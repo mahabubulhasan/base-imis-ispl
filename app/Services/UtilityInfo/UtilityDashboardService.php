@@ -59,6 +59,9 @@ class UtilityDashboardService
             '"rgba(128, 128, 128, 1)"',
             '"rgba(169, 169, 169, 1)"',
             '"rgba(219, 61, 61, 0.65)"',
+            '"rgba(84, 178, 209, 0.8)"',
+            '"rgba(125, 99, 173, 0.75)"',
+            '"rgba(246, 152, 32, 0.7)"',
         );
         $colorsArr = array_slice($colors, 0, count($results), true);
         $datasets = array();
@@ -67,9 +70,10 @@ class UtilityDashboardService
         foreach ($types as $key1 => $value1) {
             $dataset = array();
             $dataset['label'] = '"' . $value1 . '"';
-            $dataset['color'] = $colors[$count++];
+            $dataset['color'] = $colors[$count] ?? '"rgba(128, 128, 128, 1)"';
             $dataset['data'] = array();
             $dataset['value'] = array();
+            $count++;
 
             foreach ($wards as $key2 => $value2) {
                 $dataset['data'][] = isset($data[$key1][$key2]) ? $data[$key1][$key2] : '0';
@@ -80,7 +84,8 @@ class UtilityDashboardService
         }
 
         // Custom order for surface types
-        $customOrder = ['"Metalled"', '"Gravelled"', '"Brick Paved"', '"Earthen"'];
+        // $customOrder = ['"Metalled"', '"Gravelled"', '"Brick Paved"', '"Earthen"'];
+        $customOrder = ['"BC"', '"CC"', '"Earthen"', '"HBB"', '"RCC"', '"Uni-Block"', '"WBM"'];
 
         usort($datasets, function ($a, $b) use ($customOrder) {
             $indexA = array_search($a['label'], $customOrder);
@@ -147,7 +152,10 @@ class UtilityDashboardService
             '"rgba(246, 178, 107, 1)"',
             '"rgba(201, 119, 119, 1)"',
             '"rgba(255, 179, 3, 0.8)"',
-            '"rgba(219, 61, 61, 0.65)"'
+            '"rgba(219, 61, 61, 0.65)"',
+            '"rgba(84, 178, 209, 0.8)"',
+            '"rgba(125, 99, 173, 0.75)"',
+            '"rgba(246, 152, 32, 0.7)"',
         );
         $colorsArr = array_slice($colors, 0, count($results), true);
 
@@ -157,9 +165,10 @@ class UtilityDashboardService
         foreach ($types as $key1 => $value1) {
             $dataset = array();
             $dataset['label'] = '"' . $value1 . '"';
-            $dataset['color'] = $colors[$count++];
+            $dataset['color'] = $colors[$count] ?? '"rgba(128, 128, 128, 1)"';
             $dataset['data'] = array();
             $dataset['value'] = array();
+            $count++;
 
             foreach ($wards as $key2 => $value2) {
                 $dataset['data'][] = isset($data[$key1][$key2]) ? $data[$key1][$key2] : '0';
@@ -170,7 +179,8 @@ class UtilityDashboardService
         }
 
         // Custom order for specific hierarchy types
-        $customOrder = ['"Strategic Urban Road"', '"Feeder Road"', '"Other Road"'];
+        // $customOrder = ['"Strategic Urban Road"', '"Feeder Road"', '"Other Road"'];
+        $customOrder = ['"Primary"', '"Secondary"', '"Tertiary"'];
 
         usort($datasets, function ($a, $b) use ($customOrder) {
             $indexA = array_search($a['label'], $customOrder);
@@ -311,7 +321,7 @@ class UtilityDashboardService
         }, $wards);
 
         $colors = array(
-           
+
             '"rgba(159, 226, 191, 0.7)"',
             '"rgba(247, 153, 153, 1)"',
             '"rgba(255, 229, 0, 0.5)"',

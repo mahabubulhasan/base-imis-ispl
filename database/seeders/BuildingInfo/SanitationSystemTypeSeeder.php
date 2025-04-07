@@ -27,7 +27,7 @@ class SanitationSystemTypeSeeder extends Seeder
             [ 9 , 'Community Toilet' , False , True , 'others.svg' ],
             [ 10 , 'Open Defecation' , False , True , 'others.svg' ],
             [ 11 , 'Shared Containment' , False , False , ''],
-            [ 12 , 'Shared Toilets' , True , True , '']
+            [ 12 , 'Others' , True , True , '']
         );
 
      foreach ($types as $type) {

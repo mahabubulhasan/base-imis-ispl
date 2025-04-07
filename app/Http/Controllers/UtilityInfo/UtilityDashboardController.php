@@ -24,23 +24,23 @@ class UtilityDashboardController extends Controller
   {
     $page_title = 'Utility Dashboard';
     /**
-     ** For countBoxes 
+     ** For countBoxes
      */
     $sumRoads = Roadline::sum('length');
-    /** 
-     ** Road Surface Type 
+    /**
+     ** Road Surface Type
      */
-    $sumSurfaceType = Roadline::where('surface_type', 'Metalled')->sum('length');
+    $sumSurfaceType = Roadline::where('surface_type', 'CC')->sum('length');
     $sumSurfaceType1 = Roadline::where('surface_type', 'Earthen')->sum('length');
-    $sumSurfaceType2 = Roadline::where('surface_type', 'Brick Paved')->sum('length');
-    $sumSurfaceType3 = Roadline::where('surface_type', 'Gravelled')->sum('length');
-    /** 
-     ** Road Hierarchy
-     */
-    $sumHierarchy = Roadline::where('hierarchy', 'Other Road')->sum('length');
-    $sumHierarchy1 = Roadline::where('hierarchy', 'Strategic Urban Road')->sum('length');
-    $sumHierarchy2 = Roadline::where('hierarchy', 'Feeder Road')->sum('length');
-    /** 
+    $sumSurfaceType2 = Roadline::where('surface_type', 'BC')->sum('length');
+    $sumSurfaceType3 = Roadline::where('surface_type', 'RCC')->sum('length');
+    /**
+    ** Road Hierarchy
+    */
+    $sumHierarchy = Roadline::where('hierarchy', 'Primary')->sum('length');
+    $sumHierarchy1 = Roadline::where('hierarchy', 'Secondary')->sum('length');
+    $sumHierarchy2 = Roadline::where('hierarchy', 'Tertiary')->sum('length');
+    /**
      ** Road Carrying Width
      */
     $sumWidth = Roadline::where('carrying_width', '<', '3')->sum('length');
@@ -48,19 +48,19 @@ class UtilityDashboardController extends Controller
     $sumWidth2 = Roadline::where('carrying_width', [5, 8])->sum('length');
     $sumWidth3 = Roadline::where('carrying_width', '>', '8')->sum('length');
     $sumWidth4 = Roadline::where('carrying_width', null)->sum('length');
-    /** 
+    /**
      ** Calculate the total length of sewers (Displayed as "Total length (m) of sewers" in UI)
      */
     $sumSewers = SewerLine::sum('length');
-    /** 
+    /**
      ** Sewer Diameter
      */
     $sumSewerWidth = SewerLine::where('diameter', '<', 160)->sum('length');
     $sumSewerWidth1 = SewerLine::whereBetween('diameter', [160, 300])->sum('length');
     $sumSewerWidth2 = SewerLine::whereNull('diameter')->sum('length');
     $sumSewerWidth3 = SewerLine::where('diameter', '>', 300)->sum('length');
-    
-    /** 
+
+    /**
      ** Calculate the total length of drains (Displayed as "Total length (m) of drains" in UI)
      */
     $sumDrains = Drain::sum('length');
@@ -77,14 +77,14 @@ class UtilityDashboardController extends Controller
     /**
      ** For drain Surface Type
      */
-    $sumDrainsSurfaceType = Drain::where('surface_type', 'Lined')->sum('length');
-    $sumDrainsSurfaceType1 = Drain::where('surface_type', 'Unlined')->sum('length');
+    $sumDrainsSurfaceType = Drain::where('surface_type', 'RCC')->sum('length');
+    $sumDrainsSurfaceType1 = Drain::where('surface_type', 'Brick')->sum('length');
 
-    /** 
+    /**
      ** Calculate the total length of water supply (Displayed as "Total length (m) of water supply" in UI)
      */
     $sumWatersupply = WaterSupplys::sum('length');
-    /** 
+    /**
      ** Calculate the diameter of water supply (Displayed as "Water Supply Length by Diameter (mm)" in UI)
      */
     $sumWaterSupplyWidth = WaterSupplys::where('diameter', '<', 160)->sum('length');
