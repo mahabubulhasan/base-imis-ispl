@@ -1695,7 +1695,8 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
             // Authentication Keys
             var authkey = '<?php echo Config::get("constants.AUTH_KEY"); ?>';
             // BBOX Values
-            var bboxstring = @json($bboxstring);
+            var bboxstring = @json($bboxstring) || '90.70,22.80,91.00,23.05';
+;
             // URL of GeoServer Legends
             var gurl_legend = gurl_wms + "?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&BBOX="+@json($bboxstring)+"&LAYER=";
 
@@ -1862,13 +1863,19 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 // Get centre of OpenLayers Map
                 var center = ol.proj.transform(map.getView().getCenter(), 'EPSG:3857', 'EPSG:4326');
                 // Set centre of Google Map to that of OpenLayers Map
-                gmap.setCenter(new google.maps.LatLng(center[1], center[0]));
+                // gmap.setCenter(new google.maps.LatLng(center[1], center[0]));
+                if(gmap){
+                    // gmap.setCenter(new google.maps.LatLng(23.8103, 90.4125)); // TODO Coordinates for Dhaka, Bangladesh
+                    gmap.setCenter(new google.maps.LatLng(22.9333, 90.8167)); // TODO Coordinates for Lakshmipur, Bangladesh
+                }
             }
 
             // Handler for OpenLayers view zoom change event
             function onResolutionChanged() {
                 // Set zoom of Google Map to that of OpenLayers map
-                gmap.setZoom(map.getView().getZoom());
+                if(gmap){
+                    gmap.setZoom(map.getView().getZoom());
+                }
             }
 
             // Handler for window resize
@@ -8069,7 +8076,7 @@ $.ajax({
                 if (layer == 'buildings_layer')
                 {
                     params.PROPERTYNAME = 'bin,owner_name,nid,owner_gender,owner_contact,building_associated_to,ward,road_code,house_number,house_locality,tax_code,structure_type_name,surveyed_date,construction_year,floor_count,functional_use_name,use_category_name,office_business_name,household_served,male_population,female_population,other_population,population_served,diff_abled_male_pop,diff_abled_female_pop,diff_abled_others_pop,lic_community,lic_community,water_source_name,water_customer_id,watersupply_pipe_code,well_presence_status,distance_from_well,swm_customer_id,toilet_status,toilet_count,household_with_private_toilet,population_with_private_toilet,building_sanitation_system,sewer_code,drain_code,desludging_vehicle_accessible,estimated_area,toilet_name,verification_status,house_image'
-                    // 'bin,house_number,house_locality,ward,road_code,estimated_area,floor_count,household_served,population_served,office_business_name,building_associated_to,well_presence_status,toilet_status,toilet_count,sewer_code,drain_code,surveyed_date,tax_code,desludging_vehicle_accessible,construction_year,distance_from_well,owner_name,owner_gender,owner_contact,nid,functional_use_name,structure_type_type,use_category_name,sanitation_system_technology_name,water_source_source,house_image'; 
+                    // 'bin,house_number,house_locality,ward,road_code,estimated_area,floor_count,household_served,population_served,office_business_name,building_associated_to,well_presence_status,toilet_status,toilet_count,sewer_code,drain_code,surveyed_date,tax_code,desludging_vehicle_accessible,construction_year,distance_from_well,owner_name,owner_gender,owner_contact,nid,functional_use_name,structure_type_type,use_category_name,sanitation_system_technology_name,water_source_source,house_image';
                 }
 
                 if (layer == 'wardboundary_layer') {
@@ -8303,7 +8310,7 @@ $.ajax({
                                     else if (k == 'toilet_name') {
                                         kk = 'Community Toilet Name';
                                     }
-                                    
+
                                     else if (k == 'verification_status') {
                                         kk = 'Verification Status';
                                     }
@@ -8680,9 +8687,9 @@ $.ajax({
                                         html += '<td><strong>' + vv + '</strong>@can('Edit Building Structure')<br>Click <a href="{{ url("building-info/buildings") }}/'+vv+'/edit">here</a> to edit building info @endcan</td>';
                                     }
                                 else if (k == 'house_image' && layer == 'buildings_layer') {
-                                        let vv = data.features[0].properties.bin; 
+                                        let vv = data.features[0].properties.bin;
                                         let basePath = "{{ asset('') }}";
-                                      
+
                                         let imagePathJpg = basePath + 'storage/emptyings/houses/' + vv + '.jpg';
                                         let imagePathJpeg = basePath + 'storage/emptyings/houses/' + vv + '.jpeg';
                                         // let defaultImage ="{{ asset('emptyings/houses/default_img.jpg') }}";
@@ -10095,8 +10102,8 @@ $.ajax({
                     'next_emptying_date':'Next Emptying Date',
                     'no_of_times_emptied':'Number of Times Emptied',
                     'responsible_bin':'Responsible BIN',
-                   
-                    // For LIC 
+
+                    // For LIC
                     'population_total':'Population',
                     'number_of_households':'No. of Households',
                     'population_male':'Male Population',
