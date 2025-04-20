@@ -15,7 +15,10 @@ import 'datatables.net-fixedcolumns-bs4/js/fixedColumns.bootstrap4.min.js';
 
 
 
-import 'swiper/swiper-bundle.min.js';
+// import 'swiper/swiper-bundle.min.js';
+import Swiper from 'swiper/bundle';
+import 'swiper/swiper-bundle.css';
+
 
 
 
