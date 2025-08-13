@@ -10,7 +10,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
     <title>IMIS-Homepage</title>
     <!-- Google Fonts -->
     <link
-        href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Roboto:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+        href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Roboto:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i&display=swap"
         rel="stylesheet" />
 
     <!-- Vendor CSS Files -->
@@ -26,7 +26,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
         <div class="container d-flex justify-content-center justify-content-md-between">
             <div class="contact-info d-flex align-items-center">
                 <div class="d-flex p-4">
-                    <i class="fas fa-envelope d-flex align-items-center"></i> 
+                    <i class="fas fa-envelope d-flex align-items-center"></i>
                     <span class="p-2">imis@ait.asia</span>
                 </div>
 
@@ -78,7 +78,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     <h2>"Empowering Local Governments to achieve SDG 6.2 through </br> CWIS Approach"</h2>
                 </div>
                 <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-out" data-aos-delay="100">
-                    <img src="{{ asset('/img/imislogo.svg') }}" class="img-fluid" alt="">
+                    <img src="{{ asset('/img/imislogo.svg') }}" class="img-fluid" alt="" loading="lazy">
                 </div>
             </div>
         </div>
@@ -502,9 +502,9 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
     </div>
 
     <!-- Vendor JS Files -->
-    <script src="{{asset('js/app.js')}}"></script>
+    <script src="{{asset('js/app.js')}}" defer></script>
     <!-- Template Main JS File -->
-    <script src="{{ asset('js/main.js')}}"></script>
+    <script src="{{ asset('js/main.js')}}" defer></script>
     <script>
         function myFunction() {
   var x = document.getElementById("password");
@@ -526,8 +526,8 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
     </script>
      <script>
         // JavaScript code to get and display the current year
-        var currentYear = new Date().getFullYear();
-        document.getElementById("currentYear").textContent = currentYear;
+        // var currentYear = new Date().getFullYear();
+        // document.getElementById("currentYear").textContent = currentYear;
     </script>
 </body>
 
