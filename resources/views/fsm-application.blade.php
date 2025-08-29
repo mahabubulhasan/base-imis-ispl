@@ -158,7 +158,7 @@ Developed By: Streamstech Ltd.   -->
                             </div>
                         @endif
 
-                        <form action="{{ route('client-fsm-application.submit') }}" method="POST" novalidate>
+                        <form action="{{ route('client-fsm-application.submit') }}" method="POST">
                             @csrf
 
                             <div class="form-row">
