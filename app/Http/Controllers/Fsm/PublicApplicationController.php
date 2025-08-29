@@ -36,14 +36,7 @@ class PublicApplicationController extends Controller
             $query->where('name', 'ilike', '%' . request()->search . '%')
                 ->orWhere('code', 'ilike', '%' . request()->search . '%');
         }
-        if (request()->bin) {
-            $building = Building::where('bin', request()->bin)->first();
-            $query->where('code', '=', $building->road_code);
-        }
-        if (request()->ward) {
-            $building = Building::where('ward', request()->ward)->first();
-            $query->where('code', '=', $building->road_code);
-        }
+
         $total = $query->count();
 
 

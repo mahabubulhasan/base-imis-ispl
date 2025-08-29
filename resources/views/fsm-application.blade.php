@@ -18,6 +18,26 @@ Developed By: Streamstech Ltd.   -->
     <link rel="stylesheet" href="{{asset('css/app.css')}}">
     <link rel="stylesheet" href="{{asset('css/style.css')}}">
 
+    <style>
+        .animated-success {
+            animation: successPulse 2s ease-in-out;
+        }
+
+        @keyframes successPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .alert-success {
+            font-weight: 500;
+        }
+
+        .alert-success i {
+            color: #155724;
+        }
+    </style>
+
 </head>
 
 <body>
@@ -105,8 +125,19 @@ Developed By: Streamstech Ltd.   -->
                     <div class="col-lg-8 mt-5 mt-lg-0">
 
                         @if(session('success'))
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                {{ session('success') }}
+                            <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert" style="border-left: 4px solid #28a745; background-color: #d4edda; border-color: #c3e6cb;">
+                                <i class="fas fa-check-circle mr-2"></i>
+                                <strong>Success!</strong> {{ session('success') }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        @endif
+
+                        @if(session('error'))
+                            <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert" style="border-left: 4px solid #dc3545;">
+                                <i class="fas fa-exclamation-triangle mr-2"></i>
+                                <strong>Error!</strong> {{ session('error') }}
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -114,7 +145,8 @@ Developed By: Streamstech Ltd.   -->
                         @endif
 
                         @if($errors->any())
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert" style="border-left: 4px solid #dc3545;">
+                                <i class="fas fa-exclamation-triangle mr-2"></i>
                                 <ul class="mb-0">
                                     @foreach($errors->all() as $error)
                                         <li>{{ $error }}</li>
@@ -301,38 +333,86 @@ Developed By: Streamstech Ltd.   -->
 
         $(document).ready(function() {
             var error = @js($errors->messages());
+            var hasSuccess = @js(session('success') ? true : false);
 
             if (error.length > 0) {
                 $('#loginModal').modal('show');
             }
 
-            $('#road_code').select2({
-                ajax: {
-                    url: "{{ route('client-fsm-application.get-road-names') }}",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        return {
-                            search: params.term,
-                            page: params.page || 1
-                        };
+            // Scroll to and highlight success message if present
+            if (hasSuccess) {
+                setTimeout(function() {
+                    var successAlert = $('.alert-success');
+                    if (successAlert.length) {
+                        $('html, body').animate({
+                            scrollTop: successAlert.offset().top - 100
+                        }, 800);
+
+                        // Add a subtle pulse effect
+                        successAlert.addClass('animated-success');
+                    }
+                }, 300);
+            }
+
+            function initSelect2() {
+                $('#road_code').select2({
+                    ajax: {
+                        url: "{{ route('client-fsm-application.get-road-names') }}",
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (params) {
+                            return {
+                                search: params.term,
+                                page: params.page || 1
+                            };
+                        },
+                        processResults: function (data, params) {
+                            params.page = params.page || 1;
+                            return {
+                                results: data.results,
+                                pagination: {
+                                    more: data.pagination && data.pagination.more
+                                }
+                            };
+                        },
+                        cache: true
                     },
-                    processResults: function (data, params) {
-                        params.page = params.page || 1;
-                        return {
-                            results: data.results,
-                            pagination: {
-                                more: data.pagination && data.pagination.more
-                            }
-                        };
-                    },
-                    cache: true
-                },
-                placeholder: 'Street Name / Street Code',
-                allowClear: true,
-                closeOnSelect: true,
-                width: '100%',
-            });
+                    placeholder: 'Street Name / Street Code',
+                    allowClear: true,
+                    closeOnSelect: true,
+                    width: '100%',
+                });
+            }
+            initSelect2();
+
+            /**
+             * Pre-select the road code if it exists
+             */
+            function preSelect()
+            {
+                var preselectedRoadCode = "{{ old('road_code') }}";
+                if (preselectedRoadCode) {
+                    $.ajax({
+                        type: 'GET',
+                        url: "{{ route('client-fsm-application.get-road-names') }}",
+                        data: { search: preselectedRoadCode }
+                    }).then(function (data) {
+                        if (data.results && data.results.length) {
+                            var road = data.results[0];
+                            var option = new Option(road.text, road.id, true, true);
+                            $('#road_code').append(option).trigger('change');
+
+                            $('#road_code').trigger({
+                                type: 'select2:select',
+                                params: {
+                                    data: data
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+            preSelect();
 
             new Cleave('#tax_id', {
                 numericOnly: true,
