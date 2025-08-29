@@ -51,6 +51,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     <li><a class="nav-link scrollto" href="#features">Features</a></li>
                     <li><a class="nav-link scrollto" href="#services">Functional Modules</a></li>
                     <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
+                    <li><a class="nav-link scrollto" href="/fsm-application">FSM Application</a></li>
                     <li>
                         <button type="button" class="btn btn-get-started" data-toggle="modal" data-target="#loginModal">
                             LOG In
