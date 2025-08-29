@@ -18,7 +18,16 @@ class PublicApplicationService
             'holding_owner_name' => 'nullable|string|max:255',
             'ward' => 'required|string',
             'road_code' => 'nullable|string|max:255',
-            'tax_id' => 'required|string|max:50',
+            'tax_id' => [
+                'required',
+                'string',
+                'max:50',
+                function ($attribute, $value, $fail) {
+                    if (!$this->getBuilding($value)) {
+                        $fail('Invalid Tax ID.');
+                    }
+                }
+            ],
             'address' => 'required|string|max:500',
             'proposed_emptying_date' => 'required|date|after_or_equal:today',
             'latitude' => 'nullable|numeric|between:-90,90',
@@ -38,17 +47,27 @@ class PublicApplicationService
         ]);
     }
 
-    private function getApplicationStatus(Request $request)
+    private function getApplicationStatus($containment_id)
     {
-        return Application::where('containment_id', $request->containment_id)
+        return Application::where('containment_id', $containment_id)
             ->where('emptying_status', false)
             ->whereNull('deleted_at')
             ->exists();
     }
 
+    private function getBuilding($tax_code)
+    {
+        return Building::where('tax_code', $tax_code)->first();
+    }
+
+    private function getContainmentId(Building $building)
+    {
+        $firstContainment = $building->containments()->first();
+        return $firstContainment?->pivot?->containment_id;
+    }
+
     public function createApplication(Request $request)
     {
-        dd($request->all());
         $validator = $this->getValidator($request);
         if ($validator->fails()) {
             return redirect()->back()
@@ -56,43 +75,31 @@ class PublicApplicationService
                 ->withInput();
         }
 
+        $building = $this->getBuilding($request->tax_id);
+        $containment_id = $this->getContainmentId($building);
+
+        if($this->getApplicationStatus($containment_id))
+        {
+            return redirect()->back()->withInput()->with('error',"Error! Containment already has running Application.");
+        }
+
         try {
-            DB::transaction(function () use ($request) {
-                $application = Application::create($request->all());
+            $application = Application::create($request->all());
+            $application->containment_id = $containment_id;
+            $application->bin = $building->bin;
+            $application->road_code = $request->road_code;
+            $application->proposed_emptying_date = $request->proposed_emptying_date;
+            $application->address = $request->address;
 
-                $building = Building::where('bin', '=', $application->bin)->firstOrFail();
-                $owner = $building->owners;
-                $application->containment_id = $request->containment_id;
-                $application->customer_name = $request->customer_name ?? $owner->owner_name;
-                $application->customer_contact = $request->customer_contact ?? $owner->owner_contact;
-                $application->customer_gender = $request->customer_gender ?? $owner->owner_gender;
+            $owner = $building->owners;
+            $application->customer_name = $request->customer_name ?? $owner->owner_name;
+            $application->customer_contact = $request->customer_contact ?? $owner->owner_contact;
+            $application->customer_gender = $owner->owner_gender;
 
-                $owner->fill(
-                    [
-                        "owner_name" => $request->customer_name ?? $owner->owner_name,
-                        "owner_gender" => $request->customer_gender ?? $owner->owner_gender,
-                        "owner_contact" => $request->customer_contact ?? $owner->owner_contact
-                    ]
-                )->save();
-                $building->fill([
-                    "ward" => $request->ward ?? $building->ward,
-                    "road_code" => $request->road_code,
-
-                ])->save();
-                $building->household_served = $request->household_served;
-                $building->population_served = $request->population_served;
-                $building->toilet_count = $request->toilet_count;
-                $building->save();
-                $application->application_date = now()->format('Y-m-d H:i:s');
-                // $application->user_id = Auth::user()->id;
-                if ($request->autofill === 'on') {
-                    $application->applicant_name = $request->customer_name ?? $owner->owner_name ?? null;
-                    $application->applicant_contact = $request->customer_contact ?? $owner->owner_contact ?? null;
-                    $application->applicant_gender = $request->customer_gender ?? $owner->owner_gender ?? null;
-                };
-                $application->emergency_desludging_status = $request->emergency_desludging_status ?? $request->emergency_desludging_status ?? null;
-                $application->save();
-            });
+            $application->application_date = now()->format('Y-m-d H:i:s');
+            $application->applicant_name = $request->customer_name ?? $owner->owner_name ?? null;
+            $application->applicant_contact = $request->customer_contact ?? $owner->owner_contact ?? null;
+            $application->save();
         } catch (\Throwable $e) {
             return redirect()->back()->withInput()->with('error', "Error! Application couldn't be created.");
         }
