@@ -92,7 +92,7 @@ class PublicApplicationService
             $application->address = $request->address;
 
             $owner = $building->owners;
-            $application->customer_name = $request->customer_name ?? $owner->owner_name;
+            $application->customer_name = $request->holding_owner_name ?? $request->customer_name ?? $owner->owner_name;
             $application->customer_contact = $request->customer_contact ?? $owner->owner_contact;
             $application->customer_gender = $owner->owner_gender;
 
