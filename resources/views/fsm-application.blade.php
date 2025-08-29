@@ -142,7 +142,7 @@ Developed By: Streamstech Ltd.   -->
                                 <div class="form-group col-12 col-md-6">
                                     <label for="customer_contact">Contact No. <span class="text-danger">*</span></label>
                                     <input type="tel" class="form-control @error('customer_contact') is-invalid @enderror" name="customer_contact" id="customer_contact"
-                                        placeholder="Contact No." value="{{ old('customer_contact') }}" required aria-required="true">
+                                        placeholder="01#########" value="{{ old('customer_contact') }}" required aria-required="true">
                                     @error('customer_contact')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -187,7 +187,7 @@ Developed By: Streamstech Ltd.   -->
                                 <div class="form-group col-12 col-md-6">
                                     <label for="tax_id">Tax ID <span class="text-danger">*</span></label>
                                     <input type="text" name="tax_id" class="form-control @error('tax_id') is-invalid @enderror" id="tax_id"
-                                        placeholder="Tax ID" value="{{ old('tax_id') }}" required aria-required="true">
+                                        placeholder="##-###-####-##" value="{{ old('tax_id') }}" required aria-required="true">
                                     @error('tax_id')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -288,6 +288,7 @@ Developed By: Streamstech Ltd.   -->
     <script src="{{asset('js/app.js')}}"></script>
     <!-- Template Main JS File -->
     <script src="{{ asset('js/main.js')}}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cleave.js/1.0.2/cleave.min.js" integrity="sha512-SvgzybymTn9KvnNGu0HxXiGoNeOi0TTK7viiG0EGn2Qbeu/NFi3JdWrJs2JHiGA1Lph+dxiDv5F9gDlcgBzjfA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         function myFunction() {
             var x = document.getElementById("password");
@@ -332,6 +333,20 @@ Developed By: Streamstech Ltd.   -->
                 closeOnSelect: true,
                 width: '100%',
             });
+
+            new Cleave('#tax_id', {
+                numericOnly: true,
+                delimiter: '-',
+                blocks: [2, 3, 4, 2],
+                delimiterLazyShow: true
+            });
+
+            new Cleave('#customer_contact', {
+                numericOnly: true,
+                blocks: [11],
+                numericOnly: true
+            });
+
         })
 
         // --- Geolocation: fill latitude/longitude from browser ---
