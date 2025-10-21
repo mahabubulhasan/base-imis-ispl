@@ -8,6 +8,6 @@
         <span class="info-box-text">
             <h2> {{ number_format($sumHierarchy2) }}</h2>
         </span>
-        <span class="info-box-number">{{ __('Feeder Road')}}</span>
+        <span class="info-box-number">{{ __('Tertiary')}}</span>
     </div>
 </div>
