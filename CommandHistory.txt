@@ -1,0 +1,8 @@
+
+php artisan migrate --path=database/migrations/2025_05_23_121734_create_jobs_table.php
+php artisan migrate:status
+php artisan migrate --path=database/migrations/2025_05_23_155848_create_failed_jobs_table.php
+php artisan migrate:status --path=database/migrations/languauge
+php artisan migrate --path=database/migrations/languauge
+php artisan db:seed --class=LanguageSeeder
+php artisan db:seed --class=PermissionsSeeder
