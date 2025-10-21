@@ -36,7 +36,7 @@ class WaterSamplesController extends Controller
     */
     public function index()
     {
-        $page_title = "Water Samples";
+        $page_title = __("Water Samples");
         $water_coliform_test_result = WaterSamplesResult::toEnumArray();
         return view('public-health/water-samples.index', compact('page_title', 'water_coliform_test_result'));
     }
@@ -55,7 +55,7 @@ class WaterSamplesController extends Controller
      */
     public function create()
     {
-        $page_title = "Add Water Samples";
+        $page_title = __("Add Water Samples");
         $water_coliform_test_result = WaterSamplesResult::toEnumArray();
         return view('public-health/water-samples.create', compact('page_title', 'water_coliform_test_result'));
     }
@@ -70,7 +70,7 @@ class WaterSamplesController extends Controller
     {
         $data = $request->all();
         $this->waterSamplesService->storeOrUpdate($id = null, $data);
-        return redirect('publichealth/water-samples')->with('success','Water Samples created successfully');
+        return redirect('publichealth/water-samples')->with('success', __('Water Samples created successfully.'));
     }
 
    
@@ -95,7 +95,7 @@ class WaterSamplesController extends Controller
         $geom = $long . ',' . $lat;
 
         if ($waterSamples) {
-            $page_title = "Edit Water Samples";
+            $page_title = __("Edit Water Samples");
             return view('public-health/water-samples.edit', compact('page_title', 'waterSamples','water_coliform_test_result', 'geom', 'long', 'lat'));
         } else {
             abort(404);
@@ -112,7 +112,7 @@ class WaterSamplesController extends Controller
     {
         $waterSamples = WaterSamples::find($id);
         if ($waterSamples) {
-            $page_title = "Water Samples Details";
+            $page_title = __("Water Samples Details");
             $date = Carbon::parse($waterSamples->sample_date)->format('m/d/Y');
             return view('public-health/water-samples.show', compact('page_title', 'waterSamples','date'));
         } else {
@@ -134,9 +134,9 @@ class WaterSamplesController extends Controller
            
             $data = $request->all();
             $this->waterSamplesService->storeOrUpdate($id,$data);
-            return redirect('publichealth/water-samples')->with('success','Water Samples updated successfully');
+            return redirect('publichealth/water-samples')->with('success', __('Water Samples updated successfully.'));
         } else {
-            return redirect('publichealth/water-samples')->with('error','Failed to update Water Samples');
+            return redirect('publichealth/water-samples')->with('error', __('Failed to update Water Samples.'));
         }
     }
 
@@ -151,9 +151,9 @@ class WaterSamplesController extends Controller
         $waterSamples = WaterSamples::find($id);
         if ($waterSamples) {
             $waterSamples->delete();
-            return redirect('publichealth/water-samples')->with('success', 'Water Samples Information deleted successfully');
-        } else {
-            return redirect('publichealth/water-samples')->with('error', 'Failed to delete Water Samples Information');
+            return redirect('publichealth/water-samples')->with('success', __('Water Samples Information deleted successfully.'));
+        } else { 
+            return redirect('publichealth/water-samples')->with('error', __('Failed to delete Water Samples Information.'));
         }
        
     }
@@ -162,7 +162,7 @@ class WaterSamplesController extends Controller
     {
         $waterSamples = WaterSamples::find($id);
         if ($waterSamples) {
-            $page_title = "Water Samples History";
+            $page_title = __("Water Samples History");
             return view('public-health/water-samples.history', compact('page_title', 'waterSamples'));
         } else {
             abort(404);

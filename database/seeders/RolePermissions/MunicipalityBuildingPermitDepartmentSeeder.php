@@ -100,7 +100,7 @@ class MunicipalityBuildingPermitDepartmentSeeder extends Seeder
                     'Export Data Map Tools',
                     'Export in General Map Tools',
                     'Owner Information Map Tools',
-                    'Info Map Tools',
+                    'Info Map Tools', 'Containments Emptied Info Map Tools', 'Toilet Isochrone Map Tools', 'Export Containment Report'
                     ]));
                  
                     break;

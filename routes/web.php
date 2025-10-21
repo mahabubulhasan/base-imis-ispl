@@ -7,6 +7,9 @@ use App\Http\Controllers\ChartController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Fsm\ApplicationController;
+use App\Http\Controllers\Api\ApiServiceController;
+use App\Http\Controllers\MapsController;
+use App\Http\Controllers\Proxy\WMSProxyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +36,9 @@ Route::get('/', function () {
 Route::get('/fsm-application', 'Fsm\PublicApplicationController@getForm')->name('client-fsm-application.form');
 Route::post('/fsm-application', 'Fsm\PublicApplicationController@submitForm')->name('client-fsm-application.submit');
 Route::get('/fsm-road-names', 'Fsm\PublicApplicationController@getRoadNames')->name('client-fsm-application.get-road-names');
+// routes/web.php
+
+Route::middleware('fixed_token_auth')->get('redirect-to-map/{ebps_id}', [ApiServiceController::class, 'getMapUrl'])->name('maps.view');
 
 
 Route::get('/files', 'FileController@index')->name('files.index');
@@ -200,6 +206,8 @@ Route::group([
     Route::get('utilitydashboard', 'UtilityDashboardController@index')->name('utilitydashboard');
     Route::get('roadlines/export', 'RoadlineController@export');
     Route::get('roadlines/data', 'RoadlineController@getData');
+    Route::get('roadlines/{code}/geometry', 'RoadlineController@getGeometry');
+
     Route::get('roadlines/get-road-names', 'RoadlineController@getRoadNames')->name('roadlines.get-road-names');
     Route::get('roadlines/{id}/history', 'RoadlineController@history');
     Route::post('roadlines/add-road', 'RoadlineController@store');
@@ -209,20 +217,29 @@ Route::group([
 
     // Route::get('sewerconnection/{id}/approve', 'SewerConnectionController@approve');
     Route::get('drains/get-drain-names','DrainController@getDrainNames')->name('drains.get-drain-names');
+    Route::get('drains/{code}/geometry', 'DrainController@getGeometry');
 
+    Route::post('drains/update-drain-geom', 'DrainController@updateDrainGeom');
     Route::get('drains/export', 'DrainController@export');
+    Route::post('drains/add-drain', 'DrainController@store');
     Route::get('drains/data', 'DrainController@getData');
     Route::get('drains/{id}/history', 'DrainController@history');
     Route::resource('drains', 'DrainController');
 
     Route::get('sewerlines/export', 'SewerLineController@export');
+    Route::get('sewerlines/{code}/geometry', 'SewerLineController@getGeometry');
     Route::get('sewerlines/data', 'SewerLineController@getData');
+    Route::post('sewerlines/add-sewer', 'SewerLineController@store');
+    Route::post('sewerlines/update-sewer-geom', 'SewerLineController@updateSewerGeom');
     Route::get('sewerlines/get-sewer-names', 'SewerLineController@getSewerNames')->name('sewerlines.get-sewer-names');
     Route::get('sewerlines/{id}/history', 'SewerLineController@history');
     Route::resource('sewerlines', 'SewerLineController');
 
     Route::get('watersupplys/export', 'WaterSupplysController@export');
+    Route::get('watersupplys/{code}/geometry', 'WaterSupplysController@getGeometry');
     Route::get('watersupplys/data', 'WaterSupplysController@getData');
+    Route::post('watersupplys/add-watersupply', 'WaterSupplysController@store');
+    Route::post('watersupplys/update-watersupply-geom', 'WaterSupplysController@updateWatersupplyGeom');
     Route::get('watersupplys/get-watersupply-codes', 'WaterSupplysController@getWaterSupplyCode')->name('watersupply.get-watersupply-code');
 
     Route::get('watersupply/{id}/history', 'WaterSupplysController@history');
@@ -497,6 +514,16 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('maps/waterbody-inaccessible-buildings-reports', 'MapsController@getPolygonWaterbodyInaccessibleReport');
     // Route::post('maps/road-inaccessible-buildings', 'MapsController@roadInaccessibleBuildings');
     Route::get('maps/buildings-toilet-network', 'MapsController@getBuildingsToiletNetwork');
+    Route::post('maps/get-kml-summary-info', 'MapsController@getKmlSummaryInfo') ;
+
+    Route::post('maps/check-geometry', 'MapsController@checkGeometry') ;
+    Route::post('maps/get-kml-info-report-csv','MapsController@getKmlInfoReportCsv');
+    Route::post('maps/containment-report', 'MapsController@getContainmentReport');
+    Route::get('maps/export-containment-report','MapsController@getContainmentReportCsv');
+    Route::get('maps/check-location-within-boundary','MapsController@checkLocationWithinBoundary');
+    Route::get('maps/toilet-isochrone', 'MapsController@getToiletIsochroneAreaLayers');
+   Route::get('/proxy-wms', 'MapsController@proxyWms');
+
 });
 
 
@@ -536,6 +563,22 @@ Route::group([
     Route::get('hotspots/{id}/history', 'HotspotController@history');
 
     Route::resource('hotspots', 'HotspotController');
+});
+Route::group([
+    'name' => 'language',
+    'prefix' => 'language',
+    'namespace' => 'Language',
+    'middleware' => 'auth'
+], function () {
+    Route::post('/generate/{id}', 'LanguageController@generate_translate')->name('lang.generate');
+    Route::get('/switch', 'LanguageController@set_lang')->name('lang.switch');
+    Route::get('/data', 'LanguageController@getData');
+    Route::get('/exportFormat', 'LanguageController@export_csv_format');
+    Route::post('/import/{id}', 'LanguageController@import_translates')->name('lang.import');
+    Route::get('/import/{id}', 'LanguageController@create_import')->name('lang.import');
+    Route::get('add-translation/{id}', 'LanguageController@add_translation')->name('lang.add_translation');
+    Route::post('/save-translation/{languageId}', 'LanguageController@saveStepTranslation');
+    Route::resource('setup', 'LanguageController');
 });
 Route::group(['middleware' => ['auth']], function () {
     /**

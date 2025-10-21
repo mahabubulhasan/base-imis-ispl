@@ -13,20 +13,20 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 <div class="card">
     <div class="card-header">
     @can('Add Water Samples')
-        <a href="{{ action('PublicHealth\WaterSamplesController@create') }}" class="btn btn-info">Add Water Samples</a>
+        <a href="{{ action('PublicHealth\WaterSamplesController@create') }}" class="btn btn-info">{{__('Add Water Samples')}}</a>
         @endcan
         @can('Export Water Samples to CSV')
-        <a href="#" id="export" class="btn btn-info">Export to CSV</a>
+        <a href="#" id="export" class="btn btn-info">{{__('Export to CSV')}}</a>
         @endcan
         @can('Export Water Samples to Shape')
-        <a href="#" id="export-shp" class="btn btn-info">Export to Shape File</a>
+        <a href="#" id="export-shp" class="btn btn-info">{{__('Export to Shape File')}}</a>
         @endcan
         @can('Export Water Samples to KML')
-        <a href="#" id="export-kml" class="btn btn-info">Export to KML</a>
+        <a href="#" id="export-kml" class="btn btn-info">{{__('Export to KML')}}</a>
         @endcan
         <a class="btn btn-info float-right" id="headingOne" type="button" data-toggle="collapse"
             data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-            Show Filter
+            {{__('Show Filter')}}
         </a>
     </div><!-- /.box-header -->
     <div class="card-body">
@@ -39,19 +39,19 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                             <div class="accordion-body">
                                 <form class="form-horizontal" id="filter-form">
                                     <div class="form-group row">
-                                    <label for="sample_date" class="col-md-2 col-form-label ">Sample Date</label>
+                                    <label for="sample_date" class="col-md-2 col-form-label ">{{__('Sample Date')}}</label>
                                         <div class="col-md-2">
                                             <input type="date" class="form-control" id="sample_date" onclick = 'this.showPicker();'/>
                                         </div>
 
-                                        <label for="sample_location" class="col-md-2 col-form-label ">Sample Location</label>
+                                        <label for="sample_location" class="col-md-2 col-form-label ">{{__('Sample Location')}}</label>
                                         <div class="col-md-2">
-                                            <input type="text" class="form-control" id="sample_location" placeholder = "Sample Location" />
+                                            <input type="text" class="form-control" id="sample_location" placeholder = "{{__('Sample Location')}}" />
                                         </div>
-                                        <label for="water_coliform_test_result" class="col-md-2 col-form-label ">Water Coliform Test Result</label>
+                                        <label for="water_coliform_test_result" class="col-md-2 col-form-label ">{{__('Water Coliform Test Result')}}</label>
                                         <div class="col-md-2">
                                             <select class="form-control" id="water_coliform_test_result">
-                                                <option value="">Water Coliform Test Result</option>
+                                                <option value="">{{__('Water Coliform Test Result')}}</option>
                                                 @foreach ($water_coliform_test_result as $key => $value)
                                                                 <option value="{{ $key }}">{{ $value }}</option>
                                                             @endforeach
@@ -61,8 +61,8 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                     </div>
                 
                                     <div class="card-footer text-right">
-                                        <button type="submit" class="btn btn-info ">Filter</button>
-                                        <button type="reset"   id="reset-filter" class="btn btn-info reset">Reset</button>
+                                        <button type="submit" class="btn btn-info ">{{__('Filter')}}</button>
+                                        <button type="reset"   id="reset-filter" class="btn btn-info reset">{{__('Reset')}}</button>
                                     </div>
                                 </form>
                             </div>
@@ -83,11 +83,11 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
             <table id="data-table" class="table table-bordered table-striped dtr-inline" width="100%">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Sample Date</th>
-                    <th>Sample Location</th>
-                    <th>Water Coliform Test Result</th>
-                    <th>Actions</th>
+                    <th>{{__('ID')}}</th>
+                    <th>{{__('Sample Date')}}</th>
+                    <th>{{__('Sample Location')}}</th>
+                    <th>{{__('Water Coliform Test Result')}}</th>
+                    <th>{{__('Actions')}}</th>
                 </tr>
             </thead>
         </table>
@@ -152,13 +152,14 @@ $(function() {
             var form = $(this).closest("form");
             event.preventDefault();
             Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+                title: "{{__('Are you sure?')}}",
+                    text: "{!! __('You won\'t be able to revert this!') !!}",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: "{{ __('Yes, delete it!') }}",
+                    cancelButtonText: '{{ __('Cancel') }}',
             }).then((result) => {
                 if (result.isConfirmed) {
                     form.submit();

@@ -58,14 +58,14 @@ class SludgeCollectionRequest extends FormRequest
     public function messages()
     {
         return [
-            'treatment_plant_id.required' => 'The Treatment Plant is required.',
-            'date.required' => 'The Date is required.',
-            'no_of_trips.required'=> 'The No. of Trips is required.',
-            'no_of_trips.integer'=> 'The No. of Trips must be an integer.',
-            'no_of_trips.min'=> 'The No. of Trips must be at least 1.',
-            'entry_time.required' => 'The Entry Time is required.',
-            'exit_time.required' => 'The Exit Time is required.',
-            'exit_time.after' => 'The Exit Time must be after the Entry Time.',
+            'treatment_plant_id.required' => __('The Treatment Plant is required.'),
+            'date.required' => __('The Date is required.'),
+            'no_of_trips.required'=> __('The No. of Trips is required.'),
+            'no_of_trips.integer'=> __('The No. of Trips must be an integer.'),
+            'no_of_trips.min'=> __('The No. of Trips must be at least 1.'),
+            'entry_time.required' => __('The Entry Time is required.'),
+            'exit_time.required' => __('The Exit Time is required.'),
+            'exit_time.after' => __('The Exit Time must be after the Entry Time.'),
 
         ];
     }

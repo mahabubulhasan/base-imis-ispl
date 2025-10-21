@@ -3,7 +3,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 {{-- Extend the main layout --}}
 @extends('layouts.dashboard')
 {{-- Add sections for the main layout --}}
-@section('title', 'Emptying')
+@section('title',__('Emptying') )
 {{-- Add sections for the index layout --}}
 @section('filter-form')
     @include('layouts.filter-form', ['formFields' => $filterFormFields])
@@ -13,13 +13,13 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
         <table id="data-table" class="table table-bordered table-striped dtr-inline" width="100%">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Application ID</th>
-                    <th>Sludge Volume (m³)</th>
-                    <th>Emptied Date</th>
-                    <th>Total Cost</th>
-                    <th>Service Provider Name</th>
-                    <th>Actions</th>
+                    <th>{{ __('ID') }}</th>
+                    <th>{{ __('Application ID') }}</th>
+                    <th>{{ __('Sludge Volume (m³)') }}</th>
+                    <th>{{ __('Emptied Date') }}</th>
+                    <th>{{ __('Total Cost') }}</th>
+                    <th>{{ __('Service Provider Name') }}</th>
+                    <th>{{ __('Actions') }}</th>
                 </tr>
             </thead>
         </table>
@@ -73,7 +73,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     {
                         data: 'total_cost',
                         name: 'total_cost'
-                    },
+                },
                     {
                         data: 'service_provider_id',
                         name: 'service_provider_id'
@@ -88,12 +88,27 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 ]
 
             }).on('draw', function() {
-                $('.delete').on('click', function(e) {
-                    e.preventDefault();
-                    var form = $(this).closest("form");
-                    deleteAction(form);
-                });
+               
+        $('.delete').on('click', function(e) {
+
+            var form =  $(this).closest("form");
+            event.preventDefault();
+            Swal.fire({
+            title: "{{__('Are you sure?')}}",
+                    text: "{!! __('You won\'t be able to revert this!') !!}",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: "{{ __('Yes, delete it!') }}",
+                    cancelButtonText: '{{ __('Cancel') }}',
+            }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+            })
             });
+            } );
        
         filterDataTable(dataTable);
         resetDataTable(dataTable);
@@ -104,13 +119,13 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
         var date_to = $('#date_to').val();
         if (date_from !== '' && date_to !== '' && (date_to <= date_from)) {
                     Swal.fire({
-                        title: 'Invalid Date Range',
-                        text: "Date To cannot be Before Date From!",
+                        title:  '{{ __('Invalid Date Range') }}',
+                        text:  '{{ __("Date To cannot be Before Date From!") }}',
                         icon: 'warning',
                         showCancelButton: false,
                         confirmButtonColor: '#3085d6',
                         cancelButtonColor: '#d33',
-                        confirmButtonText: 'Close'
+                        confirmButtonText: "{{ __('Close') }}"
                     });
 
                     return false;
@@ -118,13 +133,13 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
         if ((date_from !== '') && (date_to === '')) {
 
             Swal.fire({
-                title: 'Date To is Required',
-                text: "Please Select Date To!",
+                title:'{{ __('Date To is Required') }}' ,
+                text:'{{ __("Please Select Date To!") }}' ,
                 icon: 'warning',
                 showCancelButton: false,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Close'
+                confirmButtonText: "{{ __('Close') }}"
             })
 
             return false;
@@ -132,13 +147,13 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
         if ((date_from === '') && (date_to !== '')) {
 
                     Swal.fire({
-                        title: 'Date From is Required',
-                        text: "Please Select Date From!",
+                        title:'{{ __('Date From is Required') }}' ,
+                        text: '{{ __("Please Select Date From!") }}',
                         icon: 'warning',
                         showCancelButton: false,
                         confirmButtonColor: '#3085d6',
                         cancelButtonColor: '#d33',
-                        confirmButtonText: 'Close'
+                        confirmButtonText: "{{ __('Close') }}"
                     })
 
                     return false;

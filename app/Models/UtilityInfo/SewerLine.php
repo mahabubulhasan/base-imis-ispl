@@ -15,6 +15,8 @@ class SewerLine extends Model
 {
     use HasFactory;
     use RevisionableTrait;
+    use SoftDeletes;
+
     protected $revisionCreationsEnabled = true;
     protected $table = 'utility_info.sewers';
     protected $primaryKey = 'code';

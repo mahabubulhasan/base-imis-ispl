@@ -47,7 +47,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $page_title = "Users";
+        $page_title = __("Users");
         $users = $this->userService->getAllData($request);
         return view('users.index')->with(compact('users', 'page_title'));
     }
@@ -60,8 +60,8 @@ class UserController extends Controller
      */
     public function create(Request $request)
     {
-        $page_title = "Create User";
-       if (!$request->user()->hasRole("Super Admin") && !$request->user()->hasRole("Municipality - Super Admin") && !$request->user()->hasRole("Municipality - IT Admin")){
+        $page_title = __("Create User");
+       if (!$request->user()->hasRole("Super Admin") && !$request->user()->hasRole("Municipality - IT Admin")){
             if ($request->user()->hasRole("Municipality - Sanitation Department")){
                 $roles = Role::where('name','!=', 'Super Admin')
                     ->where('name','LIKE','%Service Provider%')
@@ -102,11 +102,11 @@ class UserController extends Controller
         try {
         $this->userService->storeOrUpdate($id = null,$data);
         DB::commit();
-        return redirect('auth/users')->with('success','User created successfully');
+        return redirect('auth/users')->with('success', __('User created successfully.'));
         } catch (\Exception $e) {
             DB::rollBack();
             \Log::error('Error updating password: ' . $e->getMessage());
-            return redirect()->back()->with('error','User could not be created');
+            return redirect()->back()->with('error', __('User could not be created.'));
         }
     }
 
@@ -130,8 +130,8 @@ class UserController extends Controller
         foreach($userDetail->roles as $role) {
           $userRoles[] = $role->name;
         }
-        if (!$userDetail->hasRole('Super Admin') && !$userDetail->hasRole('Municipality - Super Admin')) {
-            $page_title = "Users";
+        if (!$userDetail->hasRole('Super Admin')) {
+            $page_title = __("Users");
             return view('users.show')->with([ 'userDetail' => $userDetail, 'userRoles' => $userRoles, 'page_title' => $page_title, 'treatmentPlants' => $user['treatmentPlants'], 'helpDesks' => $user['helpDesks'], 'serviceProviders' => $user['serviceProviders'], 'status' => $status,'munhelpDesks'=>$munhelpDesks]);
         } else {
             abort(404);
@@ -148,8 +148,8 @@ class UserController extends Controller
     {
         $user = User::findorfail($id);
       
-        if (!$user->hasRole('Super Admin') && !$user->hasRole('Municipality - Super Admin')) {
-            $page_title = "Edit User";
+        if (!$user->hasRole('Super Admin')) {
+            $page_title = __("Edit User");
             if (!$request->user()->hasRole("Super Admin") && !$request->user()->hasRole("Municipality - Super Admin") && !$request->user()->hasRole("Municipality - IT Admin")){
                 $roles = Role::where('name','!=', 'Super Admin')
                     ->where('name','!=', 'Service Provider - Admin')
@@ -197,18 +197,18 @@ class UserController extends Controller
         DB::beginTransaction();
         try {
             $user = User::findorfail($id);
-            if (!$user->hasRole('Super Admin') && !$user->hasRole('Municipality - Super Admin')) {
+            if (!$user->hasRole('Super Admin')) {
             $data = $request->all();
             $this->userService->storeOrUpdate($user->id,$request);
             DB::commit(); 
-            return redirect('auth/users')->with('success','User updated successfully');
+            return redirect('auth/users')->with('success', __('User updated successfully.'));
             } else {
                 abort(404);
             }
         } catch (\Exception $e) {
             DB::rollBack();
             \Log::error('Error updating user: ' . $e->getMessage());
-            return redirect()->back()->with('error','User could not be updated');
+            return redirect()->back()->with('error', __('User could not be updated.'));
         }
     }
 
@@ -221,7 +221,7 @@ class UserController extends Controller
     public function destroy($id)
     {
         $user = User::findorfail($id);
-        if (!$user->hasRole('Super Admin') && !$user->hasRole('Municipality - Super Admin')) {
+        if (!$user->hasRole('Super Admin')) {
 
             if( $user->buildingSurveys()->exists() ||
                 $user->buildings()->exists() ||
@@ -243,12 +243,12 @@ class UserController extends Controller
                 $user->watersupplys()->exists() ||
                 $user->roads()->exists()    )
                 {
-                    return redirect('auth/users')->with('error','User has created some records and cannot be deleted; Update Status to Inactive to revoke access');
+                    return redirect('auth/users')->with('error', __('User has created some records and cannot be deleted; Update Status to Inactive to revoke access'));
                 }
                 User::destroy($id);
-            return redirect('auth/users')->with('success','User deleted successfully');
+            return redirect('auth/users')->with('success', __('User deleted successfully.'));
         } else {
-            return redirect('auth/users')->with('error','User could not be deleted');
+            return redirect('auth/users')->with('error', __('User could not be deleted.'));
         }
     }
 
@@ -266,8 +266,8 @@ class UserController extends Controller
         $last_login_at = User::find($id)->lastLoginAt();
         $last_login_ip = User::find($id)->lastLoginIp();
 
-        if (!$userDetail->hasRole('Super Admin') && !$userDetail->hasRole('Municipality - Super Admin')) {
-            $page_title = "Login Activity";
+        if (!$userDetail->hasRole('Super Admin') ) {
+            $page_title = __("Login Activity");
             return view('users.login-activity',compact('page_title', 'last_login_at', 'last_login_ip', 'userDetail'));
         } else {
             abort(404);

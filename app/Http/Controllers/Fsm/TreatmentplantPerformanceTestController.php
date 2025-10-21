@@ -1,6 +1,6 @@
 <?php
 // Last Modified Date: 18-04-2024
-// Developed By: Innovative Solution Pvt. Ltd. (ISPL)  
+// Developed By: Innovative Solution Pvt. Ltd. (ISPL)
 namespace App\Http\Controllers\Fsm;
 
 use App\Http\Controllers\Controller;
@@ -30,7 +30,7 @@ class TreatmentplantPerformanceTestController extends Controller
     */
     public function index(TreatmentplantPerformanceTestRequest $request)
     {
-        $page_title = "Performance Efficiency Standards";
+        $page_title = __("Performance Efficiency Standards");
         $temp_data = TreatmentPlantPerformanceTest::all();
         $updated = $temp_data->isNotEmpty() ? $temp_data->max('updated_at') : null;
         if(!empty($updated))
@@ -55,7 +55,7 @@ class TreatmentplantPerformanceTestController extends Controller
     {
         $data = $request->all();
         $this->treatmentplantPerformanceTestService->storeOrUpdate($data);
-        return redirect('fsm/treatment-plant-performance-test')->with('success', ' Performance Efficiency Standards updated successfully');
+        return redirect('fsm/treatment-plant-performance-test')->with('success', __('Performance Efficiency Standards updated successfully.'));
     }
-    
+
 }

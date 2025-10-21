@@ -23,7 +23,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
                     <a class="btn btn-info float-right" id="headingOne" type="button" data-toggle="collapse"
                         data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                        Show Filter
+                        {{ __('Show Filter') }}
                     </a>
                 </div><!-- /.card-header -->
                 <div class="card-body">
@@ -49,8 +49,8 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                                     </div>
                                                 </div>
                                                 <div class="card-footer text-right">
-                                                    <button type="submit" class="btn btn-info">Filter</button>
-                                                    <button type="reset" class="btn btn-info reset">Reset</button>
+                                                    <button type="submit" class="btn btn-info">{{ __('Filter') }}</button>
+                                                    <button type="reset" class="btn btn-info reset">{{ __('Reset') }}</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -102,7 +102,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     <div class="message"></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Close') }}</button>
                 </div>
             </div>
         </div>
@@ -164,13 +164,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     var form = $(this).closest("form");
                     event.preventDefault();
                     Swal.fire({
-                        title: 'Are you sure?',
-                        text: "You won't be able to revert this!",
+                        title: {{__('Are you sure?')}},
+                        text: "{!! __('You won\'t be able to revert this!') !!}",
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',
                         cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, delete it!'
+                        confirmButtonText: '{{__('Yes, delete it!')}}',
+                        cancelButtonText: '{{ __('Cancel') }}',
                     }).then((result) => {
                         if (result.isConfirmed) {
                             form.submit();

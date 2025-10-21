@@ -8,7 +8,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 @include('layouts.components.error-alert')
 <div class="card card-info">
 	<div class="card-header with-border">
-		<h3 class="card-title">Application ID: {{ $sludgeCollection->application_id }}</h3>
+		<h3 class="card-title">{{__('Application ID')}}: {{ $sludgeCollection->application_id }}</h3>
 	</div><!-- /.card-header -->
 	{!! Form::model($sludgeCollection, ['method' => 'PATCH', 'action' => ['Fsm\SludgeCollectionController@update', $sludgeCollection->id], 'class' => 'form-horizontal']) !!}
 		@include('fsm/sludge-collection.partial-form', ['submitButtomText' => 'Update'])

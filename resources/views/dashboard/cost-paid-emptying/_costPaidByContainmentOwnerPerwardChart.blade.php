@@ -1,7 +1,7 @@
 <!-- Last Modified Date: 18-04-2024
 Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 @include('layouts.dashboard.chart-card',[
-    'card_title' => " Wardwise Revenue Collected from Emptying Services",
+    'card_title' => __("Wardwise Revenue Collected from Emptying Services"),
     'export_chart_btn_id' => "exportcostPaidByContainmentOwnerPerwardChart",
     'canvas_id' => "costPaidByContainmentOwnerPerwardChart"
 ])
@@ -11,7 +11,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 #costPaidByContainmentOwnerPerwardChart{
 
 height:600px !important;
-  
+
 
 }
 </style>
@@ -54,7 +54,7 @@ var myChart = new Chart(ctx, {
       },
       }],
         yAxes: [{
-       
+
             stacked: true,
             ticks: {
                 beginAtZero: true,

@@ -1,8 +1,9 @@
-@include('layouts.dashboard.chart-card',[
-    'card_title' => "Wardwise Distribution of Buildings",
+@include('layouts.dashboard.chart-card', [
+    'card_title' => __("Wardwise Distribution of Buildings"), // Removed extra quotes
     'export_chart_btn_id' => "exportbuildingsPerWardChart",
     'canvas_id' => "buildingsPerWardChart"
 ])
+
 @push('scripts')
 <script>
 var ctx = document.getElementById("buildingsPerWardChart");

@@ -8,9 +8,9 @@
             'url' => 'building-info/buildings',
             'id' => 'prevent-multiple-submits',
             'files' => true,
-           
+
         ]) !!}
-        @include('building-info.buildings.partial-form', ['submitButtomText' => 'Save'])
+        @include('building-info.buildings.partial-form', ['submitButtomText' => __('Save')])
         {!! Form::close() !!}
     </div><!-- /.card -->
 @stop
@@ -19,9 +19,9 @@
 
 @push('scripts')
     <script>
-      
+
         $(document).ready(function() {
-           
+
             // Check if a div with the alert class exists, if yes then clear local storage
             let selectedAssociatedValue = null;
             let selectedAssociatedText = null;
@@ -34,7 +34,7 @@
             let containmentTypeText = null;
             let containmentTypeValue = null;
             let selectedUseCategory = null;
-            
+
 
             if ($('.alert.alert-danger.alert-dismissible').length == 0) {
                 localStorage.removeItem("selectedAssociatedValue");
@@ -81,8 +81,8 @@
             handleContainmentTypeChange();
             showContainmentDimensionsOnReload();
           // searchable dropdown for building_associated_to
-          optionHtmlBIN = selectedAssociatedValue 
-                ? `<option value=${selectedAssociatedValue} selected="${selectedAssociatedText}">${selectedAssociatedText}</option>` 
+          optionHtmlBIN = selectedAssociatedValue
+                ? `<option value=${selectedAssociatedValue} selected="${selectedAssociatedText}">${selectedAssociatedText}</option>`
                 : `<option selected=""></option>`;
           $('#building_associated_to').prepend(optionHtmlBIN).select2({
             ajax: {
@@ -94,14 +94,14 @@
                     };
                 },
             },
-            placeholder: 'BIN of Main Building',
+            placeholder: '{{__('BIN of Main Building')}}',
             allowClear: true,
             closeOnSelect: true,
             width: '85%',
             });
-   
-            optionHtmlRoadCode = selectedRoadCode 
-                ? `<option value=${roadCode} selected=${selectedRoadCode}>${selectedRoadCode}</option>` 
+
+            optionHtmlRoadCode = selectedRoadCode
+                ? `<option value=${roadCode} selected=${selectedRoadCode}>${selectedRoadCode}</option>`
                 : `<option selected=""></option>`;
             $('#road_code').prepend(optionHtmlRoadCode).select2({
                 ajax: {
@@ -113,14 +113,14 @@
                         };
                     },
                 },
-                placeholder: 'Road Code - Road Name',
+                placeholder: '{{__('Road Code - Road Name')}}',
                 allowClear: true,
                 closeOnSelect: true,
                 width: '85%',
                 });
-                
-            optionHtmlWaterCode = selectedWaterCode 
-                ? `<option selected=${selectedWaterCode}>${selectedWaterCode}</option>` 
+
+            optionHtmlWaterCode = selectedWaterCode
+                ? `<option selected=${selectedWaterCode}>${selectedWaterCode}</option>`
                 : `<option selected=""></option>`;
             $('#watersupply_pipe_code').prepend(optionHtmlWaterCode).select2({
                 ajax: {
@@ -133,14 +133,14 @@
                         };
                     },
                 },
-                placeholder: 'Water Supply Pipe Line Code',
+                placeholder: '{{__('Water Supply Pipe Line Code')}}',
                 allowClear: true,
                 closeOnSelect: true,
                 width: '85%',
             });
-                
-            optionHtmlSewerCode = selectedSewerCode 
-                ? `<option selected=${selectedSewerCode}>${selectedSewerCode}</option>` 
+
+            optionHtmlSewerCode = selectedSewerCode
+                ? `<option selected=${selectedSewerCode}>${selectedSewerCode}</option>`
                 : `<option selected=""></option>`;
             $('#sewer_code').prepend(optionHtmlSewerCode).select2({
                 ajax: {
@@ -153,14 +153,14 @@
                         };
                     },
                 },
-                placeholder: 'Sewer Code',
+                placeholder: '{{__('Sewer Code')}}',
                 allowClear: true,
                 closeOnSelect: true,
                 width: '85%',
             });
-                
-            optionHtmlDrainCode = selectedDrainCode 
-                ? `<option selected=${selectedDrainCode}>${selectedDrainCode}</option>` 
+
+            optionHtmlDrainCode = selectedDrainCode
+                ? `<option selected=${selectedDrainCode}>${selectedDrainCode}</option>`
                 : `<option selected=""></option>`;
 
             $('#drain_code').prepend(optionHtmlDrainCode).select2({
@@ -174,15 +174,15 @@
                         };
                     },
                 },
-                placeholder: 'Drain Code',
+                placeholder: '{{__('Drain Code')}}',
                 allowClear: true,
                 closeOnSelect: true,
                 width: '85%',
             });
 
-                
-            optionHtmlBIN = selectedBINValue 
-                ? `<option value=${selectedBINValue} selected=${selectedBINText}>${selectedBINText}</option>` 
+
+            optionHtmlBIN = selectedBINValue
+                ? `<option value=${selectedBINValue} selected=${selectedBINText}>${selectedBINText}</option>`
                 : `<option selected=""></option>`;
             $('#build_contain').prepend(optionHtmlBIN).select2({
                 ajax: {
@@ -194,7 +194,7 @@
                         };
                     },
                 },
-                placeholder: 'BIN of Pre Connected Building',
+                placeholder: '{{__('BIN of Pre-Connected Building')}}',
                 allowClear: true,
                 closeOnSelect: true,
                 width: '85%',
@@ -236,7 +236,7 @@
                 success: function(response) {
                     var containmentSelect = $('#containment-type select');
                     containmentSelect.empty();
-                    containmentSelect.append('<option selected value=" ">Containment Type</option>');
+                    containmentSelect.append('<option selected value=" ">{{__('Containment Type')}}</option>');
                     $.each(response, function(index, option) {
                         containmentSelect.append($('<option>').text(option.type).attr('value',
                             option.id));
@@ -271,7 +271,7 @@
                 else
                 {
                     volumeField.readOnly = false; // Set as not readonly
-                }  
+                }
 
             };
             // Add event listeners to trigger volume calculation on input change
@@ -395,11 +395,11 @@
         var sanitationId;
         containmentTypeText = localStorage.getItem("containmentTypeText");
         containmentTypeValue = localStorage.getItem("containmentTypeValue");
-               
-        optionHtmlContainmentType = containmentTypeText 
-            ? `<option value=${containmentTypeValue} selected=${containmentTypeText}>${containmentTypeText}</option>` 
+
+        optionHtmlContainmentType = containmentTypeText
+            ? `<option value=${containmentTypeValue} selected=${containmentTypeText}>${containmentTypeText}</option>`
             : `<option selected="">Containment Type</option>`;
-        
+
             if (selectedText === "Septic Tank") {
             sanitationId = 3;
         } else if (selectedText === "Pit/ Holding Tank") {
@@ -431,7 +431,7 @@
     $('#house_image').on('change', function() {
         validateFileSize(document.querySelector('#house_image'),'fileSizeHintImg','5');
     });
-    
+
      // code that checks geom greater than 1MB from frontend
      $('#geom').on('change', function() {
         validateFileSize(document.querySelector('#geom'),'fileSizeHintKML','1');
@@ -440,7 +440,7 @@
 
     var usecatgs = JSON.parse('{!! $usecatgsJson !!}');
     // use category handled on initial load
-    var html = '<option value="">Use Categories of Building</option>';
+    var html = '<option value="">' + _('Use Category of Building') + '</option>';
         var functional_use = $('#functional_use_id').val();
         if (functional_use) {
             selectedUseCategory = localStorage.getItem("selectedUseCategory");
@@ -460,8 +460,8 @@
                 $('#office-business').show();
             }
         }
-        $('#use_category_id').html(html); 
+        $('#use_category_id').html(html);
 
 </script>
-   
+
 @endpush

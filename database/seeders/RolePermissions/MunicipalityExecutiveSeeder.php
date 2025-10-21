@@ -85,7 +85,7 @@ class MunicipalityExecutiveSeeder extends Seeder
                     //For Maps
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Maps'])
                     ->whereNotIn('name', [
-                        'Add Roads Map Tools',
+                        'Add Roads Map Tools'
                     ]));
                     break;
             }

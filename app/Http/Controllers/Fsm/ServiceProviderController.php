@@ -41,7 +41,7 @@ class ServiceProviderController extends Controller
      */
     public function index()
     {
-        $page_title = "Service Providers";
+        $page_title =__("Service Providers") ;
         if(Auth::user()->hasRole('sludge_collection_user')) {
             $treatmentPlants = TreatmentPlant::Operational()->where('id', Auth::user()->treatment_plant_id)->orderBy('id')->pluck('name', 'id');
         }
@@ -66,7 +66,7 @@ class ServiceProviderController extends Controller
      */
     public function create()
     {
-        $page_title = "Add Service Provider";
+        $page_title =__("Add Service Provider") ;
         $wards = Ward::orderBy('ward')->pluck('ward', 'ward')->toArray();
         $serviceProvider = null;
         $serviceProviderStatus = ServiceProviderStatus::asSelectArray();
@@ -93,9 +93,9 @@ class ServiceProviderController extends Controller
              $data['name'] = $data['company_name'];
              
              $this->userService->storeOrUpdate($id = null,$data);
-             $successMessage = 'Service Provider and Service Provider - Admin User created successfully';
+             $successMessage = __('Service Provider and Service Provider - Admin User created successfully.');
         } else {
-            $successMessage = 'Service Provider created successfully';
+            $successMessage = __('Service Provider created successfully.');
 
         }
         return redirect('fsm/service-providers')->with('success',$successMessage);
@@ -111,7 +111,7 @@ class ServiceProviderController extends Controller
     {
         $serviceProvider = ServiceProvider::find($id);
         if ($serviceProvider) {
-            $page_title = "Service Provider Details";
+            $page_title =__("Service Provider Details") ;
             $status = ServiceProviderStatus::getDescription($serviceProvider->status);
             return view('fsm/service-providers.show', compact('page_title', 'serviceProvider', 'status'));
         } else {
@@ -131,7 +131,7 @@ class ServiceProviderController extends Controller
         $wards = Ward::orderBy('ward')->pluck('ward', 'ward')->toArray();
         $serviceProviderStatus = ServiceProviderStatus::asSelectArray();
         if ($serviceProvider) {
-            $page_title = "Edit Service Provider";
+            $page_title = __("Edit Service Provider") ;
             return view('fsm/service-providers.edit', compact('page_title', 'serviceProvider', 'wards', 'serviceProviderStatus'));
         } else {
             abort(404);
@@ -151,9 +151,9 @@ class ServiceProviderController extends Controller
         if ($serviceProvider) {
             $data = $request->all();
             $this->serviceProviderService->storeOrUpdate($serviceProvider->id,$data);
-            return redirect('fsm/service-providers')->with('success','Service Provider updated successfully');
+            return redirect('fsm/service-providers')->with('success',__('Service Provider updated successfully.'));
         } else {
-            return redirect('fsm/service-providers')->with('error','Failed to update Servie Provider');
+            return redirect('fsm/service-providers')->with('error',__('Failed to update Servie Provider.'));
         }
     }
 
@@ -173,25 +173,25 @@ class ServiceProviderController extends Controller
                 $applicationsCount =  $serviceProvider->applications()->count();
                 if($applicationsCount > 0)
                     {
-                        return redirect('fsm/service-providers')->with('error','Cannot delete Service Provider that has associated Applicaiton Information');
+                        return redirect('fsm/service-providers')->with('error',__('Cannot delete Service Provider that has associated Applicaiton Information.'));
                     }
             }
             if($serviceProvider->users()->exists()){
-                return redirect('fsm/service-providers')->with('error','Cannot delete Service Provider that has associated User Information');
+                return redirect('fsm/service-providers')->with('error',__('Cannot delete Service Provider that has associated User Information.'));
             }
             if($serviceProvider->vacutugTypes()->exists()){
-                return redirect('fsm/service-providers')->with('error','Cannot delete Service Provider that has associated Desludging Vehicle Information');
+                return redirect('fsm/service-providers')->with('error',__('Cannot delete Service Provider that has associated Desludging Vehicle Information.'));
             }
             if($serviceProvider->employees()->exists()){
-                return redirect('fsm/service-providers')->with('error','Cannot delete Service Provider that has associated Employee Information');
+                return redirect('fsm/service-providers')->with('error',__('Cannot delete Service Provider that has associated Employee Information.'));
             }
             $serviceProvider->delete();
             
-            return redirect('fsm/service-providers')->with('success','Service Provider deleted successfully');
+            return redirect('fsm/service-providers')->with('success',__('Service Provider deleted successfully.'));
             
         } else 
         {
-            return redirect('fsm/service-providers')->with('error','Failed to delete service provider');
+            return redirect('fsm/service-providers')->with('error',__('Failed to delete service provider.'));
         }
     }
     
@@ -205,7 +205,7 @@ class ServiceProviderController extends Controller
     {
         $serviceProvider = ServiceProvider::find($id);
         if ($serviceProvider) {
-            $page_title = "Service Provider History";
+            $page_title =__("Service Provider History") ;
             return view('fsm/service-providers.history', compact('page_title', 'serviceProvider'));
         } else {
             abort(404);

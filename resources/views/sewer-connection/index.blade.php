@@ -38,7 +38,7 @@ a.skiplink:focus {
 <div class="card" style="font-family: 'Open Sans', sans-serif;">
 <div class="card-header">
     <a class="btn btn-info float-right" id="toggleFilter" type="button" data-toggle="collapse" data-target="#filterSection" aria-expanded="false" aria-controls="filterSection">
-        Show Filter
+    {{ __('Show Filter')}}    
     </a>
 </div>
     <div class="card-body">
@@ -47,18 +47,18 @@ a.skiplink:focus {
                 <div class="collapse" id="filterSection">
                     <form class="form-horizontal" id="filter-form">
                         <div class="form-group row">
-                            <label for="sewer_code" class="col-md-2 col-form-label" style=" font-family: 'Open Sans', sans-serif;">Sewer Code</label>
+                            <label for="sewer_code" class="col-md-2 col-form-label" style=" font-family: 'Open Sans', sans-serif;">{{ __('Sewer Code')}}</label>
                             <div class="col-md-2">
-                                <input type="text" class="form-control" id="sewer_code" placeholder="Sewer Code" oninput="validateAlphanumeric(this)"/>
+                                <input type="text" class="form-control" id="sewer_code" placeholder="{{ __('Sewer Code')}}" oninput="validateAlphanumeric(this)"/>
                             </div>
-                            <label for="bin" class="col-md-2 col-form-label" style=" font-family: 'Open Sans', sans-serif;">BIN</label>
+                            <label for="bin" class="col-md-2 col-form-label" style=" font-family: 'Open Sans', sans-serif;">{{ __('BIN')}}</label>
                             <div class="col-md-2">
-                                <input type="text" class="form-control" id="bin" placeholder="BIN" oninput="validateAlphanumeric(this)"/>
+                                <input type="text" class="form-control" id="bin" placeholder="{{ __('BIN') }}" oninput="validateAlphanumeric(this)"/>
                             </div>
                         </div>
                         <div class="card-footer text-right">
-                            <button type="submit" class="btn btn-info" style="font-family: 'Open Sans', sans-serif;">Filter</button>
-                            <button type="reset" class="btn btn-info reset" style="font-family: 'Open Sans', sans-serif;">Reset</button>
+                            <button type="submit" class="btn btn-info" style="font-family: 'Open Sans', sans-serif;">{{ __('Filter')}}</button>
+                            <button type="reset" class="btn btn-info reset" style="font-family: 'Open Sans', sans-serif;">{{ __('Reset')}}</button>
                         </div>
                     </form>
                 </div>
@@ -70,9 +70,9 @@ a.skiplink:focus {
             <thead>
                 <tr>
                    
-                    <th style=" font-family: 'Open Sans', sans-serif;">BIN</th>
-                    <th style=" font-family: 'Open Sans', sans-serif;">Sewer Code</th>
-                    <th style=" font-family: 'Open Sans', sans-serif;">Actions</th>
+                    <th style=" font-family: 'Open Sans', sans-serif;">{{ __('BIN')}}</th>
+                    <th style=" font-family: 'Open Sans', sans-serif;">{{ __('Sewer Code')}}</th>
+                    <th style=" font-family: 'Open Sans', sans-serif;">{{ __('Actions')}}</th>
                 </tr>
             </thead>
         </table>
@@ -84,7 +84,7 @@ a.skiplink:focus {
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabel">Sewer Connection</h4>
+                <h4 class="modal-title" id="myModalLabel">"{{__('Sewer Connection')}}"</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
@@ -132,13 +132,14 @@ $(function() {
             var form = $(this).closest("form");
             event.preventDefault();
             Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+               title: "{{__('Are you sure?')}}",
+                    text: "{!! __('You won\'t be able to revert this!') !!}",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: "{{ __('Yes, delete it!') }}",
+                    cancelButtonText: '{{ __('Cancel') }}',
             }).then((result) => {
                 if (result.isConfirmed) {
                     form.submit();
@@ -163,10 +164,10 @@ $(function() {
     const isExpanded = $(this).attr('aria-expanded') === 'true';
     
     if (isExpanded) {
-        $(this).text('Show Filter');
+        $(this).text("{{ __('Show Filter') }}");
         $(this).attr('aria-expanded', 'false');
     } else {
-        $(this).text('Hide Filter');
+        $(this).text("{{ __('Hide Filter') }}");
         $(this).attr('aria-expanded', 'true');
     }
     
@@ -234,11 +235,11 @@ $(function() {
                 sewerLayer.getSource().addFeature(sewerFeature);
                 addExtraLayer('sewer_layer', 'Sewer Layer', sewerLayer);
             } else {
-                swal({ title: "Warning!", text: "Sewer information not found", icon: "warning" })
+                swal({ title: "Warning!", text: "{{__('Sewer information not found.')}}", icon: "warning" })
                     .then(() => { $('#exampleModal').modal('hide'); });
             }
         }).fail(function() {
-            swal({ title: "Error!", text: "An error occurred while fetching data", icon: "error" })
+            swal({ title: "Error!", text: "{{__('An error occurred while fetching data.')}}", icon: "error" })
                 .then(() => { $('#exampleModal').modal('hide'); });
         });
 

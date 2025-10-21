@@ -13,13 +13,13 @@
     <div class="card">
         <div class="card-header">
             @can('Add Hotspot Identification')
-                <a href="{{ action('PublicHealth\HotspotController@create') }}" class="btn btn-info">Add Waterborne Hotspot</a>
+                <a href="{{ action('PublicHealth\HotspotController@create') }}" class="btn btn-info">{{__('Add Waterborne Hotspot')}}</a>
             @endcan
             @can('Export Hotspot Identifications')
-                <a href="#" id="export" class="btn btn-info">Export to CSV</a>
+                <a href="#" id="export" class="btn btn-info">{{__('Export to CSV')}}</a>
             @endcan
             <a href class="btn btn-info float-right" data-toggle="collapse" data-target="#collapseFilter"
-                aria-expanded="false" aria-controls="collapseFilter">Show Filter</a>
+                aria-expanded="false" aria-controls="collapseFilter">{{__('Show Filter')}}</a>
         </div><!-- /.card-header -->
         <div class="card-body">
             <div class="row">
@@ -31,21 +31,20 @@
                                 <div class="accordion-body">
                                     <form class="form-horizontal" id="filter-form">
                                         <div class="form-group row">
-                                            <label for="disease" class="control-label col-md-2">Infected Disease</label>
+                                            <label for="disease" class="control-label col-md-2">{{__('Infected Disease')}}</label>
                                             <div class="col-md-2">
                                                 <select class="form-control" id="disease">
-                                                    <option value="">Infected Disease</option>
+                                                    <option value="">{{__('Infected Disease')}}</option>
                                                     @foreach ($enumValues as $key => $value)
                                                         <option value="{{ $key }}">{{ $value }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
 
-                                            <label for="hotspot_location" class="control-label col-md-2">Hotspot
-                                                Location</label>
+                                            <label for="hotspot_location" class="control-label col-md-2">{{__('Hotspot Location')}}</label>
                                             <div class="col-md-2">
                                                 <select class="form-control" id="hotspot_location">
-                                                    <option value="">Hotspot Location</option>
+                                                    <option value="">{{__('Hotspot Location')}}</option>
                                                     @foreach ($hotspotLocation as $key => $value)
                                                         <option value="{{ $key }}">{{ $value }}</option>
                                                     @endforeach
@@ -53,8 +52,8 @@
                                             </div>
                                         </div>
                                         <div class="card-footer text-right">
-                                            <button type="submit" class="btn btn-info">Filter</button>
-                                            <button type="reset" class="btn btn-info reset">Reset</button>
+                                            <button type="submit" class="btn btn-info">{{__('Filter')}}</button>
+                                            <button type="reset" class="btn btn-info reset">{{__('Reset')}}</button>
                                         </div>
                                     </form>
                                 </div>
@@ -69,13 +68,13 @@
                 <table id="data-table" class="table table-bordered table-striped dtr-inline" width="100%">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Infected Disease</th>
-                            <th>Hotspot Location</th>
-                            <th>Date</th>
-                            <th>No. of Cases</th>
-                            <th>No. of Fatalities</th>
-                            <th>Actions</th>
+                            <th>{{__('ID')}}</th>
+                            <th>{{__('Infected Disease')}}</th>
+                            <th>{{__('Hotspot Location')}}</th>
+                            <th>{{__('Date')}}</th>
+                            <th>{{__('No. of Cases')}}</th>
+                            <th>{{__('No. of Fatalities')}}</th>
+                            <th>{{__('Actions')}}</th>
                         </tr>
                     </thead>
                 </table>
@@ -151,13 +150,14 @@
                         var form = $(this).closest("form");
                         event.preventDefault();
                         Swal.fire({
-                            title: 'Are you sure?',
-                            text: "You won't be able to revert this!",
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'Yes, delete it!'
+                            title: "{{__('Are you sure?')}}",
+                    text: "{!! __('You won\'t be able to revert this!') !!}",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: "{{ __('Yes, delete it!') }}",
+                    cancelButtonText: '{{ __('Cancel') }}',
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 form.submit();

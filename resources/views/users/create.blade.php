@@ -1,7 +1,7 @@
 <!-- Last Modified Date: 18-04-2024
 Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 @extends('layouts.dashboard')
-@section('title', 'Create User')
+@section('title', __('Create User'))
 {{--Include the layout inside the main content section--}}
 @section('content')
     @include('layouts.components.error-list')
@@ -10,10 +10,10 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 <div class="card card-info">
 	{!! Form::open(['url' => 'auth/users', 'class' => 'form-horizontal']) !!}
 	@hasanyrole('Super Admin|Municipality - Super Admin|Municipality - IT Admin|Municipality - Sanitation Department')
-		@include('users.partial-form', ['submitButtomText' => 'Save'])
+		@include('users.partial-form', ['submitButtomText' => __('Save')])
 	@endhasanyrole
 	@hasrole('Service Provider - Admin')
-		@include('users.partial-form-service-provider', ['submitButtomText' => 'Save'])
+		@include('users.partial-form-service-provider', ['submitButtomText' => __('Save')])
 	@endhasrole
 	{!! Form::close() !!}
 </div><!-- /.card -->

@@ -13,12 +13,12 @@
     <div class="card">
         <div class="card-header">
           @can('Add Building')
-          <a href="{{ action('Fsm\CtptController@listBuildings', ['id' => $toilet->id]) }}" class="btn btn-info">Back to the added Buildings list</a>
+          <a href="{{ action('Fsm\CtptController@listBuildings', ['id' => $toilet->id]) }}" class="btn btn-info">{{ __('Back to the added Buildings list')}}</a>
           @endcan
         </div><!-- /.card-header -->
         <div class="card-body">
           <div class="list-wrapper">
-            <h4><b>Selected Buildings</b></h4>
+            <h4><b>{{ __('Selected Buildings')}}</b></h4>
             <ul class="selected-list">
             </ul>
             @include('errors.list')
@@ -27,25 +27,25 @@
             {!! Form::close() !!}
           </div>
           <hr>
-          <h4><b>Search to Select Buildings</b></h4>
+          <h4><b>{{ __('Search to Select Buildings')}}</b></h4>
           <form class="form-inline" id="filter-form">
             <div class="form-group">
-              <label for="bin_text">House Number </label>
+              <label for="bin_text">{{ __('House Number')}}</label>
               <input type="text" class="form-control" id="bin_text" />
-              <label for="holding_num">Tax Code</label>
+              <label for="holding_num">{{ __('Tax Code')}}</label>
               <input type="text" class="form-control" id="holding_num" />
             </div>
-            <button type="submit" class="btn btn-default">Filter</button>
+            <button type="submit" class="btn btn-default">{{ __('Filter') }}</button>
           </form>
           <table id="data-table" class="table table-bordered table-striped" width="100%">
             <thead>
               <tr>
-                <th>House Number </th>
-                <th>Tax Code</th>
-                <th>Structure Type</th>
-                <th>Estimated Area of the Building</th>
-                <th>House Number of Main Building</th>
-                <th>Actions</th>
+                <th>{{__('House Number')}}</th>
+                <th>{{__('Tax Code')}}</th>
+                <th>{{__('Structure Type')}}</th>
+                <th>{{__('Estimated Area of the Building')}}</th>
+                <th>{{__('House Number of Main Building')}}</strong></h1></th>
+                <th>{{__('Actions')}}</th>
               </tr>
             </thead>
           </table>
@@ -88,9 +88,9 @@ $(function() {
         if(binB != ''){
         if(!validB || (binB.length != 7)){
             swal({
-                title: `House Number should be in BXXXXXX format!`,
+                title: `{{__('House Number should be in BXXXXXX format!')}}`,
                 icon: "warning",
-                button: "Close",
+                button: "{{__('Close')}}",
                 className: "custom-swal",
             });
             return false;
@@ -100,9 +100,9 @@ $(function() {
         var validT = /^\d{2}-\d{3}-\d{4}-\d{2}$/.test(taxcdT);
         if (!validT && (taxcdT != '')){ 
             swal({
-                title: `Tax Code should be in XX-XXX-XXXX-XX format!`,
+                title: `{{ __('Tax Code should be in XX-XXX-XXXX-XX format!')}}`,
                 icon: "warning",
-                button: "Close",
+                button: "{{ __('Close')}}",
                 className: "custom-swal",
             })
             return false;

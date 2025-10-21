@@ -1,7 +1,7 @@
 <!-- Last Modified Date: 19-04-2024
 Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 @include('layouts.dashboard.chart-card',[
-    'card_title' => "Wardwise Water Supply Length by Diameter (m) ",
+    'card_title' =>__('Wardwise Water Supply Length by Diameter (m)'),
     'export_chart_btn_id' => "exportwaterSurfaceTypePerWardChart",
     'canvas_id' => "watersupplySurfaceTypePerWardChart"
 ])

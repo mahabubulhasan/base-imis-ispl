@@ -26,19 +26,19 @@ class HotspotRequest extends FormRequest
     {
         return [
             //owner part
-            'hotspot_location.required' => 'Hotspot Location required',
-            'date.required' => 'Date required',
-            'disease.required' => 'Infected Disease required',
-            'male_cases.required' => 'Number of Male Cases required',
-            'female_cases.required' => 'Number of Female Cases required',
-            'other_cases.required' => 'Number of Other Cases required',
-            'male_cases.numeric' => 'Number of Male Cases should be number',
-            'male_fatalities.lte' => 'The Male Fatalities should be less than Male Cases',
-            'female_fatalities.lte' => 'The Female Fatalities should be less than Female Cases',
-            'other_fatalities.lte' => 'The Other Fatalities should be less than Other Cases',
-            'female_cases.numeric' => 'Number of Female Cases should be number',
-            'other_cases.numeric' => 'Number of Other Cases should be number',
-            'geom.required' => 'The Hotspot Area is required'
+            'hotspot_location.required' => __('Hotspot Location required.'),
+            'date.required' => __('Date required.'),
+            'disease.required' => __('Infected Disease required.'),
+            'male_cases.required' => __('Number of Male Cases required.'),
+            'female_cases.required' => __('Number of Female Cases required.'),
+            'other_cases.required' => __('Number of Other Cases required.'),
+            'male_cases.numeric' => __('Number of Male Cases should be number.'),
+            'male_fatalities.lte' => __('The Male Fatalities should be less than Male Cases.'),
+            'female_fatalities.lte' => __('The Female Fatalities should be less than Female Cases.'),
+            'other_fatalities.lte' => __('The Other Fatalities should be less than Other Cases.'),
+            'female_cases.numeric' => __('Number of Female Cases should be number.'),
+            'other_cases.numeric' => __('Number of Other Cases should be number.'),
+            'geom.required' => __('The Hotspot Area is required.'),
         ];
     }
     /**

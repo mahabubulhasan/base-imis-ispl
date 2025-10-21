@@ -166,10 +166,10 @@ class BuildingStructureService
                 }
             }
             DB::commit();
-            return redirect('building-info/buildings')->with('success', "Building created successfully ");
+            return redirect('building-info/buildings')->with('success', __("Building created successfully"));
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect('building-info/buildings')->with('error', "Building could not be created ");
+            return redirect('building-info/buildings')->with('error', __("Building could not be created"));
         }
     }
 
@@ -333,13 +333,13 @@ class BuildingStructureService
                     $xml = new DOMDocument();
                     $xml->load($filepath);
                 } else {
-                    return Redirect::back()->with('error', "Failed to update building structure :  kml file not found");
+                    return Redirect::back()->with('error', __("Failed to update building structure : kml file not found"));
                 }
             }
         } else if ($type == 'update') {
             $xml = new DOMDocument();
             if (@$xml->load($request->geom) == false) {
-                return Redirect::back()->with('error', "Failed to update building structure due to invalid kml file");
+                return Redirect::back()->with('error', __("Failed to update building structure due to invalid kml file"));
             } else {
                 $xml->load($request->geom);
             }
@@ -566,7 +566,7 @@ class BuildingStructureService
 
             if ($err == 'containment_mismatch') {
                 DB::rollback();
-                return Redirect::back()->with('error', "Sanitation System does not match with existing containment data, please update containment information and try again");
+                return Redirect::back()->with('error', __("Sanitation System does not match with existing containment data, please update containment information and try again"));
             } else if ($err == 'false') {
                 // no error so do nothing
             }
@@ -588,10 +588,10 @@ class BuildingStructureService
             // store owner
             $this->storeOwnerInfo($request);
             DB::commit();
-            return Redirect("building-info/buildings")->with('success', "Building Information updated successfully");
+            return Redirect("building-info/buildings")->with('success', __("Building Information updated successfully"));
         } catch (\Exception $e) {
             DB::rollback();
-            return Redirect("building-info/buildings")->with('error', "Failed to update building structure " . $e);
+            return Redirect("building-info/buildings")->with('error', __("Failed to update building structure") . $e);
         }
     }
 
@@ -671,51 +671,52 @@ class BuildingStructureService
         $date_to = isset($_GET['date_to']) ? $_GET['date_to'] : null;
         $date_from = isset($_GET['date_from']) ? $_GET['date_from'] : null;
         $columns = [
-            'BIN',
-            'Owner Name',
-            'Owner NID',
-            'Owner Gender',
-            'Owner Contact Number',
-            'BIN of Main Building',
-            'Ward',
-            'Road Code',
-            'House Number',
-            'House Locality/Address',
-            'Tax Code/Holding ID',
-            'Structure Type',
-            'Surveyed Date',
-            'Construction Date',
-            'Number of Floors',
-            'Functional Use of Building',
-            'Use Category of Building',
-            'Office or Business Name',
-            'Number of Households',
-            'Male Population',
-            'Female Population',
-            'Other Population',
-            'Population of Building',
-            'Differently Abled Male Population',
-            'Differently Abled Female Population',
-            'Differently Abled Other Population',
-            'Is Low Income House',
-            'LIC Name',
-            'Main Drinking Water Source',
-            'Water Supply Customer ID',
-            'Water Supply Pipe Line Code',
-            'Well in Premises',
-            'Distance of Well from Closest Containment (m)',
-            'SWM Customer ID',
-            'Presence of Toilet',
-            'Number of Toilets',
-            'Households with Private Toilet',
-            'Population with Private Toilet',
-            'Toilet Connection',
-            'Sewer Code',
-            'Drain Code',
-            'Building Accessible to Desludging Vehicle',
-            'Estimated Area of the Building ( ㎡ )',
-            'Community Toilet Name',
-            'Verification Status',
+            __('BIN'),
+            __('Owner Name'),
+            __('Owner NID'),
+            __('Owner Gender'),
+            __('Owner Contact Number'),
+            __('BIN of Main Building'),
+            __('Ward'),
+            __('Road Code'),
+            __('House Number'),
+            __('House Locality/Address'),
+            __('Tax Code/Holding ID'),
+            __('Structure Type'),
+            __('Surveyed Date'),
+            __('Construction Date'),
+            __('Number of Floors'),
+            __('Functional Use of Building'),
+            __('Use Category of Building'),
+            __('Office or Business Name'),
+            __('Number of Households'),
+            __('Male Population'),
+            __('Female Population'),
+            __('Other Population'),
+            __('Population of Building'),
+            __('Differently Abled Male Population'),
+            __('Differently Abled Female Population'),
+            __('Differently Abled Other Population'),
+            __('Is Low Income House'),
+            __('LIC Name'),
+            __('Main Drinking Water Source'),
+            __('Water Supply Customer ID'),
+            __('Water Supply Pipe Line Code'),
+            __('Well in Premises'),
+            __('Distance of Well from Closest Containment (m)'),
+            __('SWM Customer ID'),
+            __('Presence of Toilet'),
+            __('Number of Toilets'),
+            __('Households with Private Toilet'),
+            __('Population with Private Toilet'),
+            __('Toilet Connection'),
+            __('Sewer Code'),
+            __('Drain Code'),
+            __('Building Accessible to Desludging Vehicle'),
+            __('Estimated Area of the Building (m²)'),
+            __('Community Toilet Name'),
+            __('Verification Status'),
+
         ];
         $query = DB::table('building_info.buildings as b')
         ->LeftJoin('building_info.structure_types as st', 'st.id', '=', 'b.structure_type_id')
@@ -1047,30 +1048,30 @@ class BuildingStructureService
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['buildings.destroy', $model->bin]]);
 
                 if (auth()->user()->can('View Containments Connected to Buildings')) {
-                    $content .= '<a title="View Containments Connected to Building" data-id="' . $model->bin . '" class="containment btn btn-info btn-sm mb-1" data-toggle="modal" data-target="#containmentsModal"><i class="fa-solid fa-building"></i></a> ';
+                    $content .= '<a title="'.__("View Containments Connected to Building"). '" data-id="' . $model->bin . '" class="containment btn btn-info btn-sm mb-1" data-toggle="modal" data-target="#containmentsModal"><i class="fa-solid fa-building"></i></a> ';
                 }
 
                 if (auth()->user()->can('Edit Building Structure')) {
-                    $content .= '<a title="Edit" href="' . action("BuildingInfo\BuildingController@edit", [$model->bin]) . '" class="btn btn-info btn-sm mb-1"  ><i class="fas fa-edit"></i></a> ';
+                    $content .= '<a title="' . __("Edit") . '" href="' . action("BuildingInfo\BuildingController@edit", [$model->bin]) . '" class="btn btn-info btn-sm mb-1"  ><i class="fas fa-edit"></i></a> ';
                 }
 
                 if (auth()->user()->can('View Building Structure')) {
-                    $content .= '<a title="Detail" href="' . action("BuildingInfo\BuildingController@show", [$model->bin]) . '" class="btn btn-info btn-sm mb-1"  ><i class="fas fa-list"></i></a> ';
+                    $content .= '<a title="' . __("Detail") . '" href="' . action("BuildingInfo\BuildingController@show", [$model->bin]) . '" class="btn btn-info btn-sm mb-1"  ><i class="fas fa-list"></i></a> ';
                 }
 
                 if (auth()->user()->can('View Building Structures History')) {
-                    $content .= '<a title="History" href="' . action("BuildingInfo\BuildingController@history", [$model->bin]) . '" class="btn btn-info btn-sm mb-1"  ><i class="fas fa-history"></i></a> ';
+                    $content .= '<a title="' . __("History") . '" href="' . action("BuildingInfo\BuildingController@history", [$model->bin]) . '" class="btn btn-info btn-sm mb-1"  ><i class="fas fa-history"></i></a> ';
                 }
 
                 if (auth()->user()->can('Delete Building Structure')) {
-                    $content .= '<a href="#" title="Delete" class="delete btn btn-danger btn-sm mb-1 "  ><i class="fas fa-trash"></i></a> ';
+                    $content .= '<a href="#" title="' . __("Delete") . '" class="delete btn btn-danger btn-sm mb-1 "  ><i class="fas fa-trash"></i></a> ';
                 }
 
                 if (auth()->user()->can('View Building On Map')) {
-                    $content .= '<a title="Map" href="' . action("MapsController@index", ['layer' => 'buildings_layer', 'field' => 'bin', 'val' => $model->bin]) . '" class="btn btn-info btn-sm mb-1"  ><i class="fas fa-map-marker"></i></a> ';
+                    $content .= '<a title="' . __("Map") . '" href="' . action("MapsController@index", ['layer' => 'buildings_layer', 'field' => 'bin', 'val' => $model->bin]) . '" class="btn btn-info btn-sm mb-1"  ><i class="fas fa-map-marker"></i></a> ';
                 }
                 if (auth()->user()->can('View Nearest Road To Building On Map')) {
-                    $content .= '<a title="Nearest Road" href="' . action("MapsController@index", ['layer' => 'buildings_layer', 'field' => 'bin', 'val' => $model->bin, 'action' => 'building-road']) . '" class="btn btn-info btn-sm mb-1"  ><i class="fas fa-road"></i></a> ';
+                    $content .= '<a title="' . __("Nearest Road") . '" href="' . action("MapsController@index", ['layer' => 'buildings_layer', 'field' => 'bin', 'val' => $model->bin, 'action' => 'building-road']) . '" class="btn btn-info btn-sm mb-1"  ><i class="fas fa-road"></i></a> ';
                 }
 
                 $content .= \Form::close();

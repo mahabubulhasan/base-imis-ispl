@@ -11,17 +11,17 @@
 <div class="card">
     <div class="card-header">
     @can('Import SWM Service Payment Collection From CSV')
-      <a href="{{ route('swm-payment.create') }}" class="btn btn-info">Import from CSV</a>
+      <a href="{{ route('swm-payment.create') }}" class="btn btn-info">{{__('Import from CSV')}}</a>
     @endcan
     @can('Export SWM Service Payment Collection From CSV')
-    <a href="/templates/swmservice-payment-collection-iss-template.csv" download="Solid Waste Information Support System-Template.csv" class="btn btn-info">Download CSV Template</a>
+    <a href="/templates/swmservice-payment-collection-iss-template.csv" download="Solid Waste Information Support System-Template.csv" class="btn btn-info">{{__('Download CSV Template')}}</a>
     @endcan
     @can('Export SWM Service Payment Collection From CSV')
-      <a href="{{ route('swm-payment.export') }}" id="export" class="btn btn-info">Export to CSV </a>
-      <a href="{{ route('tax-payment.exportunmatched') }}" id="exportunmatched" class="btn btn-info">Export Unmatched Records</a>
+      <a href="{{ route('swm-payment.export') }}" id="export" class="btn btn-info">{{__('Export to CSV')}} </a>
+      <a href="{{ route('tax-payment.exportunmatched') }}" id="exportunmatched" class="btn btn-info">{{__('Export Unmatched Records')}}</a>
       @endcan
       <a href="#" class="btn btn-info float-right" id="headingOne" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-        Show Filter
+        {{__('Show Filter')}}
       </a>
     </div><!-- /.box-header -->
     <div class="card-body">
@@ -34,52 +34,52 @@
                             <div class="accordion-body">
                                 <form class="form-horizontal" id="filter-form">
                                     <div class="form-group row">
-                                        <label for="code" class="control-label col-md-2 "
-                                            > Ward</label>
+                                        <label for="code" class="control-label col-md-2 ">
+                                             {{__('Ward')}}</label>
                                         <div class="col-md-2" >
                                         <select class="form-control" id="ward_select">
-                                        <option value=""> Ward</option>
+                                        <option value=""> {{__('Ward')}}</option>
                                         @foreach($wards as $key=>$value)
                                         <option value="{{$key}}">{{$value}}</option>
                                         @endforeach
                                       </select>
                                         </div>
                                         <label for="road_hier_select" class="control-label col-md-2"
-                                            >Years Due</label>
+                                            >{{__('Years Due')}}</label>
                                         <div class="col-md-2" >
                                         <select class="form-control" id="dueyear_select">
-                                        <option value="">Years Due</option>
+                                        <option value="">{{__('Years Due')}}</option>
                                           @foreach($dueYears as $key=>$value)
                                           <option value="{{$key}}">{{$value}}</option>
                                           @endforeach
                                     </select>
                                         </div>
 
-                                        <label for="swm_customer_id" class="control-label col-md-2" >SWM Customer ID</label>
+                                        <label for="swm_customer_id" class="control-label col-md-2" >{{__('SWM Customer ID')}}</label>
                                             <div class="col-md-2" >
                                                 <input type="text" class="form-control" id="swm_customer_id"
-                                                    placeholder="SWM Customer ID" />
+                                                    placeholder="{{__('SWM Customer ID')}}" />
                                             </div> 
                                        
                                     </div>
 
                                     <div class="form-group row">
-                                         <label for="bin" class="control-label col-md-2" >BIN</label>
+                                         <label for="bin" class="control-label col-md-2" >{{__('BIN')}}</label>
                                             <div class="col-md-2" >
                                                 <input type="text" class="form-control" id="bin"
-                                                    placeholder="BIN" 
+                                                    placeholder="{{__('BIN')}}" 
                                                     oninput = "this.value = this.value.replace(/[^a-zA-Z0-9]/g, ''); "/> <!-- Allow only alphabetic and numeric characters -->
                                             </div>
-                                         <label for="tax_code" class="control-label col-md-2" >Tax Code</label>
+                                         <label for="tax_code" class="control-label col-md-2" >{{__('Tax Code')}}</label>
                                             <div class="col-md-2" >
                                                 <input type="text" class="form-control" id="tax_code"
-                                                    placeholder="Tax Code" 
+                                                    placeholder="{{__('Tax Code')}}" 
                                                     oninput = "this.value = this.value.replace(/[^a-zA-Z0-9-]/g, ''); "/> <!-- Allow only alphabetic characters, numbers, and the hyphen (-) -->
                                             </div>      
                                     </div>
                                     <div class="card-footer text-right">
-                                        <button type="submit" class="btn btn-info ">Filter</button>
-                                        <button id="reset-filter" type="reset" class="btn btn-info">Reset</button>
+                                        <button type="submit" class="btn btn-info ">{{__('Filter')}}</button>
+                                        <button id="reset-filter" type="reset" class="btn btn-info">{{__('Reset')}}</button>
                                     </div>
                                 </form>
                             </div>
@@ -101,12 +101,12 @@
             <table id="data-table" class="table table-bordered table-striped dtr-inline" width="100%">
                 <thead>
                     <tr>
-                    <th>SWM Customer ID</th>
-                    <th>BIN</th>
-                    <th>Tax Code</th>
-                    <th>Customer Name</th>
-                    <th>Years Due</th>
-                    <th>Ward</th>
+                    <th>{{__('SWM Customer ID')}}</th>
+                    <th>{{__('BIN')}}</th>
+                    <th>{{__('Tax Code')}}</th>
+                    <th>{{__('Customer Name')}}</th>
+                    <th>{{__('Years Due')}}</th>
+                    <th>{{__('Ward')}}</th>
                     </tr>
                 </thead>
             </table>
@@ -150,8 +150,8 @@ $(function() {
       var form =  $(this).closest("form");
       event.preventDefault();
       swal({
-          title: `Are you sure you want to delete this record?`,
-          text: "If you delete this, it will be gone forever.",
+          title: '{{__(`Are you sure you want to delete this record?`)}}',
+          text: '{{__("If you delete this, it will be gone forever.")}}',
           icon: "warning",
           buttons: true,
           dangerMode: true,

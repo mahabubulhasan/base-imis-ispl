@@ -1,7 +1,8 @@
 <!-- Last Modified Date: 18-04-2024
 Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 @include('layouts.dashboard.chart-card',[
-    'card_title' => "Wardwise Distribution of Containment Types",
+
+    'card_title' => __("Wardwise Distribution of Containment Types"),
     'export_chart_btn_id' => "exportcontainmentTypesPerWardChart",
     'canvas_id' => "containmentTypesPerWardChart"
 ])

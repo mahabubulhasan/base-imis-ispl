@@ -8,7 +8,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 @include('layouts.components.error-alert')
 <div class="card card-info">
 	{!! Form::open(['url' => 'fsm/treatment-plant-test', 'class' => 'form-horizontal']) !!}
-		@include('fsm/treatment-plant-test.partial-form', ['submitButtomText' => 'Save'])
+		@include('fsm/treatment-plant-test.partial-form', ['submitButtomText' => __('Save')])
 	{!! Form::close() !!}
 </div><!-- /.card -->
 @endsection

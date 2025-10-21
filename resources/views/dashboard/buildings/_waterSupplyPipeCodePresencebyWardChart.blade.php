@@ -1,5 +1,5 @@
 @include('layouts.dashboard.chart-card', [
-    'card_title' => " Distribution of Water Supply Service by Ward",
+    'card_title' => __("Distribution of Water Supply Service by Ward"),
     'export_chart_btn_id' => "exportPipeCodePresenceWard",
     'canvas_id' => "pipeCodePresenceWard"
 ])

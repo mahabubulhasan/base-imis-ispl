@@ -1,5 +1,5 @@
 @include('layouts.dashboard.chart-card',[
-    'card_title' => "Distribution of Emptying Requests by Structure Types",
+    'card_title' => __("Distribution of Emptying Requests by Structure Types"),
     'export_chart_btn_id' => "exportemptyingRequestsbyStructureTypesChart",
     'canvas_id' => "emptyingRequestsbyStructureTypesChart"
 ])
@@ -31,7 +31,7 @@ var myChart = new Chart(ctx, {
       },
     scales: {
       xAxes: [{
-           
+
             scaleLabel: {
                     display: true, // Enable the scale label
                     labelString: 'Structure Type' // The label text

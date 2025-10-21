@@ -29,6 +29,11 @@ use App\Models\Fsm\Emptying;
 use App\Models\Fsm\Feedback;
 use Schema;
 use App\Models\UtilityInfo\Roadline;
+use App\Models\UtilityInfo\SewerLine;
+use App\Models\UtilityInfo\Drain;
+use App\Models\Fsm\TreatmentPlant;
+
+
 
 class MapsService {
 
@@ -78,13 +83,15 @@ class MapsService {
             ->get();
 
 
-        $page_title = "Map";
+        $page_title = __("Map");
 
         // Fetching road hierarchy data
         $roadHierarchy = Roadline::whereNotNull('hierarchy')->groupBy('hierarchy')->pluck('hierarchy','hierarchy');
          // Fetching road surface types data
         $roadSurfaceTypes = Roadline::whereNotNull('surface_type')->groupBy('surface_type')->pluck('surface_type','surface_type');
-
+        $road_code = Roadline::get(['code', 'name'])->mapWithKeys(function ($item) {
+            return [$item->code => ($item->name ? $item->code . ' - ' . $item->name : $item->code)];
+        })->toArray();
         $bboxValues = DB::select("SELECT
             (ST_XMin(bbox) || ',' || ST_YMin(bbox) || ',' || ST_XMax(bbox) || ',' || ST_YMax(bbox)) AS bbox_values
             FROM (
@@ -92,13 +99,19 @@ class MapsService {
             ) AS extent_subquery
         ");
         $bboxstring = $bboxValues[0]->bbox_values;
+        $cover_type = Drain::whereNotNull('cover_type')->groupBy('cover_type')->pluck('cover_type','cover_type');
 
-        $bboxstring = $bboxstring ? $bboxstring : '90.70,22.80,91.00,23.05'; // Coordinates for Lakshmipur, Bangladesh
+        // $roadCode = Roadline::orderBy('code')->pluck('code', 'code');
+        $treatmentPlants = TreatmentPlant::Operational()->orderBy('id')->pluck('name', 'id');
+        $surface_type = Drain::whereNotNull('surface_type')->groupBy('surface_type')->pluck('surface_type','surface_type');
 
-        return view('maps.index', compact('page_title', 'wards', 'dueYears', 'maxDate',
-            'minDate', 'bldguse', 'usecatg', 'pickWardResults', 'pickDateResults', 'pickStructureResults', 'roadHierarchy', 'roadSurfaceTypes',
-            'bboxstring'
-        ));
+
+        $location = SewerLine::whereNotNull('location')->distinct('location')->pluck('location','location')->all();
+
+        return view('maps.index', compact('page_title', 'wards', 'location','dueYears', 'maxDate','treatmentPlants',
+        'minDate', 'bldguse', 'usecatg', 'pickWardResults', 'pickDateResults', 'pickStructureResults', 'cover_type','roadHierarchy', 'roadSurfaceTypes','surface_type',
+        'bboxstring','road_code'
+    ));
     }
 
     /**
@@ -1019,16 +1032,9 @@ class MapsService {
 
     }
 
-    /**
-     * Retrieves information about buildings within a specified buffer zone around a given point.
-     *
-     * @param float $distance The radius of the buffer zone in meters.
-     * @param float $long The longitude coordinate of the center point.
-     * @param float $lat The latitude coordinate of the center point.
-     * @return array An array containing information about buildings within the buffer zone, along with other related data.
-     */
-    public function getPointBufferBuildingsSummary($distance, $long, $lat)
+    public function getMultiplePointBufferBuildingsSummary($distance, $long, $lat)
     {
+        // dd($distance, $lat, $long);
        // Query to create a buffer around the specified point
         $polygon_query = "SELECT  ST_AsText(ST_Buffer(ST_SetSRID(ST_Point(" . $long . "," . $lat . "),4326)::GEOGRAPHY, " . $distance . ")) AS circle_geog";
         $polygon_result = DB::select($polygon_query);
@@ -1058,6 +1064,136 @@ class MapsService {
             'polygon' => $polygon
         ];
     }
+
+
+
+    /**
+     * Retrieves information about buildings within a specified buffer zone around a given point.
+     *
+     * @param float $distance The radius of the buffer zone in meters.
+     * @param float $long The longitude coordinate of the center point.
+     * @param float $lat The latitude coordinate of the center point.
+     * @return array An array containing information about buildings within the buffer zone, along with other related data.
+     */
+    public function getPointBufferBuildingsSummary($distance, $long, $lat)
+    {
+        // dd($distance, $lat, $long);
+       // Query to create a buffer around the specified point
+        $polygon_query = "SELECT  ST_AsText(ST_Buffer(ST_SetSRID(ST_Point(" . $long . "," . $lat . "),4326)::GEOGRAPHY, " . $distance . ")) AS circle_geog";
+        $polygon_result = DB::select($polygon_query);
+        $polygon = $polygon_result[0]->circle_geog;
+        $buildings = array();
+        $popContentsHtml = '';
+          // Query to select buildings within the buffered area
+        $building_query = "SELECT b.bin, ST_AsText(b.geom) AS geom"
+            . " FROM building_info.buildings b, ST_Buffer(ST_SetSRID(ST_Point(" . $long . "," . $lat . "),4326)::GEOGRAPHY, " . $distance . ") AS circle_geog"
+            . " WHERE ST_Intersects(circle_geog::GEOMETRY, b.geom)"
+            . " AND b.drain_code IS NULL";
+        $results1 = DB::select($building_query);
+        foreach ($results1 as $row1) {
+            $building = array();
+            $building['bin'] = $row1->bin;
+            $building['geom'] = $row1->geom;
+            $buildings[] = $building;
+        }
+        // Query to use a function to get point buffer buildings
+        $buildingQuery = "Select * from fnc_getPointBufferBuildings($long::float, $lat::float, $distance);";
+        $buildingResults = DB::select($buildingQuery);
+        $popContentsHtml = $this->popUpContentHtml($buildingResults);
+
+        return [
+            'buildings' => $buildings,
+            'popContentsHtml' => $popContentsHtml,
+            'polygon' => $polygon
+        ];
+    }
+
+
+    public function buildingsKmlPopContentPolygon($bufferDistancePolygon, $bufferPolygonGeoms)
+    {
+
+        // Initialize variables to store polygon, buildings, and HTML content
+        $polygons = [];
+        $buildings = [];
+        $popContentsHtml = '';
+        $allBuildingResults = []; // This will store all the building results from the function calls
+        $allBuildings = [];
+        // Loop through each buffer polygon geometry
+        foreach ($bufferPolygonGeoms as $bufferPolygonGeom) {
+            // Query to create a buffer polygon around the input polygon geometry
+            $polygon_query = "SELECT ST_AsText(ST_Buffer(ST_GeomFromText('" . $bufferPolygonGeom . "', 4326)::GEOGRAPHY, " . $bufferDistancePolygon . ")) AS circle_geog";
+            $polygon_result = DB::select($polygon_query);
+            $polygon = $polygon_result[0]->circle_geog;
+
+            // Use array_push to add the polygon to the polygons array
+            array_push($polygons, $polygon);
+
+            // Query to retrieve buildings that intersect with the buffer polygon
+            $building_query = "SELECT b.bin, ST_AsText(b.geom) AS geom"
+                . " FROM building_info.buildings b"
+                . " LEFT JOIN building_info.structure_types s ON b.structure_type_id = s.id"
+                . " LEFT JOIN building_info.sanitation_systems ss ON b.sanitation_system_id = ss.id"
+                . " WHERE (ST_Intersects(ST_Buffer(ST_GeomFromText('" . $bufferPolygonGeom . "', 4326)::GEOGRAPHY, " . $bufferDistancePolygon . ")::GEOMETRY, b.geom))"
+              . " AND ss.map_display IS TRUE"
+                . " GROUP BY b.bin, b.structure_type_id, s.id ORDER BY s.id ASC";
+            $results1 = DB::select($building_query);
+            // Process building results and collect them
+
+            $allBuildings = array_merge($allBuildings, $results1);
+            // Query to retrieve buildings using the stored function (this replicates the previous logic)
+            $buildingQuery = "SELECT * FROM fnc_getBufferPolygonBuildings(ST_GeomFromText('" . $bufferPolygonGeom . "', 4326), $bufferDistancePolygon);";
+            $buildingResults = DB::select($buildingQuery);
+
+            // Accumulate the results of the building function for all buffer polygons
+             $allBuildingResults = array_merge($allBuildingResults, $buildingResults);
+        }
+
+
+        foreach ($allBuildings as $row1) {
+
+            $building = [
+                'gid' => $row1->bin,
+                'geom' => $row1->geom
+            ];
+            $buildings[] = $building;
+        }
+
+        // dd($building);
+         // Aggregate results by structype
+        $aggregatedResults = [];
+
+        foreach ($allBuildingResults as $building) {
+            $type = $building->structype;
+
+            if (!isset($aggregatedResults[$type])) {
+                // Store the first occurrence as an object
+                $aggregatedResults[$type] = clone $building;
+            } else {
+                // Aggregate numeric fields
+                foreach ($building as $key => $value) {
+                    if ($key !== 'structype' && is_numeric($value)) {
+                        $aggregatedResults[$type]->$key += $value;
+                    }
+                }
+            }
+        }
+
+        $aggregatedResults = array_values($aggregatedResults);
+
+        // Convert associative array back to indexed array
+
+        $popContentsHtml .= $this->popUpContentHtml($aggregatedResults);
+
+        return [
+            'buildings' => $buildings,
+            'popContentsHtml' => $popContentsHtml,
+            'polygon' => $polygons,
+        ];
+    }
+
+
+
+
 
     /**
      * Generates building information and popup content HTML within a buffered polygon.
@@ -1092,6 +1228,7 @@ class MapsService {
         // Query to retrieve buildings using a stored function
         $buildingQuery = "Select * from fnc_getBufferPolygonBuildings( ST_GeomFromText(" . "'" . "$bufferPolygonGeom" . "'" . ",4326), $bufferDistancePolygon) ;";
         $buildingResults = DB::select($buildingQuery);
+
       // Generate HTML content for pop-up using the building query results
         $popContentsHtml = $this->popUpContentHtml($buildingResults);
         // Return the buildings array, pop-up HTML content, and polygon
@@ -1124,6 +1261,7 @@ class MapsService {
         $total_open_defacation = 0;
 
         foreach ($buildingResults as $row1) {
+
             $total += $row1->count;
             $total_sewer_network += $row1->sewer_network;
             $total_drain_network += $row1->drain_network;
@@ -1599,5 +1737,84 @@ class MapsService {
         ];
 
     }
+
+ /**
+ * Calculates isochrone polygons from nearby toilets.
+ *
+ * For each toilet in the database (excluding "Community Toilets"), this function:
+ * - Finds the nearest node in the road network.
+ * - Calculates a concave hull polygon around the reachable area (based on driving distance).
+ * - Identifies buildings that lie within this isochrone area and are not linked to a drain.
+ *
+ * @param float $distance The travel distance in meters .
+ * @return array Returns an associative array containing:
+ *               - 'polygon': an array of isochrone polygons (WKT) for each toilet.
+ *
+ */
+    public function getToiletIsochroneAreaLayers($distance)
+    {
+
+        $toilet_geom = DB::SELECT("SELECT geom, name
+                FROM fsm.toilets
+                WHERE deleted_at IS NULL
+                AND type <> 'Community Toilet';");
+
+                $polygons = array();
+                $buildings = array();
+        $i = 0;
+        foreach($toilet_geom as $toilet)
+        {
+        $long = DB::SELECT("SELECT ST_X('$toilet->geom')")[0]->st_x;
+        $lat = DB::SELECT("SELECT ST_Y('$toilet->geom')")[0]->st_y;
+
+        $node_id_query = "WITH parameters AS (
+                SELECT
+                    ".$distance." AS max_cost,
+                    ST_SetSRID(ST_Point(". $long .", ". $lat."),4326)::geometry AS origin,
+                    4326 AS srid
+                ),
+                nearest_node AS (
+                SELECT
+                    id,
+                    the_geom <-> origin AS distance
+                FROM
+                    utility_info.roads_network_noded_vertices_pgr,
+                    parameters
+                ORDER BY
+                    the_geom <-> origin
+                LIMIT 1
+                )
+                SELECT * from nearest_node; ";
+
+        $node_id = DB::SELECT($node_id_query)[0]->id;
+
+        $polygon_query = "
+            SELECT ST_asTEXT(ST_setSRID(ST_ConcaveHull(ST_Collect(the_geom), 0.9),4326)) as isochrone
+            FROM (
+                SELECT ST_Transform(ST_setSRID(the_geom, 4326),4326) as the_geom
+                FROM  pgr_drivingdistance('SELECT
+                id::integer AS id,
+                source::integer AS source,
+                target::integer AS target,
+                distance::double precision AS cost
+                FROM utility_info.roads_network_noded'::text, ".$node_id."::bigint,
+                ".$distance."::double precision, false)
+                AS dij_result
+            JOIN utility_info.roads_network_noded ON dij_result.edge = utility_info.roads_network_noded.id
+            ) AS shortest_path";
+        $polygon_result = DB::select($polygon_query);
+        $polygon['id'] = $i;
+        $polygon['geom'] = $polygon_result[0]->isochrone;
+        $polygon['long'] = $long;
+        $polygon['lat'] = $lat;
+        array_push($polygons,$polygon );
+        $i+=1;
+        }
+
+        return [
+            'polygon' => $polygons
+        ];
+    }
+
 
 }

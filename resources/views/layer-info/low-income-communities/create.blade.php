@@ -6,7 +6,7 @@
 @include('layouts.components.error-alert')
 <div class="card card-info">
 	{!! Form::open(['url' => 'layer-info/low-income-communities', 'class' => 'form-horizontal']) !!}
-		@include('layer-info/low-income-communities.partial-form', ['submitButtomText' => 'Save'])
+		@include('layer-info/low-income-communities.partial-form', ['submitButtomText' => __('Save')])
 	{!! Form::close() !!}
 </><!-- /.card -->
 @stop

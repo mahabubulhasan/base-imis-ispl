@@ -7,7 +7,7 @@
     <!-- /.card-footer -->
     <div class="card card-info">
         <div class="card-header with-border">
-            <h3 class="card-title">Containment ID: {{ $containment->id }}</h3>
+            <h3 class="card-title">{{ __("Containment ID") }}: {{ $containment->id }}</h3>
         </div><!-- /.card-header -->
         <div class="" style="margin-top: 2px">
             {!! Form::model($containment, [
@@ -21,8 +21,8 @@
         @include('fsm.containments.partial-form', ['submitButtomText' => 'Update'])
         <div class="card-footer">
 
-            <a href="{{ action('Fsm\ContainmentController@index') }}" class="btn btn-info">Back to List</a>
-            {!! Form::submit('Save', [
+            <a href="{{ action('Fsm\ContainmentController@index') }}" class="btn btn-info">{{ __("Back to List") }}</a>
+            {!! Form::submit(__('Save'), [
                 'class' => 'btn btn-info prevent-multiple-submits',
                 'id' => 'prevent-multiple-submits',
             ]) !!}
@@ -39,7 +39,7 @@
 @push('scripts')
     <script>
         onloadDynamicContainmentType();
-        handleSizeReadOnlyChange();    
+        handleSizeReadOnlyChange();
         handleSizeReadOnlyOnLoad();
         showContainmentDimensionsOnReload();
         let selectedSewerCode = null;
@@ -50,7 +50,7 @@
             localStorage.removeItem("selectedDrainCode");
         }
         else{
-            
+
             selectedSewerCode = localStorage.getItem("selectedSewerCode");
             selectedDrainCode = localStorage.getItem("selectedDrainCode");
         }
@@ -82,8 +82,8 @@
             }
         });
 
-        optionHtmlSewerCode = selectedSewerCode 
-        ? `<option selected=${selectedSewerCode}>${selectedSewerCode}</option>` 
+        optionHtmlSewerCode = selectedSewerCode
+        ? `<option selected=${selectedSewerCode}>${selectedSewerCode}</option>`
         : '<option selected="{{ $containment_building->sewer_code }}">{{ $containment_building->sewer_code }}</option>';
         $('#sewer_code').prepend(optionHtmlSewerCode).select2({
                 ajax: {
@@ -96,14 +96,14 @@
                         };
                     },
                 },
-                placeholder: 'Sewer Code',
+                placeholder: '{{__('Sewer Code')}}',
                 allowClear: true,
                 closeOnSelect: true,
                 width: '85%',
             });
 
-        optionHtmlDrainCode = selectedDrainCode 
-            ? `<option selected=${selectedDrainCode}>${selectedDrainCode}</option>` 
+        optionHtmlDrainCode = selectedDrainCode
+            ? `<option selected=${selectedDrainCode}>${selectedDrainCode}</option>`
             : '<option selected="{{ $containment_building->drain_code }}">{{ $containment_building->drain_code }}</option>';
         $('#drain_code').prepend(optionHtmlDrainCode).select2({
             ajax: {
@@ -116,7 +116,7 @@
                     };
                 },
             },
-            placeholder: 'Drain Code',
+            placeholder: '{{__('Drain Code')}}',
             allowClear: true,
             closeOnSelect: true,
             width: '85%',

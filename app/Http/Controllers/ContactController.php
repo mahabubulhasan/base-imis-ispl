@@ -15,7 +15,7 @@ class ContactController extends Controller
             'name' => 'required',
             'email' => 'required',
             'subject' => 'required',
-            'message' => 'required',
+            'message' => __('required'),
         ]);
 
         // Prepare email data

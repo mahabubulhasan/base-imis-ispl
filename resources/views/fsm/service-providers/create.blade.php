@@ -8,7 +8,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 @include('layouts.components.error-alert')
 <div class="card card-info">
 	{!! Form::open(['url' => 'fsm/service-providers', 'class' => 'form-horizontal']) !!}
-		@include('fsm/service-providers.partial-form', ['submitButtomText' => 'Save'])
+		@include('fsm/service-providers.partial-form', ['submitButtomText' => __('Save')])
 	{!! Form::close() !!}
 </div><!-- /.box -->
 @stop

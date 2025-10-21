@@ -37,19 +37,19 @@ class LowIncomeCommunityServiceClass
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['low-income-communities.destroy', $model->id]]);
 
                 if (Auth::user()->can('Edit Low Income Community')) {
-                    $content .= '<a title="Edit" href="' . action("LayerInfo\LowIncomeCommunityController@edit", [$model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-edit"></i></a> ';
+                    $content .= '<a title="' . __("Edit") . '" href="' . action("LayerInfo\LowIncomeCommunityController@edit", [$model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-edit"></i></a> ';
                 }
                 if (Auth::user()->can('View Low Income Community')) {
-                    $content .= '<a title="Detail" href="' . action("LayerInfo\LowIncomeCommunityController@show", [$model->id]) . '"class="btn btn-info btn-sm mb-1"><i class="fa fa-list"></i></a> ';
+                    $content .= '<a title="' . __("Detail") . '" href="' . action("LayerInfo\LowIncomeCommunityController@show", [$model->id]) . '"class="btn btn-info btn-sm mb-1"><i class="fa fa-list"></i></a> ';
                 }
                 if (Auth::user()->can('View Low Income Community History')) {
-                    $content .= '<a title="History" href="' . action("LayerInfo\LowIncomeCommunityController@history", [$model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-history"></i></a> ';
+                    $content .= '<a title="' . __("History") . '" href="' . action("LayerInfo\LowIncomeCommunityController@history", [$model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-history"></i></a> ';
                 }
                 if (Auth::user()->can('Delete Low Income Community')) {
-                    $content .= '<a title="Delete" class="delete btn btn-danger btn-sm mb-1">&nbsp;<i class="fa fa-trash"></i>&nbsp;</a> ';
+                    $content .= '<a title="' . __("Delete") . '" class="delete btn btn-danger btn-sm mb-1">&nbsp;<i class="fa fa-trash"></i>&nbsp;</a> ';
                 }
                 if (Auth::user()->can('View Low Income Community On Map')) {
-                    $content .= '<a title="Map" href="' . action("MapsController@index", ['layer' => 'low_income_communities_layer', 'field' => 'id', 'val' => $model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-map-marker"></i></a> ';
+                    $content .= '<a title="' . __("Map") . '" href="' . action("MapsController@index", ['layer' => 'low_income_communities_layer', 'field' => 'id', 'val' => $model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-map-marker"></i></a> ';
                 }
 
                 $content .= \Form::close();
@@ -68,7 +68,7 @@ class LowIncomeCommunityServiceClass
     // If geom is not provided or validation fails, don't update the data
     if (empty($request->geom)) {
         return redirect('layer-info/low-income-communities/create')
-            ->with('error', 'Failed to Add Low Income Community')
+            ->with('error', __('Failed to Add Low Income Community'))
             ->withInput();  // Retain the user's input
     }
 
@@ -107,16 +107,16 @@ class LowIncomeCommunityServiceClass
         if (!empty($ward)) {
             $lic->geom = DB::raw("ST_Multi(ST_GeomFromText('" . $request->geom . "', 4326))");
             $lic->save();
-            return redirect('layer-info/low-income-communities')->with('success', 'Low Income Community added successfully');
+            return redirect('layer-info/low-income-communities')->with('success', __('Low Income Community added successfully.'));
         } else {
             return redirect('layer-info/low-income-communities/create')
-                ->with('error', 'Failed to find the ward for the selected area')
+                ->with('error', __('Failed to find the ward for the selected area'))
                 ->withInput(); // Retain the user's input
         }
     } else {
         // If the geometry is not within the boundary, show an error
         return redirect('layer-info/low-income-communities/create')
-            ->with('error', 'The selected area should be within the Municipality Boundary')
+            ->with('error', __('The selected area should be within the Municipality Boundary'))
             ->withInput(); // Retain the user's input
     }
 }
@@ -168,7 +168,7 @@ class LowIncomeCommunityServiceClass
                 } else {
                     // Retain input on error
                     return redirect('layer-info/low-income-communities/' . $id . '/edit')
-                        ->with('error', 'The selected area should be within the Municipality Boundary')
+                        ->with('error', __('The selected area should be within the Municipality Boundary'))
                         ->withInput(); // Retain the user's input
                 }
             } else {
@@ -176,9 +176,9 @@ class LowIncomeCommunityServiceClass
                 $lic->save();
             }
 
-            return redirect('layer-info/low-income-communities')->with('success', 'Low Income Community updated successfully');
+            return redirect('layer-info/low-income-communities')->with('success', __('Low Income Community updated successfully.'));
         } else {
-            return redirect('layer-info/low-income-communities')->with('error', 'Failed to update Low Income Community');
+            return redirect('layer-info/low-income-communities')->with('error', __('Failed to update Low Income Community.'));
         }
     }
 
@@ -193,7 +193,7 @@ class LowIncomeCommunityServiceClass
     {
         $lic = LowIncomeCommunity::find($id);
         if ($lic) {
-            $page_title = "Low Income Community Details";
+            $page_title = __("Low Income Community Details");
             $geomArr = DB::select("SELECT ST_X(ST_AsText(ST_Centroid(ST_Centroid(geom)))) AS long, ST_Y(ST_AsText(ST_Centroid(ST_Centroid(geom)))) AS lat, ST_AsText(geom) AS geom FROM layer_info.low_income_communities WHERE id = $id");
             $geom = ($geomArr[0]->geom);
             $lat = $geomArr[0]->lat;
@@ -216,19 +216,20 @@ class LowIncomeCommunityServiceClass
         $searchData = $data['searchData'] ? $data['searchData'] : null;
         $community_name = $data['community_name'] ?? null;
         $columns = [
-            'ID',
-            'Community Name',
-            'No. of Buildings',
-            'Population',
-            'No. of Households',
-            'Male Population',
-            'Female Population',
-            'Other Population',
-            'No. of Septic Tanks',
-            'No. of Holding Tanks',
-            'No. of Pits',
-            'No. of Sewer Connections',
-            'No. of Community Toilets'
+            __('ID'),
+            __('Community Name'),
+            __('No. of Buildings'),
+            __('Population'),
+            __('No. of Households'),
+            __('Male Population'),
+            __('Female Population'),
+            __('Other Population'),
+            __('No. of Septic Tanks'),
+            __('No. of Holding Tanks'),
+            __('No. of Pits'),
+            __('No. of Sewer Connections'),
+            __('No. of Community Toilets'),
+
         ];
         $query = LowIncomeCommunity::select(
             'id',

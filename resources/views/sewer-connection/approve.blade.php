@@ -7,23 +7,22 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Sewer Connection</h5>
+                <h5 class="modal-title" id="exampleModalLongTitle">{{__('Sewer Connection')}}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                Existing Sanitation of Building will be updated as Sewer Network and corresponding containment
-                connection (if any) will be removed !
+              "{{ __('Existing Sanitation of Building will be updated as Sewer Network and corresponding containment connection (if any) will be removed !')}}"
                 <br>
 
                 <div style="margin-top:2%; font-weight:bold; text-align:center; font-size:15px">
-                    Are you sure?
+                    "{{__('Are you sure?')}}"
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                <button type="button" class="btn btn-primary" id="confirmYes">Yes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">"{{__('No')}}"</button>
+                <button type="button" class="btn btn-primary" id="confirmYes">"{{__('Yes')}}"</button>
             </div>
         </div>
     </div>
@@ -56,7 +55,7 @@ $(document).ready(function() {
                         // Display success swal if the response status is success
                         swal({
                             title: "Success!",
-                            text: "Building updated successfully",
+                            text: "{{__('Building updated successfully')}}",
                             icon: "success",
                             closeOnClickOutside: false, // Prevent close on outside click
                         }).then((result) => {
@@ -73,7 +72,7 @@ $(document).ready(function() {
                     // Handle error response
                     swal({
                         title: "Warning!",
-                        text: "Building not found",
+                        text: "{{__('Building not found.')}}",
                         icon: "warning",
                         closeOnClickOutside: false, // Prevent close on outside click
                     }).then((result) => {

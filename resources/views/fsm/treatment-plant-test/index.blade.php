@@ -15,17 +15,21 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
             <div class="card">
                 <div class="card-header">
                     @can('Add Treatment Plant Efficiency Test')
-                        <a href="{{ action('Fsm\TreatmentPlantTestController@create') }}" class="btn btn-info">Add Performance
-                            Efficiency Test</a>
+                        <a href="{{ action('Fsm\TreatmentPlantTestController@create') }}" class="btn btn-info">
+                            {{ __('Add Performance Efficiency Test') }}
+                        </a>
                     @endcan
-                    @can('Export Treatment Plant Efficiency Tests')
-                        <a href="{{ action('Fsm\TreatmentPlantTestController@export') }}" id="export"
-                            class="btn btn-info">Export to
-                            CSV</a>
-                    @endcan
-                    <a href class="btn btn-info float-right" data-toggle="collapse" data-target="#collapseFilter"
-                        aria-expanded="false" aria-controls="collapseFilter">Show Filter</a>
 
+                    @can('Export Treatment Plant Efficiency Tests')
+                        <a href="{{ action('Fsm\TreatmentPlantTestController@export') }}" id="export" class="btn btn-info">
+                            {{ __('Export to CSV') }}
+                        </a>
+                    @endcan
+
+                    <a href="#" class="btn btn-info float-right" data-toggle="collapse" data-target="#collapseFilter"
+                        aria-expanded="false" aria-controls="collapseFilter">
+                        {{ __('Show Filter') }}
+                    </a>
                 </div><!-- /.box-header -->
                 <div class="card-body">
                     <div class="row">
@@ -37,130 +41,138 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                         <div class="accordion-body">
                                             <form class="form-horizontal" id="filter-form">
 
-
                                                 <div class="form-group row mb-3">
-                                                    <label for="treatment_plant_name"
-                                                        class="col-md-2 col-form-label">Treatment Plant</label>
+                                                    <label for="treatment_plant_name" class="col-md-2 col-form-label">
+                                                        {{ __('Treatment Plant') }}
+                                                    </label>
                                                     <div class="col-md-2">
                                                         <select class="form-control" id="treatment_plant_name"
                                                             name="treatment_plant_name">
-                                                            <option value="">Treatment Plant</option>
+                                                            <option value="">{{ __('Treatment Plant') }}</option>
                                                             @foreach ($tpnames as $id => $name)
                                                                 <option value="{{ $id }}">{{ $name }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
-
                                                     </div>
 
-
-                                                    <label for="temperature" class="col-md-2 col-form-label">Temperature
-                                                        °C</label>
+                                                    <label for="temperature" class="col-md-2 col-form-label">
+                                                        {{ __('Temperature') }} °C
+                                                    </label>
                                                     <div class="col-md-2">
                                                         <input type="number" step="any" class="form-control"
-                                                            id="temperature" placeholder="Temperature in °C" />
+                                                            id="temperature" placeholder="{{ __('Temperature') }} °C" />
                                                     </div>
 
-                                                    <label for="cod" class="col-md-2 col-form-label">COD (mg/l)</label>
+                                                    <label for="cod" class="col-md-2 col-form-label">
+                                                        {{ __('COD') }} (mg/l)
+                                                    </label>
                                                     <div class="col-md-2">
                                                         <input type="text" step="any" class="form-control"
-                                                            id="cod" placeholder="COD (mg/l)" oninput = "this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\\..*?)\\..*/g, '$1')"/>
+                                                            id="cod" placeholder="{{ __('COD (mg/l)') }}"
+                                                            oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\\..*?)\\..*/g, '$1')" />
                                                     </div>
-
                                                 </div>
 
                                                 <div class="form-group row mb-3">
-
-
-                                                    <label for="date" class="col-md-2 col-form-label">Sample Date</label>
+                                                    <label for="date" class="col-md-2 col-form-label">
+                                                        {{ __('Sample Date') }}
+                                                    </label>
                                                     <div class="col-md-2">
-                                                        <input type="date" class="form-control" id="date" onclick ='this.showPicker();'/>
+                                                        <input type="date" class="form-control" id="date"
+                                                            onclick="this.showPicker();" />
                                                     </div>
 
-                                                    <label for="bod_validation" class="col-md-2 col-form-label">BOD
-                                                        Compliance</label>
+                                                    <label for="bod_validation" class="col-md-2 col-form-label">
+                                                        {{ __('BOD Compliance') }}
+                                                    </label>
                                                     <div class="col-md-2">
                                                         <select class="form-control" id="bod_validation"
                                                             name="bod_validation">
-                                                            <option value="">Select</option>
-                                                            <option value=true>Yes</option>
-                                                            <option value=false>No</option>
+                                                            <option value="">{{ __('Select') }}</option>
+                                                            <option value=true>{{ __('Yes') }}</option>
+                                                            <option value=false>{{ __('No') }}</option>
                                                         </select>
                                                     </div>
 
-                                                    <label for="ecoli_validation" class="col-md-2 col-form-label">Ecoli
-                                                        Compliance</label>
+                                                    <label for="ecoli_validation" class="col-md-2 col-form-label">
+                                                        {{ __('Ecoli Compliance') }}
+                                                    </label>
                                                     <div class="col-md-2">
                                                         <select class="form-control" id="ecoli_validation"
                                                             name="ecoli_validation">
-                                                            <option value="">Select</option>
-                                                            <option value=true>Yes</option>
-                                                            <option value=false>No</option>
+                                                            <option value="">{{ __('Select') }}</option>
+                                                            <option value=true>{{ __('Yes') }}</option>
+                                                            <option value=false>{{ __('No') }}</option>
                                                         </select>
                                                     </div>
                                                 </div>
 
                                                 <div class="form-group row mb-3">
-
-                                                    <label for="tss_validation" class="col-md-2 col-form-label">TSS
-                                                        Compliance</label>
+                                                    <label for="tss_validation" class="col-md-2 col-form-label">
+                                                        {{ __('TSS Compliance') }}
+                                                    </label>
                                                     <div class="col-md-2">
                                                         <select class="form-control" id="tss_validation"
                                                             name="tss_validation">
-                                                            <option value="">Select</option>
-                                                            <option value=true>Yes</option>
-                                                            <option value=false>No</option>
+                                                            <option value="">{{ __('Select') }}</option>
+                                                            <option value=true>{{ __('Yes') }}</option>
+                                                            <option value=false>{{ __('No') }}</option>
                                                         </select>
                                                     </div>
-                                                    <label for="ph_validation" class="col-md-2 col-form-label">pH Range
-                                                        Compliance</label>
+
+                                                    <label for="ph_validation" class="col-md-2 col-form-label">
+                                                        {{ __('pH Range Compliance') }}
+                                                    </label>
                                                     <div class="col-md-2">
                                                         <select class="form-control" id="ph_validation"
                                                             name="ph_validation">
-                                                            <option value="">Select</option>
-                                                            <option value=true>Yes</option>
-                                                            <option value=false>No</option>
+                                                            <option value="">{{ __('Select') }}</option>
+                                                            <option value=true>{{ __('Yes') }}</option>
+                                                            <option value=false>{{ __('No') }}</option>
                                                         </select>
                                                     </div>
-
                                                 </div>
 
                                                 <div class="card-footer text-right">
-                                                    <button type="submit" class="btn btn-info">Filter</button>
-                                                    <button type="reset" id="reset-filter"
-                                                        class="btn btn-info reset">Reset</button>
+                                                    <button type="submit"
+                                                        class="btn btn-info">{{ __('Filter') }}</button>
+                                                    <button type="reset" id="reset-filter" class="btn btn-info reset">
+                                                        {{ __('Reset') }}
+                                                    </button>
                                                 </div>
 
                                                 <div class="clearfix"></div>
                                             </form>
-
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                     <div class="card-body">
                         <div style="overflow: auto; width: 100%;">
                             <table id="data-table" class="table table-bordered table-striped dtr-inline" width="100%">
                                 <thead>
                                     <tr>
-                                        <th>Treatment Plant</th>
-                                        <th>Sample Date</th>
-                                        <th>Temperature °C</th>
-                                        <th>pH</th>
-                                        <th>COD (mg/l)</th>
-                                        <th>BOD (mg/l)</th>
-                                        <th>TSS (mg/l)</th>
-                                        <th>Ecoli</th>
-                                        <th>Remark</th>
-                                        <th>Actions</th>
+                                        <th>{{ __('Treatment Plant') }}</th>
+                                        <th>{{ __('Sample Date') }}</th>
+                                        <th>{{ __('Temperature') }} °C</th>
+                                        <th>{{ __('pH') }}</th>
+                                        <th>{{ __('COD') }} (mg/l)</th>
+                                        <th>{{ __('BOD') }} (mg/l)</th>
+                                        <th>{{ __('TSS') }} (mg/l)</th>
+                                        <th>{{ __('Ecoli') }}</th>
+                                        <th>{{ __('Remark') }}</th>
+                                        <th>{{ __('Actions') }}</th>
                                     </tr>
                                 </thead>
                             </table>
                         </div>
                     </div>
                 </div><!-- /.box-body -->
+
 
 
                 <!-- Modal -->
@@ -178,7 +190,8 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                 <div class="message"></div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-secondary"
+                                    data-dismiss="modal">{{ __('Close') }}</button>
                             </div>
                         </div>
                     </div>
@@ -266,13 +279,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                 var form = $(this).closest("form");
                                 event.preventDefault();
                                 Swal.fire({
-                                    title: 'Are you sure?',
-                                    text: "You won't be able to revert this!",
-                                    icon: 'warning',
-                                    showCancelButton: true,
-                                    confirmButtonColor: '#3085d6',
-                                    cancelButtonColor: '#d33',
-                                    confirmButtonText: 'Yes, delete it!'
+                                    title: '{{ __('Are you sure?') }}',
+                        text: "{!! __('You won\'t be able to revert this!') !!}",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: '{{ __('Yes, delete it!') }}',
+                        cancelButtonText: '{{ __('Cancel') }}',
                                 }).then((result) => {
                                     if (result.isConfirmed) {
                                         form.submit();
@@ -295,8 +309,8 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                             tss = '',
                             remarks = '',
                             bod_validation = '',
-                            ecoli_validation= '',
-                            tss_validation= '',
+                            ecoli_validation = '',
+                            tss_validation = '',
                             ph_validation = '';
 
                         $('#filter-form').on('submit', function(e) {
@@ -337,7 +351,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                 "&bod_validation=" + bod_validation +
                                 "&ecoli_validation=" + ecoli_validation +
                                 "&tss_validation=" + tss_validation +
-                                "&ph_validation=" + ph_validation ;
+                                "&ph_validation=" + ph_validation;
 
                         });
 

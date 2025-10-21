@@ -1,5 +1,5 @@
 @include('layouts.dashboard.chart-card', [
-    'card_title' => "Performance of Municipal Treatment Plants for Last Five Years",
+    'card_title' => __("Performance of Municipal Treatment Plants for Last Five Years"),
     'export_chart_btn_id' => "exportTreatmentPlantChart",
     'canvas_id' => "treatmentPlantChart"
 ])

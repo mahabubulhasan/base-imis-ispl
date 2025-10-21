@@ -1,7 +1,7 @@
 <!-- Last Modified Date: 18-04-2024
 Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 @extends('layouts.dashboard')
-@section('title', 'Application')
+@section('title', __('Application'))
 @push('style')
     <style type="text/css">
         .dataTables_filter {
@@ -16,22 +16,22 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 <a href="{{ $createBtnLink }}" class="btn btn-info">{{ $createBtnTitle }}</a>
             @endif
             @if (!empty($exportBtnLink))
-                <a href="{{ $exportBtnLink }}" class="btn btn-info" id="export" onclick="exportToCsv(event)" >Export to CSV</a>
+                <a href="{{ $exportBtnLink }}" class="btn btn-info" id="export" onclick="exportToCsv(event)" >{{ __('Export to CSV') }}</a>
             @endif
             <a class="btn btn-info float-right" id="headingOne" type="button" data-toggle="collapse"
                 data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                Show Filter
+                {{ __('Show Filter') }}
             </a>
             @if (!empty($reportBtnLink))
                 <a class="btn btn-info" data-toggle="collapse" data-target="#collapseFilterPdf" aria-expanded="false"
-                    aria-controls="collapseFilterPdf">Generate Report</a>
+                    aria-controls="collapseFilterPdf">{{ __('Generate Report') }}</a>
                 <div class="card-body">
                     <div class="col-12">
                         <div id="collapseFilterPdf" class="accordion-collapse collapse" aria-labelledby="headingOne"
                             data-bs-parent="#accordionExample">
                             <div class="accordion-body">
                                 <div class="form-group row required">
-                                    <label for="bin_text" class="control-label col-md-2">Month</label>
+                                    <label for="bin_text" class="control-label col-md-2">{{ __('Month') }}</label>
                                     <div class="col-md-2">
                                         <select class="form-control row" id="month_select" name="month"
                                             <?php if (!empty($application_months)) {
@@ -47,7 +47,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                                 ?>
                                         </select>
                                     </div>
-                                    <label for="bin_text" class="control-label col-md-2">Year</label>
+                                    <label for="bin_text" class="control-label col-md-2">{{ __('Year') }}</label>
                                     <div class="col-md-2">
                                         <select class="form-control row" id="year_select" name="year"
                                             <?php if (!empty($application_years)) {
@@ -62,7 +62,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                             ?>
                                         </select>
                                     </div>
-                                    <a class="btn btn-info pdf" id="pdf">Export to PDF</a>
+                                    <a class="btn btn-info pdf" id="pdf">{{ __('Export to PDF') }}</a>
                                 </div>
                             </div>
                         </div>
@@ -151,8 +151,8 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                         @endforeach
 
                                         <div class="card-footer t text-right">
-                                            <button type="submit" class="btn btn-info">Filter</button>
-                                            <button id="reset-filter" class="btn btn-info">Reset</button>
+                                            <button type="submit" class="btn btn-info">{{ __('Filter') }}</button>
+                                            <button id="reset-filter" class="btn btn-info">{{ __('Reset') }}</button>
                                         </div>
                                     </form>
                                 </div>
@@ -174,21 +174,21 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 <table id="data-table" class="table table-bordered table-striped dtr-inline" width="100%">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>BIN</th>
-                            <th>House Number</th>
-                            <th>Containment ID</th>
-                            <th>Application Date</th>
-                            <th>Proposed Emptying Date</th>
-                            <th>Street Code</th>
-                            <th>Emptying Status</th>
-                            <th>Sludge Collection Status</th>
-                            <th>Feedback Status</th>
-                            <th>Owner Name</th>
-                            <th>Ward Number</th>
-                            <th>Contact</th>
-                            <th>Service Provider Name</th>
-                            <th>Actions</th>
+                            <th>{{ __('ID') }}</th>
+                            <th>{{ __('BIN') }}</th>
+                            <th>{{ __('House Number') }}</th>
+                            <th>{{ __('Containment ID') }}</th>
+                            <th>{{ __('Application Date') }}</th>
+                            <th>{{ __('Proposed Emptying Date') }}</th>
+                            <th>{{ __('Street Code') }}</th>
+                            <th>{{ __('Emptying Status') }}</th>
+                            <th>{{ __('Sludge Collection Status') }}</th>
+                            <th>{{ __('Feedback Status') }}</th>
+                            <th>{{ __('Owner Name') }}</th>
+                            <th>{{ __('Ward Number') }}</th>
+                            <th>{{ __('Contact') }}</th>
+                            <th>{{ __('Service Provider Name') }}</th>
+                            <th>{{ __('Actions') }}</th>
                         </tr>
                     </thead>
                 </table>
@@ -216,7 +216,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
             $('#service_provider_id').empty();
 
             // Add a default "Select" option
-            $('#service_provider_id').append('<option value="">Select a Service Provider</option>');
+            $('#service_provider_id').append('<option value="">{{ __("Service Provider Name") }}</option>');
 
             // Append options to the select dropdown
             $.each(response, function (id, name) {
@@ -340,13 +340,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     var form = $(this).closest("form");
                     event.preventDefault();
                     Swal.fire({
-                        title: 'Are you sure?',
-                        text: "You won't be able to revert this!",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, delete it!'
+                    title: "{{__('Are you sure?')}}",
+                    text: "{!! __('You won\'t be able to revert this!') !!}",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: "{{ __('Yes, delete it!') }}",
+                    cancelButtonText: '{{ __('Cancel') }}',
                     }).then((result) => {
                         if (result.isConfirmed) {
                             form.submit();
@@ -365,13 +366,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 if ((date_from !== '') && (date_to === '')) {
 
                     Swal.fire({
-                        title: 'Date To is Required',
-                        text: "Please Select Date To!",
+                        title: '{{ __('Date To is Required') }}',
+                        text: "{{ __('Please Select Date To!') }}",
                         icon: 'warning',
                         showCancelButton: false,
                         confirmButtonColor: '#3085d6',
                         cancelButtonColor: '#d33',
-                        confirmButtonText: 'Close'
+                        confirmButtonText: "{{ __('Close') }}"
+
                     })
 
                     return false;
@@ -379,13 +381,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 if ((date_from === '') && (date_to !== '')) {
 
                     Swal.fire({
-                        title: 'Date From is Required',
-                        text: "Please Select Date From!",
+                        title:'{{ __('Date To is Required') }}',
+                        text: "{{ __('Please Select Date From!') }}",
                         icon: 'warning',
                         showCancelButton: false,
                         confirmButtonColor: '#3085d6',
                         cancelButtonColor: '#d33',
-                        confirmButtonText: 'Close'
+                        confirmButtonText: "{{ __('Close') }}"
+
                     })
 
                     return false;
@@ -393,13 +396,13 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
                 if (date_from !== '' && date_to !== '' && date_to <= date_from) {
                     Swal.fire({
-                        title: 'Invalid Date Range',
-                        text: "Date To cannot be Before Date From!",
+                        title: "{{ __('Invalid Date Range') }}",
+                        text:"{{ __('Date To cannot be Before Date From!') }}" ,
                         icon: 'warning',
                         showCancelButton: false,
                         confirmButtonColor: '#3085d6',
                         cancelButtonColor: '#d33',
-                        confirmButtonText: 'Close'
+                        confirmButtonText: "{{ __('Close') }}"
                     });
 
                     return false;
@@ -431,7 +434,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                         };
                     },
                 },
-                placeholder: 'Street Name/ Street Code',
+                placeholder:'{{ __('Street Name / Street Code') }}',
                 allowClear: true,
                 closeOnSelect: true,
                 width: '100%'

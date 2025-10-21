@@ -1,5 +1,5 @@
 @include('layouts.dashboard.chart-card',[
-    'card_title' => "Customer Satisfaction",
+    'card_title' => __("Customer Satisfaction"),
     'export_chart_btn_id' => "exportcustomerSatisfaction",
     'canvas_id' => "customerSatisfactionCharts"
 ])

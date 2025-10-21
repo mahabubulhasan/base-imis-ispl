@@ -1,5 +1,7 @@
 @include('layouts.dashboard.chart-card',[
-    'card_title' => "Building Connections to Sanitation System Types",
+
+
+    'card_title' => __("Building Connections to Sanitation System Types"),
     'export_chart_btn_id' => "exportsanitationSystemsChart",
     'canvas_id' => "sanitationSystemsChart"
 ])

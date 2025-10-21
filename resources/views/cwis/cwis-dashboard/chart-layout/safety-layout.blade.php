@@ -263,7 +263,7 @@
                     );
                 });
             </script>
-            <p>Population with access to safe individual toilets</p>
+            <p>{{__('Population with access to safe individual toilets')}}</p>
         </div>
         <div class="sf1" >
             <div class="chart" id="sf1bContainer">
@@ -281,7 +281,7 @@
                     );
                 });
             </script>
-            <p>Percentage of on-site sanitation that have been desludged</p>
+            <p>{{__('Percentage of on-site sanitation that have been desludged')}}</p>
         </div>
         <div class="sf1" >
             <div class="chart" id="sf1cContainer">
@@ -299,7 +299,7 @@
                     );
                 });
             </script>
-            <p>Percentage of collected FS disposed at a treatment plant or at designated disposal site</p>
+            <p>{{__('Percentage of collected FS disposed at a treatment plant or at designated disposal site')}}</p>
         </div>
      <h1 style="border-bottom: 1px solid 	#B2BEB5; margin-bottom:1%;"></h1>
 
@@ -319,7 +319,7 @@
                     );
                 });
             </script>
-            <p>FS treatment capacity as a percentage of total FS generated from NSS connections (excluding safely disposed in situ)</p>
+            <p>{{__('FS treatment capacity as a percentage of total FS generated from NSS connections (excluding safely disposed in situ)')}}</p>
         </div>
         <div class="sf1">
             <div class="chart" id="sf1eContainer">
@@ -337,7 +337,7 @@
                     );
                 });
             </script>
-            <p>FS treatment capacity as a percentage of total FS collected from NSS connections</p>
+            <p>{{__('FS treatment capacity as a percentage of total FS collected from NSS connections')}}</p>
         </div>
         <div class="sf1">
             <div class="chart" id="sf1fContainer">
@@ -355,7 +355,7 @@
                     );
                 });
             </script>
-            <p>Wastewater treatment capacity as a percentage of total wastewater generated from sewered connections and greywater generated from non-sewered connections</p>
+            <p>{{ __('Wastewater treatment capacity as a percentage of total wastewater generated from sewered connections and greywater generated from non-sewered connections')}}</p>
         </div>
         <h1 style="border-bottom: 1px solid 	#B2BEB5; margin-bottom:1%;"></h1>
         <div class="sf1">
@@ -374,7 +374,7 @@
                     );
                 });
             </script>
-            <p>Effectiveness of FS/WW treatment in meeting prescribed standards for effluent discharge and biosolids disposal</p>
+            <p>{{__('Effectiveness of FS/WW treatment in meeting prescribed standards for effluent discharge and biosolids disposal')}}</p>
         </div>
         <div class="sf2">
             <div class="chart" id="sf2aContainer">
@@ -392,7 +392,7 @@
                     );
                 });
             </script>
-            <p>Percentage LIC population with access to safe individual toilets</p>
+            <p>{{__('Percentage LIC population with access to safe individual toilets')}}</p>
         </div>
         <div class="sf2">
             <div class="chart" id="sf2bContainer">
@@ -410,7 +410,7 @@
                     );
                 });
             </script>
-            <p>Percentage of LIC, NSS, IHHLs that have been desludged</p>
+            <p>{{__('Percentage of LIC, NSS, IHHLs that have been desludged')}}</p>
         </div>
         <h1 style="border-bottom: 1px solid 	#B2BEB5; margin-bottom:1%;"></h1>
         <div class="sf2">
@@ -429,7 +429,7 @@
                     );
                 });
             </script>
-            <p>Percentage of collected FS (collected from LIC) disposed at treatment plant or designated disposal sites</p>
+            <p>{{__('Percentage of collected FS (collected from LIC) disposed at treatment plant or designated disposal sites')}}</p>
         </div>
         <div class="sf3">
             <div class="chart" id="sf3aContainer">
@@ -447,7 +447,7 @@
                     );
                 });
             </script>
-            <p>Percentage of dependent population (those without access to a private toilet/latrine) with access to safe shared facilities (CT/PT)</p>
+            <p>{{__('Percentage of dependent population (those without access to a private toilet/latrine) with access to safe shared facilities (CT/PT)')}}</p>
         </div>
         <div class="sf3">
             <div class="chart" id="sf3bContainer">
@@ -464,7 +464,7 @@
     );
 });
             </script>
-            <p>Percentage of CTs that adhere to principles of universal design</p>
+            <p>{{__('Percentage of CTs that adhere to principles of universal design')}}</p>
         </div>
         <h1 style="border-bottom: 1px solid 	#B2BEB5; margin-bottom:1%;"></h1>
         <div class="sf3">
@@ -483,7 +483,7 @@ createDoughnutChart(
 );
 });
 </script>
-<p>Percentage of users of CTs that are women</p>
+<p>{{__('Percentage of users of CTs that are women')}}</p>
 </div>
 <div class="sf3" id="sf3e">
     
@@ -491,7 +491,7 @@ createDoughnutChart(
  <br>
 
 
- <p>Average distance from the house to the closest CT (in meters)</p>
+ <p>{{__('Average distance from the house to the closest CT (in meters)')}}</p>
 </div>
 <div class="sf4">
             <div class="chart" id="sf4aContainer">
@@ -508,7 +508,7 @@ createDoughnutChart(
     );
 });
             </script>
-            <p>Percentage of PTs where FS and WW generated is safely transported to TP or safely disposed in situ</p>
+            <p>{{__('Percentage of PTs where FS and WW generated is safely transported to TP or safely disposed in situ')}}</p>
         </div>
         <h1 style="border-bottom: 1px solid 	#B2BEB5; margin-bottom:1%;"></h1>
         <div class="sf4">
@@ -526,7 +526,7 @@ createDoughnutChart(
     );
 });
             </script>
-            <p>Percentage of PTs that adhere to principles of universal design</p>
+            <p>{{__('Percentage of PTs that adhere to principles of universal design')}}</p>
         </div>
         <div class="sf4">
 
@@ -544,7 +544,7 @@ createDoughnutChart(
     );
 });
             </script>
-            <p>Percentage of users of PTs that are women</p>
+            <p>{{__('Percentage of users of PTs that are women')}}</p>
         </div>
         <div class="sf4">
         <div class="chart" id="sf5Container">
@@ -561,7 +561,7 @@ createDoughnutChart(
     );
 });
         </script>
-        <P> Percentage of educational institutions where FS/WW generated is safely transported to TP or safely disposed in situ </P>
+        <P>{{__('Percentage of educational institutions where FS/WW generated is safely transported to TP or safely disposed in situ')}} </P>
     </div>
     <h1 style="border-bottom: 1px solid 	#B2BEB5; margin-bottom:1%;"></h1>
     <div class="sf4">
@@ -579,7 +579,7 @@ createDoughnutChart(
     );
 });
         </script>
-        <P>Percentage of healthcare facilities where FS/WW generated is safely transported to TP or safely disposed in situ</P>
+        <P>{{__('Percentage of healthcare facilities where FS/WW generated is safely transported to TP or safely disposed in situ')}}</P>
         </div>
         <div class="sf4">
         <div class="chart" id="sf7Container">
@@ -596,7 +596,7 @@ createDoughnutChart(
     );
 });
         </script>
-<p>Percentage of desludging services completed mechanically or semi-mechanically (by a gulper)</p>
+<p>{{__('Percentage of desludging services completed mechanically or semi-mechanically (by a gulper)')}}</p>
     </div>
         <div class="sf4">
         <div class="chart" id="sf9Container">
@@ -613,7 +613,7 @@ createDoughnutChart(
     );
 });
         </script>
-<P> Percentage of tests which are in compliance with water quality standards for fecal coliform</P>
+<P>{{__('Percentage of tests which are in compliance with water quality standards for fecal coliform')}}</P>
     </div>
     </div>
 </div>

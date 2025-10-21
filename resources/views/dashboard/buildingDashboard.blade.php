@@ -3,8 +3,8 @@
 @section('content')
 
 @can('Building CountBox')
-  
-<h1 style="padding-bottom: 15px;font-size: 24px;">Buildings</h1>
+
+<h1 style="padding-bottom: 15px;font-size: 24px;">{{  __("Buildings")}}</h1>
   <div class="row">
 
         <div class="col-lg-3 col-md-12 col-xs-12  d-flex">
@@ -49,42 +49,38 @@
   @endcan
 
   @can('Sanitation CountBox')
-  <h1 style="padding: 15px 0 15px 0;font-size: 24px;">Sanitation Systems</h1>
+  <h1 style="padding: 15px 0 15px 0; font-size: 24px;">{{ __("Sanitation Systems") }}</h1>
   <div class="row">
-      @foreach($sanitationSystems as $sanitationSystem)
-      <div class="col-lg-3 col-xs-6">
-        <div class="info-box sanitation-system-info">
-          <span class="info-box-icon bg-info">
-              @if($sanitationSystem->icon_name && $sanitationSystem->icon_name != 'no_icon' && $sanitationSystem->icon_name != 'others.svg')
-                <img src="{{ asset('img/svg/imis-icons/'.$sanitationSystem->icon_name) }}" alt="{{$sanitationSystem->sanitation_system}}">
-              @else
-              <i class="fa fa-building"></i>
-              @endif
-          </span>
-            <div class="info-box-content">
-              <span class="info-box-text"> <h3> {{  $sanitationSystem->bin_count }}</h3></span>
-              <span class="info-box-number">{{$sanitationSystem->sanitation_system}}</span>
-            </div>
-        </div>
-      </div> <!--sub col div -->
+      @foreach ($sanitationSystems as $sanitationSystem)
+          <div class="col-lg-3 col-xs-6">
+              <div class="info-box sanitation-system-info">
+                  <span class="info-box-icon bg-info">
+                      @if (
+                          $sanitationSystem->icon_name &&
+                              $sanitationSystem->icon_name != 'no_icon' &&
+                              $sanitationSystem->icon_name != 'others.svg')
+                          <img src="{{ asset('img/svg/imis-icons/' . $sanitationSystem->icon_name) }}"
+                              alt="{{ __($sanitationSystem->sanitation_system) }}">
+                      @else
+                          <i class="fa fa-building" aria-hidden="true" title="{{ __('Building') }}"></i>
+                      @endif
+                  </span>
+                  <div class="info-box-content">
+                      <span class="info-box-text">
+                          <h3>{{ number_format($sanitationSystem->bin_count) }}</h3>
+                      </span>
+                      <span class="info-box-number">{{ __($sanitationSystem->sanitation_system) }}</span>
+                  </div>
+              </div>
+          </div> <!-- sub col div -->
       @endforeach
+
       <div class="col-lg-3 col-xs-6">
-        <div class="info-box sanitation-system-info">
-          <span class="info-box-icon bg-info">
-
-              <i class="fa fa-building"></i>
-
-          </span>
-           <div class="info-box-content">
-              <span class="info-box-text"> <h3> {{  $sanitationSystemsOthers['total'] }}</h3></span>
-              <span class="info-box-number">Others</span>
-              <i class="fa fa-info-circle sanitation-system-info-icon" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="{{nl2br(htmlspecialchars($sanitationSystemsOthers['sanitation_system_names']))}}"></i>
-            </div>
-        </div>
-      </div> <!--sub col div -->
+          @include('dashboard.countBox._sanitationOffsiteContainmentCountBox')
+      </div> <!-- sub col div -->
   </div> <!-- row div -->
+@endcan
 
-  @endcan
 
 
 <div class="row">

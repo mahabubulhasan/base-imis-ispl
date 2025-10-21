@@ -56,9 +56,9 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 $('[data-toggle="collapse"]').click(function() {
                     $(this).toggleClass( "active" );
                     if ($(this).hasClass("active")) {
-                    $(this).text("Hide Filter");
+                    $(this).text( __('Hide Filter') );
                     } else {
-                    $(this).text("Show Filter");
+                    $(this).text( __('Show Filter') );
                     }
                 });
             });

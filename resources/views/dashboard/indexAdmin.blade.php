@@ -5,7 +5,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 @section('content')
 
 @can('Building CountBox')
-    <h1 style="padding-bottom: 15px;font-size: 24px;">Buildings</h1>
+    <h1 style="padding-bottom: 15px;font-size: 24px;">{{__("Buildings") }}</h1>
     <div class="row">
         <div class="col-lg-3 col-md-12 col-xs-12  d-flex">
             @include('dashboard.countBox._buildCountBox')
@@ -52,7 +52,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 @endcan
 
 @can('Sanitation CountBox')
-    <h1 style="padding: 15px 0 15px 0;font-size: 24px;">Sanitation Systems</h1>
+    <h1 style="padding: 15px 0 15px 0; font-size: 24px;">{{ __("Sanitation Systems") }}</h1>
     <div class="row">
         @foreach ($sanitationSystems as $sanitationSystem)
             <div class="col-lg-3 col-xs-6">
@@ -63,35 +63,30 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
                                 $sanitationSystem->icon_name != 'no_icon' &&
                                 $sanitationSystem->icon_name != 'others.svg')
                             <img src="{{ asset('img/svg/imis-icons/' . $sanitationSystem->icon_name) }}"
-                                alt="{{ $sanitationSystem->sanitation_system }}">
+                                alt="{{ __($sanitationSystem->sanitation_system) }}">
                         @else
-                            <i class="fa fa-building"></i>
+                            <i class="fa fa-building" aria-hidden="true" title="{{ __('Building') }}"></i>
                         @endif
                     </span>
                     <div class="info-box-content">
                         <span class="info-box-text">
-                            <h3> {{ number_format($sanitationSystem->bin_count) }}</h3>
+                            <h3>{{ number_format($sanitationSystem->bin_count) }}</h3>
                         </span>
-                        <span class="info-box-number">{{ $sanitationSystem->sanitation_system }}</span>
-                       
-                        <!--<i class="fa fa-info-circle sanitation-system-info-icon" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Single Pit, <br>Cesspool/ Holding Tank, <br>Septic Tank without Soak Away Pit, <br>Septic Tank connected to Sewerage Network"></i>-->
+                        <span class="info-box-number">{{ __($sanitationSystem->sanitation_system) }}</span>
                     </div>
                 </div>
-            </div> <!--sub col div -->
+            </div> <!-- sub col div -->
         @endforeach
-
 
         <div class="col-lg-3 col-xs-6">
             @include('dashboard.countBox._sanitationOffsiteContainmentCountBox')
-        </div> <!--sub col div -->
-
-        <!--sub col div -->
-
+        </div> <!-- sub col div -->
     </div> <!-- row div -->
 @endcan
 
+
 @can('Utility CountBox')
-    <h1 style="padding: 15px 0 15px 0;font-size: 24px;">Utilities</h1>
+    <h1 style="padding: 15px 0 15px 0;font-size: 24px;">{{ __("Utilities") }}</h1>
     <div class="row">
         <div class="col-lg-3 col-xs-6">
             @include('dashboard.countBox._sumRoadsCountBox')
@@ -109,7 +104,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 @endcan
 
 @can('FSM CountBox')
-        <h1 style="padding: 15px 0 15px 0;font-size: 24px;">FSM Services</h1>
+        <h1 style="padding: 15px 0 15px 0;font-size: 24px;">{{ __("FSM Services") }}</h1>
         <div class="row">
             <!-- ./col -->
             <div class="col-lg-4 col-xs-6">
@@ -137,7 +132,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 @endcan
 
 @can('PTCT CountBox')
-    <h1 style="padding: 15px 0 15px 0;font-size: 24px;">PT/CT</h1>
+    <h1 style="padding: 15px 0 15px 0;font-size: 24px;">{{ __("PT/CT") }}</h1>
         <div class="row">
         <div class="col-lg-3 col-xs-6">
             @include('dashboard.countBox._pTCountBox')
@@ -155,7 +150,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 @endcan
 
 @can('Public Health CountBox')
-    <h1 style="padding: 15px 0 15px 0;font-size: 24px;">Public Health</h1>
+    <h1 style="padding: 15px 0 15px 0;font-size: 24px;">{{ __("Public Health") }}</h1>
     <div class="row">
         <div class="col-lg-3 col-xs-6">
             @include('dashboard.countBox._totalHotspotCountBox')

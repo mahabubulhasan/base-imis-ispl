@@ -1,5 +1,5 @@
 @include('layouts.dashboard.chart-card',[
-    'card_title' => "Emptying Requests for the Next Four Weeks",
+    'card_title' => __("Emptying Requests for the Next Four Weeks"),
     'export_chart_btn_id' => "exportproposedEmptyingDateContainmentsChart",
     'canvas_id' => "proposedEmptyingDateContainmentsChart"
 ])
@@ -19,7 +19,7 @@ const backgroundFill = {
         color: 'lightGreen'
     }
 }
- 
+
 var ctx = document.getElementById("proposedEmptyingDateContainmentsChart");
 var myChart = new Chart(ctx, {
   type: 'bar',
@@ -47,7 +47,7 @@ var myChart = new Chart(ctx, {
       },
     scales: {
       xAxes: [{
-           
+
            scaleLabel: {
                    display: true, // Enable the scale label
                    labelString: 'Weeks' // The label text
@@ -63,7 +63,7 @@ var myChart = new Chart(ctx, {
                      }
 
                  }
-                
+
             }
         }]
     }
@@ -74,7 +74,7 @@ document.getElementById('exportproposedEmptyingDateContainmentsChart').addEventL
   //donwload pdf from original canvas
   function downloadIMG() {
     var newCanvas = document.querySelector('#proposedEmptyingDateContainmentsChart');
-    
+
     //create image from dummy canvas
     var newCanvasImg = newCanvas.toDataURL("image/jpeg", 1.0);
     var a = document.createElement('a');

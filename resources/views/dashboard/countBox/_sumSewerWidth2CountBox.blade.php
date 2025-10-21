@@ -4,6 +4,6 @@
         <span class="info-box-text">
             <h2> {{ number_format($sumSewerWidth2) }}</h2>
         </span>
-        <span class="info-box-number">Unknown</span>
+        <span class="info-box-number">{{ __('Unknown')}}</span>
     </div>
 </div>

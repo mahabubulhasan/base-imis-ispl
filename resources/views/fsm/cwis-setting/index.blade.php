@@ -22,7 +22,7 @@
             ]) !!}
             <div class="form-group row">
                 <div class="col-sm-3" style="color:grey">
-                    <small><i class="fa-regular fa-clock"></i> Last Updated: {{ $updated ?? '' }}</small>
+                    <small><i class="fa-regular fa-clock"></i> {{__('Last Updated')}}: {{ $updated ?? '' }}</small>
                 </div>
             </div>
             
@@ -38,12 +38,12 @@
                 ];
 
                 $abbreviations = [
-                    'average_water_consumption_lpcd' => 'Average Water Consumption (LPCD)',
-                    'waste_water_conversion_factor' => 'Waste Water Conversion Factor (%)',
-                    'greywater_conversion_factor_connected_to_sewer' => 'Greywater Conversion Factor Connected To Sewer (%)',
-                    'greywater_conversion_factor_not_connected_to_sewer' => 'Greywater Conversion Factor Not Connected To Sewer (%)',
-                    'fs_generation_from_containment_not_connected_to_sewer_lpcd' => 'FS Generation From Containment Not Connected To Sewer (LPCD)',
-                    'fs_generation_from_permeable_or_unlined_pit_lpcd' => 'FS Generation From Permeable/ Unlined Pit (LPCD)'
+                    'average_water_consumption_lpcd' => __('Average Water Consumption (LPCD)'),
+                    'waste_water_conversion_factor' => __('Waste Water Conversion Factor (%)'),
+                    'greywater_conversion_factor_connected_to_sewer' => __('Greywater Conversion Factor Connected To Sewer (%)'),
+                    'greywater_conversion_factor_not_connected_to_sewer' => __('Greywater Conversion Factor Not Connected To Sewer (%)'),
+                    'fs_generation_from_containment_not_connected_to_sewer_lpcd' => __('FS Generation From Containment Not Connected To Sewer (LPCD)'),
+                    'fs_generation_from_permeable_or_unlined_pit_lpcd' => __('FS Generation From Permeable/ Unlined Pit (LPCD)')
                 ];
             @endphp
 
@@ -65,16 +65,11 @@
                     </div>
                 </div>
             @endforeach
-
-
-
-
-
         </div><!-- /.box-body -->
         <div class="card-footer">
              @can('Edit CWIS')
-            <span id="editButton" class="btn btn-info">Edit</span>
-            <button type="submit" id="saveButton" class="btn btn-info" style="display: none;">Save</button>
+            <span id="editButton" class="btn btn-info">{{__('Edit')}}</span>
+            <button type="submit" id="saveButton" class="btn btn-info" style="display: none;">{{__('Save')}}</button>
             @endcan
         </div><!-- /.box-footer -->
     </div>

@@ -1,5 +1,5 @@
 @include('layouts.dashboard.chart-card',[
-    'card_title' => "Response Time (hrs)",
+    'card_title' => __("Response Time (hrs)"),
     'export_chart_btn_id' => "exportresponseTimeCharts",
     'canvas_id' => "responseTimeCharts"
 ])

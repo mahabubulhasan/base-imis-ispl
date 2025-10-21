@@ -1,7 +1,7 @@
 
 
 
-        
+
             <p class="login-box-msg">Log In</p>
             @if(isset ($errors) && count($errors) > 0)
                 <div class="alert alert-warning" role="alert">
@@ -29,7 +29,7 @@
                     </div>
                 @endif
             @endif
-    
+
                     <form method="POST" action="{{ route('login.perform') }}">
                         @csrf
                         <div class="input-group mb-3">
@@ -46,14 +46,14 @@
                              @enderror
                         </div>
 
-                 
+
 
                         <div class="input-group mb-3">
                             <input type="password" id ="password" class="form-control @error('password') is-invalid @enderror" name="password" required placeholder="Password"  value="{{ old('password') }}">
                            <div class="input-group-append">
-                           
+
                             <div class="input-group-text">
-                            
+
                             <span class="fas fa-lock"></span>
                             </div>
                             </div>
@@ -63,7 +63,7 @@
                                     </span>
                             @enderror
                         </div>
-                        
+
                         <div class="row">
                              <div class="col-6">
                                 <div class="icheck-primary">
@@ -72,10 +72,10 @@
                                 Show password
                                 </label>
                                 </div>
-                                
+
                             </div>
                             <div class="col-6 ">
-                               
+
                                     <div class="icheck-primary " style=" text-align: end;">
                                         <input type="checkbox" name="remember" id="remember" value="1" >
                                         <label for="remember">
@@ -93,13 +93,12 @@
                             <div class="col-12 mt-2 text-center">
                                 @if (Route::has('password.request'))
                                     <a href="{{ route('password.request') }}">
-                                        {{ __('Forgot Your Password?') }}
+                                        {{ 'Forgot Your Password?' }}
                                     </a>
                                 @endif
                             </div>
                         </div>
 
             </form>
-            
-                         
-           
+
+

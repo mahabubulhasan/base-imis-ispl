@@ -33,11 +33,11 @@ class CreateSewerConnectionRequest extends FormRequest
     public function messages()
     {
         return [
-            "bin.unique" => 'The bin is already registered.',
-            "bin.required" => 'The bin is required.',
-            "bin.string" => 'The bin should be string.',    
-            "sewer_code" => 'The sewer code should be string.',
-            "sewer_code.required" => "The sewer code is required.",
+            "bin.unique" => __('The bin is already registered.'),
+            "bin.required" => __('The bin is required.'),
+            "bin.string" => __('The bin should be string.'),    
+            "sewer_code" => __('The sewer code should be string.'),
+            "sewer_code.required" => __('The sewer code is required.'),
           
         ];
     }

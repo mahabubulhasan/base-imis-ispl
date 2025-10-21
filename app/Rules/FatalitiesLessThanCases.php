@@ -42,6 +42,6 @@ class FatalitiesLessThanCases implements Rule
      */
     public function message()
     {
-        return 'The fatalities must be less than the corresponding cases.';
+        return __('The fatalities must be less than the corresponding cases.');
     }
 }

@@ -1,5 +1,5 @@
 @include('layouts.dashboard.chart-card',[
-    'card_title' => "Outstanding Payments for Solid Waste Management Services",
+    'card_title' => __("Outstanding Payments for Solid Waste Management Services"),
     'export_chart_btn_id' => "exportwaterSupplyPaymentCharts",
     'canvas_id' => "SolidwasteChart"
 ])

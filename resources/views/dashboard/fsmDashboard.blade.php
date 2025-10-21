@@ -3,21 +3,21 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 @extends('layouts.dashboard')
 @section('title', $page_title)
 @section('content')
-   
+
         <div class="row" style="padding: 15px 0 15px 0;font-size: 24px;">
             <div class="col-lg-8 col-xs-8">
                 <form class="form-inline" id="filter-form" action="{{ action('Fsm\FsmDashboardController@index') }}" method="get">
                     <div class="form-group">
-                        <label for="year_select">Year</label>
+                        <label for="year_select">{{ __('Year') }}</label>
                         <select class="form-control" id="year_select" name="year">
-                            <option value="">All Years</option>
+                            <option value="">{{ __('All Years') }}</option>
                             @for ($year = $maxDate; $year >= $minDate; $year--)
                                 <option value="{{ $year }}">{{ $year }}</option>
                             @endfor
                         </select>
 
-                        <button type="submit" class="ml-1 btn btn-info">Filter</button>
-                        <a href="{{ action('Fsm\FsmDashboardController@index') }}" class="ml-1 btn btn-info reset">Reset</a>
+                        <button type="submit" class="ml-1 btn btn-info">{{ __("Filter") }}</button>
+                        <a href="{{ action('Fsm\FsmDashboardController@index') }}" class="ml-1 btn btn-info reset">{{ __("Reset") }}</a>
                       </div>
           </form>
         </div>
@@ -58,7 +58,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
         <!-- /.row -->
     @endcan
 
-   
+
         <div class="row">
         @can('Proportion of Different Containment Types Chart')
             <div class="col-md-6">
@@ -71,7 +71,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
             </div>
             @endcan
         </div>
-  
+
 
 
         <div class="row">
@@ -88,7 +88,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
         @endcan
         </div>
 
- 
+
     <div class="row">
     @can('Containment Types Categorized by Land Use Chart')
         <div class="col-md-6">
@@ -107,9 +107,9 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
         @endcan
     </div>
 
-  
-    
-   
+
+
+
     <div class="row">
     @can('Distribution of Emptying Requests by Structure Types Chart')
         <div class="col-md-6">
@@ -122,7 +122,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
             </div>
         @endcan
     </div>
-    
+
 
     <div class="row">
         @can('Monthly Emptying Requests Processed by Service Providers Chart')
@@ -130,7 +130,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 @include('dashboard.charts._monthlyRequestByOperators')
             </div>
         @endcan
-       
+
     </div>
     <div class="row">
         @can('Emptying Requests for the Next Four Weeks Chart')
@@ -157,7 +157,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
             </div>
         @endcan
         </div>
-  
+
 
     <div class="row">
         @can('Sludge Collection Trends by Treatment Plants Over the Last 5 Years Chart')

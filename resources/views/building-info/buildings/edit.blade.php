@@ -3,7 +3,7 @@
 @section('content')
     <div class="card card-info">
         <div class="card-header with-border">
-            <h3 class="card-title">House Number : {{ $building->bin }}</h3>
+            <h3 class="card-title">{{ __('House Number') }} : {{ $building->bin }}</h3>
         </div><!-- /.card-header -->
         @include('layouts.components.error-list')
         {!! Form::model($building, [
@@ -81,13 +81,14 @@
                     var form = $(this).closest("form");
                     event.preventDefault();
                     Swal.fire({
-                        title: 'Are you sure?',
-                        text: "You won't be able to revert this!",
+                        title: '{{ __('Are you sure?') }}',
+                        text: "{!! __('You won\'t be able to revert this!') !!}",
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',
                         cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, delete it!'
+                        confirmButtonText: '{{ __('Yes, delete it!') }}',
+                        cancelButtonText: '{{ __('Cancel') }}',
                     }).then((result) => {
                         if (result.isConfirmed) {
                             form.submit();
@@ -145,7 +146,7 @@
                     };
                 },
             },
-            placeholder: 'BIN of Main Building',
+            placeholder: '{{__('BIN of Main Building')}}',
             allowClear: true,
             closeOnSelect: true,
             width: '85%',
@@ -165,7 +166,7 @@
                     };
                 },
             },
-            placeholder: 'Road Code - Road Name',
+            placeholder: '{{__('Road Code - Road Name')}}',
             allowClear: true,
             closeOnSelect: true,
             width: '85%',
@@ -186,7 +187,7 @@
                     };
                 },
             },
-            placeholder: 'Water Supply Pipe Line Code',
+            placeholder: '{{__('Water Supply Pipe Line Code')}}',
             allowClear: true,
             closeOnSelect: true,
             width: '85%',
@@ -206,7 +207,7 @@
                         };
                     },
                 },
-                placeholder: 'Sewer Code',
+                placeholder: '{{__('Sewer Code')}}',
                 allowClear: true,
                 closeOnSelect: true,
                 width: '85%',
@@ -226,7 +227,7 @@
                     };
                 },
             },
-            placeholder: 'Drain Code',
+            placeholder: '{{__('Drain Code')}}',
             allowClear: true,
             closeOnSelect: true,
             width: '85%',
@@ -248,7 +249,7 @@
                 };
             },
         },
-        placeholder: 'BIN of Pre Connected Building',
+        placeholder: '{{__('BIN of Pre-Connected Building')}}',
         allowClear: true,
         closeOnSelect: true,
         width: '85%',
@@ -405,7 +406,7 @@
         $(document).ready(function() {
 
             $('#functional_use_id').change(function() {
-                var html = '<option value="">Use Categories of Building</option>';
+                var html = '<option value="">Use Category of Building</option>';
 
                 var functional_use = $(this).val();
                 if (functional_use) {

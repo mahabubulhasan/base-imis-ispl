@@ -39,13 +39,13 @@ class SewerConnectionController extends Controller
             if ($buildingCodes->isEmpty()) {
                 return response()->json([
                     'status' => 404,
-                    'message' => 'No building codes found.'
+                    'message' => __('No building codes found.')
                 ], 404);
             }
             
             return response()->json([
                 'status' => 200,
-                'message' => 'Building codes fetched successfully.',
+                'message' => __('Building codes fetched successfully.'),
                 'data' => $buildingCodes,
                
             ]);
@@ -65,13 +65,13 @@ class SewerConnectionController extends Controller
             if ($sewerCodes->isEmpty()) {
                 return response()->json([
                     'status' => 404,
-                    'message' => 'No sewer codes found.'
+                    'message' => __('No sewer codes found.')
                 ], 404);
             }
             
             return response()->json([
                 'status' => 200,
-                'message' => 'Sewer codes fetched successfully.',
+                'message' => __('Sewer codes fetched successfully.'),
                 'data' => $sewerCodes,
                
             ]);
@@ -110,7 +110,7 @@ class SewerConnectionController extends Controller
         return [
             'success' => true,
             'data' => '',
-            'message' => 'Sewer Connection is uploaded successfully'
+            'message' => __('Sewer Connection is uploaded successfully.')
         ];
     }
     /**
@@ -126,7 +126,7 @@ class SewerConnectionController extends Controller
                 'success' => true,
                 'baseUrl' => config("constants.GEOSERVER_URL"),
                 'data' => $wms,
-                'message' => "WMS layer for ".$layer.".",
+                'message' => __('WMS layer for:').$layer,
             ]);
 
         } catch (\Throwable $th) {

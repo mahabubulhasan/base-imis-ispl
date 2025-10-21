@@ -3,11 +3,11 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 <div class="col-sm-12 col-md-8 col-lg-8">
     <div class="card">
         <div class="card-header">
-            Customer Details
+            __('Customer Details')
         </div>
         <div class="card-body">
             <div class="form-group row">
-                {!! Form::label('address','Address',['class' => 'col-sm-6 control-label']) !!}
+                {!! Form::label('address',__('Address'),['class' => 'col-sm-6 control-label']) !!}
                 <div class="col-sm-6">
                     @if(empty($application))
                     {!! Form::select('address',['asd'],null) !!}
@@ -17,7 +17,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 </div>
             </div>
             <div class="form-group row">
-                {!! Form::label('customer_name',"Customer's Name",['class' => 'col-sm-6 control-label']) !!}
+                {!! Form::label('customer_name',__('Customer's Name'),['class' => 'col-sm-6 control-label']) !!}
                 <div class="col-sm-6">
                     @if(empty($application))
                     {!! Form::text('customer_name',null,['class' => 'form-control', 'placeholder' => "Customer's Name"]) !!}
@@ -50,7 +50,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
     </div>
     <div class="card">
         <div class="card-header">
-            Applicant Details
+            __('Applicant Details')
             @if(empty($application))
             <div class="clearfix float-right">
                 <div class="icheck-primary d-inline">
@@ -97,7 +97,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
     </div>
     <div id="building-if-address" style="display: none" class="card">
         <div class="card-header">
-            Building Details
+            __('Building Details')
         </div>
         <div class="card-body">
             <div class="form-group row">
@@ -144,7 +144,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
     </div>
     <div id="building-if-not-address" style="display: none" class="card">
         <div class="card-header">
-            Building Details
+            __('Building Details')
         </div>
         <div class="card-body">
             <div class="form-group row">

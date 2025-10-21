@@ -36,7 +36,7 @@ class ApplicationController extends Controller
     public function index()
     {
         $createBtnLink = Auth::user()->can('Add Application')?$this->applicationService->getCreateRoute():null;
-        $createBtnTitle = 'Add Application';
+        $createBtnTitle = __('Add Application') ;
         $exportBtnLink = Auth::user()->can('Export Applications')?$this->applicationService->getExportRoute():null;
         $reportBtnLink = Auth::user()->can('Generate Application Report')?$this->applicationService->getReportRoute():null;
         $filterFormFields = $this->applicationService->getFilterFormFields();
@@ -106,7 +106,7 @@ class ApplicationController extends Controller
         $application = Application::find($id);
     
         if ($application) {
-            $page_title = "Application Details";
+            $page_title =__('Application Details') ;
             $formFields = $this->applicationService->getShowFormFields($application);
             $indexAction = $this->applicationService->getIndexAction();
 
@@ -127,7 +127,7 @@ class ApplicationController extends Controller
     {
         $application = Application::find($id);
         if ($application) {
-            $page_title = "Edit Application";
+            $page_title =__("Edit Application");
             $formFields = $this->applicationService->getEditFormFields($application);
             $formAction = $this->applicationService->getEditFormAction($application);
             $indexAction = $this->applicationService->getIndexAction();
@@ -160,19 +160,19 @@ class ApplicationController extends Controller
         try {
             $application = Application::findOrFail($id);
             if($application->emptying()->exists()){
-                return redirect('fsm/application')->with('error','Cannot delete Application that has associated Emptying Information');
+                return redirect('fsm/application')->with('error',__('Cannot delete Application that has associated Emptying Information.'));
             }
             if($application->sludge_collection()->exists()){
-                return redirect('fsm/application')->with('error','Cannot delete Application that has associated Sludge Collection Information');
+                return redirect('fsm/application')->with('error',__('Cannot delete Application that has associated Sludge Collection Information.'));
             }
             if($application->feedback()->exists()){
-                return redirect('fsm/application')->with('error','Cannot delete Application that has associated Feedback Information');
+                return redirect('fsm/application')->with('error',__('Cannot delete Application that has associated Feedback Information.'));
             }
             $application->delete();
         } catch (\Throwable $e) {
-            return redirect('fsm/application')->with('error','Failed to delete Application');
+            return redirect('fsm/application')->with('error',__('Failed to delete Application.'));
         }
-        return redirect('fsm/application')->with('success','Application deleted successfully');
+        return redirect('fsm/application')->with('success',__('Application deleted successfully.'));
 
     }
 
@@ -198,7 +198,7 @@ class ApplicationController extends Controller
       try {
         $this->applicationService->export($request);
         } catch (\Throwable $e) {
-            return redirect(route('application.index'))->with('error','Failed to export applications');
+            return redirect(route('application.index'))->with('error',__('Failed to export applications.'));
         }
     }
     /**

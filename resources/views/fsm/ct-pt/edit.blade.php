@@ -54,7 +54,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 };
             },
         },
-        placeholder: ' House Number / BIN',
+        placeholder: '{{ __('House Number / BIN') }}',
         allowClear: true,
         closeOnSelect: true,
         width: '85%',

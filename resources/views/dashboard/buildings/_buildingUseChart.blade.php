@@ -1,8 +1,14 @@
 @include('layouts.dashboard.chart-card',[
-    'card_title' => " Building Use Composition",
+     'card_title' => __("Building Use Composition"),
+
     'export_chart_btn_id' => "exportbuildingUseChart",
     'canvas_id' => "buildingUseChart"
 ])
+
+
+
+
+
 @push('scripts')
 <script>
 var ctx = document.getElementById("buildingUseChart");

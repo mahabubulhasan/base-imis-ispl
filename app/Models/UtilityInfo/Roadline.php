@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\UtilityInfo\SewerLine;
 use App\Models\UtilityInfo\Drains;
 use App\Models\UtilityInfo\WaterSupplys;
+use App\Jobs\RunTopologyUpdate;
 
 class Roadline extends Model
 {
@@ -66,7 +67,13 @@ class Roadline extends Model
     }
 
     
-
+ protected static function booted()
+    {
+        static::saved(function ($road) {
+            // Run the function in background
+             RunTopologyUpdate::dispatch($road->code);
+        });
+    }
 
 
 }

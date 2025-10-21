@@ -13,17 +13,22 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 
 <div class="card">
   <div class="card-header">
-    @can('Export Sewers to CSV')
-    <a href="{{ action('UtilityInfo\SewerLineController@export') }}" id="export" class="btn btn-info">Export to CSV</a>
+
+  @can('Add Sewer On Map')
+  <a href="{{ action('MapsController@index') }}#add_sewer_control" class="btn btn-info">{{ __('Add Sewer') }}</a>
+  @endcan  
+  @can('Export Sewers to CSV')
+    <a href="{{ action('UtilityInfo\SewerLineController@export') }}" id="export" class="btn btn-info">{{ __('Export to CSV') }}</a>
+
     @endcan
     @can('Export Sewers to Shape')
-    <a href="#" id="export-shp" class="btn btn-info">Export to Shape File</a>
+    <a href="#" id="export-shp" class="btn btn-info">{{ __('Export to Shape File') }}</a>
     @endcan
     @can('Export Sewers to KML')
-    <a href="#" id="export-kml" class="btn btn-info">Export to KML</a>
+    <a href="#" id="export-kml" class="btn btn-info">{{ __('Export to KML') }}</a>
     @endcan
     <a class="btn btn-info float-right" id="headingOne" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-      Show Filter
+    {{ __('Show Filter') }}
     </a>
   </div><!-- /.box-header -->
   <div class="card-body">
@@ -35,18 +40,18 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
               <div class="accordion-body">
                 <form class="form-horizontal" id="filter-form">
                   <div class="form-group row">
-                    <label for="code" class="col-md-2 col-form-label ">Code</label>
+                    <label for="code" class="col-md-2 col-form-label "> {{ __('Code') }}</label>
                     <div class="col-md-2">
-                      <input type="text" class="form-control" id="code" placeholder="Code" oninput="validateAlphanumeric(this)"/>
+                      <input type="text" class="form-control" id="code" placeholder="{{__("Code")}}" oninput="validateAlphanumeric(this)"/>
                     </div>
-                    <label for="road_code" class="col-md-2 col-form-label ">Road Code</label>
+                    <label for="road_code" class="col-md-2 col-form-label "> {{ __('Road Code') }}</label>
                     <div class="col-md-2">
-                      <input type="text" class="form-control" id="road_code" placeholder="Road Code" oninput="validateAlphanumeric(this)"/>
+                      <input type="text" class="form-control" id="road_code" placeholder="{{__("Road Code")}}" oninput="validateAlphanumeric(this)"/>
                     </div>
-                    <label for="location" class="col-md-2 col-form-label ">Location</label>
+                    <label for="location" class="col-md-2 col-form-label "> {{ __('Location') }}</label>
                     <div class="col-md-2">
                       <select class="form-control" id="location">
-                        <option value="">Location</option>
+                        <option value="">{{ __('Location') }}</option>
                         @foreach($location as $key)
                         <option value="{{$key}}">{{$key}}</option>
                         @endforeach
@@ -54,8 +59,8 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
                     </div>
                   </div>
                   <div class="card-footer text-right">
-                    <button type="submit" class="btn btn-info ">Filter</button>
-                    <button id="reset-filter" type="reset" class="btn btn-info">Reset</button>
+                    <button type="submit" class="btn btn-info "> {{ __('Filter') }}</button>
+                    <button id="reset-filter" type="reset" class="btn btn-info"> {{ __('Reset') }}</button>
                   </div>
                 </form>
               </div> <!--- accordion body!-->
@@ -71,13 +76,13 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
       <table id="data-table" class="table table-bordered table-striped dataTable dtr-inline" width="100%">
         <thead>
           <tr>
-            <th>Code</th>
-            <th>Road Code</th>
-            <th>Location</th>
-            <th>Length (m)</th>
-            <th>Diameter (mm)</th>
-            <th>Treatment Plant</th>
-            <th>Actions</th>
+            <th> {{ __('Code') }}</th>
+            <th> {{ __('Road Code') }}</th>
+            <th> {{ __('Location') }}</th>
+            <th> {{ __('Length (m)') }}</th>
+            <th> {{ __('Diameter (mm)') }}</th>
+            <th> {{ __('Treatment Plant') }}</th>
+            <th> {{ __('Actions') }}</th>
           </tr>
         </thead>
       </table>
@@ -144,13 +149,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
         var form = $(this).closest("form");
         event.preventDefault();
         Swal.fire({
-          title: 'Are you sure?',
-          text: "You won't be able to revert this!  ",
+          title:" {{ __('Are you sure?') }}" ,
+          text: "{!! __('You won\'t be able to revert this!') !!}",
           icon: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, delete it!'
+          confirmButtonText: "{{__('Yes, delete it!')}}",
+          cancelButtonText: '{{ __('Cancel') }}',
         }).then((result) => {
           if (result.isConfirmed) {
             form.submit();

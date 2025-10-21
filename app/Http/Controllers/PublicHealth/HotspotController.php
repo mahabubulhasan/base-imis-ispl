@@ -36,7 +36,7 @@ class HotspotController extends Controller
 
     public function index()
     {
-        $page_title = "Waterborne Hotspot";
+        $page_title = __("Waterborne Hotspot");
         $wards = Ward::orderBy('ward', 'asc')->pluck('ward', 'ward')->all();
         $hotspotLocation = Hotspots::pluck('hotspot_location', 'hotspot_location')->all();
         $enumValues = HotspotDisease::toEnumArray();
@@ -56,7 +56,7 @@ class HotspotController extends Controller
      */
     public function create()
     {
-        $page_title = "Add Waterborne Hotspot";
+        $page_title = __("Add Waterborne Hotspot");
         $maxDate = date('Y') + 1;
         $minDate = date('Y') - 4;
         $wards = Ward::orderBy('ward', 'asc')->pluck('ward', 'ward')->all();
@@ -106,7 +106,7 @@ class HotspotController extends Controller
         $diesase = HotspotDisease::asSelectArray();
         $enumValues = HotspotDisease::toEnumArray();
         if ($Hotspots) {
-            $page_title = "Edit Waterborne Hotspot";
+            $page_title = __("Edit Waterborne Hotspot");
             return view('public-health.hotspots.edit', compact('page_title', 'wards', 'Hotspots', 'geom', 'lat', 'long','diesase', 'enumValues'));
         } else {
             abort(404);
@@ -136,9 +136,9 @@ class HotspotController extends Controller
         $Hotspots = Hotspots::find($id);
         if ($Hotspots) {
                 $Hotspots->delete();
-                return redirect('publichealth/hotspots')->with('success','Waterborne Hotspot deleted successfully');
+                return redirect('publichealth/hotspots')->with('success', __('Waterborne Hotspot deleted successfully.'));
         } else {
-            return redirect('publichealth/hotspots')->with('error','Failed to delete Hotspot Identification');
+            return redirect('publichealth/hotspots')->with('error', __('Failed to delete Hotspot Identification.'));
         }
     }
     /**
@@ -151,7 +151,7 @@ class HotspotController extends Controller
     {
         $Hotspots = Hotspots::find($id);
         if ($Hotspots) {
-            $page_title = "Waterborne Hotspot  History";
+            $page_title = __("Waterborne Hotspot History");
             return view('public-health.hotspots.history', compact('page_title', 'Hotspots'));
         } else {
             abort(404);

@@ -67,7 +67,8 @@ class BuildingController extends Controller
     }
     public function index()
     {
-        $page_title = "Buildings";
+        $page_title = __("Buildings");
+
         $structure_type = StructureType::orderBy('type', 'asc')->pluck('type', 'id')->all();
         $water_sources = WaterSource::orderBy('source', 'asc')->pluck('source', 'id')->all();
 
@@ -94,7 +95,8 @@ class BuildingController extends Controller
      */
     public function create()
     {
-        $page_title = "Add Building";
+
+        $page_title = __("Add Building");
         $structure_type = StructureType::orderBy('type', 'asc')->pluck('type', 'id')->all();
         $water_source = WaterSource::orderBy('source', 'asc')->pluck('source', 'id')->all();
         // Capitalize the first letter of each word in the arrays
@@ -188,7 +190,8 @@ class BuildingController extends Controller
      */
     public function show($id)
     {
-        $page_title = "Building Details";
+        $page_title = __("Building Details");
+
         $building = Building::find($id);
         $statusLIH = LicStatus::getDescription($building->is_lih);
         $status = LicStatus::getDescription($building->is_lic);
@@ -225,7 +228,7 @@ class BuildingController extends Controller
     public function edit($id)
     {
 
-        $page_title = "Edit Building";
+        $page_title = __("Edit Building");
         $building = Building::find($id);
         if (!empty($building->Owners)) {
             $building->owner_name = $building->Owners->owner_name;
@@ -343,7 +346,7 @@ class BuildingController extends Controller
     {
         $building = Building::find($id);
         if ($building) {
-            $page_title = "Building History";
+            $page_title =  __("Building History");
             return view('building-info.buildings.history', compact('page_title', 'building'));
         } else {
             abort(404);
@@ -360,13 +363,13 @@ class BuildingController extends Controller
         $building = Building::find($id);
         if ($building) {
             if ($building->containments()->exists()) {
-                return redirect('building-info/buildings')->with('error', "Failed to delete Building, it is associated with Containment Information");
+                return redirect('building-info/buildings')->with('error', __("Failed to delete Building, it is associated with Containment Information"));
             } else {
                 $building->delete();
-                return redirect('building-info/buildings')->with('success', "Building Deleted Successfully");
+                return redirect('building-info/buildings')->with('success', __("Building Deleted Successfully"));
             }
         } else {
-            return redirect('building-info/buildings')->with('error', "Failed to Delete Building");
+            return redirect('building-info/buildings')->with('error', __("Failed to Delete Building"));
         }
     }
     public function export()
@@ -398,48 +401,56 @@ class BuildingController extends Controller
     public function listContainments($id)
     {
         $building = Building::find($id);
+
         if ($building) {
-            $title = "Containments Connected to Building: " . $building->bin;
+            $title = __('Containments Connected to Building') . ': ' . $building->bin;
             $containments = $building->containments->toArray();
 
-            $popContentsHtml = ""; // Initialize the variable here
-            if (empty($containments)) {
-                $popContentsHtml = "No Containment Found";
-            } else {
-                $popContentsHtml = $this->popUpContentHtml($containments);
-            }
+            $popContentsHtml = empty($containments)
+                ? __('No Containment Found.')
+                : $this->popUpContentHtml($containments);
+
             return [
                 'title' => $title,
                 'popContentsHtml' => $popContentsHtml,
             ];
         }
     }
+
     public function popUpContentHtml($containments)
     {
         $tbody = '<tbody>';
         foreach ($containments as $row1) {
-
             $tbody .= '<tr>';
             $tbody .= '<td>' . $row1['id'] . '</td>';
             $tbody .= '<td>' . $row1['containment_type']['type'] . '</td>';
-            $tbody .= '<td class="text-center"><a title="Containment Detail" href="' . action("Fsm\ContainmentController@show", ['containment' => $row1['id']]) . '" class="btn btn-info btn-sm mb-1">
-              <i class="fa fa-info-circle" aria-hidden="true"></i></a></td>';
+            $tbody .= '<td class="text-center">
+                        <a title="' . __('Containment Detail') . '"
+                           href="' . action("Fsm\ContainmentController@show", ['containment' => $row1['id']]) . '"
+                           class="btn btn-info btn-sm mb-1">
+                           <i class="fa fa-info-circle" aria-hidden="true"></i>
+                        </a>
+                       </td>';
             $tbody .= '</tr>';
         }
         $tbody .= '</tbody>';
+
         $thead = '<thead>';
         $thead .= '<tr>';
-    $thead .= '<th>Containment ID</th>';
-        $thead .= '<th>Containment Type</th>';
-        $thead .= '<th>Actions</th>';
+        $thead .= '<th>' . __('Containment ID') . '</th>';
+        $thead .= '<th>' . __('Containment Type') . '</th>';
+        $thead .= '<th>' . __('Actions') . '</th>';
         $thead .= '</tr>';
         $thead .= '</thead>';
+
         $html = '<table class="table table-bordered">';
         $html .= $thead;
         $html .= $tbody;
         $html .= '</table>';
+
         return $html;
     }
+
 
     public function getContainmentTypes(Request $request)
     {
@@ -466,21 +477,21 @@ class BuildingController extends Controller
     public function getSanitationSystem()
     {
         $building = Building::find(request()->bin);
-        
+
         $sewer_code = $building->sewer_code ?? "No Sewer Code";
         $drain_code = $building->drain_code ?? "No Drain Code";
-        $containment_ids = implode(',',$building->containments()->get()->pluck('id')->toArray()) ?? "No Containment Connected";  
+        $containment_ids = implode(',',$building->containments()->get()->pluck('id')->toArray()) ?? "No Containment Connected";
         $containment_infos = [];
         foreach($building->containments()->get() as $containment)
         {
             array_push($containment_infos, $containment->containmentType->type . " (" . $containment->id .") <br>");
         }
-        $containments = $containment_infos ? implode('',$containment_infos) : "No Containment Connected<br>"; 
+        $containments = $containment_infos ? implode('',$containment_infos) : "No Containment Connected<br>";
         $data = "Building Toilet Connection:" . $building->SanitationSystem->sanitation_system . "<br> Containment Info:<br>".  $containments . "Drain Code: " . $drain_code ."<br>Sewer Code:" . $sewer_code;
         if ($building) {
             return response()->json([
                 'success' => true,
-                'data' => $data, 
+                'data' => $data,
                 ]);
         }
 }

@@ -64,23 +64,23 @@ class WaterSupplysService
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['watersupplys.destroy', $model->code]]);
 
                 if (Auth::user()->can('Edit WaterSupply Network')) {
-                    $content .= '<a title="Edit" href="' . action("UtilityInfo\WaterSupplysController@edit", [$model->code]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-edit"></i></a> ';
+                    $content .= '<a title="' . __("Edit") . '" href="' . action("UtilityInfo\WaterSupplysController@edit", [$model->code]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-edit"></i></a> ';
                 }
 
                 if (Auth::user()->can('View WaterSupply Network')) {
-                    $content .= '<a title="Detail" href="' . action("UtilityInfo\WaterSupplysController@show", [$model->code]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-list"></i></a> ';
+                    $content .= '<a title="' . __("Detail") . '" href="' . action("UtilityInfo\WaterSupplysController@show", [$model->code]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-list"></i></a> ';
                 }
 
                 if (Auth::user()->can('View WaterSupply Network History')) {
-                    $content .= '<a title="History" href="' . action("UtilityInfo\WaterSupplysController@history", [$model->code]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-history"></i></a> ';
+                    $content .= '<a title="' . __("History") . '" href="' . action("UtilityInfo\WaterSupplysController@history", [$model->code]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-history"></i></a> ';
                 }
 
                 if (Auth::user()->can('Delete WaterSupply Network')) {
-                    $content .= '<a href="#" title="Delete"  class="delete btn btn-danger btn-sm mb-1"><i class="fa fa-trash"></i></a> ';
+                    $content .= '<a href="#" title="' . __("Delete") . '"  class="delete btn btn-danger btn-sm mb-1"><i class="fa fa-trash"></i></a> ';
                 }
 
                 if (Auth::user()->can('View WaterSupply Network On Map')) {
-                    $content .= '<a title="Map" href="' . action("MapsController@index", ['layer' => 'watersupply_network_layer', 'field' => 'code', 'val' => $model->code]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-map-marker"></i></a> ';
+                    $content .= '<a title="' . __("Map") . '" href="' . action("MapsController@index", ['layer' => 'watersupply_network_layer', 'field' => 'code', 'val' => $model->code]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-map-marker"></i></a> ';
                 }
                 $content .= \Form::close();
                 return $content;
@@ -101,20 +101,21 @@ class WaterSupplysService
 
         if (empty($code)) {
 
-            $waterSupplysTemp = DB::select("SELECT ST_AsText(geom) AS geom FROM watersupplys_temp");
-            $geom = ($waterSupplysTemp[0]->geom);
+            // $waterSupplysTemp = DB::select("SELECT ST_AsText(geom) AS geom FROM watersupplys_temp");
+            // $geom = ($waterSupplysTemp[0]->geom);
             $maxcode = WaterSupplys::withTrashed()->max('code');
-            $maxcode = str_replace('W', '', $maxcode);
+            $maxcode = str_replace('WS', '', $maxcode);
+            // $maxcode = (int)$maxcode; 
             $waterSupplys = new WaterSupplys();
             $waterSupplys->user_id = Auth::id();
-            $waterSupplys->code = 'W' . sprintf('%04d', $maxcode + 1);
+            $waterSupplys->code = 'WS' . sprintf('%06d', $maxcode + 1);
             $waterSupplys->road_code = $data['road_code'] ? $data['road_code'] : null;
             $waterSupplys->diameter = $data['diameter'] ? $data['diameter'] : null;
             $waterSupplys->length = $data['length'] ? $data['length'] : null;
             $waterSupplys->project_name = $data['project_name'] ? $data['project_name'] : null;
             $waterSupplys->type = $data['type'] ? $data['type'] : null;
             $waterSupplys->material_type = $data['material_type'] ? $data['material_type'] : null;
-            $waterSupplys->geom = $data['geom'] ? DB::raw("ST_Multi(ST_GeomFromText('" . $geom . "', 4326))") : null;
+            $waterSupplys->geom = $data['geom'] ? DB::raw("ST_Multi(ST_GeomFromText('" . $data['geom'] . "', 4326))") : null;
             $waterSupplys->save();
         } else {
 
@@ -142,7 +143,15 @@ class WaterSupplysService
         $code = $data['code'] ? $data['code'] : null;
         $length = $data['length'] ? $data['length'] : null;
         $project_name = $data['project_name'] ? $data['project_name'] : null;
-        $columns = ['Code', 'Road Code', 'Project Name', 'Type' , 'Material Type', 'Diameter (mm)', 'Length (m)'];
+        $columns = [
+            __('Code'),
+            __('Road Code'),
+            __('Project Name'),
+            __('Type'),
+            __('Material Type'),
+            __('Diameter (mm)'),
+            __('Length (m)'),
+        ];
 
         $query = WaterSupplys::select('code', 'road_code', 'project_name', 'type', 'material_type', 'diameter',  'length')
             ->whereNull('deleted_at');

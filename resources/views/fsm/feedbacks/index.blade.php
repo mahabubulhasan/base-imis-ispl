@@ -10,10 +10,10 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
     <div class="card-header">
         <a class="btn btn-info float-right" id="headingOne" type="button" data-toggle="collapse"
             data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-            Show Filter
+            {{__("Show Filter")}}
         </a>
         @can('Export Feedbacks')
-        <a href="{{ action('Fsm\FeedbackController@export') }}" id="export" class="btn btn-info">Export to CSV</a>
+        <a href="{{ action('Fsm\FeedbackController@export') }}" id="export" class="btn btn-info"> {{__("Export to CSV")}}</a>
         @endcan
     </div><!-- /.card-header -->
     <div class="card-body">
@@ -26,16 +26,15 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                             <div class="accordion-body">
                                 <form class="form-horizontal" id="filter-form">
                                     <div class="form-group row">
-                                        <label for="application_id" class="control-label col-md-2">Application
-                                            ID</label>
+                                        <label for="application_id" class="control-label col-md-2"> {{__("Application ID")}}</label>
                                         <div class="col-md-2">
-                                            <input type="text" class="form-control" id="application_id" placeholder="Application ID"
+                                            <input type="text" class="form-control" id="application_id" placeholder="{{__("Application ID")}}"
                                             oninput = "this.value = this.value.replace(/[^0-9]/g, ''); "/> <!-- Allow only numeric characters (0-9) -->
                                         </div>
-                                        <label for="ward_select" class="control-label col-md-2">Ward Number</label>
+                                        <label for="ward_select" class="control-label col-md-2"> {{__("Ward Number")}}</label>
                                         <div class="col-md-2">
                                             <select class="form-control" id="ward_select">
-                                                <option value="">Ward Number</option>
+                                                <option value=""> {{__("Ward Number")}}</option>
                                                 @foreach($wards as $key=>$value)
                                                 <option value="{{$key}}">{{$value}}</option>
                                                 @endforeach
@@ -44,18 +43,18 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                     </div>
         
                                     <div class="form-group row">
-                                        <label for="date_from" class="control-label col-md-2">Date From</label>
+                                        <label for="date_from" class="control-label col-md-2"> {{__("Date From")}}</label>
                                         <div class="col-md-2">
-                                            <input type="date" class="form-control" id="date_from" placeholder="Date From" onclick = 'this.showPicker()'/>
+                                            <input type="date" class="form-control" id="date_from" placeholder="{{__('Date From')}}" onclick = 'this.showPicker()'/>
                                         </div>
-                                        <label for="date_to" class="control-label col-md-2">Date To</label>
+                                        <label for="date_to" class="control-label col-md-2"> {{__("Date To")}}</label>
                                         <div class="col-md-2">
-                                            <input type="date" class="form-control" id="date_to" placeholder="Date To" onclick = 'this.showPicker()'/>
+                                            <input type="date" class="form-control" id="date_to" placeholder="{{__('Date To')}}" onclick = 'this.showPicker()'/>
                                         </div>
                                     </div>
                                     <div class="card-footer text-right">
-                                        <button type="submit" class="btn btn-info ">Filter</button>
-                                        <button id="reset-filter" type="reset" class="btn btn-info reset">Reset</button>
+                                        <button type="submit" class="btn btn-info "> {{__("Filter")}}</button>
+                                        <button id="reset-filter" type="reset" class="btn btn-info reset"> {{__("Reset")}}</button>
                                     </div>
                                 </form>
                             </div>
@@ -76,10 +75,10 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
             <table id="data-table" class="table table-bordered table-striped dtr-inline" width="100%">
             <thead>
                 <tr>
-                    <th>Application ID</th>
-                    <th>Ward Number</th>
-                    <th>Feedback Date</th>
-                    <th>Actions</th>
+                    <th>{{__("Application ID")}}</th>
+                    <th>{{__("Ward Number")}}</th>
+                    <th>{{__("Feedback Date")}}</th>
+                    <th>{{__("Actions")}}</th>
 
                 </tr>
             </thead>
@@ -135,13 +134,14 @@ $(function() {
             var form = $(this).closest("form");
             event.preventDefault();
             Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+               title: "{{__('Are you sure?')}}",
+                    text: "{!! __('You won\'t be able to revert this!') !!}",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: "{{ __('Yes, delete it!') }}",
+                    cancelButtonText: '{{ __('Cancel') }}',
             }).then((result) => {
                 if (result.isConfirmed) {
                     form.submit();
@@ -155,13 +155,13 @@ $(function() {
         if ((date_from !== '') && (date_to === '')) {
 
             Swal.fire({
-            title: 'Date To is Required',
-            text: "Please Select Date To!",
-            icon: 'warning',
-            showCancelButton: false,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Close'
+                title: "{{ __('Date To is Required') }}",
+                        text: "{{ __('Please Select Date To!') }}",
+                        icon: 'warning',
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: "{{ __('Close') }}"
         })
 
             return false;
@@ -169,13 +169,14 @@ $(function() {
         if ((date_from === '') && (date_to !== '')) {
 
                     Swal.fire({
-                    title: 'Date From is Required',
-                    text: "Please Select Date From!",
-                    icon: 'warning',
-                    showCancelButton: false,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Close'
+                        title:"{{ __('Date From is Required') }}",
+                        text: "{{ __('Please Select Date From!') }}",
+                        icon: 'warning',
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: "{{ __('Close') }}"
+
                 })
 
                     return false;
@@ -183,13 +184,13 @@ $(function() {
 
                 if (date_from !== '' && date_to !== '' && date_to <= date_from) {
                     Swal.fire({
-                        title: 'Invalid Date Range',
-                        text: "Date To cannot be Before Date From!",
+                        title: "{{ __('Invalid Date Range') }}",
+                        text:"{{ __('Date To cannot be Before Date From!') }}" ,
                         icon: 'warning',
                         showCancelButton: false,
                         confirmButtonColor: '#3085d6',
                         cancelButtonColor: '#d33',
-                        confirmButtonText: 'Close'
+                        confirmButtonText: "{{ __('Close') }}"
                     });
 
                     return false;

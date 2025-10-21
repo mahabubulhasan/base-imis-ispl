@@ -32,7 +32,7 @@ class BuildingSearchController extends Controller
         return response()->json([
             'status' => 200,
             'code' => 'Fetched',
-            'message' => 'User Records',
+            'message' => __('User Records'),
             'data' =>  $similarBuildings,
             'error' => null
         ]);
@@ -44,7 +44,7 @@ class BuildingSearchController extends Controller
         return response()->json([
             'status' => 200,
             'code' => 'Fetched',
-            'message' => 'User Records',
+            'message' => __('User Records'),
             'data' =>  $similarBuildings,
             'error' => null
         ]);
@@ -55,7 +55,7 @@ class BuildingSearchController extends Controller
         return response()->json([
             'status' => 200,
             'code' => 'Fetched',
-            'message' => 'User Records',
+            'message' => __('User Records'),
             'data' =>  $similarBuildings,
             'error' => null
         ]);
@@ -67,7 +67,7 @@ class BuildingSearchController extends Controller
         return response()->json([
             'status' => 200,
             'code' => 'Fetched',
-            'message' => 'User Records',
+            'message' => __('User Records'),
             'data' =>  $similarBuildings,
             'error' => null
         ]);
@@ -78,7 +78,7 @@ class BuildingSearchController extends Controller
         return response()->json([
             'status' => 200,
             'code' => 'Fetched',
-            'message' => 'User Records',
+            'message' => __('User Records'),
             'data' =>  $similarBuildings,
             'error' => null
         ]);
@@ -89,7 +89,7 @@ class BuildingSearchController extends Controller
         return response()->json([
             'status' => 200,
             'code' => 'Fetched',
-            'message' => 'User Records',
+            'message' => __('User Records'),
             'data' =>  $similarBuildings,
             'error' => null
         ]);

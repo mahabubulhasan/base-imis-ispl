@@ -39,22 +39,46 @@ class BuildContainExport implements FromView, WithTitle, WithEvents
                 $bufferDisancePolygon = 0;
             }
 
-        // Construct SQL query to retrieve buildings and containment relationship within the buffered area
+            // Initialize the results array to hold building results
+            $buildingResults = [];
 
-        $buildingQuery = "SELECT bc.bin, bc.containment_id
-            FROM building_info.build_contains bc 
-            JOIN building_info.buildings b ON bc.bin = b.bin AND b.deleted_at IS NULL AND bc.bin IS NOT NULL AND bc.containment_id IS NOT NULL
-            WHERE ST_Intersects(
-                ST_Buffer(ST_GeomFromText('" . $this->geom . "', 4326)::GEOGRAPHY, " . $bufferDisancePolygon . ")::GEOMETRY,
-                b.geom
-            )
-            AND bc.deleted_at IS NULL
-        	ORDER BY bc.bin ASC";
+            // Ensure geometries are always in an array, whether it's a single value or an array
+            $geometries = is_array($this->geom) ? $this->geom : [$this->geom];
 
-            $buildingResults = DB::select($buildingQuery);
+            // Iterate over each geometry (polygon)
+            foreach ($geometries as $polygon) {
+                // Clean up the polygon geometry string
+                $polygon = trim($polygon);
 
-        return view('exports.build-contain', compact('buildingResults'));
-    }
+                // Construct SQL query to retrieve buildings and containment relationship within the buffered area
+                $buildingQuery = "
+                    SELECT bc.bin, bc.containment_id
+                    FROM building_info.build_contains bc
+                    JOIN building_info.buildings b ON bc.bin = b.bin
+                        AND b.deleted_at IS NULL
+                        AND bc.bin IS NOT NULL
+                        AND bc.containment_id IS NOT NULL
+                    WHERE ST_Intersects(
+                            ST_Buffer(ST_GeomFromText(:polygon, 4326)::GEOGRAPHY, :bufferDistancePolygon)::GEOMETRY,
+                            b.geom
+                        )
+                    AND bc.deleted_at IS NULL
+                    ORDER BY bc.bin ASC
+                ";
+
+                // Execute the query using parameter binding for the geometry and buffer distance
+                $results = DB::select(DB::raw($buildingQuery), [
+                    'polygon' => $polygon, // Bind the current geometry
+                    'bufferDistancePolygon' => $bufferDisancePolygon, // Bind the buffer distance
+                ]);
+
+                // Merge the results from each query into the final results array
+                $buildingResults = array_merge($buildingResults, $results);
+            }
+
+            // Return the view with the building results
+            return view('exports.build-contain', compact('buildingResults'));
+        }
 
       /**
      * Registers events for the export.

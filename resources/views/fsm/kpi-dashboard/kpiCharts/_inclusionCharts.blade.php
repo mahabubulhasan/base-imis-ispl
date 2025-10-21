@@ -1,5 +1,5 @@
 @include('layouts.dashboard.chart-card',[
-    'card_title' => "Inclusion",
+    'card_title' => __("Inclusion"),
     'export_chart_btn_id' => "exportinclusionCharts",
     'canvas_id' => "inclusionCharts"
 ])

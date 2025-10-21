@@ -1,5 +1,5 @@
 @include('layouts.dashboard.chart-card',[
-    'card_title' => " Comparison of Emptying Requests from Low Income and Other Communities",
+    'card_title' => __("Comparison of Emptying Requests from Low Income and Other Communities"),
     'export_chart_btn_id' => "exportnumberOfEmptyingbyMonthsChart",
     'canvas_id' => "numberOfEmptyingbyMonthsChart"
 ])
@@ -20,7 +20,7 @@ var myChart = new Chart(ctx, {
         },
         @endforeach
     ]
- 
+
 },
   options: {
     animation:{
@@ -34,7 +34,7 @@ var myChart = new Chart(ctx, {
       },
     scales: {
       xAxes: [{
-           
+
            scaleLabel: {
                    display: true, // Enable the scale label
                    labelString: 'Month' // The label text
@@ -44,7 +44,7 @@ var myChart = new Chart(ctx, {
             stacked: true,
             ticks: {
                 beginAtZero: true,
-             
+
                 userCallback: function(label, index, labels) {
                      // when the floored value is the same as the value we have a whole number
                      if (Math.floor(label) === label) {

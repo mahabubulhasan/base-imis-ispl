@@ -32,7 +32,8 @@ class BuildingDashboardController extends Controller
 
     public function index()
     { {
-            $page_title = 'Building Dashboard';
+
+            $page_title = __("Building Dashboard");
             $buildingCount = Building::whereNull('deleted_at')->count();
 
 
@@ -51,6 +52,20 @@ class BuildingDashboardController extends Controller
 
             //sanitation systems
             $containmentCount = Containment::whereNull('deleted_at')->count();
+            $sanitationSystemOther = DB::table('building_info.buildings as b')
+            ->join('building_info.sanitation_systems as s', 'b.sanitation_system_id', '=', 's.id')
+            ->where('s.dashboard_display', false)
+            ->whereNull('b.deleted_at')
+            ->count();
+            $sanitationSystemOthername = $sanitationSystemNames = DB::table('building_info.buildings as b')
+            ->join('building_info.sanitation_systems as s', 'b.sanitation_system_id', '=', 's.id')
+            ->where('s.dashboard_display', false)
+            ->where('s.id', '!=', 11) // Exclude sanitation_systems.id == 12
+            ->whereNull('b.deleted_at')
+            ->distinct()
+            ->select('s.sanitation_system')
+            ->get();
+
 
             if (Auth::user()->hasRole('Service Provider - Admin') || Auth::user()->hasRole('Service Provider - Help Desk')) {
                 $whereRawEmptyingsServiceProvider = "emptyings.service_provider_id = " . Auth::user()->service_provider_id;
@@ -253,7 +268,10 @@ class BuildingDashboardController extends Controller
                 'sanitationSystemsOthers',
                 'institutionBuildingCount',
                 'institutionNames',
-                'educationBuildingCount'
+                'educationBuildingCount',
+                'sanitationSystemOther',
+                'sanitationSystemOthername'
+
             ));
         }
     }

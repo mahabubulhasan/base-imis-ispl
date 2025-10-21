@@ -39,11 +39,45 @@ class BuildingsExport implements FromView, WithTitle, WithEvents
         } else {
                 $bufferDisancePolygon = 0;
         }
+
         // Construct SQL query to retrieve building data within the buffered polygon
-        $buildingQuery = "Select * from fnc_getBufferPolygonBuildings( ST_GeomFromText(" . "'" . "$this->geom" . "'" . ",4326), $bufferDisancePolygon) ;";
-   
-        $buildingResults = DB::select($buildingQuery);
+        
+        $allBuildingResults = []; // Array to store results
+
+        if (is_array($this->geom)) {
+            foreach ($this->geom as $polygon) {
+                $buildingQuery = "SELECT * FROM fnc_getBufferPolygonBuildings(ST_GeomFromText('" . $polygon . "', 4326), $bufferDisancePolygon);";
+
+                $results = DB::select($buildingQuery); // Execute the query
+            
+               // Merge the results into $allBuildingResults
+               $allBuildingResults = array_merge($allBuildingResults, $results);
+            }
+            $buildingResults = [];
+
+            foreach ($allBuildingResults as $building) {
+                $type = $building->structype;
     
+                if (!isset($buildingResults[$type])) {
+                    // Store the first occurrence as an object
+                    $buildingResults[$type] = clone $building; 
+                } else {
+                    // Aggregate numeric fields
+                    foreach ($building as $key => $value) {
+                        if ($key !== 'structype' && is_numeric($value)) {
+                            $buildingResults[$type]->$key += $value;
+                        }
+                    }
+                }
+            }
+    
+            $buildingResults = array_values($buildingResults);
+        } else {
+            // If $this->geom is a single string
+            $buildingQuery = "SELECT * FROM fnc_getBufferPolygonBuildings(ST_GeomFromText('" . $this->geom . "', 4326), $bufferDisancePolygon);";
+            $buildingResults = DB::select($buildingQuery);
+        }
+
             $rows = array();
             $total = 0;
             $total_sewer_network = 0;

@@ -20,7 +20,7 @@ class SewerConnectionController extends Controller
 
     public function index()
     {
-        $page_title = "Sewer Connection";
+        $page_title = __("Sewer Connection");
         return view('sewer-connection/index', compact('page_title'));
     }
 
@@ -51,11 +51,11 @@ class SewerConnectionController extends Controller
         if ($sewerconnection) {
 
                 $sewerconnection->delete();
-                return redirect('sewerconnection/sewerconnection')->with('success','Sewer connection deleted Successfully');
+                return redirect('sewerconnection/sewerconnection')->with('success',__('Sewer connection deleted Successfully.'));
 
 
         } else {
-            return redirect('sewerconnection/sewerconnection')->with('error','Failed to delete Sewer connection');
+            return redirect('sewerconnection/sewerconnection')->with('error',__('Failed to delete Sewer connection.'));
         }
     }
 

@@ -58,10 +58,10 @@ class WaterSamplesRequest extends FormRequest
      public function messages()
     {
         return [
-            'sample_date.required' => 'The Sample Date is required.',
-            'sample_location.required' => 'The Sample Location is required.',
-            'water_coliform_test_result.required' => 'The Water Coliform Test Result is required.',
-            'geom.required' => 'The Latitude and Longitude is required.',
+            'sample_date.required' => __('The Sample Date is required.'),
+            'sample_location.required' => __('The Sample Location is required.'),
+            'water_coliform_test_result.required' => __('The Water Coliform Test Result is required.'),
+            'geom.required' => __('The Latitude and Longitude is required.'),
             ];
     }
 }

@@ -66,7 +66,7 @@ class EmptyingRequest extends FormRequest
                          'min:0',
                          function ($attribute, $value, $fail) use ($containmentSize) {
                              if ($value > $containmentSize) {
-                                 $fail("The Sludge Volume (m³) should not be greater than the selected containment size, which is " . ($containmentSize ?: '0') . " m³.");
+                                 $fail(__("The Sludge Volume (m³) should not be greater than the selected containment size, which is") . ($containmentSize ?: '0') . " m³.");
                              }
                          },
                      ],
@@ -80,8 +80,10 @@ class EmptyingRequest extends FormRequest
                      'no_of_trips' => 'required|integer|min:1',
                      'receipt_number' => 'required',
                      'total_cost' => 'required|numeric|min:0',
-                     'house_image' => 'required|mimes:jpeg,jpg|max:5120',
-                     'receipt_image' => 'required|mimes:jpeg,jpg|max:5120',
+                     'house_image' => $this->isMethod('post') ? 'required|mimes:jpeg,jpg|max:5120' : 'nullable',
+                     'receipt_image' => $this->isMethod('post') ? 'required|mimes:jpeg,jpg|max:5120' : 'nullable',
+                 
+
                  ];
              default:
                  break;
@@ -98,40 +100,40 @@ class EmptyingRequest extends FormRequest
     public function messages()
     {
         return [
-            'service_receiver_name.required' => 'The Service Receiver Name is required.',
-            'service_receiver_gender.required' => 'The Service Receiver Gender is required.',
-            'service_receiver_contact.required' => 'The Service Receiver Contact Number is required.',
-            'service_receiver_contact.integer' => 'The Service Receiver Contact Number must be an integer.',
-            'service_receiver_contact.min' => 'The Service Receiver Contact Number must be positive number.',
-            'emptying_reason.required' => 'The Reason for Emptying  is required.',
-            'volume_of_sludge.required' => 'The Sludge Volume (m³) is required.',
-            'volume_of_sludge.numeric' => 'The Sludge Volume (m³) must be numeric.',
-            'volume_of_sludge.min' => 'The Sludge Volume (m³) Contact Number Plate must be at least 0.',
-            'desludging_vehicle_id.required' => 'The Desludging Vehicle Number Plate is required.',
-            'desludging_vehicle_id.integer' => 'The Desludging Vehicle Number Plate must be an integer.',
-            'treatment_plant_id.required' => 'The Disposal Place is required.',
-            'treatment_plant_id.integer' => 'The Disposal Place must be an integer.',
-            'driver.required' => 'The Driver Name is required.',
-            'emptier1.required' => 'The Emptier 1 Name is required.',
-            'emptier1.integer' => 'The Emptier 1 Name is invalid.',
-            'emptier2.integer' => 'The Emptier 2 Name is invalid.',
-            'start_time.required' => 'The Start Time is required.',
-            'end_time.required' => 'The End Time is required.',
-            'end_time.after' => 'The End Time must be after Start Time.',
-            'no_of_trips.required' => 'The No. of Trips is required.',
-            'no_of_trips.integer' => 'The No. of Trips must be an integer.',
-            'no_of_trips.min' => 'The No. of Trips must be at least 1.',
-            'receipt_number.required' => 'The Receipt Number is required.',
-            'total_cost.required' => 'The Total Cost is required.',
-            'total_cost.numeric' => 'The Total Cost must be numeric.',
-            'house_image.required' => 'The House Image is required.',
-            'house_image.file' => 'The House Image must be an image file.',
-            'house_image.mimes' => 'The House Image must be a file of type: jpeg, jpg.',
-            'house_image.max' => 'The House Image should not be greater than 5 MB.',
-            'receipt_image.max' => 'The Receipt Image should not be greater than 5 MB.',
-            'receipt_image.required' => 'The Receipt Image is required.',
-            'receipt_image.file' => 'The Receipt Image must be an image file.',
-            'receipt_image.mimes' => 'The Receipt Image must be a file of type: jpeg, jpg.',
+            'service_receiver_name.required' => __('The Service Receiver Name is required.'),
+            'service_receiver_gender.required' => __('The Service Receiver Gender is required.'),
+            'service_receiver_contact.required' => __('The Service Receiver Contact Number is required.'),
+            'service_receiver_contact.integer' => __('The Service Receiver Contact Number must be an integer.'),
+            'service_receiver_contact.min' => __('The Service Receiver Contact Number must be positive number.'),
+            'emptying_reason.required' => __('The Reason for Emptying is required.'),
+            'volume_of_sludge.required' => __('The Sludge Volume (m³) is required.'),
+            'volume_of_sludge.numeric' => __('The Sludge Volume (m³) must be numeric.'),
+            'volume_of_sludge.min' => __('The Sludge Volume (m³) Contact Number Plate must be at least 0.'),
+            'desludging_vehicle_id.required' => __('The Desludging Vehicle Number Plate is required.'),
+            'desludging_vehicle_id.integer' => __('The Desludging Vehicle Number Plate must be an integer.'),
+            'treatment_plant_id.required' => __('The Disposal Place is required.'),
+            'treatment_plant_id.integer' => __('The Disposal Place must be an integer.'),
+            'driver.required' => __('The Driver Name is required.'),
+            'emptier1.required' => __('The Emptier 1 Name is required.'),
+            'emptier1.integer' => __('The Emptier 1 Name is invalid.'),
+            'emptier2.integer' => __('The Emptier 2 Name is invalid.'),
+            'start_time.required' => __('The Start Time is required.'),
+            'end_time.required' => __('The End Time is required.'),
+            'end_time.after' => __('The End Time must be after Start Time.'),
+            'no_of_trips.required' => __('The No. of Trips is required.'),
+            'no_of_trips.integer' => __('The No. of Trips must be an integer.'),
+            'no_of_trips.min' => __('The No. of Trips must be at least 1.'),
+            'receipt_number.required' => __('The Receipt Number is required.'),
+            'total_cost.required' => __('The Total Cost is required.'),
+            'total_cost.numeric' => __('The Total Cost must be numeric.'),
+            'house_image.required' => __('The House Image is required.'),
+            'house_image.file' => __('The House Image must be an image file.'),
+            'house_image.mimes' => __('The House Image must be a file of type: jpeg, jpg.'),
+            'house_image.max' => __('The House Image should not be greater than 5 MB.'),
+            'receipt_image.max' => __('The Receipt Image should not be greater than 5 MB.'),
+            'receipt_image.required' => __('The Receipt Image is required.'),
+            'receipt_image.file' => __('The Receipt Image must be an image file.'),
+            'receipt_image.mimes' => __('The Receipt Image must be a file of type: jpeg, jpg.'),
         ];
     }
 

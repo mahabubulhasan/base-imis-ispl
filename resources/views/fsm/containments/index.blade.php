@@ -12,14 +12,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
             <a class="btn btn-info float-right" id="headingOne" type="button" data-toggle="collapse" data-target="#collapseOne"
                 aria-expanded="true" aria-controls="collapseOne">
-                Show Filter
+                {{ __('Show Filter') }}
             </a>
             @can('Export Containments')
-                <a href="#" id="export" class="btn btn-info">Export to CSV</a>
-                <a href="#" id="export-building-containment" class="btn btn-info">Export Buildings-Containments to CSV</a>
+                <a href="#" id="export" class="btn btn-info">{{ __("Export to CSV") }}</a>
+                <a href="#" id="export-building-containment" class="btn btn-info">{{ __("Export Buildings-Containments to CSV") }}</a>
 
-                <a href="#" id="export-shp" class="btn btn-info">Export to Shape File</a>
-                <a href="#" id="export-kml" class="btn btn-info">Export to KML</a>
+                <a href="#" id="export-shp" class="btn btn-info">{{ __("Export to Shape File") }}</a>
+                <a href="#" id="export-kml" class="btn btn-info">{{ __("Export to KML") }}</a>
             @endcan
         </div><!-- /.card-header -->
         <div class="card-body">
@@ -32,27 +32,26 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                 <div class="accordion-body">
                                     <form class="form-horizontal" id="filter-form">
                                         <div class="form-group row">
-                                            <label for="containment_id" class="control-label col-md-2">Containment
-                                                ID</label>
+                                            <label for="containment_id" class="control-label col-md-2">{{ __("Containment ID") }}</label>
+
                                             <div class="col-md-2">
                                                 <input type="text" class="form-control" id="containment_id"
-                                                    placeholder="Containment ID"
+                                                    placeholder="{{ __("Containment ID") }}"
                                                     oninput = "this.value = this.value.replace(/[^a-zA-Z0-9]/g, ''); " />
                                                 <!-- Allow only alphabetic and numeric characters -->
                                             </div>
 
-                                            <label for="volume_min" class="control-label col-md-2">Containment Volume From
-                                                (m³)</label>
+                                            <label for="volume_min" class="control-label col-md-2">{{ __("Containment Volume From (m³)") }}</label>
                                             <div class="col-md-2">
                                                 <input type="text" class="form-control" id="volume_min" name="volume_min"
-                                                    placeholder="Containment Volume From (m³)"
+                                                    placeholder="{{ __("Containment Volume From (m³)") }}"
                                                     oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1')" />
                                             </div>
-                                            <label for="volume_max" class="control-label col-md-2">Containment Volume To
-                                                (m³)</label>
+                                            <label for="volume_max" class="control-label col-md-2">{{ __("Containment Volume To (m³)") }}</label>
+
                                             <div class="col-md-2">
                                                 <input type="text" class="form-control" id="volume_max" name="volume_max"
-                                                    placeholder="Containment Volume To(m³)"
+                                                    placeholder="{{ __("Containment Volume To (m³)") }}"
                                                     oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1')" />
                                             </div>
 
@@ -60,11 +59,11 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
                                         </div>
                                         <div class="form-group row">
-                                            <label for="containment_location" class="control-label col-md-2">Containment
-                                                Location</label>
+                                            <label for="containment_location" class="control-label col-md-2">{{ __("Containment Location") }}
+                                           </label>
                                             <div class="col-md-2">
                                                 <select class="form-control" id="containment_location">
-                                                    <option value="">Containment Location</option>
+                                                    <option value="">{{ __("Containment Location") }}</option>
                                                     @foreach ($containmentLocations as $key => $value)
                                                         <option value="{{ $value }}">{{ $value }}</option>
                                                     @endforeach
@@ -73,74 +72,74 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
                                             <label for="
                                             "
-                                                class="control-label col-md-2">Containment
-                                                Type</label>
+                                                class="control-label col-md-2">{{ __("Containment Type") }}
+                                                </label>
                                             <div class="col-md-2">
                                                 <select class="form-control" id="type_id">
-                                                    <option value="">Containment Type</option>
+                                                    <option value="">{{ __("Containment Type") }}</option>
                                                     @foreach ($containmentTypes as $key => $value)
                                                         <option value="{{ $key }}">{{ $value }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
 
-                                            <label for="emptying_status" class="control-label col-md-2">Emptying
-                                                Status</label>
+                                            <label for="emptying_status" class="control-label col-md-2">{{ __("Emptying Status") }}
+                                                </label>
                                             <div class="col-md-2">
                                                 <select class="form-control" id="emptying_status">
-                                                    <option value="">Emptying Status</option>
+                                                    <option value="">{{ __("Emptying Status") }}</option>
                                                     <option value="TRUE">Yes</option>
                                                     <option value="FALSE">No</option>
                                                 </select>
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <label for="septic_compliance" class="control-label col-md-2">Septic Tank
-                                                Standard Compliance </label>
+                                            <label for="septic_compliance" class="control-label col-md-2">{{ __("Septic Tank Standard Compliance") }}
+                                                 </label>
                                             <div class="col-md-2">
                                                 <select class="form-control" id="septic_compliance">
-                                                    <option value="">Septic Tank Standard Compliance</option>
+                                                    <option value="">{{ __("Septic Tank Standard Compliance") }}</option>
                                                     <option value="true">Yes</option>
                                                     <option value="false">No</option>
                                                 </select>
                                             </div>
-                                            <label for="date_from" class="control-label col-md-2">Containment Construction
-                                                Date From</label>
+                                            <label for="date_from" class="control-label col-md-2">{{ __("Containment Construction Date From") }}
+                                                </label>
                                             <div class="col-md-2">
                                                 <input type="date" class="form-control date" id="date_from"
-                                                    placeholder="Date From" onclick = 'this.showPicker();' />
+                                                    placeholder="{{ __("Containment Construction Date From") }}" onclick = 'this.showPicker();' />
                                             </div>
-                                            <label for="date_to" class="control-label col-md-2">Containment Construction
-                                                Date To</label>
+                                            <label for="date_to" class="control-label col-md-2">{{ __("Containment Construction Date To") }}
+                                               </label>
                                             <div class="col-md-2">
                                                 <input type="date" class="form-control date" id="date_to"
-                                                    placeholder="Date To" onclick = 'this.showPicker();' />
+                                                    placeholder="{{ __("Containment Construction Date To") }}" onclick = 'this.showPicker();' />
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
-                                            <label for="house_number" class="control-label col-md-2">House Number of
-                                                Connected Building</label>
+                                            <label for="house_number" class="control-label col-md-2">{{ __("House Number of Connected Building") }}
+                                                </label>
                                             <div class="col-md-2">
                                                 <input type="text" class="form-control" id="house_number"
-                                                    placeholder="House Number of Connected Building"
+                                                    placeholder="{{ __("House Number of Connected Building") }}"
                                                     oninput = "this.value = this.value.replace(/[^a-zA-Z0-9-]/g, ''); " />
                                                 <!-- Allow only alphabetic characters, numbers, and the hyphen (-) -->
                                             </div>
 
-                                            <label for="bin" class="control-label col-md-2">BIN of Connected
-                                                Building</label>
+                                            <label for="bin" class="control-label col-md-2">{{ __("BIN of Connected  Building") }}
+                                               </label>
                                             <div class="col-md-2">
                                                 <input type="text" class="form-control" id="bin"
-                                                    placeholder="BIN of Connected Building"
+                                                    placeholder="{{ __("BIN of Connected  Building") }}"
                                                     oninput = "this.value = this.value.replace(/[^a-zA-Z0-9]/g, ''); " />
                                                 <!-- Allow only alphabetic and numeric characters -->
                                             </div>
                                         </div>
                                         <div class="card-footer text-right">
-                                            <button type="submit" class="btn btn-info ">Filter</button>
+                                            <button type="submit" class="btn btn-info ">{{ __("Filter") }}</button>
                                             <button type="reset" id="reset-filter"
-                                                class="btn btn-info reset">Reset</button>
+                                                class="btn btn-info reset">{{ __("Reset") }}</button>
                                         </div>
                                     </form>
                                 </div>
@@ -161,11 +160,11 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 <table id="data-table" class="table table-bordered table-striped dtr-inline" width="100%">
                     <thead>
                         <tr>
-                            <th>Containment ID</th>
-                            <th>Containment Type</th>
-                            <th>Containment Volume (m³)</th>
-                            <th>Containment Location</th>
-                            <th>Actions</th>
+                            <th>{{ __("Containment ID") }}</th>
+                            <th>{{ __("Containment Type") }}</th>
+                            <th>{{ __("Containment Volume (m³)") }}</th>
+                            <th>{{ __("Containment Location") }}</th>
+                            <th>{{ __("Actions") }}</th>
 
                         </tr>
                     </thead>
@@ -251,13 +250,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     var form = $(this).closest("form");
                     event.preventDefault();
                     Swal.fire({
-                        title: 'Are you sure?',
-                        text: "You won't be able to revert this!",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, delete it!'
+                    title: "{{__('Are you sure?')}}",
+                    text: "{!! __('You won\'t be able to revert this!') !!}",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: "{{ __('Yes, delete it!') }}",
+                    cancelButtonText: '{{ __('Cancel') }}',
                     }).then((result) => {
                         if (result.isConfirmed) {
                             form.submit();
@@ -286,13 +286,13 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     if ((date_from !== '') && (date_to === '')) {
 
                         Swal.fire({
-                            title: 'Date To is Required',
-                            text: "Please Select Date To!",
+                            title:'{{ __('Date To is Required') }}',
+                            text: '{{ __('Please Select Date To!') }}',
                             icon: 'warning',
                             showCancelButton: false,
                             confirmButtonColor: '#3085d6',
                             cancelButtonColor: '#d33',
-                            confirmButtonText: 'Close'
+                            confirmButtonText: "{{__('Close')}}"
                         })
 
                         return false;
@@ -300,13 +300,13 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     if ((date_from === '') && (date_to !== '')) {
 
                         Swal.fire({
-                            title: 'Date From is Required',
-                            text: "Please Select Date From!",
+                            title:'{{ __('Date From is Required') }}',
+                            text: '{{ __('Please Select Date From!') }}',
                             icon: 'warning',
                             showCancelButton: false,
                             confirmButtonColor: '#3085d6',
                             cancelButtonColor: '#d33',
-                            confirmButtonText: 'Close'
+                            confirmButtonText: "{{__('Close')}}"
                         })
 
                         return false;
@@ -314,13 +314,13 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
                     if (date_from !== '' && date_to !== '' && date_to <= date_from) {
                         Swal.fire({
-                            title: 'Invalid Date Range',
-                            text: "Date To cannot be Before Date From!",
+                            title:'{{ __('Invalid Date Range') }}',
+                            text: '{{ __('Date To cannot be Before Date From!') }}',
                             icon: 'warning',
                             showCancelButton: false,
                             confirmButtonColor: '#3085d6',
                             cancelButtonColor: '#d33',
-                            confirmButtonText: 'Close'
+                            confirmButtonText: '{{__('Close')}}'
                         });
 
                         return false;
@@ -332,13 +332,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
                     if ((volumeMin === '') && (volumeMax !== '')) {
                         Swal.fire({
-                            title: 'Minimum Volume is Required',
-                            text: "Please enter the Minimum Volume!",
+                            title:'{{ __('Minimum Volume is Required') }}',
+                            text: '{{ __('Please enter the Minimum Volume!') }}',
                             icon: 'warning',
                             showCancelButton: false,
                             confirmButtonColor: '#3085d6',
                             cancelButtonColor: '#d33',
-                            confirmButtonText: 'Close'
+                            confirmButtonText: "{{__('Close')}}"
+
                         });
 
                         return false;
@@ -346,13 +347,13 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
                     if ((volumeMax === '') && (volumeMin !== '')) {
                         Swal.fire({
-                            title: 'Maximum Volume is Required',
-                            text: "Please enter the Maximum Volume!",
+                            title: '{{ __("Maximum Volume is Required") }}',
+                            text: '{{ __("Please enter the Maximum Volume!") }}',
                             icon: 'warning',
                             showCancelButton: false,
                             confirmButtonColor: '#3085d6',
                             cancelButtonColor: '#d33',
-                            confirmButtonText: 'Close'
+                            confirmButtonText: "{{__('Close')}}"
                         });
 
                         return false;
@@ -361,13 +362,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     if (volumeMin !== '' && volumeMax !== '' && parseFloat(volumeMax) <= parseFloat(
                             volumeMin)) {
                         Swal.fire({
-                            title: 'Invalid Volume Range',
-                            text: "Maximum Volume must be greater than Minimum Volume!",
+                            title: '{{ __("Invalid Volume Range") }}',
+                            text: '{{ __("Maximum Volume must be greater than Minimum Volume!") }}',
+
                             icon: 'warning',
                             showCancelButton: false,
                             confirmButtonColor: '#3085d6',
                             cancelButtonColor: '#d33',
-                            confirmButtonText: 'Close'
+                            confirmButtonText: "{{__('Close')}}"
                         });
 
                         return false;
@@ -376,13 +378,13 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
                     if (volumeMin !== '' && parseFloat(volumeMin) < 0.1) {
                         Swal.fire({
-                            title: 'Invalid Minimum Volume',
-                            text: "Minimum Volume must be at least 0.1 and cannot be 0!",
+                            title: '{{ __("Invalid Minimum Volume") }}',
+                            text: '{{__("Minimum Volume must be at least 0.1 and cannot be 0!")}}',
                             icon: 'warning',
                             showCancelButton: false,
                             confirmButtonColor: '#3085d6',
                             cancelButtonColor: '#d33',
-                            confirmButtonText: 'Close'
+                            confirmButtonText: "{{__('Close')}}",
                         });
 
                         return false;

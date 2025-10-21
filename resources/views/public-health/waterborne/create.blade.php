@@ -6,7 +6,7 @@
 @include('layouts.components.error-alert')
 <div class="card card-info">
 	{!! Form::open(['url' => 'publichealth/waterborne', 'class' => 'form-horizontal']) !!}
-		@include('public-health/waterborne.partial-form', ['submitButtomText' => 'Save'])
+		@include('public-health/waterborne.partial-form', ['submitButtomText' => __('Save')])
 	{!! Form::close() !!}
 </div><!-- /.card -->
 @stop

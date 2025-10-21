@@ -38,7 +38,7 @@ class CtptUserController extends Controller
     public function index()
     {
 
-        $page_title = "PT Users Log";
+        $page_title = __("PT Users Log");
         $name = Ctpt::pluck('name');
         return view('fsm.ctpt-users.index', compact('page_title', 'name'));
     }
@@ -55,7 +55,7 @@ class CtptUserController extends Controller
      */
     public function create()
     {
-        $page_title = "Add PT Users Log";
+        $page_title = __("Add PT Users Log");
         $ctptData = ctpt::where('status', true)
             ->where('type', 'Public Toilet')
             ->get(['id', 'name'])
@@ -91,7 +91,7 @@ class CtptUserController extends Controller
     {
         $info = CtptUsers::find($id);
         if ($info) {
-            $page_title = "PT Users Log Details";
+            $page_title = __("PT Users Log Details");
             $ctptData = Ctpt::select('id', 'name')
             ->where('id', $info->toilet_id)
             ->first();
@@ -112,7 +112,7 @@ class CtptUserController extends Controller
     {
         $info = CtptUsers::find($id);
         if ($info) {
-            $page_title = "Edit PT Users Log";
+            $page_title = __("Edit PT Users Log");
             $ctptData = Ctpt::select('id', 'name')
             ->where('id', $info->toilet_id)
             ->first();
@@ -150,10 +150,10 @@ class CtptUserController extends Controller
         $pt_user_log = CtptUsers::find($id);
         if ($pt_user_log) {
             $pt_user_log->delete();
-            return redirect('fsm/ctpt-users')->with('success','PT Users Log Deleted Successfully');
+            return redirect('fsm/ctpt-users')->with('success', __('PT Users Log Deleted Successfully.'));
             }
         else {
-            return redirect('fsm/ctpt-users')->with('error','Failed to delete PT Users Log');
+            return redirect('fsm/ctpt-users')->with('error', __('Failed to delete PT Users Log.'));
         }
     }
 
@@ -161,7 +161,7 @@ class CtptUserController extends Controller
     {
         $ctpt = CtptUsers::find($id);
         if ($ctpt) {
-            $page_title = "PT Users Log History";
+            $page_title = __("PT Users Log History");
             return view('fsm.ctpt-users.history', compact('page_title', 'ctpt'));
         } else {
             abort(404);

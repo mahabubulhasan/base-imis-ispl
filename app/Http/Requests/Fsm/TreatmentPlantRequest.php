@@ -1,6 +1,6 @@
 <?php
 // Last Modified Date: 18-04-2024
-// Developed By: Innovative Solution Pvt. Ltd. (ISPL)  
+// Developed By: Innovative Solution Pvt. Ltd. (ISPL)
 namespace App\Http\Requests\Fsm;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -25,35 +25,37 @@ class TreatmentPlantRequest extends FormRequest
      * @return array
      */
     public function messages()
-    {
-        return [
-            'name.required' => 'The Name is required.',
-            'email.required' => 'The Email is required.',
-            'email.email' => 'Please enter a valid email address.',
-            'email.unique' => 'The Email has already been taken.',
-            'location.required' => 'The Location is required.',
-            // Removing individual latitude and longitude errors
-            'geom.required' => 'The geom is required.',
-            'name.regex' => 'The Name may only contain letters and spaces.',
-            'latitude.numeric' => 'The Latitude must be numeric.',
-            'longitude.numeric' => 'The Longitude must be numeric.',
-            'capacity_per_day.numeric' => 'The Capacity Per Day (m³) must be numeric.',
-            'capacity_per_day.required' => 'The Capacity Per Day (m³) is required.',
-            'caretaker_name.required' => 'The Caretaker Name is required.',
-            'caretaker_name.regex' => 'The Caretaker Name may only contain letters and spaces.',
-            'caretaker_number.required' => 'The Caretaker Number is required.',
-            'caretaker_number.integer' => 'The Caretaker Number must be an integer.',
-            'type.required' => 'The Treatment Plant Type is required.',
-            'status.required' => 'The Status is required.',
-            'password.required_if' => 'The Password is required when create user is on.',
-            'email.required_if' => 'The Email field is required when create user is on.',
-        ];
-    }
+{
+    return [
+        'name.required' => __('The Name is required.'),
+        'email.required' => __('The Email is required.'),
+        'email.email' => __('Please enter a valid email address.'),
+        'email.unique' => __('The Email has already been taken.'),
+        'location.required' => __('The Location is required.'),
+        'geom.required' => __('The geom is required.'),
+        'name.regex' => __('The Name may only contain letters and spaces.'),
+        'latitude.numeric' => __('The Latitude must be numeric.'),
+        'longitude.numeric' => __('The Longitude must be numeric.'),
+        'capacity_per_day.numeric' => __('The Capacity Per Day (m³) must be numeric.'),
+        'capacity_per_day.required' => __('The Capacity Per Day (m³) is required.'),
+        'caretaker_name.required' => __('The Caretaker Name is required.'),
+        'caretaker_name.regex' => __('The Caretaker Name may only contain letters and spaces.'),
+        'caretaker_number.required' => __('The Caretaker Number is required.'),
+        'caretaker_number.integer' => __('The Caretaker Number must be an integer.'),
+        'type.required' => __('The Treatment Plant Type is required.'),
+        'status.required' => __('The Status is required.'),
+        'password.required_if' => __('The Password is required when create user is on.'),
+        'email.required_if' => __('The Email field is required when create user is on.'),
+        'caretaker_number.min' => __('The caretaker number must be at least 1'),
+        'password.uncompromised' => __('The given password has appeared in a data leak. Please choose a different password.'),
+    ];
+}
+
 
     public function rules()
     {
         $rules = ($this->isMethod('POST') ? $this->store() : $this->update());
-    
+
         // Check if the geom field exists in the request
         if ($this->isMethod('POST')) {
             if (!$this->filled('latitude') || !$this->filled('longitude')) {
@@ -65,11 +67,11 @@ class TreatmentPlantRequest extends FormRequest
             // For update, ensure geom is nullable if not present in the request
             $rules['geom'] = 'nullable';
         }
-    
+
         return $rules;
     }
-    
-    
+
+
 
     /**
      * Store validation rules.
@@ -104,10 +106,10 @@ class TreatmentPlantRequest extends FormRequest
             // Removing the geom required validation and relying on custom validation
             'geom' => 'nullable|latitude_longitude', // Custom rule checks if both latitude and longitude are present
         ];
-    
+
         return $rules;
     }
-    
+
 
     /**
      * Update validation rules.
@@ -135,9 +137,9 @@ class TreatmentPlantRequest extends FormRequest
             if (!$this->filled('latitude') || !$this->filled('longitude')) {
                 return false; // Invalid if either of the two is missing
             }
-    
+
             return true;
         });
     }
-    
+
 }

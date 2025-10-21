@@ -51,16 +51,16 @@ class WaterborneService
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['waterborne.destroy', $model->id]]);
 
                 if (Auth::user()->can('Edit Yearly Waterborne Cases')) {
-                    $content .= '<a title="Edit" href="' . action("PublicHealth\YearlyWaterborneController@edit", [$model->id]) . '" class="btn btn-info btn-sm mb-1"  ><i class="fas fa-edit"></i></a> ';
+                    $content .= '<a title="' . __("Edit") . '" href="' . action("PublicHealth\YearlyWaterborneController@edit", [$model->id]) . '" class="btn btn-info btn-sm mb-1"  ><i class="fas fa-edit"></i></a> ';
                 }
                 if (Auth::user()->can('View Yearly Waterborne Cases')) {
-                    $content .= '<a title="Detail" href="' . action("PublicHealth\YearlyWaterborneController@show", [$model->id]) . '"class="btn btn-info btn-sm mb-1"  ><i class="fas fa-list"></i></a> ';
+                    $content .= '<a title="' . __("Detail") . '" href="' . action("PublicHealth\YearlyWaterborneController@show", [$model->id]) . '"class="btn btn-info btn-sm mb-1"  ><i class="fas fa-list"></i></a> ';
                 }
                 if (Auth::user()->can('View Yearly Waterborne Case History')) {
-                    $content .= '<a title="History" href="' . action("PublicHealth\YearlyWaterborneController@history", [$model->id]) .'" class="btn btn-info btn-sm mb-1"  ><i class="fas fa-history"></i></a> ';
+                    $content .= '<a title="' . __("History") . '" href="' . action("PublicHealth\YearlyWaterborneController@history", [$model->id]) .'" class="btn btn-info btn-sm mb-1"  ><i class="fas fa-history"></i></a> ';
                 }
                 if (Auth::user()->can('Delete Yearly Waterborne Cases')) {
-                    $content .= '<a href="#" title="Delete" class="delete btn btn-danger btn-sm mb-1 "  ><i class="fas fa-trash"></i></a> ';
+                    $content .= '<a href="#" title="' . __("Delete") . '" class="delete btn btn-danger btn-sm mb-1 "  ><i class="fas fa-trash"></i></a> ';
                 }
                 $content .= \Form::close();
                 return $content;
@@ -92,7 +92,7 @@ class WaterborneService
         $yearlyWaterborne->total_no_of_cases = $totalCases;
         $yearlyWaterborne->total_no_of_fatalities = $totalFatalities;
         $yearlyWaterborne->save();
-        return redirect('publichealth/waterborne')->with('success', 'Waterborne Cases Information created successfully');
+        return redirect('publichealth/waterborne')->with('success', __('Waterborne Cases Information created successfully.'));
     }
 
 
@@ -100,7 +100,7 @@ class WaterborneService
     {
         $yearlyWaterborne = YearlyWaterborne::find($id);
         if (!$yearlyWaterborne) {
-            return redirect('publichealth/waterborne')->with('error', 'Failed to update Yearly Waterborne');
+            return redirect('publichealth/waterborne')->with('error', __('Failed to update Yearly Waterborne.'));
         }
         $fields = ['infected_disease', 'year', 'notes'];
         $totalCases = 0;
@@ -121,7 +121,7 @@ class WaterborneService
         $yearlyWaterborne->total_no_of_cases = $totalCases;
         $yearlyWaterborne->total_no_of_fatalities = $totalFatalities;
         $yearlyWaterborne->save();
-        return redirect('publichealth/waterborne')->with('success', 'Waterborne Cases Information updated successfully');
+        return redirect('publichealth/waterborne')->with('success', __('Waterborne Cases Information updated successfully.'));
     }
 
 
@@ -130,7 +130,7 @@ class WaterborneService
     {
         $infected_disease = request('infected_disease') ?? null;
         $year = request('year') ?? null;
-        $columns = ['ID', 'Infected Disease', 'Year', 'No. of Cases', 'No. of Fatalities','Notes'];
+        $columns = [__('ID'), __('Infected Disease'), __('Year'), __('No. of Cases'), __('No. of Fatalities'),__('Notes')];
         $query = YearlyWaterborne::select('id', 'infected_disease', 'year', 'total_no_of_cases', 'total_no_of_fatalities','notes')->whereNull('deleted_at');
         if (!empty($year)) {
             $query->where('year', $year);
@@ -172,7 +172,7 @@ class WaterborneService
     {
         $YearlyWaterborne = YearlyWaterborne::find($id);
         if ($YearlyWaterborne) {
-            $page_title = "Waterborne Cases Information Details";
+            $page_title = __("Waterborne Cases Information Details");
             $enumValue =  (int)$YearlyWaterborne->infected_disease;
             $diseaseName = HotspotDisease::getDescription($enumValue);
             return view('public-health.waterborne.show', compact('page_title', 'YearlyWaterborne', 'diseaseName'));

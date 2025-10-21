@@ -6,7 +6,7 @@
 @include('layouts.components.error-alert')
 <div class="card card-info">
 	{!! Form::open(['url' => 'fsm/employee-infos', 'class' => 'form-horizontal']) !!}
-		@include('fsm/employee-infos.partial-form', ['submitButtomText' => 'Save'])
+		@include('fsm/employee-infos.partial-form', ['submitButtomText' => __('Save')])
 	{!! Form::close() !!}
 </div><!-- /.card -->
 @stop

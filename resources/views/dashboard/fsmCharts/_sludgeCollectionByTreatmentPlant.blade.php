@@ -1,5 +1,5 @@
 @include('layouts.dashboard.chart-card',[
-    'card_title' => "Sludge Collection Trends by Treatment Plants Over the Last 5 Years",
+    'card_title' => __("Sludge Collection Trends by Treatment Plants Over the Last 5 Years"),
     'export_chart_btn_id' => "exportsludgeCollectionByTreatmentPlantChart",
     'canvas_id' => "sludgeCollectionByTreatmentPlantChart"
 ])
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     var options = {
-       
+
         scales: {
             x: { stacked: true },
             y: { stacked: true },
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
               boxWidth: 10
           }
       },
-   
+
     scales: {
       xAxes: [{
                 scaleLabel: {

@@ -1,20 +1,20 @@
 <table>
     <thead>
     <tr>
-        <th align="right" width="20"><h1><strong>BIN</strong></h1></th>
-        <th align="right" width="20"><h1><strong>Tax Code/Holding ID</strong></h1></th>
-        <th align="right" width="20"><h1><strong>Ward Number</strong></h1></th>
-        <th align="right" width="20"><h1><strong>Road Code</strong></h1></th>
-        <th align="right" width="20"><h1><strong> Presence of Toilet </strong></h1></th>
-        <th align="right" width="20"><h1><strong>Number of Floors</strong></h1></th>
-        <th align="right" width="20"><h1><strong>Number of Households</strong></h1></th>
-        <th align="right" width="20"><h1><strong>Population of Building</strong></h1></th>
-        <th align="right" width="20"><h1><strong>Structure Type</strong></h1></th>
-        <th align="right" width="20"><h1><strong>Estimated Area of the Building( ㎡)</strong></h1></th>
-        <th align="right" width="20"><h1><strong>Building Associated</strong></h1></th>
-        <th align="right" width="20"><h1><strong>Owner Name</strong></h1></th>
-        <th align="right" width="20"><h1><strong>Owner Gender</strong></h1></th>
-        <th align="right" width="20"><h1><strong>Owner Contact Number</strong></h1></th>
+        <th align="right" width="20"><h1><strong>{{__('BIN')}}</strong></h1></th>
+        <th align="right" width="20"><h1><strong>{{__('Tax Code/Holding ID')}}</strong></h1></th>
+        <th align="right" width="20"><h1><strong>{{__('Ward Number')}}</strong></h1></th>
+        <th align="right" width="20"><h1><strong>{{__('Road Code')}}</strong></h1></th>
+        <th align="right" width="20"><h1><strong>{{__('Presence of Toilet')}}</strong></h1></th>
+        <th align="right" width="20"><h1><strong>{{__('Number of Floors')}}</strong></h1></th>
+        <th align="right" width="20"><h1><strong>{{__('Number of Households')}}</strong></h1></th>
+        <th align="right" width="20"><h1><strong>{{__('Population of Building')}}</strong></h1></th>
+        <th align="right" width="20"><h1><strong>{{__('Structure Type')}}</strong></h1></th>
+        <th align="right" width="20"><h1><strong>{{__('Estimated Area of the Building(m²)')}}</strong></h1></th>
+        <th align="right" width="20"><h1><strong>{{__('Building Associated')}}</strong></h1></th>
+        <th align="right" width="20"><h1><strong>{{__('Owner Name')}}</strong></h1></th>
+        <th align="right" width="20"><h1><strong>{{__('Owner Gender')}}</strong></h1></th>
+        <th align="right" width="20"><h1><strong>{{__('Owner Contact Number')}}</strong></h1></th>
     </tr>
     </thead>
     <tbody>

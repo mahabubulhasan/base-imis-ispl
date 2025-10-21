@@ -20,7 +20,7 @@ class ExportShpKmlController extends Controller
      */
     public function index()
     {
-        $page_title = "Export to Shape File or KML";
+        $page_title = __("Export to Shape File or KML");
         $wards = Ward::orderBy('ward', 'asc')->pluck('ward', 'ward')->all();
         return view('export-shp-kml.index', compact('page_title', 'wards'));
     }

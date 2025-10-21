@@ -55,8 +55,8 @@ class FeedbackRequest extends FormRequest
     public function messages()
     {
         return [
-            'fsm_service_quality.required' => 'The FSM Service Quality is required.',
-            'wear_ppe.required' => 'The Wear PPE is required.',
+            'fsm_service_quality.required' => __('The FSM Service Quality is required.'),
+            'wear_ppe.required' => __('The Wear PPE is required.'),
 
         ];
     }

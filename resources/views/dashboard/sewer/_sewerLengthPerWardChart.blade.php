@@ -1,7 +1,7 @@
 <!-- Last Modified Date: 16-04-2024
 Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 @include('layouts.dashboard.chart-card',[
-    'card_title' => "Wardwise Sewer Network Length (m)",
+    'card_title' => __("Wardwise Sewer Network Length (m)"),
     'export_chart_btn_id' => "exportSewerLengthPerWardChart",
     'canvas_id' => "sewerLengthPerWardChart"
 ])

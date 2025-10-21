@@ -76,17 +76,17 @@ class HelpDeskService {
                 'route' => ['help-desks.destroy', $model->id]]);
 
                 if (Auth::user()->can('Edit Help Desk')) {
-                    $content .= '<a title="Edit" href="' . action("Fsm\HelpDeskController@edit", [$model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-edit"></i></a> ';
+                    $content .= '<a title="' . __("Edit") . '" href="' . action("Fsm\HelpDeskController@edit", [$model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-edit"></i></a> ';
                 }
                 if (Auth::user()->can('View Help Desk')) {
-                    $content .= '<a title="Detail" href="' . action("Fsm\HelpDeskController@show", [$model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-list"></i></a> ';
+                    $content .= '<a title="' . __("Detail") . '" href="' . action("Fsm\HelpDeskController@show", [$model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-list"></i></a> ';
                 }
                 if (Auth::user()->can('View Help Desk History')) {
-                    $content .= '<a title="History" href="' . action("Fsm\HelpDeskController@history", [$model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-history"></i></a> ';
+                    $content .= '<a title="' . __("History") . '" href="' . action("Fsm\HelpDeskController@history", [$model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-history"></i></a> ';
                 }
 
                 if (Auth::user()->can('Delete Help Desk')) {
-                    $content .= '<a href="#" title="Delete"  class="delete btn btn-danger btn-sm mb-1"><i class="fa fa-trash"></i></a> ';
+                    $content .= '<a href="#" title="' . __("Delete") . '"  class="delete btn btn-danger btn-sm mb-1"><i class="fa fa-trash"></i></a> ';
                 }
 
                 $content .= \Form::close();
@@ -136,7 +136,7 @@ class HelpDeskService {
         $help_desk_id = $data['help_desk_id'] ? $data['help_desk_id'] : null;
         $help_desk_name = $data['name'] ? $data['name'] : null;
         $servprov = $data['servprov'] ? $data['servprov'] : null;
-        $columns = ['ID', 'Help Desk Name', 'Description', 'Contact Number', 'Email Address', 'Service Provider Name'];
+        $columns = [__('ID'), __('Help Desk Name'), __('Description'), __('Contact Number'), __('Email Address'), __('Service Provider Name')];
 
 
         if (Auth::user()->hasRole('Service Provider - Admin') || Auth::user()->hasRole('Service Provider - Emptying Operator')

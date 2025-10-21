@@ -8,7 +8,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 @include('layouts.components.error-alert')
 <div class="card card-info">
 	{!! Form::open(['url' => 'fsm/sludge-collection', 'class' => 'form-horizontal']) !!}
-		@include('fsm/sludge-collection.partial-form', ['submitButtomText' => 'Save'])
+		@include('fsm/sludge-collection.partial-form', ['submitButtomText' => __('Save')])
 	{!! Form::close() !!}
 </div><!-- /.card -->
 @stop

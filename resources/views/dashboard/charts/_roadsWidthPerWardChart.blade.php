@@ -1,7 +1,7 @@
 <!-- Last Modified Date: 18-04-2024
 Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 @include('layouts.dashboard.chart-card',[
-    'card_title' => "Wardwise Total Road Length by Width (m)",
+    'card_title' =>__('Wardwise Total Road Length by Width (m)'),
     'export_chart_btn_id' => "exportroadWidthPerWardChart",
     'canvas_id' => "roadWidthPerWardChart"
 ])

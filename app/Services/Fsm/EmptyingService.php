@@ -63,43 +63,43 @@ class EmptyingService
         $this->filterFormFields = [
             [
                 new FormField(
-                    label: 'Application ID',
+                    label:__('Application ID') ,
                     labelFor: 'application_id',
                     labelClass: 'control-label col-md-2',
                     inputType: 'number',
                     inputId: 'application_id',
-                    placeholder: 'Application ID',
+                    placeholder:__('Application ID') ,
                     oninput: "this.value = this.value.replace(/[^0-9]/g, '')"
                 ),
                 new FormField(
-                    label: 'Containment ID',
+                    label: __('Containment ID'),
                     labelFor: 'containment_id',
                     labelClass: 'control-label col-md-2',
                     inputType: 'text',
                     inputId: 'containment_id',
-                    placeholder: 'Containment ID',
+                    placeholder: __('Containment ID'),
                     oninput:"this.value = this.value.replace(/[^a-zA-Z0-9]/g, '')"
                 ),
                 new FormField(
-                    label: 'Emptied Date From',
+                    label: __('Emptied Date From'),
                     labelFor: 'date_from',
                     labelClass: 'control-label col-md-2',
                     inputType: 'date',
                     inputId: 'date_from',
-                    placeholder: 'Date From',
+                    placeholder: __('Date From'),
                 ),
             ],
             [
                
              
                 new FormField(
-                    label: 'Emptied Date To',
+                    label: __('Emptied Date To'),
                     labelFor: 'date_to',
                     labelClass: 'control-label col-md-2',
                     inputType: 'date',
                     inputId: 'date_to',
                     required: true,
-                    placeholder: 'Date To',
+                    placeholder:  __('Date To'),
                 ),
             ],
         ];
@@ -116,7 +116,7 @@ class EmptyingService
         $containment = Containment::find($application->containment_id);
         $this->createFormFields = [
             new FormField(
-                label: 'Application ID',
+                label: __('Application ID'),
                 labelFor: 'application_id',
                 inputType: 'text',
                 inputId: 'application_id',
@@ -124,7 +124,7 @@ class EmptyingService
                 hidden: true
             ),
             new FormField(
-                label: 'Containment ID',
+                label:__('Containment ID') ,
                 labelFor: 'containment_id',
                 inputType: 'text',
                 inputId: 'containment_id',
@@ -132,77 +132,77 @@ class EmptyingService
                 hidden: true
             ),
             new FormField(
-                label: 'Date',
+                label: __('Date'),
                 labelFor: 'emptied_date',
                 inputType: 'label',
                 inputId: 'emptied_date',
                 labelValue:now()->format('m/d/Y'),
-                placeholder: 'Date',
+                placeholder: __('Date'),
             ),
             new FormField(
-                label: 'Service Receiver Name',
+                label: __('Service Receiver Name'),
                 labelFor: 'service_receiver_name',
                 inputType: 'text',
                 inputId: 'service_receiver_name',
                 required: true,
-                placeholder: 'Service Receiver Name',
+                placeholder:__('Service Receiver Name') ,
             ),
             new FormField(
-                label: 'Service Receiver Gender',
+                label: __('Service Receiver Gender'),
                 labelFor: 'service_receiver_gender',
                 inputType: 'select',
                 inputId: 'service_receiver_gender',
                 selectValues: ["Male"=>"Male","Female"=>"Female","Others"=>"Others"],
                 required: true,
-                placeholder: 'Service Receiver Gender',
+                placeholder: __('Service Receiver Gender'),
             ),
             new FormField(
-                label: 'Service Receiver Contact Number',
+                label: __('Service Receiver Contact Number'),
                 labelFor: 'service_receiver_contact',
                 inputType: 'text',
                 inputId: 'service_receiver_contact',
                 required: true,
-                placeholder: 'Service Receiver Contact Number',
+                placeholder: __('Service Receiver Contact Number'),
                 oninput: "validateOwnerContactInput(this)", 
             ),
             new FormField(
-                label: 'Reason for Emptying',
+                label: __('Reason for Emptying'),
                 labelFor: 'emptying_reason',
                 inputType: 'textarea',
                 inputId: 'emptying_reason',
                 required: true,
-                placeholder: 'Reason for Emptying',
+                placeholder:__('Reason for Emptying') ,
             ),
             new FormField(
-                label: 'No. of Trips',
+                label: __('No. of Trips'),
                 labelFor: 'no_of_trips',
                 inputType: 'text',
                 inputId: 'no_of_trips',
                 required: true,
-                placeholder: 'No. of Trips',
+                placeholder: __('No. of Trips'),
                 oninput:"this.value = this.value.replace(/[^0-9]/g, '')"
 
             ),
             new FormField(
-                label: 'Containment Construction Year',
+                label: __('Containment Construction Year'),
                 labelFor: 'construction_year',
                 inputType: 'label',
                 inputId: 'construction_year',
                 labelValue: empty($containment->construction_date)  ? null : date('Y', strtotime($containment->construction_date)),
-                placeholder: 'Containment Construction Year',
+                placeholder: __('Containment Construction Year'),
             ),
             
             new FormField(
-                label: 'Sludge Volume (m³)',
+                label:  __('Sludge Volume (m³)'),
                 labelFor: 'volume_of_sludge',
                 inputType: 'text',
                 inputId: 'volume_of_sludge',
                 required: true,
-                placeholder: 'Sludge Volume (m³)',
+                placeholder: __('Sludge Volume (m³)'),
                 oninput:"this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); this.value = this.value < 0 || this.value.startsWith('-') ? '' : this.value;"
             ),
             new FormField(
-                label: 'Desludging Vehicle Number Plate',
+                label: __('Desludging Vehicle Number Plate'),
                 labelFor: 'desludging_vehicle_id',
                 inputType: 'select',
                 inputId: 'desludging_vehicle_id',
@@ -210,11 +210,11 @@ class EmptyingService
                 VacutugType::Operational()->where('service_provider_id', $application->service_provider_id)->pluck('license_plate_number', 'id')->toArray()
                 : VacutugType::Operational()->pluck('license_plate_number', 'id')->toArray(),
                 required: true,
-                placeholder: 'Desludging Vehicle Number Plate',
+                placeholder: __('Desludging Vehicle Number Plate'),
             ),
 
             new FormField(
-                label: 'Driver Name',
+                label: __('Driver Name'),
                 labelFor: 'driver',
                 inputType: 'select',
                 inputId: 'driver',
@@ -222,10 +222,10 @@ class EmptyingService
                 EmployeeInfo::Active()->where('service_provider_id', $application->service_provider_id)->where('employee_type', '=', 'Driver')->pluck('name', 'id')->toArray()
                 : EmployeeInfo::Active()->where('employee_type', '=', 'Driver')->pluck('name', 'id')->toArray(),
                 required: true,
-                placeholder: 'Driver Name',
+                placeholder: __('Driver Name'),
             ),
             new FormField(
-                label: 'Emptier 1 Name',
+                label: __('Emptier 1 Name'),
                 labelFor: 'emptier1',
                 inputType: 'select',
                 inputId: 'emptier1',
@@ -233,85 +233,85 @@ class EmptyingService
                 EmployeeInfo::Active()->where('service_provider_id', $application->service_provider_id)->where('employee_type', '=', 'Cleaner/Emptier')->pluck('name', 'id')->toArray()
                 : EmployeeInfo::Active()->where('employee_type', '=', 'Cleaner/Emptier')->pluck('name', 'id')->toArray(),
                 required: true,
-                placeholder: 'Emptier 1 Name',
+                placeholder:__('Emptier 1 Name') ,
             ),
             new FormField(
-                label: 'Emptier 2 Name',
+                label: __('Emptier 2 Name'),
                 labelFor: 'emptier2',
                 inputType: 'select',
                 inputId: 'emptier2',
                 selectValues: !(Auth::user()->hasRole('Super Admin') && Auth::user()->hasRole('Municipality - Super Admin')) ?
                 EmployeeInfo::Active()->where('service_provider_id', $application->service_provider_id)->where('employee_type', '=', 'Cleaner/Emptier')->pluck('name', 'id')->toArray()
                 : EmployeeInfo::Active()->where('employee_type', '=', 'Cleaner/Emptier')->pluck('name', 'id')->toArray(),
-                placeholder: 'Emptier 2 Name',
+                placeholder:__('Emptier 2 Name') ,
             ),
             new FormField(
-                label: 'Start Time',
+                label:__('Start Time') ,
                 labelFor: 'start_time',
                 inputType: 'time',
                 inputId: 'start_time',
                 required: true,
-                placeholder: 'Start Time',
+                placeholder: __('Start Time'),
             ),
             new FormField(
-                label: 'End Time',
+                label:  __('End Time') ,
                 labelFor: 'end_time',
                 inputType: 'time',
                 inputId: 'end_time',
                 required: true,
-                placeholder: 'End Time',
+                placeholder:  __('End Time') ,
             ),
             new FormField(
-                label: 'Receipt Number',
+                label:  __('Receipt Number') ,
                 labelFor: 'receipt_number',
                 inputType: 'text',
                 inputId: 'receipt_number',
                 required: true,
-                placeholder: 'Receipt Number',
+                placeholder:  __('Receipt Number') ,
             ),
             new FormField(
-                label: 'Total Cost',
+                label:  __('Total Cost') ,
                 labelFor: 'total_cost',
                 inputType: 'text',
                 inputId: 'total_cost',
                 required: true,
-                placeholder: 'Total Cost',
+                placeholder:  __('Total Cost') ,
                 oninput:"this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); this.value = this.value < 0 || this.value.startsWith('-') ? '' : this.value;"
             ),
 
             new FormField(
-                label: 'Disposal Place',
+                label: __('Disposal Place') ,
                 labelFor: 'treatment_plant_id',
                 inputType: 'select',
                 inputId: 'treatment_plant_id',
                 selectValues: TreatmentPlant::Operational()->whereIn('type', [3, 4])->pluck('name', 'id')->toArray(),
                 required: true,
-                placeholder: 'Disposal Place',
+                placeholder: __('Disposal Place')  ,
             ),
           
         
             new FormField(
-                label: 'House Image',
+                label: __('House Image'),
                 labelFor: 'house_image',
                 inputType: 'file_upload',
                 inputId: 'house_image',
                 required: true,
-                placeholder: 'House Image',
+                placeholder: __('House Image'),
             ),
             new FormField(
-                label: 'Receipt Image',
+                label:__('Receipt Image')  ,
                 labelFor: 'receipt_image',
                 inputType: 'file_upload',
                 inputId: 'receipt_image',
                 required: true,
-                placeholder: 'Receipt Image',
+                placeholder: __('Receipt Image') ,
             ),
             new FormField(
-                label: 'Comments (if any)',
+                label: __('Comments (if any)') ,
                 labelFor: 'comments',
                 inputType: 'textarea',
                 inputId: 'comments',
-                placeholder: 'Comments (if any)',
+                placeholder: __('Comments (if any)') ,
             ),
         ];
 
@@ -361,42 +361,42 @@ class EmptyingService
         }
         $this->showFormFields = [
             new FormField(
-                label: 'Application ID',
+                label:__('Application ID'),
                 labelFor: 'application_id',
                 inputType: 'label',
                 inputId: 'application_id',
                 labelValue: $emptying->application_id,
             ),
             new FormField(
-                label: 'Date',
+                label: __('Date'),
                 labelFor: 'emptied_date',
                 inputType: 'label',
                 inputId: 'emptied_date',
                 labelValue: date('m/d/Y', strtotime($emptying->emptied_date)),
             ),
             new FormField(
-                label: 'Service Receiver Name',
+                label:__('Service Receiver Name') ,
                 labelFor: 'service_receiver_name',
                 inputType: 'label',
                 inputId: 'service_receiver_name',
                 labelValue: $emptying->service_receiver_name
             ),
             new FormField(
-                label: 'Service Receiver Gender',
+                label: __('Service Receiver Gender'),
                 labelFor: 'service_receiver_gender',
                 inputType: 'label',
                 inputId: 'service_receiver_gender',
                 labelValue: $emptying->service_receiver_gender
             ),
             new FormField(
-                label: 'Service Receiver Contact Number',
+                label: __('Service Receiver Contact Number'),
                 labelFor: 'service_receiver_contact',
                 inputType: 'label',
                 inputId: 'service_receiver_contact',
                 labelValue: $emptying->service_receiver_contact
             ),
             new FormField(
-                label: 'Reason for Emptying',
+                label:__('Reason for Emptying') ,
                 labelFor: 'emptying_reason',
                 inputType: 'label',
                 inputId: 'emptying_reason',
@@ -404,14 +404,14 @@ class EmptyingService
 
             ),
             new FormField(
-                label: 'Containment Construction Year',
+                label: __('Containment Construction Year'),
                 labelFor: 'construction_year',
                 inputType: 'label',
                 inputId: 'construction_year',
                 labelValue: date('Y', strtotime($containment->construction_date)),
             ),
             new FormField(
-                label: 'Sludge Volume (m³)',
+                label: __('Sludge Volume (m³)'),
                 labelFor: 'volume_of_sludge',
                 inputType: 'label',
                 inputId: 'volume_of_sludge',
@@ -419,28 +419,28 @@ class EmptyingService
             ),
 
             new FormField(
-                label: 'Desludging Vehicle Number Plate',
+                label:__('Desludging Vehicle Number Plate') ,
                 labelFor: 'desludging_vehicle_id',
                 inputType: 'label',
                 inputId: 'desludging_vehicle_id',
                 labelValue: $emptying->vacutug()->withTrashed()->first()->license_plate_number
             ),
             new FormField(
-                label: 'Disposal Place',
+                label: __('Disposal Place'),
                 labelFor: 'treatment_plant_id',
                 inputType: 'label',
                 inputId: 'treatment_plant_id',
                 labelValue: $emptying->treatmentPlant()->withTrashed()->first()->name
             ),
             new FormField(
-                label: 'Driver Name',
+                label:__('Driver Name') ,
                 labelFor: 'driver',
                 inputType: 'label',
                 inputId: 'driver',
                 labelValue: EmployeeInfo::withTrashed()->where('id',$emptying->driver)->first()->name
             ),
             new FormField(
-                label: 'Emptier 1 Name',
+                label: __('Emptier 1 Name'),
                 labelFor: 'emptier1',
                 inputType: 'label',
                 inputId: 'emptier1',
@@ -448,49 +448,49 @@ class EmptyingService
                 labelValue: EmployeeInfo::withTrashed()->where('id',$emptying->emptier1)->first()->name
             ),
             new FormField(
-                label: 'Emptier 2 Name',
+                label:__('Emptier 2 Name') ,
                 labelFor: 'emptier2',
                 inputType: 'label',
                 inputId: 'emptier2',
                 labelValue: $emptying->emptier2 ? EmployeeInfo::withTrashed()->where('id',$emptying->emptier2)->first()->name : ''
             ),
             new FormField(
-                label: 'Start Time',
+                label: __('Start Time'),
                 labelFor: 'start_time',
                 inputType: 'label',
                 inputId: 'start_time',
                 labelValue: $emptying->start_time
             ),
             new FormField(
-                label: 'End Time',
+                label: __('End Time'),
                 labelFor: 'end_time',
                 inputType: 'label',
                 inputId: 'end_time',
                 labelValue: $emptying->end_time
             ),
             new FormField(
-                label: 'No. of Trips',
+                label: __('No. of Trips'),
                 labelFor: 'no_of_trips',
                 inputType: 'label',
                 inputId: 'no_of_trips',
                 labelValue: $emptying->no_of_trips
             ),
             new FormField(
-                label: 'Receipt Number',
+                label: __('Receipt Number'),
                 labelFor: 'receipt_number',
                 inputType: 'label',
                 inputId: 'receipt_number',
                 labelValue: $emptying->receipt_number
             ),
             new FormField(
-                label: 'Total Cost',
+                label:__('Total Cost') ,
                 labelFor: 'total_cost',
                 inputType: 'label',
                 inputId: 'total_cost',
                 labelValue: $emptying->total_cost
             ),
             new FormField(
-                label: 'House Image',
+                label: __('House Image'),
                 labelFor: 'house_image',
                 inputType: 'file_viewer',
                 inputId: 'house_image',
@@ -498,7 +498,7 @@ class EmptyingService
                 fileUrl: $imageBuildSrc
             ),
             new FormField(
-                label: 'Receipt Image',
+                label: __('Receipt Image'),
                 labelFor: 'receipt_image',
                 inputType: 'file_viewer',
                 inputId: 'receipt_image',
@@ -506,7 +506,7 @@ class EmptyingService
                 fileUrl: $imageReceiptSrc,
             ),
             new FormField(
-                label: 'Comments (if any)',
+                label: __('Comments (if any)'),
                 labelFor: 'comments',
                 inputType: 'label',
                 inputId: 'comments',
@@ -581,7 +581,7 @@ class EmptyingService
                 }
         $this->editFormFields = [
             new FormField(
-                label: 'Application ID',
+                label:__('Application ID') ,
                 labelFor: 'application_id',
                 inputType: 'textarea',
                 inputId: 'application_id',
@@ -589,7 +589,7 @@ class EmptyingService
                 hidden: true
             ),
             new FormField(
-                label: 'Containment ID',
+                label: __('Containment ID'),
                 labelFor: 'containment_id',
                 inputType: 'text',
                 inputId: 'containment_id',
@@ -597,72 +597,72 @@ class EmptyingService
                 hidden: true
             ),
             new FormField(
-                label: 'Date',
+                label: __('Date'),
                 labelFor: 'emptied_date',
                 inputType: 'label',
                 inputId: date('m/d/Y', strtotime($emptying->emptied_date)),
-                placeholder: 'Date',
+                placeholder: __('Date'),
             ),
             new FormField(
-                label: 'Service Receiver Name',
+                label: __('Service Receiver Name'),
                 labelFor: 'service_receiver_name',
                 inputType: 'text',
                 inputId: 'service_receiver_name',
                 inputValue: $emptying->service_receiver_name,
                 required: true,
-                placeholder: 'Service Receiver Name',
+                placeholder: __('Service Receiver Name'),
             ),
             new FormField(
-                label: 'Service Receiver Gender',
+                label: __('Service Receiver Gender'),
                 labelFor: 'service_receiver_gender',
                 inputType: 'select',
                 inputId: 'service_receiver_gender',
                 selectedValue: $emptying->service_receiver_gender,
                 selectValues: ["Male"=>"Male","Female"=>"Female","Others"=>"Others"],
                 required: true,
-                placeholder: 'Service Receiver Gender',
+                placeholder: __('Service Receiver Gender'),
             ),
             new FormField(
-                label: 'Service Receiver Contact Number',
+                label: __('Service Receiver Contact Number'),
                 labelFor: 'service_receiver_contact',
                 inputType: 'text',
                 inputId: 'service_receiver_contact',
                 inputValue: $emptying->service_receiver_contact,
                 required: true,
-                placeholder: 'Service Receiver Contact Number',
+                placeholder: __('Service Receiver Contact Number'),
                 oninput: "validateOwnerContactInput(this)", 
 
             ),
               new FormField(
-                label: 'Reason for Emptying',
+                label: __('Reason for Emptying'),
                 labelFor: 'emptying_reason',
                 inputType: 'textarea',
                 inputId: 'emptying_reason',
                 inputValue: $emptying->emptying_reason,
                 required: true,
-                placeholder: 'Reason for Emptying',
+                placeholder: __('Reason for Emptying'),
             ),
             new FormField(
-                label: 'Containment Construction Year',
+                label: __('Containment Construction Year'),
                 labelFor: 'construction_year',
                 inputType: 'label',
                 inputId: 'construction_year',
                 labelValue: date('Y', strtotime($containment->construction_date)),
-                placeholder: 'Containment Construction Year',
+                placeholder:__('Containment Construction Year'),
             ),
             new FormField(
-                label: 'Sludge Volume (m³)',
+                label: __('Sludge Volume (m³)'),
                 labelFor: 'volume_of_sludge',
                 inputType: 'text',
                 inputId: 'volume_of_sludge',
                 inputValue: $emptying->volume_of_sludge,
                 required: true,
-                placeholder: 'Sludge Volume (m³)',
+                placeholder:__('Sludge Volume (m³)') ,
                 oninput:"this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); this.value = this.value < 0 || this.value.startsWith('-') ? '' : this.value;"
             ),
 
             new FormField(
-                label: 'Desludging Vehicle Number Plate',
+                label: __('Desludging Vehicle Number Plate'),
                 labelFor: 'desludging_vehicle_id',
                 inputType: 'select',
                 inputId: 'desludging_vehicle_id',
@@ -670,10 +670,10 @@ class EmptyingService
                 selectedValue: $emptying->desludging_vehicle_id,
                 required: true,
                 disabled:$application->emptying_status && $application->sludge_collection_status ? true:'',
-                placeholder: 'Desludging Vehicle Number Plate',
+                placeholder: __('Desludging Vehicle Number Plate'),
             ),
             new FormField(
-                label: 'Disposal Place',
+                label: __('Disposal Place'),
                 labelFor: 'treatment_plant_id',
                 inputType: 'select',
                 inputId: 'treatment_plant_id',
@@ -681,11 +681,11 @@ class EmptyingService
                 selectedValue: $emptying->treatment_plant_id,
                 required: true,
                 disabled:$application->emptying_status && $application->sludge_collection_status ? true:'',
-                placeholder: 'Disposal Place',
+                placeholder: __('Disposal Place'),
 
             ),
             new FormField(
-                label: 'Driver Name',
+                label:__('Driver Name') ,
                 labelFor: 'driver',
                 inputType: 'select',
                 inputId: 'driver',
@@ -693,10 +693,10 @@ class EmptyingService
                 selectedValue: $emptying->driver,
                 required: true,
                 disabled:$application->emptying_status && $application->sludge_collection_status ? true:'',
-                placeholder: 'Driver Name',
+                placeholder:__('Driver Name') ,
             ),
             new FormField(
-                label: 'Emptier 1 Name',
+                label: __('Emptier 1 Name'),
                 labelFor: 'emptier1',
                 inputType: 'select',
                 inputId: 'emptier1',
@@ -704,91 +704,91 @@ class EmptyingService
                 selectedValue: $emptying->emptier1,
                 required: true,
                 disabled:$application->emptying_status && $application->sludge_collection_status ? true:'',
-                placeholder: 'Emptier 1 Name',
+                placeholder: __('Emptier 1 Name'),
             ),
             new FormField(
-                label: 'Emptier 2 Name',
+                label: __('Emptier 2 Name'),
                 labelFor: 'emptier2',
                 inputType: 'select',
                 inputId: 'emptier2',
                 selectValues: $selectValuesCleanerEmptier,
                 selectedValue: $emptying->emptier2,
                 disabled:$application->emptying_status && $application->sludge_collection_status ? true:'',
-                placeholder: 'Emptier 2 Name',
+                placeholder: __('Emptier 2 Name'),
 
             ),
             new FormField(
-                label: 'Start Time',
+                label:__('Start Time') ,
                 labelFor: 'start_time',
                 inputType: 'time',
                 inputId: 'start_time',
                 inputValue: Carbon::parse($emptying->start_time)->format('H:i'),
                 required: true,
-                placeholder: 'Start Time',
+                placeholder:__('Start Time') ,
             ),
             new FormField(
-                label: 'End Time',
+                label: __('End Time'),
                 labelFor: 'end_time',
                 inputType: 'time',
                 inputId: 'end_time',
                 inputValue: Carbon::parse($emptying->end_time)->format('H:i'),
                 required: true,
-                placeholder: 'End Time',
+                placeholder: __('End Time'),
             ),
             new FormField(
-                label: 'No. of Trips',
+                label: __('No. of Trips'),
                 labelFor: 'no_of_trips',
                 inputType: 'text',
                 inputId: 'no_of_trips',
                 inputValue: $emptying->no_of_trips,
                 required: true,
-                placeholder: 'No. of Trips',
+                placeholder: __('No. of Trips'),
                 oninput:"this.value = this.value.replace(/[^0-9]/g, '')"
             ),
             new FormField(
-                label: 'Receipt Number',
+                label: __('Receipt Number'),
                 labelFor: 'receipt_number',
                 inputType: 'text',
                 inputId: 'receipt_number',
                 inputValue: $emptying->receipt_number,
                 required: true,
-                placeholder: 'Receipt Number',
+                placeholder:__('Receipt Number') ,
             ),
             new FormField(
-                label: 'Total Cost',
+                label: __('Total Cost'),
                 labelFor: 'total_cost',
                 inputType: 'text',
                 inputId: 'total_cost',
                 inputValue: $emptying->total_cost,
                 required: true,
-                placeholder: 'Total Cost',
+                placeholder: __('Total Cost'),
                 oninput:"this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); this.value = this.value < 0 || this.value.startsWith('-') ? '' : this.value;"
             ),
             new FormField(
-                label: 'House Image',
+                label: __('House Image'),
                 labelFor: 'house_image',
                 inputType: 'file_upload',
                 inputId: 'house_image',
                 inputValue: $emptying->house_image,
                 required: true,
-                placeholder: 'House Image',
+                placeholder: __('House Image'),
             ),
             new FormField(
-                label: 'Receipt Image',
+                label: __('Receipt Image'),
                 labelFor: 'receipt_image',
                 inputType: 'file_upload',
                 inputId: 'receipt_image',
                 inputValue: $emptying->receipt_image,
                 required: true,
-                placeholder: 'Receipt Image',
+                placeholder: __('Receipt Image'),
             ),
             new FormField(
-                label: 'Comments (if any)',
+                label: __('Comments (if any)'),
                 labelFor: 'comments',
                 inputType: 'textarea',
                 inputId: 'comments',
                 inputValue: $emptying->comments,
-                placeholder: 'Date',
+                placeholder:__('Comments (if any)') ,
             ),
         ];
         return $this->editFormFields;
@@ -940,13 +940,13 @@ class EmptyingService
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['emptying.destroy', $model->id]]);
                 $content .= '<div class="">';
                 if (Auth::user()->can('View Emptying')) {
-                    $content .= '<a title="Detail" href="' . route('emptying.show', [$model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-list"></i></a> ';
+                    $content .= '<a title="' . __("Detail") . '" href="' . route('emptying.show', [$model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-list"></i></a> ';
                 }
                 if (Auth::user()->can('View Emptyings History')) {
-                $content .= '<a title="History" href="' . route('emptying.history', $model->id) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-history"></i></a> ';
+                $content .= '<a title="' . __("History") . '" href="' . route('emptying.history', $model->id) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-history"></i></a> ';
                 }
                 if (Auth::user()->can('Delete Emptying')) {
-                    $content .= '<a title="Delete"  class="delete  btn-danger btn  btn-sm mb-1"><i class="fa fa-trash"></i></a> ';
+                    $content .= '<a title="' . __("Delete") . '"  class="delete  btn-danger btn  btn-sm mb-1"><i class="fa fa-trash"></i></a> ';
                 }
                 $content .= '</div>';
                 $content .= \Form::close();
@@ -989,7 +989,8 @@ class EmptyingService
                         $application->emptying_status = false;
                         $application->save();
                     }
-                    return redirect()->back()->withInput()->with('error', "Emptying service is already done for application $application->id");
+                    return redirect()->back()->withInput()->with('error', __("Emptying service is already done for application ID:") . $application->id);
+
                 }
                 // Assign service provider and user ID to the emptying
                 $emptying->service_provider_id = $application->service_provider_id;
@@ -1019,7 +1020,7 @@ class EmptyingService
                             $application->emptying_status = false;
                             $application->save();
                         }
-                        return redirect()->back()->withInput()->with('error', "Images already exist!");
+                        return redirect()->back()->withInput()->with('error', __("Images already exist!"));
                     }
     
                     // Assign image paths to emptying
@@ -1032,7 +1033,7 @@ class EmptyingService
                         $application->emptying_status = false;
                         $application->save();
                     }
-                    return redirect()->back()->withInput()->with('error', "Error! Invalid image format.");
+                    return redirect()->back()->withInput()->with('error', __("Error! Invalid image format."));
                 }
     
                 // Save emptying
@@ -1051,10 +1052,10 @@ class EmptyingService
                 $application->save();
             }
             DB::rollBack();
-            return redirect()->back()->withInput()->with('error', "Error! Emptying couldn't be created. " . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', __("Error! Emptying couldn't be created. ") . $e->getMessage());
         }
     
-        return redirect(route('application.index'))->with('success', 'Emptying Service Details created successfully');
+        return redirect(route('application.index'))->with('success', __('Emptying Service Details created successfully.'));
     }
     
 
@@ -1083,17 +1084,17 @@ class EmptyingService
                             $filename_receipt = $emptying->id . '_' . $emptying->application_id . '_' . $emptying->receipt_number . '_' . $dateTime . '.' . $extension_receipt;
                             $storeReceiptImg = Image::make($request->receipt_image)->save(Storage::disk('local')->path('/public/emptyings/receipts/' . $filename_receipt), 50);
                             if (!Storage::disk('local')->exists('/public/emptyings/receipts/' . $filename_receipt)) {
-                                return redirect()->back()->withInput()->with('error', "Error! Unable to save receipt image.");
+                                return redirect()->back()->withInput()->with('error', __("Error! Unable to save receipt image."));
                             }
                             $emptying->receipt_image = $filename_receipt;
                         } catch (\Throwable $th) {
                             DB::rollBack(); 
-                            return redirect()->back()->withInput()->with('error', "Error! Unable to save images.");
+                            return redirect()->back()->withInput()->with('error', __("Error! Unable to save images."));
                         }
 
                     } else {
                         DB::rollBack(); 
-                        return redirect()->back()->withInput()->with('error', "Error! Invalid image format.");
+                        return redirect()->back()->withInput()->with('error', __("Error! Invalid image format."));
                     }
 
 
@@ -1105,17 +1106,17 @@ class EmptyingService
                             $filename_house = $application->bin . '.' . $extension_house;
                             $storeHouseImg = Image::make($request->house_image)->save(Storage::disk('local')->path('/public/emptyings/houses/' . $filename_house), 50);
                             if (!Storage::disk('local')->exists('/public/emptyings/houses/' . $filename_house)) {
-                                return redirect()->back()->withInput()->with('error', "Error! Unable to save house image.");
+                                return redirect()->back()->withInput()->with('error', __("Error! Unable to save house image."));
                             }
                             $emptying->house_image = $filename_house;
                         } catch (\Throwable $th) {
                             DB::rollBack(); 
-                            return redirect()->back()->withInput()->with('error', "Error! Unable to save images.");
+                            return redirect()->back()->withInput()->with('error', __("Error! Unable to save images."));
                         }
 
                     } else {
                         DB::rollBack(); 
-                        return redirect()->back()->withInput()->with('error', "Error! Invalid image format.");
+                        return redirect()->back()->withInput()->with('error', __("Error! Invalid image format."));
                     }
                 }
                 $emptying->save();
@@ -1123,9 +1124,9 @@ class EmptyingService
             }
         } catch (\Throwable $e) {
             DB::rollBack(); 
-            return redirect()->back()->withInput()->with('error', 'Failed to update Emptying');
+            return redirect()->back()->withInput()->with('error', __('Failed to update Emptying.'));
         }
-        return redirect(route('application.index'))->with('success', 'Emptying updated successfully');
+        return redirect(route('application.index'))->with('success', __('Emptying updated successfully.'));
     }
 
     /**
@@ -1147,7 +1148,7 @@ class EmptyingService
                 ->sortByDesc('created_at')
                 ->reverse();
         } catch (\Throwable $e) {
-            return redirect(route('emptying.index'))->with('error', 'Failed to generate history.');
+            return redirect(route('emptying.index'))->with('error', __('Failed to generate history.'));
         }
         return view('fsm.emptying.history', compact('emptying', 'revisions'));
     }
@@ -1168,28 +1169,29 @@ class EmptyingService
         $containment_id = $request->containment_id;
 
         $headers = [
-            'Application ID',
-            'House Number',
-            'Date',
-            'Service Provider Name',
-            'Service Receiver Name',
-            'Service Receiver Gender',
-            'Service Receiver Contact Number',
-            'Reason for Emptying',
-            'No. of Trips',
-            'Containment Construction Year',
-            'Sludge Volume (m³)',
-            'Desludging Vehicle License Plate',
-            'Driver Name',
-            'Emptier 1 Name',
-            'Emptier 2 Name',
-            'Start Time',
-            'End Time',
-            'Receipt Number',
-            'Total Cost',
-            'Disposal Place',
-            'Uploaded By'
+            __('Application ID'),
+            __('House Number'),
+            __('Date'),
+            __('Service Provider Name'),
+            __('Service Receiver Name'),
+            __('Service Receiver Gender'),
+            __('Service Receiver Contact Number'),
+            __('Reason for Emptying'),
+            __('No. of Trips'),
+            __('Containment Construction Year'),
+            __('Sludge Volume (m³)'),
+            __('Desludging Vehicle License Plate'),
+            __('Driver Name'),
+            __('Emptier 1 Name'),
+            __('Emptier 2 Name'),
+            __('Start Time'),
+            __('End Time'),
+            __('Receipt Number'),
+            __('Total Cost'),
+            __('Disposal Place'),
+            __('Uploaded By')
         ];
+        
 
         $query =  DB::table('fsm.emptyings AS e')
         ->leftJoin('fsm.applications AS a', 'a.id', '=', 'e.application_id')

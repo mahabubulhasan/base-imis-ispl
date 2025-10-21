@@ -5,13 +5,13 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 @section('content')
 @can('Road Count Box')
     
-    <h1 style="padding: 15px 0 15px 0;font-size: 24px;">Road</h1>
+    <h1 style="padding: 15px 0 15px 0;font-size: 24px;">{{ __('Road')}}</h1>
     <div class="row">
         <div class="col-lg-3 col-md-12 col-xs-12  d-flex">
             @include('dashboard.countBox._sumRoadsCountBox')
         </div> <!-- main col div -->
         <div class="col-lg-9 col-md-12 col-xs-12  extra-padding">
-            <h1 style="padding: 15px 0 15px 0;font-size: 18px;">Road Length by Surface Type (m)</h1>
+            <h1 style="padding: 15px 0 15px 0;font-size: 18px;">{{ __('Road Length by Surface Type (m)')}}</h1>
             <div class="row">
                 <div class="col-lg-3 d-flex">
                     @include('dashboard.countBox._sumRoadSurfaceTypeCountBox')
@@ -28,7 +28,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
                 </div> <!--sub col div -->
             </div> <!-- sub row -->
 
-            <h1 style="padding: 15px 0 15px 0;font-size: 18px;">Road Length by Width (m) </h1>
+            <h1 style="padding: 15px 0 15px 0;font-size: 18px;">{{__('Road Length by Width (m)')}}</h1>
             <div class="row">
                 <div class="col-md-2  d-flex">
                     @include('dashboard.countBox._sumRoadWidth3')
@@ -46,7 +46,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
                     @include('dashboard.countBox._sumRoadWidth4')
                 </div> <!--sub col div -->
             </div>
-            <h1 style="padding: 15px 0 15px 0;font-size: 18px;">Road Length by Hierarchy (m)</h1>
+            <h1 style="padding: 15px 0 15px 0;font-size: 18px;">{{ __('Road Length by Hierarchy (m)')}} </h1>
             <div class="row">
                 <div class="col-lg-4 d-flex ">
                     @include('dashboard.countBox._sumHierarchy1CountBox')
@@ -92,7 +92,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 </div>
 
 @can('Sewer Count Box')
-<h1 style="padding: 15px 0 15px 0;font-size: 24px;">Sewer</h1>
+<h1 style="padding: 15px 0 15px 0;font-size: 24px;">{{ __('Sewer')}}</h1>
 <div class="row">
     <div class="col-lg-3 col-md-12 col-xs-12  d-flex">
         @include('dashboard.countBox._sumSewersCountBox')
@@ -100,7 +100,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
     <div class="col-lg-9 col-md-12 col-xs-12  extra-padding">
 
 
-        <h1 style="padding: 15px 0 15px 0;font-size: 18px;">Sewer Length by Diameter (m)</h1>
+        <h1 style="padding: 15px 0 15px 0;font-size: 18px;">{{ __('Sewer Length by Diameter (m)')}}</h1>
         <div class="row">
             <div class="col-md-3  d-flex">
                 @include('dashboard.countBox._sumSewerWidth3CountBox')
@@ -136,13 +136,13 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 </div>
 
 @can('Drain Count Box')
-<h1 style="padding: 15px 0 15px 0;font-size: 24px;">Drain</h1>
+<h1 style="padding: 15px 0 15px 0;font-size: 24px;">{{ __('Drain')}}</h1>
 <div class="row">
     <div class="col-lg-3 col-md-12 col-xs-12  d-flex">
         @include('dashboard.countBox._sumDrainsCountBox')
     </div> <!-- main col div -->
     <div class="col-lg-9 col-md-12 col-xs-12  extra-padding">
-        <h1 style="padding: 15px 0 15px 0;font-size: 18px;">Drain Length by Diameter (m) </h1>
+        <h1 style="padding: 15px 0 15px 0;font-size: 18px;">{{ __('Drain Length by Diameter (m)')}} </h1>
         <div class="row">
             <div class="col-lg-3  d-flex">
                 @include('dashboard.countBox._sumDrainWidth3')
@@ -158,7 +158,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
                 @include('dashboard.countBox._sumDrainWidth2')
             </div> <!--sub col div -->
         </div> <!-- sub row -->
-        <h1 style="padding: 15px 0 15px 0;font-size: 18px;">Drain Length by Type (m)</h1>
+        <h1 style="padding: 15px 0 15px 0;font-size: 18px;">{{ __('Drain Length by Type (m)')}}</h1>
         <div class="row">
             <div class="col-lg-4  d-flex">
                 @include('dashboard.countBox._sumDrainCoverType')
@@ -167,7 +167,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
                 @include('dashboard.countBox._sumDrainCoverType1')
             </div>
         </div> <!--sub row -->
-        <h1 style="padding: 15px 0 15px 0;font-size: 18px;">Drain Length by Surface Type (m)</h1>
+        <h1 style="padding: 15px 0 15px 0;font-size: 18px;">{{ __('Drain Length by Surface Type (m)')}}</h1>
         <div class="row">
             <div class="col-lg-4  d-flex">
                 @include('dashboard.countBox._sumDrainSurfaceType')
@@ -213,13 +213,13 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 </div>
 
 @can('Water Supply CountBox')
-<h1 style="padding: 15px 0 15px 0;font-size: 24px;">Water Supply</h1>
+<h1 style="padding: 15px 0 15px 0;font-size: 24px;">{{ __('Water Supply')}}</h1>
 <div class="row">
     <div class="col-lg-3 col-md-12 col-xs-12  d-flex">
         @include('dashboard.countBox._sumWatersupplyCountBox')
     </div> <!-- main col div -->
     <div class="col-lg-9 col-md-12 col-xs-12  extra-padding">
-        <h1 style="padding: 15px 0 15px 0;font-size: 18px;">Water Supply Length by Diameter (m) </h1>
+        <h1 style="padding: 15px 0 15px 0;font-size: 18px;">{{ __('Water Supply Length by Diameter (m)')}}</h1>
         <div class="row">
             <div class="col-lg-3  d-flex">
                 @include('dashboard.countBox._sumWaterSupply3')

@@ -1,150 +1,154 @@
 <!-- Last Modified Date: 18-04-2024
 Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 <div class="card-body">
-@if(!$employeeInfos)
+    @if(!$employeeInfos)
         @if(!Auth::user()->service_provider_id)
-        <div class="form-group row">
-            {!! Form::label('service_provider_id','Service Provider Name',['class' => 'col-sm-3 control-label']) !!}
-            <div class="col-sm-3">
-                {!! Form::select('service_provider_id', $service_provider_id, null, ['class' => 'form-control', 'placeholder' => 'Service Provider Name']) !!}
+            <div class="form-group row">
+                {!! Form::label('service_provider_id', __('Service Provider Name'), ['class' => 'col-sm-3 control-label']) !!}
+                <div class="col-sm-3">
+                    {!! Form::select('service_provider_id', $service_provider_id, null, ['class' => 'form-control', 'placeholder' => __('Service Provider Name')]) !!}
+                </div>
             </div>
-        </div>
         @else
-        <div class="form-group row required">
-            {!! Form::label('service_provider_id','Service Provider Name',['class' => 'col-sm-3 control-label']) !!}
-            <div class="col-sm-3">
-                {!! Form::select('service_providers', $service_providers, $service_provider_id, ['class' => 'form-control ','disabled' => 'true','placeholder' => 'Service Provider Name']) !!}
-                {!! Form::text('service_provider_id', $service_provider_id, ['class' => 'form-control ', 'hidden' => 'hidden', 'placeholder' => 'Employee Type']) !!}
-
+            <div class="form-group row required">
+                {!! Form::label('service_provider_id', __('Service Provider Name'), ['class' => 'col-sm-3 control-label']) !!}
+                <div class="col-sm-3">
+                    {!! Form::select('service_providers', $service_providers, $service_provider_id, ['class' => 'form-control', 'disabled' => 'true', 'placeholder' => __('Service Provider Name')]) !!}
+                    {!! Form::text('service_provider_id', $service_provider_id, ['class' => 'form-control', 'hidden' => 'hidden', 'placeholder' => __('Employee Type')]) !!}
+                </div>
             </div>
-        </div>
         @endif
     @else
-    <div class="form-group row">
-        {!! Form::label('service_provider_id','Service Provider Name',['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-3">
-            {!! Form::select('service_provider_id', $service_provider_id, null, ['class' => 'form-control', 'placeholder' => 'Service Provider Name']) !!}
+        <div class="form-group row">
+            {!! Form::label('service_provider_id', __('Service Provider Name'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-3">
+                {!! Form::select('service_provider_id', $service_provider_id, null, ['class' => 'form-control', 'placeholder' => __('Service Provider Name')]) !!}
+            </div>
         </div>
-    </div>
     @endif
 
     <div class="form-group row required">
-        {!! Form::label('name','Employee Name',['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('name', __('Employee Name'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::text('name',null,['class' => 'form-control', 'placeholder' => 'Employee Name']) !!}
+            {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => __('Employee Name')]) !!}
         </div>
     </div>
+    
     <div class="form-group row required">
-        {!! Form::label('gender','Employee Gender',['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('gender', __('Employee Gender'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::select('gender', ['Male' => 'Male', 'Female' => 'Female' , 'Others' => 'Others'], null, ['class' => 'form-control', 'placeholder' => 'Employee Gender']) !!}
-        </div>
-    </div>
-    <div class="form-group row required">
-        {!! Form::label('contact_number','Employee Contact Number',['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-3">
-            {!! Form::text('contact_number',null,['class' => 'form-control', 'placeholder' => 'Employee Contact Number', 'oninput' => "validateOwnerContactInput(this)",]) !!}
-        </div>
-    </div>
-    <div class="form-group row ">
-        {!! Form::label('dob','Date of Birth',['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-3">
-            {!! Form::date('dob',null,['class' => 'form-control date','id'=>'dob', 'placeholder' => 'Date of birth','onclick' => 'this.showPicker();']) !!}
+            {!! Form::select('gender', ['Male' => 'Male', 'Female' => 'Female', 'Others' => 'Others'], null, ['class' => 'form-control', 'placeholder' => __('Employee Gender')]) !!}
         </div>
     </div>
 
-    <div class="form-group row ">
-        {!! Form::label('address','Address',['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-3">
-            {!! Form::text('address',null,['class' => 'form-control', 'placeholder' => 'Address']) !!}
-        </div>
-    </div>
     <div class="form-group row required">
-        {!! Form::label('employee_type', 'Designation',['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('contact_number', __('Employee Contact Number'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::select('employee_type', [ 'Management' => 'Management', 'Driver' => 'Driver', 'Cleaner/Emptier' => 'Cleaner/Emptier'], null, ['class' => 'form-control', 'id' => 'employee_type' ,'placeholder' => 'Designation']) !!}
-
+            {!! Form::text('contact_number', null, ['class' => 'form-control', 'placeholder' => __('Employee Contact Number'), 'oninput' => "validateOwnerContactInput(this)"]) !!}
         </div>
     </div>
-
-    <div  class="form-group row" >
-    {!! Form::label('Working Experience (Years)',null,['class' => 'col-sm-3 control-label']) !!}
-    <div class="col-sm-3">
-        {!! Form::text('year_of_experience',null,['class' => 'form-control year_of_experience', 'placeholder' => 'Working Experience (Years)', 'oninput' => "validateOwnerContactInput(this)",]) !!}
-    </div>
-</div>
 
     <div class="form-group row">
-        {!! Form::label('wage','Monthly Remuneration',['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('dob', __('Date of Birth'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::text('wage',null,['class' => 'form-control', 'placeholder' => 'Monthly Remuneration', 'oninput' => "validateOwnerContactInput(this)",]) !!}
+            {!! Form::date('dob', null, ['class' => 'form-control date', 'id' => 'dob', 'placeholder' => __('Date of birth'), 'onclick' => 'this.showPicker();']) !!}
         </div>
     </div>
+
+    <div class="form-group row">
+        {!! Form::label('address', __('Address'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::text('address', null, ['class' => 'form-control', 'placeholder' => __('Address')]) !!}
+        </div>
+    </div>
+
+    <div class="form-group row required">
+        {!! Form::label('employee_type', __('Designation'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::select('employee_type', ['Management' => 'Management', 'Driver' => 'Driver', 'Cleaner/Emptier' => 'Cleaner/Emptier'], null, ['class' => 'form-control', 'id' => 'employee_type', 'placeholder' => __('Designation')]) !!}
+        </div>
+    </div>
+
+    <div class="form-group row">
+        {!! Form::label('year_of_experience', __('Working Experience (Years)'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::text('year_of_experience', null, ['class' => 'form-control', 'placeholder' => __('Working Experience (Years)'), 'oninput' => "validateOwnerContactInput(this)"]) !!}
+        </div>
+    </div>
+
+    <div class="form-group row">
+        {!! Form::label('wage', __('Monthly Remuneration'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::text('wage', null, ['class' => 'form-control', 'placeholder' => __('Monthly Remuneration'), 'oninput' => "validateOwnerContactInput(this)"]) !!}
+        </div>
+    </div>
+
     <div id="license_number" class="form-group row required" style="display: none;">
-        {!! Form::label('Driving License Number',null,['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('license_number', __('Driving License Number'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::text('license_number',null,['class' => 'form-control license_number',  'placeholder' => 'Driving License Number']) !!}
+            {!! Form::text('license_number', null, ['class' => 'form-control', 'placeholder' => __('Driving License Number')]) !!}
         </div>
     </div>
+
     <div id="license_issue_date" class="form-group row required" style="display: none;">
-        {!! Form::label('License Issue Date',null,['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('license_issue_date', __('License Issue Date'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::date('license_issue_date',null,['class' => 'form-control license_issue_date',  'placeholder' => 'License Issue Date','onclick' => 'this.showPicker();']) !!}
+            {!! Form::date('license_issue_date', null, ['class' => 'form-control', 'placeholder' => __('License Issue Date'), 'onclick' => 'this.showPicker();']) !!}
         </div>
     </div>
+
     <div class="form-group row">
-        {!! Form::label('Training Received (if any)',null,['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('training_status', __('Training Received (if any)'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::text('training_status',null,['class' => 'form-control', 'placeholder' => 'Training Received']) !!}
+            {!! Form::text('training_status', null, ['class' => 'form-control', 'placeholder' => __('Training Received')]) !!}
         </div>
     </div>
+
     <div class="form-group row required">
-        {!! Form::label('status','Status',['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('status', __('Status'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::select('status', $status, null, ['class' => 'form-control chosen-select', 'id' => 'status' ,'placeholder' => 'Status']) !!}
+            {!! Form::select('status', $status, null, ['class' => 'form-control chosen-select', 'id' => 'status', 'placeholder' => __('Status')]) !!}
         </div>
     </div>
+
     @if(isset($start))
-    <div class="form-group row required">
-        <label for="employment_start" class="col-sm-3 control-label">Job Start Date</label>
-        <div class="col-sm-3">
-        {!! Form::date('employment_start', isset($start) ? $start : null,  ['class' => 'form-control date ',  'onclick'=>'this.showPicker();', 'placeholder' => 'Job Start Date']) !!}
-           
+        <div class="form-group row required">
+            {!! Form::label('employment_start', __('Job Start Date'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-3">
+                {!! Form::date('employment_start', isset($start) ? $start : null, ['class' => 'form-control date', 'onclick' => 'this.showPicker();', 'placeholder' => __('Job Start Date')]) !!}
+            </div>
         </div>
-    </div>
-@else
-    <div class="form-group row required">
-        <label for="employment_start" class="col-sm-3 control-label">Job Start Date</label>
-        <div class="col-sm-3">
-        {!! Form::date('employment_start', null,  ['class' => 'form-control date ',  'onclick'=>'this.showPicker();', 'placeholder' => 'Job Start Date']) !!}
-        </div>
-    </div>
-@endif
-
-
-
- 
-    @if(isset($end))
-    <div id="employment" class="form-group row required" style="display: none;">
-        {!! Form::label('Job End Date',null,['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-3">
-            {!! Form::date('employment_end', isset($end) ? $end : null,['class' => 'form-control date ',  'placeholder' => 'Job End Date','onclick' => 'this.showPicker();']) !!}
-        </div>
-    </div>
     @else
-    <div  id="employment" class="form-group row  required"  style="display: none;">
-    {!! Form::label('Job End Date',null,['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-3 ">
-            {!! Form::date('employment_end', null, ['class' => 'form-control date ',   'placeholder' => 'Job End Date','onclick' => 'this.showPicker();']) !!}
+        <div class="form-group row required">
+            {!! Form::label('employment_start', __('Job Start Date'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-3">
+                {!! Form::date('employment_start', null, ['class' => 'form-control date', 'onclick' => 'this.showPicker();', 'placeholder' => __('Job Start Date')]) !!}
+            </div>
         </div>
-    </div>
-@endif
+    @endif
+
+    @if(isset($end))
+        <div id="employment" class="form-group row required" style="display: none;">
+            {!! Form::label('employment_end', __('Job End Date'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-3">
+                {!! Form::date('employment_end', isset($end) ? $end : null, ['class' => 'form-control date', 'placeholder' => __('Job End Date'), 'onclick' => 'this.showPicker();']) !!}
+            </div>
+        </div>
+    @else
+        <div id="employment" class="form-group row required" style="display: none;">
+            {!! Form::label('employment_end', __('Job End Date'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-3">
+                {!! Form::date('employment_end', null, ['class' => 'form-control date', 'placeholder' => __('Job End Date'), 'onclick' => 'this.showPicker();']) !!}
+            </div>
+        </div>
+    @endif
 </div>
-<!-- /.card-body -->
+
 <div class="card-footer">
-    <a href="{{ action('Fsm\EmployeeInfoController@index') }}" class="btn btn-info">Back to List</a>
-    {!! Form::submit('Save', ['class' => 'btn btn-info']) !!}
+    <a href="{{ action('Fsm\EmployeeInfoController@index') }}" class="btn btn-info">{{ __('Back to List') }}</a>
+    {!! Form::submit(__('Save'), ['class' => 'btn btn-info']) !!}
 </div><!-- /.card-footer -->
+
 @push('scripts')
     <script>
 

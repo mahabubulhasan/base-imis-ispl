@@ -38,13 +38,13 @@ class BuildingSurveyRequest extends FormRequest
     public function messages()
     {
         return [
-            "temp_building_code.unique" => 'The Temporary Building Code is already registered.',
-            "temp_building_code.required" => 'The Temporary Building Code is required.',
-            "temp_building_code.string" => 'The Temporary Building Code should be string.',
-            "tax_code" => 'The tax code should be string.',
-            "tax_code.required" => "The tax code is required.",
-            "collected_date.required" => "Collected date is required.",
-            "collected_date.date_format" => "Collected date should be in YYYY-MM-DD date format."
+            "temp_building_code.unique" => __('The Temporary Building Code is already registered.'),
+            "temp_building_code.required" => __('The Temporary Building Code is required.'),
+            "temp_building_code.string" => __('The Temporary Building Code should be string.'),
+            "tax_code" => __('The tax code should be string.'),
+            "tax_code.required" => __('The tax code is required.'),
+            "collected_date.required" => __('Collected date is required.'),
+            "collected_date.date_format" => __('Collected date should be in YYYY-MM-DD date format.'),
         ];
     }
 }

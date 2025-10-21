@@ -23,6 +23,7 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\TaxPaymentFunctionBuild::class,
         \App\Console\Commands\WaterSupplyFunctionBuild::class,
         \App\Console\Commands\MapTool_QryCron::class,
+         \App\Console\Commands\CreateTopologyFunction::class,
     ];
 
     protected function schedule(Schedule $schedule)

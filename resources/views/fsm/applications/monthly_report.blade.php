@@ -40,7 +40,7 @@
                 border: none !important;
             } */
         </style>
-        <title>Monthly Application Report</title>
+        <title>{{ __('Monthly Application Report') }}</title>
 
     </head>
 
@@ -48,15 +48,15 @@
     <div class="container">
             <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('img/logo-imis.png'))) }}" class="logo" style=" width: 120px;">
                 <div class="header">
-                    <h1 class="heading" style="text-transform:uppercase; margin: 0;">Municipality</h1>
-                    <h2 style="text-transform:uppercase; margin: 10px; ">Monthly Application Report</h2>
+                    <h1 class="heading" style="text-transform:uppercase; margin: 0;">{{ __('Municipality') }}</h1>
+                    <h2 style="text-transform:uppercase; margin: 10px; ">{{ __('Monthly Application Report') }}</h2>
                     <!-- <h3 style=" text-transform:uppercase; margin: 0;">Integrated Municipal Information System</h3> -->
                 </div>
          
             <table class="table" width="100%" style="margin-top: 20px; border-collapse: collapse;">
                 <tr>
-                    <td style="font-size: 18px; margin: 0; border: none;">Month: {{$monthName}}</td>
-                    <td style="text-align: right; font-size: 18px; margin: 0; border: none;">Year: {{$year}}</td>
+                    <td style="font-size: 18px; margin: 0; border: none;">{{ __('Month') }}: {{$monthName}}</td>
+                    <td style="text-align: right; font-size: 18px; margin: 0; border: none;">{{ __('Year') }}: {{$year}}</td>
                 </tr>
             </table>
 
@@ -69,13 +69,13 @@
         @endif
         @foreach($monthWisecount as $operator)
             <div style=" margin-top: 30px;letter-spacing: 0.2px; padding:2px; background-color: #ddddde; ">
-                <span style="font-size : 19px; font-weight: bold;">Operator Name:</span>
+                <span style="font-size : 19px; font-weight: bold;">{{ __('Operator Name') }}:</span>
                 <span  style="font-size : 19px; font-weight: bold;" >{{$operator->serv_name}}</span>
             </div>
             <table class="table" width="100%" style="margin-top: 20px; border-collapse: collapse;">
 
                 <tr>
-                <td style="font-size : 18px; " >Nos. Applications Received </td>
+                <td style="font-size : 18px; " >{{ __('Nos. Applications Received') }} </td>
                     @if(!$operator->applicationcount)
                     <td style="text-align: right;"> NA</td>
                     @else
@@ -83,7 +83,7 @@
                     @endif
                     </tr>
                 <tr>
-                    <td style="font-size : 18px; " >Nos. Containments Emptied </td>
+                    <td style="font-size : 18px; " >{{ __('Nos. Containments Emptied') }} </td>
                     @if(!$operator->emptycount)
                     <td style="text-align: right;"> NA</td>
                     @else
@@ -92,7 +92,7 @@
                     
                 </tr>
                 <tr>
-                <td style="font-size: 18px;"> Nos. Safe Disposals  </td>
+                <td style="font-size: 18px;"> {{ __('Nos. Safe Disposals') }}  </td>
                     @if(!$operator->scount)
                     <td style="text-align: right;"> NA</td>
                     @else
@@ -100,7 +100,7 @@
                     @endif
                     </tr>
                 <tr>
-                    <td style="font-size: 18px;"> Sludge Collected (m³)  </td>
+                    <td style="font-size: 18px;"> {{ __('Sludge Collected (m³)') }}  </td>
                     @if(!$operator->sludgecount)
                     <td style="text-align: right;"> NA</td>
                     @else
@@ -109,7 +109,7 @@
                     
                 </tr>
                 <tr>
-                <td style="font-size : 18px; "> Total Revenue </td>
+                <td style="font-size : 18px; ">{{ __('Total Revenue') }}  </td>
                     @if(!$operator->totalcost)
                     <td style="text-align: right;"> NA</td>
                     @else
@@ -120,9 +120,11 @@
          </table>
         @endforeach
         <!-- end for each -->
-        <div style=" margin-top: 30px;letter-spacing: 0.2px; padding:2px; background-color: #ddddde; ">
-            <span style="font-size : 19px; font-weight: bold;">Cumulative Data for {{$year}} upto {{$monthName}}</span>
-        </div>
+        <div style="margin-top: 30px; letter-spacing: 0.2px; padding: 2px; background-color: #ddddde;">
+                <span style="font-size: 19px; font-weight: bold;">{{ __('Cumulative Data for')}} {{$year}} {{ __('upto')}} {{$monthName}}
+                </span>
+            </div>
+
            @if(!$yearCount)
                     <div style=""> No Data</div> 
                 @else
@@ -132,7 +134,7 @@
                 @foreach($yearCount as $data)
 
                     <tr>
-                        <td style="font-size : 18px; " >  Nos. Applications Received </td>
+                        <td style="font-size : 18px; " > {{ __('Nos. Applications Received') }}  </td>
                         @if(!$data->applicationcount)
                         <td style="text-align: right;"> NA</td>
                         @else
@@ -140,7 +142,7 @@
                         @endif
                     </tr>
                     <tr>
-                        <td style="font-size : 18px; " >  Nos. Containments Emptied </td>
+                        <td style="font-size : 18px; " > {{ __('Nos. Containments Emptied') }}  </td>
                         @if(!$data->emptycount)
                         <td style="text-align: right;"> NA</td>
                         @else
@@ -149,7 +151,7 @@
                         
                     </tr>
                     <tr>
-                        <td style="font-size : 18px; " >  Nos. Safe Disposals </td>
+                        <td style="font-size : 18px; " >  {{ __('Nos. Safe Disposals') }} </td>
                             @if(!$data->scount)
                             <td style="text-align: right;"> NA</td>
                             @else
@@ -157,7 +159,7 @@
                             @endif
                     </tr>
                     <tr>
-                        <td style="font-size : 18px; " >  Sludge Collected (m³) </td>
+                        <td style="font-size : 18px; " > {{ __('Sludge Collected (m³)') }}  </td>
                         @if(!$data->sludgecount)
                         <td style="text-align: right;"> NA</td>
                         @else
@@ -166,7 +168,7 @@
                     </tr>
                     <tr>
                      
-                        <td style="font-size : 18px; " >  Total Revenue </td>
+                        <td style="font-size : 18px; " > {{ __('Total Revenue') }}  </td>
                         @if(!$data->totalcost)
                         <td style="text-align: right;"> NA</td>
                         @else
@@ -178,9 +180,12 @@
                 </table>
         @endif
 
-        <div style=" margin-top: 30px;letter-spacing: 0.2px; padding:2px; background-color: #ddddde; ">
-            <span style="font-size : 19px; font-weight: bold;">Ward Wise Cumulative Data upto {{$monthName}}</span>
-        </div>
+        <div style="margin-top: 30px; letter-spacing: 0.2px; padding: 2px; background-color: #ddddde;">
+                <span style="font-size: 19px; font-weight: bold;">
+                    {{ __('Ward Wise Cumulative Data upto')}} {{$monthName}}
+                </span>
+            </div>
+
                 
         @if(!$wardData)
       
@@ -189,12 +194,12 @@
                 <table class="table table-bordered table-striped" width="100%" style="margin-top: 20px; letter-spacing: 0.2px; border-collapse: collapse;">
 
                 <tr>
-                    <td style="letter-spacing: 0.2px;" >  Ward No</td>
-                   <td style="letter-spacing: 0.2px;" >    Nos. Applications Received </td>
-                   <td style="letter-spacing: 0.2px;" >    Nos. Containments Emptied </td>
-                   <td style="letter-spacing: 0.2px;" >    Nos. Safe Disposals </td>
-                   <td style="letter-spacing: 0.2px;" >    Sludge Collected (m³) </td>
-                   <td style="letter-spacing: 0.2px;" >    Total Revenue </td>
+                    <td style="letter-spacing: 0.2px;" > {{ __('Ward No') }} </td>
+                   <td style="letter-spacing: 0.2px;" > {{ __('Nos. Applications Received') }}    </td>
+                   <td style="letter-spacing: 0.2px;" >  {{ __('Nos. Containments Emptied') }}   </td>
+                   <td style="letter-spacing: 0.2px;" >  {{ __('Nos. Safe Disposals') }}   </td>
+                   <td style="letter-spacing: 0.2px;" > {{ __('Sludge Collected (m³)') }}    </td>
+                   <td style="letter-spacing: 0.2px;" >  {{ __('Total Revenue') }}   </td>
                 </tr>
                 @foreach($wardData as $data)
                 <tr>

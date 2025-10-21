@@ -8,7 +8,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 @include('layouts.components.error-alert')
 <div class="card card-info">
 	{!! Form::open(['url' => 'fsm/desludging-vehicles', 'class' => 'form-horizontal']) !!}
-		@include('fsm/vacutug-types.partial-form', ['submitButtomText' => 'Save'])
+		@include('fsm/vacutug-types.partial-form', ['submitButtomText' => __('Save')])
 	{!! Form::close() !!}
 </div><!-- /.box -->
 @stop

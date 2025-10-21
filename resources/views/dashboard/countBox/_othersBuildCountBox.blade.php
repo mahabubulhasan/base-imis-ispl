@@ -7,12 +7,12 @@
     <span class="info-box-text">
       <h3>{{ number_format($othersCount) }}</h3>
     </span>
-    <span class="info-box-number">Others</span>
+    <span class="info-box-number">{{__('Others') }}</span>
   </div>
   <!-- Top-right icon with tooltip -->
   <span class="top-right-icon" data-tooltip="Culture & Religious<br>Agricultural & Farm">
     <i class="fa-solid fa-circle-info"></i>
-    <div class="custom-tooltip">Culture & Religious<br>Agriculture and Livestock <br> Vacant/Under Construction</div>
+    <div class="custom-tooltip">{{ __('Culture & Religious') }}<br>{{ __('Agriculture and Livestock') }} <br> {{ __('Vacant/Under Construction') }}</div>
   </span>
 </div>
 

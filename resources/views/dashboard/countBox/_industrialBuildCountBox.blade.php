@@ -15,6 +15,6 @@
     </span>
     <div class="info-box-content">
       <span class="info-box-text"> <h3>{{ number_format($industrialBuildingCount) }}</h3></span>
-      <span class="info-box-number">Industrial</span>
+      <span class="info-box-number">{{__('Industrial') }}</span>
     </div>
   </div>

@@ -13,6 +13,8 @@ class Drain extends Model
 {
     use HasFactory;
     use RevisionableTrait;
+    use SoftDeletes;
+
     protected $revisionCreationsEnabled = true;
     protected $table = 'utility_info.drains';
     protected $primaryKey = 'code';

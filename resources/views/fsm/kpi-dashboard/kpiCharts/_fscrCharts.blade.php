@@ -1,5 +1,5 @@
 @include('layouts.dashboard.chart-card',[
-    'card_title' => "Faecal Sludge Collection Ratio",
+    'card_title' => __("Faecal Sludge Collection Ratio"),
     'export_chart_btn_id' => "exportfscrCharts",
     'canvas_id' => "fscrCharts"
 ])

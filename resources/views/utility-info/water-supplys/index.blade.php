@@ -13,16 +13,21 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 
 	<div class="card">
         <div class="card-header">
-             @can('Export WaterSupply Network to CSV')
-            <a href="" id="export" class="btn btn-info">Export to CSV</a>
+
+        @can('Add WaterSupply On Map')
+        <a href="{{ action('MapsController@index') }}#add_watersupply_control" class="btn btn-info">{{ __('Add Water Supply')}}</a>
+        @endcan    
+        @can('Export WaterSupply Network to CSV')
+            <a href="" id="export" class="btn btn-info">{{ __('Export to CSV') }}</a>
+
             @endcan
             @can('Export WaterSupply Network to Shape')
-                    <a href="#" id="export-shp" class="btn btn-info">Export to Shape File</a>
+                    <a href="#" id="export-shp" class="btn btn-info">{{ __('Export to Shape File') }}</a>
             @endcan
             @can('Export WaterSupply Network to KML')
-                    <a href="#" id="export-kml" class="btn btn-info">Export to KML</a>
+                    <a href="#" id="export-kml" class="btn btn-info">{{ __('Export to KML') }}</a>
             @endcan
-            <a class="btn btn-info float-right" id="headingOne" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Show Filter</a>
+            <a class="btn btn-info float-right" id="headingOne" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">{{ __('Show Filter') }}</a>
 
         </div>
         <div class="card-body">
@@ -35,22 +40,22 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
                                 <div class="accordion-body">
                                     <form class="form-horizontal" id="filter-form">
                                         <div class="form-group row">
-                                            <label for="code" class="col-md-2 col-form-label ">Code</label>
+                                            <label for="code" class="col-md-2 col-form-label ">{{ __('Code') }}</label>
                                             <div class="col-md-2">
-                                                <input type="text" class="form-control" id="code"  placeholder="Code" />
+                                                <input type="text" class="form-control" id="code"  placeholder="{{ __('Code') }}" />
                                             </div>
-                                            <label for="project_name" class="col-md-2 col-form-label ">Project Name</label>
+                                            <label for="project_name" class="col-md-2 col-form-label ">{{ __('Project Name') }}</label>
                                             <div class="col-md-2">
-                                                <input type="text" class="form-control" id="project_name" placeholder="Project Name" />
+                                                <input type="text" class="form-control" id="project_name" placeholder="{{ __('Project Name') }}" />
                                             </div>
-                                            <label for="length" class="col-md-2 col-form-label ">Length</label>
+                                            <label for="length" class="col-md-2 col-form-label ">{{ __('Length (m)') }}</label>
                                             <div class="col-md-2">
-                                                <input type="text" class="form-control" id="lengths" placeholder="Length"/>
+                                                <input type="text" class="form-control" id="lengths" placeholder="{{ __('Length (m)') }}"/>
                                             </div>
                                         </div>
                                         <div class="card-footer text-right">
-                                            <button type="submit" class="btn btn-info ">Filter</button>
-                                            <button id="reset-filter" type="reset" class="btn btn-info">Reset</button>
+                                            <button type="submit" class="btn btn-info ">{{ __('Filter') }}</button>
+                                            <button id="reset-filter" type="reset" class="btn btn-info">{{ __('Reset') }}</button>
                                         </div>
                                     </form>
                                 </div>  <!--- accordion body!-->
@@ -66,14 +71,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
                 <table id="data-table" class="table table-bordered table-striped dtr-inline" width="100%">
                     <thead>
                         <tr>
-                            <th>Code</th>
-                            <th>Road Code</th>
-                            <th>Project Name</th>
-                            <th>Type </th>
-                            <th>Material Type </th>
-                            <th>Diameter (mm)</th>
-                            <th>Length (m)</th>
-                            <th>Actions</th>
+                            <th>{{ __('Code') }}</th>
+                            <th>{{ __('Road Code') }}</th>
+                            <th>{{ __('Project Name') }}</th>
+                            <th>{{ __('Type') }} </th>
+                            <th>{{ __('Material Type') }} </th>
+                            <th>{{ __('Diameter (mm)') }}</th>
+                            <th>{{ __('Length (m)') }}</th>
+                            <th>{{ __('Actions') }}</th>
                         </tr>
                     </thead>
                 </table>
@@ -120,13 +125,14 @@ $(function() {
             var form = $(this).closest("form");
             event.preventDefault();
             Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
+                title: "{{ __('Are you sure?') }}",
+                text: "{!! __('You won\'t be able to revert this!') !!}",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+                confirmButtonText: "{{__('Yes, delete it!')}}",
+                cancelButtonText: '{{ __('Cancel') }}',
             }).then((result) => {
                 if (result.isConfirmed) {
                     form.submit();

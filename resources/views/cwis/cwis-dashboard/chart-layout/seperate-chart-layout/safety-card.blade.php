@@ -1,5 +1,3 @@
-
-
 <style>
     /* Breakpoints */
     @media screen and (max-width: 540px) {
@@ -216,9 +214,6 @@
         margin-bottom: 20px;
     }
 </style>
-
-
-
 <div class="hi">
     <div class="safety safety1">
     
@@ -227,15 +222,13 @@
             <div class="chart" id="sf1aContain">
                 <figure class="chart__figure">
                     <canvas class="chart__canvas" id="sf1aCanva" width="160" height="140" aria-label="Example doughnut chart showing data as a percentage" role="img"></canvas>
-    
                 </figure>
             </div>
-    
             <script>
                 document.addEventListener('DOMContentLoaded', function () {
                     createDoughnutChart(  {{ isset($sf1a[0]) && $sf1a[0] !== null ? html_entity_decode($sf1a[0]->data_value) : 0  }}, '#29ab87', 'sf1aCanva', 'sf1aContain');
                 });
-            </script><p>Percentage of population with access to safe, private, individual toilets/latrines</p>
+            </script><p>{{__('Percentage of population with access to safe, private, individual toilets/latrines')}}</p>
         </div>
         <div class="sf1">
             <div class="chart" id="sf1bContain">
@@ -250,7 +243,7 @@
                     createDoughnutChart(  {{ isset($sf1b[0]) && $sf1b[0] !== null ? html_entity_decode($sf1b[0]->data_value) : 0 }}, '#29ab87', 'sf1bCanva', 'sf1bContain');
                 });
             </script>
-            <p>Percentage of on-site sanitation that have been desludged</p>
+            <p>{{__('Percentage of on-site sanitation that have been desludged')}}</p>
         </div>
         <div class="sf1">
             <div class="chart" id="sf1cContain">
@@ -265,7 +258,7 @@
                     createDoughnutChart({{ isset($sf1c[0]) && $sf1c[0] !== null ? html_entity_decode($sf1c[0]->data_value) : 0 }}, '#29ab87', 'sf1cCanva', 'sf1cContain');
                 });
             </script>
-           <p>Percentage of collected FS disposed at a treatment plant or at designated disposal site</p>
+           <p>{{__('Percentage of collected FS disposed at a treatment plant or at designated disposal site')}}</p>
         </div>
         <div class="sf1">
             <div class="chart" id="sf1dContain">
@@ -280,13 +273,12 @@
                     createDoughnutChart(  {{ isset($sf1d[0]) && $sf1d[0] !== null ? html_entity_decode($sf1d[0]->data_value) : 0 }}, '#29ab87', 'sf1dCanva', 'sf1dContain');
                 });
             </script>
-           <p>FS treatment capacity as a percentage of total FS generated from NSS connections (excluding safely disposed in situ)</p>
+           <p>{{__('FS treatment capacity as a percentage of total FS generated from NSS connections (excluding safely disposed in situ)')}}</p>
         </div>
         <div class="sf1">
             <div class="chart" id="sf1eContain">
                 <figure class="chart__figure">
                     <canvas class="chart__canvas" id="sf1eCanva" width="160" height="140" aria-label="Example doughnut chart showing data as a percentage" role="img"></canvas>
-    
                 </figure>
             </div>
     
@@ -295,13 +287,12 @@
                     createDoughnutChart(  {{ isset($sf1e[0]) && $sf1e[0] !== null ? html_entity_decode($sf1e[0]->data_value) : '0' }}, '#29ab87', 'sf1eCanva', 'sf1eContain');
                 });
             </script>
-           <p>FS treatment capacity as a percentage of total FS collected from NSS connections</p>
+           <p>{{__('FS treatment capacity as a percentage of total FS collected from NSS connections')}}</p>
         </div>
         <div class="sf1">
             <div class="chart" id="sf1fContain">
                 <figure class="chart__figure">
                     <canvas class="chart__canvas" id="sf1fCanva" width="160" height="140" aria-label="Example doughnut chart showing data as a percentage" role="img"></canvas>
-    
                 </figure>
             </div>
     
@@ -310,7 +301,7 @@
                     createDoughnutChart({{ isset($sf1f[0]) && $sf1f[0] !== null ? html_entity_decode($sf1f[0]->data_value) : 0 }}, '#29ab87', 'sf1fCanva', 'sf1fContain');
                 });
             </script>
-           <p>Wastewater treatment capacity as a percentage of total wastewater generated from sewered connections and greywater generated from non-sewered connections</p>
+           <p>{{__('Wastewater treatment capacity as a percentage of total wastewater generated from sewered connections and greywater generated from non-sewered connections')}}</p>
         </div>
         <div class="sf1">
             <div class="chart" id="sf1gContain">
@@ -325,7 +316,7 @@
                     createDoughnutChart(  {{ isset($sf1g[0]) && $sf1g[0] !== null ? html_entity_decode($sf1g[0]->data_value) : 0 }}, '#29ab87', 'sf1gCanva', 'sf1gContain');
                 });
             </script>
-           <p>Effectiveness of FS/WW treatment in meeting prescribed standards for effluent discharge and biosolids disposal</p>
+           <p>{{__('Effectiveness of FS/WW treatment in meeting prescribed standards for effluent discharge and biosolids disposal')}}</p>
         </div>       
         <div class="sf2">
               <div class="chart" id="sf2aContain">
@@ -340,7 +331,7 @@
                     createDoughnutChart( {{ isset($sf2a[0]) && $sf2a[0] !== null ? html_entity_decode($sf2a[0]->data_value) : 0 }}, '#29ab87', 'sf2aCanva', 'sf2aContain');
                 });
             </script>
-            <p>Percentage LIC population with access to safe individual toilets</p>
+            <p>{{__('Percentage LIC population with access to safe individual toilets')}}</p>
         </div>
         <div class="sf2">
               <div class="chart" id="sf2bContain">
@@ -355,7 +346,7 @@
                     createDoughnutChart(  {{ isset($sf2b[0]) && $sf2b[0] !== null ? html_entity_decode($sf2b[0]->data_value) : 0 }}, '#29ab87', 'sf2bCanva', 'sf2bContain');
                 });
             </script>
-            <p>Percentage of LIC, NSS, IHHLs that have been desludged</p>
+            <p>{{__('Percentage of LIC, NSS, IHHLs that have been desludged')}}</p>
         </div>
         <div class="sf2">
     
@@ -371,7 +362,7 @@
                     createDoughnutChart( {{ isset($sf2c[0]) && $sf2c[0] !== null ? html_entity_decode($sf2c[0]->data_value) : 0 }}, '#29ab87', 'sf2cCanva', 'sf2cContain');
                 });
             </script>
-            <p>Percentage of collected FS (collected from LIC) disposed at treatment plant or designated disposal sites</p>
+            <p>{{__('Percentage of collected FS (collected from LIC) disposed at treatment plant or designated disposal sites')}}</p>
         </div>
         <div class="sf3">
             <div class="chart" id="sf3aContain">
@@ -386,7 +377,7 @@
                     createDoughnutChart( {{ isset($sf3[0]) && $sf3[0] !== null ? html_entity_decode($sf3[0]->data_value) : 0 }}, '#29ab87', 'sf3aCanva', 'sf3aContain');
                 });
             </script>
-            <p>Percentage of dependent population (those without access to a private toilet/latrine) with access to safe shared facilities (CT/PT)</p>
+            <p>{{__('Percentage of dependent population (those without access to a private toilet/latrine) with access to safe shared facilities (CT/PT)')}}</p>
         </div>
         <div class="sf3">
             <div class="chart" id="sf3bContain">
@@ -401,7 +392,7 @@
                     createDoughnutChart({{ isset($sf3b[0]) && $sf3b[0] !== null ? html_entity_decode($sf3b[0]->data_value) : 0 }}, '#29ab87', 'sf3bCanva', 'sf3bContain');
                 });
             </script>
-            <p>Percentage of CTs that adhere to principles of universal design</p>
+            <p>{{__('Percentage of CTs that adhere to principles of universal design')}}</p>
         </div>
         <div class="sf3">
     
@@ -417,12 +408,12 @@
                     createDoughnutChart( {{ isset($sf3c[0]) && $sf3c[0] !== null ? html_entity_decode($sf3c[0]->data_value) : 0 }}, '#29ab87', 'sf3cCanva', 'sf3cContain');
                 });
             </script>
-            <p>Percentage of users of CTs that are women</p>
+            <p>{{__('Percentage of users of CTs that are women')}}</p>
         </div>
         <div class="sf3">
              @include("cwis.cwis-dashboard.charts.seperate-chart.sf-3.sf-3e-chart")
              <br>
-             <p>Average distance from the house to the closest CT (in meters)</p>
+             <p>{{__('Average distance from the house to the closest CT (in meters)')}}</p>
         </div>
         <div class="sf4">
             <div class="chart" id="sf4aContain">
@@ -437,7 +428,7 @@
                     createDoughnutChart({{ isset($sf4a[0]) && $sf4a[0] !== null ? html_entity_decode($sf4a[0]->data_value) : 0 }}, '#29ab87', 'sf4aCanva', 'sf4aContain');
                 });
             </script>
-            <p>Percentage of PTs where FS and WW generated is safely transported to TP or safely disposed in situ</p>
+            <p>{{__('Percentage of PTs where FS and WW generated is safely transported to TP or safely disposed in situ')}}</p>
         </div>
         <div class="sf4">
             <div class="chart" id="sf4bContain">
@@ -452,7 +443,7 @@
                     createDoughnutChart({{ isset($sf4b[0]) && $sf4b[0] !== null ? html_entity_decode($sf4b[0]->data_value) : 0 }}, '#29ab87', 'sf4bCanva', 'sf4bContain');
                 });
             </script>
-            <p>Percentage of PTs that adhere to principles of universal design</p>
+            <p>{{__('Percentage of PTs that adhere to principles of universal design')}}</p>
         </div>
         <div class="sf4">
     
@@ -468,13 +459,12 @@
                     createDoughnutChart({{ isset($sf4d[0]) && $sf4d[0] !== null ? html_entity_decode($sf4d[0]->data_value) : 0 }}, '#29ab87', 'sf4dCanva', 'sf4dContain');
                 });
             </script>
-            <p>Percentage of users of PTs that are women</p>
+            <p>{{__('Percentage of users of PTs that are women')}}</p>
         </div>
         <div class="sf4">
             <div class="chart" id="sf5Contain">
                 <figure class="chart__figure">
                     <canvas class="chart__canvas" id="sf5Canva" width="160" height="140" aria-label="Example doughnut chart showing data as a percentage" role="img"></canvas>
-        
                 </figure>
             </div>
         
@@ -483,22 +473,20 @@
                     createDoughnutChart({{ isset($sf5[0]) && $sf5[0] !== null ? html_entity_decode($sf5[0]->data_value) : 0 }}, '#29ab87', 'sf5Canva', 'sf5Contain');
                 });
             </script>
-            <p> Percentage of educational institutions where FS/WW generated is safely transported to TP or safely disposed in situ</p>
+            <p> {{__('Percentage of educational institutions where FS/WW generated is safely transported to TP or safely disposed in situ')}}</p>
         </div>
         <div class="sf4">
             <div class="chart" id="sf6Contain">
                 <figure class="chart__figure">
                     <canvas class="chart__canvas" id="sf6Canva" width="160" height="140" aria-label="Example doughnut chart showing data as a percentage" role="img"></canvas>
-        
                 </figure>
             </div>
-        
             <script>
                 document.addEventListener('DOMContentLoaded', function () {
                     createDoughnutChart({{ isset($sf6[0]) && $sf6[0] !== null ? html_entity_decode($sf6[0]->data_value) : 0 }}, '#29ab87', 'sf6Canva', 'sf6Contain');
                 });
             </script>
-            <p>Percentage of healthcare facilities where FS/WW generated is safely transported to TP or safely disposed in situ</p>
+            <p>{{__('Percentage of healthcare facilities where FS/WW generated is safely transported to TP or safely disposed in situ')}}</p>
         </div>
         <div class="sf4">
             <div class="chart" id="sf7Contain">
@@ -513,7 +501,7 @@
                     createDoughnutChart( {{ isset($sf7[0]) && $sf7[0] !== null ? html_entity_decode($sf7[0]->data_value) : 0 }}, '#29ab87', 'sf7Canva', 'sf7Contain');
                 });
             </script>
-            <p>Percentage of desludging services completed mechanically or semi-mechanically (by a gulper)</p>
+            <p>{{__('Percentage of desludging services completed mechanically or semi-mechanically (by a gulper)')}}</p>
         </div>
         <div class="sf4"> 
              <div class="chart" id="sf9Contain">
@@ -528,7 +516,7 @@
                 createDoughnutChart( {{ isset($sf9[0]) && $sf9[0] !== null ? html_entity_decode($sf9[0]->data_value) : 0 }}, '#29ab87', 'sf9Canva', 'sf9Contain');
             });
          </script>
-            <p>Percentage of tests which are in compliance with water quality standards for fecal coliform</p>
+            <p>{{__('Percentage of tests which are in compliance with water quality standards for fecal coliform')}}</p>
          </div>
     </div>
     </div>

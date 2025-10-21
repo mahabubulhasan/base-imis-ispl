@@ -26,7 +26,7 @@
 <div class="card-body">
         @if(isset($role))
         <div class="form-group row">
-            {{ Form::label('name', 'Name', ['class' => 'col-sm-1 control-label']) }}
+            {{ Form::label('name', __('Name'), ['class' => 'col-sm-1 control-label']) }}
             <div class="col-sm-3">
                 {{ Form::label('name', $role->name, ['class' => 'control-label']) }}
                                 {{ Form::hidden('name', null, [ 'class' => 'form-control' . ($errors->has('name') ? ' is-invalid' : '') ])}}
@@ -35,9 +35,9 @@
         </div>
         @else
         <div class="form-group row required">
-            {{ Form::label('name', 'Name', ['class' => 'col-sm-1 control-label']) }}
+            {{ Form::label('name', __('Name'), ['class' => 'col-sm-1 control-label']) }}
             <div class="col-sm-3" >
-                {{ Form::text('name', null, [ 'class' => 'form-control' . ($errors->has('name') ? ' is-invalid' : ''),'placeholder' => 'Name'  ])}}
+                {{ Form::text('name', null, [ 'class' => 'form-control' . ($errors->has('name') ? ' is-invalid' : ''),'placeholder' => __('Name')  ])}}
                 @if($errors->has('name'))
                     <div class="invalid-feedback">
                         {{ $errors->first('name') }}
@@ -48,12 +48,12 @@
         @endif
 </div>
 <div class="form-group col-lg-12">
-    <label class="control-label">Permissions : </label>
+    <label class="control-label">{{ __('Permissions')}} </label>
 
     <table class="table table-bordered" id="permissions-table" style="width:100%">
         <thead>
         <tr>
-            <th>Permission</th>
+            <th>{{ __('Permissions')}}</th>
             <th>Category</th>
         </tr>
         </thead>

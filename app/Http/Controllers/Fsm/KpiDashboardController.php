@@ -547,7 +547,7 @@ class KpiDashboardController extends Controller
      */
     public function index($select_year= null, $service_provider_id= null)
     {
-        $page_title = "Key Performance Indicators (KPIs) Dashboard";
+        $page_title = __("Key Performance Indicators (KPIs) Dashboard");
           // Fetch unique years for filtering
           $years = KpiTarget::pluck('year')->unique()->sortDesc();
         $year = request()->input('year', '');

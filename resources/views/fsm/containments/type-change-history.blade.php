@@ -3,14 +3,14 @@
 @section('content')
 <div class="card card-info">
 	<div class="card-header bg-transparent">
-		<a href="{{ action('Fsm\ContainmentController@index') }}" class="btn btn-info">Back to List</a>
+		<a href="{{ action('Fsm\ContainmentController@index') }}" class="btn btn-info">{{ __("Back to List") }}</a>
 	</div><!-- /.box-header -->
 	<div class="card-body">
 		<div class="timeline">
     @foreach($revisions as $date=>$histories)
 
     <!-- Timeline time label -->
-    
+
     @foreach($histories as $history)
     @if($history->key == 'type')
     <div class="time-label">
@@ -26,7 +26,7 @@
                     <!-- Header. Optional -->
                     @if($history->key == 'created_at' && !$history->old_value)
                         @if($history->userResponsible())
-                            <h3 class="timeline-header">{{ $history->userResponsible()->name }} created this resource.</h3>
+                            <h3 class="timeline-header">{{ $history->userResponsible()->name }} {{ __("created this resource") }}.</h3>
                         @endif
                     @else
                         @if($history->userResponsible())

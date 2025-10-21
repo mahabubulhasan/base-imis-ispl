@@ -15,21 +15,30 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
             <div class="card">
                 <div class="card-header">
                     @can('Add Treatment Plant')
-                        <a href="{{ action('Fsm\TreatmentPlantController@create') }}" class="btn btn-info">Add Treatment
-                            Plant</a>
+                        <a href="{{ action('Fsm\TreatmentPlantController@create') }}" class="btn btn-info">
+                            {{ __('Add Treatment Plant') }}
+                        </a>
                     @endcan
                     @can('Export Treatment Plants to CSV')
-                        <a href="{{ action('Fsm\TreatmentPlantController@export') }}" id="export" class="btn btn-info">Export to
-                            CSV</a>
+                        <a href="{{ action('Fsm\TreatmentPlantController@export') }}" id="export" class="btn btn-info">
+                            {{ __('Export to CSV') }}
+                        </a>
                     @endcan
                     @can('Export Treatment Plants to Shape')
-                        <a href="#" id="export-shp" class="btn btn-info">Export to Shape File</a>
+                        <a href="#" id="export-shp" class="btn btn-info">
+                            {{ __('Export to Shape File') }}
+                        </a>
                     @endcan
                     @can('Export Treatment Plants to KML')
-                        <a href="#" id="export-kml" class="btn btn-info">Export to KML</a>
+                        <a href="#" id="export-kml" class="btn btn-info">
+                            {{ __('Export to KML') }}
+                        </a>
                     @endcan
-                    <a href class="btn btn-info float-right" data-toggle="collapse" data-target="#collapseFilter"
-                        aria-expanded="false" aria-controls="collapseFilter">Show Filter</a>
+                    <a href="#" class="btn btn-info float-right" data-toggle="collapse" data-target="#collapseFilter"
+                        aria-expanded="false" aria-controls="collapseFilter">
+                        {{ __('Show Filter') }}
+                    </a>
+
 
                 </div><!-- /.box-header -->
                 <div class="card-body">
@@ -43,64 +52,70 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                             <form class="form-horizontal" id="filter-form">
                                                 <div class="form-group row">
 
-                                                    <label for="name" class="col-md-2 col-form-label ">Name</label>
+                                                    <label for="name"
+                                                        class="col-md-2 col-form-label ">{{ __('Name') }}</label>
                                                     <div class="col-md-2">
-                                                        <input type="text" class="form-control" id="name" placeholder= "Name" />
+                                                        <input type="text" class="form-control" id="name"
+                                                            placeholder="{{ __('Name') }}" />
                                                     </div>
 
-
-                                                    <label for="status" class="col-md-2 col-form-label ">Status</label>
+                                                    <label for="status"
+                                                        class="col-md-2 col-form-label ">{{ __('Status') }}</label>
                                                     <div class="col-md-2">
-                                                        <select class="form-control" id="status"
-                                                            name="status">
-                                                            <option value="">Status</option>
-                                                            <option value="TRUE">Operational</option>
-                                                            <option value="FALSE">Not Operational</option>
-
+                                                        <select class="form-control" id="status" name="status">
+                                                            <option value="">{{ __('Status') }}</option>
+                                                            <option value="TRUE">{{ __('Operational') }}</option>
+                                                            <option value="FALSE">{{ __('Not Operational') }}</option>
                                                         </select>
                                                     </div>
 
-                                                    <label for="type" class="col-md-2 col-form-label ">Treatment Plant Type</label>
+                                                    <label for="type"
+                                                        class="col-md-2 col-form-label ">{{ __('Treatment Plant Type') }}</label>
                                                     <div class="col-md-2">
                                                         <select class="form-control" id="type" name="type">
-                                                            <option value="">Treatment Plant Type</option>
+                                                            <option value="">{{ __('Treatment Plant Type') }}
+                                                            </option>
                                                             @foreach ($tpType as $key => $value)
-                                                                <option value="{{ $key }}">{{ $value }}</option>
+                                                                <option value="{{ $key }}">{{ $value }}
+                                                                </option>
                                                             @endforeach
                                                         </select>
                                                     </div>
 
                                                 </div>
+
                                                 <div class="form-group row">
-                                                    <label for="caretaker_name" class="col-md-2 col-form-label ">Caretaker
-                                                        Name
-                                                    </label>
+                                                    <label for="caretaker_name"
+                                                        class="col-md-2 col-form-label ">{{ __('Caretaker Name') }}</label>
                                                     <div class="col-md-2">
-                                                        <input type="text" class="form-control" id="caretaker_name" placeholder= "Caretaker Name"/>
-
+                                                        <input type="text" class="form-control" id="caretaker_name"
+                                                            placeholder="{{ __('Caretaker Name') }}" />
                                                     </div>
 
-                                                    <label for="capacity_per_day" class="col-md-2 col-form-label ">Capacity
-                                                    Per Day (m³)
-                                                    </label>
+                                                    <label for="capacity_per_day"
+                                                        class="col-md-2 col-form-label ">{{ __('Capacity Per Day (m³)') }}</label>
                                                     <div class="col-md-2">
-                                                        <input type="text" class="form-control" id="capacity_per_day"  name="capacity_per_day"  placeholder= "Capacity Per Day (m³)"/>
+                                                        <input type="text" class="form-control" id="capacity_per_day"
+                                                            name="capacity_per_day"
+                                                            placeholder="{{ __('Capacity Per Day (m³)') }}" />
                                                     </div>
 
-                                                    <label for="caretaker_number" class="col-md-2 col-form-label "  >Caretaker
-                                                        Number
-                                                    </label>
+                                                    <label for="caretaker_number"
+                                                        class="col-md-2 col-form-label ">{{ __('Caretaker Number') }}</label>
                                                     <div class="col-md-2">
-                                                        <input type="text" class="form-control" id="caretaker_number" placeholder= "Caretaker Number" oninput = "validateOwnerContactInput(this)"/>
+                                                        <input type="text" class="form-control" id="caretaker_number"
+                                                            placeholder="{{ __('Caretaker Number') }}"
+                                                            oninput="validateOwnerContactInput(this)" />
                                                     </div>
-
-
                                                 </div>
+
                                                 <div class="card-footer text-right">
-                                                    <button type="submit" class="btn btn-info ">Filter</button>
-                                                    <button type="reset" id="reset-filter" class="btn btn-info">Reset</button>
-
+                                                    <button type="submit"
+                                                        class="btn btn-info">{{ __('Filter') }}</button>
+                                                    <button type="reset" id="reset-filter"
+                                                        class="btn btn-info">{{ __('Reset') }}</button>
                                                 </div>
+
                                                 <div class="clearfix"></div>
                                             </form>
                                         </div>
@@ -109,25 +124,26 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                             </div>
                         </div>
                     </div>
+
                     <div class="card-body">
                         <div style="overflow: auto; width: 100%;">
                             <table id="data-table" class="table table-bordered table-striped dtr-inline" width="100%">
                                 <thead>
                                     <tr>
-                                        {{-- <th>ID</th> --}}
-                                        <th>Name</th>
-                                        <th>Treatment Plant Type</th>
-                                        <th>Capacity Per Day (m³)</th>
-                                        <th>Caretaker Name</th>
-                                        <th>Caretaker Number</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
+                                        <th>{{ __('Name') }}</th>
+                                        <th>{{ __('Treatment Plant Type') }}</th>
+                                        <th>{{ __('Capacity Per Day (m³)') }}</th>
+                                        <th>{{ __('Caretaker Name') }}</th>
+                                        <th>{{ __('Caretaker Number') }}</th>
+                                        <th>{{ __('Status') }}</th>
+                                        <th>{{ __('Actions') }}</th>
                                     </tr>
                                 </thead>
                             </table>
                         </div>
                     </div>
                 </div><!-- /.box-body -->
+
 
 
                 <!-- Modal -->
@@ -145,7 +161,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                 <div class="message"></div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Close') }}</button>
                             </div>
                         </div>
                     </div>
@@ -201,7 +217,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                     name: 'status',
 
                                 },
-                               
+
                                 {
                                     data: 'action',
                                     name: 'action',
@@ -217,13 +233,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                 var form = $(this).closest("form");
                                 event.preventDefault();
                                 Swal.fire({
-                                    title: 'Are you sure?',
-                                    text: "You won't be able to revert this!",
+                                    title: @json(__('Are you sure?')),
+                                    text: @json(__("You won't be able to revert this!")),
                                     icon: 'warning',
                                     showCancelButton: true,
                                     confirmButtonColor: '#3085d6',
                                     cancelButtonColor: '#d33',
-                                    confirmButtonText: 'Yes, delete it!'
+                                    confirmButtonText: @json(__('Yes, delete it!')),
+                                    cancelButtonText: @json(__('Cancel'))
                                 }).then((result) => {
                                     if (result.isConfirmed) {
                                         form.submit();
@@ -279,14 +296,18 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                         $("#export-shp").on("click", function(e) {
                             e.preventDefault();
                             var cql_param = getCQLParams();
-                            window.location.href = "{{ Config::get('constants.GEOSERVER_URL') }}wfs?service=WFS&version=1.0.0&request=GetFeature&authkey={{ Config::get('constants.AUTH_KEY') }}&typeName={{ Config::get('constants.GEOSERVER_WORKSPACE') }}:treatmentplants_layer+&CQL_FILTER=" + cql_param + " &outputFormat=SHAPE-ZIP&format_options=filename:Treatment Plants.zip";
+                            window.location.href =
+                                "{{ Config::get('constants.GEOSERVER_URL') }}wfs?service=WFS&version=1.0.0&request=GetFeature&authkey={{ Config::get('constants.AUTH_KEY') }}&typeName={{ Config::get('constants.GEOSERVER_WORKSPACE') }}:treatmentplants_layer+&CQL_FILTER=" +
+                                cql_param + " &outputFormat=SHAPE-ZIP&format_options=filename:Treatment Plants.zip";
 
                         })
 
                         $("#export-kml").on("click", function(e) {
                             e.preventDefault();
                             var cql_param = getCQLParams();
-                            window.location.href ="{{ Config::get('constants.GEOSERVER_URL') }}wfs?service=WFS&version=1.0.0&request=GetFeature&authkey={{ Config::get('constants.AUTH_KEY') }}&typeName={{ Config::get('constants.GEOSERVER_WORKSPACE') }}:treatmentplants_layer+&CQL_FILTER=" + cql_param + " &outputFormat=KML&format_options=filename:Treatment Plants.kml";
+                            window.location.href =
+                                "{{ Config::get('constants.GEOSERVER_URL') }}wfs?service=WFS&version=1.0.0&request=GetFeature&authkey={{ Config::get('constants.AUTH_KEY') }}&typeName={{ Config::get('constants.GEOSERVER_WORKSPACE') }}:treatmentplants_layer+&CQL_FILTER=" +
+                                cql_param + " &outputFormat=KML&format_options=filename:Treatment Plants.kml";
                         });
 
                         function getCQLParams() {

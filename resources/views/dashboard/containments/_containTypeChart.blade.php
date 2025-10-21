@@ -1,6 +1,6 @@
 @include('layouts.dashboard.chart-card',[
-    'card_title' => "Proportion of Different Containment Types
-",
+
+    'card_title' => __("Proportion of Different Containment Types"),
     'export_chart_btn_id' => "exportcontainTypeChart",
     'canvas_id' => "containTypeChart"
 ])
@@ -42,7 +42,7 @@ var myChart = new Chart(ctx, {
          align: 'middle',
          labels: {
               boxWidth: 10,
-             
+
           }
       }}
 });

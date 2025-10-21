@@ -11,56 +11,56 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 {!! Form::open(['url' => 'fsm/feedback', 'files' => true, 'class' => 'form-horizontal']) !!}
         <div class="card-body">
             <div class="form-group row">
-                {!! Form::label('application_id','Application ID',['class' => 'col-sm-3 control-label']) !!}
+                {!! Form::label('application_id',__('Application ID'),['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-sm-6">
                     
                     {!! Form::text('application_id',$application->id,['class' => 'form-control','readonly' => true]) !!}
                 </div>
             </div>
             <div class="form-group row required">
-                {!! Form::label('customer_name','Applicant Name',['class' => 'col-sm-3 control-label']) !!}
+                {!! Form::label('customer_name', __('Applicant Name'),['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-sm-6">
                     {!! Form::text('customer_name',$application->applicant_name,['class' => 'form-control','readonly' => true]) !!}
                 </div>
             </div>
             <div class="form-group row required">
-                {!! Form::label('customer_gender','Applicant Gender',['class' => 'col-sm-3 control-label']) !!}
+                {!! Form::label('customer_gender',__('Applicant Gender'),['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-sm-6">
                     {!! Form::text('customer_gender',$application->applicant_gender,['class' => 'form-control','placeholder'=>'Select Gender','readonly' => true]) !!}
                 </div>
             </div>
             <div class="form-group row required">
-                {!! Form::label('customer_number','Applicant Contact Number',['class' => 'col-sm-3 control-label']) !!}
+                {!! Form::label('customer_number',__('Applicant Contact Number'),['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-sm-6">
                     {!! Form::text('customer_number',$application->applicant_contact,['class' => 'form-control','readonly' => true]) !!}
                 </div>
             </div>
             <div class="form-group row required">
-                <label class="col-sm-3 control-label" for="fsm_service_quality">Are you satisfied with the Service Quality?</label>
+                <label class="col-sm-3 control-label" for="fsm_service_quality">{{__('Are you satisfied with the Service Quality?')}}</label>
                 <div class="col-sm-6">
                     <label class="radio-inline">
-                        <input value="1" name="fsm_service_quality" type="radio" id="fsm_service_quality"> Yes
+                        <input value="1" name="fsm_service_quality" type="radio" id="fsm_service_quality"> {{__('Yes')}}
                     </label>
                     <label class="radio-inline">
-                        <input value="0" name="fsm_service_quality" type="radio" id="fsm_service_quality"> No
+                        <input value="0" name="fsm_service_quality" type="radio" id="fsm_service_quality"> {{__('No')}}
                     </label>
                 </div>
             </div>
             <div class="form-group row required">
-                <label class="col-sm-3 control-label" for="wear_ppe">Did the sanitation workers wear PPE during desludging?</label>
+                <label class="col-sm-3 control-label" for="wear_ppe">{{__('Did the sanitation workers wear PPE during desludging?')}}</label>
                 <div class="col-sm-6">
                     <label class="radio-inline">
-                        <input value="1" name="wear_ppe" type="radio" id="wear_ppe"> Yes
+                        <input value="1" name="wear_ppe" type="radio" id="wear_ppe"> {{__('Yes')}}
                     </label>
                     <label class="radio-inline">
-                        <input value="0" name="wear_ppe" type="radio" id="wear_ppe"> No
+                        <input value="0" name="wear_ppe" type="radio" id="wear_ppe"> {{__('No')}}
                     </label>
                 </div>
             </div>
 
           
             <div class="form-group row">
-                {!! Form::label('comments',null,['class' => 'col-sm-3 control-label']) !!}
+                {!! Form::label('comments',__('Comments'),['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-sm-6">
                     {!! Form::textarea('comments', null,['class' => 'form-control']) !!}
                 </div>
@@ -74,8 +74,8 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
         </div><!-- /.card-body -->
         
         <div class="card-footer">
-    <a href="{{ action('Fsm\ApplicationController@index') }}" class="btn btn-info">Back to List</a>
-     {!! Form::submit('Save', ['class' => 'btn btn-info']) !!}
+    <a href="{{ action('Fsm\ApplicationController@index') }}" class="btn btn-info">{{ __('Back to List') }}</a>
+     {!! Form::submit(__('Save'), ['class' => 'btn btn-info']) !!}
 </div>
         {!! Form::close() !!}
     </div>

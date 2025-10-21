@@ -13,16 +13,21 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 
 <div class="card">
   <div class="card-header">
-    @can('Export Drains to CSV')
-    <a href="{{ action('UtilityInfo\DrainController@export') }}" id="export" class="btn btn-info">Export to CSV</a>
+
+  @can('Add Drain On Map')
+  <a href="{{ action('MapsController@index') }}#add_drain_control" class="btn btn-info">{{ __('Add Drain') }}</a>
+  @endcan  
+  @can('Export Drains to CSV')
+    <a href="{{ action('UtilityInfo\DrainController@export') }}" id="export" class="btn btn-info">{{ __('Export to CSV')}}</a>
+
     @endcan
     @can('Export Drains to Shape')
-    <a href="#" id="export-shp" class="btn btn-info">Export to Shape File</a>
+    <a href="#" id="export-shp" class="btn btn-info">{{ __('Export to Shape File')}}</a>
     @endcan
     @can('Export Drains to KML')
-    <a href="#" id="export-kml" class="btn btn-info">Export to KML</a>
+    <a href="#" id="export-kml" class="btn btn-info">{{ __('Export to KML')}}</a>
     @endcan
-    <a href="#" class="btn btn-info float-right" data-toggle="collapse" data-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">Show Filter</a>
+    <a href="#" class="btn btn-info float-right" data-toggle="collapse" data-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">{{ __('Show Filter')}}</a>
   </div><!-- /.box-header -->
   <div class="card-body">
     <div class="row">
@@ -33,14 +38,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
               <div class="accordion-body">
                 <form class="form-horizontal" id="filter-form">
                   <div class="form-group row">
-                    <label for="code_text" class="col-md-2 col-form-label ">Code</label>
+                    <label for="code_text" class="col-md-2 col-form-label ">{{ __('Code')}}</label>
                     <div class="col-md-2">
-                      <input type="text" class="form-control" id="code_text" placeholder="Code" oninput="validateAlphanumeric(this)"/>
+                      <input type="text" class="form-control" id="code_text" placeholder="{{__("Code")}}" oninput="validateAlphanumeric(this)"/>
                     </div>
-                    <label for="cover_type" class="col-md-2 col-form-label ">Cover Type</label>
+                    <label for="cover_type" class="col-md-2 col-form-label ">{{ __('Cover Type')}}</label>
                     <div class="col-md-2">
                       <select class="form-control" id="cover_type">
-                        <option value="">Cover Type</option>
+                        <option value="">{{__('Cover Type')}}</option>
                         @foreach($cover_type as $key)
                         <option value="{{$key}}">{{$key}}</option>
                         @endforeach
@@ -49,8 +54,8 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
                     </div>
                   </div>
                   <div class="card-footer text-right">
-                    <button type="submit" class="btn btn-info ">Filter</button>
-                    <button id="reset-filter" type="reset" class="btn btn-info ">Reset</button>
+                    <button type="submit" class="btn btn-info ">{{ __('Filter')}}</button>
+                    <button id="reset-filter" type="reset" class="btn btn-info ">{{ __('Reset')}}</button>
                   </div>
                 </form>
 
@@ -66,14 +71,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
       <table id="data-table" class="table table-bordered table-striped dataTable dtr-inline" width="100%">
         <thead>
           <tr>
-            <th>Code</th>
-            <th>Road Code</th>
-            <th>Surface Type</th>
-            <th>Cover Type</th>
-            <th>Width (mm)</th>
-            <th>Length (m)</th>
-            <th>Treatment Plant</th>
-            <th>Actions</th>
+            <th>{{ __('Code')}}</th>
+            <th>{{ __('Road Code')}}</th>
+            <th>{{ __('Surface Type')}}</th>
+            <th>{{ __('Cover Type')}}</th>
+            <th>{{ __('Width (mm)')}}</th>
+            <th>{{ __('Length (m)')}}</th>
+            <th>{{ __('Treatment Plant')}}</th>
+            <th>{{ __('Actions')}}</th>
           </tr>
         </thead>
       </table>
@@ -146,13 +151,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
         var form = $(this).closest("form");
         event.preventDefault();
         Swal.fire({
-          title: 'Are you sure?',
-          text: "You won't be able to revert this!",
+          title: "{{__('Are you sure?')}}",
+          text: "{!! __('You won\'t be able to revert this!') !!}",
           icon: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, delete it!'
+          confirmButtonText: "{{__('Yes, delete it!')}}",
+          cancelButtonText: '{{ __('Cancel') }}',
         }).then((result) => {
           if (result.isConfirmed) {
             form.submit();
@@ -213,8 +219,6 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
       return encodeURI(cql_param);
 
     }
-
-
   });
 </script>
 @endpush

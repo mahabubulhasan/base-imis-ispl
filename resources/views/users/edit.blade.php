@@ -1,7 +1,7 @@
 <!-- Last Modified Date: 18-04-2024
 Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 @extends('layouts.dashboard')
-@section('title', 'Edit User')
+@section('title', __('Edit User'))
 @section('content')
 @include('layouts.components.error-list')
         @include('layouts.components.success-alert')

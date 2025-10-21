@@ -38,7 +38,7 @@ class ApiServiceController extends Controller
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'status' => false,
-                'message' => "No Application found for ID $application_id."
+                'message' => __('No Application found for ID:') . $application_id ,
             ], 404); // Return 404 if application not found
         } catch (\Throwable $th) {
             return response()->json([
@@ -52,7 +52,7 @@ class ApiServiceController extends Controller
             'data' => [
                 'application' => $application
             ],
-            'message' => 'Application Details.'
+            'message' => __('Application Details')
         ]);
     }
     
@@ -68,7 +68,7 @@ class ApiServiceController extends Controller
         } catch(ModelNotFoundException $e) {
             return response()->json([
                 'status' => false,
-                'message' => "No containment found or application with ID $application_id doesn't exist."
+                'message' => __('No containment/application found with application ID:') . $application_id,
             ], 500);
         } catch (\Throwable $th){
             return response()->json([
@@ -79,7 +79,7 @@ class ApiServiceController extends Controller
         return [
             'success' => true,
             'data' => $data,
-            'message' => 'Containment details for application ' . $application_id
+            'message' => __('Containment details for application ID:') . $application_id
         ];
     }
 
@@ -95,7 +95,7 @@ class ApiServiceController extends Controller
         return [
             'success' => true,
             'data' => $serviceProviders,
-            'message' => 'Service Providers.'
+            'message' => __('Service Providers')
         ];
     }
 

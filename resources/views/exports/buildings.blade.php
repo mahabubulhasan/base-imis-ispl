@@ -1,18 +1,18 @@
 <table>
     <thead>
     <tr>
-        <th align="right" width="20"><h1><strong>Structure Type</strong></h1></th>
-        <th align="right" width="20"><h1><strong>Buildings</strong></h1></th>
-        <th align="right" width="20"><h1><strong>Sewer Network</strong></h1></th>
-        <th align="right" width="20"><h1><strong>Drain Network</strong></h1></th>
-        <th align="right" width="20"><h1><strong>Septic Tank</strong></h1></th>
-        <th align="right" width="20"><h1><strong>Pit / Holding Tank</strong></h1></th>
-        <th align="right" width="20"><h1><strong>Onsite Treatment</strong></h1></th>
-        <th align="right" width="20"><h1><strong>Composting Toilet</strong></h1></th>
-        <th align="right" width="20"><h1><strong>Water Body</strong></h1></th>
-        <th align="right" width="20"><h1><strong>Open Ground</strong></h1></th>
-        <th align="right" width="20"><h1><strong>Community Toilet</strong></h1></th>
-        <th align="right" width="20"><h1><strong>Open Defecation</strong></h1></th>
+        <th align="right" width="20"><h1><strong>{{__('Structure Type')}}</strong></h1></th>
+        <th align="right" width="20"><h1><strong>{{__('Buildings')}}</strong></h1></th>
+        <th align="right" width="20"><h1><strong>{{__('Sewer Network')}}</strong></h1></th>
+        <th align="right" width="20"><h1><strong>{{__('Drain Network')}}</strong></h1></th>
+        <th align="right" width="20"><h1><strong>{{__('Septic Tank')}}</strong></h1></th>
+        <th align="right" width="20"><h1><strong>{{__('Pit/Holding Tank')}}</strong></h1></th>
+        <th align="right" width="20"><h1><strong>{{__('Onsite Treatment')}}</strong></h1></th>
+        <th align="right" width="20"><h1><strong>{{__('Composting Toilet')}}</strong></h1></th>
+        <th align="right" width="20"><h1><strong>{{__('Water Body')}}</strong></h1></th>
+        <th align="right" width="20"><h1><strong>{{__('Open Ground')}}</strong></h1></th>
+        <th align="right" width="20"><h1><strong>{{__('Community Toilet')}}</strong></h1></th>
+        <th align="right" width="20"><h1><strong>{{__('Open Defecation')}}</strong></h1></th>
     </tr>
     </thead>
     <tbody>

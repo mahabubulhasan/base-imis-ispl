@@ -8,7 +8,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 @include('layouts.components.error-alert')
 <div class="card card-info">
 	{!! Form::open(['url' => 'fsm/ctpt', 'class' => 'form-horizontal']) !!}
-		@include('fsm/ct-pt.partial-form', ['submitButtomText' => 'Save'])
+		@include('fsm/ct-pt.partial-form', ['submitButtomText' => __('Save')])
 	{!! Form::close() !!}
 </div><!-- /.card -->
 @stop
@@ -50,7 +50,7 @@ $(document).ready(function() {
                             }
                         },
                     
-                    placeholder: 'House Number / BIN',
+                    placeholder: '{{ __('House Number / BIN') }}',
                     allowClear: true,
                     closeOnSelect: true,
                     width: '100%',

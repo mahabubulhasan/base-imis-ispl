@@ -4,6 +4,6 @@
         <span class="info-box-text">
             <h2> {{ number_format($sumDrainsCoverType1) }}</h2>
         </span>
-        <span class="info-box-number">Closed</span>
+        <span class="info-box-number">{{ __('Closed')}}</span>
     </div>
 </div>

@@ -7,6 +7,6 @@
         <span class="info-box-text">
             <h2> {{ number_format($buildingCount) }}</h2>
         </span>
-        <span class="info-box-number"> Total Buildings</span>
+        <span class="info-box-number"> {{ __('Total Buildings')}}</span>
     </div>
 </div>

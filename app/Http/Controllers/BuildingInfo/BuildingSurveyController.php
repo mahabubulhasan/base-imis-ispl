@@ -52,7 +52,7 @@ class BuildingSurveyController extends Controller
      */
     public function index()
     {
-        $page_title = "Building Survey";
+        $page_title = __("Building Survey");
 
         return view('building-info.building-surveys.index',compact('page_title'));
     }
@@ -87,16 +87,16 @@ class BuildingSurveyController extends Controller
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['building-surveys.destroy', $model->id]]);
 
                  if (Auth::user()->can('Approve Building Survey')) {
-                     $content .= '<a title="Approve Building Structure" href="' . action("BuildingInfo\BuildingSurveyController@approve", [$model->id]) . '" class="btn btn-info btn-sm mb-1 '. ( !file_exists(storage_path('app/public/building-survey-kml/' . $model->kml)) ? ' anchor-disabled' : '' ) . '"  ><i class="fas fa-check"></i></a> ';
+                     $content .= '<a title="' . __("Approve Building Structure") . '" href="' . action("BuildingInfo\BuildingSurveyController@approve", [$model->id]) . '" class="btn btn-info btn-sm mb-1 '. ( !file_exists(storage_path('app/public/building-survey-kml/' . $model->kml)) ? ' anchor-disabled' : '' ) . '"  ><i class="fas fa-check"></i></a> ';
                  }
                 if (Auth::user()->can('Preview Building Survey')) {
-                    $content .= '<a title="Preview Building Location" data-toggle="modal" data-target="#kml-previewer" data-id="'.$model->kml.'" class="btn btn-info btn-sm mb-1" ><i class="fas fa-eye"></i></a> ';
+                    $content .= '<a title="' . __("Preview Building Location") . '" data-toggle="modal" data-target="#kml-previewer" data-id="'.$model->kml.'" class="btn btn-info btn-sm mb-1" ><i class="fas fa-eye"></i></a> ';
                 }
                 if (Auth::user()->can('Download Building Survey')) {
-                    $content .= '<a title="Download Building KML File" href="' . action("BuildingInfo\BuildingSurveyController@download", [$model->kml]) . '" class="btn btn-info btn-sm mb-1"  download><i class="fas fa-download"></i></a> ';
+                    $content .= '<a title="' . __("Download Building KML File") . '" href="' . action("BuildingInfo\BuildingSurveyController@download", [$model->kml]) . '" class="btn btn-info btn-sm mb-1"  download><i class="fas fa-download"></i></a> ';
                 }
                 if (Auth::user()->can('Delete Building Survey')) {
-                    $content .= '<a title="Delete" class="delete btn btn-danger btn-sm mb-1" ><i class="fas fa-trash"></i></a> ';
+                    $content .= '<a title="' . __("Delete") . '" class="delete btn btn-danger btn-sm mb-1" ><i class="fas fa-trash"></i></a> ';
                 }
 
                 $content .= \Form::close();
@@ -169,9 +169,9 @@ class BuildingSurveyController extends Controller
                 }
             }
             $buildingSurvey->delete();
-            return redirect('building-info/building-surveys')->with('success','Building Survey deleted successfully');
+            return redirect('building-info/building-surveys')->with('success',__('Building Survey deleted successfully.'));
         } else {
-            return redirect('building-info/building-surveys')->with('error','Failed to delete Building Survey');
+            return redirect('building-info/building-surveys')->with('error',__('Failed to delete Building Survey'));
         }
     }
 
@@ -188,7 +188,7 @@ class BuildingSurveyController extends Controller
     }
 
     public function approve($id){
-        $page_title = "Approve Building Structure";
+        $page_title = __("Approve Building Structure");
 
         $structure_type = StructureType::orderBy('type', 'asc')->pluck('type', 'id')->all();
         $water_source = WaterSource::orderBy('source', 'asc')->pluck('source', 'id')->all();

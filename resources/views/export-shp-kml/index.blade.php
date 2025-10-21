@@ -7,7 +7,7 @@
 
         <div class="card-body">
             <div class="form-group row">
-                {!! Form::label('ward_overlay','Layers',['class' => 'col-md-3 control-label']) !!}
+                {!! Form::label('ward_overlay', __('Layers'),['class' => 'col-md-3 control-label']) !!}
                 <div class="col-md-3">
                     {!! Form::select('ward_overlay',
                     [
@@ -56,7 +56,7 @@
             --}}
 
             <div class="form-group wardssection row" style="xdisplay: none">
-                {!! Form::label('ward','Select Wards',['class' => 'col-md-3 control-label']) !!}
+                {!! Form::label('ward', __('Select Wards'),['class' => 'col-md-3 control-label']) !!}
                 <div class="col-md-3">
     {!! Form::select('ward', $wards, null, ['id' => 'ward', 'multiple' => true, 'style' => 'width: 100%','class' => 'custom-ul']) !!}
 
@@ -75,7 +75,7 @@
 {{--                </div>--}}
 {{--            </div>--}}
             <div class="form-group row">
-                {!! Form::label('export_format','Export Format',['class' => 'col-md-3 control-label']) !!}
+                {!! Form::label('export_format', __('Export Format'),['class' => 'col-md-3 control-label']) !!}
                 <div class="col-md-3">
                     {!! Form::select('export_format',
                     [
@@ -83,13 +83,13 @@
                         'shp' => 'Shape File'
                     ],
                     null,
-                    ['class' => 'form-control', 'placeholder' => 'Export Format'])
+                    ['class' => 'form-control', 'placeholder' => __('Export Format')])
                     !!}
                 </div>
             </div>
         </div><!-- /.card-body -->
         <div class="card-footer">
-            {!! Form::submit('Download', ['class' => 'btn btn-info']) !!}
+            {!! Form::submit(__('Download'), ['class' => 'btn btn-info']) !!}
         </div><!-- /.card-footer -->
     {!! Form::close() !!}
 </div><!-- /.card -->
@@ -101,11 +101,11 @@
 $(document).ready(function(){
     $('#ward').multipleSelect({
         filter: true,
-        placeholder: 'Select Wards'
+        placeholder: "{{ __('Select Wards')}}"
     });
     $('#ward_overlay').multipleSelect({
         filter: true,
-        placeholder: 'Layers'
+        placeholder: "{{__('Layers')}}"
     });
 
 

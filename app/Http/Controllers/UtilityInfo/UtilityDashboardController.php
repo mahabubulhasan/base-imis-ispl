@@ -22,7 +22,8 @@ class UtilityDashboardController extends Controller
   }
   public function index()
   {
-    $page_title = 'Utility Dashboard';
+    $page_title = __('Utility Dashboard');
+
     /**
      ** For countBoxes
      */

@@ -48,7 +48,7 @@ class SludgeCollectionController extends Controller
     */
     public function index()
     {
-        $page_title = "Sludge Collections";
+        $page_title = __("Sludge Collections");
         if(Auth::user()->hasRole('Treatment Plant - Admin')) {
             $treatmentPlants = TreatmentPlant::where('id', Auth::user()->treatment_plant_id)->orderBy('id')->pluck('id', 'name');
         }
@@ -114,15 +114,15 @@ class SludgeCollectionController extends Controller
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['sludge-collection.destroy', $model->id]]);
 
                 if (Auth::user()->can('View Sludge Collection')) {
-                    $content .= '<a title="Detail" href="' . action("Fsm\SludgeCollectionController@show", [$model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-list"></i></a> ';
+                    $content .= '<a title="' . __("Detail") . '" href="' . action("Fsm\SludgeCollectionController@show", [$model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-list"></i></a> ';
                 }
 
                 if (Auth::user()->can('View Sludge Collection History')) {
-                    $content .= '<a title="History" href="' . action("Fsm\SludgeCollectionController@history", [$model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-history"></i></a> ';
+                    $content .= '<a title="' . __("History") . '" href="' . action("Fsm\SludgeCollectionController@history", [$model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-history"></i></a> ';
                 }
 
                 if (Auth::user()->can('Delete Sludge Collection')) {
-                    $content .= '<a title="Delete" class="delete btn btn-danger btn-sm mb-1"><i class="fa fa-trash"></i></a> ';
+                    $content .= '<a title="' . __("Delete") . '"  class="delete btn btn-danger btn-sm mb-1"><i class="fa fa-trash"></i></a> ';
                 }
 
                 $content .= \Form::close();
@@ -156,7 +156,7 @@ class SludgeCollectionController extends Controller
     */
     public function create(int $application_id)
     {
-        $page_title = "Add Sludge Collection Details";
+        $page_title = __("Add Sludge Collection Details");
         $application = Application::findOrFail($application_id)??null;
         $emptying = Emptying::where('application_id',$application_id)->latest()->first()??null;
         if ($emptying){
@@ -209,7 +209,7 @@ class SludgeCollectionController extends Controller
             $application->sludge_collection_status = true;
             $application->save();
         }
-        return redirect('fsm/application')->with('success','Sludge collection created successfully');
+        return redirect('fsm/application')->with('success',__('Sludge collection created successfully.'));
     }
 
     /**
@@ -240,7 +240,7 @@ class SludgeCollectionController extends Controller
             }
             $date = Carbon::parse($sludgeCollection->date)->format('m/d/Y');
 
-            $page_title = "Sludge Collection Details";
+            $page_title = __("Sludge Collection Details");
             return view('fsm.sludge-collection.show', compact('page_title','date', 'sludgeCollection', 'serviceProvider', 'treatmentPlant'));
         } else {
             abort(404);
@@ -260,7 +260,7 @@ class SludgeCollectionController extends Controller
         {
             if($sludgeCollection->created_at->diffInDays(today()) > 1)
             {
-                return redirect('fsm/sludge-collection')->with('error','Cannot edit Sludge Collection Information 24 hours after creation. Please contact Sanitation Department for support');
+                return redirect('fsm/sludge-collection')->with('error',__('Cannot edit Sludge Collection Information 24 hours after creation. Please contact Sanitation Department for support.'));
             }
         }
         if ($sludgeCollection) {
@@ -269,7 +269,7 @@ class SludgeCollectionController extends Controller
                     abort(403);
                 }
             }
-            $page_title = "Edit Sludge Collection Details";
+            $page_title =  __("Edit Sludge Collection Details");
            if(Auth::user()->hasRole('Treatment Plant - Admin')) {
                 $treatmentPlants = TreatmentPlant::withTrashed()->where('id', Auth::user()->treatment_plant_id)->orderBy('id')->pluck('name', 'id');
             }
@@ -327,7 +327,7 @@ class SludgeCollectionController extends Controller
 
             }
           
-            return redirect('fsm/application')->with('success','Sludge collection updated successfully');
+            return redirect('fsm/application')->with('success',__('Sludge collection updated successfully.'));
 
     }
 
@@ -345,14 +345,14 @@ class SludgeCollectionController extends Controller
             // not allowing TP Admin to delete other sludge colleciton info
            if(Auth::user()->hasRole('Treatment Plant - Admin')) {
                 if($sludgeCollection->treatment_plant_id != Auth::user()->treatment_plant_id) {
-                    return redirect('fsm/sludge-collection')->with('error','Cannot delete Sludge Collection not created ');
+                    return redirect('fsm/sludge-collection')->with('error','Cannot delete Sludge Collection not created.');
                 }
             }
             if( !(Auth::user()->hasRole('Super Admin') || Auth::user()->hasRole('Municipality - Super Admin') || Auth::user()->hasRole('Municipality - Sanitation Department')) )
             {
                 if($sludgeCollection->created_at->diffInDays(today()) > 1)
                 {
-                    return redirect('fsm/sludge-collection')->with('error','Cannot delete Sludge Collection Information 24 hours after creation. Please contact Sanitation Department for support');
+                    return redirect('fsm/sludge-collection')->with('error',__('Cannot delete Sludge Collection Information 24 hours after creation. Please contact Sanitation Department for support.'));
                 }
             }
             // updating applicaiton->sludge_collection_status
@@ -360,9 +360,9 @@ class SludgeCollectionController extends Controller
             $application->sludge_collection_status=false;
             $application->save();
             $sludgeCollection->delete();
-            return redirect('fsm/sludge-collection')->with('success','Sludge Collection deleted successfully');
+            return redirect('fsm/sludge-collection')->with('success',__('Sludge Collection deleted successfully'));
         } else {
-            return redirect('fsm/sludge-collection')->with('error','Failed to delete Sludge Collection');
+            return redirect('fsm/sludge-collection')->with('error',__('Failed to delete Sludge Collection.'));
         }
     }
 
@@ -376,7 +376,7 @@ class SludgeCollectionController extends Controller
     {
         $sludgeCollection = SludgeCollection::find($id);
         if ($sludgeCollection) {
-            $page_title = "Sludge Collection History";
+            $page_title = __("Sludge Collection History");
             return view('fsm.sludge-collection.history', compact('page_title', 'sludgeCollection'));
         } else {
             abort(404);
@@ -400,8 +400,18 @@ class SludgeCollectionController extends Controller
         $treatment_plant_id = $_GET['treatment_plant_id'] ?? null;
         $servprov = $_GET['servprov'] ?? null;
 
-       $columns = ['Application ID', 'Treatment Plant Name', 'Sludge Volume (m³)', 'Date','No. of Trips','Entry Time', 'Exit Time', 'Desludging Vehicle Number Plate', 'Service Provider Name '];
-
+        $columns = [
+            __('Application ID'),
+            __('Treatment Plant Name'),
+            __('Sludge Volume (m³)'),
+            __('Date'),
+            __('No. of Trips'),
+            __('Entry Time'),
+            __('Exit Time'),
+            __('Desludging Vehicle Number Plate'),
+            __('Service Provider Name'),
+        ];
+        
         $query =  DB::table('fsm.sludge_collections AS sc')
         ->leftJoin('fsm.treatment_plants AS t', 't.id', '=', 'sc.treatment_plant_id')
         ->leftJoin('fsm.service_providers AS s', 's.id', '=', 'sc.service_provider_id')

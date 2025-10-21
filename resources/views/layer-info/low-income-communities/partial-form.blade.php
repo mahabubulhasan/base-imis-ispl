@@ -50,79 +50,79 @@
 
 <div class="card-body">
     <div class="form-group required row">
-        {!! Form::label('community_name','Community Name',['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('community_name',__('Community Name') ,['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::text('community_name',null,['class' => 'form-control', 'placeholder' => 'Community Name']) !!}
+            {!! Form::text('community_name',null,['class' => 'form-control', 'placeholder' => __('Community Name')]) !!}
         </div>
     </div>
     <div class="form-group required row">
-         {!! Form::label('no_of_buildings','No. of Buildings',['class' => 'col-sm-3 control-label']) !!}
+         {!! Form::label('no_of_buildings',__('No. of Buildings'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::text('no_of_buildings',null,['class' => 'form-control', 'placeholder' => 'No. of Buildings','oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",]) !!}
+            {!! Form::text('no_of_buildings',null,['class' => 'form-control', 'placeholder' => __('No. of Buildings'),'oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",]) !!}
         </div>
     </div>
     <div class="form-group required row">
-         {!! Form::label('population_total','Population',['class' => 'col-sm-3 control-label']) !!}
+         {!! Form::label('population_total',__('Population'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::text('population_total',null,['class' => 'form-control', 'placeholder' => 'Population','oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",]) !!}
+            {!! Form::text('population_total',null,['class' => 'form-control', 'placeholder' => __('Population'),'oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",]) !!}
         </div>
     </div>
     <div class="form-group required row">
-         {!! Form::label('number_of_households','No. of Households',['class' => 'col-sm-3 control-label']) !!}
+         {!! Form::label('number_of_households',__('No. of Households'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::text('number_of_households',null,['class' => 'form-control', 'placeholder' => 'No. of Households','oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",]) !!}
+            {!! Form::text('number_of_households',null,['class' => 'form-control', 'placeholder' => __('No. of Households'),'oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",]) !!}
         </div>
     </div>
     <div class="form-group row">
-         {!! Form::label('population_male','Male Population',['class' => 'col-sm-3 control-label']) !!}
+         {!! Form::label('population_male',__('Male Population'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::text('population_male',null,['class' => 'form-control', 'placeholder' => 'Male Population','oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",]) !!}
+            {!! Form::text('population_male',null,['class' => 'form-control', 'placeholder' => __('Male Population'),'oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",]) !!}
         </div>
     </div>
     <div class="form-group row">
-         {!! Form::label('population_female','Female Population',['class' => 'col-sm-3 control-label']) !!}
+         {!! Form::label('population_female',__('Female Population'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::text('population_female',null,['class' => 'form-control', 'placeholder' => 'Female Population','oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",]) !!}
+            {!! Form::text('population_female',null,['class' => 'form-control', 'placeholder' => __('Female Population'),'oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",]) !!}
         </div>
     </div>
     <div class="form-group row">
-         {!! Form::label('population_others','Other Population',['class' => 'col-sm-3 control-label']) !!}
+         {!! Form::label('population_others',__('Other Population'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::text('population_others',null,['class' => 'form-control', 'placeholder' => 'Other Population','oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",]) !!}
+            {!! Form::text('population_others',null,['class' => 'form-control', 'placeholder' => __('Other Population'),'oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",]) !!}
         </div>
     </div>
     <div class="form-group row">
-         {!! Form::label('no_of_septic_tank','No. of Septic Tanks',['class' => 'col-sm-3 control-label']) !!}
+         {!! Form::label('no_of_septic_tank',__('No. of Septic Tanks'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::text('no_of_septic_tank',null,['class' => 'form-control', 'placeholder' => 'No. of Septic Tanks','oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",]) !!}
+            {!! Form::text('no_of_septic_tank',null,['class' => 'form-control', 'placeholder' => __('No. of Septic Tanks'),'oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",]) !!}
         </div>
     </div>
     <div class="form-group row">
-         {!! Form::label('no_of_holding_tank','No. of Holding Tanks',['class' => 'col-sm-3 control-label']) !!}
+         {!! Form::label('no_of_holding_tank',__('No. of Holding Tanks'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::text('no_of_holding_tank',null,['class' => 'form-control', 'placeholder' => 'No. of Holding Tanks','oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",]) !!}
+            {!! Form::text('no_of_holding_tank',null,['class' => 'form-control', 'placeholder' => __('No. of Holding Tanks'),'oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",]) !!}
         </div>
     </div>
     <div class="form-group row">
-         {!! Form::label('no_of_pit','No. of Pits',['class' => 'col-sm-3 control-label']) !!}
+         {!! Form::label('no_of_pit',__('No. of Pits'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::text('no_of_pit',null,['class' => 'form-control', 'placeholder' => 'No. of Pits','oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",]) !!}
+            {!! Form::text('no_of_pit',null,['class' => 'form-control', 'placeholder' => __('No. of Pits'),'oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",]) !!}
         </div>
     </div>
     <div class="form-group row">
-         {!! Form::label('no_of_sewer_connection','No. of Sewer Connections',['class' => 'col-sm-3 control-label']) !!}
+         {!! Form::label('no_of_sewer_connection',__('No. of Sewer Connections'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::text('no_of_sewer_connection',null,['class' => 'form-control', 'placeholder' => 'No. of Sewer Connections','oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",]) !!}
+            {!! Form::text('no_of_sewer_connection',null,['class' => 'form-control', 'placeholder' => __('No. of Sewer Connections'),'oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",]) !!}
         </div>
     </div>
     <div class="form-group row">
-         {!! Form::label('no_of_community_toilets','No. of Community Toilets',['class' => 'col-sm-3 control-label']) !!}
+         {!! Form::label('no_of_community_toilets',__('No. of Community Toilets'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::text('no_of_community_toilets',null,['class' => 'form-control', 'placeholder' => 'No. of Community Toilets','oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",]) !!}
+            {!! Form::text('no_of_community_toilets',null,['class' => 'form-control', 'placeholder' => __('No. of Community Toilets'),'oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",]) !!}
         </div>
     </div>
     <div class="form-group required row">
-            {!! Form::label('geom','Area',['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('geom',__('Area'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-6">
             <a class="skiplink" href="#map">Go to map</a>
             <!--<div id="map" class="map" tabindex="0">-->
@@ -142,8 +142,8 @@
 
       </div>
 <div class="card-footer">
-    <a href="{{ action('LayerInfo\LowIncomeCommunityController@index') }}" class="btn btn-info">Back to List</a>
-    {!! Form::submit('Save', ['class' => 'btn btn-info']) !!}
+    <a href="{{ action('LayerInfo\LowIncomeCommunityController@index') }}" class="btn btn-info">{{  __("Back to List")}}</a>
+   {!! Form::submit(__('Save'), ['class' => 'btn btn-info']) !!}
 </div><!-- /.box-footer -->
 <!--</div> /.content-wrapper -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

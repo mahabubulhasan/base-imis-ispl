@@ -8,6 +8,6 @@
     </span>
     <div class="info-box-content">
       <span class="info-box-text"> <h3>{{ number_format($healthBuildingCount) }}</h3></span>
-      <span class="info-box-number">Health</span>
+      <span class="info-box-number">{{__('Health') }}</span>
     </div>
   </div>

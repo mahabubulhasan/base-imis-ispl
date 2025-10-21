@@ -30,7 +30,7 @@ class AuthController extends Controller
              if ($validateUser->fails()) {
                  return response()->json([
                      'status' => false,
-                     'message' => 'Validation Error',
+                     'message' => __('Validation Error!'),
                      'errors' => $validateUser->errors()
                  ], 401);
              }
@@ -45,7 +45,7 @@ class AuthController extends Controller
              if (!Auth::attempt($credentials)) {
                  return response()->json([
                      'status' => false,
-                     'message' => 'Email & Password do not match our records.',
+                     'message' => __('Email & Password do not match our records.'),
                  ], 401);
              }
      
@@ -65,14 +65,14 @@ class AuthController extends Controller
              if (!$user->hasAnyRole($allowedRoles)) {
                  return response()->json([
                      'status' => false,
-                     'message' => 'Unauthorized: You do not have the required role to log in.',
+                     'message' => __('Unauthorized: You do not have the required role to log in.'),
                  ], 403);
              }
      
              // Generate the token and return success response
              return response()->json([
                  'status' => true,
-                 'message' => 'User Logged In Successfully.',
+                 'message' => __('User Logged In Successfully.'),
                  'token' => $user->createToken("API TOKEN")->plainTextToken,
                  'data' => [
                      "name" => $user->name,
@@ -108,7 +108,7 @@ class AuthController extends Controller
         }
         return [
             'success' => true,
-            'message' => 'Logged out successfully.'
+            'message' => __('Logged out successfully.'),
         ];
     }
 }

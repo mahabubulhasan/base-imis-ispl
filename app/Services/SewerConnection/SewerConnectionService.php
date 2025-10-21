@@ -64,13 +64,13 @@ class SewerConnectionService {
                 
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['sewerconnection.destroy', $model->id]]);
                 if (Auth::user()->can('Approve Sewer Connection')) {
-                $content .= '<a  title="Approve sewer connection" data-toggle="modal" data-target="#exampleModalCenter" data-id="'.$model->bin.'" data-sewer-code="'.$model->sewer_code.'" class="btn btn-info btn-sm mb-1 mr-2 approve-button"><i class="fas fa-check"></i></a>';
+                $content .= '<a  title="' . __("Approve sewer connection") . '" data-toggle="modal" data-target="#exampleModalCenter" data-id="'.$model->bin.'" data-sewer-code="'.$model->sewer_code.'" class="btn btn-info btn-sm mb-1 mr-2 approve-button"><i class="fas fa-check"></i></a>';
                 }
                 if (Auth::user()->can('Preview Sewer Connection')) {
-                $content .= '<a title="Preview Sewer Location" data-toggle="modal" data-target="#exampleModal" class="btn btn-info btn-sm mb-1 mr-1" data-id="'.$model->bin.'" data-sewer-code="'.$model->sewer_code.'"><i class="fas fa-eye"></i></a> ';
+                $content .= '<a title="' . __("Preview Sewer Location") . '" data-toggle="modal" data-target="#exampleModal" class="btn btn-info btn-sm mb-1 mr-1" data-id="'.$model->bin.'" data-sewer-code="'.$model->sewer_code.'"><i class="fas fa-eye"></i></a> ';
                 }
                 if (Auth::user()->can('Delete Sewer Connection')) {
-                $content .= '<a href="#" title="Delete"  class="delete btn btn-danger btn-sm mb-1"><i class="fa fa-trash"></i></a> ';
+                $content .= '<a href="#" title="' . __("Delete") . '"  class="delete btn btn-danger btn-sm mb-1"><i class="fa fa-trash"></i></a> ';
                 }
                $content .= \Form::close();
                 return $content;
@@ -115,7 +115,7 @@ class SewerConnectionService {
             
         } else {
             // Return a JSON response indicating that the building with the given bin was not found
-            return response()->json(['status' => 'error', 'message' => 'Building not found'], 404);
+            return response()->json(['status' => 'error', 'message' => __('Building not found.')], 404);
         }
     }
     
@@ -140,7 +140,7 @@ class SewerConnectionService {
             return response()->json(['wkt_geom' => $geom]);
         } else {
             // Return a JSON response indicating that the building with the given bin was not found
-            return response()->json(['status' => 'error', 'message' => 'Building not found'], 404);
+            return response()->json(['status' => 'error', 'message' => __('Building not found.')], 404);
         }
     }
 
@@ -163,7 +163,7 @@ class SewerConnectionService {
             return response()->json(['wkt_geom' => $wktGeom]);
         } else {
             // Return a JSON response indicating that the sewer line with the given code was not found
-            return response()->json(['status' => 'error', 'message' => 'Sewer line not found'], 404);
+            return response()->json(['status' => 'error', 'message' => __('Sewer line not found.')], 404);
         }
     }
     

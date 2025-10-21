@@ -11,13 +11,13 @@
 <div class="card">
     <div class="card-header">
         @can('Add Hotspot Identification')
-        <a href="{{ action('PublicHealth\YearlyWaterborneController@create') }}" class="btn btn-info">Add Waterborne Cases Information</a>
+        <a href="{{ action('PublicHealth\YearlyWaterborneController@create') }}" class="btn btn-info">{{__('Add Waterborne Cases Information')}}</a>
         @endcan
         @can('Export Hotspot Identifications')
-        <a href="#" id="export" class="btn btn-info">Export to CSV</a>
+        <a href="#" id="export" class="btn btn-info">{{__('Export to CSV')}}</a>
         @endcan
         <a href class="btn btn-info float-right" data-toggle="collapse" data-target="#collapseFilter"
-            aria-expanded="false" aria-controls="collapseFilter">Show Filter</a>
+            aria-expanded="false" aria-controls="collapseFilter">{{__('Show Filter')}}</a>
     </div><!-- /.card-header -->
     <div class="card-body">
         <div class="row">
@@ -32,10 +32,10 @@
 
 
 
-                                        <label for="year" class="control-label col-md-2">Year</label>
+                                        <label for="year" class="control-label col-md-2">{{__('Year')}}</label>
                                             <div class="col-md-2">
                                                 <select class="form-control" id="year">
-                                                    <option value="">Year</option>
+                                                    <option value="">{{__('Year')}}</option>
                                                     @foreach($years  as $key=>$value)
                                                     <option value="{{$key}}">{{$value}}</option>
                                                     @endforeach
@@ -43,10 +43,10 @@
                                             </div>
 
 
-                                            <label for="infected_disease" class="control-label col-md-2">Infected Disease</label>
+                                            <label for="infected_disease" class="control-label col-md-2">{{__('Infected Disease')}}</label>
                                             <div class="col-md-2">
                                                 <select class="form-control" id="infected_disease">
-                                                    <option value="">Infected Disease</option>
+                                                    <option value="">{{__('Infected Disease')}}</option>
                                                     @foreach($enumValues  as $key=>$value)
                                                     <option value="{{$key}}">{{$value}}</option>
                                                     @endforeach
@@ -56,8 +56,8 @@
 
 
                                     <div class="card-footer text-right">
-                                        <button type="submit" class="btn btn-info">Filter</button>
-                                        <button type="reset" class="btn btn-info reset">Reset</button>
+                                        <button type="submit" class="btn btn-info">{{__('Filter')}}</button>
+                                        <button type="reset" class="btn btn-info reset">{{__('Reset')}}</button>
                                     </div>
                                 </form>
                             </div>
@@ -71,12 +71,12 @@
             <table id="data-table" class="table table-bordered table-striped dtr-inline" width="100%">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Infected Disease</th>
-                    <th>Year</th>
-                    <th>No. of Cases</th>
-                    <th>No. of Fatalities</th>
-                    <th>Actions</th>
+                    <th>{{__('ID')}}</th>
+                    <th>{{__('Infected Disease')}}</th>
+                    <th>{{__('Year')}}</th>
+                    <th>{{__('No. of Cases')}}</th>
+                    <th>{{__('No. of Fatalities')}}</th>
+                    <th>{{__('Actions')}}</th>
                 </tr>
             </thead>
         </table>
@@ -139,13 +139,14 @@ $(function() {
             var form = $(this).closest("form");
             event.preventDefault();
             Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+               title: "{{__('Are you sure?')}}",
+                    text: "{!! __('You won\'t be able to revert this!') !!}",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: "{{ __('Yes, delete it!') }}",
+                    cancelButtonText: '{{ __('Cancel') }}',
             }).then((result) => {
                 if (result.isConfirmed) {
                     form.submit();

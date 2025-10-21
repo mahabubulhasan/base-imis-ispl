@@ -10,7 +10,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
     <div class="card-body">
         @if(!empty($treatment_plant_id))
         <div class="form-group row required">
-            {!! Form::label('treatment_plant_id','Treatment Plant Name',['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('treatment_plant_id',__('Treatment Plant Name'),['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
                 {!! Form::select('treatment_plant_id', $treatmentPlants, $treatment_plant_id, ['class' => 'form-control chosen-select', 'placeholder' => '--- Choose treatment plant ---','disabled'=>'true']) !!}
                 {!! Form::text('treatment_plant_id', $treatment_plant_id, ['class' => 'form-control','hidden'=>'hidden']) !!}
@@ -18,58 +18,58 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
         </div>
         @else
         <div class="form-group row required">
-            {!! Form::label('treatment_plant_id','Treatment Plant Name',['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('treatment_plant_id',__('Treatment Plant Name'),['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
                 {!! Form::select('treatment_plant_id', $treatmentPlants, null, ['class' => 'form-control chosen-select', 'placeholder' => '--- Choose treatment plant ---']) !!}
             </div>
         </div>
         @endif
         <div class="form-group row required">
-        {!! Form::label('application_id','Application ID',['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('application_id',__('Application ID'),['class' => 'col-sm-3 control-label']) !!}
         @if($sludgeCollection)
         <div class="col-sm-3">
-            {!! Form::text('application_id',null,['class' => 'form-control datepicker ', 'placeholder' => 'Application ID','readonly']) !!}
+            {!! Form::text('application_id',null,['class' => 'form-control datepicker ', 'placeholder' => __('Application ID'),'readonly']) !!}
         </div>
         @elseif($application_id)
         <div class="col-sm-3">
-            {!! Form::text('application_id',$application_id,['class' => 'form-control datepicker ', 'placeholder' => 'Application ID','readonly']) !!}
+            {!! Form::text('application_id',$application_id,['class' => 'form-control datepicker ', 'placeholder' => __('Application ID'),'readonly']) !!}
         </div>
         @else
         <div class="col-sm-3">
-            {!! Form::select('application_id',$applications, null,['class' => 'form-control datepicker', 'placeholder' => 'Application ID']) !!}
+            {!! Form::select('application_id',$applications, null,['class' => 'form-control datepicker', 'placeholder' => __('Application ID')]) !!}
         </div>
         @endif
     </div>
     @if(!empty($volume_of_sludge))
         <div class="form-group row required">
-        {!! Form::label('volume_of_sludge', 'Sludge Volume (m³)',['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('volume_of_sludge',__('Sludge Volume (m³)') ,['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             {!! Form::text('volume_of_sludge',$volume_of_sludge,['class' => 'form-control ','readonly']) !!}
         </div>
         </div>
     @endif
     <div class="form-group row required">
-        {!! Form::label('date',null,['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('date',__('Date'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
        
             {!! Form::date('date',$sludgeCollection->date??null,['class' => 'form-control date', 'id' => 'sludge_collection_date', 'onclick' => 'this.showPicker()']) !!}
         </div>
     </div>
     <div class="form-group row required">
-        {!! Form::label('no_of_trips','No. of Trips',['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('no_of_trips',__('No. of Trips'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::number('no_of_trips',null,['class' => 'form-control', 'placeholder' => 'No. of Trips','oninput' => "this.value = this.value.replace(/[^0-9]/g, '')"]) !!}
+            {!! Form::number('no_of_trips',null,['class' => 'form-control', 'placeholder' => __('No. of Trips'),'oninput' => "this.value = this.value.replace(/[^0-9]/g, '')"]) !!}
         </div>
     </div>
     
     <div class="form-group row required">
-        {!! Form::label('entry_time',null,['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('entry_time',__('Entry Time'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             {!! Form::time('entry_time',$entry_time,['class' => 'form-control timepicker', 'placeholder' => 'Time']) !!}
         </div>
     </div>
     <div class="form-group row required">
-        {!! Form::label('exit_time',null,['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('exit_time',__('Exit Time'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             {!! Form::time('exit_time',$exit_time,['class' => 'form-control timepicker', 'placeholder' => 'Time']) !!}
         </div>
@@ -91,7 +91,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
 </div><!-- /.card-body -->
 <div class="card-footer">
-    <a href="{{ action('Fsm\ApplicationController@index') }}" class="btn btn-info">Back to List</a>
-    {!! Form::submit('Save', ['class' => 'btn btn-info']) !!}
+    <a href="{{ action('Fsm\ApplicationController@index') }}" class="btn btn-info">{{__('Back to List')}}</a>
+    {!! Form::submit(__('Save'), ['class' => 'btn btn-info']) !!}
 </div><!-- /.card-footer -->
 

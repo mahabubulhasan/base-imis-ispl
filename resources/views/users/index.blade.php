@@ -1,17 +1,17 @@
 <!-- Last Modified Date: 18-04-2024
 Developed By: Innovative Solution Pvt. Ltd. (ISPL) -->
 @extends('layouts.dashboard')
-@section('title', 'Users')
+@section('title', __('Users'))
 @section('content')
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
                     @can('Add User')
-                        <a href="{{ action('Auth\UserController@create') }}" class="btn btn-info">Create User</a>
+                        <a href="{{ action('Auth\UserController@create') }}" class="btn btn-info">{{__('Create User')}}</a>
                     @endcan
                     @can('Export Users to CSV')
-                        <a href="{{ action('Auth\UserController@export') }}" class="btn btn-info">Export to CSV</a>
+                        <a href="{{ action('Auth\UserController@export') }}" class="btn btn-info">{{__('Export to CSV')}}</a>
                     @endcan
                 </div>
 
@@ -19,18 +19,18 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL) -->
                     <table class="table table-hover text-nowrap table-striped">
                         <thead>
                             <tr>
-                                <th>User ID</th>
-                                <th>Email</th>
-                                <th>Name</th>
-                                <th>Role</th>
-                                <th>User Type</th>
-                                <th>Status</th>
-                                <th>Actions</th>
+                                <th>{{__('User ID')}}</th>
+                                <th>{{__('Email')}}</th>
+                                <th>{{__('Name')}}</th>
+                                <th>{{__('Role')}}</th>
+                                <th>{{__('User Type')}}</th>
+                                <th>{{__('Status')}}</th>
+                                <th>{{__('Actions')}}</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($users as $user)
-                                @if (!$user->hasRole('Super Admin') && !$user->hasRole('Municipality - Super Admin'))
+                                @if (!$user->hasRole('Super Admin'))
                                     <tr>
                                         <td>{{ $user->id }}</td>
                                         <td>{{ $user->email }}</td>
@@ -49,7 +49,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL) -->
                                         <td>
                                             {!! Form::open(['method' => 'DELETE', 'route' => ['users.destroy', $user->id]]) !!}
                                             @can('Edit User')
-                                                <a title="Edit" href="{{ action('Auth\UserController@edit', [$user->id]) }}"
+                                                <a title={{ __('Edit') }}  href="{{ action('Auth\UserController@edit', [$user->id]) }}"
                                                     class="btn btn-info btn-xs"><i class="fa fa-edit"></i></a>
                                             @endcan
                                             @can('View User')
@@ -58,12 +58,12 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL) -->
                                                     class="btn btn-info btn-xs"><i class="fa fa-list"></i></a>
                                             @endcan
                                             @can('View User Login Activity')
-                                                <a title="History"
+                                                 <a title={{__("History")}}
                                                     href="{{ action('Auth\UserController@getLoginActivity', [$user->id]) }}"
                                                     class="btn btn-info btn-xs"><i class="fa-solid fa-right-to-bracket"></i></a>
                                             @endcan
                                             @can('Delete User')
-                                                <button title="Delete" type="submit"
+                                                <button title={{__('Delete')}} .  type="submit"
                                                     class="btn btn-danger btn-xs delete">&nbsp;<i
                                                         class="fa fa-trash"></i>&nbsp;</button>
                                             @endcan
@@ -90,13 +90,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL) -->
 
             // Show SweetAlert confirmation
             Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+                title: "{{__('Are you sure?')}}",
+                    text: "{!! __('You won\'t be able to revert this!') !!}",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: "{{ __('Yes, delete it!') }}",
+                    cancelButtonText: '{{ __('Cancel') }}',
             }).then((result) => {
                 if (result.isConfirmed) {
                     form.submit(); // Submit the form on confirmation

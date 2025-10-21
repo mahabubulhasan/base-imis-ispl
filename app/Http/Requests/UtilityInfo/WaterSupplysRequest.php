@@ -17,52 +17,81 @@ class WaterSupplysRequest extends Request
         return true;
     }
 
+      /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'diameter' => $this->cleanNumber($this->input('diameter')),
+            'length' => $this->cleanNumber($this->input('length')),
+        ]);
+    }
+
+
+     /**
+     * Remove commas from number inputs.
+     */
+    private function cleanNumber($value)
+    {
+        return $value !== null ? str_replace(',', '', $value) : null;
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
      * @return array
      */
-    public function rules()
+       public function rules()
     {
-        
-        switch ($this->method()) 
-        {
+        switch ($this->method()) {
             case 'GET':
             case 'DELETE':
-                {
-                    return [];
-                }
+                return [];
+
             case 'POST':
                 {
                     return [
-                        'diameter' => 'nullable|numeric',
-                        'length' => 'nullable|numeric',
-                        'project_name'=> 'nullable|string',
+                        'road_code' => 'required',
+                        'project_name'=> 'required|string',
                         'type'=>'nullable|string',
-                        'material_type'=>'nullable|string'
+                        'material_type'=>'nullable|string',
+                        'diameter' => 'required|numeric',
+                        'length' => 'required|numeric',
+                       
                     ];
                 }
             case 'PUT':
             case 'PATCH':
                 {
                     return [
-                        'diameter' => 'nullable|numeric',
-                        'length' => 'nullable|numeric',
-                        'project_name'=> 'nullable|string',
+                        'project_name'=> 'required|string',
                         'type'=>'nullable|string',
-                        'material_type'=>'nullable|string'
+                        'material_type'=>'nullable|string',
+                        'diameter' => 'required|numeric',
+                        'length' => 'required|numeric',
                     ];
                 }
             default:break;
         }
     }
-     public function messages()
+    
+    public function messages()
     {
         return [
-            'name.regex' => 'The name field should contain only contain letters and spaces.',
-            'diameter.numeric' => 'The Diameter must be a number.',
-            'length.numeric' => 'The Length(m) must be a number.',
-            'name.string' => 'This Project Name must be a string.',
-            ];
+            'name.regex' => __('The name field should contain only contain letters and spaces.'),
+            'diameter.numeric' => __('The Diameter must be a number.'),
+            'length.numeric' => __('The Length (m) must be a number.'),
+            'name.string' => __('This Project Name must be a string.'),
+            'road_code.required' => __('The Road Code is required.'),
+            'project_name.required' => __('The Project Name is required.'),
+            'project_name.string' => __('The Project Name must be a string.'),
+            'type.string' => __('The Type must be a string.'),
+            'material_type.string' => __('The Material Type must be a string.'),
+            'diameter.required' =>__( 'The Diameter (mm) is required.'),
+            'length.required' => __('The Length (m) is required.'),
+        ];
+
     }
+
 }

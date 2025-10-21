@@ -1,6 +1,6 @@
 <?php
 // Last Modified Date: 18-04-2024
-// Developed By: Innovative Solution Pvt. Ltd. (ISPL)  
+// Developed By: Innovative Solution Pvt. Ltd. (ISPL)
 namespace App\Http\Controllers\Fsm;
 
 use App\Http\Controllers\Controller;
@@ -43,7 +43,7 @@ class TreatmentPlantController extends Controller
     public function index()
     {
 
-        $page_title = "Treatment Plants";
+        $page_title = __("Treatment Plants");
         $tpType = TreatmentPlantType::toEnumArray();
         $status = TreatmentPlantType::asSelectArray();
 
@@ -65,7 +65,7 @@ class TreatmentPlantController extends Controller
      */
     public function create()
     {
-        $page_title = "Add Treatment Plant";
+        $page_title = __("Add Treatment Plant");
         $treatmentPlant = null;
         $status = TreatmentPlantStatus::asSelectArray();
         $tpType = TreatmentPlantType::toEnumArray();
@@ -90,11 +90,11 @@ class TreatmentPlantController extends Controller
         if(!is_null($request->create_user))
         {
              $this->userService->storeOrUpdate($id = null,$data);
-             $successMessage = 'Treatment plant and user created successfully';
+             $successMessage = __('Treatment plant and user created successfully');
         } else {
-             $successMessage = 'Treatment plant created successfully';
+             $successMessage = __('Treatment plant created successfully');
         }
-       
+
         return redirect('fsm/treatment-plants')->with('success',$successMessage);
     }
 
@@ -125,7 +125,7 @@ class TreatmentPlantController extends Controller
                 $type = 'FSTP';
         }
         if ($treatmentPlant) {
-            $page_title = "Treatment Plant Details";
+            $page_title = __("Treatment Plant Details");
             return view('fsm/treatment-plants.show', compact('page_title', 'treatmentPlant', 'status','type'));
         } else {
             abort(404);
@@ -144,7 +144,7 @@ class TreatmentPlantController extends Controller
         $status = TreatmentPlantStatus::asSelectArray();
         $tpType = TreatmentPlantType::toEnumArray();
         if ($treatmentPlant) {
-            $page_title = "Edit Treatment Plant";
+            $page_title = __("Edit Treatment Plant");
             return view('fsm/treatment-plants.edit', compact('page_title', 'treatmentPlant', 'status','tpType'));
         } else {
             abort(404);
@@ -164,9 +164,9 @@ class TreatmentPlantController extends Controller
         if ($treatmentPlant) {
             $data = $request->all();
             $this->treatmentPlantService->storeOrUpdate($treatmentPlant->id,$data);
-            return redirect('fsm/treatment-plants')->with('success','Treatment plant updated successfully');
+            return redirect('fsm/treatment-plants')->with('success',__('Treatment plant updated successfully.'));
         } else {
-            return redirect('fsm/treatment-plants')->with('error','Failed to update treatment plant');
+            return redirect('fsm/treatment-plants')->with('error',__('Failed to update treatment plant'));
         }
     }
 
@@ -179,32 +179,40 @@ class TreatmentPlantController extends Controller
     public function destroy($id)
     {
         $treatmentPlant = TreatmentPlant::find($id);
+
         if ($treatmentPlant) {
-            if($treatmentPlant->sludgeCollections()->exists()){
-                return redirect('fsm/treatment-plants')->with('error','Cannot delete Treatment Plant that has associated Sludge Collection Information');
+            if ($treatmentPlant->sludgeCollections()->exists()) {
+                return redirect('fsm/treatment-plants')
+                    ->with('error', __('Cannot delete Treatment Plant that has associated Sludge Collection Information.'));
             }
-            if($treatmentPlant->emptyings()->exists()){
-                return redirect('fsm/treatment-plants')->with('error','Cannot delete Treatment Plant that has associated Emptying Information');
+            if ($treatmentPlant->emptyings()->exists()) {
+                return redirect('fsm/treatment-plants')
+                    ->with('error', __('Cannot delete Treatment Plant that has associated Emptying Information.'));
             }
-            if($treatmentPlant->users()->exists()){
-                return redirect('fsm/treatment-plants')->with('error','Cannot delete Treatment Plant that has associated User Information');
+            if ($treatmentPlant->users()->exists()) {
+                return redirect('fsm/treatment-plants')
+                    ->with('error', __('Cannot delete Treatment Plant that has associated User Information.'));
             }
-            if($treatmentPlant->treatmentplantTests()->exists()){
-                return redirect('fsm/treatment-plants')->with('error','Cannot delete Treatment Plant that has associated Performance Efficiency Information');
-            } 
-            if($treatmentPlant->sewer()->exists()){
+            if ($treatmentPlant->treatmentplantTests()->exists()) {
+                return redirect('fsm/treatment-plants')
+                    ->with('error', __('Cannot delete Treatment Plant that has associated Performance Efficiency Information.'));
+            }
+            if ($treatmentPlant->sewer()->exists()) {
                 $treatmentPlant->sewer()->update(['treatment_plant_id' => null]);
             }
-            if($treatmentPlant->drain()->exists()){
+            if ($treatmentPlant->drain()->exists()) {
                 $treatmentPlant->drain()->update(['treatment_plant_id' => null]);
             }
+
             $treatmentPlant->delete();
-            return redirect('fsm/treatment-plants')->with('success','Treatment Plant deleted successfully');
+            return redirect('fsm/treatment-plants')
+                ->with('success', __('Treatment Plant deleted successfully.'));
         }
-        else{
-            return redirect('fsm/treatment-plants')->with('error','Failed to delete Treatment Plant');
-        }
+
+        return redirect('fsm/treatment-plants')
+            ->with('error', __('Failed to delete Treatment Plant.'));
     }
+
 
     /**
      * Display history of the specified resource.
@@ -216,7 +224,7 @@ class TreatmentPlantController extends Controller
     {
         $treatmentPlant = TreatmentPlant::find($id);
         if ($treatmentPlant) {
-            $page_title = "Treatment Plant History";
+            $page_title = __("Treatment Plant History");
             return view('fsm/treatment-plants.history', compact('page_title', 'treatmentPlant'));
         } else {
             abort(404);

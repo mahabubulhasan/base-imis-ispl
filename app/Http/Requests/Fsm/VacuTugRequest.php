@@ -81,18 +81,18 @@ class VacuTugRequest extends FormRequest
     public function messages()
     {
         return[
-            'license_plate_number.required' => 'The Vehicle License Plate Number is required.',
+            'license_plate_number.required' => __('The Vehicle License Plate Number is required.'),
             //'license_plate_number.integer' => 'The Vehicle License plate number must be an integer.',
-            'capacity.required' => 'The Capacity (m³) is required.',
-            'capacity.numeric' => 'The Capacity (m³) must be numeric.',
-            'capacity.min' => 'The Capacity must be positive value.',
-            'width.required' => 'The Width (m) is required.',
-            'width.numeric' => 'The Width (m) must be numeric.',
-            'width.min' => 'The Width must be positive value.',
-            'service_provider_id.required' => 'The Service Provider is required.',
-            'service_provider_id.integer' => 'The Service Provider Id must be integer.',
-            'comply_with_maintainance_standards.required' => 'The Comply with Maintainance Standard is required.',
-            'status.required' => 'The Status is required.'
+            'capacity.required' => __('The Capacity (m³) is required.'),
+            'capacity.numeric' => __('The Capacity (m³) must be numeric.'),
+            'capacity.min' => __('The Capacity must be positive value.'),
+            'width.required' => __('The Width (m) is required.'),
+            'width.numeric' => __('The Width (m) must be numeric.'),
+            'width.min' => __('The Width must be positive value.'),
+            'service_provider_id.required' => __('The Service Provider is required.'),
+            'service_provider_id.integer' => __('The Service Provider Id must be integer.'),
+            'comply_with_maintainance_standards.required' => __('The Comply with Maintainance Standard is required.'),
+            'status.required' => __('The Status is required.')
         ];
     }
 }

@@ -1,5 +1,5 @@
 @include('layouts.dashboard.chart-card',[
-    'card_title' => "Sanitation Worker Compliance with PPE Guidelines",
+    'card_title' => __("Sanitation Worker Compliance with PPE Guidelines"),
     'export_chart_btn_id' => "exportppe",
     'canvas_id' => "ppe"
 ])

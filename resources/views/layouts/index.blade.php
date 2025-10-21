@@ -6,9 +6,9 @@ A Layout for the index page of every page
 <div class="card border-0">
     <div class="card-header">
         @if(!empty($createBtnLink) && !empty($createBtnTitle))<a href="{{ $createBtnLink }}" class="btn btn-info">{{ $createBtnTitle }}</a>@endif
-        @if(!empty($exportBtnLink))<a href="{{ $exportBtnLink }}" class="btn btn-info" id="export" onclick="exportToCsv(event)">Export to CSV</a>@endif
+        @if(!empty($exportBtnLink))<a href="{{ $exportBtnLink }}" class="btn btn-info" id="export" onclick="exportToCsv(event)">{{ __('Export to CSV') }}</a>@endif
         @if(!empty($reportBtnLink))
-        <a  class="btn btn-info" data-toggle="collapse" data-target="#collapseFilterPdf" aria-expanded="false" aria-controls="collapseFilterPdf">Generate Report</a>
+        <a  class="btn btn-info" data-toggle="collapse" data-target="#collapseFilterPdf" aria-expanded="false" aria-controls="collapseFilterPdf">{{ __('Generate Report') }}</a>
         <div class="card-body">
             <div class="col-12">
                 <div id="collapseFilterPdf" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
@@ -39,7 +39,7 @@ A Layout for the index page of every page
                                     ?>
                                 </select>
                             </div>
-                                <a class="btn btn-info pdf" id="pdf" >Export to PDF</a>
+                                <a class="btn btn-info pdf" id="pdf" >{{ __('Export to PDF') }}</a>
                         </div>
                     </div>
                 </div>
@@ -49,7 +49,7 @@ A Layout for the index page of every page
             @endif
 
         <a class="btn btn-info float-right" id="headingOne" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-            Show Filter
+        {{ __('Show Filter') }}
         </a>
     </div><!-- /.card-header -->
     <div class="card-body">
@@ -61,8 +61,8 @@ A Layout for the index page of every page
                             <form class="form-horizontal" id="filter-form">
                                 @yield('filter-form')
                                 <div class="card-footer text-right">
-                                    <button type="submit" class="btn btn-info">Filter</button>
-                                    <button id="reset-filter" class="btn btn-info">Reset</button>
+                                    <button type="submit" class="btn btn-info">{{ __('Filter') }}</button>
+                                    <button id="reset-filter" class="btn btn-info">{{ __('Reset') }}</button>
                                 </div>
                             </form>
                         </div>  <!--- accordion body!-->

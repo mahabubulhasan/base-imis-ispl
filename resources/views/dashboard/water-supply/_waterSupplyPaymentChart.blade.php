@@ -1,5 +1,5 @@
 @include('layouts.dashboard.chart-card',[
-    'card_title' => "Distribution of Water Supply Payment Dues",
+    'card_title' => __("Distribution of Water Supply Payment Dues"),
     'export_chart_btn_id' => "exportwaterSupplyPaymentChart",
     'canvas_id' => "waterSupplyPaymentChart"
 ])

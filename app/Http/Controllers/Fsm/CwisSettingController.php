@@ -23,7 +23,7 @@ class CwisSettingController extends Controller
 
     public function index()
     {
-        $page_title = "CWIS Setting";
+        $page_title = __('CWIS Setting');
     
         // Retrieve all settings
         $data1 = CwisSetting::all();
@@ -43,7 +43,7 @@ class CwisSettingController extends Controller
 
         $data = $request->all();
         $result = $this->cwissetting->storeOrUpdate($data);
-        return redirect('fsm/cwis-setting')->with('success', ' Site Setting updated successfully');
+        return redirect('fsm/cwis-setting')->with('success', __('Site Setting updated successfully.'));
     }
 
 }

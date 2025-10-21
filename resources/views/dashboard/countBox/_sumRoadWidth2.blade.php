@@ -4,6 +4,6 @@
         <span class="info-box-text">
             <h2> {{ number_format($sumWidth2) }}</h2>
         </span>
-        <span class="info-box-number">5 - 8 (m)</span>
+        <span class="info-box-number">{{ __('5 - 8 (m)')}}</span>
     </div>
 </div>

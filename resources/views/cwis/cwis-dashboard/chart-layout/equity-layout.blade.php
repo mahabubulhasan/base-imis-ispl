@@ -193,7 +193,7 @@
             </h2>
             <br>
            
-            <h2>Ratio of LIC access to total population access</h2>
+            <h2>{{__('Ratio of LIC access to total population access')}}</h2>
         </div>
     </div>
 </div>

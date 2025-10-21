@@ -2,6 +2,7 @@
 // Last Modified Date: 12-04-2024
 // Developed By: Innovative Solution Pvt. Ltd. (ISPL)  
 return [
+
     // function to get point buffer buildings 
     "fnc_getPointBufferBuildings" => [
 

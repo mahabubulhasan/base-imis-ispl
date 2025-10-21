@@ -1,3 +1,6 @@
+<?php
+use App\Helpers\LanguageSwitcher;
+?>
 <nav class="main-header navbar-expand navbar-white navbar-light">
     <ul class="navbar-nav">
         @if (request()->is('maps'))
@@ -22,13 +25,15 @@
                 </a>
             </li>
         @endif
-
+              
+        <!-- Language Dropdown -->
+        {!! LanguageSwitcher::language_switcher() !!}
         <!-- This div is used for aligning the user name and roles to the right -->
         <div style="flex-grow: 1;"></div> <!-- This pushes content to the right -->
         
         <!-- Display the user's name and roles on the right side -->
         <div style="display: flex; justify-content: flex-end; margin-top: 0.5%;">
-            <small>Hi,{{ Auth::user()->name }}, {{ implode(', ', get_current_user_roles()) }}</small>
+            <small>{{__('Hi')}},{{ Auth::user()->name }}, {{ implode(', ', get_current_user_roles()) }}</small>
         </div>
 
         <li class="nav-item ml-auto">

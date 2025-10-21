@@ -99,22 +99,23 @@ class ServiceProviderRequest extends FormRequest
     public function messages()
     {
         return [
-            'company_name.regex' => 'The service provider name field may only contain letters and spaces.',
-            'company_name.required' => 'The Company Name is required.',
-            'email.required' => 'The Email is required.',
-            'email.email' => 'Please enter a valid email address.',
-            'email.unique' => 'The email has already been taken.',
-            'ward.required' => 'The Ward Number is required.',
-            'company_location.required' =>'The Address is required.',
-            'company_location.string' =>'The Address must be string.',
-            'contact_person.required' =>'The Contact Person Name is required.',
-            'contact_person.string' =>'The Contact Person Name must be a string.',
-            'contact_number.required'=>'The Contact Person Number is required.',
-            'contact_number.integer'=>'The Contact Person Number must be an integer.',
-            'contact_gender.required' => 'The Contact Person Gender is required.',
-            'status.required' => 'The Status is required.',
-            'password.required_if' => 'The Password is required when create user is on.',
-            'password.confirmed' => 'The Confirm Password does not match the Password.'
+            'company_name.regex' => __('The service provider name field may only contain letters and spaces.'),
+            'company_name.required' => __('The Company Name is required.'),
+            'email.required' => __('The Email is required.'),
+            'email.email' => __('Please enter a valid email address.'),
+            'email.unique' => __('The email has already been taken.'),
+            'ward.required' => __('The Ward Number is required.'),
+            'company_location.required' =>__('The Address is required.'),
+            'company_location.string' =>__('The Address must be string.'),
+            'contact_person.required' =>__('The Contact Person Name is required.'),
+            'contact_person.string' =>__('The Contact Person Name must be a string.'),
+            'contact_number.required'=>__('The Contact Person Number is required.'),
+            'contact_number.integer'=>__('The Contact Person Number must be an integer.'),
+            'contact_gender.required' => __('The Contact Person Gender is required.'),
+            'status.required' => __('The Status is required.'),
+            'password.required_if' => __('The Password is required when create user is on.'),
+            'password.confirmed' => __('The Confirm Password does not match the Password.'),
+            'password.uncompromised' => __('The given password has appeared in a data leak. Please choose a different password.'),
         ];
     }
 }

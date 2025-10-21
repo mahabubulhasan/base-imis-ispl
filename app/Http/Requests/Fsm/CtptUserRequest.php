@@ -64,15 +64,15 @@ class CtptUserRequest extends FormRequest
      public function messages()
      {
          return[
-             'toilet_id.required' => 'The Toilet Name is required.',
-             'date.required' => 'The Date is required.',
-             'date.before_or_equal' => 'The date must be todays.',
-             'no_male_user.required' => 'The No. of Male Users is required.',
-             'no_male_user.numeric' => 'The No. of Male Users  must be numeric.',
-             'no_male_user.min' => 'The No. of Male Users  must be positive value.',
-             'no_female_user.required' => 'The No. of Female Users is required.',
-             'no_female_user.numeric' => 'The No. of Female  must be numeric.',
-             'no_female_user.min' => 'The No. of Female  must be positive value.',
+             'toilet_id.required'=> __('The Toilet Name is required.'),
+             'date.required'=> __('The Date is required.'),
+             'date.before_or_equal'=> __('The date must be todays.'),
+             'no_male_user.required'=> __('The No. of Male Users is required.'),
+             'no_male_user.numeric'=> __('The No. of Male Users must be numeric.'),
+             'no_male_user.min'=> __('The No. of Male Users  must be positive value.'),
+             'no_female_user.required'=> __('The No. of Female Users is required.'),
+             'no_female_user.numeric'=> __('The No. of Female must be numeric.'),
+             'no_female_user.min'=> __('The No. of Female must be positive value.'),
          ];
      }
  }

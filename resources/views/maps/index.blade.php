@@ -2,7 +2,7 @@
 Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
 @extends('layouts.maps')
-@section('title', 'Map')
+@section('title', __('Map'))
 @section('content')
 
     <div class="content-wrapper map-container">
@@ -11,48 +11,47 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 <div class="controls-div" style="display: flex;">
                     <ul>
                         <a href="#" id="zoomin_control" class="btn btn-default map-control" data-toggle="tooltip"
-                           data-placement="bottom" title="Zoom In"><i class="fa fa-search-plus fa-fw"></i></a>
+                           data-placement="bottom" title="{{ __('Zoom In') }}"><i class="fa fa-search-plus fa-fw"></i></a>
                         <a href="#" id="zoomout_control" class="btn btn-default map-control" data-toggle="tooltip"
-                           data-placement="bottom" title="Zoom Out"><i class="fa fa-search-minus fa-fw"></i></a>
+                           data-placement="bottom" title="{{ __('Zoom Out') }}"><i class="fa fa-search-minus fa-fw"></i></a>
                         <a href="#" id="zoomfull_control" class="btn btn-default map-control" data-toggle="tooltip"
-                           data-placement="bottom" title="Municipality"><i class="fa fa-globe fa-fw"></i></a>
+                           data-placement="bottom" title="{{ __('Municipality') }}"><i class="fa fa-globe fa-fw"></i></a>
                         @can('Info Map Tools')
                          <a href="#" id="identify_control" class="btn btn-default map-control" data-toggle="tooltip"
-                           data-placement="bottom" title="Info"><i class="fa fa-info-circle fa-fw"></i></a>
+                           data-placement="bottom" title="{{ __('Info') }}"><i class="fa fa-info-circle fa-fw"></i></a>
                         @endcan
 
                         <a href="#" id="coordinate_control" class="btn btn-default map-control"
                            style="padding:6px 14px!important;" data-toggle="tooltip" data-placement="bottom"
-                           title="Coordinate Information"><i class="fa fa-map-pin fa-fw"></i></a>
+                           title="{{ __('Coordinate Information') }}"><i class="fa fa-map-pin fa-fw"></i></a>
                         <a href="#" id="getpointbycoordinates_control" class="btn btn-default map-control"
-                           data-toggle="tooltip" data-placement="bottom" title="Locate Point by Coordinate"><i
+                           data-toggle="tooltip" data-placement="bottom" title="{{ __('Locate Point by Coordinate') }}"><i
                                     class="fa fa-location-arrow" aria-hidden="true"></i></a>
                         <a href="#" id="linemeasure_control" class="btn btn-default map-control"
                            data-toggle="tooltip" data-placement="bottom"
-                           title="Measure Distance"><i class="fa-solid fa-ruler"></i></a>
+                           title="{{ __('Measure Distance') }}"><i class="fa-solid fa-ruler"></i></a>
                         <a href="#" id="polymeasure_control" class="btn btn-default map-control"
                            data-toggle="tooltip" data-placement="bottom"
-                           title="Measure Area"><i class="fas fa-draw-polygon"></i></a>
+                           title="{{ __('Measure Area') }}"><i class="fas fa-draw-polygon"></i></a>
                         <a href="#" id="print_control" class="btn btn-default map-control" data-toggle="tooltip"
-                           data-placement="bottom" title="Print"><i class="fa fa-print fa-fw"></i></a>
+                           data-placement="bottom" title="{{ __('Print') }}"><i class="fa fa-print fa-fw"></i></a>
                         <a target="_blank" href="{{ asset('pdf/tools-help.pdf') }}" class="btn btn-default map-control"
-                           data-toggle="tooltip" data-placement="bottom" title="Help"><i class="fa-solid fa-file"></i></a>
+                           data-toggle="tooltip" data-placement="bottom" title="{{ __('Help') }}"><i class="fa-solid fa-file"></i></a>
                         <a href="#" id="nearestroad_control" class="btn btn-default map-control" data-toggle="tooltip"
-                           data-placement="bottom" title="Find Nearest Road"> <img src="{{ asset('img/svg/imis-icons/nearestroad.svg')}}" style="height:24px;" alt="Nearest Road Icon"></a>
+                           data-placement="bottom" title="{{ __('Find Nearest Road') }}"> <img src="{{ asset('img/svg/imis-icons/nearestroad.svg')}}" style="height:24px;" alt="Nearest Road Icon"></a>
                         <a href="#" id="containmentbuilding_control" class="btn btn-default map-control"
-                           data-toggle="tooltip" data-placement="bottom" title="Find Buildings Connected to Containment"><img src="{{ asset('img/svg/imis-icons/building_to_containment.svg')}}" style="height:24px;" alt="Buildings Connected to Containment Icon"></a>
+                           data-toggle="tooltip" data-placement="bottom" title="{{ __('Find Buildings Connected to Containment') }}"><img src="{{ asset('img/svg/imis-icons/building_to_containment.svg')}}" style="height:24px;" alt="Buildings Connected to Containment Icon"></a>
                         <a href="#" id="buildingcontainment_control" class="btn btn-default map-control"
-                           data-toggle="tooltip" data-placement="bottom" title="Find Containments Connected to Building"> <img src="{{ asset('img/svg/imis-icons/containment_to_building.svg')}}" style="height:24px;"alt="Containment to Buildings Connected Icon"></a>
+                           data-toggle="tooltip" data-placement="bottom" title="{{ __('Find Containments Connected to Building') }}"> <img src="{{ asset('img/svg/imis-icons/containment_to_building.svg')}}" style="height:24px;"alt="Containment to Buildings Connected Icon"></a>
                         <a href="#" id="associatedtomain_control" class="btn btn-default map-control"
-                           data-toggle="tooltip" data-placement="bottom" title="Find Associated Buildings"><img src="{{ asset('img/svg/imis-icons/associated_building.svg')}}" style="height:24px;"alt="Associated Buildings Icon"></a>
-
-                        @can('Add Roads Map Tools')
-                        <a href="#" id="add_road_control" class="btn btn-default map-control"
-                           data-toggle="tooltip" data-placement="bottom" title="Add roads"><i class="fa-solid fa-road-circle-check"></i></a>
-                        @endcan
-                      <a href="#" id="removemarkers_control" class="btn btn-default map-control" data-toggle="tooltip"
-                           data-placement="bottom" title="Remove Markers"><i class="fa fa-trash fa-fw"></i></a>
-
+                           data-toggle="tooltip" data-placement="bottom" title="{{ __('Find Associated Buildings') }}"><img src="{{ asset('img/svg/imis-icons/associated_building.svg')}}" style="height:24px;"alt="Associated Buildings Icon"></a>
+                        <a href="#" id="wms_layer" class="btn btn-default map-control"
+                           data-toggle="tooltip" data-placement="bottom" title="{{ __('Import from WMS') }}"  ><i class="fas fa-layer-group"></i></a>
+                        <a href="#" id="get_location" class="btn btn-default map-control"data-toggle="tooltip" data-placement="bottom" title="{{ __('Locate Me') }}" ><img src="{{ asset('img/locate_me.png')}}" style="height:17px;"alt="Location Icon"> </a>
+                        <a href="#" id="kml_drag_drop" class="btn btn-default map-control"data-toggle="tooltip" data-placement="bottom" title="{{ __('KML Drag and Drop') }}" ><img src="{{ asset('img/kml_icon.png')}}" style="height:22px;"alt="Location Icon"> </a>
+                        <a href="#" id="removemarkers_control" class="btn btn-default map-control" data-toggle="tooltip"
+                           data-placement="bottom" title="{{ __('Remove Markers') }}"><i class="fa fa-trash fa-fw"></i></a>
+                          
                     </ul>
 
                 </div>
@@ -80,10 +79,10 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                             </div>
                             <div class="form-row">
                                 <select class="form-control" id="building_field_select">
-                                    <option value="bin">BIN</option>
-                                    <option value="house_number">House Number</option>
-                                    <option value="places_layer">Places</option>
-                                    <option value="roadlines_layer">Roads</option>
+                                    <option value="bin">{{ __('BIN') }}</option>
+                                    <option value="house_number">{{ __('House Number') }}</option>
+                                    <option value="places_layer">{{ __('Places') }}</option>
+                                    <option value="roadlines_layer">{{ __('Roads') }}</option>
                                 </select>
                         </div>
                             <button class="btn btn-default" type="submit"><i class="fa fa-search fa-fw"></i></button>
@@ -92,7 +91,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 </div>
             </div>
             <div id="buildings-road-popup" class="ol-popup" style="display: none;">
-                <h3 class="card-title py-2">Summary Info</h3>
+                <h3 class="card-title py-2">{{ __('Summary Info') }}</h3>
                 <div id="buildings-road-popup-content"></div>
                 @can('Export in Decision Map Tools')
                 <div id="buildings-road-popup-content-download">
@@ -100,9 +99,9 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                         <form method="get" action="{{ url("maps/export-buildings-road") }}">
                             <input type="hidden" name="road_codes" value="" id="road_codes"/>
                             <button type="submit" id="buildings-road-popup-export-excel-btn" class="btn btn-default">
-                               Export to Excel
+                            {{ __('Export to Excel') }}
                             </button>
-                            <button id="buildings-road-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer" >Close</button>
+                            <button id="buildings-road-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer" >{{ __('Close') }}</button>
                         </form>
                 </div>
                 @endcan
@@ -113,11 +112,32 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                         <form method="get" action="{{ url("maps/waterbody-inaccessible-buildings-reports") }}">
                             <input type="hidden" name="waterbody_hose_length_report" value="" id="waterbody_hose_length_report"/>
                             <input type="hidden" name="waterbody_hose_length_unit_report" value="" id="waterbody_hose_length_unit_report"/>
-                            <button type="submit" id="waterbody-inaccessible-export-csv-btn" class="btn btn-default"> Export to Excel</button>
-                            <button id="waterbody-inaccessible-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer">Close</button>
+                            <button type="submit" id="waterbody-inaccessible-export-csv-btn" class="btn btn-default">{{ __('Export to Excel') }}</button>
+                            <button id="waterbody-inaccessible-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer">{{ __('Close') }}</button>
                         </form>
 
                 </div>
+            </div>
+
+            <div id="kml-dragdrop-popup" class="ol-popup" style="display: none;">
+                <a href="#" id="kml-dragdrop-popup-closer" class="ol-popup-closer"></a>
+                <div id="kml-dragdrop-popup-content"></div>
+                @can('Export in KML Drag And Drop')
+                <div id="kml-dragdrop-popup-content-download">
+                    <div class="btn-group">
+                    <form method="POST" action="{{ url('maps/get-kml-info-report-csv') }}" id="kml-export-form">
+                        @csrf
+                        <input type="hidden" name="kml_dragdrop_geom" value="" id="kml_dragdrop_geom"/>
+                        
+                        <button type="submit" id="kml-dragdrop-export-excel-btn" class="btn btn-default">
+                            {{ __('Export to Excel') }}
+                        </button>
+                    </form>
+
+                        
+                    </div>
+                </div>
+                @endcan
             </div>
             <div class="text-right">
                 <a href="#" id="map-right-sidebar-toggle" class="btn btn-default">
@@ -139,7 +159,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                         <div class="form-group">
                             <div class="input-group">
                                 <select class="form-control" id="feature_info_overlay">
-                                    <option value="">Select a layer</option>
+                                    <option value="">{{ __('Select a layer') }}</option>
                                 </select>
                             </div>
                         </div>
@@ -147,64 +167,204 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     <div id="feature_info_content"></div>
                 </div>
             </div>
-            <div class="box-footer" id="add-road-tool-box" style="display:none;position: absolute;top: 10px;left: 15px;filter: drop-shadow(0 10px 4px rgba(0,0,0,0.2));border-radius: 5px;border: 1px solid #cccccc;">
+            <div class="box-footer" id="add-tool-box" style="display:none;position: absolute;top: 10px;left: 15px;filter: drop-shadow(0 10px 4px rgba(0,0,0,0.2));border-radius: 5px;border: 1px solid #cccccc;">
                 <div id="add-road-tool-box-content">
-                    <form class="form-horizontal" id="add-road-form">
+                  
                         <div xclass="form-group">
                             <div class="input-group">
-                                <a href="#" id="add_road_start_control" class="btn btn-default map-control" data-toggle="tooltip"
-                                   data-placement="bottom" title="Add"><i class="fa fa-circle-plus fa-fw"></i></a>
-                                <a href="#" id="add_road_undo_last_point_control" class="btn btn-default map-control ml-1" data-toggle="tooltip"
-                                   data-placement="bottom" title="Undo last point"><i class="fa fa-clock-rotate-left fa-fw"></i></a>
-                                <a href="#" id="add_road_undo_control" class="btn btn-default map-control ml-1" data-toggle="tooltip"
-                                   data-placement="bottom" title="Undo"><i class="fa fa-rotate-left fa-fw"></i></a>
-                                <a href="#" id="add_road_redo_control" class="btn btn-default map-control ml-1" data-toggle="tooltip"
-                                   data-placement="bottom" title="Redo"><i class="fa fa-rotate-right fa-fw"></i></a>
-                                <a href="#" id="add_road_edit_control" class="btn btn-default map-control ml-1" data-toggle="tooltip"
-                                   data-placement="bottom" title="Edit"><i class="fa fa-pen-to-square fa-fw"></i></a>
-                                <a href="#" id="add_road_delete_control" class="btn btn-default map-control ml-1" data-toggle="tooltip"
-                                   data-placement="bottom" title="Remove all drawn lines"><i class="fa fa-trash fa-fw"></i></a>
-                                <a href="#" id="add_road_submit_control" class="btn btn-default map-control ml-1" data-toggle="tooltip"
-                                   data-placement="bottom" title="Save"><i class="fa fa-floppy-disk fa-fw"></i></a>
+
+                                <a href="#" id="add_start_control" class="btn btn-default map-control" data-toggle="tooltip"
+                                   data-placement="bottom" title="{{ __('Add') }}"><i class="fa fa-circle-plus fa-fw"></i></a>
+                                <a href="#" id="add_undo_last_point_control" class="btn btn-default map-control ml-1" data-toggle="tooltip"
+                                   data-placement="bottom" title="{{ __('Undo last point') }}"><i class="fa fa-clock-rotate-left fa-fw"></i></a>
+                                <a href="#" id="add_edit_control" class="btn btn-default map-control ml-1" data-toggle="tooltip"
+                                   data-placement="bottom" title="{{ __('Edit') }}"><i class="fa fa-pen-to-square fa-fw"></i></a>
+                                <a href="#" id="add_undo_control" class="btn btn-default map-control ml-1" data-toggle="tooltip"
+                                   data-placement="bottom" title="{{ __('Undo') }}"><i class="fa fa-rotate-left fa-fw"></i></a>
+                                <a href="#" id="add_redo_control" class="btn btn-default map-control ml-1" data-toggle="tooltip"
+                                   data-placement="bottom" title="{{ __('Redo') }}"><i class="fa fa-rotate-right fa-fw"></i></a>
+                                <a href="#" id="add_delete_control" class="btn btn-default map-control ml-1" data-toggle="tooltip"
+                                   data-placement="bottom" title="{{ __('Remove all drawn lines') }}"><i class="fa fa-trash fa-fw"></i></a>
+                                <a href="javascript:void(0);" id="add_submit_control" class="btn btn-default map-control ml-1" data-toggle="tooltip"data-placement="bottom" title="{{ __('Save') }}" data-code="" >
+                                    <i class="fa fa-floppy-disk fa-fw"></i>
+                                </a>
+
                             </div>
-                            <div class="add-road-form" style="display: none">
+                            <!-- Road Form -->
+                            <form class="form-horizontal" id="add-road-form">
+                                <div class="add-road-form" style="display: none">
+                                    <div>
+                                        <hr>
+                                        <h4>{{ __('Add Road Network') }}</h4>
+                                    </div>
+                                    <div id="add-road-errors" tabindex="1"></div>
+
+                                     <div class="add-road-form-group">
+                                        {!! Form::label('name',__('Road Name') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
+                                        {!! Form::text('name',null,['class' => 'form-control', 'placeholder' => __('Road Name')]) !!}
+                                    </div>
+                                    
+                                      <div class="add-road-form-group pt-2">
+                                        {!! Form::label('hierarchy',__('Hierarchy'),['class' => 'control-label'],false) !!}
+                                        {!! Form::select('hierarchy', $roadHierarchy, null, ['class' => 'form-control', 'placeholder' => __('Road Hierarchy')]);!!}
+                                    </div>
+                                    
+                                    <div class="add-road-form-group pt-2">
+                                        {!! Form::label('right_of_way',__('Right of Way (m)') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
+                                        {!! Form::number('right_of_way',null,['class' => 'form-control', 'placeholder' => __('Right of Way (m)'),'min' => 1]) !!}
+                                    </div>
+                                   
+                                    <div class="add-road-form-group pt-2">
+                                        {!! Form::label('carrying_width',__('Carrying Width (m)') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
+                                        {!! Form::number('carrying_width',null,['class' => 'form-control', 'placeholder' => __('Carrying Width (m)'),'min' => 1]) !!}
+                                    </div>
+                                    
+
+                                    <div class="add-road-form-group pt-2">
+                                        {!! Form::label('surface_type',__('Surface Type'),['class' => 'control-label'],false) !!}
+                                        {!! Form::select('surface_type', $roadSurfaceTypes, null, ['class' => 'form-control', 'placeholder' => __('Road Surface Type')]);!!}
+                                    </div>
+                                    
+                                    <div class="add-road-form-group pt-2">
+                                        {!! Form::label('length',__('Length (m)') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
+                                        {!! Form::number('length',null,['class' => 'form-control', 'placeholder' => __('Road Length (m)'),'min' => 1]) !!}
+                                    </div>
+                                   
+                                    
+                                    <div class="add-road-form-group pt-2">
+                                        {!! Form::button(__('Save'), ['class' => 'btn btn-info', 'id' => 'add_road_submit_btn']) !!}
+                                    </div>
+                                </div>
+                            </form>
+
+                     <form class="form-horizontal" id="add-sewer-form">
+                        <div class="add-sewer-form" style="display: none">
                                 <div>
                                     <hr>
-                                    <h4>Add Road Network</h4>
+                                    <h4>{{ __('Add Sewer Network')}}</h4>
                                 </div>
-                                <div id="add-road-errors" tabindex='1'>
+                                <div id="add-sewer-errors" tabindex='1'>
 
                                 </div>
-                                    <div class="add-road-form-group">
-                                        {!! Form::label('name','Road Name <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
-                                        {!! Form::text('name',null,['class' => 'form-control', 'placeholder' => 'Road Name']) !!}
+                                    <div class="add-sewer-form-group">
+                                    {!! Form::label('road_code',__('Road Code') .' <span style="color: red">*</span>', ['class' => 'control-label d-block'], false) !!}
+                                    {!! Form::select('road_code', $road_code, null, ['class' => 'form-control', 'placeholder' => __('Road Code'), 'style' => 'width: 350px;']) !!}
+
                                     </div>
-                                    <div class="add-road-form-group">
-                                        {!! Form::label('hierarchy','Hierarchy',['class' => 'control-label'],false) !!}
-                                        {!! Form::select('hierarchy', $roadHierarchy, null, ['class' => 'form-control', 'placeholder' => 'Road Hierarchy']);!!}
+                                    <div class="add-sewer-form-group pt-2">
+                                        {!! Form::label('location',__('Location') .'<span style="color: red">*</span>',['class' => 'control-label'],false) !!}
+                                        {!! Form::select('location', ['' => 'Location','middle' => 'middle','side' => 'side'], null, ['class' => 'form-control']) !!}
                                     </div>
-                                    <div class="add-road-form-group">
-                                        {!! Form::label('surface_type','Surface Type',['class' => 'control-label'],false) !!}
-                                        {!! Form::select('surface_type', $roadSurfaceTypes, null, ['class' => 'form-control', 'placeholder' => 'Road Surface Type']);!!}
+                                    <div class="add-sewer-form-group pt-2">
+                                        {!! Form::label('length',__('Length (m)') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
+                                        {!! Form::text('length', null, ['class' => 'form-control', 'id' => 'length_sewer', 'placeholder' => __('Length (m)'), 'oninput' => "this.value = this.value.replace(/[^0-9.]/g, '');"]) !!}
+
                                     </div>
-                                    <div class="add-road-form-group">
-                                        {!! Form::label('length','Length (m) <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
-                                        {!! Form::number('length',null,['class' => 'form-control', 'placeholder' => 'Road Length (m)','min' => 1]) !!}
+                                    <div class="add-sewer-form-group pt-2">
+                                       {!! Form::label('diameter',__('Diameter (mm)') .' <span style="color: red">*</span>',['class' => ' control-label'],false) !!}
+                                       {!! Form::text('diameter',null,['class' => 'form-control', 'placeholder' => __('Diameter (mm)'),'oninput' => "this.value = this.value.replace(/[^0-9.]/g, ''); ",]) !!}
                                     </div>
-                                    <div class="add-road-form-group">
-                                        {!! Form::label('right_of_way','Right of Way (m) <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
-                                        {!! Form::number('right_of_way',null,['class' => 'form-control', 'placeholder' => 'Right of Way (m)','min' => 1]) !!}
+                                    <div class="add-sewer-form-group pt-2">
+                                        {!! Form::label('treatment_plant_id',__('Treatment Plant'),['class' => 'control-label'],false) !!}
+                                        {!! Form::select('treatment_plant_id', $treatmentPlants, null, ['class' => 'form-control', 'placeholder' => __('Treatment Plant')]);!!}
                                     </div>
-                                    <div class="add-road-form-group">
-                                        {!! Form::label('carrying_width','Carrying Width (m) <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
-                                        {!! Form::number('carrying_width',null,['class' => 'form-control', 'placeholder' => 'Carrying Width (m)','min' => 1]) !!}
+                                    <div class="add-sewer-form-group pt-2">
+                                        {!! Form::button(__('Save'), ['class' => 'btn btn-info','id'=>'add_sewer_submit_btn', 'style' => 'width: -webkit-fill-available; margin-top: 12px;']) !!}
                                     </div>
-                                    <div class="add-road-form-group">
-                                        {!! Form::button('Save', ['class' => 'btn btn-info','id'=>'add_road_submit_btn']) !!}
+
+                            </div>
+
+                    </form>
+
+                    <form class="form-horizontal" id="add-drain-form">
+                        <div class="add-drain-form" style="display: none">
+                                <div>
+                                    <hr>
+                                     <h4>{{ __('Add Drain Network')}}</h4>
+                                </div>
+                                <div id="add-drain-errors" tabindex='1'>
+
+                                </div>
+                                    <div class="add-drain-form-group">
+                                    {!! Form::label('road_code', __('Road Code') .' <span style="color: red">*</span>', ['class' => 'control-label d-block'], false) !!}
+                                        {!! Form::select('road_code', $road_code, null, ['class' => 'form-control','id'=>'road_code_drain', 'placeholder' =>  __('Road Code'), 'style' => 'width: 350px;']) !!}
+                                    </div>
+                                    <div class="add-drain-form-group pt-2">
+                                        {!! Form::label('cover_type', __('Cover Type'),['class' => 'control-label'],false) !!}
+                                        {!! Form::select('cover_type', $cover_type, null, ['class' => 'form-control', 'placeholder' => __('Cover Type')])!!}
+                                    </div>
+
+                                    <div class="add-drain-form-group pt-2">
+                                        {!! Form::label('surface_type', __('Surface Type'),['class' => 'control-label'],false) !!}
+                                        {!! Form::select('surface_type', $surface_type, null, ['class' => 'form-control', 'placeholder' => __('Surface Type'), 'id'=>'surface_type_drain',])!!}
+                                    </div>
+                                    <div class="add-drain-form-group pt-2">
+                                        {!! Form::label('size',__('Width (mm)') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
+                                        {!! Form::text('size', null, ['class' => 'form-control', 'placeholder' => __('Width (mm)'), 'oninput' => "this.value = this.value.replace(/[^0-9.]/g, '')"]) !!}
+
+                                    </div>
+                                    <div class="add-drain-form-group pt-2">
+                                        {!! Form::label('length',__('Length (m)') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
+                                        {!! Form::text('length', null, ['class' => 'form-control', 'id' => 'length_drain', 'placeholder' => __('Length (m)'), 'oninput' => "this.value = this.value.replace(/[^0-9.]/g, '');"]) !!}
+
+                                    </div>
+                                    <div class="add-drain-form-group pt-2">
+                                        {!! Form::label('treatment_plant_id',__('Treatment Plant'),['class' => 'control-label'],false) !!}
+                                        {!! Form::select('treatment_plant_id', $treatmentPlants, null, ['class' => 'form-control', 'id' => 'tp_drain','placeholder' => __('Treatment Plant')]);!!}
+                                    </div>
+                                    <div class="add-drain-form-group pt-2">
+                                        {!! Form::button(__('Save'), ['class' => 'btn btn-info','id'=>'add_drain_submit_btn', 'style' => 'width: -webkit-fill-available; margin-top: 12px;']) !!}
                                     </div>
                             </div>
-                        </div>
+                       
                     </form>
+
+                    <form class="form-horizontal" id="add-watersupply-form">
+                        <div class="add-watersupply-form" style="display: none">
+                                <div>
+                                    <hr>
+                                    <h4>{{ __('Add Water Supply Network')}}</h4>
+                                </div>
+                                <div id="add-watersupply-errors" tabindex='1'>
+
+                                </div>
+                               
+                                    <div class="add-watersupply-form-group">
+                                    {!! Form::label('road_code', __('Road Code') .' <span style="color: red">*</span>', ['class' => 'control-label d-block'], false) !!}
+                                        {!! Form::select('road_code', $road_code, null, ['class' => 'form-control','id'=>'road_code_watersupply', 'placeholder' =>  __('Road Code'), 'style' => 'width: 350px;']) !!}
+                                    </div>
+                                    <div class="add-watersupply-form-group pt-2">
+                                        {!! Form::label('project_name', __('Project Name') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
+                                        {!! Form::text('project_name', null, ['class' => 'form-control', 'placeholder' => __('Project Name')]) !!}
+
+                                    </div>
+                                    <div class="add-watersupply-form-group pt-2">
+                                        {!! Form::label('type',__('Type'),['class' => 'control-label'],false) !!}
+                                        {!! Form::select('type', ['Main' => 'Main', 'Secondary' => 'Secondary'], null, ['class' => 'form-control', 'placeholder' => __('Type')]);!!}
+                                    </div>
+                                    <div class="add-watersupply-form-group pt-2">
+                                        {!! Form::label('material_type',__('Material Type'),['class' => 'control-label'],false) !!}
+                                        {!! Form::select('material_type', ['HDPE' => 'HDPE', 'GI' => 'GI'], null, ['class' => 'form-control', 'placeholder' => __('Material Type')])!!}
+                                    </div>
+                                    <div class="add-watersupply-form-group pt-2">
+                                       {!! Form::label('diameter',__('Diameter (mm)') .' <span style="color: red">*</span>',['class' => ' control-label'],false) !!}
+                                       {!! Form::text('diameter',null,['class' => 'form-control','id'=>'diameter_watersupply', 'placeholder' => __('Diameter (mm)'),'oninput' => "this.value = this.value.replace(/[^0-9.]/g, ''); ",]) !!}
+                                    </div>
+                                    <div class="add-watersupply-form-group pt-2">
+                                        {!! Form::label('length',__('Length (m)') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
+                                        {!! Form::text('length', null, ['class' => 'form-control', 'id' => 'length_watersupply', 'placeholder' =>  __('Length (m)'), 'oninput' => "this.value = this.value.replace(/[^0-9.]/g, '');"]) !!}
+
+                                    </div>
+                                   
+                                    <div class="add-watersupply-form-group pt-2" >
+                                    {!! Form::button(__('Save'), ['class' => 'btn btn-info', 'id' => 'add_watersupply_submit_btn', 'style' => 'width: -webkit-fill-available; margin-top: 12px;']) !!}
+
+
+                                    </div>
+                            </div>
+                       
+                    </form>
+                </div>
                     <div id="feature_info_content"></div>
                 </div>
             </div>
@@ -214,27 +374,27 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                         <div class="form-group">
                             <div class="add-road-inaccessible-form" >
                                 <div>
-                                    <h4>Hard to Reach Buildings</h4>
+                                    <h4>{{ __('Hard to Reach Buildings') }}</h4>
                                 </div>
                                 <div id="add-road-inaccessible-errors" tabindex='1'>
                                 </div>
                                     <div class="add-road-inaccessible-form-group">
-                                        {!! Form::label('road_width','Carrying Width <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
+                                        {!! Form::label('road_width', __('Carrying Width') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
                                          <div class="container-fluid">
                                         <div class="row">
-                                        {!! Form::text('road_width',null,['class' => 'form-control col-md-6', 'placeholder' => 'Carrying Width'  ,'oninput' => "this.value = this.value < 0 ? '' : this.value", ]) !!}
-                                        <select class="form-control col-md-6" id="road_width_unit"><option value="meter">Meter</option><option value="feet">Feet</option></select>
+                                        {!! Form::text('road_width',null,['class' => 'form-control col-md-6', 'placeholder' => __('Carrying Width')  ,'oninput' => "this.value = this.value < 0 ? '' : this.value", ]) !!}
+                                        <select class="form-control col-md-6" id="road_width_unit"><option value="meter">{{ __('Meter') }}</option><option value="feet">{{ __('Feet') }}</option></select>
                                     </div></div>
                                         </div>
                                     <div class="add-road-inaccessible-form-group">
-                                        {!! Form::label('hose_length','Hose Length <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
+                                        {!! Form::label('hose_length', __('Hose Length') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
                                         <div class="container-fluid">
                                         <div class="row">
-                                            {!! Form::text('hose_length',null,['class' => 'form-control col-md-6', 'placeholder' => 'Hose Length' , 'oninput' => "this.value = this.value < 0 ? '' : this.value",]) !!}
-                                        <select class="form-control col-md-6" id="hose_length_unit"><option value="meter">Meter</option><option value="feet">Feet</option></select>
+                                            {!! Form::text('hose_length',null,['class' => 'form-control col-md-6', 'placeholder' => __('Hose Length') , 'oninput' => "this.value = this.value < 0 ? '' : this.value",]) !!}
+                                        <select class="form-control col-md-6" id="hose_length_unit"><option value="meter">{{ __('Meter') }}</option><option value="feet">{{ __('Feet') }}</option></select>
                                     </div></div></div>
                                     <div class="add-road-inaccessible-form-group">
-                                        {!! Form::button('Submit', ['class' => 'btn btn-info','id'=>'add_road_inaccessible_submit_btn']) !!}
+                                        {!! Form::button(__('Submit'), ['class' => 'btn btn-info','id'=>'add_road_inaccessible_submit_btn']) !!}
                                     </div>
                             </div>
                         </div>
@@ -248,22 +408,22 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                         <div class="form-group">
                             <div class="add-waterbody-inaccessible-form" >
                                 <div>
-                                    <h4>Buildings Close to Water Bodies</h4>
+                                    <h4>{{ __('Buildings Close to Water Bodies') }}</h4>
                                 </div>
                                 <div id="add-waterbody-inaccessible-errors" tabindex='1'>
                                 </div>
                                     <div class="add-waterbody-inaccessible-form-group">
-                                        {!! Form::label('waterbody_hose_length','Buffer Distance <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
+                                        {!! Form::label('waterbody_hose_length', __('Buffer Distance') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
                                         <div class="container-fluid">
                                         <div class="row">
 
-                                            {!! Form::text('waterbody_hose_length',null,['class' => 'form-control col-md-6', 'placeholder' => 'Buffer Distance','oninput' => "this.value = this.value < 0 ? '' : this.value",]) !!}
-                                        <select class="form-control col-md-6" id="waterbody_hose_length_unit"><option value="meter">Meter</option><option value="feet">Feet</option></select>
+                                            {!! Form::text('waterbody_hose_length',null,['class' => 'form-control col-md-6', 'placeholder' => __('Buffer Distance'),'oninput' => "this.value = this.value < 0 ? '' : this.value",]) !!}
+                                        <select class="form-control col-md-6" id="waterbody_hose_length_unit"><option value="meter">{{ __('Meter') }}</option><option value="feet">{{ __('Feet') }}</option></select>
                                         </div>
                                         </div>
                                     </div>
                                     <div class="add-waterbody-inaccessible-form-group">
-                                        {!! Form::button('Submit', ['class' => 'btn btn-info','id'=>'add_waterbody_inaccessible_submit_btn']) !!}
+                                        {!! Form::button(__('Submit'), ['class' => 'btn btn-info','id'=>'add_waterbody_inaccessible_submit_btn']) !!}
                                     </div>
                             </div>
                         </div>
@@ -286,17 +446,17 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 <a href="#" id="report-popup-closer" class="ol-popup-closer"></a>
                 <div id="report-popup-content"></div>
                 <div id="report-popup-content-download">
-                    <div><strong>Export to:</strong></div>
+                    <div><strong>{{ __('Export to') }}:</strong></div>
                     <div class="btn-group">
                         <form method="post" action="{{ url("getPolygonReportCSV") }}">
                             <input type="hidden" name="geom" value="" id="report-export-geom"/>
-                            <button type="submit" id="report-export-csv-btn" class="btn btn-default">Excel</button>
+                            <button type="submit" id="report-export-csv-btn" class="btn btn-default">{{ __('Excel') }}</button>
                         </form>
                     </div>
                 </div>
             </div>
             <div id="drain-potentialSummary-popup" class="ol-popup" style="display: none;">
-                <h3 class="card-title py-2">Summary Info</h3>
+                <h3 class="card-title py-2">{{ __('Summary Info') }}</h3>
                 <div id="drain-potentialSummary-popup-content"></div>
                 <div id="drain-potentialSummary-popup-content-download">
                         <form method="get" action="{{ url("maps/export-drain-potential-buildings") }}">
@@ -304,15 +464,15 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                             <input type="hidden" name="db_distance" value="" id="DBdistance"/>
                             @can('Export in Decision Map Tools')
                             <button type="submit" id="drain-potentialSummary-export-excel-btn" class="btn btn-default">
-                                Export to Excel
+                                {{ __('Export to Excel') }}
                             </button>
                             @endcan
-                            <button id="drain-potentialSummary-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer" >Close</button>
+                            <button id="drain-potentialSummary-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer" >{{ __('Close') }}</button>
                         </form>
                 </div>
             </div>
             <div id="water-body-popup" class="ol-popup" style="display: none;">
-                <h3 class="card-title py-2">Summary Info</h3>
+                <h3 class="card-title py-2">{{ __('Summary Info') }}</h3>
                 <div id="water-body-popup-content"></div>
 
                 <div id="water-body-popup-content-download">
@@ -320,10 +480,10 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                             <input type="hidden" name="wb_code" value="" id="waterBodyCode"/>
                             <input type="hidden" name="wb_distance" value="" id="WBdistance"/>
                             @can('Export in Summary Information Map Tools')
-                            <button type="submit" id="water-body-export-excel-btn" class="btn btn-default">Export to Excel
+                            <button type="submit" id="water-body-export-excel-btn" class="btn btn-default">{{ __('Export to Excel') }}
                             </button>
                             @endcan
-                            <button id="water-body-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer" >Close</button>
+                            <button id="water-body-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer" >{{ __('Close') }}</button>
                         </form>
                 </div>
 
@@ -335,10 +495,10 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                         <form method="get" action="{{ url("maps/export-ward-buildings") }}">
                             <input type="hidden" name="ward_building_no" value="" id="ward_building_no"/>
                             @can('Export in Summary Information Map Tools')
-                            <button type="submit" id="ward-buildings-export-excel-btn" class="btn btn-default">Export to Excel
+                            <button type="submit" id="ward-buildings-export-excel-btn" class="btn btn-default">{{ __('Export to Excel') }}
                             </button>
                             @endcan
-                            <button id="ward-buildings-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer" >Close</button>
+                            <button id="ward-buildings-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer" >{{ __('Close') }}</button>
                         </form>
                 </div>
 
@@ -346,7 +506,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
             <div id="buffer-polygon-popup" class="ol-popup" style="display: none;">
 
 
-                    <h3 class="card-title py-2">Summary Info</h3>
+                    <h3 class="card-title py-2">{{ __('Summary Info') }}</h3>
 
                     <div id="buffer-polygon-popup-content"></div>
 
@@ -357,10 +517,10 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                             <input type="hidden" name="buffer_polygon_geom" value="" id="buffer_polygon_geom"/>
                             <input type="hidden" name="buffer_polygon_distance" value="" id="buffer_polygon_distance"/>
                             @can('Export in Summary Information Map Tools')
-                            <button type="submit" id="buffer-polygon-export-excel-btn" class="btn btn-default">Export to Excel
-                            </button>
+                              <button type="submit" id="buffer-polygon-export-excel-btn" class="btn btn-default">{{ __('Export to Excel') }}
+                              </button>
                              @endcan
-                             <button id="buffer-polygon-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer" >Close</button>
+                             <button id="buffer-polygon-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer" >{{ __('Close') }}</button>
                         </form>
                 </div>
 
@@ -368,7 +528,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
             </div>
             <div id="road-popup" class="ol-popup" style="display: none;">
-                <h3 class="card-title py-2">Summary Info</h3>
+                <h3 class="card-title py-2">{{ __('Summary Info') }}</h3>
                 <div id="road-popup-content"></div>
 
                 <div id="road-popup-content-download">
@@ -376,15 +536,15 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                             <input type="hidden" name="road_code" value="" id="RDCode"/>
                             <input type="hidden" name="rb_distance" value="" id="RDBdistance"/>
                             @can('Export in Summary Information Map Tools')
-                            <button type="submit" id="road-export-excel-btn" class="btn btn-default">Export to Excel</button>
+                            <button type="submit" id="road-export-excel-btn" class="btn btn-default">{{ __('Export to Excel') }}</button>
                             @endcan
-                            <button id="road-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer" >Close</button>
+                            <button id="road-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer" >{{ __('Close') }}</button>
                         </form>
                 </div>
 
             </div>
             <div id="point-buffer-popup" class="ol-popup" style="display: none;">
-                <h3 class="card-title py-2">Summary Info</h3>
+                <h3 class="card-title py-2">{{ __('Summary Info') }}</h3>
                 <div id="point-buffer-popup-content"></div>
                 <div id="point-buffer-popup-content-download">
                         <form method="get" action="{{ url("maps/export-point-buildings") }}">
@@ -392,30 +552,30 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                             <input type="hidden" id="PTB-lat-csv" name="PTB_lat" value=""/>
                             <input type="hidden" id="PTB-distance" name="PTB_distance" value=""/>
                             @can('Export in Summary Information Map Tools')
-                            <button type="submit" id="ptb-export-excel-btn" class="btn btn-default">Export to Excel</button>
+                            <button type="submit" id="ptb-export-excel-btn" class="btn btn-default">{{ __('Export to Excel') }}</button>
                             @endcan
-                            <button id="point-buffer-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer" >Close</button>
+                            <button id="point-buffer-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer" >{{ __('Close') }}</button>
                         </form>
                 </div>
             </div>
             <div id="export-popup" class="ol-popup" style="display: none;">
                 <a href="#" id="export-popup-closer" class="ol-popup-closer"></a>
-                <h3 class="card-title py-2">Export Data Set</h3>
+                <h3 class="card-title py-2">{{ __('Export Data Set') }}</h3>
                 <div id="export-popup-content">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" >Overlay</span>
+                            <span class="input-group-text" >{{ __('Overlay') }}</span>
                     </div>
                     <select class="form-control"  id="export_overlay">
-                        <option value="">Select a layer</option>
+                        <option value="">{{ __('Select a layer') }}</option>
                     </select>
                     </div>
                     <div class="input-group">
             <div class="input-group-prepend">
-                                        <span class="input-group-text" >Export</span>
+                                        <span class="input-group-text" >{{ __('Export') }}</span>
                                 </div>
             <div class="input-group-append">
-                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Select a format</button>
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ __('Select a format') }}</button>
                 <div class="dropdown-menu">
                 <a class="dropdown-item" id="export-csv-btn" href="#">CSV</a>
                 <a class="dropdown-item"  id="export-kml-btn" href="#">KML</a>
@@ -429,15 +589,15 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
             <div id="export-csv-popup" class="ol-popup" style="display: none;">
                 <a href="#" id="export-csv-popup-closer" class="ol-popup-closer"></a>
-                <h3 class="card-title py-2">Buidings data with owner info</h3>
+                <h3 class="card-title py-2">{{ __('Buidings data with owner info') }}</h3>
                 <div id="export-csv-popup-content">
                     <div class="input-group">
                         {{-- <div class="input-group-prepend">
-                            <span class="input-group-text" >Export</span>
+                            <span class="input-group-text" >{{ __('Export') }}</span>
                         </div> --}}
                         <div class="input-group-append">
                             <input type="hidden" id="building-with-owner-polygon-geom" value=""/>
-                            <button id="export-buildings-csv-btn" class="btn btn-default">Export to Excel</button>
+                            <button id="export-buildings-csv-btn" class="btn btn-default">{{ __('Export to Excel') }}</button>
                         </div>
                     </div>
                 </div>
@@ -454,8 +614,8 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                             <input type="hidden" name="road_width_unit_report" value="" id="road_width_unit_report"/>
                             <input type="hidden" name="road_hose_length_report" value="" id="road_hose_length_report"/>
                             <input type="hidden" name="road_hose_length_unit_report" value="" id="road_hose_length_unit_report"/>
-                            <button type="submit" id="report-road-inaccessible-export-csv-btn" class="btn btn-default">Export to Excel</button>
-                            <button id="road-inaccessible-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer">Close</button>
+                            <button type="submit" id="report-road-inaccessible-export-csv-btn" class="btn btn-default">{{ __('Export to Excel') }}</button>
+                            <button id="road-inaccessible-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer">{{ __('Close') }}</button>
                         </form>
 
                 </div>
@@ -464,9 +624,9 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active nav-item"><a href="#layers-tab" aria-controls="layers" role="tab"
-                                                              data-toggle="tab" class="nav-link active" aria-selected="true">Layers</a></li>
+                                                              data-toggle="tab" class="nav-link active" aria-selected="true">{{ __('Layers') }}</a></li>
                     <li role="presentation" class="nav-item"><a href="#analysis-tab" aria-controls="analysis" role="tab"
-                                               data-toggle="tab" class="nav-link">Tools</a></li>
+                                               data-toggle="tab" class="nav-link">{{ __('Tools') }}</a></li>
                 </ul>
 
                 <!-- Tab panes -->
@@ -474,17 +634,17 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     <div role="tabpanel" class="tab-pane fade active show" id="layers-tab">
                         <div>
                             <div>
-                                <label for="base_layer_select">Base Layer</label>
+                                <label for="base_layer_select">{{ __('Base Layer') }}</label>
                             </div>
                             <div>
                                 <select id="base_layer_select">
-                                    <option value="">None</option>
+                                    <option value="">{{ __('None') }}</option>
                                 </select>
                             </div>
                         </div>
                         <div class="overlay-spacer">
                             <div>
-                                <label for="">Overlays</label>
+                                <label for="">{{ __('Overlays') }}</label>
                             </div>
                             <div id="overlay_checkbox_container"></div>
                         </div>
@@ -493,19 +653,19 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     <div role="tabpanel" class="tab-pane fade" id="analysis-tab">
                         <!-- Service Providers Tools -->
                         @can('Service Delivery Map Tools')
-                            <span data-toggle="tooltip" data-placement="bottom" title="Service Delivery">
+                            <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Service Delivery') }}">
                             <a id="servicedelivery_control" class="btn btn-default collapse-control" role="button"
                             data-toggle="collapse" href="#collapse_service_delivery" aria-expanded="false"
-                            aria-controls="collapse_service_delivery"><i class="fa-brands fa-servicestack"></i>Service Delivery Tools</a>
+                            aria-controls="collapse_service_delivery"><i class="fa-brands fa-servicestack"></i>{{ __('Service Delivery Tools') }}</a>
                             </span>
                             <div class="collapse" id="collapse_service_delivery">
                                 <div class="card">
                                     <div class="card-body">
                                         @can('Applications Map Tools')
                                             <!-- find application -->
-                                                <span data-toggle="tooltip" data-placement="bottom" title="Find Applications">
+                                                <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Find Applications') }}">
                                                     <a id="applicationcontainments_control" class="btn btn-default collapse-control collapsed" role="button" data-toggle="collapse" href="#collapse_find_appications" aria-expanded="false" aria-controls="collapse_find_appications"><i
-                                                    class="fa fa-file-text"></i>Applications</a>
+                                                    class="fa fa-file-text"></i>{{ __('Applications') }}</a>
                                                 </span>
                                                 <div class="collapse" id="collapse_find_appications">
                                                     <div class="card">
@@ -516,7 +676,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                                                     <div class="input-group input-group-sm">
                                                                         <select name="applicaion_year" class="form-control col-md-4"
                                                                             id="applicaion_year">
-                                                                            <option value="">Year</option>
+                                                                            <option value="">{{ __('Year') }}</option>
 
                                                                             @foreach($pickDateResults as $unique)
                                                                                 <option value= "{{ $unique->date1 }}" > {{ $unique->date1 }}</option>
@@ -525,7 +685,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                                                         </select>
                                                                         <select name="application_month" class="form-control col-md-4"
                                                                             id="application_month">
-                                                                            <option value="">Month</option>
+                                                                            <option value="">{{ __('Month') }}</option>
                                                                             @for ($mm=1; $mm<=12; $mm++)
                                                                                 <option value="{{ $mm }}">{{ $mm }}</option>
                                                                             @endfor
@@ -538,7 +698,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                                             </form>
                                                             <form role="form" name="application_date_form" id="application_date_form" class="form-inline">
                                                                 <div class="input-group input-group-sm">
-                                                                    <div class="input-group-prepend"><span class="input-group-text">Date</span></div>
+                                                                    <div class="input-group-prepend"><span class="input-group-text">{{ __('Date') }}</span></div>
                                                                         <input type="date" class="form-control col-md-10" id="application_date_field"/>
                                                                         <div class="input-group-append">
                                                                             <button type="submit" class="btn btn-default"><i class="fa fa-search" aria-hidden="true"></i></button>
@@ -550,25 +710,23 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                                                 <tr>
                                                                     <td style="vertical-align: top;"><img
                                                                                 src="{{ asset("/img/application.png") }}"></td>
-                                                                    <td>- Application only</td>
+                                                                    <td>-{{ __('Application only') }}</td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td style="vertical-align: top;"><img
                                                                                 src="{{ asset("/img/application-emptying.png") }}"></td>
-                                                                    <td>- Application and emptying service</td>
+                                                                    <td>-{{ __('Application and emptying service') }}</td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td style="vertical-align: top;"><img
                                                                                 src="{{ asset("/img/application-feedback.png") }}"></td>
-                                                                    <td style="vertical-align: top;">- Application, emptying
-                                                                        service and feedback
+                                                                    <td style="vertical-align: top;">-{{ __('Application, emptying service and feedback') }}
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td style="vertical-align: top;"><img
                                                                                 src="{{ asset("/img/application-sludge-collection.png") }}"></td>
-                                                                    <td style="vertical-align: top;">- Application, emptying
-                                                                        service, sludge collection and feedback
+                                                                    <td style="vertical-align: top;">-{{ __('Application, emptying service, sludge collection and feedback') }}
                                                                     </td>
                                                                 </tr>
                                                             </table>
@@ -579,8 +737,8 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
                                         @can('Emptied Applications Not Reached to TP Map Tools')
                                             <!-- find emptied applications that have not reached to treatment-plants -->
-                                            <span data-toggle="tooltip" data-placement="bottom" title="Emptied Applications that have not reached to Treatment Plant">
-                                                <a id="applications_not_tp" class="btn btn-default collapse-control collapsed" role="button" data-toggle="collapse" href="#collapse_applications_not_tp" aria-expanded="false" aria-controls="collapse_find_tax_due_buildings"><i class="fa-solid fa-calendar-xmark"></i>Emptied Applications not reached to Treatment Plant</a>
+                                            <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Emptied Applications that have not reached to Treatment Plant') }}">
+                                                <a id="applications_not_tp" class="btn btn-default collapse-control collapsed" role="button" data-toggle="collapse" href="#collapse_applications_not_tp" aria-expanded="false" aria-controls="collapse_find_tax_due_buildings"><i class="fa-solid fa-calendar-xmark"></i>{{ __('Emptied Applications not reached to Treatment Plant') }}</a>
                                             </span>
                                             <div class="collapse" id="collapse_applications_not_tp">
                                                 <div class="card">
@@ -591,14 +749,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                                             <div class="form-group">
                                                                 <div class="input-group input-group-sm">
                                                                     <select name="applicaion_not_tp_year" class="form-control col-md-4" id="applicaion_not_tp_year">
-                                                                        <option value="">Year</option>
+                                                                        <option value="">{{ __('Year') }}</option>
                                                                         @foreach($pickDateResults as $unique)
                                                                             <option value= "{{ $unique->date1 }}" > {{ $unique->date1 }}</option>
                                                                         @endforeach
                                                                     </select>
 
                                                                     <select name="application_not_tp_month" class="form-control col-md-4" id="application_not_tp_month">
-                                                                        <option value="">Month</option>
+                                                                        <option value="">{{ __('Month') }}</option>
                                                                         @for ($mm=1; $mm<=12; $mm++)
                                                                             <option value="{{ $mm }}">{{ $mm }}</option>
                                                                         @endfor
@@ -611,7 +769,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                                         </form>
                                                         <form role="form" name="application_not_tp_date_form" id="application_not_tp_date_form" class="form-inline">
                                                             <div class="input-group input-group-sm">
-                                                                <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1">Date</span></div>
+                                                                <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1">{{ __('Date') }}</span></div>
                                                                     <input type="date" class="form-control col-md-6"
                                                                 id="application_not_tp_date_field"/>
                                                                 <div class="input-group-append">
@@ -627,8 +785,8 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
                                         @can('Containments Proposed To Be Emptied Map Tools')
                                             <!-- find containment proposed to be emptied-->
-                                            <span data-toggle="tooltip" data-placement="bottom" title="Containments proposed to be emptied">
-                                                <a id="containments_proposed_to_be_emptied" class="btn btn-default collapse-control" role="button" data-toggle="collapse"  href="#collapse_proposed_emptying_containments" aria-expanded="false" aria-controls="collapse_proposed_emptying_containments"><i class="fa fa-square" aria-hidden="true"></i>Containments proposed to be emptied</a>
+                                            <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Containments proposed to be emptied') }}">
+                                                <a id="containments_proposed_to_be_emptied" class="btn btn-default collapse-control" role="button" data-toggle="collapse"  href="#collapse_proposed_emptying_containments" aria-expanded="false" aria-controls="collapse_proposed_emptying_containments"><i class="fa fa-square" aria-hidden="true"></i>{{ __('Containments proposed to be emptied') }}</a>
                                             </span>
                                             <div class="collapse" id="collapse_proposed_emptying_containments">
                                                 <div class="card">
@@ -636,10 +794,10 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                                         <form class="form-inline" name="proposed_emptying_days_form" id="proposed_emptying_days_form" style="margin-bottom: 15px">
                                                             <div class="form-group ">
                                                                 <div class="input-group input-group-sm ">
-                                                                    <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1">Next</span></div>
+                                                                    <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1">{{ __('Next') }}</span></div>
                                                                     <input type="text" class="form-control col-md-1"
                                                                         id="proposed_emptying_days">
-                                                                    <div class="input-group-append"><span class="input-group-text">Days</span></div>
+                                                                    <div class="input-group-append"><span class="input-group-text">{{ __('Days') }}</span></div>
                                                                     <div class="input-group-append">
                                                                         <button type="submit" class="btn btn-default"><i class="fa fa-search" aria-hidden="true"></i></button>
                                                                     </div>
@@ -651,7 +809,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                                             <div class="form-group">
                                                                 <div class="input-group input-group-sm">
                                                                     <div class="input-group-prepend">
-                                                                        <span class="input-group-text">Next Week</span>
+                                                                        <span class="input-group-text">{{ __('Next Week') }}</span>
                                                                     </div>
                                                                     <div class="input-group-append">
                                                                         <button type="submit" class="btn btn-default"><i class="fa fa-search" aria-hidden="true"></i></button>
@@ -661,7 +819,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                                         </form>
                                                         <form role="form" name="proposed_emptying_date_form" id="proposed_emptying_date_form">
                                                             <div class="input-group input-group-sm">
-                                                                <div class="input-group-prepend"><span class="input-group-text">Date</span></div>
+                                                                <div class="input-group-prepend"><span class="input-group-text">{{ __('Date') }}</span></div>
                                                                 <input type="date" class="form-control" id="proposed_emptying_date"/>
                                                                 <div class="input-group-append">
                                                                     <button type="submit" class="btn btn-default"><i class="fa fa-search" aria-hidden="true"></i></button>
@@ -675,9 +833,9 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
                                         @can('Service Feedback Map Tools')
                                             <!-- feedback chart -->
-                                            <span data-toggle="tooltip" data-placement="bottom" title="Generate Feedback Chart within Custom Boundary">
+                                            <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Generate Feedback Chart within Custom Boundary') }}">
                                                 <a href="#" id="feedback_control" class="btn btn-default map-control"><i
-                                                class="fa fa-list-alt"></i>Service Feedback</a>
+                                                class="fa fa-list-alt"></i>{{ __('Service Feedback') }}</a>
                                             </span>
                                         @endcan
                                     </div>
@@ -687,18 +845,18 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
                         @can('General Map Tools')
                             <!-- General Tools -->
-                            <span data-toggle="tooltip" data-placement="bottom" title="General Tools">
+                            <span data-toggle="tooltip" data-placement="bottom" title= "General Tools">
                                 <a id="generaltools_control" class="btn btn-default collapse-control" role="button"
                                 data-toggle="collapse" href="#collapse_general_tools" aria-expanded="false"
-                                aria-controls="collapse_general_tools"><i class="fa-brands fa-servicestack"></i>General Tools</a>
+                                aria-controls="collapse_general_tools"><i class="fa-brands fa-servicestack"></i>{{ __('General Tools') }}</a>
                             </span>
                             <div class="collapse" id="collapse_general_tools">
                                 <div class="card">
                                     <div class="card-body">
                                         @can('Building by Structure Map Tools')
                                             <!-- Find Building By structure -->
-                                            <span data-toggle="tooltip" data-placement="bottom" title="Buildings by Structure Type">
-                                                <a class="btn btn-default collapse-control" role="button" data-toggle="collapse" href="#collapse_building_structype_filter" aria-expanded="false" aria-controls="collapse_building_structype_filter"><i class="fa fa-building"></i>Buildings by Structure Type</a>
+                                            <span data-toggle="tooltip" data-placement="bottom" title= "{{ __('Buildings by Structure Type') }}">
+                                                <a class="btn btn-default collapse-control" role="button" data-toggle="collapse" href="#collapse_building_structype_filter" aria-expanded="false" aria-controls="collapse_building_structype_filter"><i class="fa fa-building"></i>{{ __('Buildings by Structure Type') }}</a>
                                             </span>
                                             <div class="collapse" id="collapse_building_structype_filter">
                                                 <div class="card">
@@ -719,8 +877,8 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
                                         @can('Property Tax Map Tools')
                                             <!-- Building by Tax Payments -->
-                                            <span data-toggle="tooltip" data-placement="bottom" title="Property Tax Collection Status">
-                                                <a class="btn btn-default collapse-control" role="button" data-toggle="collapse" href="#collapse_building_tax_status" aria-expanded="false" aria-controls="collapse_building_tax_status"><i class="fa fa-building"></i>Property Tax Collection Status</a>
+                                            <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Property Tax Collection Status') }}">
+                                                <a class="btn btn-default collapse-control" role="button" data-toggle="collapse" href="#collapse_building_tax_status" aria-expanded="false" aria-controls="collapse_building_tax_status"><i class="fa fa-building"></i>{{ __('Property Tax Collection Status') }}</a>
                                             </span>
                                             <div class="collapse" id="collapse_building_tax_status">
                                                 <div class="card">
@@ -737,11 +895,11 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                                                 @endforeach
                                                             </div>
 
-                                                            <button type="button" class="btn btn-default" id="building_tax_payment_clear_button">Clear
+                                                            <button type="button" class="btn btn-default" id="building_tax_payment_clear_button">{{ __('Filter') }}
                                                             </button>
                                                             @can('Export in General Map Tools')
                                                                 <div class="btn-group">
-                                                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Export <span class="caret"></span>
+                                                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ __('Export') }}<span class="caret"></span>
                                                                     </button>
                                                                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                                                         <a href="#" class="dropdown-item" id="export_building_tax_filter_csv">CSV</a>
@@ -758,8 +916,8 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
                                         @can('Water Payment Status Map Tools')
                                             <!-- water supply payments -->
-                                            <span data-toggle="tooltip" data-placement="bottom" title="Water Payment Status">
-                                                <a class="btn btn-default collapse-control" role="button" data-toggle="collapse" href="#collapse_water_supply_status" aria-expanded="false" aria-controls="collapse_building_tax_status"><i class="fa fa-building"></i>Water Payment Status</a>
+                                            <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Water Payment Status') }}">
+                                                <a class="btn btn-default collapse-control" role="button" data-toggle="collapse" href="#collapse_water_supply_status" aria-expanded="false" aria-controls="collapse_building_tax_status"><i class="fa fa-building"></i>{{ __('Water Payment Status') }}</a>
                                             </span>
                                             <div class="collapse" id="collapse_water_supply_status">
                                                 <div class="card">
@@ -775,14 +933,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                                                     </div>
                                                                 @endforeach
                                                             </div>
-                                                            <button type="button" class="btn btn-default" id="water_supply_payment_clear_button">Clear
+                                                            <button type="button" class="btn btn-default" id="water_supply_payment_clear_button">{{ __('Filter') }}
                                                             </button>
                                                             @can('Export in General Map Tools')
                                                                 <div class="btn-group">
                                                                     <button type="button" class="btn btn-default dropdown-toggle"
                                                                             data-toggle="dropdown" aria-haspopup="true"
                                                                             aria-expanded="false">
-                                                                        Export <span class="caret"></span>
+                                                                            {{ __('Export') }} <span class="caret"></span>
                                                                     </button>
 
                                                                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -800,9 +958,9 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
                                         @can('Solid Waste Payment Status Map Tools')
                                             <!-- Swm -->
-                                            <span data-toggle="tooltip" data-placement="bottom" title="Solid Waste Payment Status">
-                                                <a class="btn btn-default collapse-control" role="button" data-toggle="collapse" href="#collapse_swm" aria-expanded="false" aria-controls="collapse_building_tax_status"><i class="fa fa-building"></i>Solid Waste Payment Status</a>
-                                            </span>
+                                            <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Solid Waste Payment Status') }}">
+                                                <a class="btn btn-default collapse-control" role="button" data-toggle="collapse" href="#collapse_swm" aria-expanded="false" aria-controls="collapse_building_tax_status"><i class="fa fa-building"></i>{{ __('Solid Waste Payment Status') }}</a>
+                                            </span> 
                                             <div class="collapse" id="collapse_swm">
                                                 <div class="card">
                                                     <div class="card-body">
@@ -818,14 +976,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                                                 @endforeach
                                                             </div>
                                                             <button type="button" class="btn btn-default"
-                                                                    id="swm_clear_button">Clear
+                                                                    id="swm_clear_button">{{ __('Filter') }}
                                                             </button>
                                                             @can('Export in General Map Tools')
                                                                 <div class="btn-group">
                                                                     <button type="button" class="btn btn-default dropdown-toggle"
                                                                             data-toggle="dropdown" aria-haspopup="true"
                                                                             aria-expanded="false">
-                                                                        Export <span class="caret"></span>
+                                                                            {{ __('Export') }} <span class="caret"></span>
                                                                     </button>
                                                                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                                                         <a href="#" class="dropdown-item"  id="export_swm_filter_csv">CSV</a>
@@ -846,44 +1004,44 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
                         @can('Data Export Map Tools')
                             <!-- Data Export Tools -->
-                            <span data-toggle="tooltip" data-placement="bottom" title="Data Export">
+                            <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Data Export') }}">
                                 <a id="dataexporttools_control" class="btn btn-default collapse-control" role="button"
                                 data-toggle="collapse" href="#collapse_data_export_tools" aria-expanded="false"
-                                aria-controls="collapse_data_export_tools"><i class="fa-solid fa-file-export"></i>Data Export Tools</a>
+                                aria-controls="collapse_data_export_tools"><i class="fa-solid fa-file-export"></i>{{ __('Data Export Tools') }}</a>
                             </span>
                             <div class="collapse" id="collapse_data_export_tools">
                                 <div class="card">
                                     <div class="card-body">
                                         @can('Filter by Wards Map Tools')
                                             <!-- filter by wards -->
-                                            <span data-toggle="tooltip" data-placement="bottom" title="Filter by Wards">
+                                            <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Filter by Wards') }}">
                                                 <a class="btn btn-default collapse-control" role="button" data-toggle="collapse"
                                                 href="#collapse_ward_filter" aria-expanded="false"
-                                                aria-controls="collapse_ward_filter"><i class="fa fa-map"></i>Filter by Wards</a>
+                                                aria-controls="collapse_ward_filter"><i class="fa fa-map"></i>{{ __('Filter by Wards') }}</a>
                                             </span>
                                             <div class="collapse" id="collapse_ward_filter">
                                                 <div class="card">
                                                     <div class="card-body">
                                                         <form role="form" name="ward_form" id="ward_form">
                                                             <div class="form-group ">
-                                                                <label for="ward" >Wards</label>
+                                                                <label for="ward" >{{ __('Wards') }}</label>
                                                                 {!! Form::select('ward', $wards,null, ['id' => 'ward', 'multiple' => true, 'style' => 'width: 100%'])!!}
                                                             </div>
                                                             <div class="form-group ">
-                                                                <label for="ward_overlay" >Overlay</label>
+                                                                <label for="ward_overlay" >{{ __('Overlay') }}</label>
                                                                     <select id="ward_overlay" style="width: 100%" >
-                                                                        <option value="">Select a layer</option>
+                                                                        <option value="">{{ __('Select a layer') }}</option>
                                                                     </select>
                                                             </div>
-                                                            <button type="submit"  id="ward_filter" class="btn btn-default">Filter</button>
+                                                            <button type="submit"  id="ward_filter" class="btn btn-default">{{ __('Filter') }}</button>
                                                             <button type="button" class="btn btn-default" id="ward_clear_button">
-                                                                Clear
+                                                                {{ __('Clear') }}
                                                             </button>
                                                             <div class="btn-group">
                                                                 <button type="button" class="btn btn-default dropdown-toggle"
                                                                         data-toggle="dropdown" aria-haspopup="true"
                                                                         aria-expanded="false">
-                                                                    Export <span class="caret"></span>
+                                                                    {{ __('Export') }}<span class="caret"></span>
                                                                 </button>
                                                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                                                     <a class="dropdown-item" href="#" id="export_ward_filter_csv">CSV</a>
@@ -900,16 +1058,16 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
                                         @can('Export Data Map Tools')
                                             <!-- export data set -->
-                                            <span data-toggle="tooltip" data-placement="bottom" title="Export Data Set within Custom Boundary">
-                                                <a href="#" id="export_control" class="btn btn-default map-control"><i class="fa-solid fa-file-export"></i>Export Data Set</a>
+                                            <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Export Data Set within Custom Boundary') }}">
+                                                <a href="#" id="export_control" class="btn btn-default map-control"><i class="fa-solid fa-file-export"></i>{{ __('Export Data Set') }}</a>
                                             </span>
                                         @endcan
 
                                         @can('Owner Information Map Tools')
                                             <!-- Building Owner Information -->
-                                            <span data-toggle="tooltip" data-placement="bottom" title="Building Owner Information within Custom Boundary">
+                                            <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Building Owner Information within Custom Boundary') }}">
                                                 <a href="#" id="update_tax_zone" class="btn btn-default map-control"><i
-                                                    class="fa fa-database"></i>Building Owner Information</a>
+                                                    class="fa fa-database"></i>{{ __('Building Owner Information') }}</a>
                                             </span>
                                         @endcan
                                     </div>
@@ -919,38 +1077,38 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
                         @can('Decision Map Tools')
                             <!-- Decision Tools -->
-                            <span data-toggle="tooltip" data-placement="bottom" title="Decision Tools">
+                            <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Decision Tools') }}">
                                     <a id="decisiontools_control" class="btn btn-default collapse-control" role="button"
                                     data-toggle="collapse" href="#collapse_decision_tools" aria-expanded="false"
-                                    aria-controls="collapse_decision_tools"><i class="fa-solid fa-calendar-check"></i>Decision Tools</a>
+                                    aria-controls="collapse_decision_tools"><i class="fa-solid fa-calendar-check"></i>{{ __('Decision Tools') }}</a>
                             </span>
                             <div class="collapse" id="collapse_decision_tools">
                                 <div class="card">
                                     <div class="card-body">
                                             @can('Tax Due Map Tools')
                                                 <!-- find tax due buildings(Commented - Might be needed in the future) -->
-                                                <span data-toggle="tooltip" data-placement="bottom" title="Find Tax Due Buildings">
+                                                <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Find Tax Due Buildings') }}">
                                                     <a id="duebuildings_control" class="btn btn-default collapse-control collapsed"
                                                     role="button" data-toggle="collapse" href="#collapse_find_tax_due_buildings"
-                                                    aria-expanded="false" aria-controls="collapse_find_tax_due_buildings"><i class="fa-solid fa-building-circle-exclamation"></i>Tax Due Buildings</a>
+                                                    aria-expanded="false" aria-controls="collapse_find_tax_due_buildings"><i class="fa-solid fa-building-circle-exclamation"></i>{{ __('Tax Due Buildings') }}</a>
                                                 </span>
                                                 <div class="collapse" id="collapse_find_tax_due_buildings">
                                                     <div class="card">
                                                         <div class="card-body">
                                                             <form role="form" name="tax_due_buildings_form" id="tax_due_buildings_form">
                                                                 <div class="form-group">
-                                                                    <label for="ward_tax_due">Wards</label>
+                                                                    <label for="ward_tax_due">{{ __('Wards') }}</label>
                                                                         {!! Form::select('ward',$wards,null,['id' => 'ward_tax_due', 'multiple' => true, 'style' => 'width: 100%'])!!}
                                                                 </div>
-                                                                <button type="submit" class="btn btn-default">Filter</button>
-                                                                <button type="button" class="btn btn-default" id="wardtaxzone_clear_button">Clear
+                                                                <button type="submit" class="btn btn-default">{{ __('Filter') }}</button>
+                                                                <button type="button" class="btn btn-default" id="wardtaxzone_clear_button">{{ __('Close') }}
                                                                 </button>
                                                             </form>
                                                             <table>
                                                                 <tr>
                                                                     <td style="vertical-align: top;"><img
                                                                                 src="{{ asset("/img/building-green.png") }}"></td>
-                                                                    <td> - Tax Due</td>
+                                                                    <td> - {{ __('Tax Due') }}</td>
                                                                 </tr>
                                                             </table>
                                                         </div>
@@ -960,95 +1118,110 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
                                             @can('Sewer Potential Map Tools')
                                                 <!-- find sewer potential buildings -->
-                                                <span data-toggle="tooltip" data-placement="bottom" title="Find Buildings Potential to Connect to Sewer">
-                                                    <a href="#" id="drainpotential_control" class="btn btn-default map-control"><i class="fa-solid fa-building"></i>Sewers Potential Buildings</a>
+                                                <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Find Buildings Potential to Connect to Sewer') }}">
+                                                    <a href="#" id="drainpotential_control" class="btn btn-default map-control"><i class="fa-solid fa-building"></i>{{ __('Sewers Potential Buildings') }}</a>
                                                 </span>
                                             @endcan
 
                                             @can('Buildings to Sewer Map Tools')
                                                 <!-- find building to sewer -->
-                                                <span data-toggle="tooltip" data-placement="bottom" title="Find Buildings Connected to Sewer">
-                                                    <a href="#" id="drainbuildings_control" class="btn btn-default map-control"><i class="fa fa-building"></i>Buildings to Sewer</a>
+                                                <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Find Buildings Connected to Sewer') }}">
+                                                    <a href="#" id="drainbuildings_control" class="btn btn-default map-control"><i class="fa fa-building"></i>{{ __('Buildings to Sewer') }}</a>
                                                 </span>
                                             @endcan
 
                                             @can('Buildings to Road Map Tools')
                                                 <!-- find buildings connecet to road -->
-                                                <span data-toggle="tooltip" data-placement="bottom" title="Find Buildings Connected to Road">
-                                                    <a href="#" id="roadbuildings_control" class="btn btn-default map-control"><i class="fa fa-building"></i>Buildings to Road</a>
+                                                <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Find Buildings Connected to Road') }}">
+                                                    <a href="#" id="roadbuildings_control" class="btn btn-default map-control"><i class="fa fa-building"></i>{{ __('Buildings to Road') }}</a>
                                                 </span>
                                             @endcan
 
                                             @can('Hard to Reach Buildings Map Tools')
                                                 <!-- find Hard to Reach Buildings -->
-                                                <span data-toggle="tooltip" data-placement="bottom" title="Find Buildings that are Hard to Reach">
-                                                    <a href="#" id="road_inaccessible_control" class="btn btn-default map-control"><i class="fa-brands fa-buffer"  title="Hard to Reach Building"></i>Hard to Reach Buildings</a>
+                                                <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Find Buildings that are Hard to Reach') }}">
+                                                    <a href="#" id="road_inaccessible_control" class="btn btn-default map-control"><i class="fa-brands fa-buffer"  title="{{ __('Hard to Reach Building') }}"></i>{{ __('Hard to Reach Buildings') }}</a>
                                                 </span>
                                             @endcan
 
                                             @can('Building Close to Water Bodies Map Tools')
                                                  <!-- find Building Close to Water Bodies -->
-                                                <span data-toggle="tooltip" data-placement="bottom" title="Find Buildings that are close to Water Bodies">
-                                                    <a href="#" id="waterbody_inaccessible_control" class="btn btn-default map-control"><i class="fa-solid fa-water"></i>Building Close to Water Bodies</a>
+                                                <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Find Buildings that are close to Water Bodies') }}">
+                                                    <a href="#" id="waterbody_inaccessible_control" class="btn btn-default map-control"><i class="fa-solid fa-water"></i>{{ __('Building Close to Water Bodies') }}</a>
                                                 </span>
                                             @endcan
 
                                             @can('Community Toilets Map Tools')
                                                  <!-- find Buildings using Community Toilets -->
-                                                <span data-toggle="tooltip" data-placement="bottom" title="Find Buildings that use Community Toilet">
-                                                    <a href="#" id="ptct_network" class="btn btn-default map-control" ><i class="fa-solid fa-bezier-curve"></i>Buildings using Community Toilets</a>
+                                                <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Find Buildings that use Community Toilet') }}">
+                                                    <a href="#" id="ptct_network" class="btn btn-default map-control" ><i class="fa-solid fa-bezier-curve"></i>{{ __('Buildings using Community Toilets') }}</a>
                                                 </span>
                                             @endcan
 
                                             @can('Area Population Map Tools')
                                                 <!-- area population -->
                                                 <span data-toggle="tooltip" data-placement="bottom"
-                                                    title="Estimate Population within Custom Boundary">
-                                                    <a href="#" id="areapopulation_control" class="btn btn-default map-control" data-toggle="tooltip" data-placement="bottom"><i class="fa fa-bars" aria-hidden="true"></i>Area Population</a>
+                                                    title="{{ __('Estimate Population within Custom Boundary') }}">
+                                                    <a href="#" id="areapopulation_control" class="btn btn-default map-control" data-toggle="tooltip" data-placement="bottom"><i class="fa fa-bars" aria-hidden="true"></i>{{ __('Area Population') }}</a>
                                                 </span>
                                             @endcan
 
                                             @can('Summary Information Buffer Map Tools')
                                                 <!-- Summary Information -->
                                                 <span data-toggle="tooltip" data-placement="bottom"
-                                                title="Generate Information of Buildings and Containment within Custom Boundary with Buffer">
+                                                title="{{ __('Generate Information of Buildings and Containment within Custom Boundary with Buffer') }}">
                                                     <a href="#" id="report_control_summary_buffer" class="btn btn-default map-control"><i
-                                                    class="fa fa-list-alt"></i>Summary Information Buffer Filter</a>
+                                                    class="fa fa-list-alt"></i>{{ __('Summary Information Buffer Filter') }}</a>
                                                 </span>
                                             @endcan
 
                                             @can('Summary Information Water Bodies Map Tools')
                                                 <!-- water bodies buffer -->
                                                 <span data-toggle="tooltip" data-placement="bottom"
-                                                    title="Generate Information of Buildings and Containment within Selected Water Body with Buffer">
-                                                    <a href="#" id="buildingswaterbodies_control" class="btn btn-default map-control"><i class="fa-solid fa-building"></i>Water Bodies Buffer Summary Information</a>
+                                                    title="{{ __('Generate Information of Buildings and Containment within Selected Water Body with Buffer') }}">
+                                                    <a href="#" id="buildingswaterbodies_control" class="btn btn-default map-control"><i class="fa-solid fa-building"></i>{{ __('Water Bodies Buffer Summary Information') }}</a>
                                                 </span>
                                             @endcan
 
                                             @can('Summary Information Wards Map Tools')
                                                 <!-- by wards -->
                                                 <span data-toggle="tooltip" data-placement="bottom"
-                                                    title="Generate Information of Buildings and Containment within Selected Ward">
-                                                    <a href="#" id="buildingswards_control" class="btn btn-default map-control"><i class="fa-solid fa-building"></i>Wards Summary Information</a>
+                                                    title="{{ __('Generate Information of Buildings and Containment within Selected Ward') }}">
+                                                    <a href="#" id="buildingswards_control" class="btn btn-default map-control"><i class="fa-solid fa-building"></i>{{ __('Wards Summary Information') }}</a>
                                                 </span>
                                             @endcan
 
                                             @can('Summary Information Road Map Tools')
                                                 <!-- road buffer -->
                                                 <span data-toggle="tooltip" data-placement="bottom"
-                                                    title="Generate Information of Buildings and Containment within Selected Road with Buffer">
-                                                    <a href="#" id="buildingsroads_control" class="btn btn-default map-control"><i class="fa-solid fa-building"></i>Road Buffer Summary Information</a>
+                                                    title="{{ __('Generate Information of Buildings and Containment within Selected Road with Buffer') }}">
+                                                    <a href="#" id="buildingsroads_control" class="btn btn-default map-control"><i class="fa-solid fa-building"></i>{{ __('Road Buffer Summary Information') }}</a>
                                                 </span>
                                             @endcan
 
                                             @can('Summary Information Point Map Tools')
                                                 <!-- point buffer -->
                                                 <span data-toggle="tooltip" data-placement="bottom"
-                                                    title="Generate Information of Buildings and Containment within Selected Point with Buffer">
+                                                    title="{{ __('Generate Information of Buildings and Containment within Selected Point with Buffer') }}">
                                                     <a href="#" id="pointbuffer_control" class="btn btn-default map-control"><i
-                                                    class="fa fa-building"></i>Point Buffer Summary Information</a>
+                                                    class="fa fa-building"></i>{{ __('Point Buffer Summary Information') }}</a>
                                                 </span>
                                             @endcan
+                                            @can('Containments Emptied Info Map Tools')
+                                            <span data-toggle="tooltip" data-placement="bottom"
+                                          title="{{ __('Containments emptied monthly') }}">
+                            <a href="#" id="containments_emptied_monthly" class="btn btn-default map-control"><i
+                                        class="fa fa-building"></i>{{ __('Containments Emptied Information') }}</a>
+                             </span>
+                             @endcan
+                             @can('Toilet Isochrone Map Tools')
+                            <!-- toilet isochrone map -->
+                            <span data-toggle="tooltip" data-placement="bottom"
+                                          title="{{ __('Generate isochrone information of CTPT by distance traversed (m)') }}">
+                            <a href="#" id="toilet_isochrone_control" class="btn btn-default map-control"><i
+                                        class="fa fa-building"></i>{{ __('Public Toilet Accessibility Tool') }}</a>
+                             </span>
+                             @endcan
                                     </div>
                                 </div>
                             </div>
@@ -1067,7 +1240,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" href="#analysis">
                                     <i class="fa fa-list-alt"></i>
-                                    Spatial Analysis
+                                    {{ __('Spatial Analysis') }}
                                 </a>
                                 <span class="pull-right slide-submenu">
                     <i class="glyphicon glyphicon-chevron-left"></i>
@@ -1090,7 +1263,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" href="#layers">
                                     <i class="fa fa-list-alt"></i>
-                                    Layers
+                                    {{ __('Layers') }}
                                 </a>
                                 <span class="pull-right slide-submenu">
                   <i class="glyphicon glyphicon-chevron-right"></i>
@@ -1116,7 +1289,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" href="#featureinfo-collapse">
                                     <i class="fa fa-table"></i>
-                                    Info
+                                    {{ __('Info') }}
                                 </a>
                                 <span class="pull-right slide-submenu">
                     <i class="glyphicon glyphicon-chevron-left"></i>
@@ -1156,7 +1329,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
         	<strong>Developed by:</strong> <a href="http://www.innovativesolution.com.np">Innovative Solution Pvt. Ltd.</a>
     	</div>
         <strong> Base IMIS <i class="fa-regular fa-copyright"> </i>  2022-{{ \Carbon\Carbon::now()->format('Y') }} by <a href="http://www.innovativesolution.com.np">
-    ISPL</a> & <a href="https://www.gwsc.ait.ac.th/">GWSC-AIT</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1">CC BY-NC-SA 4.0 </a>
+    Innovative Solution Pvt. Ltd.</a> & <a href="https://www.gwsc.ait.ac.th/">Global Water & Sanitation Center-Asian Institute of Technology (GWSC-AIT)</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1">CC BY-NC-SA 4.0 </a>
 </strong>
 
         <!-- Default to the left -->
@@ -1166,31 +1339,28 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
     </footer>
 
-
-
-
     <div class="modal fade" id="print_modal" tabindex="-1" role="dialog" aria-labelledby="print_modal_label">
         <div class="modal-dialog modal-sm print_modal_dialog ui-draggable draggable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
 
-                    <h4 class="modal-title" id="print_modal_label">Print Map</h4>
+                    <h4 class="modal-title" id="print_modal_label">{{ __('Print Map') }}</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-<span aria-hidden="true">×</span>
-</button>
+                    <span aria-hidden="true">×</span>
+                    </button>
                 </div>
 
                     <div class="modal-body">
                         <div class="form-group required">
-                            <label class="control-label">Title</label>
+                            <label class="control-label">{{ __('Title') }}</label>
                             <input type="text" class="form-control" id="print_map_title"/>
                         </div>
                         <div class="form-group">
-                            <label class="control-label">Description</label>
+                            <label class="control-label">{{ __('Description') }}</label>
                             <textarea class="form-control" rows="3" id="print_map_description"></textarea>
                         </div>
                         <div class="form-group">
-                        <label class="control-label">Scale</label>
+                        <label class="control-label">{{ __('Scale') }}</label>
                         <select class="form-control" id="print_scale">
                             <option value="500" selected>1:500</option>
                             <option value="1000">1:1000</option>
@@ -1205,14 +1375,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                         </select>
                         </div>
                         <div class="form-group">
-                        <label class="control-label">Paper Size</label>
+                        <label class="control-label">{{ __('Paper Size') }}</label>
                         <select class="form-control " id="print_paper_size">
                             <option value="A4" selected>A4</option>
                             <option value="A3">A3</option>
                         </select>
                         </div>
                         <div class="form-group">
-                        <label class="control-label">DPI</label>
+                        <label class="control-label">{{ __('DPI') }}</label>
                         <select class="form-control " id="print_dpi">
                             <option value="75" >75</option>
                             <option value="150" selected>150</option>
@@ -1220,7 +1390,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                         </select>
                         </div>
                         <div class="form-group">
-                        <label class="control-label">Orientation</label>
+                        <label class="control-label">{{ __('Orientation') }}</label>
                         <select class="form-control " id="box_orientation">
                             <!--<option value="portrait" selected>Portrait</option>-->
                             <option value="landscape" >Landscape</option>
@@ -1228,8 +1398,8 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-info" id="print_map_fish">Print</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">{{ __('Close') }}</button>
+                        <button type="submit" class="btn btn-info" id="print_map_fish">{{ __('Print') }}</button>
                     </div>
 
             </div>
@@ -1241,26 +1411,26 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
             <div class="modal-content draggable">
                 <div class="modal-header">
 
-                    <h4 class="modal-title" id="print_modal_label">Locate point by coordinate</h4>
+                    <h4 class="modal-title" id="print_modal_label">{{ __('Locate point by coordinate') }}</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-<span aria-hidden="true">×</span>
-</button>
+                    <span aria-hidden="true">×</span>
+                    </button>
                 </div>
                 <form name="latlong_form" id="latlong_form">
                     <div class="modal-body">
 
                         <div class="form-group">
-                            <label>Longitude</label>
+                            <label>{{ __('Longitude') }}</label>
                             <input type="text" class="form-control" id="point_longitude" placeholder="85.372873" value="85.372873"/>
                         </div>
                         <div class="form-group">
-                            <label>Latitude</label>
+                            <label>{{ __('Latitude') }}</label>
                             <input type="text" class="form-control" id="point_latitude" placeholder="27.636295" value="27.636295"/>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-info">Search</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">{{ __('Close') }}</button>
+                        <button type="submit" class="btn btn-info">{{ __('Search') }}</button>
                     </div>
                 </form>
             </div>
@@ -1273,12 +1443,12 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                                 aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="emptying_containments_modal_label">Containments to be emptied</h4>
+                    <h4 class="modal-title" id="emptying_containments_modal_label">{{ __('Containments to be emptied') }}</h4>
                 </div>
                 <div class="modal-body">
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ __('Close') }}</button>
                 </div>
             </div>
         </div>
@@ -1294,7 +1464,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 <div class="modal-body">
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ __('Close') }}</button>
                 </div>
             </div>
         </div>
@@ -1304,7 +1474,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content draggable">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="DEMModalLabel">Elevation</h5>
+                    <h5 class="modal-title" id="DEMModalLabel">{{ __('Elevation') }}</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -1313,7 +1483,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     <canvas id="DEMChart" width="100" height="100"></canvas>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Close') }}</button>
                 </div>
             </div>
         </div>
@@ -1321,8 +1491,23 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
     <!-- Modal -->
     <div id="feedback-popup" class="ol-popup" style="display: none;">
         <div id="feedback-popup-content"></div>
-        <button id="feedback-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer">Close</button>
+        <button id="feedback-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer">{{ __('Close') }}</button>
     </div>
+
+     <!-- Modal -->
+     <div id="containment-report-popup" class="ol-popup" style="display: none;">
+        <div id="containment-report-popup-content"></div>
+
+                        <form method="get" style="margin-top: 12px;" action="{{ url("maps/export-containment-report") }}">
+                            <input type="hidden" name="containment_report_polygon" value="" id="containment_report_polygon"/>
+                            <input type="hidden" name="containment_report_year" value="" id="containment_report_year"/>
+                             @can('Export Containment Report')
+                           <button id="containment-report-popup-export" type="submit" class="btn btn-default">Export to Excel</button>
+                           @endcan
+                            <button id="containment-report-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer">Close</button>
+                        </form>
+    </div>
+
     <!-- Modal -->
     <div id="popup-drain-potential" class="modal fade" role="dialog">
         <div class="modal-dialog modal-dialog-centered">
@@ -1335,20 +1520,20 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 <div class="modal-body">
                     <form class="form-horizontal" id="form-drain-potential">
                         <div class="form-group row">
-                            <label class="col-form-label col-md-4">Buffer Distance (m)</label>
+                            <label class="col-form-label col-md-4">{{ __('Buffer Distance (m)') }}</label>
                             <input type="text" class="form-control col-md-4" id="buffer-distance" placeholder="" value="" oninput="this.value = this.value.replace(/[^0-9]/g, '')" >
 
                         <input type="hidden" id="drain-code" value=""/>
                         <input type="hidden" id="drain-long" value=""/>
                         <input type="hidden" id="drain-lat" value=""/>
                         <div class="col-md-4">
-                        <button type="submit" class="btn btn-info">Get Buildings</button>
+                        <button type="submit" class="btn btn-info">{{ __('Get Buildings') }}</button>
                         </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ __('Close') }}</button>
                 </div>
             </div>
 
@@ -1365,20 +1550,20 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 <div class="modal-body">
                     <form class="form-horizontal" id="form-waterbodies-buildings">
                         <div class="form-group row">
-                            <label class="col-form-label col-md-4">Buffer Distance (m)</label>
+                            <label class="col-form-label col-md-4">{{ __('Buffer Distance (m)') }}</label>
                            <input type="text" class="form-control col-md-4" id="buffer-distance-waterbodies" placeholder="" value="" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
 
                             <div class="col-md-4">
                             <input type="hidden" id="water-body-code" value=""/>
                             <input type="hidden" id="water-body-long" value=""/>
                             <input type="hidden" id="water-body-lat" value=""/>
-                            <button type="submit" class="btn btn-info">Get Information</button>
+                            <button type="submit" class="btn btn-info">{{ __('Get Information') }}</button>
                             </div>
                         </div>
                     </form>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ __('Close') }}</button>
                 </div>
             </div>
 
@@ -1397,7 +1582,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     <form class="form-horizontal" id="form-buffer-polygon">
                         <div class="form-group row">
 
-                            <label class="col-form-label col-md-4">Buffer Distance (m)</label>
+                            <label class="col-form-label col-md-4">{{ __('Buffer Distance (m)') }}</label>
 
                                 <input type="hidden" id="polygon-geom" value=""/>
                         <input type="hidden" id="polygon-coordinates" value=""/>
@@ -1406,7 +1591,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
 
                             <div class="col-md-4">
-                                <button type="submit" class="btn btn-info">Get Information</button>
+                                <button type="submit" class="btn btn-info">{{ __('Get Information') }}</button>
                             </div>
                         </div>
 
@@ -1414,7 +1599,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ __('Close') }}</button>
                 </div>
             </div>
 
@@ -1432,7 +1617,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 <div class="modal-body">
                     <form class="form-horizontal" id="form-road-buildings">
                         <div class="form-group row">
-                             <label class="col-form-label col-md-4">Buffer Distance (m)</label>
+                             <label class="col-form-label col-md-4">{{ __('Buffer Distance (m)') }}</label>
 
                             <input type="text" class="form-control col-md-4" id="buffer-distance-road" placeholder="" value="" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
 
@@ -1440,13 +1625,13 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                         <input type="hidden" id="road-long" value=""/>
                         <input type="hidden" id="road-lat" value=""/>
                         <div class="col-md-4">
-                        <button type="submit" class="btn btn-info">Get Information</button>
+                        <button type="submit" class="btn btn-info">{{ __('Get Information') }}</button>
                         </div>
                          </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ __('Close') }}</button>
                 </div>
             </div>
 
@@ -1463,7 +1648,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 <div class="modal-body">
                     <form class="form-horizontal" id="form-point-buffer-buildings">
                         <div class="form-group row">
-                            <label class="col-form-label col-md-4">Buffer Distance (m)</label>
+                            <label class="col-form-label col-md-4">{{ __('Buffer Distance (m)') }}</label>
                              <input type="text" class="form-control col-md-4" id="buffer-distance-point" placeholder="" value="" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
 
 
@@ -1472,13 +1657,13 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                         <input type="hidden" id="point-buffer-lat-pos" value=""/>
                         <input type="hidden" id="point-buffer-long" value=""/>
                         <input type="hidden" id="point-buffer-lat" value=""/>
-                        <button type="submit" class="btn btn-info">Get Information</button>
+                        <button type="submit" class="btn btn-info">{{ __('Get Information') }}</button>
                         </div>
                             </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ __('Close') }}</button>
                 </div>
             </div>
 
@@ -1495,15 +1680,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 <div class="modal-body">
                     <form class="form-horizontal" id="form-road-inaccessible">
                         <div class="form-group row">
-                            <label for="buffer-distance-polygon" class="control-label col-md-4">Road Width(meters)</label>
+                            <label for="buffer-distance-polygon" class="control-label col-md-4">{{ __('Road Width(meters)') }}</label>
                             <div class="col-md-4">
                                 <input type="text" class="form-control" id="road-width" placeholder=""
                                        value="">
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="buffer-distance-polygon" class="control-label col-md-4">Vacutug Pipe
-                                Range(feets)</label>
+                            <label for="buffer-distance-polygon" class="control-label col-md-4">{{ __('Vacutug Pipe Range(feets)') }}</label>
                             <div class="col-md-4">
                                 <input type="text" class="form-control" id="vacutug-range" placeholder=""
                                        value="">
@@ -1511,18 +1695,100 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                         </div>
                         <div class="form-group">
                             <div class="offset-md-4 col-md-4">
-                                <button type="submit" class="btn btn-default">Get Information</button>
+                                <button type="submit" class="btn btn-default">{{ __('Get Information') }}</button>
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ __('Close') }}</button>
                 </div>
             </div>
 
         </div>
     </div>
+
+    <div id="popup-toilet-isochrone" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-dialog-centered">
+
+            <!-- Modal content-->
+            <div class="modal-content draggable">
+                <div class="modal-header">
+                    <span class="modal"> {{ __('Toilet Isochrone Map') }} </span>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" id="form-toilet-isochrone-map">
+                        <div class="form-group row">
+                            <label class="col-form-label col-md-4">{{ __('Estimated Travel Distance (m)') }}</label>
+                            <input type="number" 
+                                class="form-control col-md-4" 
+                                id="toilet-isochrone-distance" 
+                                placeholder="{{ __('Distance in meter') }}" 
+                                min="1" 
+                                step="1" />
+
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-4">
+                                <input type="hidden" id="isochrone-long-pos" value=""/>
+                                <input type="hidden" id="isochrone-lat-pos" value=""/>
+                                <input type="hidden" id="isochrone-long" value=""/>
+                                <input type="hidden" id="isochrone-lat" value=""/>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-info">{{ __('Get Information') }}</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">{{ __('Close') }}</button>
+                        </div>
+                    </form>
+                </div>
+              
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal fade" id="wmsModal" tabindex="-1" role="dialog" aria-labelledby="wmsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="wmsModalLabel">{{ __('Please Enter URL') }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="text" class="form-control mt-3" id="wmsAddress">
+                </input>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="wmsURL">{{ __('OK') }}</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Close') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="getLayerModal" tabindex="-1" role="dialog" aria-labelledby="getLayerModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="getLayerModalLabel">{{ __('Select a layer to be displayed') }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <select class="form-control mt-3" id="mapLayer">
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Close') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
     <script type="text/javascript">
         // Google Map
         var gmap;
@@ -1570,7 +1836,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
             });
 
             $('#ward, #tax_zone, #watlog_overlay, #ward_tax_due, #tax_zone_tax_due').multipleSelect({
-                placeholder: 'Wards',
+                placeholder: '{{__('Wards')}}',
                 filter: true
             });
 
@@ -1585,7 +1851,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
             }
 
             function displayAjaxError() {
-                displayAjaxErrorModal('An error occurred');
+                displayAjaxErrorModal(@json(__('An error occurred')));
             }
 
             function displayAjaxErrorModal(message) {
@@ -1743,6 +2009,169 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 })
             });
 
+            //KML Drag and drop
+            dragAndDropInteraction.on('addfeatures', function (event) {
+                if (event.features.length > 1000) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: '{{ __("Too Many Features!")}}',
+                        text: '{{ __("Upload a KML file with 1000 features or less")}}',
+                        confirmButtonColor: '#d33'
+                    });
+                    return; // Stop the function execution here
+                }
+             displayAjaxLoader(); 
+            var format = new ol.format.WKT();
+            var geometries = []; // Store all geometries
+
+            // Loop through all features and convert them to WKT
+            for (var i = 0; i < event.features.length; i++) {
+                var geom = format.writeGeometry(event.features[i].getGeometry().clone().transform('EPSG:3857', 'EPSG:4326'));
+                geometries.push(geom);
+            }
+
+            // Send all geometries to the server for intersection check
+            $.ajax({
+                url: '{{ url("maps/check-geometry") }}',
+                type: 'POST',
+                data: {
+                    geometries: geometries, // Send multiple geometries
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(data) {
+                 
+                    // Check if at least one geometry does NOT intersect
+                    var hasNonIntersection = data.details.some(item => item.intersects === false);
+
+                    if (hasNonIntersection) {
+                        Swal.fire({
+                            icon: 'warning', // Change to 'error' if needed
+                            title: '{{ __("Some Features do not Intersect")}}',
+                            text: '{{ __("Some of the Features do not Intersect with the Municipality")}}',
+                            confirmButtonColor: '#d33'
+                        });
+                        removeAjaxLoader();
+                    }
+                    else{
+                        // Proceed with adding KML if none of the features intersect
+                        if (eLayer.kml_features) {
+                            eLayer.kml_features.layer.getSource().clear();
+                        } else {
+                            var layer = new ol.layer.Vector({
+                                source: new ol.source.Vector()
+                            });
+
+                            addExtraLayer('kml_features', 'KML Features', layer);
+                        }
+
+                        for (var i = 0; i < event.features.length; i++) {
+                        var feature = event.features[i];
+                        var geometry = feature.getGeometry();
+
+                        // Check if the geometry is a Point
+                        if (geometry.getType() === 'Point') {
+
+                            feature.setStyle(new ol.style.Style({
+                                        image: new ol.style.Icon({
+                                            anchor: [0.5, 1],
+                                            src: '{{ url("/")}}/img/marker-green.png'
+                                        })
+                            }));
+                        } else {
+                            // Style for non-point geometries (e.g., polygons, lines)
+                            feature.setStyle(new ol.style.Style({
+                                stroke: new ol.style.Stroke({
+                                    color: '#FF0000',
+                                    width: 3
+                                })
+                            }));
+                        }
+
+                        // Add feature to the layer
+                        eLayer.kml_features.layer.getSource().addFeature(feature);
+                    }
+
+                    map.getView().fit(
+                        eLayer.kml_features.layer.getSource().getExtent(), /** @type {ol.Size} */ (map.getSize())
+                    ); 
+                    
+                    var center = ol.extent.getCenter(eLayer.kml_features.layer.getSource().getExtent());
+
+                    if (eLayer.kmlbuildings) {
+                    eLayer.kmlbuildings.layer.getSource().clear();
+                } else {
+                    var layer = new ol.layer.Vector({
+                        // visible: false,
+                        source: new ol.source.Vector(),
+                        style: new ol.style.Style({
+                            stroke: new ol.style.Stroke({
+                                color: '#0000FF',
+                                width: 3
+                            }),
+                        })
+                    });
+
+                    addExtraLayer('kmlbuildings', 'KML Buildings', layer);
+                }
+                        // Send the geometry to get KML summary information
+                        var url1 = '{{ url("maps/get-kml-summary-info") }}';
+                        displayAjaxLoader();
+                       var polygonGeometries = geometries.filter(g => g.startsWith("POLYGON Z"));
+                        $.ajax({
+                            url: url1,
+                            type: 'post',
+                            data: {
+                                geometries: geometries,
+                            },
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            success: function (Response) {
+                                // Check if response.success is false
+                                if (Response.success === false) {
+                                    displayAjaxErrorModal(Response.responseText);
+                                } else {
+                                    kmlDragDropPopupContent.innerHTML = Response.popContentsHtml;
+                                    kmlDragDropPopupOverlay.setPosition(center);
+                                    data1 = Response['buildings'];
+                                     if (data1 && Array.isArray(data1)) {
+                                        var format = new ol.format.WKT();
+
+                                        for (var i = 0; i < data1.length; i++) {
+                                            var feature = format.readFeature(data1[i].geom, {
+                                                dataProjection: 'EPSG:4326',
+                                                featureProjection: 'EPSG:3857'
+                                            });
+
+                                            feature.setStyle(styleFunction(data1[i].id));
+                                            eLayer.kmlbuildings.layer.getSource().addFeature(feature);
+                                        }
+                                    }
+                                 }
+                                removeAjaxLoader();
+                            },
+                            error: function (error) {
+                                // Show the error modal if AJAX fails
+                                displayAjaxErrorModal(error.statusText);
+                            }
+                        });
+               
+                        $('#kml_dragdrop_geom').val(polygonGeometries.join(','));
+                        document.getElementById('kml-export-form').addEventListener('submit', function (e) {
+                            const sourceGeom = document.getElementById('kml_dragdrop_geom').value;
+                            // Copy the geometry string to the actual form field
+                            document.getElementById('kml_dragdrop_geom_post').value = sourceGeom;
+                        });
+                    }
+                },
+
+                error: function(xhr, status, error) {
+                    console.error('Error checking geometry:', error);
+                }
+            });
+        });
             // Base Layers Object
             var bLayer = {
                 osm: {name: 'OpenStreetMap', type: 'osm'},
@@ -1907,7 +2336,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
             var mLayer = {
                 @can('Municipality Map Layer')
                 citypolys_layer: {
-                    name: ' Municipality',
+                    name: '{{ __("Municipality") }}',
                     styles: {},
                     clipLegend: false,
                     showCount: false,
@@ -1916,7 +2345,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 @endcan
                 @can('Ward Boundary Map Layer')
                 wardboundary_layer: {
-                    name: 'Ward Boundary',
+                    name: '{{ __("Ward Boundary") }}',
                     styles: {},
                     clipLegend: false,
                     showCount: false,
@@ -1925,25 +2354,25 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 @endcan
                 @can('Roads Map Layer')
                 roadlines_layer: {
-                    name: 'Road Network',
+                    name: '{{ __("Road Network") }}',
                     styles: {
                         roadlines_layer_none: {
-                            name: 'None',
+                            name: '{{ __("None") }}',
                             clipLegend: true,
                             showCount: false
                         },
                         roadlines_layer_hierarchy: {
-                            name: 'Hierarchy',
+                            name: '{{ __("Hierarchy") }}',
                             clipLegend: false,
                             showCount: false
                         },
                         roadlines_layer_width: {
-                            name: 'Carrying Width (m)',
+                            name: '{{ __("Carrying Width (m)") }}',
                             clipLegend: false,
                             showCount: false
                         },
                         roadlines_layer_surface_type: {
-                            name: 'Surface Type',
+                            name: '{{ __("Surface Type") }}',
                             clipLegend: false,
                             showCount: false,
                         },
@@ -1956,20 +2385,20 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 @endcan
                 @can('Sewers Line Map Layer')
                 sewerlines_layer: {
-                    name: 'Sewer Network',
+                    name: '{{ __("Sewer Network") }}',
                     styles: {
                         sewer_none: {
-                            name: 'None',
+                            name: '{{ __("None") }}',
                             clipLegend: true,
                             showCount: false
                         },
                         sewerlines_layer_size: {
-                            name: 'Diameter (mm)',
+                            name: '{{ __("Diameter (mm)") }}',
                             clipLegend: false,
                             showCount: false
                         },
                         sewerlines_layer_length: {
-                            name: 'Length (m)',
+                            name: '{{ __("Length (m)") }}',
                             clipLegend: false,
                             showCount: false
                         },
@@ -1982,20 +2411,20 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
                 @can('Drains Map Layer')
                     drains_layer: {
-                    name: 'Drain Network',
+                    name: '{{ __("Drain Network") }}',
                     styles: {
                         drains_none: {
-                            name: 'None',
+                            name: '{{ __("None") }}',
                             clipLegend: true,
                             showCount: false
                         },
                         drain_type: {
-                            name: 'Surface Type',
+                            name: '{{ __("Surface Type") }}',
                             clipLegend: false,
                             showCount: false
                         },
                         drain_covertype : {
-                            name: 'Cover Type',
+                            name: '{{ __("Cover Type") }}',
                             clipLegend: false,
                             showCount: false
                         },
@@ -2007,10 +2436,10 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 @endcan
                 @can('WaterSupply Network Map Layer')
                 watersupply_network_layer: {
-                    name: 'Water Supply Network',
+                    name: '{{ __("Water Supply Network") }}',
                     styles: {
                         watersupply_none: {
-                            name: 'None',
+                            name: '{{ __("None") }}',
                             clipLegend: false,
                             showCount: false
                         },
@@ -2022,7 +2451,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 @endcan
                 @can('Places Map Layer')
                 places_layer: {
-                    name: 'Places',
+                    name: '{{ __("Places") }}',
                     styles: {},
                     clipLegend: true,
                     showCount: false,
@@ -2031,63 +2460,63 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 @endcan
                 @can('Buildings Map Layer')
                 buildings_layer: {
-                    name: 'Building',
+                    name: '{{ __("Building") }}',
                     styles: {
                         buildings_layer_none: {
-                            name: 'None',
+                            name: '{{ __("None") }}',
                             clipLegend: true,
                             showCount: false
                         },
                         buildings_layer_structure_type: {
-                            name: 'Structure Type',
+                            name: '{{ __("Structure Type") }}',
                             clipLegend: true,
                             showCount: false
                         },
                         buildings_layer_flrcount: {
-                            name: 'Number of Floors',
+                            name: '{{ __("Number of Floors") }}',
                             clipLegend: false,
                             showCount: false
                         },
                         buildings_layer_functional_use: {
-                            name: 'Functional Use of Building',
+                            name: '{{ __("Functional Use of Building") }}',
                             clipLegend: true,
                             showCount: false
                         },
 
                         buildings_layer_building_associated_to: {
-                            name: 'Associated Building',
+                            name: '{{ __("Associated Building") }}',
                             clipLegend: true,
                             showCount: false
                         },
                         buildings_layer_toilet: {
-                            name: 'Presence of Toilet',
+                            name: '{{ __("Presence of Toilet") }}',
                             clipLegend: false,
                             showCount: false
                         },
 
                         buildings_layer_toilet_connection: {
-                            name: 'Toilet Connection',
+                            name: '{{ __("Toilet Connection") }}',
                             clipLegend: true,
                             showCount: false
                         },
                         buildings_layer_water_source: {
-                            name: 'Main Drinking Water Source',
+                            name: '{{ __("Main Drinking Water Source") }}',
                             clipLegend: false,
                             showCount: false
                         },
                         buildings_layer_well_presence: {
-                            name: 'Well in Premises',
+                            name: '{{ __("Well in Premises") }}',
                             clipLegend: false,
                             showCount: false
                         },
 
                         low_income_houses: {
-                            name: 'Is Low Income House',
+                            name: '{{ __("Is Low Income House") }}',
                             clipLegend: false,
                             showCount: false
                         },
                         building_construction_year: {
-                            name: 'Construction Date',
+                            name: '{{ __("Construction Date") }}',
                             clipLegend: false,
                             showCount: false
                         },
@@ -2099,38 +2528,38 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 @endcan
                 @can('Containments Map Layer')
                 containments_layer: {
-                    name: 'Containments',
+                    name: '{{ __("Containments") }}',
                     styles: {
                         containments_layer_none: {
-                            name: 'None',
+                            name: '{{ __("None") }}',
                             clipLegend: true,
                             showCount: false
                         },
 
                         containments_layer_type: {
-                            name: 'Type',
+                            name: '{{ __("Type") }}',
                             clipLegend: true,
                             showCount: false,
                         },
 
                         containments_outlet_connection: {
-                            name: 'Outlet Connection',
+                            name: '{{ __("Outlet Connection") }}',
                             clipLegend: true,
                             showCount: false,
                         },
 
                         containments_layer_emptied_status: {
-                            name: 'Emptied Status',
+                            name: '{{ __("Emptied Status") }}',
                             clipLegend: true,
                             showCount: false
                         },
                         containments_layer_no_of_times_emptied: {
-                            name: 'Times Emptied',
+                            name: '{{ __("Times Emptied") }}',
                             clipLegend: true,
                             showCount: false
                         },
                         containments_period_from_construction: {
-                            name: 'Year of Construction',
+                            name: '{{ __("Year of Construction") }}',
                             clipLegend: true,
                             showCount: false
                         },
@@ -2138,13 +2567,13 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                          *containments_last_emptied_year uses a SQL View made in the GeoServer
                          * */
                         containments_last_emptied_year: {
-                            name: 'Last Emptied Year',
+                            name: '{{ __("Last Emptied Year") }}',
                             clipLegend: true,
                             showCount: false
                         },
 
                         containments_layer_location: {
-                            name: 'Location',
+                            name: '{{ __("Location") }}',
                             clipLegend: false,
                             showCount: false
                         }
@@ -2158,20 +2587,20 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
                 @can('Treatment Plants Map Layer')
                 treatmentplants_layer: {
-                    name: 'Treatment Plants',
+                    name: '{{ __("Treatment Plants") }}',
                     styles: {
                         treatmentplants_layer_none: {
-                        name: 'None',
+                        name: '{{ __("None") }}',
                         clipLegend: true,
                         showCount: false
                     },
                     treatmentplants_layer_status: {
-                        name: 'Status',
+                        name: '{{ __("Status") }}',
                         clipLegend: true,
                         showCount: false
                     },
                     treatmentplants_layer_type: {
-                        name: 'Type',
+                        name: '{{ __("Type") }}',
                         clipLegend: true,
                         showCount: false
                     },
@@ -2185,7 +2614,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
                 @can('Sanitation System Map Layer')
                 sanitation_system_layer: {
-                    name: 'Sanitation System',
+                    name: '{{ __("Sanitation System") }}',
                     styles: {},
                     clipLegend: true,
                     showCount: false,
@@ -2196,15 +2625,15 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
                 @can('PT/CT Toilets Map Layer')
                 toilets_layer: {
-                    name: 'Toilets PT/CT',
+                    name: '{{ __("Toilets PT/CT") }}',
                     styles: {
                         toilets_layer_none: {
-                        name: 'None',
+                        name: '{{ __("None") }}',
                         clipLegend: false,
                         showCount: false
                     },
                     toilets_layer_type: {
-                        name: 'Toilet Type',
+                        name: '{{ __("Toilet Type") }}',
                         clipLegend: false,
                         showCount: false
                     },
@@ -2217,15 +2646,15 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
                 @can('Public Health Map Layer')
                    waterborne_hotspots_layer:{
-                        name: 'Waterborne Hotspots',
+                        name: '{{ __("Waterborne Hotspots") }}',
                     styles:{
                         waterborne_hotspots_layer_none: {
-                            name: 'None',
+                            name: '{{ __("None") }}',
                             clipLegend: false,
                             showCount: false
                         },
                         infected_disease: {
-                            name: 'Infected Disease',
+                            name: '{{ __("Infected Disease") }}',
                             clipLegend: false,
                             showCount: false
                         },
@@ -2240,7 +2669,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
                 @can('Water Samples Map Layer')
                 water_samples_layer: {
-                    name: 'Water Samples',
+                    name: '{{ __("Water Samples") }}',
                     styles: {},
                     clipLegend: true,
                     showCount: false,
@@ -2251,8 +2680,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 @if(auth()->user()->can('Tax Payment Status Buildings Map Layer') || auth()->user()->can('Water Payment Status Map Layer'))
                 @can('Tax Payment Status Buildings Map Layer')
                  buildings_tax_status_layer:{
-                    name: 'Tax Payment Status',
-                    styles:{},
+                    name: '{{ __("Tax Payment Status") }}',
+                    styles:{
+                        buildings_tax_status_layer: {
+                        name: '{{ __("Payment Status") }}',
+                        clipLegend: true,
+                        showCount: false
+                    }
+                    },
                     clipLegend: true,
                     showCount: false,
                     filters: [],
@@ -2260,15 +2695,15 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 @endcan
                 @can('Water Payment Status Map Layer')
                 buildings_water_payment_status_layer:{
-                        name: 'Water Payment Status',
+                        name: '{{ __("Water Payment Status") }}',
                     styles:{
                         buildings_water_payment_status_layer: {
-                            name: 'Payment Status',
+                            name: '{{ __("Payment Status") }}',
                             clipLegend: true,
                             showCount: false
                         },
                         buildings_water_payment_service_layer: {
-                            name: 'Service Status',
+                            name: '{{ __("Service Status") }}',
                             clipLegend: false,
                             showCount: false
                         },
@@ -2283,15 +2718,15 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 @endif
                 @can('Solid Waste Status Map Layer')
                 buildings_swm_payment_status_layer:{
-                        name: 'Solid Waste Service Status',
+                        name: '{{ __("Solid Waste Service Status") }}',
                     styles:{
                         buildings_swm_payment_status_layer: {
-                            name: 'Payment Status',
+                            name: '{{ __("Payment Status") }}',
                             clipLegend: true,
                             showCount: false
                         },
                         buildings_swm_payment_service_layer: {
-                            name: 'Service Status',
+                            name: '{{ __("Service Status") }}',
                             clipLegend: false,
                             showCount: false
                         },
@@ -2304,7 +2739,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 @endcan
                 @can('Low Income Community Map Layer')
                 low_income_communities_layer: {
-                    name: 'Low Income Community',
+                    name: '{{ __("Low Income Community") }}',
                     styles: {},
                     clipLegend: false,
                     showCount: false,
@@ -2313,96 +2748,96 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 @endcan
                 @can('Wards Map Layer')
                 wards_layer: {
-                    name: 'Ward Wise Info',
+                    name: '{{ __("Ward Wise Info") }}',
                     styles: {
                         wards_layer_none: {
-                            name: 'None',
+                            name: '{{ __("None") }}',
                             clipLegend: true,
                             showCount: false
                         },
                         wards_layer_no_build: {
-                            name: 'No. of Buildings',
+                            name: '{{ __("No. of Buildings") }}',
                             clipLegend: true,
                             showCount: false
                         },
                         wards_layer_no_rcc_framed: {
-                            name: 'No. of RCC Framed',
+                            name: '{{ __("No. of RCC Framed") }}',
                             clipLegend: true,
                             showCount: false
                         },
                         wards_layer_no_wooden_mud: {
-                            name: 'No. of Wooden/Mud',
+                            name: '{{ __("No. of Wooden/Mud") }}',
                             clipLegend: true,
                             showCount: false
                         },
                         wards_layer_no_load_bearing: {
-                            name: 'No. of Load Bearing',
+                            name: '{{ __("No. of Load Bearing") }}',
                             clipLegend: true,
                             showCount: false
                         },
                         wards_layer_no_cgi_sheet: {
-                            name: 'No. of CGI Sheet',
+                            name: '{{ __("No. of CGI Sheet") }}',
                             clipLegend: true,
                             showCount: false
                         },
                         wards_layer_no_build_directly_to_sewerage_network: {
-                            name: 'No. of Building Connected to Sewerage Network',
+                            name: '{{ __("No. of Building Connected to Sewerage Network") }}',
                             clipLegend: true,
                             showCount: false
                         },
                         wards_layer_no_contain: {
-                            name: 'No. of Containments',
+                            name: '{{ __("No. of Containments") }}',
                             clipLegend: true,
                             showCount: false
                         },
                         wards_layer_no_pit_holding_tank: {
-                            name: 'No.of Pit/Holding Tank',
+                            name: '{{ __("No.of Pit/Holding Tank") }}',
                             clipLegend: true,
                             showCount: false
                         },
 
                 wards_layer_no_septic_tank: {
-                            name: 'No.of Septic Tank',
+                            name: '{{ __("No.of Septic Tank") }}',
                             clipLegend: true,
                             showCount: false
                         },
                         wards_layer_total_rdlen: {
-                            name: 'Total Length of Roads (km)',
+                            name: '{{ __("Total Length of Roads (km)") }}',
                             clipLegend: true,
                             showCount: false
                         },
                         wards_layer_bldgtaxpdprprtn: {
-                            name: 'Tax Paid %',
+                            name: '{{ __("Tax Paid %") }}',
                             clipLegend: true,
                             showCount: false
                         },
                         wards_layer_wtrpmntprprtn: {
-                            name: 'Watersupply Payment Paid %',
+                            name: '{{ __("Watersupply Payment Paid %") }}',
                             clipLegend: true,
                             showCount: false
                         },
                         wards_layer_swmsrvpmntprprtn: {
-                            name: 'Solid Waste Payment Paid %',
+                            name: '{{ __("Solid Waste Payment Paid %") }}',
                             clipLegend: true,
                             showCount: false
                         },
                         wards_layer_population_served: {
-                            name: 'Population of Building',
+                            name: '{{ __("Population of Building") }}',
                             clipLegend: true,
                             showCount: false
                         },
                         wards_layer_household_served: {
-                            name: 'Number of Households',
+                            name: '{{ __("Number of Households") }}',
                             clipLegend: true,
                             showCount: false
                         },
                         wards_layer_no_emptying: {
-                            name: 'No. of Containments Emptied',
+                            name: '{{ __("No. of Containments Emptied") }}',
                             clipLegend: true,
                             showCount: false
                         },
                         wards_layer_no_emptying: {
-                            name: 'No. of Emptying Requests',
+                            name: '{{ __("No. of Emptying Requests") }}',
                             clipLegend: true,
                             showCount: false
                         },
@@ -2415,88 +2850,88 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 @endcan
                 @can('Summarized Grids Map Layer')
                 grids_layer: {
-                    name: 'Summarized Grids (0.5 km)',
+                    name: '{{ __("Summarized Grids (0.5 km)") }}',
                     styles: {
                         grids_layer_no_build: {
-                    name: 'No. of Buildings',
+                    name: '{{ __("No. of Buildings") }}',
                     clipLegend: true,
                     showCount: false
                 },
 
                 grids_layer_no_contain: {
-                    name: 'No. of Containments',
+                    name: '{{ __("No. of Containments") }}',
                     clipLegend: true,
                     showCount: false
                 },
                 grids_layer_no_rcc_framed: {
-                    name: 'No. of RCC Framed',
+                    name: '{{ __("No. of RCC Framed") }}',
                     clipLegend: true,
                     showCount: false
                 },
                 grids_layer_no_wooden_mud: {
-                    name: 'No. of Wooden/Mud',
+                    name: '{{ __("No. of Wooden/Mud") }}',
                     clipLegend: true,
                     showCount: false
                 },
                 grids_layer_no_load_bearing: {
-                    name: 'No. of Load Bearing',
+                    name: '{{ __("No. of Load Bearing") }}',
                     clipLegend: true,
                     showCount: false
                 },
                 grids_layer_no_cgi_sheet: {
-                    name: 'No. of CGI Sheet',
+                    name: '{{ __("No. of CGI Sheet") }}',
                     clipLegend: true,
                     showCount: false
                 },
                 grids_layer_no_build_directly_to_sewerage_network: {
-                    name: 'No. of Building Connected to Sewerage Network',
+                    name: '{{ __("No. of Building Connected to Sewerage Network") }}',
                     clipLegend: true,
                     showCount: false
                 },
 
                 grids_layer_no_pit_holding_tank: {
-                            name: 'No.of Pit/Holding Tank',
+                            name: '{{ __("No.of Pit/Holding Tank") }}',
                             clipLegend: true,
                             showCount: false
                         },
                 grids_layer_no_septic_tank: {
-                            name: 'No.of Septic Tank',
+                            name: '{{ __("No.of Septic Tank") }}',
                             clipLegend: true,
                             showCount: false
                         },
 
                 grids_layer_total_rdlen: {
-                    name: 'Total Length of Roads (km)',
+                    name: '{{ __("Total Length of Roads (km)") }}',
                     clipLegend: true,
                     showCount: false
                 },
                 grids_layer_bldgtaxpdprprtn: {
-                    name: 'Tax Paid %',
+                    name: '{{ __("Tax Paid %") }}',
                     clipLegend: true,
                     showCount: false
                 },
                 grids_layer_wtrpmntprprtn: {
-                    name: 'Watersupply Payment Paid %',
+                    name: '{{ __("Watersupply Payment Paid %") }}',
                     clipLegend: true,
                     showCount: false
                 },
                 grids_layer_swmsrvpmntprprtn : {
-                    name: 'Solid Waste Payment Paid %',
+                    name: '{{ __("Solid Waste Payment Paid %") }}',
                     clipLegend: true,
                     showCount: false
                 },
                 grids_layer_population_served: {
-                    name: 'Population Served',
+                    name: '{{ __("Population Served") }}',
                     clipLegend: true,
                     showCount: false
                 },
                 grids_layer_household_served: {
-                    name: 'Household Served',
+                    name: '{{ __("Household Served") }}',
                     clipLegend: true,
                     showCount: false
                 },
                 grids_layer_no_emptying: {
-                    name: 'No. of Emptying Requests',
+                    name: '{{ __("No. of Emptying Requests") }}',
                     clipLegend: true,
                     showCount: false
                 },
@@ -2509,7 +2944,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
         @can('Water Body Map Layer')
         waterbodys_layer: {
-            name: 'Water Bodies',
+            name: '{{ __("Water Bodies") }}',
             styles: {},
             clipLegend: true,
             showCount: false,
@@ -2520,7 +2955,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
                 @can('Land Use Map Layer')
                 landuses_layer: {
-                    name: 'Land Use',
+                    name: '{{ __("Land Use") }}',
                     styles: {},
                     clipLegend: true,
                     showCount: false,
@@ -2713,7 +3148,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 }
 
                 //Update Get information layer select dropdown
-                var html = '<option value="">Select a layer</option>';
+                var html = '<option value="">{{ __('Select a layer') }}</option>';
 
                 $.each(mLayer, function (key, value) {
                     if (value.layer.getVisible()) {
@@ -2897,9 +3332,9 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 map.un('singleclick', displayBuildingsToPTCT);
                 $('#add-road-inaccessible-box').hide();
                 $('#add-waterbody-inaccessible-box').hide();
-                $('#add-road-tool-box').hide();
-                // map.removeInteraction(removeDrawnRoads);
-              resetAddRoadTool();
+                $('#add-tool-box').hide();
+                // map.removeInteraction(removeDrawnFeatures);
+              resetAddTool();
 
                 if (eLayer.measure) {
                     eLayer.measure.layer.getSource().clear();
@@ -2916,6 +3351,79 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 map.removeOverlay(staticMeasureTooltip);
                 $('#layer-select-box').hide();
             }
+
+               // Add handler to get current location click
+               $('#get_location').click(function (e) {
+                e.preventDefault();
+                disableAllControls();
+                $('.map-control').removeClass('map-control-active');
+                currentControl = '';
+            
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(showLoc, errHand);
+                }
+                });
+                 function showLoc(pos) {
+                    latt = pos.coords.latitude;
+                    long = pos.coords.longitude;
+                    
+                displayAjaxLoader();
+                $.ajax({
+                    url: "{{url('/maps/check-location-within-boundary')}}",
+                    type: 'get',
+                    data: {
+                        latt: latt,
+                        long: long,
+                    },
+                    success: function (data) {
+                        if (data.length > 0) {
+                                
+                                displayPointByCoordinates(latt, long);
+                                removeAjaxLoader();
+                            }
+                         else {
+                             displayAjaxErrorModal( "{{ __('Your Current Location is Outside the Municipality Boundary')}}");
+                        }
+                        
+                    },
+                    error: function (data) {
+                        displayAjaxError();
+                    }
+                })
+                    
+                }
+
+                    function errHand(err) {
+                    switch (err.code) {
+                        case err.PERMISSION_DENIED:
+                        result.innerHTML = "{{ __('The application does not have the permission to make use of location services')}}"
+;
+                        break;
+                        case err.POSITION_UNAVAILABLE:
+                        result.innerHTML =  "{{ __('The location of the device is uncertain')}}";
+                        break;
+                        case err.TIMEOUT:
+                        result.innerHTML = "{{ __('The request to get user location timed out')}}";
+                        break;
+                        case err.UNKNOWN_ERROR:
+                        result.innerHTML = "{{ __('Time to fetch location information exceeded the maximum timeout interval')}}";
+                        break;
+                    }
+                    }
+           
+           
+               $('#kml_drag_drop').click(function (e) {
+                e.preventDefault();
+                disableAllControls();
+                currentControl = '';
+                 Swal.fire({
+                    icon: 'info',
+                    title: "{{ __('KML Viewer')}}",
+                    text: "{{ __('To View KML, Please Drag and Drop the KML File Directly onto the Map')}}",
+                    confirmButtonText: "{{ __('OK')}}"
+                });
+
+            });
 
             // Add handler to zoom in button click
             $('#zoomin_control').click(function (e) {
@@ -2955,7 +3463,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 e.preventDefault();
                 disableAllControls();
                 $('.map-control').removeClass('map-control-active');
-                var html = '<option value="">Select a layer</option>';
+                var html = '<option value="">{{ __('Select a layer') }}</option>';
 
                 $.each(mLayer, function (key, value) {
                     if (value.layer.getVisible()) {
@@ -3250,6 +3758,23 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     }
                 });
             });
+
+             // Add handler to toilet isochrone map button click
+             $('#toilet_isochrone_control').click(function (e) {
+                e.preventDefault();
+                disableAllControls();
+                $('.map-control').removeClass('map-control-active');
+                if (currentControl == 'toilet_isochrone_control') {
+                    currentControl = '';
+                    // $('#pan_control').addClass('map-control-active');
+                } else {
+                    currentControl = 'toilet_isochrone_control';
+                    $('#toilet_isochrone_control').addClass('map-control-active');
+                    $('#popup-toilet-isochrone').modal('show');
+
+                }
+            });
+
             // Add handler to length measure button click
             $('#linemeasure_control').click(function (e) {
                 e.preventDefault();
@@ -3281,509 +3806,820 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
             });
 
 
-             //*Add road tool start*
+           //*Add road tool start*
 
-            var currentAddRoadControl='',
+           var currentAddControl='',
                 vectorSource,
                 vectorLayer,
                 drawSource,
                 drawLayer,
                 selectInteraction,
-                roadDrawInteraction,
-                roadSnapInteraction,
-                roadDrawnSnapInteraction,
+                layerDrawInteraction,
+                layerSnapInteraction,
+                layerDrawnSnapInteraction,
                 undoInteraction,
                 modifyInteraction,
                 originalRoadFeature,
-                modifiedRoadFeature,
+                modifiedFeature,
                 hasModification = false;
-            $('#add_road_control').click(function (e) {
-                e.preventDefault();
-                disableAllControls();
-                displayAjaxLoader();
-                var allLayers = map.getLayers().getArray();
-                $('.map-control').removeClass('map-control-active');
-                if (currentControl === 'add_road_control') {
-                    $('#add-road-tool-box').hide();
-                    currentControl='';
-                    resetAddRoadTool();
-                    removeAjaxLoader();
-                    disableAllControls();
-                }else {
-                    currentControl = 'add_road_control';
-                    $('#add-road-tool-box').show();
-                    vectorSource = new ol.source.Vector({
-                    url: '<?php echo Config::get("constants.GEOSERVER_URL"); ?>/ows?service=WFS&' +
-                            'version=1.1.0&request=GetFeature&typeName=<?php echo Config::get("constants.GEOSERVER_WORKSPACE"); ?>:roadlines_layer&&CQL_FILTER=deleted_at is null&' +
-                            'SRS=EPSG:4326&outputFormat=json&authkey=9499949e-6318-4ffd-8384-ed94c5d84770',
 
-                        format: new ol.format.GeoJSON(),
-                    });
-                    vectorLayer = new ol.layer.Vector({
-                        background: '#1a2b39',
-                        source: vectorSource,
-                        name: 'add-roads-layer'
-                    });
-                    drawSource = new ol.source.Vector({format: new ol.format.GeoJSON()});
-                    drawLayer = new ol.layer.Vector({
-                        background: '#1a2b39',
-                        source: drawSource,
-                        name: 'add-roads-draw-layer'
-                    });
-                    if (!allLayers.includes('add-roads-layer')) {
-                        map.addLayer(vectorLayer);
-                    }else{
-                        removeAjaxLoader();
-                    }
-                    if (!allLayers.includes('add-roads-draw-layer')) {
-                        map.addLayer(drawLayer);
-                    }
-                    var sourceEventListener = vectorSource.on('change', function(e) {
-                        if (vectorSource.getState() === 'ready') {
-                            vectorSource.un('change', sourceEventListener);
-                            removeAjaxLoader();
-                        }
-                    });
+        function handleAddRoadControlClick(code) {
+                    currentLayerType = 'Road';
+
+                    // Set tool titles or other properties
+                    $('#add_edit_control').attr( currentLayerType);
+                    $('#add_submit_road_btn').attr(currentLayerType);
+                    $('#add_submit_control')
+                        .attr('data-code', code)
+                        .attr(currentLayerType);
+                    $('#add_start_control').attr(currentLayerType);
+
+                    handleMapControl(
+                        '#add_road_control',
+                        'add-roads-layer',          // Layer name
+                        'add-tool-box',             // Toolbox ID
+                        'roadlines_layer'           // GeoServer layer
+                    );
+
+                  // Trigger the click event immediately after binding
+            $('#add_road_control').trigger('click');
+        }
+
+            // On page load, check if the hash is #add_road_control
+            if (window.location.hash === '#add_road_control') {
+                    $('#add_edit_control').hide();
+                    let code = '';
+                        handleAddRoadControlClick(code);
+
                 }
-            });
 
+                // On page load, check if the hash is #add_road_control
+                if (window.location.hash.startsWith('#edit_road_control-')) {
+                    const code = window.location.hash.split('-')[1];
+                    $('#add_start_control').hide();
+                    $('#add_undo_last_point_control').hide();
+                    $('#add_delete_control').hide();
+                    $('#add_edit_control').hide();
+                     handleAddRoadControlClick(code);
+                     currentAddControl = 'Modify Road'; 
+                    addModifyInteractions(currentAddControl, code, 'roadlines');
+
+                }
+
+        function handleAddSewerControlClick(code) {
+            currentLayerType = 'Sewer';
+              // Set tool titles or other properties
+                $('#add_edit_control').attr( currentLayerType);
+                $('#add_submit_sewer_btn').attr(currentLayerType);
+                $('#add_submit_control')
+                        .attr('data-code', code)
+                        .attr(currentLayerType);
+                $('#add_start_control').attr(  currentLayerType);
+
+                handleMapControl(
+                    '#add_sewer_control',
+                   'add-sewers-layer',          // Layer name
+                     'add-tool-box',             // Toolbox ID
+                      'sewerlines_layer'           // GeoServer layer
+                            );
+                    $('#add_sewer_control').trigger('click');
+                }
+
+                // On page load, check if the hash is #add_road_control
+                if (window.location.hash === '#add_sewer_control') {
+                    $('#add_edit_control').hide();
+                    let code = '';
+                    handleAddSewerControlClick(code);
+                }
+
+                // On page load, check if the hash is #add_road_control
+                if (window.location.hash.startsWith('#edit_sewer_control-')) {
+                    const code = window.location.hash.split('-')[1];
+                    
+                    $('#add_start_control').hide();
+                    $('#add_undo_last_point_control').hide();
+                    $('#add_delete_control').hide();
+                    $('#add_edit_control').hide();
+                    handleAddSewerControlClick(code);
+                    currentAddControl = 'Modify Sewer'; 
+                    addModifyInteractions(currentAddControl, code , 'sewerlines');
+
+                }
+
+
+            function handleAddDrainControlClick(code) {
+                    currentLayerType = 'Drain';
+
+              // Set tool titles or other properties
+                $('#add_edit_control').attr( currentLayerType);
+                $('#add_submit_drain_btn').attr( currentLayerType);
+                $('#add_submit_control')
+                        .attr('data-code', code)
+                        .attr(currentLayerType);
+                $('#add_start_control').attr(  currentLayerType);
+
+                handleMapControl(
+                    '#add_drain_control',
+                   'add-drains-layer',          // Layer name
+                     'add-tool-box',             // Toolbox ID
+                      'drains_layer'           // GeoServer layer
+                            );
+                    $('#add_drain_control').trigger('click');
+                }
+
+                 // On page load, check if the hash is #add_road_control
+                 if (window.location.hash === '#add_drain_control') {
+                    $('#add_edit_control').hide();
+                    let code = '';
+                    handleAddDrainControlClick(code);
+                }
+
+                // On page load, check if the hash is #add_road_control
+                if (window.location.hash.startsWith('#edit_drain_control-')) {
+                    const code = window.location.hash.split('-')[1];
+                                        
+                    $('#add_start_control').hide();
+                    $('#add_undo_last_point_control').hide();
+                    $('#add_delete_control').hide();
+                    $('#add_edit_control').hide();
+
+                    handleAddDrainControlClick(code);
+                    currentAddControl = 'Modify Drain'; 
+                    addModifyInteractions(currentAddControl, code , 'drains');
+                }
+
+
+
+                function handleAddWatersupplyControlClick(code) {
+                    currentLayerType = 'Watersupply';
+
+              // Set tool titles or other properties
+                $('#add_edit_control').attr( currentLayerType);
+                $('#add_submit_watersupply_btn').attr( currentLayerType);
+                $('#add_submit_control')
+                        .attr('data-code', code)
+                        .attr(currentLayerType);
+                $('#add_start_control').attr( currentLayerType);
+
+                handleMapControl(
+                    '#add_watersupply_control',
+                   'add-watersupplys-layer',          // Layer name
+                     'add-tool-box',             // Toolbox ID
+                      'watersupply_network_layer'           // GeoServer layer
+                            );
+                    $('#add_watersupply_control').trigger('click');
+                }
+
+                  // On page load, check if the hash is #add_road_control
+                  if (window.location.hash === '#add_watersupply_control') {
+                    $('#add_edit_control').hide();
+                    let code = '';
+                     handleAddWatersupplyControlClick(code);
+                }
+
+                // On page load, check if the hash is #add_road_control
+                if (window.location.hash.startsWith('#edit_watersupplys_control-')) {
+                    const code = window.location.hash.split('-')[1];
+                    $('#add_start_control').hide();
+                    $('#add_undo_last_point_control').hide();
+                    $('#add_delete_control').hide();
+                    $('#add_edit_control').hide();
+                     handleAddWatersupplyControlClick(code);
+                     currentAddControl = 'Modify Watersupply'; 
+                     addModifyInteractions(currentAddControl, code , 'watersupplys');
+                }
+
+
+                function handleMapControl(controlId, layerName, toolBoxId, geoServerLayer) {
+                
+                        disableAllControls();
+                        var allLayers = map.getLayers().getArray();
+                        $('.map-control').removeClass('map-control-active');
+
+                        if (currentControl === controlId) {
+                            $('#' + toolBoxId).hide();
+                            currentControl = '';
+                            resetAddTool();
+                            removeAjaxLoader();
+                            disableAllControls();
+                        } else {
+                            currentControl = controlId;
+                            $('#' + toolBoxId).show();
+
+                            vectorSource = new ol.source.Vector({
+                                url: '<?php echo Config::get("constants.GEOSERVER_URL"); ?>/ows?service=WFS&' +
+                                    'version=1.1.0&request=GetFeature&typeName=<?php echo Config::get("constants.GEOSERVER_WORKSPACE"); ?>:' + geoServerLayer + '&' +
+                                    'CQL_FILTER=deleted_at is null&SRS=EPSG:4326&outputFormat=json&authkey=9499949e-6318-4ffd-8384-ed94c5d84770',
+                                format: new ol.format.GeoJSON(),
+                            });
+
+                            vectorLayer = new ol.layer.Vector({
+                                background: '#1a2b39',
+                                source: vectorSource,
+                                name: layerName
+                            });
+
+                            drawSource = new ol.source.Vector({ format: new ol.format.GeoJSON() });
+                            drawLayer = new ol.layer.Vector({
+                                background: '#1a2b39',
+                                source: drawSource,
+                                name: layerName + '-draw-layer'
+                            });
+
+                            if (!allLayers.some(layer => layer.get('name') === layerName)) {
+                                map.addLayer(vectorLayer);
+                            } else {
+                                removeAjaxLoader();
+                            }
+
+                            if (!allLayers.some(layer => layer.get('name') === layerName + '-draw-layer')) {
+                                map.addLayer(drawLayer);
+                            }
+
+                            var sourceEventListener = vectorSource.on('change', function (e) {
+                                if (vectorSource.getState() === 'ready') {
+                                    vectorSource.un('change', sourceEventListener);
+                                    removeAjaxLoader();
+                                }
+                            });
+                        }
+                }
+
+                
             // Add draw,snap & undo interactions.
-            $('#add_road_start_control').click(function (e) {
+            $('#add_start_control').click(function (e) {
                 e.preventDefault();
-                hideAddRoadForm();
-                //   map.removeInteraction(roadDrawInteraction);
-                if (currentAddRoadControl !== 'Add Road'){
-                    currentAddRoadControl = 'Add Road';
-                    addRoadDrawInteractions();
+                hideAddForm();
+                if (currentAddControl !== 'Add ' + currentLayerType){
+                    currentAddControl = 'Add ' + currentLayerType;
+                    addDrawInteractions();
                 }
             });
 
             //Undo the last drawn point.
-            $('#add_road_undo_last_point_control').click(function (e) {
+            $('#add_undo_last_point_control').click(function (e) {
                 e.preventDefault();
-                hideAddRoadForm();
-                roadDrawInteraction?.removeLastPoint();
+                hideAddForm();
+                layerDrawInteraction?.removeLastPoint();
             });
 
             //Undo the entire drawn line.
-            $('#add_road_undo_control').click(function (e) {
+            $('#add_undo_control').click(function (e) {
                 e.preventDefault();
-                hideAddRoadForm();
+                hideAddForm();
                 undoInteraction?.undo();
             });
 
             //Redo the drawing that was undoed
-            $('#add_road_redo_control').click(function (e) {
+            $('#add_redo_control').click(function (e) {
                 e.preventDefault();
-                hideAddRoadForm();
+                hideAddForm();
                 undoInteraction?.redo();
             });
 
             //Remove the drawn lines.
-            $('#add_road_delete_control').click(function (e) {
+            $('#add_delete_control').click(function (e) {
                 e.preventDefault();
-                hideAddRoadForm();
-                removeDrawnRoads();
-            });
+                hideAddForm();
+                if (hasModification && modifiedFeature && originalRoadFeature) {
+                    const source = vectorLayer.getSource();
 
-            //Modify the drawn roads
-            $('#add_road_edit_control').click(function(e){
-                hideAddRoadForm();
-                if (currentAddRoadControl === 'Modify Road'){
-                    currentAddRoadControl='';
-                    removeAllAddRoadInteractions();
-                }else {
-                    if (currentAddRoadControl === 'Add Road') {
-                        Swal.fire({
-                            title: 'Are you sure?',
-                            text: "Roads added would be lost!",
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonText: 'Yes',
-                            cancelButtonText: 'No!',
-                            reverseButtons: true
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                removeAllAddRoadInteractions();
-                                removeDrawnRoads();
-                                currentAddRoadControl='Modify Road';
-                                addRoadModifyInteractions();
-                            } else if (result.dismiss === Swal.DismissReason.cancel) {
-                                //do nothing
-                            }
-                        });
-                    }else{
-                        currentAddRoadControl='Modify Road';
-                        addRoadModifyInteractions();
-                    }
+                    // Remove modified feature
+                    source.removeFeature(modifiedFeature);
+
+                    // Add original feature back
+                    source.addFeature(originalRoadFeature.clone());
+
+                    // Clear selection and state
+                    selectInteraction.getFeatures().clear();
+                    originalRoadFeature = null;
+                    modifiedFeature = null;
+                    hasModification = false;
+                } else {
+                    removeDrawnFeatures(); // fallback for drawn lines
+
                 }
             });
 
-            //save the added and modified road
-            $('#add_road_submit_control').click(function (e) {
-                e.preventDefault();
-                if (currentAddRoadControl === 'Add Road'){
-                    let features = drawLayer.getSource().getFeatures();
-                    if(features){
-                        if(features.length < 1 ){
+
+            $('#add_submit_control').click(function (e) {
+                    e.preventDefault();
+                 
+                    let code = $('#add_submit_control').data('code');
+
+                    const layerTypeLower = currentLayerType.toLowerCase();
+
+                    if (currentAddControl === 'Add ' + currentLayerType) {
+                        const features = drawLayer.getSource().getFeatures();
+
+                        if (!features || features.length < 1) {
                             Swal.fire({
-                                title: 'Error',
-                                text : `Please draw a roadline before saving!`,
+                                title: "{{ __('Error') }}",
+
+                                text: `${layerTypeLower}` +` {{ __('must be drawn before saving') }}`,
                                 icon: "warning",
                             });
-                        }else{
-                            $('.add-road-form').slideToggle();
+                        } else {
+                            $(`.add-${layerTypeLower}-form`).slideToggle();
                         }
-                    }
-                } else if (currentAddRoadControl === 'Modify Road'){
-                    //If we want to provide all fields update form
-                    /*$('.add-road-form').slideDown();*/
-                    //If we want to provide geom only update
-                    hideAddRoadForm();
-                    if (hasModification){
-                        //If we want to provide all fields update form**********
-                        /*displayAjaxLoader();
-                        var road = modifiedRoadFeature.getProperties();
-                        $('#roadnam').val(road.roadnam);
-                        $('#roadhier').val(road.roadhier);
-                        $('#rdsurf').val(road.rdsurf);
-                        $('#rdlen').val(road.rdlen);
-                        $('#rdwidth').val(road.rdwidth);
-                        $('#rdcarwdth').val(road.rdcarwdth);
 
-                        let lineFormat = new ol.format.WKT();
-                        let geom = lineFormat.writeGeometry(modifiedRoadFeature.getGeometry().clone().transform('EPSG:3857', 'EPSG:4326'));
-                        $.ajaxSetup({
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                                'Accept': 'application/json'
-                            }
-                        });
-                        $.ajax({
-                            url: '{{url('/roadlines/update-road')}}', //May need new route and controller here
-                            type: 'post',
-                            data: {
-                                'roadnam' : $('#roadnam').val(),
-                                'roadhier' : $('#roadhier').val(),
-                                'rdsurf' : $('#rdsurf').val(),
-                                'rdlen' : $('#rdlen').val(),
-                                'rdwidth' : $('#rdwidth').val(),
-                                'rdcarwdth' : $('#rdcarwdth').val(),
-                                "geom" : geom
-                            },
-                            success: function (data) {
-                                $('#add-road-errors').empty();
-                                $('.add-road-form').slideUp();
-                                Swal.fire({
-                                    title: 'Success!',
-                                    text: "Road Network updated successfully.",
-                                    icon: 'success',
-                                    confirmButtonText: 'OK!',
-                                });
-                                resetAddRoadTool();
-                                $('#add_road_control').trigger("click");
-                                removeAjaxLoader();
-                            },
-                            error: function (data) {
-                                $('#add-road-errors').empty();
-                                let html = '<ul class="alert alert-danger">';
-                                if (data.responseText) {
-                                    Object.values(JSON.parse(data.responseText).errors).forEach(function (error) {
-                                        html += "<li>" + error[0] + "</li>";
-                                    });
-                                }else{
-                                    html+= "<li>Error</li>";
-                                }
-                                html+='</ul';
-                                $('#add-road-errors').append(html);
-                                $('#add-road-errors').focus();
-                                removeAjaxLoader();
-                            }
-                        });*/
-                        //All fields update End **********
+                    } else if (currentAddControl === 'Modify ' + currentLayerType) {
+                        hideAddForm();
 
-                        //If we want to provide geom only update++++++++++
+                        if (hasModification && modifiedFeature) {
+                            Swal.fire({
+                                title:"{{__('Are you sure?')}}",
+                                text: "{{__('The changes made will be saved')}}",
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonText: "{{ __('Yes') }}",
+                                cancelButtonText: "{{ __('No') }}",
+                                reverseButtons: true
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    displayAjaxLoader();
 
-                        Swal.fire({
-                            title: 'Are you sure?',
-                            text: "The changes made will be saved",
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonText: 'Yes',
-                            cancelButtonText: 'No!',
-                            reverseButtons: true
-                        }).then((result) => {
-                            displayAjaxLoader();
-                            if (result.isConfirmed) {
-                                let lineFormat = new ol.format.WKT();
-                                let geom = lineFormat.writeGeometry(modifiedRoadFeature.getGeometry().clone().transform('EPSG:3857', 'EPSG:4326'));
-                                $.ajaxSetup({
-                                    headers: {
-                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                                        'Accept': 'application/json'
-                                    }
-                                });
-                                $.ajax({
-                                    url: '{{url('/utilityinfo/roadlines/update-road-geom')}}', //May need new route and controller here
-                                    type: 'post',
-                                    data: {
-                                        'roadcd' : modifiedRoadFeature.getProperties().code,
-                                        "geom" : geom
-                                    },
-                                    success: function (data) {
-                                        /*$('#add-road-errors').empty();
-                                        $('.add-road-form').slideUp();
-                                        Swal.fire({
-                                            title: 'Success!',
-                                            text: "Road Network updated successfully.",
-                                            icon: 'success',
-                                            confirmButtonText: 'OK!',
+                                    const geometry = modifiedFeature.getGeometry().clone(); 
+    
+                                    // Check the type of geometry and calculate length
+                                    if (geometry instanceof ol.geom.LineString) {
+                                        var length = geometry.getLength(); // Get length in meters
+                                    } else if (geometry instanceof ol.geom.MultiLineString) {
+                                        var length = 0 ;
+                                        // If it's a MultiLineString, sum the lengths of individual lines
+                                        var coordinates = geometry.getCoordinates();
+                                        coordinates.forEach(function(coords) {
+                                            var lineString = new ol.geom.LineString(coords);
+                                            length += lineString.getLength(); // Get length for each line in the MultiLineString
                                         });
-                                        resetAddRoadTool();
-                                        $('#add_road_control').trigger("click");*/
-                                        removeAjaxLoader();
-                                        Swal.fire(
-                                            'Saved!',
-                                            'The changes have been saved.',
-                                            'success',
-                                        );
-                                    },
-                                    error: function (data) {
-                                        /*$('#add-road-errors').empty();
-                                        let html = '<ul class="alert alert-danger">';
-                                        if (data.responseText) {
-                                            Object.values(JSON.parse(data.responseText).errors).forEach(function (error) {
-                                                html += "<li>" + error[0] + "</li>";
-                                            });
-                                        }else{
-                                            html+= "<li>Error</li>";
-                                        }
-                                        html+='</ul';
-                                        $('#add-road-errors').append(html);
-                                        $('#add-road-errors').focus();*/
-                                        removeAjaxLoader();
-                                        Swal.fire(
-                                            'Error',
-                                            'There was an error!',
-                                            'error'
-                                        )
-                                    }
-                                });
-                            } else if (result.dismiss === Swal.DismissReason.cancel) {
-                                removeAjaxLoader();
-                                Swal.fire(
-                                    'Cancelled',
-                                    'The changes have been removed.',
-                                    'error'
-                                )
-                            }
-                        });
 
-                        //Geom only update end++++++++++
+                                    }
+                                   
+                                    const lineFormat = new ol.format.WKT();
+                                    const geom = lineFormat.writeGeometry(
+                                        modifiedFeature.getGeometry().clone().transform('EPSG:3857', 'EPSG:4326')
+                                    );
+            
+                                    // Dynamic values based on the layer type
+                                    let formData = {};
+                                    let updateUrl = '';
+                                    let return_url = '';
+
+                                    switch (currentLayerType) {
+                                        case 'Road':
+                                            formData = {
+                                                'roadcd':code,
+                                                'geom': geom,
+                                                'length': length.toFixed(2)
+                                            };
+                                            return_url = '{{ url("utilityinfo/roadlines/:code/edit") }}'.replace(':code',code);
+                                            updateUrl = '{{ url("/utilityinfo/roadlines/update-road-geom") }}';
+                                            break;
+
+                                        case 'Drain':
+                                            formData = {
+                                                'code': code,
+                                                'geom': geom,
+                                                'length': length.toFixed(2)
+                                            };
+                                            return_url = '{{ url("utilityinfo/drains/:code/edit") }}'.replace(':code',code);
+                                            updateUrl = '{{ url("/utilityinfo/drains/update-drain-geom") }}';
+                                            break;
+
+                                        case 'Sewer':
+                                            formData = {
+                                                'code': code,
+                                                'geom': geom,
+                                                'length': length.toFixed(2)
+                                            };
+                                            return_url = '{{ url("utilityinfo/sewerlines/:code/edit") }}'.replace(':code',code);
+                                            updateUrl = '{{ url("/utilityinfo/sewerlines/update-sewer-geom") }}';
+                                            break;
+
+                                        case 'Watersupply':
+                                            formData = {
+                                                'code': code,
+                                                'geom': geom,
+                                                'length': length.toFixed(2)
+                                            };
+                                            return_url = '{{ url("utilityinfo/watersupplys/:code/edit") }}'.replace(':code',code);
+
+                                            updateUrl = '{{ url("/utilityinfo/watersupplys/update-watersupply-geom") }}';
+                                            break;
+
+                                        default:
+                                            removeAjaxLoader();
+                                            Swal.fire("{{ __('Error') }}", "{{ __('Invalid Layer') }}", 'error');
+                                            return;
+                                    }
+                                    
+
+                                    $.ajaxSetup({
+                                        headers: {
+                                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                                            'Accept': 'application/json'
+                                        }
+                                    });
+
+                                    $.ajax({
+                                        url: updateUrl,
+                                        type: 'POST',
+                                        data: formData,
+                                        success: function (data) {
+                                            removeAjaxLoader();
+                                            Swal.fire("{{ __('Saved') }}", "{{ __('The changes have been saved') }}", 'success')
+                                                .then((res) => {
+                                                    if (res.isConfirmed) {
+                                                        displayAjaxLoader();
+                                                        window.location.href = return_url;
+                                                    }
+                                                });
+                                        },
+                                        error: function () {
+                                            removeAjaxLoader();
+                                            Swal.fire("{{ __('Error') }}",  "{{ __('There was an error while saving changes') }}", 'error');
+                                        }
+                                    });
+                                } else {
+                                    Swal.fire("{{ __('Cancelled') }}",  "{{ __('The changes have been removed') }}", 'info');
+                                    removeAjaxLoader();
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "{{ __('Nothing to save') }}",
+                                icon: "warning",
+                            });
+                        }
 
                     } else {
+                        hideAddForm();
                         Swal.fire({
-                            title: 'Nothing to save!',
+                            title: "{{ __('Nothing to save') }}",
                             icon: "warning",
                         });
                     }
+                });
 
-                } else {
-                    hideAddRoadForm();
+            function submitDetails(controlType) {
+            // Set the dynamic fields based on control type
+            let formData = {};
+            let geom = null;
+            let fieldNameMapping = {};
+
+            if (controlType === 'road') {
+                geom = getGeometryLayer();
+                fieldNameMapping = {
+                    "name": "{{ __('Road Name') }}",
+                    "length": "{{ __('Length (m)') }}",
+                    "carrying_width": "{{ __('Carrying Width (m)') }}",
+                    "right_of_way": "{{ __('Right of Way (m)') }}"
+                };
+
+                // Dynamically get the road form data
+                formData = {
+                    'name': $('#name').val(),
+                    'hierarchy': $('#hierarchy').val(),
+                    'surface_type': $('#surface_type').val(),
+                    'length': $('#length').val(),
+                    'carrying_width': $('#carrying_width').val(),
+                    'right_of_way': $('#right_of_way').val(),
+                    "geom": geom
+                };
+
+                url = '{{url("/utilityinfo/roadlines/add-road")}}';
+                return_url = '{{ route("roadlines.index") }}';
+            } else if (controlType === 'sewer') {
+                geom = getGeometryLayer();
+                fieldNameMapping = {
+                    "road_code": "{{ __('Road Code') }}",
+                    "treatment_plant_id": "{{ __('Treatment Plant') }}",
+                    "length": "{{ __('Length (m)') }}",
+                    "location": "{{ __('Location') }}",
+                    "diameter": "{{ __('Diameter (mm)') }}",
+
+                };
+
+                // Dynamically get the drain form data
+                formData = {
+                    'road_code': $('#road_code').val(),
+                    'treatment_plant_id': $('#treatment_plant_id').val(),
+                    'length': $('#length_sewer').val(),
+                    'location': $('#location').val(),
+                    'diameter': $('#diameter').val(),
+                    "geom": geom
+                };
+
+                
+                url = '{{url("/utilityinfo/sewerlines/add-sewer")}}';
+                return_url = '{{ route("sewerlines.index") }}';
+
+            }else if (controlType === 'drain') {
+                geom = getGeometryLayer();
+                fieldNameMapping = {
+                    "road_code": "{{ __('Road Code') }}",
+                    "cover_type": "{{ __('Cover Type') }}",
+                    "surface_type": "{{ __('Surface Type') }}",
+                    "size": "{{ __('Width (mm)') }}",
+                    "length": "{{ __('Length (m)') }}",
+                    "treatment_plant_id": "{{ __('Treatment Plant') }}",
+                };
+
+                // Dynamically get the drain form data
+                formData = {
+                    'road_code': $('#road_code_drain').val(),
+                    "cover_type": $('#cover_type').val(),
+                    "surface_type": $('#surface_type_drain').val(),
+                    'size': $('#size').val(),
+                    'length': $('#length_drain').val(),
+                    'treatment_plant_id': $('#tp_drain').val(), 
+                    "geom": geom
+                };
+                url = '{{url("/utilityinfo/drains/add-drain")}}';
+                return_url = '{{ route("drains.index") }}';
+
+            }else if (controlType === 'watersupply') {
+                geom = getGeometryLayer();
+                fieldNameMapping = {
+                    "road_code": "{{ __('Road Code') }}",
+                    "diameter": "{{ __('Diameter (mm)') }}",
+                    "length": "{{ __('Length (m') }})",
+                    "project_name": "{{ __('Project Name') }}",
+                    "type": "{{ __('Type') }}",
+                    "material_type": "{{ __('Material Type') }}",
+                };
+
+                // Dynamically get the drain form data
+                formData = {
+                    'road_code': $('#road_code_watersupply').val(),
+                    "diameter": $('#diameter_watersupply').val(),
+                    "length": $('#length_watersupply').val(),
+                    'project_name': $('#project_name').val(),
+                    'type': $('#type').val(),
+                    'material_type': $('#material_type').val(), 
+                    "geom": geom
+                };
+                url = '{{url("/utilityinfo/watersupplys/add-watersupply")}}';
+                return_url = '{{ route("watersupplys.index") }}';
+
+            }
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    'Accept': 'application/json'
+                }
+            });
+            displayAjaxLoader();
+            $.ajax({
+                url: url,
+                type: 'post',
+                data: formData,
+                success: function(data) {
+                    $('#add-' + controlType + '-errors').empty();
+                    $('.add-' + controlType + '-form').slideUp();
+                    removeAjaxLoader(); 
                     Swal.fire({
-                        title: 'Nothing to save!',
-                        icon: "warning",
+                        title: 'Success!',
+                        text: `${controlType === 'watersupply' ? 'Water Supply' : controlType.charAt(0).toUpperCase() + controlType.slice(1)} {{ __('added successfully') }}`,
+                        icon: 'success',
+                        confirmButtonText: 'OK!',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = return_url; 
+                             displayAjaxLoader();
+                        }
                     });
+                },
+                error: function (data) {
+                    $('#add-' + controlType + '-errors').empty();
+                    let html = '<ul class="alert alert-danger">';
+
+                    if (data.responseText) {
+                        let errors = JSON.parse(data.responseText).errors;
+                        Object.entries(errors).forEach(function ([field, messages]) {
+                            let fieldTitle = fieldNameMapping[field] || field;
+                            let message = messages[0]; // Get the first error message for this field
+
+                            // Optional: Customize message if needed
+                            let customMessage = `${fieldTitle} ` + `{{ __("is required")}}`;
+
+                            html += `<li>${customMessage}</li>`;
+                        });
+                    } else {
+                        html += "<li>Error</li>";
+                    }
+
+                    html += '</ul>';
+                    $('#add-' + controlType + '-errors').append(html);
+                    $('#add-' + controlType + '-errors').focus();
+                    removeAjaxLoader();
                 }
 
             });
-
-            //submit the details about road
-            $('#add_road_submit_btn').click(function(e) {
-    e.preventDefault();
-    displayAjaxLoader();
-    let lineFormat = new ol.format.WKT();
-    let geom = lineFormat.writeGeometry(
-        drawSource.getFeatures()[drawSource.getFeatures().length - 1].getGeometry().clone().transform('EPSG:3857', 'EPSG:4326')
-    );
-
-    // Field name mapping for custom error titles
-    let fieldNameMapping = {
-        "name": "Road Name",
-        "length": "Length (m)",
-        "carrying_width": "Carrying Width (m)",
-        "right_of_way": "Right of Way (m)"
-    };
-
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-            'Accept': 'application/json'
         }
-    });
 
-    $.ajax({
-        url: '{{url('/utilityinfo/roadlines/add-road')}}',
-        type: 'post',
-        data: {
-            'name': $('#name').val(),
-            'hierarchy': $('#hierarchy').val(),
-            'surface_type': $('#surface_type').val(),
-            'length': $('#length').val(),
-            'carrying_width': $('#carrying_width').val(),
-            'right_of_way': $('#right_of_way').val(),
-            "geom": geom
-        },
-        success: function(data) {
-            $('#add-road-errors').empty();
-            $('.add-road-form').slideUp();
-            Swal.fire({
-                title: 'Success!',
-                text: "Road(s) added successfully.",
-                icon: 'success',
-                confirmButtonText: 'OK!',
-            });
-            resetAddRoadTool();
-            $('#add_road_control').trigger("click");
-            removeAjaxLoader();
-        },
-        error: function(data) {
-            $('#add-road-errors').empty();
-            let html = '<ul class="alert alert-danger">';
-            if (data.responseText) {
-                let errors = JSON.parse(data.responseText).errors;
-                Object.keys(errors).forEach(function(field) {
-                    let fieldTitle = fieldNameMapping[field] || field; // Use mapped title or default to field
-                    let message = errors[field][0];
-
-                    // Replace default field name in error message with the custom title
-                    let customMessage = message.replace(new RegExp(field, "gi"), fieldTitle.toLowerCase());
-
-                    // Capitalize the first letter of the custom field title
-                    customMessage = `The ${fieldTitle} is required.`;
-
-                    html += `<li>${customMessage}</li>`;
-                });
-            } else {
-                html += "<li>Error</li>";
-            }
-            html += '</ul>';
-            $('#add-road-errors').append(html);
-            $('#add-road-errors').focus();
-            removeAjaxLoader();
+        function getGeometryLayer() {
+            let lineFormat = new ol.format.WKT();
+            return lineFormat.writeGeometry(
+                drawSource.getFeatures()[drawSource.getFeatures().length - 1].getGeometry().clone().transform('EPSG:3857', 'EPSG:4326')
+            );
         }
-    });
-});
 
+        // Event listeners for submit buttons
+        $('#add_road_submit_btn').click(function (e) {
+            e.preventDefault();
+            submitDetails('road');
+        });
 
+          $('#add_sewer_submit_btn').click(function (e) {
+            e.preventDefault();
+            submitDetails('sewer');
+        });
 
-            function hideAddRoadForm(){
+        $('#add_drain_submit_btn').click(function (e) {
+            e.preventDefault();
+            submitDetails('drain');
+        });
+
+        $('#add_watersupply_submit_btn').click(function (e) {
+            e.preventDefault();
+            submitDetails('watersupply');
+        });
+        
+            function hideAddForm(){
                 $('.add-road-form').slideUp();
+                $('.add-drain-form').slideUp();
+                $('.add-sewer-form').slideUp();
+                $('.add-watersupply-form').slideUp();
             }
-            function addRoadDrawInteractions() {
+
+            function addDrawInteractions() {
+
                 map.removeInteraction(modifyInteraction);
                 map.removeInteraction(selectInteraction);
-                roadDrawInteraction = new ol.interaction.Draw({
+                layerDrawInteraction = new ol.interaction.Draw({
                     source: drawSource,
                     type: "MultiLineString",
                 });
-                roadSnapInteraction = new ol.interaction.Snap({source: vectorSource});
-                roadDrawnSnapInteraction = new ol.interaction.Snap({source: drawSource});
+                layerSnapInteraction = new ol.interaction.Snap({source: vectorSource});
+                layerDrawnSnapInteraction = new ol.interaction.Snap({source: drawSource});
                 undoInteraction = new ol.interaction.UndoRedo();
-                map.addInteraction(roadDrawInteraction);
-                map.addInteraction(roadSnapInteraction);
-                map.addInteraction(roadDrawnSnapInteraction);
+                map.addInteraction(layerDrawInteraction);
+                map.addInteraction(layerSnapInteraction);
+                map.addInteraction(layerDrawnSnapInteraction);
                 map.addInteraction(undoInteraction);
-                roadDrawInteraction.on("drawstart",function(e){
-                    hideAddRoadForm();
-                    removeDrawnRoads();
+                layerDrawInteraction.on("drawstart",function(e){
+                    hideAddForm();
+                    removeDrawnFeatures();
                 });
-            }
-            function addRoadModifyInteractions() {
-                map.removeInteraction(roadDrawInteraction);
-                selectInteraction = new ol.interaction.Select({
-                    layers: [drawLayer,vectorLayer],
-                    style: new ol.style.Style({
-                        stroke: new ol.style.Stroke({
-                            color: [191, 17, 183, 1],
-                            width: 5
-                        })
-                    })
-                });
-                modifyInteraction = new ol.interaction.ModifyFeature({
-                    features: selectInteraction.getFeatures()
-                });
-                undoInteraction = new ol.interaction.UndoRedo();
-                map.addInteraction(modifyInteraction);
-                map.addInteraction(selectInteraction);
-                roadSnapInteraction = new ol.interaction.Snap({source: vectorSource});
-                roadDrawnSnapInteraction = new ol.interaction.Snap({source: drawSource});
-                map.addInteraction(roadSnapInteraction);
-                map.addInteraction(roadDrawnSnapInteraction);
-                map.addInteraction(undoInteraction);
+    
+                layerDrawInteraction.on("drawend", function(e) {
+                // Get the geometry of the drawn feature
+                var feature = e.feature;
+                var geometry = feature.getGeometry();
 
-                selectInteraction.on('select',function (e) {
-                    if (e.selected.length>0){
-                        if (e.selected[0]!==e.deselected[0]){
-                            if (!hasModification){
-                                originalRoadFeature = e.selected[0];
-                            } else{
+                // Initialize length variable
+                var length = 0;
+
+                // Check the type of geometry and calculate length
+                if (geometry instanceof ol.geom.LineString) {
+                    length = geometry.getLength(); // Get length in meters
+                } else if (geometry instanceof ol.geom.MultiLineString) {
+                    // If it's a MultiLineString, sum the lengths of individual lines
+                    var coordinates = geometry.getCoordinates();
+                    coordinates.forEach(function(coords) {
+                        var lineString = new ol.geom.LineString(coords);
+                        length += lineString.getLength(); // Get length for each line in the MultiLineString
+                    });
+                }
+
+                if (window.location.hash === '#add_sewer_control') {
+                    document.getElementById('length_sewer').value = length.toFixed(2);
+                }else if(window.location.hash === '#add_road_control'){
+                    document.getElementById('length').value = length.toFixed(2);
+                }
+                else if(window.location.hash === '#add_drain_control'){
+                    document.getElementById('length_drain').value = length.toFixed(2);
+                }
+                else if(window.location.hash === '#add_watersupply_control'){
+                    document.getElementById('length_watersupply').value = length.toFixed(2);
+                }
+                
+            });
+            }
+            
+            function addModifyInteractions(currentAddControl, code, utilityType) {
+
+                // Clear existing interactions
+                map.removeInteraction(layerDrawInteraction);
+                map.removeInteraction(modifyInteraction);
+                map.removeInteraction(selectInteraction);
+                map.removeInteraction(undoInteraction);
+
+                // Clear any previous features
+                vectorSource.clear();
+
+                // AJAX call to fetch the geometry for the given utility type and code
+                $.ajax({
+                    url: `utilityinfo/${utilityType}/${code}/geometry`, // Dynamic endpoint
+                    method: 'GET',
+                    success: function (response) {
+                        const format = new ol.format.WKT();
+                        var feature = format.readFeature(response.geometry, {
+                            dataProjection: 'EPSG:4326',
+                            featureProjection: 'EPSG:3857'
+                        });
+
+                        const featureCollection = new ol.Collection([feature]);
+
+                        selectInteraction = new ol.interaction.Select({
+                            features: featureCollection,
+                            style: new ol.style.Style({
+                                stroke: new ol.style.Stroke({
+                                    color: [191, 17, 183, 1],
+                                    width: 5
+                                })
+                            })
+                        });
+
+                        modifyInteraction = new ol.interaction.ModifyFeature({
+                            features: featureCollection
+                        });
+
+                        undoInteraction = new ol.interaction.UndoRedo();
+                        layerSnapInteraction = new ol.interaction.Snap({ source: vectorSource });
+                        layerDrawnSnapInteraction = new ol.interaction.Snap({ source: drawSource });
+
+                        map.addInteraction(modifyInteraction);
+                        map.addInteraction(selectInteraction);
+                        map.addInteraction(layerSnapInteraction);
+                        map.addInteraction(layerDrawnSnapInteraction);
+                        map.addInteraction(undoInteraction);
+
+                        modifyInteraction.on('modifyend', function (e) {
+                            hasModification = true;
+                            modifiedFeature = e.features[0];
+                        });
+
+                        selectInteraction.on('select', function (e) {
+                            const selectedFeatures = selectInteraction.getFeatures();
+
+                            // If the selected feature is already selected, do nothing
+                            if (e.selected.length > 0 && e.selected[0] !== feature) {
+                                // Revert the selection to only the desired feature
+                                selectedFeatures.clear();
+                                selectedFeatures.push(feature);
+
+                                // Optional: Show warning
                                 Swal.fire({
-                                    title: 'Are you sure?',
-                                    text: "Previous changes may be lost.",
                                     icon: 'warning',
-                                    showCancelButton: true,
-                                    confirmButtonText: 'Yes',
-                                    cancelButtonText: 'No!',
-                                    reverseButtons: true
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        let undoCount = undoInteraction.getStack().length;
-                                        for(let i=0;i<undoCount;i++) {
-                                            undoInteraction.undo();
-                                            if (i===undoCount-1){
-                                                undoInteraction.clear();
-                                            }
-                                        }
-                                        hasModification=false;
-                                    } else if (result.dismiss === Swal.DismissReason.cancel) {
-                                        selectInteraction.getFeatures().clear();
-                                        selectInteraction.getFeatures().push(modifiedRoadFeature);
-                                    }
+                                    title: 'Warning',
+                                    text: 'You can only modify the geometry for ' + code,
+                                    confirmButtonColor: '#3085d6',
+                                    confirmButtonText: 'OK'
                                 });
+                            } else if (e.selected.length === 0) {
+                                // If user clicks on empty space, prevent deselection
+                                if (!selectedFeatures.getArray().includes(feature)) {
+                                    selectedFeatures.clear();
+                                    selectedFeatures.push(feature);
+                                }
                             }
-                        }
-                    }
-                })
+                        });
 
-                modifyInteraction.on('modifyend', function(e) {
-                    hasModification = true;
-                    modifiedRoadFeature = e.features[0];
+
+                        undoInteraction.clear();
+                    },
+                    error: function () {
+                        alert("Failed to load geometry for " + utilityType + " code: " + code);
+                    }
                 });
-                undoInteraction.clear();
-            }
-            function removeDrawnRoads(){
+                }
+
+
+            function removeDrawnFeatures(){
                 drawLayer.getSource().clear();
             }
-            function removeAllAddRoadInteractions(){
-                map.removeInteraction(roadDrawInteraction);
-                map.removeInteraction(roadSnapInteraction);
-                map.removeInteraction(roadDrawnSnapInteraction);
+            function removeAllAddInteractions(){
+                map.removeInteraction(layerDrawInteraction);
+                map.removeInteraction(layerSnapInteraction);
+                map.removeInteraction(layerDrawnSnapInteraction);
                 map.removeInteraction(undoInteraction);
                 map.removeInteraction(modifyInteraction);
                 map.removeInteraction(selectInteraction);
             }
-            function clearAddRoadlayers(){
+            function clearAddlayers(){
                 if (drawSource){
                     drawSource.clear();
                 }
                 map.removeLayer(vectorLayer);
                 map.removeLayer(drawLayer);
             }
-            function resetAddRoadTool(){
-                currentAddRoadControl='';
-                removeAllAddRoadInteractions();
-                clearAddRoadlayers();
+            function resetAddTool(){
+                currentAddControl='';
+                removeAllAddInteractions();
+                clearAddlayers();
             }
 
             //*Add road tool end*
@@ -3832,13 +4668,13 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
              * Message to show when the user is drawing a polygon.
              * @type {string}
              */
-            var continuePolygonMsg = 'Click to continue drawing the polygon';
+            var continuePolygonMsg = "{{ __('Click to continue drawing the polygon.') }}";
 
             /**
              * Message to show when the user is drawing a line.
              * @type {string}
              */
-            var continueLineMsg = 'Click to continue drawing the line';
+            var continueLineMsg = "{{ __('Click to continue drawing the line.') }}";
 
             /**
              * Handle pointer move.
@@ -3849,7 +4685,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     return;
                 }
                 /** @type {string} */
-                var helpMsg = 'Click to start drawing';
+                var helpMsg = "{{ __('Click to start drawing')}}";
 
                 if (sketch) {
                     var geom = (sketch.getGeometry());
@@ -4180,9 +5016,9 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 let map_print_center = $('#map-print-polygon-center').val();
                 if (!print_map_title) {
                     Swal.fire({
-                        title: `Please provide a title!`,
+                        title: "{{ __('Please provide a title!') }}",
                         icon: "warning",
-                        button: "Close",
+                        button: "{{ __('Close') }}",
                         className: "custom-swal",
                     });
                     return;
@@ -4704,6 +5540,43 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 return false;
             };
 
+              /**
+             * Elements that make up the popup for report.
+             */
+            var reportContainmentPopupContainer = document.getElementById('containment-report-popup');
+            var reportContainmentPopupContent = document.getElementById('containment-report-popup-content');
+            var reportContainmentPopupCloser = document.getElementById('containment-report-popup-closer');
+
+
+            /**
+             * Create an overlay to anchor the popup to the map.
+             */
+            var reportContainmentPopupOverlay = new ol.Overlay(/** @type {olx.OverlayOptions} */ ({
+                element: reportContainmentPopupContainer,
+                autoPan: true,
+                dragging: false,
+                stopEvent: false,
+                autoPanAnimation: {
+                    duration: 250
+                }
+            }));
+
+            $(reportContainmentPopupContainer).show();
+
+            map.addOverlay(reportContainmentPopupOverlay);
+
+
+            /**
+             * Add a click handler to hide the popup for report.
+             * @return {boolean} Don't follow the href.
+             */
+            reportContainmentPopupCloser.onclick = function () {
+                reportContainmentPopupOverlay.setPosition(undefined);
+                reportContainmentPopupCloser.blur();
+                return false;
+            };
+            
+
             /**
              * Elements that make up the popup for feedback.
              */
@@ -5062,7 +5935,40 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 return false;
             };
             @endcan
+ /**
+             * Elements that make up the popup for KML drag and drop.
+             */
+            var kmlDragDropPopupContainer = document.getElementById('kml-dragdrop-popup');
+            var kmlDragDropPopupContent = document.getElementById('kml-dragdrop-popup-content');
+            var kmlDragDropPopupCloser = document.getElementById('kml-dragdrop-popup-closer');
 
+            /**
+             * Create an overlay to anchor the KML drag and drop popup to the map.
+             */
+            var kmlDragDropPopupOverlay = new ol.Overlay(/** @type {olx.OverlayOptions} */ ({
+                element: kmlDragDropPopupContainer,
+                autoPan: true,
+                stopEvent: false,
+                autoPanAnimation: {
+                    duration: 250
+                }
+            }));
+
+            $(kmlDragDropPopupContainer).show();
+
+            map.addOverlay(kmlDragDropPopupOverlay);
+
+            /**
+             * Add a click handler to hide the  popup for KML drag and drop.
+             * @return {boolean} Don't follow the href.
+             */
+            kmlDragDropPopupCloser.onclick = function () {
+                kmlDragDropPopupOverlay.setPosition(undefined);
+                kmlDragDropPopupCloser.blur();
+                return false;
+            };
+
+            
             var drag;
 
             /**
@@ -5376,6 +6282,190 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     map.addInteraction(draw);
                 }
             });
+
+              // Add handler to containments_emptied_monthly information tool button click
+              $('#containments_emptied_monthly').click(function (e) {
+                e.preventDefault();
+                disableAllControls();
+                $('.map-control').removeClass('map-control-active');
+                if (currentControl == 'containments_emptied_monthly') {
+                    currentControl = '';
+                    // $('#pan_control').addClass('map-control-active');
+                } else {
+                    currentControl = 'containments_emptied_monthly';
+                    $('#containments_emptied_monthly').addClass('map-control-active');
+
+                    if (!eLayer.containments_report_polygon) {
+                        var reportContainmentPolygonLayer = new ol.layer.Vector({
+                            // visible: false,
+                            source: new ol.source.Vector(),
+                            style: new ol.style.Style({
+                                stroke: new ol.style.Stroke({
+                                    color: '#0000FF',
+                                    width: 3
+                                }),
+                            })
+                        });
+
+
+                        addExtraLayer('containments_report_polygon', 'Report Containment Polygon', reportContainmentPolygonLayer);
+                    }
+
+                    // map.removeInteraction(draw);
+                    draw = new ol.interaction.Draw({
+                        source: eLayer.containments_report_polygon.layer.getSource(),
+                        type: 'Polygon'
+                    });
+
+                    draw.on('drawstart', function (evt) {
+                        eLayer.containments_report_polygon.layer.getSource().clear();
+                        reportContainmentPopupOverlay.setPosition(undefined);
+                    });
+                    draw.on('drawend', function (evt) {
+                        // showExtraLayer('feedback_report_polygon');
+                        var format = new ol.format.WKT();
+                        var geom = format.writeGeometry(evt.feature.getGeometry().clone().transform('EPSG:3857', 'EPSG:4326'));
+                        $('#containment_report_polygon').val(geom);
+                        $('#containment_report_year').val("All");
+                        displayAjaxLoader();
+                        var url = '{{ url("maps/containment-report") }}';
+                        $.ajax({
+                            url: url,
+                            type: 'post',
+                            data: {geom: geom, "_token": "{{ csrf_token() }}"},
+                            success: function (data) {
+                                if (data['values'] != "") {
+                                    var values = data['values'];
+                                    var valuesAll = data['valuesAll'];
+                                    var values_m_one = data['values_m_one'];
+                                    var values_m_two = data['values_m_two'];
+                                    var values_m_three = data['values_m_three'];
+                                    var values_m_four = data['values_m_four'];
+                                    var colors = data['colors'];
+                                    var borderColor = data['borderColor'];
+                                    var hoverBackgroundColor = data['hoverBackgroundColor'];
+                                    var hoverBorderColor = data['hoverBorderColor'];
+                                    var labels = data['labels'];
+                                    var uniqueContainCodeEmptiedCount = data['year'];
+                                    var feedbackCount = data['feedbackCount'];
+                                    var current_year = data['current_year'];
+                                    var from_year = data['from_year'];
+                                    var html = '<div style="min-width: 500px;">';
+                                        html += '<p class="h4 text-center">Containments Emptied</p>';
+
+                                        // Row for dropdown and button
+                                        html += '<div class="row justify-content-end align-items-center">';
+                                        html += '<form class="form-inline d-flex align-items-center">';
+                                       
+                                        // Year selection dropdown
+                                        html += '<div class="form-group d-flex align-items-center pr-3">';
+                                        html += '<label class="p-2" for="year_select">Select Year</label>';
+                                        html += '<select id="year_select" class="form-control">';
+                                        html += '<option value="All">All Year</option>';
+                                        for (var i = from_year; i <= current_year; i++) {
+                                            html += '<option value="' + i + '">' + i + '</option>';
+                                        }
+                                        html += '</select>';
+                                        html += '<button id="downloadChart" class=" btn btn-primary"><i class="fa fa-download"></i></button>';
+
+                                        html += '</div>';
+
+                                        html += '</form>';
+                                        html += '</div>';
+
+                                        // Chart canvas row
+                                        html += '<div class="row mt-3">';
+                                        html += '<div class="col-md-12"><canvas id="pie-chart" width="200" height="200"></canvas></div>';
+                                        html += '</div>';
+
+                                        html += '</div>'; // Closing main container div
+
+                                                reportContainmentPopupContent.innerHTML = html;
+                                    var chart = new Chart(document.getElementById("pie-chart"), {
+                                        type: 'bar',
+                                        data: {
+                                            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', "Nov", "Dec"],
+                                            datasets: [{
+                                                label: "No. of containments",
+                                                backgroundColor: "rgba(90, 155, 212,0.2)",
+                                                    borderColor: "rgba(90, 155, 212,1)",
+                                                    borderWidth: 1,
+                                                    hoverBackgroundColor: "rgba(90, 155, 212,0.4)",
+                                                    hoverBorderColor: "rgba(90, 155, 212,1)",
+                                                borderWidth: 1,
+                                                data: valuesAll,
+                                                skipNull: true,
+                                            }]
+                                        },
+                                         options : {
+                                        scales: {
+                                            yAxes: [{
+                                                ticks: {
+                                                    beginAtZero: true,
+                                                    userCallback: function(label, index, labels) {
+                                                        // when the floored value is the same as the value we have a whole number
+                                                        if (Math.floor(label) === label) {
+                                                            return label;
+                                                        }
+
+                                                    },
+                                                }
+                                            }],
+                                        },
+                                    }
+                                    });
+                                    // Chart download functionality
+                                    document.getElementById("downloadChart").addEventListener("click", function(e) {
+                                         e.preventDefault();
+                                        var link = document.createElement("a");
+                                        link.href = document.getElementById("pie-chart").toDataURL("image/png");
+                                        link.download = "Containment Emptied Chart.png";
+                                        link.click();
+                                    });
+                                   $( "#year_select" ).change(function() {
+                                       $('#containment_report_year').val($(this).val());
+                                       if($(this).val() == new Date().getFullYear()){
+                                           chart.data.datasets[0].data = values;
+                                       } else if($(this).val() == (new Date().getFullYear())-1){
+                                           chart.data.datasets[0].data = values_m_one;
+                                       } else if($(this).val() == (new Date().getFullYear())-2){
+                                           chart.data.datasets[0].data = values_m_two;
+                                       } else if($(this).val() == (new Date().getFullYear())-3){
+                                           chart.data.datasets[0].data = values_m_three;
+                                       } else if($(this).val() == (new Date().getFullYear())-4){
+                                           chart.data.datasets[0].data = values_m_four;
+                                       } else{
+                                           chart.data.datasets[0].data = valuesAll;
+                                       }
+                                      chart.update();
+                                    });
+                                
+
+                                } else {
+                                    reportContainmentPopupContent.innerHTML = "No Containment data available.";
+                                }
+                                removeAjaxLoader();
+
+                                reportContainmentPopupOverlay.setPosition(evt.feature.getGeometry().getInteriorPoint().getCoordinates());
+                                $('#containments_emptied_monthly').removeClass('map-control-active');
+                                currentControl = '';
+                                map.removeInteraction(draw);
+                            },
+                            error: function (data) {
+                                displayAjaxError();
+                            }
+                        });
+                    
+                       
+                       
+                       
+                    });
+
+                    map.addInteraction(draw);
+                }
+            });
+
+
             //report_control_summary_buffer
             ///DEM Chart
             // Add handler to road building button click
@@ -5513,6 +6603,17 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     map.addInteraction(draw);
                 }
             });
+
+            //Add handler to find wms_layer click
+            $('#wms_layer').click(function (e) {
+                e.preventDefault();
+                disableAllControls();
+                $('.map-control').removeClass('map-control-active');
+                currentControl = '';
+                $("#wmsModal").modal('show');
+            });
+            
+
             // Handler for building structype checkbox change
             $('#building_structype_checkbox_container').on('change', 'input[type=checkbox]', function () {
 
@@ -6084,9 +7185,9 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
                 if (!selectedLayer) {
                     Swal.fire({
-                        title: `Please select an overlay!`,
+                        title: "{{ __('Please select an overlay!') }}",
                         icon: "warning",
-                        button: "Close",
+                        button: "{{ __('Close') }}",
                         className: "custom-swal",
                     })
                     return;
@@ -6272,9 +7373,9 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     {'INFO_FORMAT': 'application/json'});
                 if (!url) {
                     Swal.fire({
-                        title: 'Failed to generate URL!',
+                        title: "{{ __('Failed to generate URL!') }}",
                         icon: "error",
-                        button: "Close",
+                        button: "{{ __('Close') }}",
                         className: "custom-swal",
                     })
                     return;
@@ -6323,7 +7424,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                     }
                                 });
                             } else {
-                                displayAjaxErrorModal('Sewer Not Found');
+                                displayAjaxErrorModal(@json(__('Sewer Not Found')));
                             }
                         } else {
                             displayAjaxError();
@@ -6396,9 +7497,9 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     {'INFO_FORMAT': 'application/json'});
                 if (!url) {
                     Swal.fire({
-                        title: 'Failed to generate URL!',
+                        title: "{{ __('Failed to generate URL!') }}",
                         icon: "error",
-                        button: "Close",
+                        button: "{{ __('Close') }}",
                         className: "custom-swal",
                     })
                     return;
@@ -6455,7 +7556,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                     }
                                 });
                             } else {
-                                displayAjaxErrorModal('Road Not Found');
+                                displayAjaxErrorModal(@json(__('Road Not Found')));
                             }
                         } else {
                             displayAjaxError();
@@ -6526,9 +7627,9 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     {'INFO_FORMAT': 'application/json'});
                 if (!url) {
                     Swal.fire({
-                        title: 'Failed to generate URL!',
+                        title: "{{ __('Failed to generate URL!') }}",
                         icon: "error",
-                        button: "Close",
+                        button: "{{ __('Close') }}",
                         className: "custom-swal",
                     })
                     return;
@@ -6574,7 +7675,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                     }
                                 });
                             } else {
-                                displayAjaxErrorModal('Containment Not Found');
+                                displayAjaxErrorModal(@json(__('Containment Not Found')));
                             }
                         } else {
                             displayAjaxError();
@@ -6635,9 +7736,9 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     {'INFO_FORMAT': 'application/json'});
                 if (!url) {
                     Swal.fire({
-                        title: 'Failed to generate URL!',
+                        title: "{{ __('Failed to generate URL!') }}",
                         icon: "error",
-                        button: "Close",
+                        button: "{{ __('Close') }}",
                         className: "custom-swal",
                     })
                     return;
@@ -6697,7 +7798,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                     }
                                 });
                             } else {
-                                displayAjaxErrorModal('Building Not Found');
+                                displayAjaxErrorModal(@json(__('Building Not Found')));
                             }
                         } else {
                             displayAjaxError();
@@ -6758,9 +7859,9 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     {'INFO_FORMAT': 'application/json'});
                 if (!url) {
                     Swal.fire({
-                        title: 'Failed to generate URL!',
+                        title: "{{ __('Failed to generate URL!') }}",
                         icon: "error",
-                        button: "Close",
+                        button: "{{ __('Close') }}",
                         className: "custom-swal",
                     })
                     return;
@@ -6821,7 +7922,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                     }
                                 });
                             } else {
-                                displayAjaxErrorModal('Main Building Not Found');
+                                displayAjaxErrorModal(@json(__('Main Building Not Found')));
                             }
                         } else {
                             displayAjaxError();
@@ -6886,9 +7987,9 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     {'INFO_FORMAT': 'application/json'});
                 if (!url) {
                     Swal.fire({
-                        title: 'Failed to generate URL!',
+                        title: "{{ __('Failed to generate URL!') }}",
                         icon: "error",
-                        button: "Close",
+                        button: "{{ __('Close') }}",
                         className: "custom-swal",
                     })
                     return;
@@ -6916,10 +8017,10 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                     removeAjaxLoader();
                                     $('#popup-drain-potential').modal('show');
                                 } else {
-                                    displayAjaxErrorModal('More than One Sewer lines Found, Please Zoom In or Select another Sewer line');
+                                    displayAjaxErrorModal(@json(__('More than One Sewer lines Found, Please Zoom In or Select another Sewer line')));
                                 }
                             } else {
-                                displayAjaxErrorModal('Sewer Not Found');
+                                displayAjaxErrorModal(@json(__('Sewer Not Found')));
                             }
                         } else {
                             displayAjaxError();
@@ -6992,9 +8093,9 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     {'INFO_FORMAT': 'application/json'});
                 if (!url) {
                     Swal.fire({
-                        title: 'Failed to generate URL!',
+                        title: "{{ __('Failed to generate URL!') }}",
                         icon: "error",
-                        button: "Close",
+                        button: "{{ __('Close') }}",
                         className: "custom-swal",
                     })
                     return;
@@ -7019,10 +8120,10 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                     removeAjaxLoader();
                                     $('#popup-waterbodies-buildings').modal('show');
                                 } else {
-                                    displayAjaxErrorModal('More than One water bodies Found, Please Zoom In or Select another Water Body');
+                                    displayAjaxErrorModal(@json(__('More than One water bodies Found, Please Zoom In or Select another Water Body')));
                                 }
                             } else {
-                                displayAjaxErrorModal('Water Body Not Found');
+                                displayAjaxErrorModal(@json(__('Water Body Not Found')));
                             }
                         } else {
                             displayAjaxError();
@@ -7096,9 +8197,9 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     {'INFO_FORMAT': 'application/json'});
                 if (!url) {
                     Swal.fire({
-                        title: 'Failed to generate URL!',
+                        title: "{{ __('Failed to generate URL!') }}",
                         icon: "error",
-                        button: "Close",
+                        button: "{{ __('Close') }}",
                         className: "custom-swal",
                     })
                     return;
@@ -7122,10 +8223,10 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                     removeAjaxLoader();
                                     $('#popup-road-buildings').modal('show');
                                 } else {
-                                    displayAjaxErrorModal('More than One Roads Found, Please Zoom In or Select another Road');
+                                    displayAjaxErrorModal(@json(__('More than One Roads Found, Please Zoom In or Select another Road')));
                                 }
                             } else {
-                                displayAjaxErrorModal('Road Not Found');
+                                displayAjaxErrorModal(@json(__('Road Not Found')));
                             }
                         } else {
                             displayAjaxError();
@@ -7200,9 +8301,9 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     {'INFO_FORMAT': 'application/json'});
                 if (!url) {
                     Swal.fire({
-                        title: 'Failed to generate URL!',
+                        title: "{{ __('Failed to generate URL!') }}",
                         icon: "error",
-                        button: "Close",
+                        button: "{{ __('Close') }}",
                         className: "custom-swal",
                     })
                     return;
@@ -7240,7 +8341,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                                 eLayer.buildings_ptct.layer.getSource().addFeature(feature);
                                             }
                                         } else {
-                                            displayAjaxErrorModal('Buildings not found');
+                                            displayAjaxErrorModal(@json(__('Buildings not found')));
                                         }
 
                                         removeAjaxLoader();
@@ -7250,7 +8351,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                     }
                                 });
                             } else {
-                                displayAjaxErrorModal('PTCT not found');
+                                displayAjaxErrorModal(@json(__('PTCT not found')));
                             }
                         } else {
                             displayAjaxError();
@@ -7298,9 +8399,9 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     {'INFO_FORMAT': 'application/json'});
                 if (!url) {
                     Swal.fire({
-                        title: 'Failed to generate URL!',
+                        title: "{{ __('Failed to generate URL!') }}",
                         icon: "error",
-                        button: "Close",
+                        button: "{{ __('Close') }}",
                         className: "custom-swal",
                     })
                     return;
@@ -7353,10 +8454,10 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
                                     removeAjaxLoader();
                                 } else {
-                                    displayAjaxErrorModal('More than One wards Found, Please Zoom In or Select another Water Body');
+                                    displayAjaxErrorModal(@json(__('More than One wards Found, Please Zoom In or Select another Water Body')));
                                 }
                             } else {
-                                displayAjaxErrorModal('Ward Not Found');
+                                displayAjaxErrorModal(@json(__('Ward Not Found')));
                             }
                         } else {
                             displayAjaxError();
@@ -7420,20 +8521,20 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
             // Validation: Check if the distance is a positive number
             if (distance === "" || isNaN(distance) || distance < 0) {
-                let message = "Please enter a valid Buffer Distance. ";
+                let message = "{{ __('Please enter a valid Buffer Distance.') }}";
 
                 // Append specific message for negative values
                 if (distance < 0) {
-                    message += "Negative numbers are not allowed.";
+                    message += "{{ __('Negative numbers are not allowed.') }}";
                 }
                 else if (!Number.isInteger(Number(distance))) {
-                    message += "Float values are not accepted.";
+                    message += "{{ __('Float values are not accepted.') }}";
                 }
                 Swal.fire({
-                    title: "Invalid Input",
+                    title: "{{ __('Invalid Input') }}",
                     text: message,
                     icon: "warning",
-                    button: "OK"
+                    button: "{{ __('OK') }}"
                 });
 
                 return false;
@@ -7529,20 +8630,20 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 var url1 = '{{ url("maps/water-bodies-buildings") }}';
                 var distance = $('#buffer-distance-waterbodies').val();
                 if (distance === "" || isNaN(distance) || distance < 0) {
-                let message = "Please enter a valid Buffer Distance. ";
+                let message = "{{ __('Please enter a valid Buffer Distance.') }}";
 
                 // Append specific message for negative values
                 if (distance < 0) {
-                    message += "Negative numbers are not allowed.";
+                    message += "{{ __('Negative numbers are not allowed.') }}";
                 }
                 else if (!Number.isInteger(Number(distance))) {
-                    message += "Float values are not accepted.";
+                    message += "{{ __('Float values are not accepted.') }}";
                 }
                 Swal.fire({
-                    title: "Invalid Input",
+                    title: "{{ __('Invalid Input') }}",
                     text: message,
                     icon: "warning",
-                    button: "OK"
+                    button: "{{ __('OK') }}"
                 });
 
                 return false;
@@ -7629,18 +8730,18 @@ var bufferDistancePolygon = $('#buffer-distance-polygon').val();
 // Validation: Check if the distance is a non-negative number
 if (bufferDistancePolygon === "" || isNaN(bufferDistancePolygon)) {
     Swal.fire({
-        title: 'Invalid Input',
-        text: 'Please enter a valid Buffer Distance.',
+        title: "{{ __('Invalid Input') }}",
+        text: "{{ __('Please enter a valid Buffer Distance.') }}",
         icon: 'warning',
-        confirmButtonText: 'OK'
+        confirmButtonText: "{{ __('OK') }}"
     });
     return false;
 } else if (parseFloat(bufferDistancePolygon) < 0) {
     Swal.fire({
-        title: 'Invalid Input',
-        text: 'Negative numbers are not allowed.',
+        title: "{{ __('Invalid Input') }}",
+        text: "{{ __('Negative numbers are not allowed.') }}",
         icon: 'warning',
-        confirmButtonText: 'OK'
+        confirmButtonText: "{{ __('OK') }}"
     });
     return false;
 }
@@ -7713,20 +8814,20 @@ $.ajax({
                 $('#RDBdistance').val(distance);
 
                 if (distance === "" || isNaN(distance) || distance < 0) {
-                    let message = "Please enter a valid Buffer Distance. ";
+                    let message = "{{ __('Please enter a valid Buffer Distance.') }}";
 
                     // Append specific message for negative values
                     if (distance < 0) {
-                        message += "Negative numbers are not allowed.";
+                        message += "{{ __('Negative numbers are not allowed.') }}";
                     }
                     else if (!Number.isInteger(Number(distance))) {
-                    message += "Float values are not accepted.";
+                    message += "{{ __('Float values are not accepted.') }}";
                 }
                     Swal.fire({
-                        title: "Invalid Input",
+                        title: "{{ __('Invalid Input') }}",
                         text: message,
                         icon: "warning",
-                        button: "OK"
+                        button: "{{ __('OK') }}"
                     });
 
                     return false;
@@ -7818,20 +8919,20 @@ $.ajax({
                 var lat = $('#point-buffer-lat').val();
 
                 if (distance === "" || isNaN(distance) || distance < 0) {
-                let message = "Please enter a valid Buffer Distance. ";
+                let message = "{{ __('Please enter a valid Buffer Distance.') }}";
 
                 // Append specific message for negative values
                 if (distance < 0) {
-                    message += "Negative numbers are not allowed.";
+                    message += "{{ __('Negative numbers are not allowed.') }}";
                 }
                 else if (!Number.isInteger(Number(distance))) {
-                    message += "Float values are not accepted.";
+                    message += "{{ __('Float values are not accepted.') }}";
                 }
                 Swal.fire({
-                    title: "Invalid Input",
+                    title: "{{ __('Invalid Input') }}",
                     text: message,
                     icon: "warning",
-                    button: "OK"
+                    button: "{{ __('OK') }}"
                 });
 
                 return false;
@@ -7885,6 +8986,121 @@ $.ajax({
                 });
             });
 
+
+             // submit function for toilet isochrone map
+             $("#form-toilet-isochrone-map").submit(function (event) {
+                event.preventDefault();
+                var i =0;
+                if (eLayer.toilet_isochrone_polygon) {
+                    eLayer.toilet_isochrone_polygon.layer.getSource().clear();
+                } else {
+                    var layer = new ol.layer.Vector({
+                        // visible: false,
+                        source: new ol.source.Vector(),
+                        style: new ol.style.Style({
+                            stroke: new ol.style.Stroke({
+                                color: '#FF0000',
+                                width: 3
+                            })
+                    }),
+                    });
+                    addExtraLayer('toilet_isochrone_polygon', 'Toilets Isochrone Polygon', layer);
+                }
+
+                if (eLayer.toilets_isochrone_buildings) {
+                    eLayer.toilets_isochrone_buildings.layer.getSource().clear();
+                } else {
+                    var layer = new ol.layer.Vector({
+                        // visible: false,
+                        source: new ol.source.Vector(),
+                        style: new ol.style.Style({
+                            stroke: new ol.style.Stroke({
+                                color: '#FF0000',
+                                width: 3
+                            })
+                    }),
+                    });
+                addExtraLayer('toilets_isochrone_buildings', 'Toilets Isochrone Buffer Buildings', layer);
+                }
+               
+                var urliso = '{{ url("maps/toilet-isochrone") }}';
+
+                var distance = $('#toilet-isochrone-distance').val() ; //distance calculated in meter
+
+                displayAjaxLoader();
+                $.ajax({
+                    url: urliso,
+                    type: 'get',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        distance: distance,
+                    },
+                    success: function (Response) {
+                        data2 = Response['polygon'];
+                        if (data2 && Array.isArray(data2)) {
+                            for (var i = 0; i < data2.length; i++) {
+                                var format = new ol.format.WKT();
+                                var featureP = format.readFeature(data2[i].geom, {
+                                    dataProjection: 'EPSG:4326',
+                                    featureProjection: 'EPSG:3857'
+                                });
+                                featureP.setStyle(styleFunction(i));
+                                eLayer.toilet_isochrone_polygon.layer.getSource().addFeature(featureP);
+                        }
+                        }
+                        else
+                        {
+                            var featureP = format.readFeature(data2.geom, {
+                                dataProjection: 'EPSG:4326',
+                                featureProjection: 'EPSG:3857'
+                            });
+                            eLayer.toilet_isochrone_polygon.layer.getSource().addFeature(featureP);
+                        }
+                        showLayer('toilets_layer');
+                        showLayer('roadlines_layer');
+
+
+                        $('#popup-toilet-isochrone').modal('hide');
+                        removeAjaxLoader();
+                    },
+                    error: function (data2) {
+                        displayAjaxError();
+                    }
+                });
+                
+             });
+
+             function styleFunction(i, resolution) {
+                i+=1;
+                return(getBikeStyle(i));
+            }
+            var bikeStyleCache = {};
+            function createBikeStyle(id) {
+                //  var strokeColor = randomColor();
+                var strokeColor = '#397B7D' ;
+                var fillColor = strokeColor.slice();
+                fillColor[3] = 0.2;
+                var bikeStyle  = new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        color: strokeColor,
+                        width: 4,
+                    }),
+                });
+                bikeStyleCache[id] = bikeStyle;
+            }
+            function getBikeStyle(id) {
+                if (!bikeStyleCache[id]) {
+                    createBikeStyle(id);
+                }
+                return(bikeStyleCache[id]);
+            }
+            function randomColor() {
+                var r = Math.floor(Math.random() * 256);
+                var g = Math.floor(Math.random() * 256);
+                var b = Math.floor(Math.random() * 256);
+                var color = [r, g, b];
+                return(color);
+            } 
              $("#form-road-inaccessible").submit(function (event) {
                 event.preventDefault();
                 roadInaccessiblePopupOverlay.setPosition(undefined);
@@ -8057,9 +9273,9 @@ $.ajax({
 
                 if (!layer) {
                     Swal.fire({
-                        title: `Please select a layer!`,
+                        title: "{{ __('Please select a layer!') }}",
                         icon: "warning",
-                        button: "Close",
+                        button: "{{ __('Close') }}",
                         className: "custom-swal",
                     })
                     return;
@@ -8168,9 +9384,9 @@ $.ajax({
                     {'INFO_FORMAT': 'application/json'});
                 if (!url) {
                     Swal.fire({
-                        title: 'Failed to generate URL!',
+                        title: "{{ __('Failed to generate URL!') }}",
                         icon: "error",
-                        button: "Close",
+                        button: "{{ __('Close') }}",
                         className: "custom-swal",
                     })
                     return;
@@ -8723,7 +9939,6 @@ $.ajax({
                                                                 html += `<div class="col-sm-6">${kk}</div>`;
                                                                 html += `<div class="col-sm-5"><strong>No House Image</strong></div>`;
                                                                 html += `</div>`;
-                                                                console.log("test");
                                                             $('#feature_information').html(html);
                                                         });
                                                 });
@@ -8741,7 +9956,7 @@ $.ajax({
                             } else {
                                 $('#feature_information').html('');
                                 $('#feature-info-popup-closer').click();
-                                displayAjaxErrorModal('Feature Not Found');
+                                displayAjaxErrorModal(@json(__('Feature Not Found')));
                             }
                         } else {
                             displayAjaxError();
@@ -8800,7 +10015,7 @@ $.ajax({
                 return false;
             };
 
-            //DRAGGABLE OVERLAYS - SUJAL
+            //DRAGGABLE OVERLAYS 
 // Drag interaction
             var ol_Drag = new ol.interaction.DragOverlay({
                 overlays: [
@@ -8817,6 +10032,7 @@ $.ajax({
                     populationPopupOverlay,
                     roadInaccessiblePopupOverlay,
                     feedbackPopupOverlay,
+                    kmlDragDropPopupOverlay,
                 ]
             });
             map.addInteraction(ol_Drag);
@@ -8870,6 +10086,21 @@ $.ajax({
 
             }
 
+
+             // Display popup form isochrone map 
+             function displayPopupToiletIsochrone(evt) {
+                var coordinate = ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326');
+                $('#isochrone-long-pos').val(evt.coordinate[0].toFixed(6));
+                $('#isochrone-lat-pos').val(evt.coordinate[1].toFixed(6));
+                $('#isochrone-long').val(coordinate[0].toFixed(6));
+                $('#isochrone-lat').val(coordinate[1].toFixed(6));
+                $('#isochrone_control').removeClass('map-control-active');
+                map.un('singleclick', displayPopupToiletIsochrone);
+                currentControl = "";
+                $('#popup-toilet-isochrone').modal('show');
+
+            }
+            
 
             function displayContainmentBuildings(field, val) {
                 var url = '{{ url("maps/containment-buildings") }}' + '/' + field + '/' + val;
@@ -9377,9 +10608,9 @@ $.ajax({
 
                 if (!val) {
                     Swal.fire({
-                        title: 'Please enter ' + field_text + '!',
+                        title: '{{ __("Please enter") }}' + ' ' + field_text + '!',
                         icon: "warning",
-                        button: "Close",
+                        button: "{{ __('Close') }}",
                         className: "custom-swal",
                     });
                 } else if (field == 'places_layer' || field == 'roadlines_layer' || field == ' bin') {
@@ -9456,7 +10687,7 @@ $.ajax({
 
                                 removeAjaxLoader();
                             } else {
-                                displayAjaxErrorModal('Building Not Found');
+                                displayAjaxErrorModal(@json(__('Building Not Found')));
                             }
                         },
                         error: function (dataResponse) {
@@ -9530,9 +10761,9 @@ $.ajax({
 
                 if (!keywords) {
                     Swal.fire({
-                        title: `Please type keyword to search!`,
+                        title: "{{ __('Please type keyword to search!') }}",
                         icon: "warning",
-                        button: "Close",
+                        button: "{{ __('Close') }}",
                         className: "custom-swal",
                     });
                     return;
@@ -9597,7 +10828,7 @@ $.ajax({
                                     removeAjaxLoader();
                                 });
                             } else {
-                                displayAjaxErrorModal('No Results Found');
+                                displayAjaxErrorModal(@json(__('No Results Found.')));
                             }
                         },
                         error: function (dataResponse) {
@@ -9613,9 +10844,9 @@ $.ajax({
             function findPlacesRoads(keywords, layer) {
                 if (!keywords) {
                     Swal.fire({
-                        title: `Please type keyword to search!`,
+                        title: "{{ __('Please type keyword to search!') }}",
                         icon: "warning",
-                        button: "Close",
+                        button: "{{ __('Close') }}",
                         className: "custom-swal",
                     });
                     return;
@@ -9685,7 +10916,7 @@ $.ajax({
                                     removeAjaxLoader();
                                 });
                             } else {
-                                displayAjaxErrorModal('No Results Found');
+                                displayAjaxErrorModal("{{ __('No Results Found.') }}");
                             }
                         },
                         error: function (data) {
@@ -9704,9 +10935,9 @@ $.ajax({
                 var selectedLayer = $('#ward_overlay').val();
                 if (!selectedWards || selectedWards.length === 0 || !selectedLayer || selectedLayer.length === 0) {
                     Swal.fire({
-                        title: 'Please select wards and overlay!',
+                        title: "{{ __('Please select wards and overlay!') }}",
                         icon: 'warning',
-                        button: 'Close',
+                        button: "{{ __('Close') }}",
                         className: 'custom-swal',
                     });
                     // Prevent the form from submitting
@@ -9846,9 +11077,9 @@ $.ajax({
                 var selectedLayer = $('#ward_overlay').val();
                 if (!selectedWards || selectedWards.length === 0 || !selectedLayer || selectedLayer.length === 0) {
                     Swal.fire({
-                        title: `Please select wards and overlay!`,
+                        title: "{{ __('Please select wards and overlay!') }}",
                         icon: "warning",
-                        button: "Close",
+                        button: "{{ __('Close') }}",
                         className: "custom-swal",
                     });
                     return;
@@ -9869,27 +11100,27 @@ $.ajax({
         function csvdata(outputFormat, selectedLayer, exportLink)
         {
             const layerFilenames = {
-                    'treatmentplants_layer': 'Treatment Plants',
-                    'drains_layer': 'Drain Network',
-                    'roadlines_layer': 'Road Network',
-                    'sewerlines_layer': 'Sewer Network',
-                    'buildings_tax_status_layer': 'Property Tax Collection ISS',
-                    'buildings_water_payment_status_layer': 'Water Supply ISS',
-                    'watersupply_network_layer': 'Water Supply Network',
-                    'wardboundary_layer': 'Ward Boundary',
-                    'water_samples_layer' : 'Water Samples',
-                    'toilets_layer':'Toilets PTCT',
-                    'buildings_layer':'Buildings',
-                    'buildings_swm_payment_status_layer' : 'SWM ISS',
-                    'containments_layer' : 'Containment',
-                    'buildings_layer' : 'Buildings',
-                    'low_income_communities_layer':'Low Income Community',
-                    'grids_layer': 'Summarized Grids',
-                    'landuses_layer': 'Land Use',
-                    'waterbodys_layer': 'Water Bodies',
-                    'places_layer': 'Places',
-                    'sanitation_system_layer': 'Sanitation System',
-                    'waterborne_hotspots_layer': 'Waterborne Hotspots',
+                    'treatmentplants_layer': '{{ __("Treatment Plants") }}',
+                    'drains_layer': '{{ __("Drain Network") }}',
+                    'roadlines_layer': '{{ __("Road Network") }}',
+                    'sewerlines_layer': '{{ __("Sewer Network") }}',
+                    'buildings_tax_status_layer': '{{ __("Property Tax Collection ISS") }}',
+                    'buildings_water_payment_status_layer': '{{ __("Water Supply ISS") }}',
+                    'watersupply_network_layer': '{{ __("Water Supply Network") }}',
+                    'wardboundary_layer': '{{ __("Ward Boundary") }}',
+                    'water_samples_layer' : '{{ __("Water Samples") }}',
+                    'toilets_layer': '{{ __("Toilets PTCT") }}',
+                    'buildings_layer': '{{ __("Buildings") }}',
+                    'buildings_swm_payment_status_layer' : '{{ __("SWM ISS") }}',
+                    'containments_layer' : '{{ __("Containment") }}',
+                    'buildings_layer' : '{{ __("Buildings") }}',
+                    'low_income_communities_layer': '{{ __("Low Income Community") }}',
+                    'grids_layer': '{{ __("Summarized Grids") }}',
+                    'landuses_layer': '{{ __("Land Use") }}',
+                    'waterbodys_layer': '{{ __("Water Bodies") }}',
+                    'places_layer': '{{ __("Places") }}',
+                    'sanitation_system_layer': '{{ __("Sanitation System") }}',
+                    'waterborne_hotspots_layer': '{{ __("Waterborne Hotspots") }}',
 
                 };
 
@@ -9954,7 +11185,7 @@ $.ajax({
                     setExportLink('KML', 'kml');
                     break;
                 default:
-                    console.error('Unsupported format:', outputFormat);
+                    console.error("{{ __('Unsupported format') }}"+':', outputFormat);
             }
         }
 
@@ -10219,9 +11450,9 @@ $.ajax({
                 checklistparam = checkedList.join(' OR ');
             } else {
                 Swal.fire({
-                    title: `Please check one or more options!`,
+                    title: "{{ __('Please check one or more options!') }}",
                     icon: "warning",
-                    button: "Close",
+                    button: "{{ __('Close') }}",
                     className: "custom-swal",
                 });
                 return;
@@ -10240,7 +11471,7 @@ $.ajax({
                         const url = URL.createObjectURL(blob);
                         const downloadLink = document.createElement('a');
                         downloadLink.href = url;
-                        downloadLink.setAttribute('download', `Property Tax Collection ISS'.csv`);
+                        downloadLink.setAttribute('download', `{{ __("Property Tax Collection ISS") }}.csv`);
                         document.body.appendChild(downloadLink);
                         downloadLink.click();
                         document.body.removeChild(downloadLink);
@@ -10248,9 +11479,9 @@ $.ajax({
                     .catch(error => console.error('Error fetching CSV:', error));
             } else {
                 if (outputFormat === 'SHAPE-ZIP') {
-                    exportLink += '&format_options=filename:' + 'Property Tax Collection ISS' + '.zip';
+                    exportLink += '&format_options=filename:' + '{{ __("Property Tax Collection ISS") }}' + '.zip';
                 } else if (outputFormat === 'KML') {
-                    exportLink += '&format_options=filename:' + 'Property Tax Collection ISS' + '.kml';
+                    exportLink += '&format_options=filename:' + '{{ __("Property Tax Collection ISS") }}' + '.kml';
                 }
                 window.open(exportLink);
             }
@@ -10290,9 +11521,9 @@ $.ajax({
                     checklistparam = checkedList.join(' OR ');
                 } else {
                     Swal.fire({
-                        title: `Please check one or more options!`,
+                        title: "{{ __('Please check one or more options!') }}",
                         icon: "warning",
-                        button: "Close",
+                        button: "{{ __('Close') }}",
                         className: "custom-swal",
                     });
                     return;
@@ -10311,7 +11542,7 @@ $.ajax({
                             const url = URL.createObjectURL(blob);
                             const downloadLink = document.createElement('a');
                             downloadLink.href = url;
-                            downloadLink.setAttribute('download', `Water Supply ISS.csv`);
+                            downloadLink.setAttribute('download', `{{ __("Water Supply ISS") }}.csv`);
                             document.body.appendChild(downloadLink);
                             downloadLink.click();
                             document.body.removeChild(downloadLink);
@@ -10319,10 +11550,10 @@ $.ajax({
                         .catch(error => console.error('Error fetching CSV:', error));
                 } else {
                      if (outputFormat === 'SHAPE-ZIP') {
-                    exportLink += '&format_options=filename:' + 'Water Supply ISS' + '.zip';
+                    exportLink += '&format_options=filename:' + '{{ __("Water Supply ISS") }}' + '.zip';
                 }
                     else if (outputFormat === 'KML') {
-                    exportLink += '&format_options=filename:' + 'Water Supply ISS' + '.kml';
+                    exportLink += '&format_options=filename:' + '{{ __("Water Supply ISS") }}' + '.kml';
                 }
                     window.open(exportLink);
                 }
@@ -10356,9 +11587,9 @@ $.ajax({
                     checklistparam = checkedList.join(' OR ');
                 } else {
                     Swal.fire({
-                        title: `Please check one or more options!`,
+                        title: "{{ __('Please check one or more options!') }}",
                         icon: "warning",
-                        button: "Close",
+                        button: "{{ __('Close') }}",
                         className: "custom-swal",
                     });
                     return;
@@ -10377,7 +11608,7 @@ $.ajax({
                             const url = URL.createObjectURL(blob);
                             const downloadLink = document.createElement('a');
                             downloadLink.href = url;
-                            downloadLink.setAttribute('download', `Solid Waste ISS.csv`);
+                            downloadLink.setAttribute('download', `{{ __("Solid Waste ISS") }}.csv`);
                             document.body.appendChild(downloadLink);
                             downloadLink.click();
                             document.body.removeChild(downloadLink);
@@ -10385,10 +11616,10 @@ $.ajax({
                         .catch(error => console.error('Error fetching CSV:', error));
                 } else {
                      if (outputFormat === 'SHAPE-ZIP') {
-                    exportLink += '&format_options=filename:' + 'Solid Waste ISS' + '.zip';
+                    exportLink += '&format_options=filename:' + '{{ __("Solid Waste ISS") }}' + '.zip';
                 }
                     else if (outputFormat === 'KML') {
-                    exportLink += '&format_options=filename:' + 'Solid Waste ISS' + '.kml';
+                    exportLink += '&format_options=filename:' + '{{ __("Solid Waste ISS") }}' + '.kml';
                 }
                     window.open(exportLink);
                 }
@@ -10420,13 +11651,14 @@ $.ajax({
                 var date = $('#application_date_field').val();
                 if (!date) {
                     Swal.fire({
-                        title: `Please select a date!`,
+                        title: "{{ __('Please select a date!') }}",
                         icon: "warning",
-                        button: "Close",
+                        button: "{{ __('Close') }}",
                         className: "custom-swal",
+                        confirmButtonText: "{{ __('OK') }}",
                     });
                 } else {
-                    var message = 'Number of applications on ' + date + ': ';
+                    var message = "{{ __('Number of applications on') }}" + ' '+ date + ': ';
 
                     displaySelectedDateApplications(date, message);
                 }
@@ -10439,13 +11671,14 @@ $.ajax({
                 var date = $('#application_not_tp_date_field').val();
                 if (!date) {
                     Swal.fire({
-                        title: `Please select a date!`,
+                        title: "{{ __('Please select a date!') }}",
                         icon: "warning",
-                        button: "Close",
+                        button: "{{ __('Close') }}",
                         className: "custom-swal",
+                        confirmButtonText: "{{ __('OK') }}",
                     });
                 } else {
-                    var message = 'Number of applications on ' + date + ': ';
+                    var message = "{{ __('Number of applications on') }}" + ' '+ date + ': ';
 
                     displaySelectedDateApplicationsNotTP(date, message);
                 }
@@ -10530,29 +11763,31 @@ $.ajax({
                 });
             }
 
-        //Display application based on selected year and months
+                 //Display application based on selected year and months
             $('#find_application_yearmonth').submit(function () {
 
                 var applicaion_year = $('#applicaion_year').val();
                 var application_month = $('#application_month').val();
                 if (!applicaion_year) {
                     Swal.fire({
-                        title: `Please select a year!`,
+                        title: "{{ __('Please select a year!') }}",
                         icon: "warning",
-                        button: "Close",
+                        button: "{{ __('Close') }}",
                         className: "custom-swal",
+                        confirmButtonText: "{{ __('OK') }}",
                     });
                     return false;
                 } else if (!applicaion_year && !application_month) {
                     Swal.fire({
-                        title: `Please select a month!`,
+                        title: "{{ __('Please select a month!') }}",
                         icon: "warning",
-                        button: "Close",
+                        button: "{{ __('Close') }}",
                         className: "custom-swal",
+                        confirmButtonText: "{{ __('OK') }}",
                     });
                     return false;
                 } else {
-                    var message = 'Number of applications on ' + applicaion_year + ' ' + application_month + ': ';
+                    var message = "{{ __('Number of applications on') }}" + ' '+ applicaion_year + ' ' + application_month + ': ';
                     displaySelectedYearMonthApplications(applicaion_year, application_month, message);
                 }
 
@@ -10635,22 +11870,24 @@ $.ajax({
                 var application_not_tp_month = $('#application_not_tp_month').val();
                 if (!applicaion_not_tp_year) {
                     Swal.fire({
-                        title: `Please select a year!`,
+                        title: "{{ __('Please select a year!') }}",
                         icon: "warning",
-                        button: "Close",
+                        button: "{{ __('Close') }}",
                         className: "custom-swal",
+                        confirmButtonText: "{{ __('OK') }}"
                     });
                     return false;
                 } else if (!applicaion_not_tp_year && !application_not_tp_month) {
                     Swal.fire({
-                        title: `Please select a month!`,
+                        title: "{{ __('Please select a month!') }}",
                         icon: "warning",
-                        button: "Close",
+                        button: "{{ __('Close') }}",
                         className: "custom-swal",
+                        confirmButtonText: "{{ __('OK') }}"
                     });
                     return false;
                 } else {
-                    var message = 'Number of applications on ' + applicaion_not_tp_year + ' ' + application_not_tp_month + ': ';
+                    var message = "{{ __('Number of applications on') }}" + ' ' + applicaion_not_tp_year + ' ' + application_not_tp_month + ': ';
                     displaySelectedYearMonthApplicationsNotTP(applicaion_not_tp_year, application_not_tp_month, message);
                 }
 
@@ -10810,22 +12047,22 @@ $.ajax({
                 var days = Number($('#proposed_emptying_days').val());
                 if (!days) {
                     Swal.fire({
-                        title: `Please enter number of days!`,
+                        title: "{{ __('Please enter number of days!') }}",
                         icon: "warning",
-                        button: "Close",
+                        button: "{{ __('Close') }}",
                         className: "custom-swal",
                     });
                 } else if (!Number.isInteger(days) || days < 0) {
                     Swal.fire({
-                        title: `Invalid input for number of days!`,
+                        title: "{{ __('Invalid input for number of days!') }}",
                         icon: "warning",
-                        button: "Close",
+                        button: "{{ __('Close') }}",
                         className: "custom-swal",
                     });
                 } else {
                     var startDate = moment().format('YYYY-MM-DD');
                     var endDate = moment().add(days, 'days').format('YYYY-MM-DD');
-                    var message = 'Number of containments proposed to be emptied on next ' + days + ' days: ';
+                    var message = '{{ __('Number of containments proposed to be emptied in the next few days:') }}' + ' ' + days ;
 
                     displayProposedEmptyingContainments(startDate, endDate, message);
                 }
@@ -10837,7 +12074,7 @@ $.ajax({
             $('#proposed_emptying_week_form').submit(function () {
                 var startDate = moment().format('YYYY-MM-DD');
                 var endDate = moment().add(7, 'days').format('YYYY-MM-DD');
-                var message = 'Number of containments proposed to be emptied next week: ';
+                var message = '{{ __('Number of containments proposed to be emptied next week:') }}';
 
                 displayProposedEmptyingContainments(startDate, endDate, message);
 
@@ -10848,13 +12085,14 @@ $.ajax({
                 var date = $('#proposed_emptying_date').val();
                 if (!date) {
                     Swal.fire({
-                        title: `Please select a date!`,
-                        icon: "warning",
-                        button: "Close",
+                        title: "{{ __('Please select a date!') }}",
+                       icon: "warning",
+                        button: "{{ __('Close') }}",
                         className: "custom-swal",
+                        confirmButtonText: "{{ __('OK') }}",
                     });
                 } else {
-                    var message = 'Number of containments proposed to be emptied on ' + date + ': ';
+                    var message = "{{ __('Number of containments proposed to be emptied on') }} " + date + ": ";
 
                     displayProposedEmptyingContainments(date, date, message);
                 }
@@ -11088,7 +12326,155 @@ $.ajax({
                 });
             }
 
-            function updateMapSize() {
+            function extentIntersects(extent1, extent2) {
+                return extent1[0] <= extent2[2] && extent1[2] >= extent2[0] &&
+                extent1[1] <= extent2[3] && extent1[3] >= extent2[1];
+            }
+
+            //WMS URL importing
+            var parser = new ol.format.WMSCapabilities();
+            var wmsUrl = document.getElementById("wmsURL");
+            var mapLayer = document.getElementById("mapLayer");
+
+            const citypolylayers = ['citypolys_layer'];
+
+            let availableLayers = [];
+
+            wmsUrl.addEventListener("click", function () {
+            displayAjaxLoader();
+
+            var wmsAddress = document.getElementById("wmsAddress").value;
+                const urlObj = new URL(wmsAddress);
+                const params = new URLSearchParams(urlObj.search);
+
+                const SERVICE = params.get('service') ||  params.get('SERVICE') ;
+                const REQUEST = params.get('request') ||  params.get('REQUEST');
+                const VERSION = params.get('version') ||  params.get('VERSION');
+
+                if (!SERVICE || !REQUEST || !VERSION) {
+                    Swal.fire({
+                                icon: 'error',
+                                title: "{{ __('Invalid Layer') }}",
+                                text: "{{ __('Enter URL does not match WMS GetCapabilities pattern') }}",
+                                    confirmButtonColor: '#d33'
+                                });
+                    removeAjaxLoader();
+                    return;
+                }
+                $.ajax({
+                    url: '/proxy-wms',
+                    method: 'GET',
+                    data: {
+                        url: urlObj.origin + urlObj.pathname,
+                        SERVICE: SERVICE,
+                        REQUEST: REQUEST,
+                        VERSION: VERSION
+                    },
+                    success: function () {
+                        fetch(wmsAddress)
+                            .then(response => response.text())
+                            .then(text => {
+                                $("#wmsModal").modal("hide");
+                                const result = parser.read(text);
+                                const layers = result.Capability.Layer.Layer;
+                                availableLayers = layers.map(layer => layer.Name);
+                                wms_gurl = wmsAddress.split("?")[0]; // Base WMS URL
+                                const baseWFSUrl = wms_gurl.replace(/\/wms$/i, '/wfs');
+
+                                removeAjaxLoader();
+                                $("#getLayerModal").modal();
+                                mapLayer.options.length = 0;
+
+                                layers.forEach(layer => {
+                                    const option = document.createElement("option");
+                                    option.value = option.text = layer.Name;
+                                    mapLayer.add(option);
+                                });
+
+                                mapLayer.addEventListener("change", function () {
+                                    const selectedLayer = mapLayer.value;
+
+                                    const urlParts = wms_gurl.split('/').filter(Boolean);
+                                    const workspace_url = urlParts[urlParts.length - 2];
+
+                                    const cityPolyUrl = `${gurl_wms}?service=WFS&version=1.0.0&request=GetFeature&typeName=${workspace}:citypolys_layer&outputFormat=application/json`;
+                                    displayAjaxLoader();
+                                    fetch(cityPolyUrl)
+                                        .then(res => res.json())
+                                        .then(cityGeoJSON => {
+                                            const cityFeatures = new ol.format.GeoJSON().readFeatures(cityGeoJSON, {
+                                                featureProjection: 'EPSG:3857'
+                                            });
+                                            const cityGeometry = cityFeatures[0].getGeometry();
+
+                                            const selectedLayerUrl = `${baseWFSUrl}?service=WFS&version=${VERSION}&request=GetFeature&typeName=${workspace_url}:${selectedLayer}&outputFormat=application/json`;
+
+                                            fetch(selectedLayerUrl)
+                                                .then(res => res.json())
+                                                .then(selectedGeoJSON => {
+                                                    const selectedFeatures = new ol.format.GeoJSON().readFeatures(selectedGeoJSON, {
+                                                        featureProjection: 'EPSG:3857'
+                                                    });
+
+                                                    let doesIntersect = selectedFeatures.some(f => {
+                                                        return f.getGeometry() && extentIntersects(f.getGeometry().getExtent(), cityGeometry.getExtent());
+                                                    });
+
+                                                    if (!doesIntersect) {
+                                                        removeAjaxLoader();
+                                                        Swal.fire({
+                                                            icon: 'error',
+                                                            title: "{{ __('Invalid Layer') }}",
+                                                            text: "{{ __('Selected layer does not intersect with Municipality boundary') }}",
+                                                            confirmButtonColor: '#d33'
+                                                        });
+                                                        return;
+                                                    }
+
+                                                    const source = new ol.source.TileWMS({
+                                                        url: wms_gurl,
+                                                        params: {
+                                                            layers: selectedLayer,
+                                                            TILED: true
+                                                        },
+                                                        crossOrigin: "anonymous",
+                                                        serverType: "geoserver",
+                                                        attributions: 'This is from GetCapabilities'
+                                                    });
+
+                                                    const layer = new ol.layer.Tile({
+                                                        source: source,
+                                                        visible: true
+                                                    });
+                                                    removeAjaxLoader();
+                                                    map.addLayer(layer);
+                                                });
+                                        })
+                                });
+                            })
+                            .catch(error => {
+                                removeAjaxLoader();
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: "{{ __('Invalid Layer') }}",
+                                    text: "{{ __('Enter a valid WMS URL.') }}",
+                                    confirmButtonText: "{{ __('OK') }}"
+                                });
+                            });
+                    },
+                    error: function (xhr) {
+                        removeAjaxLoader();
+                        Swal.fire({
+                            icon: 'error',
+                            title:  "{{ __('Proxy Error') }}",
+                            text:  "{{ __('Failed to fetch WMS capabilities') }}",
+                            confirmButtonColor: '#d33'
+                        });
+                    }
+                });
+        });
+
+        function updateMapSize() {
                 map.updateSize();
                 google.maps.event.trigger(gmap, 'resize');
                 onCenterChanged();
@@ -11148,6 +12534,20 @@ $.ajax({
         document.addEventListener("mouseup", () => {
             isDragging = false;
             document.body.style.userSelect = "auto"; // Re-enable text selection
+        });
+        $('#road_code, #road_code_drain, #road_code_watersupply').select2({
+            ajax: {
+                url: "{{ route('roadlines.get-road-names') }}",
+                data: function (params) {
+                    return {
+                        search: params.term,
+                        page: params.page || 1
+                    };
+                },
+            },
+            placeholder: 'Road Code - Road Name',
+            allowClear: true,
+            closeOnSelect: true,
         });
 
    </script>

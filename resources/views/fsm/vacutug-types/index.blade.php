@@ -13,15 +13,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 <div class="card">
     <div class="card-header">
         @can('Add Desludging Vehicle')
-        <a href="{{ action('Fsm\VacutugTypeController@create') }}" class="btn btn-info">Add Desludging Vehicle</a>
+        <a href="{{ action('Fsm\VacutugTypeController@create') }}" class="btn btn-info">{{ __('Add Desludging Vehicle') }}</a>
         @endcan
         @can('Export Desludging Vehicles')
-        <a href="{{ action('Fsm\VacutugTypeController@export') }}" id="export" class="btn btn-info">Export to
-            CSV</a>
+        <a href="{{ action('Fsm\VacutugTypeController@export') }}" id="export" class="btn btn-info">{{ __('Export to CSV') }}</a>
         @endcan
         <a href="#" class="btn btn-info float-right" id="headingOne" type="button" data-toggle="collapse"
             data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-            Show Filter
+            {{ __('Show Filter') }}
         </a>
     </div><!-- /.box-header -->
     <div class="card-body">
@@ -34,46 +33,46 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                             <div class="accordion-body">
                                 <form class="form-horizontal" id="filter-form">
                                     <div class="form-group row">
-                                        <label for="service_provider_id" class="col-md-2 col-form-label ">Service Provider Name</label>
+                                        <label for="service_provider_id" class="col-md-2 col-form-label ">{{ __('Service Provider Name') }}</label>
                                         <div class="col-md-2">
                                             <select class="form-control" id="service_provider_id" name="service_provider_id">
-                                                <option value="">Service Provider Name</option>
+                                                <option value="">{{ __('Service Provider Name') }}</option>
                                                 @foreach ($service_provider_id as $key => $value)
                                                     <option value="{{ $key }}">{{ $value }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <label for="license_plate_number" class="col-md-2 col-form-label ">Vehicle License Plate Number</label>
+                                        <label for="license_plate_number" class="col-md-2 col-form-label ">{{ __('Vehicle License Plate Number') }}</label>
                                         <div class="col-md-2">
                                             <select class="form-control" id="license_plate_number" name="license_plate_number">
-                                                <option value="">Vehicle License Plate Number</option>
+                                                <option value="">{{ __('Vehicle License Plate Number') }}</option>
                                                 @foreach ($license_plate_number as $key => $value)
                                                     <option value="{{ $key }}">{{ $value }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <label for="capacity" class="col-md-2 col-form-label">Capacity (m³)</label>
+                                        <label for="capacity" class="col-md-2 col-form-label">{{ __('Capacity  (m³)') }}</label>
                                         <div class="col-md-2">
-                                            <input type="text" class="form-control" id="capacity" placeholder="Capacity (m³)" oninput = "this.value = this.value.replace(/[^0-9.]/g, ''); " />
+                                            <input type="text" class="form-control" id="capacity" placeholder="{{ __('Capacity (m³)') }}" oninput = "this.value = this.value.replace(/[^0-9.]/g, ''); " />
                                         </div>
                                         </div>
                                         <div class="form-group row">
-                                        <label for="width" class="col-md-2 col-form-label ">Width (m)</label>
+                                        <label for="width" class="col-md-2 col-form-label ">{{ __('Width (m)') }}</label>
                                         <div class="col-md-2">
-                                            <input type="text" class="form-control" id="width"  placeholder="Width (m)" oninput = "this.value = this.value.replace(/[^0-9.]/g, '')"/>
+                                            <input type="text" class="form-control" id="width"  placeholder="{{ __('Width (m)') }}" oninput = "this.value = this.value.replace(/[^0-9.]/g, '')"/>
                                         </div>
-                                        <label for="width" class="col-md-2 col-form-label ">Status</label>
+                                        <label for="width" class="col-md-2 col-form-label ">{{ __('Status') }}</label>
                                         <div class="col-md-2">
                                             <select class="form-control chosen-select" id="status" name="status">
-                                                <option value="">Status</option>
+                                                <option value="">{{ __('Status') }}</option>
                                                 <option value="true">Operational</option>
                                                 <option value="false">Not Operational</option>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="card-footer text-right">
-                                        <button type="submit" class="btn btn-info">Filter</button>
-                                        <button type="reset" id="reset-filter" class="btn btn-info">Reset</button>
+                                        <button type="submit" class="btn btn-info">{{ __('Filter') }}</button>
+                                        <button type="reset" id="reset-filter" class="btn btn-info">{{ __('Reset') }}</button>
                                     </div>
                                 </form>
                             </div>
@@ -96,12 +95,13 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
             <thead>
                 <tr>
                     
-                    <th>Service Provider</th>
-                    <th>Vehicle License Plate Number</th>
-                    <th>Capacity (m³)</th>
-                    <th>Width (m)</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                <th>{{ __('Service Provider') }}</th>
+                <th>{{ __('Vehicle License Plate Number') }}</th>
+                <th>{{ __('Capacity (m³)') }}</th>
+                <th>{{ __('Width (m)') }}</th>
+                <th>{{ __('Status') }}</th>
+                <th>{{ __('Actions') }}</th>
+
                 </tr>
             </thead>
         </table>
@@ -166,13 +166,14 @@ $(function() {
             var form = $(this).closest("form");
             event.preventDefault();
             Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+                title: '{{ __('Are you sure?') }}',
+                        text: "{!! __('You won\'t be able to revert this!') !!}",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: '{{ __('Yes, delete it!') }}',
+                        cancelButtonText: '{{ __('Cancel') }}',
             }).then((result) => {
                 if (result.isConfirmed) {
                     form.submit();

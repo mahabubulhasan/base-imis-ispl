@@ -6,7 +6,7 @@
 @include('layouts.components.error-alert')
 <div class="card card-info">
 	{!! Form::open(['url' => 'fsm/kpi-targets', 'class' => 'form-horizontal']) !!}
-		@include('fsm/kpi-target.partial-form', ['submitButtomText' => 'Save'])
+		@include('fsm/kpi-target.partial-form', ['submitButtomText' => __('Save')])
 	{!! Form::close() !!}
 </div><!-- /.card -->
 @stop

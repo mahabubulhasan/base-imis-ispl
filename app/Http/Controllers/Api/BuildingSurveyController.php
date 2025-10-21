@@ -51,13 +51,13 @@ class BuildingSurveyController extends Controller
             if ($buildingCodes->isEmpty()) {
                 return response()->json([
                     'status' => 404,
-                    'message' => 'No building codes found.'
+                    'message' => __('No building codes found.'),
                 ], 404);
             }
             
             return response()->json([
                 'status' => 200,
-                'message' => 'Building codes fetched successfully.',
+                'message' => __('Building codes fetched successfully.'),
                 'data' => $buildingCodes,
                
             ]);
@@ -77,13 +77,13 @@ class BuildingSurveyController extends Controller
             if ($sewerCodes->isEmpty()) {
                 return response()->json([
                     'status' => 404,
-                    'message' => 'No sewer codes found.'
+                    'message' => __('No sewer codes found.'),
                 ], 404);
             }
             
             return response()->json([
                 'status' => 200,
-                'message' => 'Sewer codes fetched successfully.',
+                'message' => __('Sewer codes fetched successfully.'),
                 'data' => $sewerCodes,
                
             ]);
@@ -123,7 +123,7 @@ class BuildingSurveyController extends Controller
                     }
                     return response()->json([
                         'status' => false,
-                        'message' => 'Kml file is required.'
+                        'message' => __('Kml file is required.'),
                     ], 500);
                 }
 
@@ -144,14 +144,14 @@ class BuildingSurveyController extends Controller
                                 }
                                 return response()->json([
                                     'status' => false,
-                                    'message' => 'Kml file couldn\'t be stored.'
+                                    'message' => __('Kml file couldn\'t be stored.')
                                 ], 500);
                             }
                             $buildingSurvey->kml = $filename;
                             $buildingSurvey->save();
                             return response()->json([
                                 'status' => true,
-                                'message' => " Building Survey is uploaded successfully."
+                                'message' => __('Building Survey is uploaded successfully.')
                             ], 200);
                         } else {
                             if ($buildingSurvey){
@@ -159,7 +159,7 @@ class BuildingSurveyController extends Controller
                             }
                             return response()->json([
                                 'status' => false,
-                                'message' => 'Kml file is invalid. Polygons shouldn\'t self-intersect.'
+                                'message' => __('Kml file is invalid. Polygons shouldn\'t self-intersect.'),
                             ], 500);
                         }
                     }
@@ -197,7 +197,7 @@ class BuildingSurveyController extends Controller
         return [
             'success' => true,
             'data' => '',
-            'message' => 'Service Providers.'
+            'message' => __('Service Providers'),
         ];
     }
   
@@ -214,7 +214,7 @@ class BuildingSurveyController extends Controller
                 'success' => true,
                 'baseUrl' => config("constants.GEOSERVER_URL"),
                 'data' => $wms,
-                'message' => "WMS layer for ".$layer.".",
+                'message' => __('WMS layer for:').$layer,
             ]);
 
         } catch (\Throwable $th) {
@@ -239,7 +239,7 @@ class BuildingSurveyController extends Controller
             else {
                 return true;
             }
-        }, 'Invalid file format. The file must be a .kml file.');
+        }, "{{ __('Invalid file format. The file must be a .kml file.') }}" );
 
         $kmlValidator = Validator::make(["kml" => $kml],[
             "kml" => 'required|file|file_extension:kml'

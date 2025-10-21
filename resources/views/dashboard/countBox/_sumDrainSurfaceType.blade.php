@@ -4,6 +4,6 @@
         <span class="info-box-text">
             <h2> {{ number_format($sumDrainsSurfaceType) }}</h2>
         </span>
-        <span class="info-box-number"> RCC </span>
+        <span class="info-box-number">{{ __('Lined')}}  </span>
     </div>
 </div>

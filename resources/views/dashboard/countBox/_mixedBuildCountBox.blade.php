@@ -5,6 +5,6 @@
     </span>
     <div class="info-box-content">
       <span class="info-box-text"> <h3>{{ number_format($mixedBuildCount) }}</h3></span>
-      <span class="info-box-number">Mixed (Residential, Commercial, Office uses)</span>
+      <span class="info-box-number">{{__('Mixed')}}</span>
     </div>
   </div>

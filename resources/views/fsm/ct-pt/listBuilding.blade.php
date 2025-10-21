@@ -5,21 +5,21 @@
     <div class="col-12">
     <div class="card">
         <div class="card-header">
-          <a href="{{ action('Fsm\CtptController@index') }}" class="btn btn-info">Back to the toilet List</a>
+          <a href="{{ action('Fsm\CtptController@index') }}" class="btn btn-info">{{ __('Back to the toilet List')}}</a>
           @can('View Buildings connect to P')
-          <a href="{{ action('Fsm\CtptController@addBuildings', ['id' => $toilet->id]) }}" class="btn btn-info">Add Buildings to this Toilet</a>
+          <a href="{{ action('Fsm\CtptController@addBuildings', ['id' => $toilet->id]) }}" class="btn btn-info">{{ __('Add Buildings to this Toilet')}}</a>
           @endcan
         </div><!-- /.card-header -->
         <div class="card-body">
           <table id="data-table" class="table table-bordered table-striped" width="100%">
             <thead>
               <tr>
-                <th>House Number </th>
-                <th>Tax Code</th>
-                <th>Structure Type</th>
-                <th>Estimated Area of the Building</th>
-                <th>Functional Use</th>
-                <th>Actions</th>
+                <th>{{__('House Number')}}</th>
+                <th>{{__('Tax Code')}}</th>
+                <th>{{__('Structure Type')}}</th>
+                <th>{{__('Estimated Area of the Building')}}</th>
+                <th>{{__('Functional Use')}}</th>
+                <th>{{__('Actions')}}</th>
               </tr>
             </thead>
             <tbody>
@@ -42,7 +42,7 @@
                 @endforeach
               @else
                 <tr>
-                  <td valign="top" colspan="6">No Matching records found</td>
+                  <td valign="top" colspan="6">{{ __('No Matching records found')}}</td>
                 </tr>
               @endif
             </tbody>
@@ -61,13 +61,14 @@
          var form =  $(this).closest("form");
          event.preventDefault();
          Swal.fire({
-           title: 'Are you sure?',
-           text: "You won't be able to revert this!",
-           icon: 'warning',
-           showCancelButton: true,
-           confirmButtonColor: '#3085d6',
-           cancelButtonColor: '#d33',
-           confirmButtonText: 'Yes, delete it!'
+           title: '{{ __('Are you sure?') }}',
+                      text: "{!! __('You won\'t be able to revert this!') !!}",
+                      icon: 'warning',
+                      showCancelButton: true,
+                      confirmButtonColor: '#3085d6',
+                      cancelButtonColor: '#d33',
+                      confirmButtonText: "{{ __('Yes, delete it!') }}",
+                      cancelButtonText: "{{ __('Cancel') }}",
          }).then((result) => {
            if (result.isConfirmed) {
              form.submit();

@@ -7,7 +7,7 @@ Version: V1.0.0
 This section describes the functionality for exporting data as shapefiles or KML files. Users can select specific layers, wards, and the desired format (shapefile or KML) for download.
 
 Normally, GeoServer operation only allows a filter to be applied on each layer in isolation, based on its attribute and external information (geometry, values) provided by the user. The querylayer, a geoserver extension, is used that provides three new filter functions namely: querySingle, queryCollection, and collectGeometries, which allows Cross layer filtering. These filter functions can be used directly in CQL filters, OGC filters and SLD, meaning they are available both from WMS and WFS.
- 
+
 In IMIS, the querylayer filter functions are used in Map Export Tools. The export tools requires Cross layer filtering, which is the the ability to select features from one layer that bear some relationship with features coming from another layer.
 
 ### Backend
@@ -93,7 +93,7 @@ Geoserver workspace name from constants
 
 // Coordinates of the city
 
-var coord = [centerX, centerY];  // [latitude, longitude]
+var coord = [centerX, centerY]; // [latitude, longitude]
 //Modifying these values will affect functions like zoomToCity(), setInitialZoom(), and tools like Hard to Reach Building,Buildings Close to Water Bodies.
 
 // OpenLayers Map
@@ -131,7 +131,6 @@ extent: ol.proj.transformExtent([xmin, ymin, xmax, ymax], 'EPSG:4326', 'EPSG:385
 \< -- CODE END --\>
 
 GetMap example request
-
 
 gurl+//wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&LAYERS={workspace}:{layer_name}&TILED=true&STYLES={workspace}:{style_name}&FORMAT_OPTIONS=dpi:113&WIDTH={width}&HEIGHT={height}&srs=EPSG:900913&BBOX={minX},{minY},{maxX},{maxY}
 
@@ -255,19 +254,19 @@ To visualize styles on the map, users are required to click on the checkbox, tri
 
     -   The visibility of the layer associated with the "key" in the "mLayer" object will be set to "true". If the "key" exists in the "conditionalLayers" array, the visibility will only be set to "true" if the map's current zoom level is greater than 14 for layers such as building Structures, Containments and Point of Interest.
 
-    -   The element with an id of " ' + key + '_overlay_style_select_container" will be shown.
+    -   The element with an id of " ' + key + '\_overlay_style_select_container" will be shown.
 
     -   If there are styles associated with the layer in the "mLayer" object, the change event on the select element with the same name as the "key" will be triggered.
 
-    -   If there are no styles, the legend image HTML for the layer will be set and set to the element with an id of "' + key + '_overlay_legend_container".
+    -   If there are no styles, the legend image HTML for the layer will be set and set to the element with an id of "' + key + '\_overlay_legend_container".
 
 -   If the checkbox is unchecked:
 
 -   The visibility of the layer associated with the "key" in the "mLayer" object will be set to "false".
 
--   The element with an id of "' + key + '_overlay_style_select_container" will be hidden.
+-   The element with an id of "' + key + '\_overlay_style_select_container" will be hidden.
 
--   The HTML of the element with an id of "' + key + '_overlay_legend_container" will be set to an empty string.
+-   The HTML of the element with an id of "' + key + '\_overlay_legend_container" will be set to an empty string.
 
 -   The options for the "feature_info_overlay" select dropdown will be updated with the visible layers in the "mLayer" object. The value of "feature_info_overlay" will be set to an empty string.
 
@@ -417,13 +416,12 @@ Type
 
 -   The styling for this visualization is sourced from the ‘treatmentplants_layer_type’ available within Geoserver.
 
-
 **Road Network**
 
 -   The 'utility_info.roads' table is utilized for retrieving road data present in the 'roadlines_layer' layer.
 
 -   Within this context, layers grouped from the 'roads_width_zoom_layer' within the Layer Group of GeoServer are categorized into 'roadlines_layer_width' and 'roadlines_layer_zoom', 'roadlines_layer_surface_type' and 'roadlines_layer_zoom', as well as 'roadlines_layer_hierarchy' and 'roadlines_layer_zoom'.
-None
+    None
 
 -   The styling for this visualization is sourced from the ‘roadlines_layer_none’ available within Geoserver.
 
@@ -444,7 +442,7 @@ Hierarchy
 -   The 'utility_info.sewers’ table is utilized for retrieving sewers data present in the 'sewerlines_layer' layer.
 
 -   The sewer network can be visualized based on the following options selected from the dropdown menu:
-None
+    None
 
 -   The styling for this visualization is sourced from the ‘sewer_none’ available within Geoserver.
 
@@ -461,7 +459,7 @@ Sewer Length (m)
 -   The ‘utility_info.water_supplys’ table table is utilized for retrieving water supply network data present in the watersupply_network_layer' layer.
 
 -   The styling for this visualization is sourced from the ‘watersupply_network_layer' available within Geoserver.
-None
+    None
 
 -   The styling for this visualization is sourced from the ‘watersupply_none’ available within Geoserver.
 
@@ -470,7 +468,7 @@ None
 -   The ‘utility_info.drains’ table is utilized for retrieving drain network data present in the ‘drains_layer' layer.
 
 -   The styling for this visualization is sourced from the ‘drains_layer' available within Geoserver.
-None
+    None
 
 -   The styling for this visualization is sourced from the ‘drain_none’ available within Geoserver.
 
@@ -491,7 +489,6 @@ None
 -   The ‘public_health.water_samples’ table is utilized for retrieving water samples data present in the ‘water_samples_layer' layer.
 
 -   The styling for this visualization is sourced from the ‘water_samples_layer' available within Geoserver.
-
 
 **Solid Waste ISS**
 
@@ -547,7 +544,7 @@ No. of Pit/Holding Tank
 
 -   The styling for this visualization is sourced from the ‘wards_layer_no_pit_holding_tank’ available within Geoserver.
 
-No. of Septic Tank 
+No. of Septic Tank
 
 -   The styling for this visualization is sourced from the ‘wards_layer_no_septic_tank’ available within Geoserver.
 
@@ -605,7 +602,7 @@ No. of CGI Sheet
 
 -   The styling for this visualization is sourced from the ‘grids_layer_no_cgi_sheet’ available within Geoserver.
 
-No. of  Building Connected Sewerage Network
+No. of Building Connected Sewerage Network
 
 -   The styling for this visualization is sourced from the ‘grids_layer_no_build_directly_to_sewerage_network’ available within Geoserver.
 
@@ -613,7 +610,7 @@ No. of Pit/Holding Tank
 
 -   The styling for this visualization is sourced from the ‘grids_layer_no_pit_holding_tank’ available within Geoserver.
 
-No. of Septic Tank 
+No. of Septic Tank
 
 -   The styling for this visualization is sourced from the ‘grids_layer_no_septic_tank’ available within Geoserver.
 
@@ -640,7 +637,6 @@ Household Served
 No. of Emptying Requests
 
 -   The styling for this visualization is sourced from the ‘grids_layer_no_emptying’ available within Geoserver.
-
 
 **Sanitation System**
 
@@ -1078,7 +1074,7 @@ displaySelectedDateApplicationsNotTP(date, message)
 
 -   In case of an error during the AJAX request, it calls the displayAjaxError() function to handle the error.
 
-##### Feedback chart
+##### Service Feedback
 
 -   This tool displays the feedback chart of custom boundary entered by the user. If the user requires the feedback of a certain area, the user can utilize this tool to generate the feedback chart that aggregates all the records of feedback from that particular area.
 
@@ -1654,8 +1650,6 @@ openExportLink()
 
     currentControl = '';
 
-   
-
     } else {
 
     currentControl = 'drainpotential_control';
@@ -1721,8 +1715,6 @@ displayDrainPotentialBuildings()
     if (currentControl == 'drainbuildings_control') {
 
     currentControl = '';
-
-   
 
     } else {
 
@@ -1793,8 +1785,6 @@ displayDrainBuildings()
     if (currentControl == 'roadbuildings_control') {
 
     currentControl = '';
-
-   
 
     } else {
 
@@ -2034,8 +2024,6 @@ hoverOnRoadBuildingHandler()
 
     currentControl = '';
 
-   
-
     } else {
 
     currentControl = 'ptct_network';
@@ -2208,8 +2196,6 @@ displayBuildingsToPTCT()
 
     currentControl = '';
 
-   
-
     } else {
 
     currentControl = 'buildingswaterbodies_control';
@@ -2300,8 +2286,6 @@ hoverOnWaterBodiesHandler()
 
     currentControl = '';
 
-   
-
     } else {
 
     currentControl = 'buildingswards_control';
@@ -2383,7 +2367,6 @@ disableAllControls();
 if (currentControl == 'buildingsroads_control') {
 
 currentControl = '';
-
 
 } else {
 
@@ -2473,8 +2456,6 @@ displayRoadsBuildings()
 
     currentControl = '';
 
-   
-
     } else {
 
     currentControl = 'pointbuffer_control';
@@ -2524,6 +2505,125 @@ Initialize
 -   Then it calls disableAllControls(), this function disable all the controls in the page. The function is further explained in the supporting functions below.
 
 -   Then it uses jQuery to remove the "map-control-active" class from all elements with the class "map-control".
+
+##### Containments Emptied Information
+
+-   This tool displays the monthly emptied containment chart of custom boundary entered by the user. If the user requires the information of monthly emptied containment of a certain area, the user can utilize this tool to generate the chart that aggregates all the records of containment from that particular area.
+
+    \< -- CODE START -- \>
+
+    \<a href="\#" id="containments_emptied_monthly" class="btn btn-default map-control"\>\<i
+
+    class="fa fa-building"\>\</i\>Containments Emptied Information\</a\>
+
+    \< -- CODE END -- \>
+
+-   Here, id value (containments_emptied_monthly) trigger the jQuery as
+
+    \< -- CODE START -- \>
+
+    \$('\#containments_emptied_monthly').click(function (e) {
+
+    e.preventDefault();
+
+    disableAllControls();
+
+    }); \< -- CODE END -- \>
+
+-   Initial steps are explained below in initialize having id value (containments_emptied_monthly).
+
+-   The code checks if currentControl is equal to containments_emptied_monthly, if the condition is true than the variable "currentControl" is set to an empty string. Else variable "currentControl" is set to containments_emptied_monthly.
+
+-   Adds the "map-control-active" class to the element with the ID “containments_emptied_monthly”.
+
+-   If the layer doesn't exist, it creates a new vector layer with an empty source and adds it to the map using the addExtraLayer() function.
+
+-   Allows drawing of a polygon that will be stored in the containments_report_polygon vector layer.
+
+-   Clears old features when a new drawing begins and removes popup location from the map.
+
+-   Converts drawn polygon to WKT (Well-Known Text) format and transforms it to EPSG:4326.
+
+-   Stores the polygon geometry in a hidden input for form access and shows a loading spinner.
+
+-   Sends the polygon to the server via AJAX POST request along with CSRF token for security.
+
+-   Builds a dynamic HTML structure including dropdown to choose a year.
+
+-   Displays a bar chart with containment data.
+-   Allows users to download the chart as a PNG image.
+-   Updates chart data dynamically when the user selects a year from the dropdown.
+-   Displays a message if no containment data is returned.
+-   Removes loading spinner.
+-   Shows popup at drawn polygon’s center.
+-   Cleans up map interaction and resets control states.
+
+##### Toilet Isochrone Map
+
+-   This tool displays the concave polygon boundary that represents the area which is reachable within a given distance (speed \* time) (in meters) from a specific operational public toilet on a road network.
+
+    \< -- CODE START -- \>
+
+    \<a href="\#" id="toilet_isochrone_control" title="Generate isochrone information of CTPT by distance traversed (m)"> class="btn btn-default map-control"\>\<i
+
+    class="fa fa-building"\>\</i\>Public Toilet Accessibility Tool\</a\>
+
+    \< -- CODE END -- \>
+
+-   Here, id value (toilet_isochrone_control) trigger the jQuery as
+
+    \< -- CODE START -- \>
+
+    \$('\#toilet_isochrone_control').click(function (e) { e.preventDefault();
+
+    disableAllControls();
+
+    \$('.map-control').removeClass('map-control-active');
+
+    if (currentControl == 'toilet_isochrone_control') {
+
+    currentControl = '';
+
+    } else {
+
+    currentControl = 'toilet_isochrone_control';
+
+    \$('\#toilet_isochrone_control').addClass('map-control-active');
+    \$('\#popup-toilet-isochrone').modal('show');
+
+    }
+
+    });
+
+    \< --CODE END -- \>
+
+-   Initial steps are explained below in initialize having id value (“toilet_isochrone_control”).
+
+    -   The code checks if currentControl is equal to toilet_isochrone_control, if the condition is true than the variable "currentControl" is set to an empty string. Else variable "currentControl" is set to toilet_isochrone_control.
+
+    -   Adds the "map-control-active" class to the element with the ID “toilet_isochrone_control”.
+
+    -   Show the modal having ID "popup-toilet-isochrone" which allows the user to enter a Estimated Travel Time Distance (meter).
+
+-   The submit button of form binds a click event handler to the HTML element with the id form-toilet-isochrone-map.
+
+    -   Prevents the default form submission behavior .
+
+    -   Clear existing data in the toilet_isochrone_polygon if it exists, or create a new layer if it doesn't. Create a new vector layer for toilet_isochrone_polygon and adds it using a custom function addExtraLayer().
+
+-   Handles the buildings within the isochrone zone, just like the polygon layer.
+-   Setup AJAX headers including CSRF token and passes distance as a query parameter. It calls ‘**getToiletIsochroneAreaLayers** function of ‘**MapsController**’.
+
+-   Make an AJAX request to fetch isochrone polygons from nearby toilets.
+-   On success, extracts the returned polygon(s) from the response and loops through array of geometries (in WKT format) and converted to the correct projection.
+
+-   Applies dynamic styling via styleFunction(i) and adds the feature to the map layer.
+
+-   Ensures relevant layers (e.g., toilets and roadlines) are made visible after drawing the isochrone.
+
+-   Hides the modal form and removes the loading spinner.
+
+-   If request fails, shows a generic error UI.
 
 ### Tools functions
 
@@ -2685,8 +2785,6 @@ map.getView().setZoom(map.getView().getZoom() - 1);
 
     currentControl = '';
 
-   
-
     } else {
 
     \$('\#layer-select-box').show();
@@ -2756,8 +2854,6 @@ displayFeatureInformation()
     if (currentControl == 'coordinate_control') {
 
     currentControl = '';
-
-   
 
     } else {
 
@@ -2851,8 +2947,6 @@ displayCoordinateInformation()
 
     currentControl = '';
 
-   
-
     } else {
 
     currentControl = 'linemeasure_control';
@@ -2902,8 +2996,6 @@ displayCoordinateInformation()
     if (currentControl == 'polymeasure_control') {
 
     currentControl = '';
-
-   
 
     } else {
 
@@ -2967,7 +3059,7 @@ displayCoordinateInformation()
 
     \<-- CODE START -- \>
 
-    \<a target="_blank" href="{{ asset('pdf/tools-help.pdf') }}" class="btn btn-default map-control" data-toggle="tooltip" data-placement="bottom" title="Help"\>\<i class="fa-solid fa-file"\>\</i\>\</a\>
+    \<a target="\_blank" href="{{ asset('pdf/tools-help.pdf') }}" class="btn btn-default map-control" data-toggle="tooltip" data-placement="bottom" title="Help"\>\<i class="fa-solid fa-file"\>\</i\>\</a\>
 
     \< -- CODE END -- \>
 
@@ -3000,8 +3092,6 @@ displayCoordinateInformation()
     if (currentControl == 'nearestroad_control') {
 
     currentControl = '';
-
-   
 
     } else {
 
@@ -3066,8 +3156,6 @@ findNearestRoad()
     if (currentControl == 'containmentbuilding_control') {
 
     currentControl = '';
-
-   
 
     } else {
 
@@ -3143,7 +3231,6 @@ displayContainmentToBuildings()
 
     currentControl = '';
 
-
     } else {
 
     currentControl = 'buildingcontainment_control';
@@ -3208,8 +3295,6 @@ displayBuildingToContainment()
 
     currentControl = '';
 
-   
-
     } else {
 
     currentControl = 'associatedtomain_control';
@@ -3244,551 +3329,209 @@ displayAssociatedToMainBuilding()
 
 -   Markers are also added to the map for each containment point.
 
-##### Add Roads
+##### Import From WMS
 
--   This tool allows the user to add roads on map.
+-   This tool is used for importing layer from WMS URL and displaying the selected layer on map.
 
 -   Path: views/maps/index.blade.php
 
     \< -- CODE START -- \>
 
-    \<a href="\#" id="add_road_control" class="btn btn-default map-control"data-toggle="tooltip" data-placement="bottom" title="Add roads"\>\<i class="fa-solid fa-road-circle-check"\>\</i\>\</a\>
+    \<a href="\#" id="wms_layer" class="btn btn-default map-control" data-toggle="tooltip"data-placement="bottom" title="Import from WMS"\>\<i class="as fa-layer-group"\>\</i\>\</a\> \< -- CODE END -- \>
 
-    \<--CODE End -- \>
+-   Here, id value (wms_layer) trigger the jQuery as
 
--   Here, id value (add_road_control) trigger the jQuery as
+\< -- CODE START -- \>
 
-    \< -- CODE START -- \>
+\$('\#wms_layer').click(function (e) {
 
-    \$('\#add_road_control').click(function (e) {
+e.preventDefault();
 
-    e.preventDefault();
+disableAllControls();
 
-    disableAllControls();
+\$('.map-control').removeClass('map-control-active');
 
-    displayAjaxLoader();
+currentControl = '';
 
-    var allLayers = map.getLayers().getArray();
+\$("#wmsModal").modal('show'); }); \< -- CODE END -- \>
 
-    \$('.map-control').removeClass('map-control-active');
+-   Initial steps are explained below in Initialize having id value (wms_layer).
 
-    if (currentControl === 'add_road_control') {
+-   The variable "currentControl" is set to an empty string.
 
-    \$('\#add-road-tool-box').hide();
+-   Opens the WMS modal where the user can configure and add WMS layers.
 
-    currentControl='';
+-   Show the 'wmsModal' which allows the user to enter a WMS URL.
 
-    resetAddRoadTool();
+-   After submitting the input, it retrieves all available layers from the URL.
 
-    removeAjaxLoader();
+-   When the retrieve WMS layers button is clicked, a loading effect is displayed.
 
-    disableAllControls();
+-   The code takes the WMS URL entered by the user and sends a request to get its GetCapabilities XML.
 
-    }else {
+-   After getting the response, it closes the input modal.
 
-    currentControl = 'add_road_control';
+-   The capabilities XML is parsed and names of all available layers are obtained.
 
-    \$('\#add-road-tool-box').show();
+-   These layer names are stored in an array and displayed in a dropdown inside another modal.
 
-    vectorSource = new ol.source.Vector({
+-   The WMS and related WFS base URLs are created by modifying the user-entered URL.
 
-    url: '\<?php echo Config::get("constants.GEOSERVER_URL"); ?\>/ows?service=WFS&' +
+-   If the user selects a layer from the dropdown, the selected layer name and WMS URL are retrieved.
 
-    'version=1.1.0&request=GetFeature&typeName=\<?php echo Config::get("constants.GEOSERVER_WORKSPACE"); ?\>:roadlines_layer&&CQL_FILTER=deleted_at is null&' +
+-   The code extracts the workspace name from the WMS URL.
 
-    'SRS=EPSG:4326&outputFormat=json&authkey=9499949e-6318-4ffd-8384-ed94c5d84770',
+-   Request is made to the WFS endpoint to get the municipality boundary polygon (city polygon layer).
 
-    format: new ol.format.GeoJSON(),
+-   City boundary geometry is parsed and stored.
 
-    });
+-   Request is made to the WFS service to import features of the target layer.
 
-    vectorLayer = new ol.layer.Vector({
+-   All features of the targeted layer are queried for whether any of them spatially overlap the city boundary or not.
 
-    background: '\#1a2b39',
+-   In case of no overlap, an error alert is displayed.
 
-    source: vectorSource,
+-   If an intersection is correct, a new WMS layer is constructed and overlaid on the map, showing the chosen data.
 
-    name: 'add-roads-layer'
+##### Locate Me
 
-    });
-
-    drawSource = new ol.source.Vector({format: new ol.format.GeoJSON()});
-
-    drawLayer = new ol.layer.Vector({
-
-    background: '\#1a2b39',
-
-    source: drawSource,
-
-    name: 'add-roads-draw-layer'
-
-    });
-
-    if (!allLayers.includes('add-roads-layer')) {
-
-    map.addLayer(vectorLayer);
-
-    }else{
-
-    removeAjaxLoader();
-
-    }
-
-    if (!allLayers.includes('add-roads-draw-layer')) {
-
-    map.addLayer(drawLayer);
-
-    }
-
-    var sourceEventListener = vectorSource.on('change', function(e) {
-
-    if (vectorSource.getState() === 'ready') {
-
-    vectorSource.un('change', sourceEventListener);
-
-    removeAjaxLoader();
-
-    }});}});
-
-    \< -- CODE END -- \>
-
--   Initial steps are explained below in Initialize having id value (“add_road_control”).
-
--   The code checks if currentControl is equal to add_road_control, if the condition is true than the variable "currentControl" is set to an empty string. Else variable "currentControl" is set to add_road_control.
-
--   Shows the HTML element with the id 'add-road-tool-box'. This could be a UI component related to road editing tools.
-
--   Creates a vector source for road data. It seems to fetch data from a GeoServer using WFS (Web Feature Service) with specific parameters like service version, request type, feature type name, etc.
-
--   Creates a vector layer for the road data fetched from the vector source. The layer is styled with a background color '\#1a2b39'.
-
--   Creates a vector source for drawing roads. It's likely used for user interaction to add or edit road features.
-
--   Creates a vector layer for drawing roads.
-
--   Checks if the 'add-roads-layer' is not already added to the map. If it's not, the vectorLayer (which contains road data) is added to the map.
-
--   Checks if the 'add-roads-draw-layer' is not already added to the map. If it's not, the drawLayer (which is used for drawing roads) is added to the map.
-
--   Listens for changes in the vectorSource. When the state of the source becomes 'ready', it removes the loading spinner or any loading indicators.
-
-    **Add**
-
--   This tool allows the user to initialize a draw interaction of type MultiLineString. Add draw,snap & undo interactions.
+-   This tool is used for importing layer from WMS URL and displaying the selected layer on map.
 
 -   Path: views/maps/index.blade.php
 
+```sh
     \< -- CODE START -- \>
 
-    \<a href="\#" id="add_road_start_control" class="btn btn-default map-control" data-toggle="tooltip"data-placement="bottom" title="Add"\>\<i class="fa fa-circle-plus fa-fw"\>\</i\>\</a\>
+    \<a href="\#" id="get_location" class="btn btn-default map-control" data-toggle="tooltip"data-placement="bottom" title="Locate Me"\>\<img src="{{ asset('img/locate_me.png')}}" style="height:20px;"alt="Location Icon">\</a\> \< -- CODE END -- \>
+```
 
-    \<--CODE End -- \>
+-   Here, id value (get_location) trigger the jQuery as
 
--   Here, id value (add_road_start_control) trigger the jQuery as
+```sh
+\< -- CODE START -- \>
 
-    \< -- CODE START -- \>
+\$('\#get_location').click(function (e) {
 
-    \$('\#add_road_start_control').click(function (e) {
+e.preventDefault();
 
-    e.preventDefault();
+disableAllControls();
 
-    hideAddRoadForm();
+\$('.map-control').removeClass('map-control-active');
 
-    if (currentAddRoadControl !== 'Add Road'){
+currentControl = '';
 
-    currentAddRoadControl = 'Add Road';
 
-    addRoadDrawInteractions();
+if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(showLoc, errHand);
+                } \< -- CODE END -- \>
+```
 
-    }
+-   Initial steps are explained below in Initialize having id value (get_location).
 
-    });
+-   The variable "currentControl" is set to an empty string.
 
-    \<--CODE End -- \>
+-   Checks if the browser supports geolocation.
 
--   Initial steps are explained below in Initialize having id value (“add_road_start_control”).
+    -   If supported, it calls getCurrentPosition():
 
--   Selects an element with the id add_road_start_control using jQuery. It then attaches a click event handler to it. When this element is clicked, the function specified inside the click() method will be executed.
+    -   If successful, it runs showLoc() which is explained below .
 
--   Calls a function named ‘**hideAddRoadForm()**’ which is explained in supporting functions.
+    -   If it fails, it runs errHand() which is explained below.
 
--   Checks whether the variable currentAddRoadControl is not equal to 'Add Road'. If this condition is true, it means that the current control for adding a road is not already set to 'Add Road'.
+**_showLoc()_**
 
--   Updates the value of the variable currentAddRoadControl to 'Add Road'. This variable likely keeps track of the current state or mode of the road adding functionality.
+-   Gets the latitude and longitude of the user's current position.
 
--   Calls a function named ‘**addRoadDrawInteractions()**’ explained below.
+-   Setup AJAX headers including CSRF token and content type. It calls ‘**checkLocationWithinBoundary**’ function of ‘**MapsController**’.
 
-    addRoadDrawInteractions()
+    -   Make an AJAX request to check whether a given point (latitude & longitude) lies within a municipality boundary.
 
--   Remove any existing modify and select interactions from the map. These interactions might be present to modify or select existing features on the map.
+    -   On success, it returns the intersected feature and display it on the map.
 
--   Creates a new draw interaction for drawing roads on the map. It specifies the source where the drawn features will be added (drawSource) and sets the type of geometry that can be drawn, in this case, "MultiLineString" which means multiple lines can be drawn to form a road.
+-   If not, it shows an error message modal.
 
--   Creates a snap interaction to snap the vertices of the drawn roads to existing features on the map. It specifies the source from which to snap vertices (vectorSource).
+**_errHand()_**
 
--   Creates another snap interaction, but this time it's for snapping the vertices of the newly drawn roads to each other. It specifies the source from which to snap vertices (drawSource).
+-   The errHand function is defined to handle geolocation errors.
 
--   creates an Undo/Redo interaction, which allows users to undo and redo their drawing actions.
+-   It uses a switch statement to handle different error codes returned by the Geolocation API, and displays corresponding messages based on each case:
 
--   Add the draw, snap, and undo interactions to the map.
+    -   PERMISSION_DENIED : Displays a message when the user denies location access permission.
 
--   Attaches an event listener to the draw interaction's "drawstart" event. This function is triggered when the user starts drawing a new road. Within this event listener, it hides the form used for adding roads ‘**hideAddRoadForm**()’ and removes any previously drawn roads ‘**removeDrawnRoads**()’. These two function: ‘**hideAddRoadForm**()’ and ‘**removeDrawnRoads**()’ are further explained below in supporting functions.
+    -   POSITION_UNAVAILABLE: Displays a message if the device’s location cannot be determined.
 
-**Undo last point**
+    -   TIMEOUT: Displays a message when the request to get the location takes too long and times out.
 
--   This tool allows the user to undo the last drawn point.
+    -   UNKNOWN_ERROR: Displays a message for any other unknown location error.
+
+##### KML Drag and Drop
+
+-   This tool is used to handle KML drag-and-drop, validate it, visualize features on the map, and prepare the data for further processing.
 
 -   Path: views/maps/index.blade.php
 
+-   Here, this function is triggered after uploading a KML file onto the map via drag and drop
+
+```sh
     \< -- CODE START -- \>
 
-    \<a href="\#" id="add_road_undo_last_point_control" class="btn btn-default map-control ml-1" data-toggle="tooltip"
+    \<a href="\#" id="kml_drag_drop" class="btn btn-default map-control" data-toggle="tooltip"data-placement="bottom" title="KML Drag and Drop"\>\<img src="{{ asset('img/kml_icon.png')}}" style="height:22px;"alt="Location Icon"\> \< -- CODE END -- \>
+```
 
-    data-placement="bottom" title="Undo last point"\>\<i class="fa fa-clock-rotate-left fa-fw"\>\</i\>\</a\>
+-   A popup appears with the message: 'To view a KML file, please drag and drop it directly onto the map'.
 
-    \<--CODE End -- \>
+```sh
+\< -- CODE START -- \>
 
--   Here, id value (add_road_undo_last_point_control) trigger the jQuery as
+\  dragAndDropInteraction.on('addfeatures', function (event)
+ {
+                }) \< -- CODE END -- \>
+```
 
-    \< -- CODE START -- \>
+-   Initially, if more than 1000 features are dropped, a SweetAlert warning is shown and the function stops.
 
-    \$('\#add_road_undo_last_point_control').click(function (e) {
+-   If not, convert the geometry of each feature from the map's coordinate system (EPSG:3857) to WKT format in the WGS84 coordinate system (EPSG:4326).
 
-    e.preventDefault();
+-   Sends all geometries to the backend to check if they intersect with the municipality area.
 
-    hideAddRoadForm();
+    -   If any geometry does not intersect, show a warning via SweetAlert and stop further processing.
+    -   If all intersect, continue with rendering and data fetching
 
-    roadDrawInteraction?.removeLastPoint();
+-   All geometries are sent to a backend using AJAX.
 
-    });
+-   The server checks whether each feature intersects with the municipality boundaries.
 
-    \<--CODE End -- \>
+-   If even one feature doesn't intersect:
 
--   Initial steps are explained below in Initialize having id value (“add_road_undo_last_point_control'”).
+    -   Show a warning alert to inform the user.
 
--   Calls a function named ‘**hideAddRoadForm()**’ which is explained in supporting functions.
+    -   Stop the process here.
 
--   It ensures that if roadDrawInteraction is null or undefined, the code will not throw an error and removeLastPoint() will not be called. If roadDrawInteraction is defined and has a removeLastPoint() method, it will be executed that will remove the last drawn point.
+-   The existing KML layer on the map is cleared or created.
 
-    **Undo**
+-   Each feature is styled and added:
 
--   This tool allows the user to undo the entire drawn line.
+    -   Points get a marker icon.
 
--   Path: views/maps/index.blade.php
+    -   Lines and polygons get a red stroke outline.
 
-    \< -- CODE START -- \>
+-   The map automatically zooms in to fit the boundaries of the newly added features.
 
-    \<a href="\#" id="add_road_undo_control" class="btn btn-default map-control ml-1" data-toggle="tooltip"
+-   A separate map layer is used for buildings (from the KML file).
 
-    data-placement="bottom" title="Undo"\>\<i class="fa fa-rotate-left fa-fw"\>\</i\>\</a\>\<--CODE End -- \>
+    -   If it doesn’t exist, it’s created.
 
--   Here, id value (add_road_undo_control) trigger the jQuery as
+    -   This layer is styled with blue outlines.
 
-    \< -- CODE START -- \>
+-   The list of geometries is sent to another backend using ajax.
 
-    \$('\#add_road_undo_control').click(function (e) {
+-   The server sends back information about the buildings and other details.
 
-    e.preventDefault();
+-   Each building geometry from the summary is styled and added to the building layer on the map.
 
-    hideAddRoadForm();
+-   It consists of an 'Export to Excel' button. When the form is submitted, the geometry data is passed along for storage or further processing.
 
-    undoInteraction?.undo();
-
-    });
-
-    \<--CODE End -- \>
-
--   Initial steps are explained below in Initialize having id value (“add_road_undo_control'”).
-
--   Calls a function named ‘**hideAddRoadForm()**’ which is explained in supporting functions.
-
--   It ensures that if undoInteraction is null or undefined, the code will not throw an error and undo() will not be called. If undoInteractionis defined and has a rundo() method, it will be executed that will undo all drawn point.
-
-    **Redo**
-
--   This tool allows the user to redo the drawing that was undone.
-
--   Path: views/maps/index.blade.php
-
-    \< -- CODE START -- \>
-
-    \<a href="\#" id="add_road_redo_control" class="btn btn-default map-control ml-1" data-toggle="tooltip"
-
-    data-placement="bottom" title="Redo"\>\<i class="fa fa-rotate-right fa-fw"\>\</i\>\</a\>
-
-    \<--CODE End -- \>
-
--   Here, id value (add_road_undo_control) trigger the jQuery as
-
-    \< -- CODE START -- \>
-
-    \$('\#add_road_redo_control').click(function (e) {
-
-    e.preventDefault();
-
-    hideAddRoadForm();
-
-    undoInteraction?.redo();
-
-    });
-
-    \<--CODE End -- \>
-
--   Initial steps are explained below in Initialize having id value (“add_road_redo_control'”).
-
--   Calls a function named ‘**hideAddRoadForm()**’ which is explained in supporting functions.
-
--   It ensures that if undoInteraction is null or undefined, the code will not throw an error and redo() will not be called. If undoInteractionis defined and has a redo() method, it will be executed that will redo the drawn point.
-
-    **Edit**
-
--   This tool allows the user to edit the road.
-
--   Path: views/maps/index.blade.php
-
-    \< -- CODE START -- \>
-
-    \<a href="\#" id="add_road_edit_control" class="btn btn-default map-control ml-1" data-toggle="tooltip"
-
-    data-placement="bottom" title="Edit"\>\<i class="fa fa-pen-to-square fa-fw"\>\</i\>\</a\>\<--CODE End -- \>
-
--   Here, id value (add_road_edit_control) trigger the jQuery as
-
-    \< -- CODE START -- \>
-
-    \$('\#add_road_edit_control').click(function(e){
-
-    hideAddRoadForm();
-
-    if (currentAddRoadControl === 'Modify Road'){
-
-    currentAddRoadControl='';
-
-    removeAllAddRoadInteractions();
-
-    }else {
-
-    if (currentAddRoadControl === 'Add Road') {
-
-    Swal.fire({
-
-    title: 'Are you sure?',
-
-    text: "Roads added would be lost!",
-
-    icon: 'warning',
-
-    showCancelButton: true,
-
-    confirmButtonText: 'Yes',
-
-    cancelButtonText: 'No!',
-
-    reverseButtons: true
-
-    }).then((result) =\> {
-
-    if (result.isConfirmed) {
-
-    removeAllAddRoadInteractions();
-
-    removeDrawnRoads();
-
-    currentAddRoadControl='Modify Road';
-
-    addRoadModifyInteractions();
-
-    } else if (result.dismiss === Swal.DismissReason.cancel) {
-
-    //do nothing
-
-    }});
-
-    }else{
-
-    currentAddRoadControl='Modify Road';
-
-    addRoadModifyInteractions();
-
-    }}});
-
-    \<--CODE End -- \>
-
--   Initial steps are explained below in Initialize having id value (“add_road_edit_control”).
-
--   This code binds a click event handler to the HTML element with the id add_road_edit_control. When this element is clicked, the function inside the click() method will be executed.
-
--   Calls a function named ‘**hideAddRoadForm()**’ which is explained in supporting functions.
-
--   if the variable currentAddRoadControl is equal to 'Modify Road', it sets currentAddRoadControl to an empty string and call ‘**removeAllAddRoadInteractions()**’ which is further explained in supporting functions.
-
--   If the currentAddRoadControl is not 'Modify Road', this code displays a confirmation dialog using the SweetAlert library. It asks the user if they are sure they want to proceed, warning that added roads would be lost.
-
--   If the user confirms the action, it executes some functions to remove existing road interactions, drawn roads, and then sets currentAddRoadControl to 'Modify Road', and adds modify interactions for roads. If the user cancels the action, nothing happens.
-
--   If currentAddRoadControl is not 'Modify Road' and the user hasn't chosen to cancel, it simply sets currentAddRoadControl to 'Modify Road' and calls ‘**addRoadModifyInteractions()**’which is explained in supporting function. It ensures that if undoInteraction is null or undefined, the code will not throw an error and redo() will not be called. If undoInteractionis defined and has a redo() method, it will be executed that will redo the drawn point
-
-    **Delete**
-
--   This tool allows the user to remove the drawn lines
-
--   Path: views/maps/index.blade.php
-
-    \< -- CODE START -- \>
-
-    \<a href="\#" id="add_road_delete_control" class="btn btn-default map-control ml-1" data-toggle="tooltip"
-
-    data-placement="bottom" title="Remove all drawn lines"\>\<i class="fa fa-trash fa-fw"\>\</i\>\</a\>\<--CODE End -- \>
-
--   Here, id value (add_road_edit_control) trigger the jQuery as
-
-    \< -- CODE START -- \>
-
-    \$('\#add_road_delete_control').click(function (e) {
-
-    e.preventDefault();
-
-    hideAddRoadForm();
-
-    removeDrawnRoads();
-
-    });
-
-    \<--CODE End -- \>
-
--   Initial steps are explained below in Initialize having id value (“add_road_delete_control”).
-
--   This code binds a click event handler to the HTML element with the id add_road_delete_control. When this element is clicked, the function inside the click() method will be executed.
-
--   Calls a function named ‘**hideAddRoadForm()**’ and ‘**removeDrawnRoads()**’ which is explained in supporting functions.
-
-    **Submit**
-
--   There are two types of submission the user can perform. One is an add road submit and another is an updated road submit.
-
--   Path: views/maps/index.blade.php
-
-    \< -- CODE START -- \>
-
-    \<a href="\#" id="add_road_submit_control" class="btn btn-default map-control ml-1" data-toggle="tooltip"
-
-    data-placement="bottom" title="Save"\>\<i class="fa fa-floppy-disk fa-fw"\>\</i\>\</a\>\<--CODE End -- \>
-
--   Here, id value (add_road_submit_control) trigger the jQuery as
-
-    \< -- CODE START -- \>
-
-    \$('\#add_road_submit_control').click(function (e) {
-
-    e.preventDefault();
-
-    if (currentAddRoadControl === 'Add Road'){
-
-    let features = drawLayer.getSource().getFeatures();
-
-    if(features){
-
-    if(features.length \< 1 ){
-
-    Swal.fire({
-
-    title: 'Error',
-
-    text : \`Please draw a roadline before saving!\`,
-
-    icon: "warning",
-
-    });
-
-    }else{
-
-    \$('.add-road-form').slideToggle();
-
-    }
-
-    } ………………..
-
-    ……………………………………
-
-    …………………………………..
-
-    ………………………………… } else {
-
-    hideAddRoadForm();
-
-    Swal.fire({
-
-    title: 'Nothing to save!',
-
-    icon: "warning",
-
-    });
-
-    }
-
-    });
-
-    \<--CODE End -- \>
-
--   Initial steps are explained below in Initialize having id value (“add_road_submit_control”).
-
--   This code binds a click event handler to the HTML element with the id add_road_submit_control.
-
--   It checks the value of the variable currentAddRoadControl to determine the current state of road manipulation. There are three main branches depending on its value:
-
-    -   If currentAddRoadControl is 'Add Road':
-
-        -   It retrieves features from the drawLayer source.
-
-        -   If there are no features drawn, it displays a warning message using Swal (SweetAlert) indicating that the user needs to draw a roadline before saving.
-
-        -   If there are features drawn, it toggles the visibility of the .add-road-form element.
-
-        -   Add-road-form contain allows to add the details information about the road.
-
-        -   Ater that, on clicking the submit button.
-
-        -   It prepares the geometry data for the road feature to be added. It retrieves the last feature drawn from drawSource, converts its geometry to WKT format, and transforms it from EPSG:3857 to EPSG:4326 coordinate reference system.
-
-        -   It sets up AJAX headers including CSRF token and specifies that the expected response format is JSON.
-
-        -   It sends an AJAX POST request to the server with the following data. It calls the ‘**store**’ function of ‘**RoadlineController**’.
-
-        -   Upon a successful response from the server.
-
-        -   Slides up (hides) the add road form.
-
-        -   Displays a success message using Swal indicating that the road(s) have been added successfully.
-
-        -   Resets the add road tool.
-
-        -   Triggers a click event on the element with the ID add_road_control. Removes the AJAX loader.
-
-        -   Upon an error response from the server. Constructs an error message from the response data (if available) and appends it to the \#add-road-errors element.
-
-        -   Focuses on the \#add-road-errors element.
-
-        -   Removes the AJAX loader.
-
-    -   If currentAddRoadControl is 'Modify Road':
-
-        -   It hides the add road form.
-
-        -   Checks if there are modifications made (hasModification).
-
-        -   If there are modifications. It displays a warning message using Swal, asking the user to confirm if they want to save the changes.
-
-        -   Upon confirmation, it sends an AJAX request to update the road geometry. It calls the ‘**updateRoadGeom**’ function of ‘**RoadlineController**’.
-
-        -   Displays success or error messages based on the AJAX request response.
-
-        -   If there are no modifications, it displays a warning message using Swal indicating that there is nothing to save.
-
-    -   If currentAddRoadControl is neither 'Add Road' nor 'Modify Road':
-
-        -   It hides the add road form.
-
-        -   Displays a warning message using Swal indicating that there is nothing to save.
+-   If something goes wrong a modal appears showing an error message.
 
 ##### Remove Markers
 
@@ -3813,7 +3556,6 @@ disableAllControls();
 \$('.map-control').removeClass('map-control-active');
 
 currentControl = '';
-
 
 \$.each(eLayer, function (key, value) {
 
@@ -3935,7 +3677,7 @@ map.removeOverlay(staticMeasureTooltip); }); \< -- CODE END -- \>
 
     -   If the request is not successful, it displays an error message.
 
-   -   The function returns false to prevent the form from being submitted.
+-   The function returns false to prevent the form from being submitted.
 
 ### Supporting Functions
 
@@ -3957,9 +3699,9 @@ map.removeOverlay(staticMeasureTooltip); }); \< -- CODE END -- \>
 
 -   A helper function setExportLink updates the exportLink to include the desired output format and optionally the file extension. It then opens this link in a new window.
 
--  The switch statement is used to execute different code blocks based on the value of outputFormat.
+-   The switch statement is used to execute different code blocks based on the value of outputFormat.
 
--  outputFormat.toLowerCase() ensures that the outputFormat is compared in lowercase, making the check case-insensitive. 
+-   outputFormat.toLowerCase() ensures that the outputFormat is compared in lowercase, making the check case-insensitive.
 
 -   Retrieves the property names for the selected layer from propertyNames.
 
@@ -4049,38 +3791,6 @@ map.removeOverlay(staticMeasureTooltip); }); \< -- CODE END -- \>
 
 -   Finally, the function updates the source parameters of the layer with the CQL_FILTER parameter set to the cql_filter string.
 
-**hideAddRoadForm()**
-
--   This line uses jQuery to select all elements with the class add-road-form.
-
--   The slideUp() function is then called on these selected elements that hides the selected elements by sliding them up.
-
-**removeDrawnRoads()**
-
--   When this function is called, it removes all drawn roads or features from the specified draw layer on the map. This is achieved by clearing the data source associated with the layer.
-
-**removeAllAddRoadInteractions()**
-
--   This function ensures for removing various interactions related to adding roads from a map
-
-**addRoadModifyInteractions()**
-
--   Initially, the function removes any existing interactions related to road drawing to ensure a clean slate for modification interactions.
-
--   Creates a new ol.interaction.Select interaction, which allows users to select road features on the map. This interaction is configured to work with layers drawLayer and vectorLayer, and it specifies a custom style for selected features.
-
--   The function creates a ol.interaction.ModifyFeature interaction. This interaction is responsible for modifying selected road features. It is initialized with the features selected using the selectInteraction.
-
--   Create Undo/Redo Interaction: An ol.interaction.UndoRedo interaction is created to enable undo and redo functionality for modifications made to road features.
-
--   The newly created interactions (modifyInteraction, selectInteraction, roadSnapInteraction, roadDrawnSnapInteraction, and undoInteraction) are added to the map using the map.addInteraction() method.
-
--   The select event handler is attached to the selectInteraction. This handler is triggered when a feature is selected. It checks if there are any modifications made to the selected feature and prompts the user with a confirmation dialog if there are unsaved changes.
-
--   The modifyend event handler is attached to the modifyInteraction. This handler is triggered when modification of a feature is completed. It sets a flag hasModification to true and stores the modified feature.
-
--   The undoInteraction.clear() method is called to clear any existing undo history.
-
 **hoverOnRoadsHandler()**
 
 -   Inside the function, it checks if the map is being dragged (evt.dragging). If the map is being dragged, the function returns early and does nothing. This prevents unnecessary processing when the map is being interactively moved by the user.
@@ -4095,78 +3805,78 @@ map.removeOverlay(staticMeasureTooltip); }); \< -- CODE END -- \>
 
 Controllers stored in app\\Http\\Controllers\\MapsController.php
 
-| **Function**    | \__construct()                                                         |
-|-----------------|------------------------------------------------------------------------|
+| **Function**    | \_\_construct()                                                        |
+| --------------- | ---------------------------------------------------------------------- |
 | **Description** | Initializes authentication, permissions and the service class instance |
 | **Parameters**  | Service class instance(Excel, MapsService)                             |
 | **Return**      | null                                                                   |
 | **Source**      | app\\Http\\Controllers\\MapsController.php                             |
 
 | **Function**    | index ()                                                                     |
-|-----------------|------------------------------------------------------------------------------|
+| --------------- | ---------------------------------------------------------------------------- |
 | **Description** | Returns the index.blade.php page with dropdown values fetched from database. |
 | **Parameters**  | null                                                                         |
 | **Return**      | maps.index                                                                   |
 | **Source**      | app\\Http\\Controllers\\MapsController.php                                   |
 
 | **Function**    | getBufferPolygonReportCSV ()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-|-----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Description** | Calls the class that handles the data about buffer polygon that is stored in the server.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | **Parameters**  | Null                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| **Return**      | CSV files containing data obtainerd from:   new SummaryInfoMultiSheetExport(request()-\>buffer_polygon_geom, request()-\>buffer_polygon_distance)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| **Return**      | CSV files containing data obtainerd from: new SummaryInfoMultiSheetExport(request()-\>buffer_polygon_geom, request()-\>buffer_polygon_distance)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | **Source**      | app\\Http\\Controllers\\MapsController.php                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | **Remarks**     | SummaryInfoMultiSheetExport: The Excel file is generated using this class, passing the buffer polygon geometry and distance obtained from the request parameters. In this case, it returns an array containing instances of other export classes (BuildingsExport, BuildingsListExport, and ContainmentsListExport), passing the buffer polygon geometry and distance to each of them. BuildingsExport: This class encapsulates the logic to export building data from SQL query using the provided buffer polygon geometry data and its buffer distance to an Excel sheet, apply some styling, and provide a title for the sheet. BuildingsListExport: This class encapsulates the logic to export a list of buildings data from SQL query using the provided buffer polygon geometry data and its buffer distance to an Excel sheet, apply some styling, and provide a title for the sheet. ContainmentsListExport: This class encapsulates the logic to export a list of containments data from SQL query using the provided buffer polygon geometry data and its buffer distance to an Excel sheet, apply some styling, and provide a title for the sheet. |
 
 | **Function**    | getWaterBodyReportCsv ()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Description** | Calls the class that handles the data about buffer water body polygon that is stored in the server.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | **Parameters**  | Null                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| **Return**      | CSV files containing data obtained from:  new SummaryInfoMultiSheetExport(\$waterbody[0]-\>geom, \$bufferDisancePolygon)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| **Return**      | CSV files containing data obtained from: new SummaryInfoMultiSheetExport(\$waterbody[0]-\>geom, \$bufferDisancePolygon)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | **Source**      | app\\Http\\Controllers\\MapsController.php                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | **Remarks**     | A SQL query is constructed to retrieve the geometry of the water body from the database table layer_info.waterbodys based on the provided wb_code. Execute the constructed SQL query using Laravel's DB facade to fetch the geometry of the waterbody. Check if a buffer distance is provided in the request (wb_distance). If a valid distance is provided, set bufferDisancePolygon to that value. Otherwise, set it to 0. Instantiate a SummaryInfoMultiSheetExport export class with the water body geometry and buffer distance parameters. In this case, it returns an array containing instances of other export classes (BuildingsExport, BuildingsListExport, and ContainmentsListExport), passing the buffer polygon geometry and distance to each of them. BuildingsExport: This class encapsulates the logic to export building data from SQL query using the provided waterbody geometry data and its buffer distance to an Excel sheet, apply some styling, and provide a title for the sheet. BuildingsListExport: This class encapsulates the logic to export a list of buildings data from SQL query using the provided waterbody geometry data and its buffer distance to an Excel sheet, apply some styling, and provide a title for the sheet. ContainmentsListExport: This class encapsulates the logic to export a list of containments data from SQL query using the provided waterbody geometry data and its buffer distance to an Excel sheet, apply some styling, and provide a title for the sheet. |
 
-| **Function**    | getWardBuildingsReportCsv()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-|-----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Description** | Calls the class that handles the data about ward building that is stored in the server.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| **Parameters**  | Null                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| **Return**      | CSV files containing data from:  new SummaryInfoMultiSheetExport(\$rowGeom, 0)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| **Source**      | app\\Http\\Controllers\\MapsController.php                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| **Remarks**     | A SQL query is constructed to retrieve the geometry data of ward from the database table layer_info.wards based on a specific ward number obtained from the request parameter ward_building_no. The geometry data (in WKT format) from the first row of the result set is retrieved and stored in the variable \$rowGeom.  Instantiate a SummaryInfoMultiSheetExport export class with the ward geometry and 0 parameters. In this case, it returns an array containing instances of other export classes (BuildingsExport, BuildingsListExport, and ContainmentsListExport), passing the polygon geometry. BuildingsExport: This class encapsulates the logic to export building data from SQL query using the provided ward geometry data to an Excel sheet, apply some styling, and provide a title for the sheet. BuildingsListExport: This class encapsulates the logic to export a list of buildings data from SQL query using the provided ward geometry data to an Excel sheet, apply some styling, and provide a title for the sheet.ContainmentsListExport: This class encapsulates the logic to export a list of containments data from SQL query using the provided ward geometry data to an Excel sheet, apply some styling, and provide a title for the sheet. |
+| **Function**    | getWardBuildingsReportCsv()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Description** | Calls the class that handles the data about ward building that is stored in the server.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| **Parameters**  | Null                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| **Return**      | CSV files containing data from: new SummaryInfoMultiSheetExport(\$rowGeom, 0)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| **Source**      | app\\Http\\Controllers\\MapsController.php                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| **Remarks**     | A SQL query is constructed to retrieve the geometry data of ward from the database table layer_info.wards based on a specific ward number obtained from the request parameter ward_building_no. The geometry data (in WKT format) from the first row of the result set is retrieved and stored in the variable \$rowGeom. Instantiate a SummaryInfoMultiSheetExport export class with the ward geometry and 0 parameters. In this case, it returns an array containing instances of other export classes (BuildingsExport, BuildingsListExport, and ContainmentsListExport), passing the polygon geometry. BuildingsExport: This class encapsulates the logic to export building data from SQL query using the provided ward geometry data to an Excel sheet, apply some styling, and provide a title for the sheet. BuildingsListExport: This class encapsulates the logic to export a list of buildings data from SQL query using the provided ward geometry data to an Excel sheet, apply some styling, and provide a title for the sheet.ContainmentsListExport: This class encapsulates the logic to export a list of containments data from SQL query using the provided ward geometry data to an Excel sheet, apply some styling, and provide a title for the sheet. |
 
-| **Function**    | getRoadBuildingsReportCsv()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-|-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Description** | Calls the class that handles the data about road to building that is stored in the server.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| **Parameters**  | Null                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| **Return**      | CSV files containing data from:  new SummaryInfoMultiSheetExport(\$rowGeom, \$bufferDisancePolygon)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| **Source**      | app\\Http\\Controllers\\MapsController.php                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| **Remarks**     | A SQL query is constructed to retrieve the geometry data of road from the database table utility_info.roads based on a specific road code obtained from the request parameter road_code. The geometry data (in WKT format) from the first row of the result set is retrieved and stored in the variable \$row.  Check if a buffer distance is provided in the request (rb_distance). If a valid distance is provided, set bufferDisancePolygon to that value. Otherwise, set it to 0. Instantiate a SummaryInfoMultiSheetExport export class with the road geometry and buffer distance parameters. In this case, it returns an array containing instances of other export classes (BuildingsExport, BuildingsListExport, and ContainmentsListExport), passing the buffer polygon geometry and distance to each of them. BuildingsExport: This class encapsulates the logic to export building data from SQL query using the provided road geometry data, and its buffer distance to an Excel sheet, apply some styling, and provide a title for the sheet. BuildingsListExport: This class encapsulates the logic to export a list of buildings data from SQL query using the provided road geometry data, and its buffer distance to an Excel sheet, apply some styling, and provide a title for the sheet. ContainmentsListExport: This class encapsulates the logic to export a list of containments data from SQL query using the provided road geometry data, and its buffer distance to an Excel sheet, apply some styling, and provide a title for the sheet. |
+| **Function**    | getRoadBuildingsReportCsv()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Description** | Calls the class that handles the data about road to building that is stored in the server.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| **Parameters**  | Null                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| **Return**      | CSV files containing data from: new SummaryInfoMultiSheetExport(\$rowGeom, \$bufferDisancePolygon)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| **Source**      | app\\Http\\Controllers\\MapsController.php                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| **Remarks**     | A SQL query is constructed to retrieve the geometry data of road from the database table utility_info.roads based on a specific road code obtained from the request parameter road_code. The geometry data (in WKT format) from the first row of the result set is retrieved and stored in the variable \$row. Check if a buffer distance is provided in the request (rb_distance). If a valid distance is provided, set bufferDisancePolygon to that value. Otherwise, set it to 0. Instantiate a SummaryInfoMultiSheetExport export class with the road geometry and buffer distance parameters. In this case, it returns an array containing instances of other export classes (BuildingsExport, BuildingsListExport, and ContainmentsListExport), passing the buffer polygon geometry and distance to each of them. BuildingsExport: This class encapsulates the logic to export building data from SQL query using the provided road geometry data, and its buffer distance to an Excel sheet, apply some styling, and provide a title for the sheet. BuildingsListExport: This class encapsulates the logic to export a list of buildings data from SQL query using the provided road geometry data, and its buffer distance to an Excel sheet, apply some styling, and provide a title for the sheet. ContainmentsListExport: This class encapsulates the logic to export a list of containments data from SQL query using the provided road geometry data, and its buffer distance to an Excel sheet, apply some styling, and provide a title for the sheet. |
 
 | **Function**    | getPointBuildingReportCSV ()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Description** | Calls the class that handles the data about buffer point that is stored in the server.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | **Parameters**  | Null                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| **Return**      | CSV files containing data from:  new PointBuildingsSummaryInfoMultiSheetExport(request()-\>PTB_long, request()-\>PTB_lat, request()-\>PTB_distance)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| **Return**      | CSV files containing data from: new PointBuildingsSummaryInfoMultiSheetExport(request()-\>PTB_long, request()-\>PTB_lat, request()-\>PTB_distance)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | **Source**      | app\\Http\\Controllers\\MapsController.php                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | **Remarks**     | PointBuildingsSummaryInfoMultiSheetExport: The Excel file is generated using this class, passing the latitude, longitude and buffer distance obtained from the request parameters. In this case, it returns an array containing instances of other export classes (PointBuildingsExport, PointBuildingsListExport, and PointContainmentsListExport. PointBuildingsExport: This class encapsulates the logic to export building data from SQL query using the provided longitude, latitude, and its buffer distance to an Excel sheet, apply some styling, and provide a title for the sheet. PointBuildingsListExport: This class encapsulates the logic to export a list of buildings data from SQL query using the provided longitude, latitude, and its buffer distance to an Excel sheet, apply some styling, and provide a title for the sheet. PointContainmentsListExport: This class encapsulates the logic to export a list of containments data from SQL query using the provided longitude, latitude, and its buffer distance to an Excel sheet, apply some styling, and provide a title for the sheet. |
 
 | **Function**    | getBuildingsRoadReportCsv ()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-|-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Description** | Calls the class that handles the data about building to road that is stored in the server.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | **Parameters**  | Null                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | **Return**      | CSV files containing data from: (new BuildingsRoadSummaryInfoMultiSheetExport(request()-\>road_codes)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | **Source**      | app\\Http\\Controllers\\MapsController.php                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | **Remarks**     | BuildingsRoadSummaryInfoMultiSheetExport: The Excel file is generated using this class, passing the road code from the request parameters. In this case, it returns an array containing instances of other export classes (BuildingsRoadExport, BuildingsRoadListExport, and ContainmentsRoadListExport. BuildingsRoadExport: This class encapsulates the logic to export buildings and their sanitation systems data based on various criteria, such as structype and sanitation_system_technology_id. It also considers road codes and ensures that only active buildings and containments are included in the results display it to an Excel sheet, apply some styling, and provide a title for the sheet. BuildingsRoadListExport: This class encapsulates the logic to export a list of buildings data from SQL query using the provided longitude, latitude, and its buffer distance to an Excel sheet, apply some styling, and provide a title for the sheet. ContainmentsRoadListExport: This class encapsulates the logic to export a list of containments data from SQL query using the provided longitude, latitude, and its buffer distance to an Excel sheet, apply some styling, and provide a title for the sheet. |
 
-| **Function**    | getDrainPotentialReportCSV ()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-|-----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Description** | Calls the class that handles the data about sewer to building that is stored in the server.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| **Parameters**  | Null                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| **Return**      | CSV files containing data from: (new DrainPotentialSummaryInfoMultiSheetExport(\$rowGeom, \$bufferDisancePolygon)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| **Source**      | app\\Http\\Controllers\\MapsController.php                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| **Remarks**     | A SQL query is constructed to retrieve the geometry data of sewer from the database table utility_info.sewers based on a specific sewer code obtained from the request parameter sewer_code. The geometry data (in WKT format) from the first row of the result set is retrieved and stored in the variable \$rowGeom.  Check if a buffer distance is provided in the request (db_distance). If a valid distance is provided, set bufferDisancePolygon to that value. Otherwise, set it to 0. Instantiate a DrainPotentialSummaryInfoMultiSheetExport export class with the sewer geometry and buffer distance parameters. In this case, it returns an array containing instances of other export classes (BuildingsExport, BuildingsListExport, and ContainmentsListExport), passing the buffer polygon geometry and distance to each of them. BuildingsExport: This class encapsulates the logic to export building data from SQL query using the provided sewer geometry data, and its buffer distance to an Excel sheet, apply some styling, and provide a title for the sheet. BuildingsListExport: This class encapsulates the logic to export a list of buildings data from SQL query using the provided sewer geometry data, and its buffer distance to an Excel sheet, apply some styling, and provide a title for the sheet. ContainmentsListExport: This class encapsulates the logic to export a list of containments data from SQL query using the provided sewer geometry data, and its buffer distance to an Excel sheet, apply some styling, and provide a title for the sheet. |
+| **Function**    | getDrainPotentialReportCSV ()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Description** | Calls the class that handles the data about sewer to building that is stored in the server.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| **Parameters**  | Null                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| **Return**      | CSV files containing data from: (new DrainPotentialSummaryInfoMultiSheetExport(\$rowGeom, \$bufferDisancePolygon)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| **Source**      | app\\Http\\Controllers\\MapsController.php                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| **Remarks**     | A SQL query is constructed to retrieve the geometry data of sewer from the database table utility_info.sewers based on a specific sewer code obtained from the request parameter sewer_code. The geometry data (in WKT format) from the first row of the result set is retrieved and stored in the variable \$rowGeom. Check if a buffer distance is provided in the request (db_distance). If a valid distance is provided, set bufferDisancePolygon to that value. Otherwise, set it to 0. Instantiate a DrainPotentialSummaryInfoMultiSheetExport export class with the sewer geometry and buffer distance parameters. In this case, it returns an array containing instances of other export classes (BuildingsExport, BuildingsListExport, and ContainmentsListExport), passing the buffer polygon geometry and distance to each of them. BuildingsExport: This class encapsulates the logic to export building data from SQL query using the provided sewer geometry data, and its buffer distance to an Excel sheet, apply some styling, and provide a title for the sheet. BuildingsListExport: This class encapsulates the logic to export a list of buildings data from SQL query using the provided sewer geometry data, and its buffer distance to an Excel sheet, apply some styling, and provide a title for the sheet. ContainmentsListExport: This class encapsulates the logic to export a list of containments data from SQL query using the provided sewer geometry data, and its buffer distance to an Excel sheet, apply some styling, and provide a title for the sheet. |
 
 | **Function**    | getBuildingsTaxzoneReportCSV ()                                                                                                                                  |
-|-----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Description** | Calls the class that handles the data about buildings within a tax zone that is stored in the server.                                                            |
 | **Parameters**  | Null                                                                                                                                                             |
 | **Return**      | CSV file containing data from: (new BuildingsOwnerExport(\$geom)                                                                                                 |
@@ -4174,7 +3884,7 @@ Controllers stored in app\\Http\\Controllers\\MapsController.php
 | **Remarks**     | Instantiate a BuildingsOwnerExport export class with the geometry of building. A SQL query is constructed to fetch building information along with owner details |
 
 | **Function**    | getBuildingToContainment()                                                                        |
-|-----------------|---------------------------------------------------------------------------------------------------|
+| --------------- | ------------------------------------------------------------------------------------------------- |
 | **Description** | Calls the service class that handles the data                                                     |
 | **Parameters**  | null                                                                                              |
 | **Return**      | Returns the result obtained from the getBuildingToContainment() method of the \$mapsService,      |
@@ -4182,7 +3892,7 @@ Controllers stored in app\\Http\\Controllers\\MapsController.php
 | **Remarks**     | getBuildingToContainment () MapsService explains the Service Class Function Name mentioned above. |
 
 | **Function**    | getContainmentToBuildings ()                                                                       |
-|-----------------|----------------------------------------------------------------------------------------------------|
+| --------------- | -------------------------------------------------------------------------------------------------- |
 | **Description** | Calls the service class that handles the data                                                      |
 | **Parameters**  | null                                                                                               |
 | **Return**      | Returns the result obtained from the getContainmentToBuildings() method of the \$mapsService,      |
@@ -4190,7 +3900,7 @@ Controllers stored in app\\Http\\Controllers\\MapsController.php
 | **Remarks**     | getContainmentToBuildings () MapsService explains the Service Class Function Name mentioned above. |
 
 | **Function**    | getAssociatedToMainbuilding ()                                                                       |
-|-----------------|------------------------------------------------------------------------------------------------------|
+| --------------- | ---------------------------------------------------------------------------------------------------- |
 | **Description** | Calls the service class that handles the data                                                        |
 | **Parameters**  | null                                                                                                 |
 | **Return**      | Returns the result obtained from the getAssociatedToMainbuilding () method of the \$mapsService,     |
@@ -4198,7 +3908,7 @@ Controllers stored in app\\Http\\Controllers\\MapsController.php
 | **Remarks**     | getAssociatedToMainbuilding () MapsService explains the Service Class Function Name mentioned above. |
 
 | **Function**    | getExtent ()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-|-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Description** | Calls the service class that handles the data                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | **Parameters**  | null                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | **Return**      | the spatial extent of the requested layer such as: Returns the result obtained from the containmentExtent (\$layer, \$atrribute, \$value) method of the \$mapsService, Returns the result obtained from the buildingExtent (\$layer, \$atrribute, \$value) method of the \$mapsService, Returns the result obtained from the lineStringExtent(\$layer, \$atrribute, \$value) method of the \$mapsService, Returns the result obtained from the containmentSurveyExtent(\$atrribute, \$value) method of the \$mapsService, Returns the result obtained from the pointsExtent(\$layer, \$atrribute, \$value) method of the \$mapsService, |
@@ -4206,55 +3916,55 @@ Controllers stored in app\\Http\\Controllers\\MapsController.php
 | **Remarks**     | lineStringExtent(\$layer, \$atrribute, \$value), containmentSurveyExtent(\$atrribute, \$value) and pointsExtent(\$layer, \$atrribute, \$value) MapsService explains the Service Class Function Name mentioned above.                                                                                                                                                                                                                                                                                                                                                                                                                    |
 
 | **Function**    | getContainmentBuildings ()                                                                                                         |
-|-----------------|------------------------------------------------------------------------------------------------------------------------------------|
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
 | **Description** | Calls the service class that handles the data                                                                                      |
 | **Parameters**  | null                                                                                                                               |
 | **Return**      | Returns the result obtained from the getContainmentBuildings (request()-\>field, request()-\>val) method of the \$mapsService,     |
 | **Source**      | app\\Http\\Controllers\\ MapsController.php                                                                                        |
 | **Remarks**     | getContainmentBuildings (request()-\>field, request()-\>val) MapsService explains the Service Class Function Name mentioned above. |
 
-| **Function**    | getContainmentRoad ()                                                                                                              |
-|-----------------|------------------------------------------------------------------------------------------------------------------------------------|
-| **Description** | Calls the service class that handles the data                                                                                      |
-| **Parameters**  | null                                                                                                                               |
-| **Return**      | Returns the result obtained from the getContainmentRoadInfo (request()-\>field, request()-\>val) method of the \$mapsService,      |
-| **Source**      | app\\Http\\Controllers\\ MapsController.php                                                                                        |
-| **Remarks**     | getContainmentRoadInfo (request()-\>field, request()-\>val)  MapsService explains the Service Class Function Name mentioned above. |
+| **Function**    | getContainmentRoad ()                                                                                                             |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| **Description** | Calls the service class that handles the data                                                                                     |
+| **Parameters**  | null                                                                                                                              |
+| **Return**      | Returns the result obtained from the getContainmentRoadInfo (request()-\>field, request()-\>val) method of the \$mapsService,     |
+| **Source**      | app\\Http\\Controllers\\ MapsController.php                                                                                       |
+| **Remarks**     | getContainmentRoadInfo (request()-\>field, request()-\>val) MapsService explains the Service Class Function Name mentioned above. |
 
-| **Function**    | getBuildingRoad ()                                                                                                              |
-|-----------------|---------------------------------------------------------------------------------------------------------------------------------|
-| **Description** | Calls the service class that handles the data                                                                                   |
-| **Parameters**  | null                                                                                                                            |
-| **Return**      | Returns the result obtained from the getBuildingRoadInfo (request()-\>field, request()-\>val) method of the \$mapsService,      |
-| **Source**      | app\\Http\\Controllers\\ MapsController.php                                                                                     |
-| **Remarks**     | getBuildingRoadInfo (request()-\>field, request()-\>val)  MapsService explains the Service Class Function Name mentioned above. |
+| **Function**    | getBuildingRoad ()                                                                                                             |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| **Description** | Calls the service class that handles the data                                                                                  |
+| **Parameters**  | null                                                                                                                           |
+| **Return**      | Returns the result obtained from the getBuildingRoadInfo (request()-\>field, request()-\>val) method of the \$mapsService,     |
+| **Source**      | app\\Http\\Controllers\\ MapsController.php                                                                                    |
+| **Remarks**     | getBuildingRoadInfo (request()-\>field, request()-\>val) MapsService explains the Service Class Function Name mentioned above. |
 
-| **Function**    | getNearestRoad ()                                                                                                         |
-|-----------------|---------------------------------------------------------------------------------------------------------------------------|
-| **Description** | Calls the service class that handles the data                                                                             |
-| **Parameters**  | null                                                                                                                      |
-| **Return**      | Returns the result obtained from the getNearestRoad (request()-\>lat, request()-\>long) method of the \$mapsService,      |
-| **Source**      | app\\Http\\Controllers\\ MapsController.php                                                                               |
-| **Remarks**     | getNearestRoad (request()-\>lat, request()-\>long)  MapsService explains the Service Class Function Name mentioned above. |
+| **Function**    | getNearestRoad ()                                                                                                        |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| **Description** | Calls the service class that handles the data                                                                            |
+| **Parameters**  | null                                                                                                                     |
+| **Return**      | Returns the result obtained from the getNearestRoad (request()-\>lat, request()-\>long) method of the \$mapsService,     |
+| **Source**      | app\\Http\\Controllers\\ MapsController.php                                                                              |
+| **Remarks**     | getNearestRoad (request()-\>lat, request()-\>long) MapsService explains the Service Class Function Name mentioned above. |
 
-| **Function**    | getProposedEmptyingContainments ()                                                                                                                       |
-|-----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Description** | Calls the service class that handles the data                                                                                                            |
-| **Parameters**  | null                                                                                                                                                     |
-| **Return**      | Returns the result obtained from the getProposedEmptyingContainmentsInfo(request()-\>start_date, request()-\>end_date) method of the \$mapsService,      |
-| **Source**      | app\\Http\\Controllers\\ MapsController.php                                                                                                              |
-| **Remarks**     | getProposedEmptyingContainmentsInfo(request()-\>start_date, request()-\>end_date)  MapsService explains the Service Class Function Name mentioned above. |
+| **Function**    | getProposedEmptyingContainments ()                                                                                                                      |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Description** | Calls the service class that handles the data                                                                                                           |
+| **Parameters**  | null                                                                                                                                                    |
+| **Return**      | Returns the result obtained from the getProposedEmptyingContainmentsInfo(request()-\>start_date, request()-\>end_date) method of the \$mapsService,     |
+| **Source**      | app\\Http\\Controllers\\ MapsController.php                                                                                                             |
+| **Remarks**     | getProposedEmptyingContainmentsInfo(request()-\>start_date, request()-\>end_date) MapsService explains the Service Class Function Name mentioned above. |
 
-| **Function**    | getDueBuildings ()                                                                           |
-|-----------------|----------------------------------------------------------------------------------------------|
-| **Description** | Calls the service class that handles the data                                                |
-| **Parameters**  | null                                                                                         |
-| **Return**      | Returns the result obtained from the getDueBuildingsInfo() method of the \$mapsService,      |
-| **Source**      | app\\Http\\Controllers\\ MapsController.php                                                  |
-| **Remarks**     | getDueBuildingsInfo()  MapsService explains the Service Class Function Name mentioned above. |
+| **Function**    | getDueBuildings ()                                                                          |
+| --------------- | ------------------------------------------------------------------------------------------- |
+| **Description** | Calls the service class that handles the data                                               |
+| **Parameters**  | null                                                                                        |
+| **Return**      | Returns the result obtained from the getDueBuildingsInfo() method of the \$mapsService,     |
+| **Source**      | app\\Http\\Controllers\\ MapsController.php                                                 |
+| **Remarks**     | getDueBuildingsInfo() MapsService explains the Service Class Function Name mentioned above. |
 
 | **Function**    | getDueBuildingsWardTaxzone(Request \$request)                                                                 |
-|-----------------|---------------------------------------------------------------------------------------------------------------|
+| --------------- | ------------------------------------------------------------------------------------------------------------- |
 | **Description** | Calls the service class that handles the data                                                                 |
 | **Parameters**  | \$request                                                                                                     |
 | **Return**      | Returns the result obtained from the getDueBuildingsWardTaxzoneInfo(\$where) method of the \$mapsService,     |
@@ -4262,7 +3972,7 @@ Controllers stored in app\\Http\\Controllers\\MapsController.php
 | **Remarks**     | getDueBuildingsWardTaxzoneInfo(\$where) MapsService explains the Service Class Function Name mentioned above. |
 
 | **Function**    | getApplicationContainments ()                                                                                                       |
-|-----------------|-------------------------------------------------------------------------------------------------------------------------------------|
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
 | **Description** | Calls the service class that handles the data                                                                                       |
 | **Parameters**  | null                                                                                                                                |
 | **Return**      | Returns the result obtained from the getApplicationContainments(request()-\>lat, request()-\>long) method of the \$mapsService,     |
@@ -4270,7 +3980,7 @@ Controllers stored in app\\Http\\Controllers\\MapsController.php
 | **Remarks**     | getApplicationContainments(request()-\>lat, request()-\>long) MapsService explains the Service Class Function Name mentioned above. |
 
 | **Function**    | getApplicationContainmentsYearMonth(Request \$request)                                                                                         |
-|-----------------|------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Description** | Calls the service class that handles the data                                                                                                  |
 | **Parameters**  | \$request                                                                                                                                      |
 | **Return**      | Returns the result obtained from the getApplicationContainmentsYearMonth(\$request-\>year, \$request-\>month) method of the \$mapsService,     |
@@ -4278,70 +3988,70 @@ Controllers stored in app\\Http\\Controllers\\MapsController.php
 | **Remarks**     | getApplicationContainmentsYearMonth(\$request-\>year, \$request-\>month) MapsService explains the Service Class Function Name mentioned above. |
 
 | **Function**    | getApplicationNotTPOnDate ()                                                                                            |
-|-----------------|-------------------------------------------------------------------------------------------------------------------------|
+| --------------- | ----------------------------------------------------------------------------------------------------------------------- |
 | **Description** | Calls the service class that handles the data                                                                           |
 | **Parameters**  | null                                                                                                                    |
 | **Return**      | Returns the result obtained from the getApplicationNotTPOnDate(request()-\>start_date) method of the \$mapsService,     |
 | **Source**      | app\\Http\\Controllers\\ MapsController.php                                                                             |
 | **Remarks**     | getApplicationNotTPOnDate(request()-\>start_date) MapsService explains the Service Class Function Name mentioned above. |
 
-| **Function**    | getApplicationOnDate ()                                                                                             |
-|-----------------|---------------------------------------------------------------------------------------------------------------------|
-| **Description** | Calls the service class that handles the data                                                                       |
-| **Parameters**  | null                                                                                                                |
-| **Return**      | Returns the result obtained from the getApplicationOnDate(request()-\>start_date) method of the \$mapsService,      |
-| **Source**      | app\\Http\\Controllers\\ MapsController.php                                                                         |
-| **Remarks**     | getApplicationOnDate(request()-\>start_date) MapsService explains the Service Class Function Name mentioned above.  |
+| **Function**    | getApplicationOnDate ()                                                                                            |
+| --------------- | ------------------------------------------------------------------------------------------------------------------ |
+| **Description** | Calls the service class that handles the data                                                                      |
+| **Parameters**  | null                                                                                                               |
+| **Return**      | Returns the result obtained from the getApplicationOnDate(request()-\>start_date) method of the \$mapsService,     |
+| **Source**      | app\\Http\\Controllers\\ MapsController.php                                                                        |
+| **Remarks**     | getApplicationOnDate(request()-\>start_date) MapsService explains the Service Class Function Name mentioned above. |
 
 | **Function**    | getApplicationNotTP ()                                                                                       |
-|-----------------|--------------------------------------------------------------------------------------------------------------|
+| --------------- | ------------------------------------------------------------------------------------------------------------ |
 | **Description** | Calls the service class that handles the data                                                                |
 | **Parameters**  | null                                                                                                         |
 | **Return**      | Returns the result obtained from the getApplicationNotTP() method of the \$mapsService,                      |
 | **Source**      | app\\Http\\Controllers\\ MapsController.php                                                                  |
 | **Remarks**     | getApplicationNotTP() MapsService explains the Service Class Function Name mentioned above. mentioned above. |
 
-| **Function**    | getApplicationNotTPContainmentsYearMonth(Request \$request)                                                                                         |
-|-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Description** | Calls the service class that handles the data                                                                                                       |
-| **Parameters**  | \$request                                                                                                                                           |
-| **Return**      | Returns the result obtained from the getApplicationNotTPContainmentsYearMonth(\$request-\>year,\$request-\>month) method of the \$mapsService,      |
-| **Source**      | app\\Http\\Controllers\\ MapsController.php                                                                                                         |
-| **Remarks**     | getApplicationNotTPContainmentsYearMonth(\$request-\>year,\$request-\>month) MapsService explains the Service Class Function Name mentioned above.  |
+| **Function**    | getApplicationNotTPContainmentsYearMonth(Request \$request)                                                                                        |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Description** | Calls the service class that handles the data                                                                                                      |
+| **Parameters**  | \$request                                                                                                                                          |
+| **Return**      | Returns the result obtained from the getApplicationNotTPContainmentsYearMonth(\$request-\>year,\$request-\>month) method of the \$mapsService,     |
+| **Source**      | app\\Http\\Controllers\\ MapsController.php                                                                                                        |
+| **Remarks**     | getApplicationNotTPContainmentsYearMonth(\$request-\>year,\$request-\>month) MapsService explains the Service Class Function Name mentioned above. |
 
-| **Function**    | getFeedbackReport(Request \$request)                                                                                                                                                                                                                                                     |
-|-----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Description** | Calls the service class that handles the data                                                                                                                                                                                                                                            |
-| **Parameters**  | \$request                                                                                                                                                                                                                                                                                |
-| **Return**      | Returns the result obtained from the getUniqueContainmentEmptiedCount(\$request-\>geom, \$whereUser), getFeedbacksCount(\$request-\>geom, \$whereUser), getFeedbackFsmServiceQuality(\$request-\>geom, \$whereUser), getFeedbackSanitationWorkersPpe()method of the \$mapsService,       |
-| **Source**      | app\\Http\\Controllers\\ MapsController.php                                                                                                                                                                                                                                              |
-| **Remarks**     | getUniqueContainmentEmptiedCount(\$request-\>geom, \$whereUser), getFeedbacksCount(\$request-\>geom, \$whereUser), getFeedbackFsmServiceQuality(\$request-\>geom, \$whereUser), getFeedbackSanitationWorkersPpe() MapsService explains the Service Class Function Name mentioned above.  |
+| **Function**    | getFeedbackReport(Request \$request)                                                                                                                                                                                                                                                    |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Description** | Calls the service class that handles the data                                                                                                                                                                                                                                           |
+| **Parameters**  | \$request                                                                                                                                                                                                                                                                               |
+| **Return**      | Returns the result obtained from the getUniqueContainmentEmptiedCount(\$request-\>geom, \$whereUser), getFeedbacksCount(\$request-\>geom, \$whereUser), getFeedbackFsmServiceQuality(\$request-\>geom, \$whereUser), getFeedbackSanitationWorkersPpe()method of the \$mapsService,      |
+| **Source**      | app\\Http\\Controllers\\ MapsController.php                                                                                                                                                                                                                                             |
+| **Remarks**     | getUniqueContainmentEmptiedCount(\$request-\>geom, \$whereUser), getFeedbacksCount(\$request-\>geom, \$whereUser), getFeedbackFsmServiceQuality(\$request-\>geom, \$whereUser), getFeedbackSanitationWorkersPpe() MapsService explains the Service Class Function Name mentioned above. |
 
 | **Function**    | getDrainBuildings (Request \$request)                                        |
-|-----------------|------------------------------------------------------------------------------|
+| --------------- | ---------------------------------------------------------------------------- |
 | **Description** | Retrieves information about buildings associated with specified drain codes. |
 | **Parameters**  | \$request                                                                    |
 | **Return**      | Building information associated with the specified drain codes.              |
 | **Source**      | app\\Http\\Controllers\\ MapsController.php                                  |
 
 | **Function**    | getBuildingsToRoad (Request \$request)                                                                                                                          |
-|-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Description** | Retrieves buildings associated with the specified road codes and their summary information. Calls the service class that handles the data                       |
 | **Parameters**  | \$request                                                                                                                                                       |
 | **Return**      | Associative array containing buildings and their summary information.                                                                                           |
 | **Source**      | app\\Http\\Controllers\\ MapsController.php                                                                                                                     |
 | **Remarks**     | getBuildingsToRoadSummary(\$roadCodes) MapsService explains the Service Class Function Name mentioned above to get buildings related to the provided road codes |
 
-| **Function**    | getDrainPotentialBuildings (Request \$request)                                                                                                                                           |
-|-----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Description** | Retrieves the potential buildings within the drainage area. Calls the service class that handles the data                                                                                |
-| **Parameters**  | \$request                                                                                                                                                                                |
-| **Return**      | Returns an array containing buildings, popup content HTML, and polygon data.                                                                                                             |
-| **Source**      | app\\Http\\Controllers\\ MapsController.php                                                                                                                                              |
-| **Remarks**     | buildingsPopContentPolygon(\$bufferDisancePolygon, \$sewer[0]-\>geom)  MapsService explains the Service Class Function Name mentioned above to get buildings, pop contents, and polygon. |
+| **Function**    | getDrainPotentialBuildings (Request \$request)                                                                                                                                          |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Description** | Retrieves the potential buildings within the drainage area. Calls the service class that handles the data                                                                               |
+| **Parameters**  | \$request                                                                                                                                                                               |
+| **Return**      | Returns an array containing buildings, popup content HTML, and polygon data.                                                                                                            |
+| **Source**      | app\\Http\\Controllers\\ MapsController.php                                                                                                                                             |
+| **Remarks**     | buildingsPopContentPolygon(\$bufferDisancePolygon, \$sewer[0]-\>geom) MapsService explains the Service Class Function Name mentioned above to get buildings, pop contents, and polygon. |
 
 | **Function**    | getWaterBodiesBuildings (Request \$request)                                                                                                                                    |
-|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Description** | Retrieves buildings and related information within a specified distance from a water body. Calls the service class that handles the data                                       |
 | **Parameters**  | \$request                                                                                                                                                                      |
 | **Return**      | Array containing buildings, pop contents HTML, and polygon information.                                                                                                        |
@@ -4349,7 +4059,7 @@ Controllers stored in app\\Http\\Controllers\\MapsController.php
 | **Remarks**     | buildingsPopContentPolygon(\$distance,\$waterbody[0]-\>geom) MapsService explains the Service Class Function Name mentioned above to get buildings, pop contents, and polygon. |
 
 | **Function**    | getPointBufferBuildings(Request \$request)                                                                                                                                     |
-|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Description** | Retrieves buildings and related information within a specified distance from a water body. Calls the service class that handles the data                                       |
 | **Parameters**  | \$request                                                                                                                                                                      |
 | **Return**      | Array containing buildings, pop contents HTML, and polygon information.                                                                                                        |
@@ -4357,139 +4067,198 @@ Controllers stored in app\\Http\\Controllers\\MapsController.php
 | **Remarks**     | buildingsPopContentPolygon(\$distance,\$waterbody[0]-\>geom) MapsService explains the Service Class Function Name mentioned above to get buildings, pop contents, and polygon. |
 
 | **Function**    | getRoadBuildings (Request \$request)                                                                                                                                                   |
-|-----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Description** | Retrieves information about buildings along a road and returns relevant data. Calls the service class that handles the data                                                            |
 | **Parameters**  | \$request                                                                                                                                                                              |
 | **Return**      | Array containing buildings, pop contents HTML, and polygon information.                                                                                                                |
 | **Source**      | app\\Http\\Controllers\\ MapsController.php                                                                                                                                            |
 | **Remarks**     | buildingsPopContentPolygon(\$bufferDisancePolygon, \$road[0]-\>geom) MapsService explains the Service Class Function Name mentioned above to get buildings, pop contents, and polygon. |
 
-| **Function**    |  searchByKeywords()                                                                                                                                                                                                                                                                                |
-|-----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Description** | Searches for keywords within specified layers and retrieves associated data.                                                                                                                                                                                                                       |
-| **Parameters**  | null                                                                                                                                                                                                                                                                                               |
-| **Return**      | An array containing the following keys: 'gid': The ID associated with the matched keyword (or null if not found).  'point': The point geometry associated with the matched keyword (or null if not found).  'geom': The geometric data associated with the matched keyword (or null if not found). |
-| **Source**      | app\\Http\\Controllers\\ MapsController.php                                                                                                                                                                                                                                                        |
+| **Function**    | searchByKeywords()                                                                                                                                                                                                                                                                               |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Description** | Searches for keywords within specified layers and retrieves associated data.                                                                                                                                                                                                                     |
+| **Parameters**  | null                                                                                                                                                                                                                                                                                             |
+| **Return**      | An array containing the following keys: 'gid': The ID associated with the matched keyword (or null if not found). 'point': The point geometry associated with the matched keyword (or null if not found). 'geom': The geometric data associated with the matched keyword (or null if not found). |
+| **Source**      | app\\Http\\Controllers\\ MapsController.php                                                                                                                                                                                                                                                      |
 
-| **Function**    |  searchBuilding()                                                                               |
-|-----------------|-------------------------------------------------------------------------------------------------|
+| **Function**    | searchBuilding()                                                                                |
+| --------------- | ----------------------------------------------------------------------------------------------- |
 | **Description** | Searches for buildings based on a specified field and value.                                    |
 | **Parameters**  | null                                                                                            |
 | **Return**      | An array of buildings matching the search criteria, or null if no matching buildings are found. |
 | **Source**      | app\\Http\\Controllers\\ MapsController.php                                                     |
 
-| **Function**    |  searchAutoComplete ()                                             |
-|-----------------|--------------------------------------------------------------------|
+| **Function**    | searchAutoComplete ()                                              |
+| --------------- | ------------------------------------------------------------------ |
 | **Description** | Performs autocomplete search based on provided layer and keywords. |
 | **Parameters**  | null                                                               |
 | **Return**      | Results of autocomplete search.                                    |
 | **Source**      | app\\Http\\Controllers\\ MapsController.php                        |
 
-| **Function**    |  getBufferPolygonBuildings (Request \$request)                                                                                                                                             |
-|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Function**    | getBufferPolygonBuildings (Request \$request)                                                                                                                                              |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Description** | Retrieves buildings within a buffered polygon and their corresponding population content HTML. Calls the service class that handles the data                                               |
 | **Parameters**  | \$request                                                                                                                                                                                  |
 | **Return**      | Array containing buildings, population content HTML, and polygon information.                                                                                                              |
 | **Source**      | app\\Http\\Controllers\\ MapsController.php                                                                                                                                                |
 | **Remarks**     | buildingsPopContentPolygon(\$bufferDistancePolygon, \$bufferPolygonGeom) MapsService explains the Service Class Function Name mentioned above to get buildings, pop contents, and polygon. |
 
-| **Function**    |  getWardBuildings (Request \$request)                                                                                                                                      |
-|-----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Description** | Retrieves buildings within a specific ward and their corresponding population content HTML. Calls the service class that handles the data                                  |
-| **Parameters**  | \$request                                                                                                                                                                  |
-| **Return**      | Array containing buildings information.                                                                                                                                    |
-| **Source**      | app\\Http\\Controllers\\ MapsController.php                                                                                                                                |
-| **Remarks**     | buildingsPopContentPolygon(\$bufferDisancePolygon, \$ward[0]-\>geom)  MapsService explains the Service Class Function Name mentioned above to get buildings, pop contents. |
+| **Function**    | getWardBuildings (Request \$request)                                                                                                                                      |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Description** | Retrieves buildings within a specific ward and their corresponding population content HTML. Calls the service class that handles the data                                 |
+| **Parameters**  | \$request                                                                                                                                                                 |
+| **Return**      | Array containing buildings information.                                                                                                                                   |
+| **Source**      | app\\Http\\Controllers\\ MapsController.php                                                                                                                               |
+| **Remarks**     | buildingsPopContentPolygon(\$bufferDisancePolygon, \$ward[0]-\>geom) MapsService explains the Service Class Function Name mentioned above to get buildings, pop contents. |
 
-| **Function**    |  getAreaPopulationPolygonSum(Request \$request)                                                                                                        |
-|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Function**    | getAreaPopulationPolygonSum(Request \$request)                                                                                                         |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Description** | Retrieves the sum of population within a specified polygon area. Calls the service class that handles the data                                         |
 | **Parameters**  | \$request                                                                                                                                              |
 | **Return**      | The sum of population within the polygon area or an error message if the 'geom' field is missing.                                                      |
 | **Source**      | app\\Http\\Controllers\\ MapsController.php                                                                                                            |
 | **Remarks**     | getAreaPopulationPolygonSumInfo(\$request-\>geom) MapsService explains the Service Class Function Name mentioned above to get buildings, pop contents. |
 
-| **Function**    |  getWardCenterCoordinates (Request \$request)                       |
-|-----------------|---------------------------------------------------------------------|
+| **Function**    | getWardCenterCoordinates (Request \$request)                        |
+| --------------- | ------------------------------------------------------------------- |
 | **Description** | Retrieves the center coordinates of a specified ward.               |
 | **Parameters**  | \$request                                                           |
 | **Return**      | Array containing the geometry and identifier of the specified ward. |
 | **Source**      | app\\Http\\Controllers\\ MapsController.php                         |
 
-| **Function**    |  getClipWardCenterCoordinates (Request \$request)              |
-|-----------------|----------------------------------------------------------------|
+| **Function**    | getClipWardCenterCoordinates (Request \$request)               |
+| --------------- | -------------------------------------------------------------- |
 | **Description** | Retrieves the center coordinates of the clipped ward geometry. |
 | **Parameters**  | \$request                                                      |
 | **Return**      | Array containing the geometry and ward identifier.             |
 | **Source**      | app\\Http\\Controllers\\ MapsController.php                    |
 
-| **Function**    |  getOwnerOfBuilding (Request \$request)                        |
-|-----------------|----------------------------------------------------------------|
+| **Function**    | getOwnerOfBuilding (Request \$request)                         |
+| --------------- | -------------------------------------------------------------- |
 | **Description** | Retrieves the owner information of a building based on its BIN |
 | **Parameters**  | \$request                                                      |
 | **Return**      | The owner information of the building, or null if not found    |
 | **Source**      | app\\Http\\Controllers\\ MapsController.php                    |
 
-| **Function**    |  checkGeometryType (Request \$request)               |
-|-----------------|------------------------------------------------------|
+| **Function**    | checkGeometryType (Request \$request)                |
+| --------------- | ---------------------------------------------------- |
 | **Description** | Checks the type of geometry provided in the request. |
 | **Parameters**  | \$request                                            |
 | **Return**      | The type of geometry                                 |
 | **Source**      | app\\Http\\Controllers\\ MapsController.php          |
 
-| **Function**    |  roadInaccesibleISummaryInfo (Request \$request)                                                                                                      |
-|-----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Function**    | roadInaccesibleISummaryInfo (Request \$request)                                                                                                       |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Description** | Retrieves summary information about road inaccessibility based on provided road width and vacuum range. Calls the service class that handles the data |
 | **Parameters**  | \$request                                                                                                                                             |
 | **Return**      | Array containing buildings, population content HTML, and polygon information.                                                                         |
 | **Source**      | app\\Http\\Controllers\\ MapsController.php                                                                                                           |
 | **Remarks**     | getRoadInaccesibleISummaryInfo(\$roadWidth, \$vacutugRange) MapsService explains the Service Class Function Name mentioned above.                     |
 
-| **Function**    |  exportWfsRequest (Request \$request)                                                                   |
-|-----------------|---------------------------------------------------------------------------------------------------------|
+| **Function**    | exportWfsRequest (Request \$request)                                                                    |
+| --------------- | ------------------------------------------------------------------------------------------------------- |
 | **Description** | Exports data from a WFS request.                                                                        |
 | **Parameters**  | \$request                                                                                               |
 | **Return**      | The HTTP request containing the export URL, file format, and layer information.                         |
 | **Source**      | app\\Http\\Controllers\\ MapsController.php                                                             |
 | **Remarks**     | This function retrieves data from a specified WFS endpoint and exports it in the requested file format. |
 
-| **Function**    |  getPolygonWaterbodyInaccessibleReport (Request \$request)                      |
-|-----------------|---------------------------------------------------------------------------------|
+| **Function**    | getPolygonWaterbodyInaccessibleReport (Request \$request)                       |
+| --------------- | ------------------------------------------------------------------------------- |
 | **Description** | Retrieves a report of buildings close to water bodies within a specified range. |
 | **Parameters**  | \$request                                                                       |
 | **Return**      | Excel file containing summary information of buildings close to water bodies.   |
 | **Source**      | app\\Http\\Controllers\\ MapsController.php                                     |
 
-| **Function**    |  waterbodyInaccessibleBuildings (Request \$request)                                                                                                               |
-|-----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Function**    | waterbodyInaccessibleBuildings (Request \$request)                                                                                                                |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Description** | Retrieves buildings within a water body's inaccessible zone along with their corresponding population content HTML. Calls the service class that handles the data |
 | **Parameters**  | \$request                                                                                                                                                         |
 | **Return**      | Array containing buildings, population content HTML, and polygon information.                                                                                     |
 | **Source**      | app\\Http\\Controllers\\ MapsController.php                                                                                                                       |
 | **Remarks**     | getWaterbodyInaccesibleISummaryInfo(\$hose_length) MapsService explains the Service Class Function Name mentioned above.                                          |
 
-| **Function**    |  roadInaccessibleBuildings (Request \$request)                                                                                             |
-|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| **Function**    | roadInaccessibleBuildings (Request \$request)                                                                                              |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Description** | Retrieves inaccessible buildings along a road based on provided road width and house length. Calls the service class that handles the data |
 | **Parameters**  | \$request                                                                                                                                  |
 | **Return**      | Array containing buildings, population content HTML, and polygon information.                                                              |
 | **Source**      | app\\Http\\Controllers\\ MapsController.php                                                                                                |
 | **Remarks**     | getRoadInaccesibleISummaryInfo(\$road_width, \$hose_length) MapsService explains the Service Class Function Name mentioned above.          |
 
-| **Function**    |  getPolygonRoadInaccessibleReport (Request \$request)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-|-----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Function**    | getPolygonRoadInaccessibleReport (Request \$request)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Description** | Retrieves a report of inaccessible road areas within a specified range and width. Calls the service class that handles the data                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | **Parameters**  | \$request                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| **Return**      | CSV files containing data obtainerd from:   new SummaryInfoMultiSheetExport(\$remainingPolygonGeom, 0)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| **Return**      | CSV files containing data obtainerd from: new SummaryInfoMultiSheetExport(\$remainingPolygonGeom, 0)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | **Source**      | app\\Http\\Controllers\\MapsController.php                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | **Remarks**     | SummaryInfoMultiSheetExport: The Excel file is generated using this class, passing the buffer polygon geometry and distance obtained from the request parameters. In this case, it returns an array containing instances of other export classes (BuildingsExport, BuildingsListExport, and ContainmentsListExport), passing the buffer polygon geometry and distance to each of them. BuildingsExport: This class encapsulates the logic to export building data from SQL query using the provided buffer polygon geometry data and its buffer distance to an Excel sheet, apply some styling, and provide a title for the sheet. BuildingsListExport: This class encapsulates the logic to export a list of buildings data from SQL query using the provided buffer polygon geometry data and its buffer distance to an Excel sheet, apply some styling, and provide a title for the sheet. ContainmentsListExport: This class encapsulates the logic to export a list of containments data from SQL query using the provided buffer polygon geometry data and its buffer distance to an Excel sheet, apply some styling, and provide a title for the sheet. |
 
-| **Function**    |  getBuildingsToiletNetwork (Request \$request)                                                  |
-|-----------------|-------------------------------------------------------------------------------------------------|
+| **Function**    | getBuildingsToiletNetwork (Request \$request)                                                   |
+| --------------- | ----------------------------------------------------------------------------------------------- |
 | **Description** | Retrieves buildings with toilet network information based on the provided bin.                  |
 | **Parameters**  | \$request                                                                                       |
 | **Return**      | Returns an array of buildings with toilet network information if found, otherwise returns null. |
 | **Source**      | app\\Http\\Controllers\\ MapsController.php                                                     |
+
+| **Function**    | checkLocationWithinBoundary(Request $request)                                                                                              |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Description** | Checks whether the provided coordinates fall within the municipality boundary                                                              |
+| **Parameters**  | $request                                                                                                                                   |
+| **Return**      | an array of polygon(s) from the 'citypolys' table that intersect with the given point. If no polygon is found, an empty array is returned. |
+
+| **Function**    | getKmlInfoReportCsv(Request $request)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Description** | Generates and downloads a summary report in Excel format based on multiple KML geometries.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| **Parameters**  | $request                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| **Return**      | CSV files containing data obtainerd from: new SummaryInfoMultiSheetExport($geometries, 0)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| **Source**      | app\Http\Controllers\MapsController.php                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| **Remarks**     | SummaryInfoMultiSheetExport: The Excel file is generated using this class, passing the geometry and distance obtained from the request parameters. In this case, it returns an array containing instances of other export classes (BuildingsExport, BuildingsListExport, and ContainmentsListExport), passing the buffer polygon geometry and distance to each of them. BuildingsExport: This class encapsulates the logic to export building data from SQL query using the provided buffer polygon geometry data and its buffer distance to an Excel sheet, apply some styling, and provide a title for the sheet. BuildingsListExport: This class encapsulates the logic to export a list of buildings data from SQL query using the provided buffer polygon geometry data and its buffer distance to an Excel sheet, apply some styling, and provide a title for the sheet. ContainmentsListExport: This class encapsulates the logic to export a list of containments data from SQL query using the provided buffer polygon geometry data and its buffer distance to an Excel sheet, apply some styling, and provide a title for the sheet. |
+
+| **Function**    | checkGeometry(Request $request)                                                |
+| --------------- | ------------------------------------------------------------------------------ |
+| **Description** | Checks whether the provided geometries intersect with municipality boundaries. |
+| **Parameters**  | $request                                                                       |
+| **Return**      | JSON response indicating intersection results for each geometry.               |
+| **Source**      | app\Http\Controllers\MapsController.php                                        |
+| **Remarks**     | checkGeometryType($geometry) is explained below                                |
+
+| **Function**    | getKmlSummaryInfo(Request $request)                                                                                                                                                    |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Description** | Processes an array of geometries from the request and filters only valid polygons (ST_POLYGON). \* If valid polygons exist, it forwards them to another method for further processing. |
+| **Parameters**  | $request                                                                                                                                                                               |
+| **Return**      | Result of building lookup \* if valid polygons exist; otherwise, returns an error response indicating no valid polygons found.                                                         |
+| **Source**      | app\Http\Controllers\MapsController.php                                                                                                                                                |
+| **Remarks**     | checkGeometryType($geometry) is explained below                                                                                                                                        |
+
+| **Function**    | checkGeometryType(string $geometry)                  |
+| --------------- | ---------------------------------------------------- |
+| **Description** | Checks the type of geometry provided in the request. |
+| **Parameters**  | $geometry                                            |
+| **Return**      | The type of geometry                                 |
+| **Source**      | app\Http\Controllers\MapsController.php              |
+
+| **Function**    | getToiletIsochroneAreaLayers(Request $request)                                                                                              |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Description** | Retrieves buildings and polygon geometry within a specified isochrone distance for toilet network analysis                                  |
+| **Parameters**  | $request                                                                                                                                    |
+| **Return**      | Returns an associative array with: - 'buildings': List of buildings within the isochrone area. - 'polygon': The isochrone polygon geometry. |
+| **Source**      | app\Http\Controllers\MapsController.php                                                                                                     |
+| **Remarks**     | getToiletIsochroneAreaLayers($distance) MapsService explains the Service Class Function Name mentioned above.                               |
+
+| **Function**    | getContainmentReport(Request $request)                                                                                                      |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Description** | Generates a containment emptying report for a specified geometry over the past 5 years.                                                     |
+| **Parameters**  | $request                                                                                                                                    |
+| **Return**      | Returns an array of monthly data and styling information for the chart. - If 'geom' is missing, a string error message is returned instead. |
+| **Source**      | app\Http\Controllers\MapsController.php                                                                                                     |
+
+| **Function**    | getContainmentReportCsv(Request $request)                                                                                                            |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Description** | Retrieves a report containing the monthly containment emptying summary, based on the selected geometry and year from the request.                    |
+| **Parameters**  | $request                                                                                                                                             |
+| **Return**      | CSV files containing data obtainerd from: new SummaryInfoMultiSheetExport(request()->containment_report_polygon, request()->containment_report_year) |
+| **Source**      | app\Http\Controllers\MapsController.php                                                                                                              |
 
 MapsService
 
@@ -4498,244 +4267,251 @@ Service class: app\\Services\\Maps\\MapsService.php
 -   All functions and queries used by maps are written here.
 
 | **Function**    | mapsIndex ()                                                                                                                                                                                                              |
-|-----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Description** | Retrieves necessary data for rendering the map index page                                                                                                                                                                 |
 | **Parameters**  | null                                                                                                                                                                                                                      |
 | **Return**      | view('maps.index', compact('page_title', 'wards', 'taxZones', 'dueYears', 'maxDate', 'minDate', 'bldguse', 'usecatg', 'pickWardResults', 'pickDateResults', 'pickStructureResults', 'roadHierarchy', 'roadSurfaceTypes')) |
 | **Source**      | app\\Http\\Controllers\\ MapsService.php                                                                                                                                                                                  |
 
 | **Function**    | getBuildingToContainment ()                                                                                                                       |
-|-----------------|---------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Description** | Retrieves the latitude and longitude coordinates of containment areas associated with a given building.                                           |
 | **Parameters**  | null                                                                                                                                              |
 | **Return**      | Returns an array of associative arrays containing latitude and longitude coordinates for each containment associated with the specified building. |
 | **Source**      | app\\Http\\Controllers\\ MapsService.php                                                                                                          |
 
 | **Function**    | getContainmentToBuildings ()                                                     |
-|-----------------|----------------------------------------------------------------------------------|
+| --------------- | -------------------------------------------------------------------------------- |
 | **Description** | Retrieves containment information for buildings based on a given containment ID. |
 | **Parameters**  | null                                                                             |
 | **Return**      | Returns an array containing building information including BIN and geometry.     |
 | **Source**      | app\\Http\\Controllers\\ MapsService.php                                         |
 
 | **Function**    | getAssociatedToMainbuilding ()                                                               |
-|-----------------|----------------------------------------------------------------------------------------------|
+| --------------- | -------------------------------------------------------------------------------------------- |
 | **Description** | Retrieves the coordinates of buildings associated with a main building identified by its BIN |
 | **Parameters**  | null                                                                                         |
 | **Return**      | Returns an array containing the latitude and longitude coordinates of associated buildings.  |
 | **Source**      | app\\Http\\Controllers\\ MapsService.php                                                     |
 
 | **Function**    | buildingExtent (\$bin, \$value)                                                               |
-|-----------------|-----------------------------------------------------------------------------------------------|
+| --------------- | --------------------------------------------------------------------------------------------- |
 | **Description** | Retrieves the extent and centroid coordinates of buildings based on a given attribute value.  |
 | **Parameters**  | \$bin, \$value                                                                                |
 | **Return**      | An array containing the extent (xmin, ymin, xmax, ymax) and centroid (lat, long) coordinates. |
 | **Source**      | app\\Http\\Controllers\\ MapsService.php                                                      |
 
 | **Function**    | containmentExtent (\$id, \$value)                                                               |
-|-----------------|-------------------------------------------------------------------------------------------------|
+| --------------- | ----------------------------------------------------------------------------------------------- |
 | **Description** | Retrieves the extent and centroid coordinates of containments based on a given attribute value. |
 | **Parameters**  | \$id, \$value                                                                                   |
 | **Return**      | An array containing the extent (xmin, ymin, xmax, ymax) and centroid (lat, long) coordinates.   |
 
 | **Function**    | lineStringExtent(\$layer, \$code, \$value)                                                                        |
-|-----------------|-------------------------------------------------------------------------------------------------------------------|
+| --------------- | ----------------------------------------------------------------------------------------------------------------- |
 | **Description** | Retrieves the extent (bounding box) and geometry of a linestring feature based on a given layer, code, and value. |
 | **Parameters**  | \$layer, \$code, \$value                                                                                          |
 | **Return**      | An array containing the xmin, ymin, xmax, ymax values of the extent, and the geometry of the linestring feature.  |
 | **Source**      | app\\Http\\Controllers\\ MapsService.php                                                                          |
 
 | **Function**    | containmentSurveyExtent(\$param)                                                      |
-|-----------------|---------------------------------------------------------------------------------------|
+| --------------- | ------------------------------------------------------------------------------------- |
 | **Description** | Retrives the extent of containment survey based on given parameters.                  |
 | **Parameters**  | \$param                                                                               |
 | **Return**      | Containment survey extent containing xmin, ymin, xmax, ymax, latitude, and longitude. |
 | **Source**      | app\\Http\\Controllers\\ MapsService.php                                              |
 
 | **Function**    | pointsExtent(\$layer, \$id, \$value)                                                               |
-|-----------------|----------------------------------------------------------------------------------------------------|
+| --------------- | -------------------------------------------------------------------------------------------------- |
 | **Description** | Retrieves the extent (bounding box) of points for a given layer, value and identifier.             |
 | **Parameters**  | \$layer, \$id, \$value                                                                             |
 | **Return**      | The extent of points represented as an associative array with keys 'xmin', 'ymin', 'xmax', 'ymax'. |
 | **Source**      | app\\Http\\Controllers\\ MapsService.php                                                           |
 
 | **Function**    | getContainmentBuildings(\$field, \$value)                            |
-|-----------------|----------------------------------------------------------------------|
+| --------------- | -------------------------------------------------------------------- |
 | **Description** | Retrieves containment buildings based on a specific field and value. |
 | **Parameters**  | \$field, \$value                                                     |
 | **Return**      | An array of containment connected to building coordinates.           |
 | **Source**      | app\\Http\\Controllers\\ MapsService.php                             |
 
-| **Function**    | getContainmentRoadInfo (\$field, \$value)                                                                                                                                                                                                                    |
-|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Description** | Retrieves containment and nearest road information based on a specified field and value.                                                                                                                                                                     |
-| **Parameters**  | \$field, \$value                                                                                                                                                                                                                                             |
-| **Return**      | An associative array containing the latitude and longitude of the containment (c_lat, c_long) and the nearest road (r_lat, r_long) found within a 1000-meter radius of the containment.  If no results are found, empty strings are returned for all values. |
-| **Source**      | app\\Http\\Controllers\\ MapsService.php                                                                                                                                                                                                                     |
+| **Function**    | getContainmentRoadInfo (\$field, \$value)                                                                                                                                                                                                                   |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Description** | Retrieves containment and nearest road information based on a specified field and value.                                                                                                                                                                    |
+| **Parameters**  | \$field, \$value                                                                                                                                                                                                                                            |
+| **Return**      | An associative array containing the latitude and longitude of the containment (c_lat, c_long) and the nearest road (r_lat, r_long) found within a 1000-meter radius of the containment. If no results are found, empty strings are returned for all values. |
+| **Source**      | app\\Http\\Controllers\\ MapsService.php                                                                                                                                                                                                                    |
 
 | **Function**    | getBuildingRoadInfo (\$field, \$value)                                                                                                                                                                                                                                                       |
-|-----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Description** | Retrieves building centroid and nearest road information based on a specified field and value.                                                                                                                                                                                               |
 | **Parameters**  | \$field, \$value                                                                                                                                                                                                                                                                             |
 | **Return**      | An associative array containing the latitude and longitude of the building centroid (c_lat, c_long) and the latitude and longitude of the nearest road (r_lat, r_long) found within a 1000-meter radius of the building. If no results are found, empty strings are returned for all values. |
 | **Source**      | app\\Http\\Controllers\\ MapsService.php                                                                                                                                                                                                                                                     |
 
 | **Function**    | getNearestRoad (\$lat,\$long)                                                                                                                                        |
-|-----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Description** | Retrieves information about the nearest road to a specified latitude and longitude.                                                                                  |
 | **Parameters**  | \$lat,\$long                                                                                                                                                         |
 | **Return**      | An associative array containing the latitude and longitude of the nearest road. If no results are found, empty strings are returned for both latitude and longitude. |
 | **Source**      | app\\Http\\Controllers\\ MapsService.php                                                                                                                             |
 
 | **Function**    | getProposedEmptyingContainmentsInfo(request()-\>start_date, request()-\>end_date)                                                                                                                                                                            |
-|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Description** | Retrieves information about proposed emptying containments within a specified date range.                                                                                                                                                                    |
 | **Parameters**  | request()-\>start_date, request()-\>end_date                                                                                                                                                                                                                 |
 | **Return**      | An array of associative arrays containing the latitude and longitude coordinates of containment locations with proposed emptying dates within the specified date range. If no results are found, empty strings are returned for both latitude and longitude. |
 | **Source**      | app\\Http\\Controllers\\ MapsService.php                                                                                                                                                                                                                     |
 
 | **Function**    | getDueBuildingsInfo()                                                                                                                                |
-|-----------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Description** | Retrieves information about buildings with due taxes, including their bin number, latitude, and longitude.                                           |
 | **Parameters**  | null                                                                                                                                                 |
 | **Return**      | An array of associative arrays, each containing the latitude ('lat') and longitude ('long') of a building with due taxes, along with its bin number. |
 | **Source**      | app\\Http\\Controllers\\ MapsService.php                                                                                                             |
 
 | **Function**    | getDueBuildingsWardTaxzoneInfo(\$where)                                                                                                                         |
-|-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Description** | Retrieves information about buildings within a ward or tax zone that have tax dues.                                                                             |
 | **Parameters**  | \$where                                                                                                                                                         |
 | **Return**      | An array of associative arrays, each containing the latitude (lat) and longitude (long) of a building within the specified ward or tax zone that has due taxes. |
 | **Source**      | app\\Http\\Controllers\\ MapsService.php                                                                                                                        |
 
-| **Function**    | getApplicationContainments()                                                                                                                                                                                                       |
-|-----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Description** | Retrieves application containment information based on the user's role.                                                                                                                                                            |
-| **Parameters**  | null                                                                                                                                                                                                                               |
+| **Function**    | getApplicationContainments()                                                                                                                                                                                    |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Description** | Retrieves application containment information based on the user's role.                                                                                                                                         |
+| **Parameters**  | null                                                                                                                                                                                                            |
 | **Return**      | An array containing application containment information including application ID, house number, service provider, application date, emptying status, feedback status, sludge collection status , and longitude. |
-| **Source**      | app\\Http\\Controllers\\ MapsService.php                                                                                                                                                                                           |
+| **Source**      | app\\Http\\Controllers\\ MapsService.php                                                                                                                                                                        |
 
 | **Function**    | getApplicationContainmentsYearMonth(\$year, \$month)                                     |
-|-----------------|------------------------------------------------------------------------------------------|
+| --------------- | ---------------------------------------------------------------------------------------- |
 | **Description** | Retrieves containment information for applications filtered by year and month.           |
 | **Parameters**  | \$year, \$month                                                                          |
 | **Return**      | An array containing information about applications and their corresponding containments. |
 | **Source**      | app\\Http\\Controllers\\ MapsService.php                                                 |
 
 | **Function**    | getApplicationNotTPOnDate(\$start_date)                                                                                                     |
-|-----------------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Description** | Retrieves applications that are not yet marked as sludge collection and have been emptied by service providers on the specified start date. |
 | **Parameters**  | \$start_date                                                                                                                                |
 | **Return**      | JSON response containing data about applications and service providers.                                                                     |
 | **Source**      | app\\Http\\Controllers\\ MapsService.php                                                                                                    |
 
 | **Function**    | getApplicationOnDate (\$start_date)                                                                                                                                                         |
-|-----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Description** | Retrieves application information for a specified date.                                                                                                                                     |
 | **Parameters**  | \$start_date                                                                                                                                                                                |
 | **Return**      | An array containing application information, including application ID, house number, service provider, emptying status, feedback status, sludge collection status, latitude, and longitude. |
 | **Source**      | app\\Http\\Controllers\\ MapsService.php                                                                                                                                                    |
 
 | **Function**    | getApplicationNotTP ()                                                                                                                                                                      |
-|-----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Description** | Retrieves application information for a specified date.                                                                                                                                     |
 | **Parameters**  | \$start_date                                                                                                                                                                                |
 | **Return**      | An array containing application information, including application ID, house number, service provider, emptying status, feedback status, sludge collection status, latitude, and longitude. |
 | **Source**      | app\\Http\\Controllers\\ MapsService.php                                                                                                                                                    |
 
 | **Function**    | getApplicationNotTP ()                                                                                        |
-|-----------------|---------------------------------------------------------------------------------------------------------------|
+| --------------- | ------------------------------------------------------------------------------------------------------------- |
 | **Description** | Retrieves application information for applications that are not yet marked as TP (TreatmentPlant) collection. |
 | **Parameters**  | null                                                                                                          |
 | **Return**      | JSON response containing application data and service provider information.                                   |
 | **Source**      | app\\Http\\Controllers\\ MapsService.php                                                                      |
 
 | **Function**    | getApplicationNotTPContainmentsYearMonth (\$year, \$month)                                                    |
-|-----------------|---------------------------------------------------------------------------------------------------------------|
+| --------------- | ------------------------------------------------------------------------------------------------------------- |
 | **Description** | Retrieves application information for applications that are not yet marked as TP (TreatmentPlant) collection. |
 | **Parameters**  | null                                                                                                          |
 | **Return**      | JSON response containing application data and service provider information.                                   |
 | **Source**      | app\\Http\\Controllers\\ MapsService.php                                                                      |
 
 | **Function**    | getUniqueContainmentEmptiedCount(\$geom, \$whereUser)                   |
-|-----------------|-------------------------------------------------------------------------|
+| --------------- | ----------------------------------------------------------------------- |
 | **Description** | Retrieves the count of unique containment units that have been emptied. |
 | **Parameters**  | \$geom, \$whereUser                                                     |
 | **Return**      | The count of unique containment units that have been emptied.           |
 | **Source**      | app\\Http\\Controllers\\ MapsService.php                                |
 
 | **Function**    | getFeedbacksCount (\$geom, \$whereUser)                                                       |
-|-----------------|-----------------------------------------------------------------------------------------------|
+| --------------- | --------------------------------------------------------------------------------------------- |
 | **Description** | Retrieves the count of feedbacks based on the provided geometry and user-specific conditions. |
 | **Parameters**  | \$geom, \$whereUser                                                                           |
 | **Return**      | The total count of feedbacks satisfying the given criteria.                                   |
 | **Source**      | app\\Http\\Controllers\\ MapsService.php                                                      |
 
 | **Function**    | getFeedbackFsmServiceQuality(\$geom, \$whereUser)                                                               |
-|-----------------|-----------------------------------------------------------------------------------------------------------------|
+| --------------- | --------------------------------------------------------------------------------------------------------------- |
 | **Description** | Retrieves feedback data related to FSM service quality based on provided geometry and optional user conditions. |
 | **Parameters**  | \$geom, \$whereUser                                                                                             |
 | **Return**      | Returns an array of feedback data including quality indicators and their counts.                                |
 | **Source**      | app\\Http\\Controllers\\ MapsService.php                                                                        |
 
 | **Function**    | getFeedbackSanitationWorkersPpe ()                                              |
-|-----------------|---------------------------------------------------------------------------------|
+| --------------- | ------------------------------------------------------------------------------- |
 | **Description** | Retrieves the count of sanitation workers wearing (PPE) based on feedback data. |
 | **Parameters**  | null                                                                            |
 | **Return**      | An array containing the count of workers wearing PPE and not wearing PPE.       |
 | **Source**      | app\\Http\\Controllers\\ MapsService.php                                        |
 
 | **Function**    | getBuildingsToRoadSummary(\$roadCodes)                                                                                                     |
-|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Description** | Retrieves summary information about buildings along specified road codes.                                                                  |
 | **Parameters**  | \$roadCodes                                                                                                                                |
 | **Return**      | An array containing buildings information and summary HTML                                                                                 |
 | **Source**      | app\\Http\\Controllers\\ MapsService.php                                                                                                   |
 | **Remarks**     | popUpContentHtml(\$buildingResults): Generates HTML content for displaying based on summary data of building information in a table format |
 
-| **Function**    | buildingsPopContentPolygon(\$bufferDistancePolygon, \$bufferPolygonGeom)                                                                                                                                                                                                                                                                                                        |
-|-----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Description** | Generates building information and popup content HTML within a buffered polygon.                                                                                                                                                                                                                                                                                                |
-| **Parameters**  | \$bufferDistancePolygon, \$bufferPolygonGeom                                                                                                                                                                                                                                                                                                                                    |
-| **Return**      | Associative array containing building information, popup content HTML, and polygon geometry.                                                                                                                                                                                                                                                                                    |
-| **Source**      | app\\Http\\Controllers\\ MapsService.php                                                                                                                                                                                                                                                                                                                                        |
+| **Function**    | buildingsPopContentPolygon(\$bufferDistancePolygon, \$bufferPolygonGeom)                                                                                                                                                                                                                                                                                                           |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Description** | Generates building information and popup content HTML within a buffered polygon.                                                                                                                                                                                                                                                                                                   |
+| **Parameters**  | \$bufferDistancePolygon, \$bufferPolygonGeom                                                                                                                                                                                                                                                                                                                                       |
+| **Return**      | Associative array containing building information, popup content HTML, and polygon geometry.                                                                                                                                                                                                                                                                                       |
+| **Source**      | app\\Http\\Controllers\\ MapsService.php                                                                                                                                                                                                                                                                                                                                           |
 | **Remarks**     | Use a ufunction to get building data as fnc_getBufferPolygonBuildings( ST_GeomFromText(" . "'" . "\$bufferPolygonGeom" . "'" . ",4326), \$bufferDistancePolygon) further explained in Section **2 - Technical Information/ Basic CRUD** popUpContentHtml(\$buildingResults): Generates HTML content for displaying based on summary data of building information in a table format |
 
-| **Function**    | getPointBufferBuildingsSummary(\$distance, \$long, \$lat)                                                                                                                                                                                                                                  |
-|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Description** | Retrieves information about buildings within a specified buffer zone around a given point. use a function to get point buffer buildings “fnc_getPointBufferBuildings”                                                                                                                      |
-| **Parameters**  | \$distance, \$long, \$lat                                                                                                                                                                                                                                                                  |
-| **Return**      | An array containing information about buildings within the buffer zone, along with other related data.                                                                                                                                                                                     |
-| **Source**      | app\\Http\\Controllers\\ MapsService.php                                                                                                                                                                                                                                                   |
+| **Function**    | getPointBufferBuildingsSummary(\$distance, \$long, \$lat)                                                                                                                                                                                                                                     |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Description** | Retrieves information about buildings within a specified buffer zone around a given point. use a function to get point buffer buildings “fnc_getPointBufferBuildings”                                                                                                                         |
+| **Parameters**  | \$distance, \$long, \$lat                                                                                                                                                                                                                                                                     |
+| **Return**      | An array containing information about buildings within the buffer zone, along with other related data.                                                                                                                                                                                        |
+| **Source**      | app\\Http\\Controllers\\ MapsService.php                                                                                                                                                                                                                                                      |
 | **Remarks**     | use a function to get point buffer buildings “fnc_getPointBufferBuildings” which is mentioned in Section **2 - Technical Information/ Basic CRUD** popUpContentHtml(\$buildingResults): Generates HTML content for displaying based on summary data of building information in a table format |
 
 | **Function**    | getAreaPopulationPolygonSumInfo (\$geom)                                                               |
-|-----------------|--------------------------------------------------------------------------------------------------------|
+| --------------- | ------------------------------------------------------------------------------------------------------ |
 | **Description** | Retrieves the sum of population served within a given polygon area.                                    |
 | **Parameters**  | \$geom                                                                                                 |
 | **Return**      | An array containing information about buildings within the buffer zone, along with other related data. |
 | **Source**      | app\\Http\\Controllers\\ MapsService.php                                                               |
 | **Remarks**     | HTML table containing the total population served within the polygon area.                             |
 
-| **Function**    | getRoadInaccesibleISummaryInfo(\$width, \$range)                                                                                                                                                                                                                                                                                                                |
-|-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Description** | Retrieves summary information about inaccessible roads within a specified width range.                                                                                                                                                                                                                                                                          |
-| **Parameters**  | \$width, \$range                                                                                                                                                                                                                                                                                                                                                |
-| **Return**      | Array containing information about buildings, population content HTML, and the buffered polygon.                                                                                                                                                                                                                                                                |
-| **Source**      | app\\Http\\Controllers\\ MapsService.php                                                                                                                                                                                                                                                                                                                        |
-| **Remarks**     | Use a ufunction to get building data as fnc_getBufferPolygonBuildings ( ST_GeomFromText(" . "'" . "\$remainingPolygonGeom" . "'" . ",4326), 0) further explained in Section **2 - Technical Information/ Basic CRUD** popUpContentHtml(\$buildingResults) : Generates HTML content for displaying based on summary data of building information in a table format  |
+| **Function**    | getRoadInaccesibleISummaryInfo(\$width, \$range)                                                                                                                                                                                                                                                                                                                  |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Description** | Retrieves summary information about inaccessible roads within a specified width range.                                                                                                                                                                                                                                                                            |
+| **Parameters**  | \$width, \$range                                                                                                                                                                                                                                                                                                                                                  |
+| **Return**      | Array containing information about buildings, population content HTML, and the buffered polygon.                                                                                                                                                                                                                                                                  |
+| **Source**      | app\\Http\\Controllers\\ MapsService.php                                                                                                                                                                                                                                                                                                                          |
+| **Remarks**     | Use a ufunction to get building data as fnc_getBufferPolygonBuildings ( ST_GeomFromText(" . "'" . "\$remainingPolygonGeom" . "'" . ",4326), 0) further explained in Section **2 - Technical Information/ Basic CRUD** popUpContentHtml(\$buildingResults) : Generates HTML content for displaying based on summary data of building information in a table format |
 
 | **Function**    | getWaterbodyInaccesibleISummaryInfo(\$range)                                                                                                                                                                                                                                                                          |
-|-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Description** | Retrieves summary information about inaccessible water bodies within a specified range.                                                                                                                                                                                                                               |
 | **Parameters**  | \$range                                                                                                                                                                                                                                                                                                               |
 | **Return**      | An array containing information about buildings, population content HTML, and the polygon.                                                                                                                                                                                                                            |
 | **Source**      | app\\Http\\Controllers\\ MapsService.php                                                                                                                                                                                                                                                                              |
 | **Remarks**     | Use a ufunction to get building data as fnc_getBufferPolygonBuildings( ST_GeomFromText(" . "'" . "\$polygon" . "'" . ",4326), \$range) further explained in Section 10.2.2 popUpContentHtml(\$buildingResults): Generates HTML content for displaying based on summary data of building information in a table format |
 
-| **Function**    |  popUpContentHtml(\$buildingResults)                                          |
-|-----------------|-------------------------------------------------------------------------------|
+| **Function**    | popUpContentHtml(\$buildingResults)                                           |
+| --------------- | ----------------------------------------------------------------------------- |
 | **Description** | Generates HTML content for displaying building information in a table format. |
 | **Parameters**  | \$buildingResults                                                             |
 | **Return**      | HTML content for displaying building information.                             |
 | **Source**      | app\\Http\\Controllers\\ MapsService.php                                      |
+
+| **Function**    | getToiletIsochroneAreaLayers($distance)              |
+| --------------- | ---------------------------------------------------- |
+| **Description** | Calculates isochrone polygons from nearby toilets.   |
+| **Parameters**  | $distance                                            |
+| **Return**      | an array of isochrone polygons (WKT) for each toilet |
+| **Source**      | app\Services\Maps\MapsService.php                    |

@@ -3,7 +3,7 @@
 @section('content')
 <div class="card card-info">
 	<div class="card-header bg-transparent">
-		<a href="{{ action('LayerInfo\LowIncomeCommunityController@index') }}" class="btn btn-info">Back to List</a>
+		<a href="{{ action('LayerInfo\LowIncomeCommunityController@index') }}" class="btn btn-info">{{ __('Back to List') }}</a>
 	</div><!-- /.card-header -->
 	<div class="card-body">
 		<ul>

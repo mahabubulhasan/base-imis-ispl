@@ -25,89 +25,88 @@ class BuildingRequest extends FormRequest
     {
         return [
             //owner part
-            'owner_name.required' => 'Owner Name is required.',
-            'owner_contact.integer' => 'Owner Contact should be integer value',
-            'owner_gender.required' => 'Owner Gender is required',
-            'owner_contact.required' => 'Owner Contact Number is required',
+            'owner_name.required' => __('Owner Name is required.'),
+            'owner_contact.integer' => __('Owner Contact should be integer value.'),
+            'owner_gender.required' => __('Owner Gender is required.'),
+            'owner_contact.required' => __('Owner Contact Number is required.'),
 
 
             //Building Information
-            'main_building.required' => "The Main Building is required.",
-            'building_associated_to.required_if' => "The BIN of Main Building is required.",
-            'ward.required' => 'Ward Number is required.',
-            'floor_count.required' => 'Number of Floors is required',
-            'tax_code.required' => 'Tax Code/Holding ID is required',
-            'road_code.required' => 'Road Code is required.',
-            'structure_type_id.required' => 'Structure Type is required.',
-            'functional_use_id.required' => 'Functional Use of Building is required.',
-            'house_number.unique' => 'The House Number is Already Taken',
-
-            'main_building.required' => "The Main Building status required.",
-            'building_associated_to.required_if' => "BIN of Main Building required.",
-            'ward.required' => 'Ward Number required.',
-            'tax_code.required' => 'Tax Code/Holding ID required',
-            'road_code.required' => 'Road Code  required.',
-            'structure_type_id.required' => 'Structure Type  required.',
-            'functional_use_id.required' => 'Functional Use of Building  required.',
-            'house_number.unique' => 'The House Number is Taken',
+            'main_building.required' => __('The Main Building is required.'),
+            'building_associated_to.required_if' => __('The BIN of Main Building is required.'),
+            'ward.required' => __('Ward Number is required.'),
+            'floor_count.required' => __('Number of Floors is required.'),
+            'tax_code.required' => __('Tax Code/Holding ID is required.'),
+            'road_code.required' => __('Road Code is required.'),
+            'house_number.unique' => __('The House Number is Already Taken.'),
+            'main_building.required' => __('The Main Building status required.'),
+            'building_associated_to.required_if' => __('BIN of Main Building required.'),
+            'ward.required' => __('Ward Number required.'),
+            'structure_type_id.required' => __('Structure Type required.'),
+            'functional_use_id.required' => __('Functional Use of Building required.'),
+            'house_number.unique' => __('The House Number is Taken.'),
+            'main_building.required' => __('The Main Building status required.'),
+            'building_associated_to.required_if' => __('BIN of Main Building required.'),
+            'house_number.unique' => __('The House Number is Taken.'),
             //population Validation
-            'diff_abled_male_pop.lte' => 'The Differently Abled Male Population must not exceed the Male Population.',
-            'diff_abled_female_pop.lte' => 'The Differently Abled Female Population must not exceed the Female Population.',
-            'diff_abled_others_pop.lte' => 'The Differently Abled Other Population must not exceed the Other Population.',
+            'diff_abled_male_pop.lte' => __('The Differently Abled Male Population must not exceed the Male Population.'),
+            'diff_abled_female_pop.lte' => __('The Differently Abled Female Population must not exceed the Female Population.'),
+            'diff_abled_others_pop.lte' => __('The Differently Abled Other Population must not exceed the Other Population.'),
 
-            'construction_year.required' => 'Building Construction Date is required.',
+            'construction_year.required' => __('Building Construction Date is required.'),
             //lic
-            'low_income_hh.required' => 'Is Low Income House is required.',
+            'low_income_hh.required' => __('Is Low Income House is required.'),
 
-            'lic_id.required_if' => 'LIC Name is required.',
+            'lic_id.required_if' => __('LIC Name is required.'),
             //Water Source Information
-            'water_source_id.required' => "Main Drinking Water Source is required",
-            'watersupply_pipe_code.required_if' => 'Water Supply Pipe Line Code is required',
+            'water_source_id.required' => __('Main Drinking Water Source is required.'),
+            'watersupply_pipe_code.required_if' => __('Water Supply Pipe Line Code is required.'),
 
             //Sanitation System Information
-            'toilet_status.required' => 'Presence of Toilet is required',
-            'sewer_code.required_if' => 'Sewer Code is required.',
-            'drain_code.required_if' => 'Drain Code is required.',
-            'ctpt_name.required_if' => 'Community Toilet Name is required.',
+            'toilet_status.required' => __('Presence of Toilet is required.'),
+            'sewer_code.required_if' => __('Sewer Code is required.'),
+            'drain_code.required_if' => __('Drain Code is required.'),
+            'ctpt_name.required_if' => __('Community Toilet Name is required.'),
 
-            'size.required_if' => 'Containment Volume (m³) is required. Enter dimensions to auto generate.',
+            'size.required_if' => __('Containment Volume (m³) is required. Enter dimensions to auto generate.'),
 
-            'geom.required_if' => 'Building Footprint (KML) is required.',
-            'floor_count.numeric' => 'Number of Floors should be numeric value.',
-            'use_category_id.required_with' => 'Use Category of Building is required.',
+            'geom.required_if' => __('Building Footprint (KML) is required.'),
+            'floor_count.numeric' => __('Number of Floors should be numeric value.'),
+            'use_category_id.required_with' => __('Use Category of Building is required.'),
 
-            'depth.numeric' => 'Tank Depth should be numeric value.',
-            'tank_length.numeric' => 'Tank Length should be numeric value.',
-            'tank_width.numeric' => 'Tank Width should be numeric value.',
-            'pit_depth.numeric' => 'Pit Depth should be numeric value.',
-            'pit_diameter.integer' => 'Pit Diameter should be integer value.',
-            'size.numeric' => 'Containment Volume should be numeric value.',
-            'floor_count.min' => 'Number of Floors should be positive and non-zero value.',
-            'household_with_private_toilet.lte' => 'Household with Private Toilet must not exceed the Number of Households',
-            'population_with_private_toilet.lte' => 'Population with Private Toilet must not exceed the Population of Building',
-            'toilet_count.min' => 'Number of Toilets should be at least 1.',
-            'toilet_count.integer' => 'Number of Toilets should be integer value.',
-            'toilet_count.required_if' => 'Number of Toilets is required.',
-            'household_served.required_unless' => 'Number of Households is required',
-            'population_served.required_unless' => 'Population of Building is required',
-            'household_served.integer'=> 'Number of Household should be integer value',
-            'population_served.integer'=> 'Number of Population should be integer value',
-            'distance_from_well.integer' => 'Distance of containment from well should be integer value.',
-            'distance_from_well.min' => 'Distance of containment from well should be positive value.',
-            'depth.min' => 'Tank depth should be positive value.',
-            'tank_length.min' => 'Tank length should be positive value.',
-            'tank_width.min' => 'Tank width Count should be positive value.',
-            'pit_depth.min' => 'Pit Depth should be positive value.',
-            'pit_diameter.min' => 'Pit Diameter Count should be positive value.',
-            'size.min' => 'Containment Volume should be positive value.',
-            'construction_year' => 'Cant Select Future Value',
-            'sanitation_system_id.required_if' => 'Toilet Connection is required.',
+            'depth.numeric' => __('Tank Depth should be numeric value.'),
+            'tank_length.numeric' => __('Tank Length should be numeric value.'),
+            'tank_width.numeric' => __('Tank Width should be numeric value.'),
+            'pit_depth.numeric' => __('Pit Depth should be numeric value.'),
+            'pit_diameter.integer' => __('Pit Diameter should be integer value.'),
+            'size.numeric' => __('Containment Volume should be numeric value.'),
+            'floor_count.min' => __('Number of Floors should be positive and non-zero value.'),
+            'household_with_private_toilet.lte' => __('Household with Private Toilet must not exceed the Number of Households.'),
+            'population_with_private_toilet.lte' => __('Population with Private Toilet must not exceed the Population of Building.'),
+            'toilet_count.min' => __('Number of Toilets should be at least 1.'),
+            'toilet_count.integer' => __('Number of Toilets should be integer value.'),
+            'toilet_count.required_if' => __('Number of Toilets is required.'),
+            'household_served.required_unless' => __('Number of Households is required.'),
+            'population_served.required_unless' => __('Population of Building is required.'),
+            'household_served.integer' => __('Number of Household should be integer value.'),
+            'population_served.integer' => __('Number of Population should be integer value.'),
+            'distance_from_well.integer' => __('Distance of containment from well should be integer value.'),
+            'distance_from_well.min' => __('Distance of containment from well should be positive value.'),
+            'depth.min' => __('Tank depth should be positive value.'),
+            'tank_length.min' => __('Tank length should be positive value.'),
+            'tank_width.min' => __('Tank width Count should be positive value.'),
+            'pit_depth.min' => __('Pit Depth should be positive value.'),
+            'pit_diameter.min' => __('Pit Diameter Count should be positive value.'),
+            'size.min' => __('Containment Volume should be positive value.'),
+            'construction_year' => __('Cant Select Future Value.'),
+            'sanitation_system_id.required_if' => __('Toilet Connection is required.'),
             //containment message for validation
-            'type_id.required_if' => 'Containment Type is required when Toilet Connection  Septic or Pit/Holding.',
-            'defecation_place.required_if' => 'Defecation Place is required',
-            'build_contain.required_if' => 'BIN of Pre-Connected Building is required',
+            'type_id.required_if' => __('Containment Type is required when Toilet Connection Septic or Pit/Holding.'),
+            'defecation_place.required_if' => __('Defecation Place is required.'),
+            'build_contain.required_if' => __('BIN of Pre-Connected Building is required.'),
             // 'construction_date.required_if'=>'Containment Construction date  required.',
-            'pit_shape.required_if' => 'Pit shape is required.',
+            'pit_shape.required_if' => __('Pit shape is required.'),
+            'house_image.image' => __('The house image must be an image.'),
 
         ];
     }
@@ -129,7 +128,7 @@ class BuildingRequest extends FormRequest
                     return true;
                 }
             },
-            'Building Footprint (KML) file must be kml format'
+            __('Building Footprint (KML) file must be kml format.') 
         );
         $use_cat = $this->input('use_category_id');
         return [
@@ -184,7 +183,7 @@ class BuildingRequest extends FormRequest
             'toilet_status' => ['required',
              function ($attribute, $value, $fail) use ($use_cat) {
                 if (($use_cat == 34 && $value != true) || ($use_cat == 35 && $value != true) ) {
-                    $fail("The Toilet Presence must be Yes when Use Category is Public Toilet or Community Toilet");
+                    $fail(__("The Toilet Presence must be Yes when Use Category is Public Toilet or Community Toilet"));
                 }
             }
             ],
@@ -229,7 +228,7 @@ class BuildingRequest extends FormRequest
             } else {
                 return true;
             }
-        }, 'File must be kml format');
+        }, "{{ __('File must be kml format.') }}" );
         return [
             //  compulsory fields
             // Owner Information
@@ -283,7 +282,7 @@ class BuildingRequest extends FormRequest
             'toilet_status' => ['required',
             function ($attribute, $value, $fail) use ($use_cat) {
                if (($use_cat == 34 && $value != true) || ($use_cat == 35 && $value != true) ) {
-                   $fail("The Toilet Presence must be Yes when Use Category is Public Toilet or Community Toilet");
+                   $fail(__("The Toilet Presence must be Yes when Use Category is Public Toilet or Community Toilet"));
                }
            }
            ],

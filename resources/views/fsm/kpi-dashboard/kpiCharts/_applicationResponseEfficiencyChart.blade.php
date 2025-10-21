@@ -1,5 +1,5 @@
 @include('layouts.dashboard.chart-card',[
-    'card_title' => "Application Response",
+    'card_title' => __("Application Response"),
     'export_chart_btn_id' => "exportapplicationResponseEfficiency",
     'canvas_id' => "applicationResponseEfficiencyCharts"
 ])

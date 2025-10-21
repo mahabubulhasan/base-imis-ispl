@@ -37,22 +37,22 @@
             }
           
         </style>
-        <title>Application Report</title>
+        <title>{{ __('Application Report') }}</title>
     </head>
 
     <body>
     <div class="container">
             <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('img/logo-imis.png'))) }}" class="logo" style=" width: 120px;">
                 <div class="header">
-                    <h1 class="heading" style="text-transform:uppercase; margin: 0;">Municipality</h1>
-                    <h2 style="text-transform:uppercase; margin: 10px; ">Application Report</h2>
+                    <h1 class="heading" style="text-transform:uppercase; margin: 0;">{{ __('Municipality') }}</h1>
+                    <h2 style="text-transform:uppercase; margin: 10px; ">{{ __('Application Report') }}</h2>
                     <!-- <h3 style=" text-transform:uppercase; margin: 0;">Integrated Municipal Information System</h3> -->
                 </div>
          
             <table class="table" width="100%" style="margin-top: 20px; border-collapse: collapse;">
                 <tr>
-                <td style="text-align:left;font-size: 18px; margin: 0; border: none;" >Application ID: {{$application->id}} </td>
-                <td style="float:right;font-size: 18px; margin: 0; border: none;">Application Date: {{$application->application_date->format('Y-m-d')}}</td>
+                <td style="text-align:left;font-size: 18px; margin: 0; border: none;" >{{ __('Application ID') }}: {{$application->id}} </td>
+                <td style="float:right;font-size: 18px; margin: 0; border: none;">{{ __('Application Date') }}: {{$application->application_date->format('Y-m-d')}}</td>
                 </tr>
             </table>
 
@@ -60,7 +60,7 @@
  
 
         <table style="width: 100%; letter-spacing: 0.2px">
-        <thead><p style="text-align:left;font-size : 19px; font-weight: bold;background-color: #ddddde; padding: 2px"> Building Details </p></thead>
+        <thead><p style="text-align:left;font-size : 19px; font-weight: bold;background-color: #ddddde; padding: 2px"> {{ __('Building Details') }} </p></thead>
         <tbody>
         <tr>
             @if(empty($application->emptying))
@@ -77,55 +77,55 @@
             </th>
 
             @endif
-            <td style="width: 20%; font-size : 18px;">BIN</td>
+            <td style="width: 20%; font-size : 18px;">{{ __('BIN') }}</td>
             <td style="width: 20%; font-size : 18px;">{{$application->buildings->bin ?? '-'}}</td>
         </tr>
         <tr>
-            <td style=" font-size : 18px;">Structure Type</td>
+            <td style=" font-size : 18px;">{{ __('Structure Type') }}</td>
             <td  style=" font-size : 18px;">{{$application->buildings->StructureType->type?? '-'}}</td>
         </tr>
         <tr>
-            <td style=" font-size : 18px;">Ward</td>
+            <td style=" font-size : 18px;">{{ __('Ward') }}</td>
             <td style=" font-size : 18px;">{{$application->buildings->ward?? '-'}}</td>
         </tr>
         <tr>
-            <td style=" font-size : 18px;">Number of Floors</td>
+            <td style=" font-size : 18px;">{{ __('Number of Floors') }}</td>
             <td style=" font-size : 18px;">{{$application->buildings->floor_count?? '-'}}</td>
         </tr>
         @if(($application->applicant_name == $application->customer_name))
         <tr>
-            <td style=" font-size : 18px;">Owner/Applicant Name</td>
+            <td style=" font-size : 18px;">{{ __('Owner/Applicant Name') }}</td>
             <td style=" font-size : 18px;">{{$application->applicant_name?? '-'}}</td>
         </tr>
         @else
             @if(isset($application->customer_name))
             <tr>
-                <td style=" font-size : 18px;">Owner Name</td>
+                <td style=" font-size : 18px;">{{ __('Owner Name') }}</td>
                 <td style=" font-size : 18px;">{{$application->customer_name?? '-'}}</td>
             </tr>
             @endif
             @if(isset($application->applicant_name))
              <tr>
-                <td style=" font-size : 18px;">Applicant Name</td>
+                <td style=" font-size : 18px;">{{ __('Applicant Name') }}</td>
                 <td style=" font-size : 18px;">{{$application->applicant_name?? '-'}}</td>
             </tr>
             @endif
         @endif
          @if(($application->applicant_contact == $application->customer_contact))
         <tr>
-            <td style=" font-size : 18px;">Owner/Applicant Contact</td>
+            <td style=" font-size : 18px;">{{ __('Owner/Applicant Contact') }}</td>
             <td style=" font-size : 18px;">{{$application->customer_contact?? '-'}}</td>
         </tr>
         @else
             @if(isset($application->customer_contact))
             <tr>
-                <td style=" font-size : 18px;">Owner Contact</td>
+                <td style=" font-size : 18px;">{{ __('Owner Contact') }}</td>
                 <td style=" font-size : 18px;">{{$application->customer_contact?? '-'}}</td>
             </tr>
             @endif
             @if(isset($application->applicant_contact))
              <tr>
-                <td style=" font-size : 18px;">Applicant Contact</td>
+                <td style=" font-size : 18px;">{{ __('Applicant Contact') }}</td>
                 <td style=" font-size : 18px;">{{$application->applicant_contact?? '-'}}</td>
             </tr>
             @endif
@@ -138,7 +138,7 @@
           
             <table style="width: 100%;">
 
-                        <thead> <p style="text-align:left;font-size : 19px; font-weight: bold;background-color: #ddddde; padding: 2px"> Containment Details </p>
+                        <thead> <p style="text-align:left;font-size : 19px; font-weight: bold;background-color: #ddddde; padding: 2px"> {{ __('Containment Details') }} </p>
                 </thead>
                 <tbody>
                     <tr>
@@ -149,16 +149,16 @@
                         </div>
                         </th>
                      
-                        <td style="width: 20%; font-size : 18px;">Containment ID</td>
+                        <td style="width: 20%; font-size : 18px;">{{ __('Containment ID') }}</td>
                         <td style="width: 20%; font-size : 18px;">{{$containments->id?? '-'}}</td>
                     </tr>
                     <tr>
         
-                        <td style=" font-size : 18px;">Containment Type</td>
+                        <td style=" font-size : 18px;">{{ __('Containment Type') }}</td>
                         <td style=" font-size : 18px;">{{$containments->type?? '-'}}</td>
                     </tr>
                     <tr>
-                        <td style=" font-size : 18px;">Containment Location</td>
+                        <td style=" font-size : 18px;">{{ __('Containment Location') }}</td>
                         <td style=" font-size : 18px;">{{$containments->location?? '-'}}</td>
                     </tr>
                     
@@ -167,7 +167,7 @@
         @endforeach
 
         <table style="width: 100%;">
-                        <thead>  <p style="text-align:left;font-size : 19px; font-weight: bold;background-color: #ddddde; padding: 2px"> Emptying Details </p>
+                        <thead>  <p style="text-align:left;font-size : 19px; font-weight: bold;background-color: #ddddde; padding: 2px">{{ __('Emptying Details') }}  </p>
                 </thead>
                 <tbody>
                     <tr>
@@ -178,19 +178,19 @@
                         </div>
                         </th>
                     
-                        <td style="width: 20%; font-size : 18px;">Service Provider Name</td>
+                        <td style="width: 20%; font-size : 18px;">{{ __('Service Provider Name') }}</td>
                         <td style="width: 20%; font-size : 18px;">{{$application->emptying->service_provider()->withTrashed()->first()->company_name?? '-'}}</td>
                     </tr>
                     <tr>
-                        <td style=" font-size : 18px;">Total Sludge Volume (m³) </td>
+                        <td style=" font-size : 18px;">{{ __('Total Sludge Volume (m³)') }} </td>
                         <td style=" font-size : 18px;">{{$application->emptying->volume_of_sludge?? '-'}}</td>
                     </tr>
                     <tr>
-                        <td style=" font-size : 18px;">Emptied Date</td>
+                        <td style=" font-size : 18px;">{{ __('Emptied Date') }}</td>
                         <td style=" font-size : 18px;">{{$application->emptying->emptied_date->format('Y-m-d')?? '-'}}</td>
                     </tr>
                     <tr>
-                    <td style=" font-size : 18px;">Emptied Time</td>
+                    <td style=" font-size : 18px;">{{ __('Emptied Time') }}</td>
                     <td style=" font-size : 18px;">{{$application->emptying->start_time?? '-'}}</td>
                 </tr>
                 {{--   
@@ -204,7 +204,7 @@
                 </tr> --> 
                 --}}
                 <tr>
-                    <td style=" font-size : 18px;">Name of Driver</td>
+                    <td style=" font-size : 18px;">{{ __('Name of Driver') }}</td>
                     <td style=" font-size : 18px;">{{$application->emptying->employee_info_driver->name?? '-'}}</td>
                 </tr>
                 
@@ -215,11 +215,11 @@
                 </tr> -->
                 --}}
                 <tr>
-                    <td style=" font-size : 18px;">Total Cost</td>
+                    <td style=" font-size : 18px;">{{ __('Total Cost') }}</td>
                     <td style=" font-size : 18px;">{{number_format($application->emptying->total_cost)?? '-'}}</td>
                 </tr>
                 <tr>
-                    <td style=" font-size : 18px;">Disposal Treatment Plant</td>
+                    <td style=" font-size : 18px;">{{ __('Disposal Treatment Plant') }}</td>
                     <td style=" font-size : 18px;">{{$application->emptying->treatmentPlant->name?? '-'}}</td>
                 </tr>
                 </tbody>
@@ -230,7 +230,7 @@
        <table style="width: 100%;">
 
             <thead>
-                <p style="text-align:left;font-size : 19px; font-weight: bold;background-color: #ddddde; padding: 2px">Sludge Collection Details </p>
+                <p style="text-align:left;font-size : 19px; font-weight: bold;background-color: #ddddde; padding: 2px">{{ __('Sludge Collection Details') }} </p>
             </thead>
             <tbody>
                 <tr>
@@ -238,16 +238,16 @@
                 <div style="text-align: center;">
                     <img src="{{'data:image/png;base64,'.base64_encode(file_get_contents(public_path('img/report-icon/sludge.png')))}}" width="100px"/> 
                </div></th>
-                    <td style="width: 20%;  font-size : 18px;">Disposal Place</td>
+                    <td style="width: 20%;  font-size : 18px;">{{ __('Disposal Place') }}</td>
                         <td style="width: 20%; font-size : 18px;">{{$application->sludge_collection->treatmentplants->name?? '-'}}</td>
                 </tr>
                 <tr>
-                    <td style=" font-size : 18px;">Disposal Date</td>
+                    <td style=" font-size : 18px;">{{ __('Disposal Date') }}</td>
                     <td style=" font-size : 18px;">{{$application->sludge_collection->date?? '-'}}</td>
 
                 </tr>
                 <tr>
-                    <td style=" font-size : 18px;">Disposal Time</td>
+                    <td style=" font-size : 18px;">{{ __('Disposal Time') }}</td>
                     <td style="font-size: 18px;">{{ (date('h:i A', strtotime($application->sludge_collection->entry_time)) ?? '-') . '-' . (date('h:i A', strtotime($application->sludge_collection->exit_time)) ?? '-') }}</td>
                 </tr>
             </tbody>

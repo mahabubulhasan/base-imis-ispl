@@ -3,7 +3,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 {{--Extend the main layout--}}
 @extends('layouts.dashboard')
 {{--Add sections for the main layout--}}
-@section('title', 'Add Emptying Service Details')
+@section('title', __('Add Emptying Service Details'))
 {{--Add sections for the index layout--}}
 
 {{--Include the layout inside the main content section--}}
@@ -14,7 +14,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
     @include('layouts.components.error-alert')
     <div class="card-body">
     {!! Form::open(['url' => route('emptying.store'), 'class' => 'form-horizontal','files'=>true]) !!}
-        @include('layouts.partial-form',["submitButtonText" => 'Save'])
+        @include('layouts.partial-form',["submitButtonText" =>  __('Save')])
     {!! Form::close() !!}
     </div>
 </div>

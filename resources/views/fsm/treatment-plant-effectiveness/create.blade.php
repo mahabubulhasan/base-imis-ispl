@@ -13,7 +13,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
 	</div><!-- /.card-header -->
 	{!! Form::open(['action'=> 'Fsm\TreatmentPlantEffectivenessController@store', 'method' => 'POST', 'class' => 'form-horizontal']) !!}
-		@include('fsm.treatment-plant-effectiveness.partial-form', ['submitButtomText' => 'Save'])
+		@include('fsm.treatment-plant-effectiveness.partial-form', ['submitButtomText' => __('Save')])
 	{!! Form::close() !!}
 </div><!-- /.card -->
 @stop

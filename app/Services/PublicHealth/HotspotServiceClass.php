@@ -59,19 +59,19 @@ class HotspotServiceClass
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['hotspots.destroy', $model->id]]);
 
                 if (Auth::user()->can('Edit Hotspot Identification')) {
-                    $content .= '<a title="Edit" href="' . action("PublicHealth\HotspotController@edit", [$model->id]) . '"  class="btn btn-info btn-sm mb-1"><i class="fa fa-edit"></i></a> ';
+                    $content .= '<a title="' . __("Edit") . '" href="' . action("PublicHealth\HotspotController@edit", [$model->id]) . '"  class="btn btn-info btn-sm mb-1"><i class="fa fa-edit"></i></a> ';
                 }
                 if (Auth::user()->can('View Hotspot Identification')) {
-                    $content .= '<a title="Detail" href="' . action("PublicHealth\HotspotController@show", [$model->id]) . '"class="btn btn-info btn-sm mb-1"><i class="fa fa-list"></i></a> ';
+                    $content .= '<a title="' . __("Detail") . '" href="' . action("PublicHealth\HotspotController@show", [$model->id]) . '"class="btn btn-info btn-sm mb-1"><i class="fa fa-list"></i></a> ';
                 }
                 if (Auth::user()->can('View Hotspot Identification History')) {
-                    $content .= '<a title="History" href="' . action("PublicHealth\HotspotController@history", [$model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-history"></i></a> ';
+                    $content .= '<a title="' . __("History") . '" href="' . action("PublicHealth\HotspotController@history", [$model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-history"></i></a> ';
                 }
                 if (Auth::user()->can('Delete Hotspot Identification')) {
-                    $content .= '<a title="Delete" class="delete btn btn-danger btn-sm mb-1">&nbsp;<i class="fa fa-trash"></i>&nbsp;</a> ';
+                    $content .= '<a title="' . __("Delete") . '" class="delete btn btn-danger btn-sm mb-1">&nbsp;<i class="fa fa-trash"></i>&nbsp;</a> ';
                 }
             if (Auth::user()->can('View Hotspot Identification On Map')) {
-                $content .= '<a title="Map" href="' . action("MapsController@index", ['layer' => 'waterborne_hotspots_layer', 'field' => 'id', 'val' => $model->id]) .
+                $content .= '<a title="' . __("Map") . '" href="' . action("MapsController@index", ['layer' => 'waterborne_hotspots_layer', 'field' => 'id', 'val' => $model->id]) .
                     '" class="btn btn-info btn-sm mb-1"><i class="fa fa-map-marker"></i></a> ';
             }
 
@@ -143,18 +143,18 @@ class HotspotServiceClass
                     $Hotspots->save();
 
                     DB::commit(); // Commit the transaction
-                    return redirect('publichealth/hotspots')->with('success', 'Waterborne Hotspot created successfully');
+                    return redirect('publichealth/hotspots')->with('success', __('Waterborne Hotspot created successfully.'));
                 } else {
                     DB::rollBack(); // Rollback if geom is not within the city boundary
-                    return redirect('publichealth/hotspots/create')->with('error', 'The selected area should be within the City Boundary')->withInput();
+                    return redirect('publichealth/hotspots/create')->with('error', __('The selected area should be within the City Boundary.'))->withInput();
                 }
             } else {
                 DB::rollBack(); // Rollback if geom is not provided
-                return redirect('publichealth/hotspots/create')->with('error', 'Failed to Create Hotspot Identification')->withInput();
+                return redirect('publichealth/hotspots/create')->with('error', __('Failed to Create Hotspot Identification.'))->withInput();
             }
         } catch (\Exception $e) {
             DB::rollBack(); // Rollback in case of any exception
-            return redirect('publichealth/hotspots/create')->with('error', 'An error occurred: ' . $e->getMessage())->withInput();
+            return redirect('publichealth/hotspots/create')->with('error', __('An error occurred') . ':' . $e->getMessage())->withInput();
         }
     }
 
@@ -216,12 +216,12 @@ class HotspotServiceClass
                     $Hotspots->geom = DB::raw("ST_Multi(ST_GeomFromText('" . $request->geom . "', 4326))");
                     $Hotspots->save();
                 } else {
-                    return redirect('publichealth/hotspots/' . $id . '/edit')->with('error', 'The selected area should be within the City Boundary')->withInput();
-                }
+                    return redirect('publichealth/hotspots/' . $id . '/edit')->with('error', __('The selected area should be within the City Boundary.'))->withInput();
+                }                                                                                
             }
-            return redirect('publichealth/hotspots')->with('success', 'Waterborne Hotspot updated successfully ');
+            return redirect('publichealth/hotspots')->with('success', __('Waterborne Hotspot updated successfully.'));
         } else {
-            return redirect('publichealth/hotspots')->with('error', 'Failed to update Hotspot Identifications')->withInput();;
+            return redirect('publichealth/hotspots')->with('error', __('Failed to update Hotspot Identification.'))->withInput();;
         }
     }
 
@@ -237,7 +237,7 @@ class HotspotServiceClass
         if ($Hotspots) {
             $enumValue =  (int)$Hotspots->disease;
             $diseaseName = HotspotDisease::getDescription($enumValue);
-            $page_title = "Waterborne Hotspot Details";
+            $page_title = __("Waterborne Hotspot Details");
             $geomArr = DB::select("SELECT ST_X(ST_AsText(ST_Centroid(ST_Centroid(geom)))) AS long, ST_Y(ST_AsText(ST_Centroid(ST_Centroid(geom)))) AS lat, ST_AsText(geom) AS geom FROM public_health.waterborne_hotspots WHERE id = $id");
 
             $geom = ($geomArr[0]->geom);
@@ -263,7 +263,7 @@ class HotspotServiceClass
         $searchData = $data['searchData'] ? $data['searchData'] : null;
         $disease = $data['disease'] ? $data['disease'] : null;
         $hotspot_location = $data['hotspot_location'] ? $data['hotspot_location'] : null;
-        $columns = ['Infected Disease', 'Hotspot Location', 'Date', 'No. of Cases','Male Cases','Female Cases','Other Cases','No of Fatalities','Male Fatalities','Female Fatalities','Other Fatalities','Notes'];
+        $columns = [__('Infected Disease'), __('Hotspot Location'), __('Date'), __('No. of Cases'),__('Male Cases'),__('Female Cases'),__('Other Cases'),__('No. of Fatalities'),__('Male Fatalities'),__('Female Fatalities'),__('Other Fatalities'),__('Notes')];
         $query = Hotspots::select('disease', 'hotspot_location', 'date', 'no_of_cases','male_cases','female_cases','other_cases', 'no_of_fatalities','male_fatalities','female_fatalities','other_fatalities','notes')->whereNull('deleted_at');
 
         if (!empty($disease)) {

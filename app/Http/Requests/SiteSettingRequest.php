@@ -56,10 +56,10 @@ class SiteSettingRequest extends Request
      public function messages()
     {
         return [
-            'name.regex' => 'The name field should contain only contain letters and spaces.',
-            'name.required' =>'Name is required.',
-            'value.required' =>'Value is required.',
-            'value.integer' => 'Value must be an integer.',
+            'name.regex' => __('The name field should contain only contain letters and spaces.'),
+            'name.required' => __('Name is required.'),
+            'value.required' => __('Value is required.'),
+            'value.integer' => __('Value must be an integer.'),
             ];
     }
 }

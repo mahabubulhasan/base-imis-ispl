@@ -1,7 +1,7 @@
 <!-- Last Modified Date: 18-04-2024
 Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 @include('layouts.dashboard.chart-card',[
-    'card_title' => "Summary of Applications, Emptying Services, Sludge Disposal, and Feedback by Ward",
+    'card_title' => __("Summary of Applications, Emptying Services, Sludge Disposal, and Feedback by Ward"),
     'export_chart_btn_id' => "exportemptyingServicePerWardsChart",
     'canvas_id' => "emptyingServicePerWardsChart"
 ])
@@ -40,7 +40,7 @@ var myChart = new Chart(ctx, {
         labelString: 'Wards',
         //fontSize: 10,
       },
-            
+
         }],
         yAxes: [{
             stacked: true,
@@ -53,14 +53,14 @@ var myChart = new Chart(ctx, {
                      }
 
                  }
-              
+
             }
         }]
     },
     tooltips: {
         mode: 'index',
     }
-   
+
   }
 });
 document.getElementById('exportemptyingServicePerWardsChart').addEventListener("click", downloadIMG);

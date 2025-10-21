@@ -13,13 +13,13 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 <div class="card">
     <div class="card-header">
         @can('Add Help Desk')
-        <a href="{{ action('Fsm\HelpDeskController@create') }}" class="btn btn-info">Add Help Desk</a>
+        <a href="{{ action('Fsm\HelpDeskController@create') }}" class="btn btn-info">{{ __('Add Help Desk') }}</a>
         @endcan
         @can('Export Help Desk')
-        <a href="#" id="export" class="btn btn-info">Export to CSV</a>
+        <a href="#" id="export" class="btn btn-info">{{ __('Export to CSV') }}</a>
         @endcan
         <a href="#" class="btn btn-info float-right" data-toggle="collapse" data-target="#collapseFilter"
-            aria-expanded="false" aria-controls="collapseFilter">Show Filter</a>
+            aria-expanded="false" aria-controls="collapseFilter">{{ __('Show Filter') }}</a>
     </div><!-- /.card-header -->
     <div class="card-body">
         <div class="row">
@@ -31,21 +31,21 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                             <div class="accordion-body">
                                 <form class="form-horizontal" id="filter-form">
                                     <div class="form-group row">
-                                        <label for="help_desk_id" class="col-md-2 col-form-label ">ID</label>
+                                        <label for="help_desk_id" class="col-md-2 col-form-label ">{{ __('ID') }}</label>
                                         <div class="col-md-2">
                                             <input type="text" class="form-control" id="help_desk_id"
-                                                placeholder="ID" 
+                                                placeholder={{ __("ID")}} 
                                                 oninput = "this.value = this.value.replace(/[^0-9]/g, ''); "/> <!-- Allow only numeric characters (0-9) -->
                                         </div>
-                                        <label for="name" class="col-md-2 col-form-label ">Name</label>
+                                        <label for="name" class="col-md-2 col-form-label ">{{ __('Name') }}</label>
                                         <div class="col-md-2">
-                                            <input type="text" class="form-control" id="name" placeholder="Name" />
+                                            <input type="text" class="form-control" id="name" placeholder="{{ __('Name') }}" />
                                         </div>
                                          {{-- @hasrole('Super Admin|Municipality - Super Admin|Municipality - IT Admin|Municipality - Executive|Municipality - Sanitation Department') --}}
-                                        <label for="servprov" class="col-md-2 col-form-label ">Service Provider Name</label>
+                                        <label for="servprov" class="col-md-2 col-form-label ">{{ __('Service Provider Name') }}</label>
                                         <div class="col-md-2">
                                             <select class="form-control" id="servprov">
-                                                <option value="">Service Provider Name</option>
+                                                <option value="">{{ __('Service Provider Name') }}</option>
                                                 @foreach($service_providers as $key=>$value)
                                                 <option value={{$key}}>{{$value}}</option>
                                                 @endforeach
@@ -54,8 +54,8 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                         {{-- @endhasrole --}}
                                     </div>
                                     <div class="card-footer text-right">
-                                        <button type="submit" class="btn btn-info">Filter</button>
-                                        <button type="reset" id="reset-filter" class="btn btn-info reset">Reset</button>
+                                        <button type="submit" class="btn btn-info">{{ __('Filter') }}</button>
+                                        <button type="reset" id="reset-filter" class="btn btn-info reset">{{ __('Reset') }}</button>
                                     </div>
                                 </form>
                             </div>
@@ -70,11 +70,11 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
             <table id="data-table" class="table table-bordered table-striped dtr-inline" width="100%">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Contact Number</th>
-                    <th>Service Provider Name</th>
-                    <th>Actions</th>
+                    <th>{{ __('ID') }}</th>
+                    <th>{{ __('Name') }}</th>
+                    <th>{{ __('Contact Number') }}</th>
+                    <th>{{ __('Service Provider Name') }}</th>
+                    <th>{{ __('Actions') }}</th>
                 </tr>
             </thead>
         </table>
@@ -131,13 +131,14 @@ $(function() {
             var form = $(this).closest("form");
             event.preventDefault();
             Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+               title: "{{__('Are you sure?')}}",
+                    text: "{!! __('You won\'t be able to revert this!') !!}",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: "{{ __('Yes, delete it!') }}",
+                    cancelButtonText: '{{ __('Cancel') }}',
             }).then((result) => {
                 if (result.isConfirmed) {
                     form.submit();

@@ -1,5 +1,5 @@
 @include('layouts.dashboard.chart-card',[
-    'card_title' => "Yearly Distribution of Waterborne Disease Incidents",
+    'card_title' => __("Yearly Distribution of Waterborne Disease Incidents"),
     'export_chart_btn_id' => "exportwaterborneCasesChart",
     'canvas_id' => "waterborneCasesChart"
 ])

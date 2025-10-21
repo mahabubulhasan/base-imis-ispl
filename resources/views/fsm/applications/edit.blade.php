@@ -17,7 +17,7 @@ An Edit Layout for all forms
         @include('layouts.components.error-alert')
         <div class="card-body">
             {!! Form::open(['url' => $formAction, 'class' => 'form-horizontal','method'=>'PATCH']) !!}
-            @include('layouts.partial-form', ['submitButtonText' => 'Save'])
+            @include('layouts.partial-form', ['submitButtonText' => __('Save')])
             {!! Form::close() !!}
         </div>
     </div>
@@ -36,9 +36,6 @@ An Edit Layout for all forms
                     $("input[name='applicant_name']").val($("input[name=customer_name]").val());
                     $("#applicant_gender").val($("#customer_gender").val());
                     $("input[name='applicant_contact']").val($("input[name=customer_contact]").val());
-//                    $("input[name='applicant_name']").attr('disabled','disabled');
-//                    $("#applicant_gender").attr('disabled','disabled');
-//                    $("input[name='applicant_contact']").attr('disabled','disabled');
                 } else {
                     $("input[name='applicant_name']").val('');
                     $("#applicant_gender").val('');
@@ -162,7 +159,40 @@ An Edit Layout for all forms
                 onAddressChange();
             }
 
-            $('#bin').on('change',onAddressChange)
+            $('#bin').on('change',onAddressChange);
+            checkDetailsAndUpdateCheckbox();
+
         });
+
+         // Function to check if the Owner and Applicant details are the same
+    function checkDetailsAndUpdateCheckbox() {
+        // Get the values of the Owner and Applicant Details
+        const ownerDetails = {
+            name: document.getElementById('customer_name').value,
+            gender: document.getElementById('customer_gender').value,
+            contact: document.getElementById('customer_contact').value
+        };
+
+        const applicantDetails = {
+            name: document.getElementById('applicant_name').value,
+            gender: document.getElementById('applicant_gender').value,
+            contact: document.getElementById('applicant_contact').value
+        };
+
+        // Get the checkbox element
+        const sameAsOwnerCheckbox = document.getElementById('autofill');
+
+        // Compare Owner and Applicant details
+        const isSame = ownerDetails.name === applicantDetails.name &&
+                    ownerDetails.gender === applicantDetails.gender &&
+                    ownerDetails.contact === applicantDetails.contact;
+
+        // Update checkbox state based on comparison
+        sameAsOwnerCheckbox.checked = isSame;
+    }
+        // Attach event listeners to Applicant fields to check when any field changes
+        document.getElementById('applicant_name').addEventListener('input', checkDetailsAndUpdateCheckbox);
+        document.getElementById('applicant_gender').addEventListener('input', checkDetailsAndUpdateCheckbox);
+        document.getElementById('applicant_contact').addEventListener('input', checkDetailsAndUpdateCheckbox);
     </script>
 @endpush

@@ -14,14 +14,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
     <div class="card">
         <div class="card-header">
             @can('Add PT/CT Toilet')
-                <a href="{{ action('Fsm\CtptController@create') }}" class="btn btn-info">Add Public / Community Toilets</a>
+                <a href="{{ action('Fsm\CtptController@create') }}" class="btn btn-info">{{__('Add Public / Community Toilets')}}</a>
             @endcan
             @can('Export PT/CT Toilets')
-                <a href="#" id="export" class="btn btn-info">Export to CSV</a>
+                <a href="#" id="export" class="btn btn-info">{{__('Export to CSV')}}</a>
             @endcan
             <a href="#" class="btn btn-info float-right" id="headingOne" type="button" data-toggle="collapse"
                 data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                Show Filter
+                {{__('Show Filter')}}
             </a>
         </div><!-- /.card-header -->
         <div class="card-body">
@@ -34,22 +34,22 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                 <div class="accordion-body">
                                     <form class="form-horizontal" id="filter-form">
                                         <div class="form-group row">
-                                        <label for="name" class="col-md-2 col-form-label ">Toilet Name</label>
+                                        <label for="name" class="col-md-2 col-form-label ">{{__('Toilet Name')}}</label>
                                             <div class="col-md-2">
                                                 <input type="text" class="form-control" id="name"
-                                                    placeholder="Toilet Name" />
+                                                    placeholder="{{__('Toilet Name')}}" />
                                             </div>
-                                            <label for="bin" class="control-label col-md-2">BIN</label>
+                                            <label for="bin" class="control-label col-md-2">{{__('BIN')}}</label>
                                             <div class="col-md-2">
                                                 <input type="text" class="form-control" id="bin"
-                                                    placeholder="BIN" 
+                                                    placeholder="{{__('BIN')}}" 
                                                     oninput = "this.value = this.value.replace(/[^a-zA-Z0-9]/g, ''); "/> <!-- Allow only alphabetic and numeric characters -->
                                             </div>
 
-                                            <label for="house_address" class="control-label col-md-2">House Number </label>
+                                            <label for="house_address" class="control-label col-md-2">{{__('House Number')}}</label>
                                             <div class="col-md-2">
                                                 <input type="text" class="form-control" id="house_address"
-                                                    placeholder="House Number" 
+                                                    placeholder="{{__('House Number')}}" 
                                                     oninput = "this.value = this.value.replace(/[^a-zA-Z0-9-]/g, ''); "/> <!-- Allow only alphabetic characters, numbers, and the hyphen (-) -->
                                             </div>
                                            
@@ -57,56 +57,55 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                         </div>
                                         <div class="form-group row">
                                        
-                                        <label for="type" class="col-md-2 col-form-label ">Toilet Type</label>
+                                        <label for="type" class="col-md-2 col-form-label ">{{__('Toilet Type')}}</label>
                                             <div class="col-md-2">
                                                 <select class="form-control" id="type" name="type">
-                                                    <option value="">Toilet Type</option>
-                                                    <option value="Community Toilet">Community Toilet</option>
-                                                    <option value="Public Toilet">Public Toilet</option>
+                                                    <option value="">{{__('Toilet Type')}}</option>
+                                                    <option value="Community Toilet">{{__('Community Toilet')}}</option>
+                                                    <option value="Public Toilet">{{__('Public Toilet')}}</option>
                                                 </select>
                                             </div>
 
-                                            <label for="ward" class="col-md-2 col-form-label ">Ward Number</label>
+                                            <label for="ward" class="col-md-2 col-form-label ">{{__('Ward Number')}}</label>
                                             <div class="col-md-2">
                                                 <select class="form-control" id="ward">
-                                                    <option value="">Ward Number</option>
+                                                    <option value="">{{__('Ward Number')}}</option>
                                                     @foreach ($ward as $key => $value)
                                                         <option value="{{ $key }}">{{ $value }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <label for="caretaker_name" class="col-md-2 col-form-label ">Caretaker Name</label>
+                                            <label for="caretaker_name" class="col-md-2 col-form-label ">{{__('Caretaker Name')}}</label>
                                             <div class="col-md-2">
                                                 <input type="text" class="form-control" id="caretaker_name"
-                                                    placeholder="Caretaker Name" />
+                                                    placeholder="{{__('Caretaker Name')}}" />
                                             </div>
                                            
                                         </div>
 
                                         <div class="form-group row">
-                                        <label for="sanitary_supplies_disposal_facility" class="col-md-2 col-form-label ">Sanitary Supplies &
-                                                Disposal Facility</label>
+                                        <label for="sanitary_supplies_disposal_facility" class="col-md-2 col-form-label ">{{__('Sanitary Supplies & Disposal Facility')}}</label>
                                             <div class="col-md-2">
                                                 <select class="form-control" id="sanitary_supplies_disposal_facility"
                                                     name="sanitary_supplies_disposal_facility">
-                                                    <option value="">Sanitary Supplies & Disposal Facility</option>
-                                                    <option value=true>Yes</option>
-                                                    <option value=false>No</option>
+                                                    <option value="">{{__('Sanitary Supplies & Disposal Facility')}}</option>
+                                                    <option value=true>{{__('Yes')}}</option>
+                                                    <option value=false>{{__('No')}}</option>
                                                 </select>
                                             </div>
-                                    <label for="width" class="col-md-2 col-form-label ">Status</label>
+                                    <label for="width" class="col-md-2 col-form-label ">{{__('Status')}}</label>
                                     <div class="col-md-2">
                                     <select class="form-control chosen-select" id="status" name="status">
-                                        <option value="">Status</option>
-                                        <option value="true">Operational</option>
-                                        <option value="false">Not Operational</option>
+                                        <option value="">{{__('Status')}}</option>
+                                        <option value="true">{{__('Operational')}}</option>
+                                        <option value="false">{{__('Not Operational')}}</option>
 
                                     </select>
                                     </div>
                                     </div>
                                         <div class="card-footer text-right">
-                                            <button type="submit" class="btn btn-info ">Filter</button>
-                                            <button type="reset" id="reset-filter" class="btn btn-info ">Reset</button>
+                                            <button type="submit" class="btn btn-info ">{{__('Filter')}}</button>
+                                            <button type="reset" id="reset-filter" class="btn btn-info ">{{__('Reset')}}</button>
                                         </div>
                                     </form>
                                 </div> <!--- accordion body!-->
@@ -122,16 +121,17 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 <table id="data-table" class="table table-bordered table-striped dtr-inline" width="100%">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Toilet Name</th>
-                            <th>BIN</th>
-                            <th>House Number</th>
-                            <th>Toilet Type</th>
-                            <th>Ward Number</th>
-                            <th>Caretaker Name</th>
-                            <th>Sanitary Supplies Disposal Facility</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <th>{{ __('ID')}}</th>
+                            <th>{{ __('Toilet Name')}}</th>
+                            <th>{{ __('BIN')}}</th>
+                            <th>{{ __('House Number')}}</th>
+                            <th>{{ __('Toilet Type')}}</th>
+                            <th>{{ __('Ward Number')}}</th>
+                            <th>{{ __('Caretaker Name')}}</th>
+                            <th>{{ __('Sanitary Supplies & Disposal Facility')}}</th>
+                            <th>{{ __('Status')}}</th>
+                            <th>{{ __('Actions')}}</th>
+
                         </tr>
                     </thead>
                 </table>
@@ -219,13 +219,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     var form = $(this).closest("form");
                     event.preventDefault();
                     Swal.fire({
-                        title: 'Are you sure?',
-                        text: "You won't be able to revert this!",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, delete it!'
+                     title: "{{__('Are you sure?')}}",
+                    text: "{!! __('You won\'t be able to revert this!') !!}",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: "{{ __('Yes, delete it!') }}",
+                    cancelButtonText: '{{ __('Cancel') }}',
                     }).then((result) => {
                         if (result.isConfirmed) {
                             form.submit();

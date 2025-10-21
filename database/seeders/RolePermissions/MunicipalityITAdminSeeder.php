@@ -27,12 +27,13 @@ class MunicipalityITAdminSeeder extends Seeder
             $createdRole = Role::updateOrCreate($role);
             switch ($createdRole->name) {
                 case 'Municipality - IT Admin':
-                    
+
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', [
                         'Building Dashboard',
                         'Dashboard',
                         'FSM Dashboard',
-                        'Utility Dashboard'
+                        'Utility Dashboard',
+                        'Language',
                     ]));
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', [
                         'Building Structures',
@@ -70,7 +71,7 @@ class MunicipalityITAdminSeeder extends Seeder
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', [
                         'Treatment Plant Efficiency Standards'
                     ])->whereIn('type', ['View']));
-                    
+
                     //CT/PT
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['PT/CT Toilets','PT Users Logs'])
                         ->whereIn('type', ['View', 'List', 'Export', 'History', 'View on map'])
@@ -164,6 +165,9 @@ class MunicipalityITAdminSeeder extends Seeder
                             'Water Body Map Layer',
                             'Solid Waste Status Map Layer',
                             'Low Income Community Map Layer',
+                            'Containments Emptied Info Map Tools', 
+                            'Toilet Isochrone Map Tools',
+                            'Export Containment Report'
 
 
                         ]));
@@ -186,6 +190,11 @@ class MunicipalityITAdminSeeder extends Seeder
                             'Delete',
                             'Activity'
                         ]));
+
+
+
+
+
 
                     break;
             }

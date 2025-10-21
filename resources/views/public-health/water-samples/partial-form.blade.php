@@ -51,7 +51,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 <div class="card-body">
     
     <div class="form-group required row">
-        {!! Form::label('sample_date','Sample Date',['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('sample_date',__('Sample Date'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-4">
         {!! Form::date('sample_date', null, ['class' => 'form-control','id'=>'sample_date','onclick' => 'this.showPicker();', 'placeholder' => 'Sample Date']) !!}
 
@@ -59,22 +59,22 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
     </div>
 
     <div class="form-group required row">
-        {!! Form::label('sample_location','Sample Location',['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('sample_location',__('Sample Location'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-4">
-            {!! Form::text('sample_location',null,['class' => 'form-control', 'placeholder' => 'Sample Location']) !!}
+            {!! Form::text('sample_location',null,['class' => 'form-control', 'placeholder' => __('Sample Location')]) !!}
         </div>
     </div>
 
     <div class="form-group required row">
-        {!! Form::label('water_coliform_test_result','Water Coliform Test Result',['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('water_coliform_test_result',__('Water Coliform Test Result'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-4">
-        {!! Form::select('water_coliform_test_result', $water_coliform_test_result, null, ['class' => 'form-control chosen-select', 'placeholder' => 'Water Coliform Test Result']) !!}
+        {!! Form::select('water_coliform_test_result', $water_coliform_test_result, null, ['class' => 'form-control chosen-select', 'placeholder' => __('Water Coliform Test Result')]) !!}
            
         </div>
     </div>
 
      <div class="form-group required row">
-            {!! Form::label('geom','Click to set Latitude and Longitude',['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('geom',__('Click to set Latitude and Longitude'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-6">
             <a class="skiplink" href="#map">Go to map</a>
             <!--<div id="map" class="map" tabindex="0">-->
@@ -89,8 +89,8 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
         </div>
         </div>
     <div class="card-footer">
-        <a href="{{ action('PublicHealth\WaterSamplesController@index') }}" class="btn btn-info">Back to List</a>
-        {!! Form::submit('Save', ['class' => 'btn btn-info']) !!}
+        <a href="{{ action('PublicHealth\WaterSamplesController@index') }}" class="btn btn-info">{{__('Back to List')}}</a>
+        {!! Form::submit(__('Save'), ['class' => 'btn btn-info']) !!}
     </div>
 
  

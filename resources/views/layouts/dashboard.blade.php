@@ -73,9 +73,9 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     break;
                 default:
                     if ($(this).hasClass("active")) {
-                        $(this).text("Hide Filter");
+                        $(this).text("{{ __('Hide Filter') }}");
                     } else {
-                        $(this).text("Show Filter");
+                        $(this).text("{{ __('Show Filter') }}");
                     }
                     break;
             }

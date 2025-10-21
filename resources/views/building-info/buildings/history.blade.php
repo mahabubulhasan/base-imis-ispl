@@ -3,7 +3,7 @@
 @section('content')
 <div class="card card-info">
 	<div class="card-header bg-transparent">
-		<a href="{{ action('BuildingInfo\BuildingController@index') }}" class="btn btn-info">Back to List</a>
+		<a href="{{ action('BuildingInfo\BuildingController@index') }}" class="btn btn-info">{{ __("Back to List") }}</a>
 	</div><!-- /.box-header -->
 	<div class="card-body">
 		<ul>
@@ -18,7 +18,7 @@
                             @endif
                         @endif
 			@endforeach
-                        
+
                         @foreach($building->Owners->revisionHistory as $history)
 			@if($history->key == 'created_at' && !$history->old_value)
                             @if($history->userResponsible())

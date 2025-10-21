@@ -1,5 +1,5 @@
 @extends('layouts.dashboard')
-@section('title', 'Create Role')
+@section('title', __('Create Role'))
 @section('content')
 <div class="box box-info">
     <div class="box-header with-border">
@@ -10,8 +10,8 @@
         @include('roles.form')
       </div>
       <div class="card-footer">
-        <a href="{{ action('Auth\RoleController@index') }}" class="btn btn-info">Back to List</a>
-        <button class="btn btn-info" type="submit">Save</button>
+        <a href="{{ action('Auth\RoleController@index') }}" class="btn btn-info">{{ __('Back to List')}}</a>
+        <button class="btn btn-info" type="submit">{{ __('Save')}}</button>
       </div>
       {{ Form::close() }}
     </div>

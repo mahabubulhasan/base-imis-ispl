@@ -1,5 +1,5 @@
 @include('layouts.dashboard.chart-card',[
-    'card_title' => "Containment Types Categorized by Building Usage",
+    'card_title' => __("Containment Types Categorized by Building Usage"),
     'export_chart_btn_id' => "exportcontainmentTypesByBldgUsesChart",
     'canvas_id' => "containmentTypesByBldgUsesChart"
 ])
@@ -36,7 +36,7 @@
               boxWidth: 10
           }
       },
-      
+
         scales: {
       xAxes: [{
         stacked: true,
@@ -52,7 +52,7 @@
         stacked: true,
         ticks: {
                 beginAtZero: true,
-               
+
             },
             display: true,
             position: 'right',
@@ -88,7 +88,7 @@
     // Trigger the download
     a.click();
       }
-      
+
 
 </script>
 

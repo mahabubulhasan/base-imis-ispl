@@ -14,7 +14,7 @@ A Layout for showing resource details
     <div class="card card-info">
         @if(!Request::is('*/create') && !Request::is('*/edit') && !Request::is('*/create/*'))
 <div class="card-header bg-transparent">
-        <a href="{{ $indexAction }}" class="btn btn-info">Back to List</a>
+        <a href="{{ $indexAction }}" class="btn btn-info">{{ __('Back to List') }}</a>
 </div>
 @endif
         <div class="card-body">

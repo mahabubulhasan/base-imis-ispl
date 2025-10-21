@@ -44,7 +44,7 @@ class FeedbackController extends Controller{
     */
     public function index(Request $request)
     {
-        $page_title = "Feedbacks";
+        $page_title =__("Feedbacks");
         $wards = Ward::orderBy('ward', 'asc')->pluck('ward', 'ward')->all();
         $feedbackYears = $this->getAllFeedbacksYearsDate();
         $months = DB::select("select distinct extract(month from created_at) as date1 from fsm.feedbacks where deleted_at is null order by date1 asc");
@@ -107,10 +107,10 @@ class FeedbackController extends Controller{
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['feedback.destroy', $model->id]]);
 
                 if (Auth::user()->can('View Feedback')) {
-                    $content .= '<a title="Detail" href="' . action("Fsm\FeedbackController@show", [$model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-list"></i></a> ';
+                    $content .= '<a title="' . __("Detail") . '" href="' . action("Fsm\FeedbackController@show", [$model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-list"></i></a> ';
                 }
                 if (Auth::user()->can('Delete Feedback')) {
-                    $content .= '<a title="Delete" class="delete btn btn-danger btn-sm mb-1"><i class="fa fa-trash"></i></a> ';
+                    $content .= '<a title="' . __("Delete") . '" class="delete btn btn-danger btn-sm mb-1"><i class="fa fa-trash"></i></a> ';
                 }
 
                 $content .= \Form::close();
@@ -142,7 +142,7 @@ class FeedbackController extends Controller{
     {
         $feedback = Feedback::find($id);
         if ($feedback) {
-            $page_title = "Feedback Details";
+            $page_title = __("Feedback Details");
             return view('fsm.feedbacks.show', compact('page_title', 'feedback'));
         } else {
             abort(404);
@@ -162,7 +162,7 @@ class FeedbackController extends Controller{
         if ($application) {
             $feedback = new Feedback;
             $feedback->application_id = $id;
-            $page_title = "Add Feedback Details";
+            $page_title = __("Add Feedback Details");
             return view('fsm.feedbacks.create', compact('page_title', 'feedback', 'application'));
 
         } else {
@@ -181,19 +181,19 @@ class FeedbackController extends Controller{
         $feedback = Feedback::find($id);
         if(Auth::user()->hasRole('Municipality - Help Desk') || Auth::user()->hasRole('Service Provider - Help Desk')) {
             if($feedback->user_id != Auth::user()->id) {
-                return redirect('fsm/application')->with('error','Cannot update Feedback not created by current User');
+                return redirect('fsm/application')->with('error',__('Cannot update Feedback not created by current User.'));
             }
         }
         if( !(Auth::user()->hasRole('Super Admin') || Auth::user()->hasRole('Municipality - Sanitation Department')) )
         {
             if($feedback->created_at->diffInDays(today()) > 1)
             {
-                return redirect('fsm/application')->with('error','Cannot update Feedback Information 24 hours after creation. Please contact Sanitation Department for support');
+                return redirect('fsm/application')->with('error',__('Cannot update Feedback Information 24 hours after creation. Please contact Sanitation Department for support.'));
             }
         }
         $application = Application::find($feedback->application_id);
         if ($feedback) {
-            $page_title = "Edit Feedback Details";
+            $page_title = __("Edit Feedback Details");
             return view('fsm.feedbacks.edit', compact('page_title', 'feedback', 'application'));
         } else {
             abort(404);
@@ -220,11 +220,12 @@ class FeedbackController extends Controller{
         $feedback->wear_ppe = (bool)$request->wear_ppe;
         $feedback->comments = $request->comments ? $request->comments : null;
         $feedback->service_provider_id = $application->service_provider_id;
+
         $feedback->save();
         
         $application->feedback_status = TRUE;
         $application->save();
-            return redirect('fsm/application')->with('success','Feedback Details updated successfully');
+            return redirect('fsm/application')->with('success',__('Feedback Details updated successfully.'));
 
     }
     /**
@@ -238,7 +239,7 @@ class FeedbackController extends Controller{
         $application = Application::find($request->application_id);
         // Check if feedback for the application already exists
         if (Feedback::where('application_id', $request->application_id)->exists() && $application->feedback_status) {
-            return redirect('fsm/application')->with('error', 'Feedback for this application already exists');
+            return redirect('fsm/application')->with('error', __('Feedback for this application already exists.'));
         }
         $feedback = new Feedback;
         $feedback->application_id = $request->application_id? $request->application_id : null;
@@ -254,7 +255,7 @@ class FeedbackController extends Controller{
         $feedback->save();
         $application->feedback_status = TRUE;
         $application->save();
-            return redirect('fsm/application')->with('success','Feedback Details Created Successfully');
+            return redirect('fsm/application')->with('success',__('Feedback Details Created Successfully.'));
 
     }
     
@@ -271,14 +272,14 @@ class FeedbackController extends Controller{
         if ($feedback) {
             if(Auth::user()->hasRole('Municipality - Help Desk') || Auth::user()->hasRole('Service Provider - Help Desk')) {
                 if($feedback->user_id != Auth::user()->id) {
-                    return redirect('fsm/sludge-collection')->with('error','Cannot delete Feedback not created by current User');
+                    return redirect('fsm/sludge-collection')->with('error',__('Cannot delete Feedback not created by current User.'));
                 }
             }
             if( !(Auth::user()->hasRole('Super Admin') || Auth::user()->hasRole('Municipality - Sanitation Department')) )
             {
                 if($feedback->created_at->diffInDays(today()) > 1)
                 {
-                    return redirect('fsm/sludge-collection')->with('error','Cannot delete Feedback Information 24 hours after creation. Please contact Sanitation Department for support');
+                    return redirect('fsm/sludge-collection')->with('error',__('Cannot delete Feedback Information 24 hours after creation. Please contact Sanitation Department for support.'));
                 }
             }
             // updating applicaiton->sludge_collection_status
@@ -286,9 +287,9 @@ class FeedbackController extends Controller{
             $application->feedback_status=false;
             $application->save();
             $feedback->delete();
-            return redirect('fsm/feedback')->with('success','Feedback deleted successfully');
+            return redirect('fsm/feedback')->with('success',__('Feedback deleted successfully.'));
         } else {
-            return redirect('fsm/feedback')->with('error','Failed to delete feedback');
+            return redirect('fsm/feedback')->with('error',__('Failed to delete feedback.'));
         }
     }
     
@@ -303,7 +304,16 @@ class FeedbackController extends Controller{
         $ward = $_GET['ward'] ?? null;
         $date_from = $_GET['date_from'] ?? null;
         $date_to = $_GET['date_to'] ?? null;
-        $columns = ['Application ID','Applicant Name','Applicant Gender','Applicant Contact Number','Are you satisfied with the Service Quality?','Did the sanitation workers wear PPE during desludging?','Comments'];
+        $columns = [
+            __('Application ID'),
+            __('Applicant Name'),
+            __('Applicant Gender'),
+            __('Applicant Contact Number'),
+            __('Are you satisfied with the Service Quality?'),
+            __('Did the sanitation workers wear PPE during desludging?'),
+            __('Comments')
+        ];
+        
         $query = DB::table('fsm.feedbacks AS f')
             ->join('auth.users AS u', 'f.user_id', '=', 'u.id')
             ->join('fsm.applications AS a', 'f.application_id', '=', 'a.id')

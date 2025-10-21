@@ -1,7 +1,7 @@
 <!-- Last Modified Date: 16-04-2024
 Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 @extends('layouts.dashboard')
-@section('title', 'CWIS Dashboard')
+@section('title', __('CWIS Dashboard'))
 @section('content')
 <style>
     h1 {
@@ -174,6 +174,34 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
         flex-wrap: wrap;
 
     }
+    #loader-overlay {
+        display: none; /* Hidden by default */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6); /* Semi-transparent black */
+        z-index: 9999; /* High priority */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Loader content */
+    .loader-content {
+        text-align: center;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px;
+    }
+
+    /* Spinner icon */
+    .fa-spinner {
+        font-size: 30px;
+        margin-bottom: 10px;
+    }
 </style>
 @if ($hasInvalidValues)
 <!-- Bootstrap Modal -->
@@ -183,24 +211,24 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
         
             <div class="modal-body text-center">
                 <p>
-                    Some indicators have been calculated as <strong>NaN</strong> (Not a Number) or <strong>NA</strong> (Not Available).
+                    {{__('Some indicators have been calculated as')}} <strong>NaN</strong> {{__('(Not a Number)')}} or <strong>NA</strong> {{__('(Not Available)')}}.
                 </p>
                 <p>
-                    This happens due to one or more of the following reasons:
+                    {{__('This happens due to one or more of the following reasons')}}:
                 </p>
                 <ul class="text-left">
-                    <li><strong>NA:</strong> Occurs when the numerator or denominator is missing.</li>
-                    <li><strong>NaN:</strong> Happens when:
+                    <li><strong>NA:</strong>{{__('Occurs when the numerator or denominator is missing')}}.</li>
+                    <li><strong>NaN:</strong> {{__('Happens when')}}:
                         <ul>
-                            <li>The denominator is zero (division by zero).</li>
-                            <li>Both the numerator and denominator are zero (undefined result).</li>
+                            <li>{{__('The denominator is zero')}} {{__('(division by zero)')}}.</li>
+                            <li>{{__('Both the numerator and denominator are zero')}} {{__('(undefined result)')}}.</li>
                         </ul>
                     </li>
                 </ul>
              
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Close') }}</button>
                
             </div>
         </div>
@@ -237,19 +265,13 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
         if (percent > 100) {
             percentValue = 100;
         }
-  
         // Create a div element to display the chart's value
         var divElement = document.createElement('div');
         let domString = (percentValue === 'NaN' || isNaN(percentValue))
     ? '<div class="chart__value"><p style="color: ' + colorGreen + '">' + percent + '</p></div>'
     : '<div class="chart__value"><p style="color: ' + colorGreen + '">' + percent + '%</p></div>';
-
-
-
-        
         // Set data values for the chart
         var dataValues = percentValue > 100 ? [100, 0] : [percentValue, 100 - percentValue];
-
         // Create the doughnut chart using Chart.js library
         var doughnutChart = new Chart(canvas, {
             type: 'doughnut',
@@ -268,10 +290,8 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
                 }
             }
         });
-
         // Set animation duration for the chart
         Chart.defaults.global.animation.duration = animationTime;
-
         // Append the chart's value display to the container
         divElement.innerHTML = domString;
         container.appendChild(divElement.firstChild);
@@ -320,9 +340,6 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
         });
     });
 </script>
-
-
-
 @if(isset($noDataMessage))
         <div class="alert alert-warning">
             {{ $noDataMessage }}
@@ -330,21 +347,20 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
     @else
 <div class="tabs">
     <input class="input" name="tabs" type="radio" id="tab-1" checked="checked" />
-    <label class="label" for="tab-1">All</label>
+    <label class="label" for="tab-1">{{ __('All') }}</label>
     <div class="panel">
-        <h1>Equity</h1>
+        <h1>{{__('Equity')}}</h1>
         @include('cwis.cwis-dashboard.chart-layout.equity-layout')
-        <h1>Safety</h1>
+        <h1>{{__('Safety')}}</h1>
         @include('cwis.cwis-dashboard.chart-layout.safety-layout')
-       
     </div>
     <input class="input" name="tabs" type="radio" id="tab-2" />
-    <label class="label" for="tab-2">Equity</label>
+    <label class="label" for="tab-2">{{__('Equity')}}</label>
     <div class="panel">
         @include('cwis.cwis-dashboard.chart-layout.seperate-chart-layout.equity-card')
     </div>
     <input class="input" name="tabs" type="radio" id="tab-4" />
-    <label class="label" for="tab-4">Safety</label>
+    <label class="label" for="tab-4">{{__('Safety')}}</label>
     <div class="panel">
         <br>
         @include('cwis.cwis-dashboard.chart-layout.seperate-chart-layout.safety-card')
@@ -352,17 +368,23 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
     
     <div class="select-dropdown">
         <select style="text-align: center;" id="cwis-year-select">
-            <option value="">Select year</option>
+            <option value="">{{__('Select year')}}</option>
             @foreach($presentYears as $year)
             <option value="{{ $year }}">{{ $year }}</option>
             @endforeach
         </select>
     </div>
     <div class="buttons-container">
-        <button class="export-button" style="margin-right:none" id="export">Export to Excel</button>
-        <button class="pdf">Generate PDF</button>
+        <button class="export-button" style="margin-right:none" id="export">{{__("Export to Excel")}}</button>
+        <button class="pdf">{{__("Generate PDF")}}</button>
     </div>
 </div>
+<div id="loader-overlay" style="display: none;">
+    <div class="loader-content">
+        <i class="fa fa-spinner fa-spin"></i>
+        <p>Loading...</p>
+    </div>
+    </div>
 
 <script>
     /**
@@ -840,7 +862,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 
     document.addEventListener('DOMContentLoaded', function () {
         function downloadPDF() {
-           
+            $('#loader-overlay').show();
             // Ensure all generateSafety functions are defined elsewhere
             var safety1aImage = generateSafetyImage();
             var safety1bImage = generateSafety1bImage();
@@ -899,6 +921,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
                         sf9Image : sf9Image
                     }),
                 })
+                
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Failed to download PDF');
@@ -916,7 +939,11 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                });
+                }).finally(() => {
+                 // Hide the loader overlay after AJAX request completes, regardless of success or failure
+                $('#loader-overlay').hide();
+            });
+                
         }
 
         document.querySelector('.pdf').addEventListener('click', downloadPDF);

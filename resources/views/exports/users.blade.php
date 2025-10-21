@@ -1,8 +1,8 @@
 <table>
     <thead>
         <tr>
-            <th>Name</th>
-            <th>Email</th>
+            <th>{{__('Name')}}</th>
+            <th>{{__('Email')}}</th>
         </tr>
     </thead>
 

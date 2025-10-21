@@ -1,5 +1,5 @@
 @include('layouts.dashboard.chart-card', [
-    'card_title' => "Distribution of SWM Service by Ward",
+    'card_title' => __("Distribution of SWM Service by Ward"),
     'export_chart_btn_id' => "exportSwmPresenceWard",
     'canvas_id' => "swmPresenceWardChart"
 ])
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 labels: { boxWidth: 10 }
             }
         },
-   
+
    scales: {
      xAxes: [{
                scaleLabel: {

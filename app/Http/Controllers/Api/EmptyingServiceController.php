@@ -74,7 +74,7 @@ class EmptyingServiceController extends Controller
                 'data' => [
                     'applications' => $applications
                 ],
-                'message' => 'Applications retrieved successfully'
+                'message' => __('Applications retrieved successfully.'),
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -107,7 +107,7 @@ class EmptyingServiceController extends Controller
             'data' => [
                 'treatment-plants' => $treatmentplants
             ],
-            'message' => 'Treatment Plants',
+            'message' => __('Treatment Plants'),
         ]);
     }
     
@@ -128,7 +128,7 @@ class EmptyingServiceController extends Controller
         return [
             'success' => true,
             'data' => $vacutugs,
-            'message' => 'Vacutugs'
+            'message' => __('Vacutugs')
         ];
     }
 
@@ -149,7 +149,7 @@ class EmptyingServiceController extends Controller
         return [
             'success' => true,
             'data' => $drivers,
-            'message' => 'Drivers.'
+            'message' => __('Drivers')
         ];
     }
 
@@ -170,7 +170,7 @@ class EmptyingServiceController extends Controller
         return [
             'success' => true,
             'data' => $emptiers,
-            'message' => 'Emptiers.'
+            'message' => __('Emptiers')
         ];
     }
     
@@ -207,7 +207,7 @@ class EmptyingServiceController extends Controller
     
                     return response()->json([
                         'status' => false,
-                        'message' => "Emptying service is already done for this application."
+                        'message' => __('Emptying service is already done for this application.')
                     ], 500);
                 }
     
@@ -224,7 +224,7 @@ class EmptyingServiceController extends Controller
                     }
                     return response()->json([
                         'status' => false,
-                        'message' => "Error! Receipt image is required and must be in a valid format."
+                        'message' => __('Error! Receipt image is required and must be in a valid format.')
                     ], 500);
                 }
     
@@ -249,7 +249,7 @@ class EmptyingServiceController extends Controller
                     }
                     return response()->json([
                         'status' => false,
-                        'message' => "Error saving receipt image."
+                        'message' => __('Error saving receipt image.')
                     ], 500);
                 }
     
@@ -299,7 +299,7 @@ class EmptyingServiceController extends Controller
     
         return [
             'success' => true,
-            'message' => 'Emptying service saved successfully.'
+            'message' => __('Emptying service saved successfully.')
         ];
     }
     

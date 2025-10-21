@@ -1,5 +1,5 @@
 @include('layouts.dashboard.chart-card',[
-    'card_title' => "Containment Type wise Emptying Services Over the Last 5 Years",
+    'card_title' => __("Containment Type wise Emptying Services Over the Last 5 Years"),
     'export_chart_btn_id' => "exportemptyingServiceByTypeYearChart",
     'canvas_id' => "emptyingServiceByTypeYearChart"
 ])
@@ -35,7 +35,7 @@ var myChart = new Chart(ctx, {
       },
     scales: {
         xAxes: [{
-            stacked: true, 
+            stacked: true,
             scaleLabel: {
                     display: true, // Enable the scale label
                     labelString: 'Year' // The label text

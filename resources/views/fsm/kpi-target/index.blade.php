@@ -13,14 +13,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 <div class="card">
     <div class="card-header">
     @can('Add KPI Target')
-        <a href="{{ action('Fsm\KpiTargetController@create') }}" class="btn btn-info">Add KPI Target</a>
+        <a href="{{ action('Fsm\KpiTargetController@create') }}" class="btn btn-info">{{__('Add KPI Target')}}</a>
       @endcan
       @can('Export KPI Target')
-      <a href="#" id="export" class="btn btn-info">Export to CSV</a>
+      <a href="#" id="export" class="btn btn-info">{{__('Export to CSV')}}</a>
  @endcan
 
         <a href="#" class="btn btn-info float-right" data-toggle="collapse" data-target="#collapseFilter"
-            aria-expanded="false" aria-controls="collapseFilter">Show Filter</a>
+            aria-expanded="false" aria-controls="collapseFilter">{{ __('Show Filter') }}</a>
     </div><!-- /.card-header -->
     <div class="card-body">
         <div class="row">
@@ -33,19 +33,19 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                 <form class="form-horizontal" id="filter-form">
                                     <div class="form-group row">
 
-                                        <label for="indicators" class="col-md-2 col-form-label ">Indicator</label>
+                                        <label for="indicators" class="col-md-2 col-form-label ">{{__('Indicator')}}</label>
                                         <div class="col-md-2">
                                         <select class="form-control" id="indicator_id" name="indicator_id">
-                                            <option value="">Choose an Indicator</option>
+                                            <option value="">{{__('Indicator')}}</option>
                                             @foreach($indicators as $value)
                                             <option value="{{$value}}">{{$value}}</option>
                                             @endforeach
                                         </select>
                                         </div>
-                                        <label for="year" class="col-md-2 col-form-label ">Year</label>
+                                        <label for="year" class="col-md-2 col-form-label ">{{__('Year')}}</label>
                                         <div class="col-md-2">
                                         <select class="form-control" id="year" name="year">
-                                            <option value="">Choose a Year</option>
+                                            <option value="">{{__('Year')}}</option>
                                             @foreach($years as $value)
                                             <option value="{{$value}}">{{$value}}</option>
                                             @endforeach
@@ -54,8 +54,8 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                         </div>
 
                                     <div class="card-footer text-right">
-                                        <button type="submit" class="btn btn-info">Filter</button>
-                                        <button type="reset" id="reset-filter" class="btn btn-info reset">Reset</button>
+                                        <button type="submit" class="btn btn-info">{{ __('Filter') }}</button>
+                                        <button type="reset" id="reset-filter" class="btn btn-info reset">{{ __('Reset') }}</button>
                                     </div>
                                 </form>
                             </div>
@@ -70,11 +70,11 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
             <table id="data-table" class="table table-bordered table-striped dtr-inline" width="100%">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Indicator</th>
-                    <th>Year</th>
-                    <th>Target (%)</th>
-                    <th>Actions</th>
+                    <th>{{__('ID')}}</th>
+                    <th>{{__('Indicator')}}</th>
+                    <th>{{__('Year')}}</th>
+                    <th>{{__('Target (%)')}}</th>
+                    <th>{{__('Actions')}}</th>
                 </tr>
             </thead>
         </table>
@@ -131,13 +131,14 @@ $(function() {
             var form = $(this).closest("form");
             event.preventDefault();
             Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+               title: "{{__('Are you sure?')}}",
+                    text: "{!! __('You won\'t be able to revert this!') !!}",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: "{{ __('Yes, delete it!') }}",
+                    cancelButtonText: '{{ __('Cancel') }}',
             }).then((result) => {
                 if (result.isConfirmed) {
                     form.submit();

@@ -13,16 +13,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 <div class="card">
     <div class="card-header">
         @can('Add Service Provider')
-        <a href="{{ action('Fsm\ServiceProviderController@create') }}" class="btn btn-info">Add Service
-            Provider</a>
+        <a href="{{ action('Fsm\ServiceProviderController@create') }}" class="btn btn-info">{{ __("Add Service Provider")}}</a>
         @endcan
-        @can('Export Service Providers to CSV')
-        <a href="{{ action('Fsm\ServiceProviderController@export') }}" id="export" class="btn btn-info">Export to
-            CSV</a>
+        @can('Export to CSV')
+        <a href="{{ action('Fsm\ServiceProviderController@export') }}" id="export" class="btn btn-info">{{ __("Export to CSV")}}</a>
         @endcan
         <a href="#" class="btn btn-info float-right" id="headingOne" type="button" data-toggle="collapse"
             data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-            Show Filter
+            {{ __("Show Filter")}}
         </a>
     </div><!-- /.box-header -->
     <div class="card-body">
@@ -33,49 +31,56 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                         <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
                             data-bs-parent="#accordionExample">
                             <div class="accordion-body">
-                                <form class="form-horizontal" id="filter-form">
-                                    <div class="form-group row">
-                                        <label for="company_name" class="col-md-2 col-form-label ">Company Name</label>
-                                        <div class="col-md-2">
-                                            <input type="text" class="form-control" id="company_name"  placeholder= "Company Name"/>
-                                        </div>
-                                        <label for="ward" class="col-md-2 col-form-label ">Ward Number</label>
-                                        <div class="col-md-2">
-                                            <select class="form-control" id="ward">
-                                                <option value="">Ward Number</option>
-                                                @foreach($ward as $key)
-                                                <option value="{{$key}}">{{$key}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <label for="company_location" class="col-md-2 col-form-label "> Address</label>
-                                        <div class="col-md-2">
-                                            <input type="text" class="form-control" id="company_location"  placeholder= "Address"/>
-                                        </div>
+                            <form class="form-horizontal" id="filter-form">
+                                <div class="form-group row">
+                                    <label for="company_name" class="col-md-2 col-form-label">{{ __("Company Name") }}</label>
+                                    <div class="col-md-2">
+                                        <input type="text" class="form-control" id="company_name" placeholder="{{ __('Company Name') }}" />
                                     </div>
-                                    <div class="form-group row">
-                                        <label for="email" class="col-md-2 col-form-label ">Email</label>
-                                        <div class="col-md-2">
-                                            <input type="text" class="form-control" id="email"  placeholder= " Email"/>
-                                        </div>
-                                        <label for="contact_person" class="col-md-2 col-form-label ">Contact Person Name</label>
-                                        <div class="col-md-2">
-                                            <input type="text" class="form-control" id="contact_person"  placeholder= "Contact Person Name"/>
-                                        </div>
-                                        <label for="status" class="col-md-2 col-form-label ">Status</label>
-                                        <div class="col-md-2">
-                                                <select class="form-control chosen-select" id="status" name="status">
-                                                <option value="">Status</option>
-                                                <option value="true">Operational</option>
-                                                <option value="false">Not Operational</option>
-                                            </select>
-                                        </div>
+
+                                    <label for="ward" class="col-md-2 col-form-label">{{ __("Ward Number") }}</label>
+                                    <div class="col-md-2">
+                                        <select class="form-control" id="ward">
+                                            <option value="">{{ __("Ward Number") }}</option>
+                                            @foreach($ward as $key)
+                                                <option value="{{ $key }}">{{ $key }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
-                                    <div class="card-footer text-right">
-                                        <button type="submit" class="btn btn-info">Filter</button>
-                                        <button type="reset" id="reset-filter" class="btn btn-info">Reset</button>
+
+                                    <label for="company_location" class="col-md-2 col-form-label">{{ __("Address") }}</label>
+                                    <div class="col-md-2">
+                                        <input type="text" class="form-control" id="company_location" placeholder="{{ __('Address') }}" />
                                     </div>
-                                </form>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="email" class="col-md-2 col-form-label">{{ __("Email") }}</label>
+                                    <div class="col-md-2">
+                                        <input type="text" class="form-control" id="email" placeholder="{{ __('Email') }}" />
+                                    </div>
+
+                                    <label for="contact_person" class="col-md-2 col-form-label">{{ __("Contact Person Name") }}</label>
+                                    <div class="col-md-2">
+                                        <input type="text" class="form-control" id="contact_person" placeholder="{{ __('Contact Person Name') }}" />
+                                    </div>
+
+                                    <label for="status" class="col-md-2 col-form-label">{{ __("Status") }}</label>
+                                    <div class="col-md-2">
+                                        <select class="form-control chosen-select" id="status" name="status">
+                                            <option value="">{{ __("Status") }}</option>
+                                            <option value="true">Operational</option>
+                                            <option value="false">Not Operational</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="card-footer text-right">
+                                    <button type="submit" class="btn btn-info">{{ __("Filter") }}</button>
+                                    <button type="reset" id="reset-filter" class="btn btn-info">{{ __("Reset") }}</button>
+                                </div>
+                            </form>
+
                             </div>
                             <!--- accordion body!-->
                         </div>
@@ -95,14 +100,15 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
         <table id="data-table" class="table table-bordered table-striped" width="100%">
             <thead>
                 <tr>
-                    <th>Company Name</th>
-                    <th>Email</th>
-                    <th>Ward Number</th>
-                    <th>Address</th>
-                    <th>Contact Person Name</th>
-                    <th>Customer Feedback</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                <th>{{ __("Company Name") }}</th>
+                <th>{{ __("Email") }}</th>
+                <th>{{ __("Ward Number") }}</th>
+                <th>{{ __("Address") }}</th>
+                <th>{{ __("Contact Person Name") }}</th>
+                <th>{{ __("Customer Feedback") }}</th>
+                <th>{{ __("Status") }}</th>
+                <th>{{ __("Actions") }}</th>
+
                 </tr>
             </thead>
         </table>
@@ -175,13 +181,14 @@ $(function() {
             var form = $(this).closest("form");
             event.preventDefault();
             Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+                title: '{{ __('Are you sure?') }}',
+                        text: "{!! __('You won\'t be able to revert this!') !!}",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: '{{ __('Yes, delete it!') }}',
+                        cancelButtonText: '{{ __('Cancel') }}',
             }).then((result) => {
                 if (result.isConfirmed) {
                     form.submit();

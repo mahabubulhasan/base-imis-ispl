@@ -4,6 +4,6 @@
         <span class="info-box-text">
             <h2> {{ number_format($sumDrainsSurfaceType1) }}</h2>
         </span>
-        <span class="info-box-number"> Brick </span>
+        <span class="info-box-number">{{ __('Unlined')}} </span>
     </div>
 </div>

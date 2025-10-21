@@ -53,7 +53,7 @@ class HomeController extends Controller
 
     public function index()
     {
-        $page_title = 'IMIS Dashboard';
+        $page_title = __("IMIS Dashboard");
 
         $buildingCount = Building::whereNull('deleted_at')->count();
 

@@ -45,22 +45,25 @@ class EmployeeInfoRequest extends FormRequest
     public function messages()
     {
         return[
-            'name.regex' => 'The Name may only contain letters and spaces.',
-            'name.required' => 'The Employee Name is required.',
-            'gender.required' => 'The Employee Gender is required.',
-            'contact_number.required'=> 'The Employee Contact Number is required.',
-            'contact_number.integer' => 'The Employee Contact Number must be an integer.',
-            'address.string'=>'The Address must be a string.',
-            'employee_type.required' => 'The Designation is required.',
-            'year_of_experience.integer' => 'The Year of Experience must be an integer.',
-            'wage.integer' => 'The  Monthly Remuneration field must be an integer.',
-            'license_number.required_if'=>'The Driving License Number is required when designation is driver.',
-            'license_number.integer'=>'The Driving License Number must be an integer.',
-            'license_issue_date.required_if'=>'The Driving License Issue Date is required when designation is driver.',
-            'employment_start.required'=>'The Job Start Date is required.',
-            'status.required'=>'The Status is required.',
-            'employment_end.required_if'=>'The Job End Date is required when Status is Inactive.',
-            'employment_end.after' => 'The Job End Date must be a date after Job Start Date.',
+            'name.regex' => __('The Name may only contain letters and spaces.'),
+            'name.required' => __('The Employee Name is required.'),
+            'gender.required' => __('The Employee Gender is required.'),
+            'contact_number.required'=> __('The Employee Contact Number is required.'),
+            'contact_number.integer' => __('The Employee Contact Number must be an integer.'),
+            'address.string'=>__('The Address must be a string.'),
+            'employee_type.required' => __('The Designation is required.'),
+            'year_of_experience.integer' => __('The Year of Experience must be an integer.'),
+            'wage.integer' => __('The Monthly Remuneration field must be an integer.'),
+            'license_number.required_if'=>__('The Driving License Number is required when designation is driver.'),
+            'license_number.integer'=>__('The Driving License Number must be an integer.'),
+            'license_issue_date.required_if'=>__('The Driving License Issue Date is required when designation is driver.'),
+            'employment_start.required'=>__('The Job Start Date is required.'),
+            'status.required'=>__('The Status is required.'),
+            'employment_end.required_if'=>__('The Job End Date is required when Status is Inactive.'),
+            'employment_end.after' => __('The Job End Date must be a date after Job Start Date.'),
+            'employment_end.after' => __('The Job End Date must be a date after Job Start Date.'),
+            'license_number.unique'=>__('The license plate number has already been taken.'),
+
         ];
     }
 

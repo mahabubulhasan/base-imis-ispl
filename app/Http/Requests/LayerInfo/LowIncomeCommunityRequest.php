@@ -24,44 +24,44 @@ class LowIncomeCommunityRequest extends FormRequest
     public function messages()
 {
     return [
-        'community_name.required' => 'The Community Name is required.',
-        'no_of_buildings.required' => 'The No. of Buildings is required.',
-        'no_of_buildings.integer' => 'The No. of Buildings must be an integer.',
-        'no_of_buildings.min' => 'The No. of Buildings must be at least 0.',
+        'community_name.required' => __('The Community Name is required.'),
+        'no_of_buildings.required' => __('The No. of Buildings is required.'),
+        'no_of_buildings.integer' => __('The No. of Buildings must be an integer.'),
+        'no_of_buildings.min' => __('The No. of Buildings must be at least 0.'),
 
-        'population_total.required' => 'The Population is required.',
-        'population_total.integer' => 'The Population must be an integer.',
-        'population_total.min' => 'The Population must be at least 0.',
+        'population_total.required' => __('The Population is required.'),
+        'population_total.integer' => __('The Population must be an integer.'),
+        'population_total.min' => __('The Population must be at least 0.'),
 
-        'number_of_households.required' => 'The No. of Households is required.',
-        'number_of_households.integer' => 'The No. of Households must be an integer.',
-        'number_of_households.min' => 'The No. of Households must be at least 0.',
+        'number_of_households.required' => __('The No. of Households is required.'),
+        'number_of_households.integer' => __('The No. of Households must be an integer.'),
+        'number_of_households.min' => __('The No. of Households must be at least 0.'),
 
-        'population_male.integer' => 'The Male Population must be an integer.',
-        'population_male.min' => 'The Male Population must be at least 0.',
+        'population_male.integer' => __('The Male Population must be an integer.'),
+        'population_male.min' => __('The Male Population must be at least 0.'),
 
-        'population_female.integer' => 'The Female Population must be an integer.',
-        'population_female.min' => 'The Female Population must be at least 0.',
+        'population_female.integer' => __('The Female Population must be an integer.'),
+        'population_female.min' => __('The Female Population must be at least 0.'),
 
-        'population_others.integer' => 'The Other Population must be an integer.',
-        'population_others.min' => 'The Other Population must be at least 0.',
+        'population_others.integer' => __('The Other Population must be an integer.'),
+        'population_others.min' => __('The Other Population must be at least 0.'),
 
-        'no_of_septic_tank.integer' => 'The No. of Septic Tanks must be an integer.',
-        'no_of_septic_tank.min' => 'The No. of Septic Tanks must be at least 0.',
+        'no_of_septic_tank.integer' => __('The No. of Septic Tanks must be an integer.'),
+        'no_of_septic_tank.min' => __('The No. of Septic Tanks must be at least 0.'),
 
-        'no_of_holding_tank.integer' => 'The No. of Holding Tanks must be an integer.',
-        'no_of_holding_tank.min' => 'The No. of Holding Tanks must be at least 0.',
+        'no_of_holding_tank.integer' => __('The No. of Holding Tanks must be an integer.'),
+        'no_of_holding_tank.min' => __('The No. of Holding Tanks must be at least 0.'),
 
-        'no_of_pit.integer' => 'The No. of Pits must be an integer.',
-        'no_of_pit.min' => 'The No. of Pits must be at least 0.',
+        'no_of_pit.integer' => __('The No. of Pits must be an integer.'),
+        'no_of_pit.min' => __('The No. of Pits must be at least 0.'),
 
-        'no_of_sewer_connection.integer' => 'The No. of Sewer Connections must be an integer.',
-        'no_of_sewer_connection.min' => 'The No. of Sewer Connections must be at least 0.',
+        'no_of_sewer_connection.integer' => __('The No. of Sewer Connections must be an integer.'),
+        'no_of_sewer_connection.min' => __('The No. of Sewer Connections must be at least 0.'),
 
-        'no_of_community_toilets.integer' => 'The No. of Community Toilets must be an integer.',
-        'no_of_community_toilets.min' => 'The No. of Community Toilets must be at least 0.',
+        'no_of_community_toilets.integer' => __('The No. of Community Toilets must be an integer.'),
+        'no_of_community_toilets.min' => __('The No. of Community Toilets must be at least 0.'),
 
-        'geom.required' => 'The Area is required.',
+        'geom.required' => __('The Area is required.'),
     ];
 }
 

@@ -48,7 +48,7 @@ class KpiTargetController extends Controller
      */
     public function index()
     {
-        $page_title = "KPI Target";
+        $page_title = __("KPI Target");
          // Fetch distinct years 
         $years = KpiTarget::distinct()->pluck('year')->sortDesc()->all();
          // Retrieve all indicator from the database,ordered by their 'id' column in ascending order
@@ -77,7 +77,7 @@ class KpiTargetController extends Controller
      */
     public function create()
     {
-        $page_title = "Add KPI Target";
+        $page_title = __("Add KPI Target");
         $indicators = KeyPerformanceIndicator::orderBy('id', 'asc')->pluck('indicator','id')->all();
         return view('fsm/kpi-target.create', compact('page_title', 'indicators'));
     }
@@ -92,7 +92,7 @@ class KpiTargetController extends Controller
 {
         $data = $request->all();
         $this->kpiService->storeOrUpdate(null, $data);
-        return redirect('fsm/kpi-targets')->with('success', 'KPI Target created successfully');
+        return redirect('fsm/kpi-targets')->with('success', __('KPI Target created successfully.'));
     
 }
     /**
@@ -108,7 +108,7 @@ class KpiTargetController extends Controller
         // Find the KPI target with the given ID
         $kpi = KpiTarget::find($id);
         if ($kpi) {
-            $page_title = "Edit KPI Target";
+            $page_title = __("Edit KPI Target");
             return view('fsm.kpi-target.edit', compact('page_title', 'kpi', 'indicators'));
         } else {
             abort(404);
@@ -130,9 +130,9 @@ class KpiTargetController extends Controller
             $data = $request->all();
       
             $this->kpiService->storeOrUpdate($kpi->id,$data);
-            return redirect('fsm/kpi-targets')->with('success','KPI Target updated successfully');
+            return redirect('fsm/kpi-targets')->with('success',__('KPI Target updated successfully.'));
         } else {
-            return redirect('fsm/kpi-targets')->with('error','Failed to update KPI Target');
+            return redirect('fsm/kpi-targets')->with('error',__('Failed to update KPI Target'));
         }
     }
 
@@ -150,7 +150,7 @@ class KpiTargetController extends Controller
         $indicators = KeyPerformanceIndicator::where('id','=',$kpi->indicator_id)->pluck('indicator', 'id')->first();
         
         if ($kpi) {
-            $page_title = "KPI Target Details";
+            $page_title = __("KPI Target Details");
             return view('fsm/kpi-target.show', compact('page_title', 'kpi', 'indicators'));
         } else {
             abort(404);
@@ -168,9 +168,15 @@ class KpiTargetController extends Controller
         $kpi = KpiTarget::find($id);
         if ($kpi) {
             $kpi->delete();
-            return redirect('fsm/kpi-targets')->with('success','KPI Target deleted successfully');
+             $kpi_years = KpiTarget::pluck('year')->unique()->toArray();
+            $existingYears = Quarters::pluck('year')->unique()->toArray();
+            $missingYears = array_diff($existingYears, $kpi_years);
+            if (!empty($missingYears)) {
+                Quarters::whereIn('year', $missingYears)->delete();
+            }
+            return redirect('fsm/kpi-targets')->with('success',__('KPI Target deleted successfully.'));
         } else {
-            return redirect('fsm/kpi-targets')->with('error','Failed to delete kPI Target');
+            return redirect('fsm/kpi-targets')->with('error',__('Failed to delete KPI Target'));
         }
     }
     
@@ -184,7 +190,7 @@ class KpiTargetController extends Controller
     {
         $kpi = KpiTarget::find($id);
         if ($kpi) {
-            $page_title = "KPI Target History";
+            $page_title = __("KPI Target History");
             return view('fsm/kpi-target.history', compact('page_title', 'kpi'));
         } else {
             abort(404);

@@ -1,5 +1,5 @@
 @include('layouts.dashboard.chart-card',[
-    'card_title' => "Property Tax Payment Due Across Time Periods",
+    'card_title' => __("Property Tax Payment Due Across Time Periods"),
     'export_chart_btn_id' => "exporttaxRevenueChart",
     'canvas_id' => "taxRevenueChart"
 ])

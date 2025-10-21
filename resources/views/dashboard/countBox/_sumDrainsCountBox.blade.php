@@ -7,6 +7,8 @@
         <span class="info-box-text">
             <h2> {{ number_format($sumDrains) }}</h2>
         </span>
-        <span class="info-box-number"> Total length of Drain (m) </span>
+
+        <span class="info-box-number">{{__("Total length of Drain (m)") }}</span>
+
     </div>
 </div>

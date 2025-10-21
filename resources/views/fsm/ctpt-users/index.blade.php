@@ -13,14 +13,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
     <div class="card">
         <div class="card-header">
             @can('Add PT Users Log')
-                <a href="{{ action('Fsm\CtptUserController@create') }}" class="btn btn-info">Add PT Users Log</a>
+                <a href="{{ action('Fsm\CtptUserController@create') }}" class="btn btn-info">{{__('Add PT Users Log')}}</a>
             @endcan
             @can('Export PT Users Logs')
-                <a href="#" id="export" class="btn btn-info">Export to CSV</a>
+                <a href="#" id="export" class="btn btn-info">{{__('Export to CSV')}}</a>
             @endcan
             <a href="#" class="btn btn-info float-right" id="headingOne" type="button" data-toggle="collapse"
                 data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                Show Filter
+                {{__('Show Filter')}}
             </a>
         </div><!-- /.card-header -->
         <div class="card-body">
@@ -33,23 +33,23 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                 <div class="accordion-body">
                                     <form class="form-horizontal" id="filter-form">
                                         <div class="form-group row">
-                                        <label for="name" class="col-md-2 col-form-label ">Toilet Name</label>
+                                        <label for="name" class="col-md-2 col-form-label ">{{__('Toilet Name')}}</label>
                                             <div class="col-md-2">
                                                 <input type="text" class="form-control" id="toilet_id"
-                                                    placeholder="Toilet Name" />
+                                                    placeholder="{{__('Toilet Name')}}" />
                                             </div>
                                             
-                                            <label for="date" class="col-md-2 col-form-label ">Date</label>
+                                            <label for="date" class="col-md-2 col-form-label ">{{__('Date')}}</label>
                                             <div class="col-md-2">
                                                 <input type="date" class="form-control" id="date"
-                                                    placeholder="Date" onclick = 'this.showPicker();'/>
+                                                    placeholder="{{__('Date')}}" onclick = 'this.showPicker();'/>
                                             </div>
                                            
                                         </div>
 
                                         <div class="card-footer text-right">
-                                            <button type="submit" class="btn btn-info ">Filter</button>
-                                            <button type="reset" id="reset-filter" class="btn btn-info ">Reset</button>
+                                            <button type="submit" class="btn btn-info ">{{__('Filter')}}</button>
+                                            <button type="reset" id="reset-filter" class="btn btn-info ">{{__('Reset')}}</button>
                                         </div>
                                     </form>
                                 </div>
@@ -71,12 +71,12 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 <table id="data-table" class="table table-bordered table-striped dtr-inline" width="100%">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Toilet Name</th>
-                            <th>Date</th>
-                            <th>No. of Male Users (daily)</th>
-                            <th>No. of Female Users (daily)</th>
-                            <th>Actions </th>
+                            <th>{{__('ID')}}</th>
+                            <th>{{__('Toilet Name')}}</th>
+                            <th>{{__('Date')}}</th>
+                            <th>{{__('No. of Male Users (daily)')}}</th>
+                            <th>{{__('No. of Female Users (daily)')}}</th>
+                            <th>{{__('Actions')}} </th>
                         </tr>
                     </thead>
                 </table>
@@ -135,13 +135,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     var form = $(this).closest("form");
                     event.preventDefault();
                     Swal.fire({
-                        title: 'Are you sure?',
-                        text: "You won't be able to revert this!",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, delete it!'
+                      title: "{{__('Are you sure?')}}",
+                    text: "{!! __('You won\'t be able to revert this!') !!}",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: "{{ __('Yes, delete it!') }}",
+                    cancelButtonText: '{{ __('Cancel') }}',
                     }).then((result) => {
                         if (result.isConfirmed) {
                             form.submit();

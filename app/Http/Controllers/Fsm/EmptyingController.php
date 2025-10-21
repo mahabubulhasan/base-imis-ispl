@@ -95,7 +95,7 @@ class EmptyingController extends Controller
         $emptying = Emptying::find($id);
         
         if ($emptying) {
-            $page_title = "Emptying Details";
+            $page_title = __("Emptying Details");
             $formFields = $this->emptyingService->getShowFormFields($emptying);
             $indexAction = url()->previous();
             return view('layouts.show',compact('page_title','formFields','emptying','indexAction'));
@@ -117,11 +117,11 @@ class EmptyingController extends Controller
         {
             if($emptying->created_at->diffInDays(today()) > 1)
             {
-                return redirect('fsm/application')->with('error','Cannot update Emptying Information 24 hours after creation. Please contact Sanitation Department for more information');
+                return redirect('fsm/application')->with('error',__('Cannot update Emptying Information 24 hours after creation. Please contact Sanitation Department for more information.'));
             }
         }
         if ($emptying) {
-            $page_title = "Edit Emptying Service Details";
+            $page_title = __("Edit Emptying Service Details");
             $formFields = $this->emptyingService->getEditFormFields($emptying);
             $formAction = $this->emptyingService->getEditFormAction($emptying);
             $indexAction = url()->previous();
@@ -166,18 +166,18 @@ class EmptyingController extends Controller
             $emptying = Emptying::findOrFail($id);
             if($emptying->sludge_collection()->exists())
             {
-                return redirect(route('emptying.index'))->with('error','Cannot delete Emptying that has assocaited Sludge Collection Information');
+                return redirect(route('emptying.index'))->with('error',__('Cannot delete Emptying that has assocaited Sludge Collection Information.'));
             }
             if($emptying->feedback()->exists())
             {
-                return redirect(route('emptying.index'))->with('error','Cannot delete Emptying that has assocaited Feedback Information');
+                return redirect(route('emptying.index'))->with('error',__('Cannot delete Emptying that has assocaited Feedback Information.'));
             }
             // allowing super admin and sanitation department to delete anytime, else only allowing deletion within 24 hours.
             if( !(Auth::user()->hasRole('Super Admin') || Auth::user()->hasRole('Municipality - Sanitation Department')) )
             {
                 if($emptying->created_at->diffInDays(today()) > 1)
                 {
-                    return redirect(route('emptying.index'))->with('error','Cannot delete Emptying Information 24 hours after creation. Please contact Sanitation Department for more information');
+                    return redirect(route('emptying.index'))->with('error',__('Cannot delete Emptying Information 24 hours after creation. Please contact Sanitation Department for more information.'));
                 }
             }
             // updating emptying status for particular application 
@@ -228,9 +228,9 @@ class EmptyingController extends Controller
                 }
             }
             $containment->save();
-            return redirect('fsm/emptying')->with('success','Emptying deleted successfully');
+            return redirect('fsm/emptying')->with('success',__('Emptying deleted successfully.'));
         } catch (\Exception $e) {
-            return redirect('fsm/emptying')->with('error','Failed to delete Emptying');
+            return redirect('fsm/emptying')->with('error',__('Failed to delete Emptying.'));
         }
     }
 
@@ -246,7 +246,7 @@ class EmptyingController extends Controller
      try {
             $this->emptyingService->export($request);
         } catch (\Throwable $e) {
-            return redirect(route('emptying.index'))->with('error','Failed to export emptyings.');
+            return redirect(route('emptying.index'))->with('error',__('Failed to export emptyings.'));
         }
     }
 }

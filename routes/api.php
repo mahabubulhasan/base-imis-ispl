@@ -5,10 +5,12 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BuildingSurveyController;
 use App\Http\Controllers\Api\SewerConnectionController;
 use App\Http\Controllers\Api\EmptyingServiceController;
+use App\Http\Controllers\Api\LanguageController;
 use App\Http\Controllers\BuildingInfo\BuildingController;
 use App\Http\Controllers\BuildingSearchController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -116,11 +118,23 @@ Route::group([
         Route::get('/sewercode',[BuildingSurveyController::class,'getSewerCodes']);
         Route::group(['name' => 'wms','prefix' => 'wms'],function (){
             Route::get('/sewers',[SewerConnectionController::class,'getSewerWms']);
-          
+
         });
         Route::post('/save-sewerconnection',[SewerConnectionController::class,'saveSewerConnections']);
-        
+
     });
+    Route::group([
+        'name' => 'language',
+        'prefix' => 'language',
+        'namespace' => 'Language',
+        'middleware' => 'auth'
+    ], function () {
+
+        Route::get('languages', [LanguageController::class, 'headerDropdown']);
+        Route::get('translations/{lang_id}', [LanguageController::class, 'getTranslation']);
+    });
+
+
     Route::prefix('revamp')->group(function() {
         Route::get('/collection', [BuildingSearchController::class,'getAll']);
         Route::get('get-Building-bin/{bin}',[BuildingSearchController::class,'getBuildingBin']);

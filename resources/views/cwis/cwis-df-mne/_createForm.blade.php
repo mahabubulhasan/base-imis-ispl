@@ -45,7 +45,7 @@
     </div>
 
     <div class="footer">
-        {!! Form::submit('Save', ['class' => 'btn btn-info']) !!}
+        {!! Form::submit(__('Save'), ['class' => 'btn btn-info']) !!}
     </div><!-- /.card-footer -->
     
 </div><!-- /.card-body -->

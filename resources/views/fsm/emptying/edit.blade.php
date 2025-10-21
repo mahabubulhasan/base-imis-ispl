@@ -17,7 +17,7 @@ An Edit Layout for all forms
         @include('layouts.components.error-alert')
         <div class="card-body">
         {!! Form::open(['url' => $formAction, 'class' => 'form-horizontal','method'=>'PATCH','files'=>true]) !!}
-            @include('layouts.partial-form', ['submitButtonText' => 'Save'])
+            @include('layouts.partial-form', ['submitButtonText' =>  __('Save')])
             {!! Form::close() !!}
         </div>
     </div>

@@ -1,7 +1,7 @@
 <!-- Last Modified Date: 19-04-2024
 Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 @include('layouts.dashboard.chart-card',[
-    'card_title' => "Wardwise Total Road Length by Surface Type (m)",
+    'card_title' => __('Wardwise Total Road Length by Surface Type (m)') ,
     'export_chart_btn_id' => "exportroadsSurfaceTypePerWardChart",
     'canvas_id' => "roadsSurfaceTypePerWardChart"
 ])

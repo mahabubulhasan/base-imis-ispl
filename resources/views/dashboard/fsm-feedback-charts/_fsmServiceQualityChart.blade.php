@@ -1,7 +1,7 @@
 @include('layouts.dashboard.chart-card',[
-    'card_title' => " Customer Satisfaction with FSM Service Quality",
+    'card_title' => __("Customer Satisfaction with FSM Service Quality"),
     'export_chart_btn_id' => "exportfsmSrvcQltyChart",
-   
+
     'canvas_id' => "fsmSrvcQltyChart"
 ])
 

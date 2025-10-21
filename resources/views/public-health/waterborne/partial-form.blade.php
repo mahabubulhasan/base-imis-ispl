@@ -45,7 +45,7 @@
 
 <div class="card-body">
     <div class="form-group required row">
-        {!! Form::label('year','Year', ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('year',__('Year'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             <select name="year" class="form-control" id="dropdownYear"
              onchange="getProjectReportFunc()">
@@ -53,65 +53,65 @@
         </div>
     </div>
     <div class="form-group required row">
-        {!! Form::label('infected_disease', 'Infected Disease', ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('infected_disease', __('Infected Disease'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::select('infected_disease', $enumValues, null, ['class' => 'form-control chosen-select', 'placeholder' => '--- Choose Infected Disease ---']) !!}
+            {!! Form::select('infected_disease', $enumValues, null, ['class' => 'form-control chosen-select', 'placeholder' => __('Choose Infected Disease')]) !!}
         </div>
     </div>
 
-    <h4>No. of Cases</h4>
+    <h4>{{__('No. of Cases')}}</h4>
 
 
 
     <div class="form-group required row">
-        {!! Form::label('male_cases','Male',['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('male_cases',__('Male'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::number('male_cases',null,['class' => 'form-control', 'placeholder' => ' Male ','oninput' => "this.value = this.value.replace(/[^0-9.]/g, ''); "]) !!}
+            {!! Form::number('male_cases',null,['class' => 'form-control', 'placeholder' => __('Male'),'oninput' => "this.value = this.value.replace(/[^0-9.]/g, ''); "]) !!}
         </div>
     </div>
 
     <div class="form-group required row">
-        {!! Form::label('female_cases','Female',['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('female_cases',__('Female'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::number('female_cases',null,['class' => 'form-control', 'placeholder' => 'Female ','oninput' => "this.value = this.value.replace(/[^0-9.]/g, ''); "]) !!}
+            {!! Form::number('female_cases',null,['class' => 'form-control', 'placeholder' => __('Female'),'oninput' => "this.value = this.value.replace(/[^0-9.]/g, ''); "]) !!}
         </div>
     </div>
 
     <div class="form-group required row">
-        {!! Form::label('other_cases','Other',['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('other_cases',__('Other'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::number('other_cases',null,['class' => 'form-control', 'placeholder' => 'Other ','oninput' => "this.value = this.value.replace(/[^0-9.]/g, ''); "]) !!}
+            {!! Form::number('other_cases',null,['class' => 'form-control', 'placeholder' => __('Other'),'oninput' => "this.value = this.value.replace(/[^0-9.]/g, ''); "]) !!}
         </div>
     </div>
-    <h4>No. of Fatalities</h4>
+    <h4>{{__('No. of Fatalities')}}</h4>
     <div class="form-group  row">
-        {!! Form::label('male_fatalities','Male',['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('male_fatalities',__('Male'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::number('male_fatalities',null,['class' => 'form-control', 'placeholder' => 'Male ','oninput' => "this.value = this.value.replace(/[^0-9.]/g, ''); "]) !!}
+            {!! Form::number('male_fatalities',null,['class' => 'form-control', 'placeholder' => __('Male'),'oninput' => "this.value = this.value.replace(/[^0-9.]/g, ''); "]) !!}
         </div>
     </div>
     <div class="form-group  row">
-        {!! Form::label('female_fatalities','Female',['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('female_fatalities',__('Female'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::number('female_fatalities',null,['class' => 'form-control', 'placeholder' => 'Female ','oninput' => "this.value = this.value.replace(/[^0-9.]/g, ''); "]) !!}
+            {!! Form::number('female_fatalities',null,['class' => 'form-control', 'placeholder' => __('Female'),'oninput' => "this.value = this.value.replace(/[^0-9.]/g, ''); "]) !!}
         </div>
     </div>
 
     <div class="form-group  row">
-        {!! Form::label('other_fatalities','Other',['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('other_fatalities',__('Other'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::number('other_fatalities',null,['class' => 'form-control', 'placeholder' => 'Other ','oninput' => "this.value = this.value.replace(/[^0-9.]/g, ''); "]) !!}
+            {!! Form::number('other_fatalities',null,['class' => 'form-control', 'placeholder' => __('Other'),'oninput' => "this.value = this.value.replace(/[^0-9.]/g, ''); "]) !!}
         </div>
     </div>
     <div class="form-group row">
-        {!! Form::label('notes', 'Notes', ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('notes', __('Notes'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::textarea('notes', null, ['class' => 'form-control', 'placeholder' => 'Notes']) !!}
+            {!! Form::textarea('notes', null, ['class' => 'form-control', 'placeholder' => __('Notes')]) !!}
         </div>
     </div>
     <div class="card-footer">
-        <a href="{{ action('PublicHealth\YearlyWaterborneController@index') }}" class="btn btn-info">Back to List</a>
-        {!! Form::submit('Save', ['class' => 'btn btn-info']) !!}
+        <a href="{{ action('PublicHealth\YearlyWaterborneController@index') }}" class="btn btn-info">{{__('Back to List')}}</a>
+        {!! Form::submit(__('Save'), ['class' => 'btn btn-info']) !!}
     </div>
     <script>
         var i, currentYear, startYear, endYear, newOption, dropdownYear;

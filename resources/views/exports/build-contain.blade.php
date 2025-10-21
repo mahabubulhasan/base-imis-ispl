@@ -1,9 +1,8 @@
 <table>
     <thead>
     <tr>
-        <th align="right" width="20"><h1><strong>BIN</strong></h1></th>
-        <th align="right" width="20"><h1><strong>Containment ID</strong></h1></th>
-
+        <th align="right" width="20"><h1><strong>{{__('BIN')}}</strong></h1></th>
+        <th align="right" width="20"><h1><strong>{{__('Containment ID')}}</strong></h1></th>
     </tr>
     </thead>
     <tbody>

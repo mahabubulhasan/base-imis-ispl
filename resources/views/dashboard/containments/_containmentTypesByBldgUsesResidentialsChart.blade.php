@@ -1,7 +1,8 @@
 <!-- Last Modified Date: 12-04-2024
 Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 @include('layouts.dashboard.chart-card',[
-    'card_title' => " Wardwise Distribution of Containment Types in Residential Buildings",
+
+    'card_title' => __("Wardwise Distribution of Containment Types in Residential Buildings"),
     'export_chart_btn_id' => "exportcontainmentTypesByBldgUsesResidentialsChart",
     'canvas_id' => "containmentTypesByBldgUsesResidentialsChart"
 ])

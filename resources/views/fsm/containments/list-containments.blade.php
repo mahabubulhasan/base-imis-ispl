@@ -5,11 +5,11 @@
   <table id="data-table" class="table table-bordered table-striped"  width="100%">
       <thead>
           <tr>
-              <th>Containment ID</th>
-              <th>Containment Type</th>
-              <th>Containment Volume (m³)</th>
-              <th>Containment Location</th>
-              <th>Actions</th>
+              <th>{{ __('Containment ID') }}</th>
+              <th>{{ __('Containment Type') }}</th>
+              <th>{{ __('Containment Volume (m³)') }}</th>
+              <th>{{ __('Containment Location') }}</th>
+              <th>{{ __('Actions') }}</th>
 
           </tr>
       </thead>

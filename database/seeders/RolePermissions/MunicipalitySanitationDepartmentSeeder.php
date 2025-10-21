@@ -113,7 +113,10 @@ class MunicipalitySanitationDepartmentSeeder extends Seeder
                                 'Municipality Map Layer',
                                 'PT/CT Toilets Map Layer',
                                 'Ward Boundary Map Layer',
-                                'Emptied Applications Not Reached to TP Map Tools'
+                                'Emptied Applications Not Reached to TP Map Tools', 
+                                'Containments Emptied Info Map Tools', 
+                                'Toilet Isochrone Map Tools',
+                                'Export Containment Report'
                             ])
                     );
 

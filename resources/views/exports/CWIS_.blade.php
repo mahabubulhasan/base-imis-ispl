@@ -1,7 +1,7 @@
 <table>
     <thead>
         <tr>
-            <th>CWIS Monitoring and Evaluation Indicator</th>
+            <th>{{__('CWIS Monitoring and Evaluation Indicators')}}</th>
         </tr>
         <tr>
             <th> {{ $years }}</th>
@@ -10,9 +10,9 @@
             <th> </th>
         </tr>
         <tr>
-            <th>Indicator </th>
-            <th>Outcome</th>
-            <th>Value</th>
+            <th>{{__('Indicators')}} </th>
+            <th>{{__('Outcome')}}</th>
+            <th>{{__('Value')}}</th>
         </tr>
 
     </thead>

@@ -1,7 +1,7 @@
 <!-- Last Modified Date: 19-04-2024
 Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 @include('layouts.dashboard.chart-card',[
-    'card_title' => "Wardwise Drain Length by Size (m)",
+    'card_title' =>__('Wardwise Drain Length by Size (m)') ,
     'export_chart_btn_id' => "exportdrainWidthPerWardChart",
     'canvas_id' => "drainWidthPerWardChart"
 ])

@@ -6,6 +6,8 @@ namespace App\Http\Requests;
 use App\Http\Requests\Request;
 use App\Models\User;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\Rule;
+
 
 class UserRequest extends Request
 {
@@ -31,7 +33,7 @@ class UserRequest extends Request
             'name' => 'required|max:255',
             'gender' => 'required',
             'username' => 'required|max:255|unique:pgsql.auth.users',
-            'email' => 'required|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix|max:255|unique:pgsql.auth.users',
+            
             'password' => ['required', Password::min(8)
                 ->letters()
                 ->mixedCase()
@@ -59,15 +61,28 @@ class UserRequest extends Request
                 if (in_array('Service Provider - Help Desk', $roles) && $user_type === 'Help Desk') {
                     $rules['help_desk_id_1'] = 'required|integer';
                 }
-    
-                return $rules;  // Ensure rules are returned after being modified
+                $rules = array_merge($rules, [ 'email' => [
+                        'required',
+                        'regex:/^([a-z0-9_\+\-]+)(\.[a-z0-9_\+\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
+                        'max:255',
+                        Rule::unique('pgsql.auth.users')->whereNull('deleted_at'),
+                    ],]);
+            
+                return $rules; 
     
             case 'PUT':
             case 'PATCH':
                 // Define the rules for PUT and PATCH if needed
                 $rules = array_merge($rules, [
                     'username' => 'required|max:255|unique:pgsql.auth.users,username,' . $user->id,
-                    'email' => 'required|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix|unique:pgsql.auth.users,email,' . $user->id,
+                      'email' => [
+                        'required',
+                        'regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
+                        'max:255',
+                        Rule::unique('pgsql.auth.users', 'email')
+                            ->ignore($user->id) 
+                            ->whereNull('deleted_at'),
+                    ],
                     'password' => ['nullable', 'required_with:password_confirmation', Password::min(8)
                         ->letters()
                         ->mixedCase()
@@ -89,34 +104,35 @@ class UserRequest extends Request
 public function messages()
 {
     return [
-        'name.required' => 'The Full Name field is required.',
-        'name.max' => 'The Full Name must not exceed 255 characters.',
-        'gender.required' => 'The Gender field is required.',
-        'username.required' => 'The Username field is required.',
-        'username.max' => 'The Username must not exceed 255 characters.',
-        'username.unique' => 'The Username has already been taken.',
-        'email.required' => 'The Email field is required.',
-        'email.regex' => 'The Email format is invalid.',
-        'email.max' => 'The Email must not exceed 255 characters.',
-        'email.unique' => 'The Email has already been taken.',
-        'password.required' => 'The Password field is required.',
-        'password.min' => 'The Password must be at least 8 characters.',
-        'password.letters' => 'The Password must contain at least one letter.',
-        'password.mixedCase' => 'The Password must include both uppercase and lowercase letters.',
-        'password.numbers' => 'The Password must contain at least one number.',
-        'password.symbols' => 'The Password must include at least one symbol.',
-        'password.uncompromised' => 'The Password has been found in a data leak. Please choose a different password.',
-        'password.confirmed' => 'The Confirm Password confirmation does not match.',
-        'roles.required' => 'The Roles field is required.',
-        'user_type.required' => 'The User Type field is required.',
-        'service_provider_id.required_if' => 'The Service Provider ID is required when User Type is Service Provider.',
-        'help_desk_id_2.required' => 'The Help Desk is required for Municipality Help Desk role.',
-        'help_desk_id_2.integer' => 'The Help Desk must be an integer.',
-        'help_desk_id_1.required' => 'The Help Desk is required for Service Provider Help Desk role.',
-        'help_desk_id_1.integer' => 'The Help Desk must be an integer.',
-        'status.required' => 'The Status field is required.',
+        'name.required' => __('The Full Name field is required.'),
+        'name.max' => __('The Full Name must not exceed 255 characters.'),
+        'gender.required' => __('The Gender field is required.'),
+        'username.required' => __('The Username field is required.'),
+        'username.max' => __('The Username must not exceed 255 characters.'),
+        'username.unique' => __('The Username has already been taken.'),
+        'email.required' => __('The Email field is required.'),
+        'email.regex' => __('The Email format is invalid.'),
+        'email.max' => __('The Email must not exceed 255 characters.'),
+        'email.unique' => __('The Email has already been taken.'),
+        'password.required' => __('The Password field is required.'),
+        'password.min' => __('The Password must be at least 8 characters.'),
+        'password.letters' => __('The Password must contain at least one letter.'),
+        'password.mixedCase' => __('The Password must include both uppercase and lowercase letters.'),
+        'password.numbers' => __('The Password must contain at least one number.'),
+        'password.symbols' => __('The Password must include at least one symbol.'),
+        'password.uncompromised' => __('The Password has been found in a data leak. Please choose a different password.'),
+        'password.confirmed' => __('The Confirm Password confirmation does not match.'),
+        'roles.required' => __('The Roles field is required.'),
+        'user_type.required' => __('The User Type field is required.'),
+        'service_provider_id.required_if' => __('The Service Provider ID is required when User Type is Service Provider.'),
+        'help_desk_id_2.required' => __('The Help Desk is required for Municipality Help Desk role.'),
+        'help_desk_id_2.integer' => __('The Help Desk must be an integer.'),
+        'help_desk_id_1.required' => __('The Help Desk is required for Service Provider Help Desk role.'),
+        'help_desk_id_1.integer' => __('The Help Desk must be an integer.'),
+        'status.required' => __('The Status field is required.'),
     ];
 }
 
 
 }
+

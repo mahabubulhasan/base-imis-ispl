@@ -1,6 +1,6 @@
 <?php
 // Last Modified Date: 18-04-2024
-// Developed By: Innovative Solution Pvt. Ltd. (ISPL)  
+// Developed By: Innovative Solution Pvt. Ltd. (ISPL)
 namespace App\Http\Controllers\Fsm;
 
 use App\Http\Controllers\Controller;
@@ -33,7 +33,7 @@ class TreatmentPlantTestController extends Controller
      */
     public function index()
     {
-        $page_title = "Performance Efficiency Test";
+        $page_title = __("Performance Efficiency Test");
 
         $tpnames = TreatmentPlantTest::whereNull('deleted_at')
         ->with('treatmentplants:id,name')
@@ -57,7 +57,7 @@ class TreatmentPlantTestController extends Controller
      */
     public function create()
     {
-        $page_title = "Add Performance Efficiency Test";
+        $page_title = __("Add Performance Efficiency Test");
         $trtName = TreatmentPlant::operational()->pluck('name', 'id')->whereNull('deleted_at');
         $treatmentPlants = null;
         return view('fsm/treatment-plant-test.create', compact('page_title', 'trtName', 'treatmentPlants'));
@@ -88,7 +88,7 @@ class TreatmentPlantTestController extends Controller
             ->pluck('fsm.treatment_plants.name');
 
         if ($treatmentPlantTest) {
-            $page_title = "Performance Efficiency Test Details";
+            $page_title = __("Performance Efficiency Test Details");
             return view('fsm/treatment-plant-test.show', compact('page_title', 'treatmentPlantTest', 'treatmentPlantName'));
         } else {
             abort(404);
@@ -106,7 +106,7 @@ class TreatmentPlantTestController extends Controller
         $treatmentPlantTest = TreatmentPlantTest::find($id);
         $trtName = TreatmentPlant::pluck('name', 'id');
         if ($treatmentPlantTest) {
-            $page_title = "Edit Performance Efficiency Test";
+            $page_title = __("Edit Performance Efficiency Test");
             return view('fsm/treatment-plant-test.edit', compact('page_title', 'treatmentPlantTest', 'trtName'));
         } else {
             abort(404);
@@ -137,16 +137,16 @@ class TreatmentPlantTestController extends Controller
         $info = TreatmentPlantTest::find($id);
         if ($info) {
             $info->delete();
-            return redirect('fsm/treatment-plant-test')->with('success', 'Performance Efficiency Test deleted successfully');
+            return redirect('fsm/treatment-plant-test')->with('success', __('Performance Efficiency Test deleted successfully.'));
         } else {
-            return redirect('fsm/treatment-plant-test')->with('error', 'Failed to delete Performance Efficiency Test');
+            return redirect('fsm/treatment-plant-test')->with('error',__('Failed to delete Performance Efficiency Test'));
         }
     }
     public function history($id)
     {
         $treatmentPlant = TreatmentPlantTest::find($id);
         if ($treatmentPlant) {
-            $page_title = "Performance Efficiency Test History";
+            $page_title = __("Performance Efficiency Test History");
             return view('fsm/treatment-plant-test.history', compact('page_title', 'treatmentPlant'));
         } else {
             abort(404);

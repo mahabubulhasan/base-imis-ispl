@@ -34,7 +34,7 @@ class LowIncomeCommunityController extends Controller
 
     public function index()
     {
-        $page_title = "Low Income Community";
+        $page_title = __("Low Income Community");
         return view('layer-info.low-income-communities.index', compact('page_title'));
     }
 
@@ -51,7 +51,7 @@ class LowIncomeCommunityController extends Controller
      */
     public function create()
     {
-        $page_title = "Add Low Income Community";
+        $page_title = __("Add Low Income Community");
         return view('layer-info.low-income-communities.create', compact('page_title'));
     }
 
@@ -92,7 +92,7 @@ class LowIncomeCommunityController extends Controller
         $lat = $geomArr[0]->lat;
         $long = $geomArr[0]->long;
         if ($lic) {
-            $page_title = "Edit Low Income Community";
+            $page_title = __("Edit Low Income Community");
             return view('layer-info.low-income-communities.edit', compact('page_title', 'lic', 'geom', 'lat', 'long'));
         } else {
             abort(404);
@@ -125,14 +125,14 @@ class LowIncomeCommunityController extends Controller
                 if($building_count == 0)
                 {
                     $lic->delete();
-                    return redirect('layer-info/low-income-communities')->with('success','Low Income Community deleted successfully');
+                    return redirect('layer-info/low-income-communities')->with('success',__('Low Income Community deleted successfully.'));
                 }
                 else
                 {
-                    return redirect('layer-info/low-income-communities')->with('error','Cannot delete Low Income Community that has associated Buildings');
+                    return redirect('layer-info/low-income-communities')->with('error',__('Cannot delete Low Income Community that has associated Buildings.'));
                 }
             } else {
-                return redirect('layer-info/low-income-communities')->with('error','Failed to delete Low Income Community');
+                return redirect('layer-info/low-income-communities')->with('error',__('Failed to delete Low Income Community.'));
             }
 {
     $lic = LowIncomeCommunity::find($id);
@@ -140,12 +140,12 @@ class LowIncomeCommunityController extends Controller
         $building_count = Building::where('lic_id', $lic->id)->count();
         if ($building_count == 0) {
             $lic->delete();
-            return redirect('layer-info/low-income-communities')->with('success', 'Low Income Community deleted successfully.');
+            return redirect('layer-info/low-income-communities')->with('success', __('Low Income Community deleted successfully.'));
         } else {
-            return redirect('layer-info/low-income-communities')->with('error', 'Cannot delete Low Income Community that has associated Buildings.');
+            return redirect('layer-info/low-income-communities')->with('error', __('Cannot delete Low Income Community that has associated Buildings.'));
         }
     } else {
-        return redirect('layer-info/low-income-communities')->with('error', 'Failed to delete Low Income Community.');
+        return redirect('layer-info/low-income-communities')->with('error', __('Failed to delete Low Income Community.'));
     }
 }
 }
@@ -160,7 +160,7 @@ class LowIncomeCommunityController extends Controller
     {
         $lic = LowIncomeCommunity::find($id);
         if ($lic) {
-            $page_title = "Low Income Community History";
+            $page_title = __("Low Income Community History");
             return view('layer-info.low-income-communities.history', compact('page_title', 'lic'));
         } else {
             abort(404);

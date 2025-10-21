@@ -67,23 +67,23 @@ class RoadlineService {
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['roadlines.destroy', $model->code]]);
 
                 if (Auth::user()->can('Edit Roadline')) {
-                    $content .= '<a title="Edit" href="' . action("UtilityInfo\RoadlineController@edit", [$model->code]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-edit"></i></a> ';
+                    $content .= '<a title="' . __("Edit") . '" href="' . action("UtilityInfo\RoadlineController@edit", [$model->code]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-edit"></i></a> ';
                 }
 
                 if (Auth::user()->can('View Roadline')) {
-                    $content .= '<a title="Detail" href="' . action("UtilityInfo\RoadlineController@show", [$model->code]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-list"></i></a> ';
+                    $content .= '<a title="' . __("Detail") . '" href="' . action("UtilityInfo\RoadlineController@show", [$model->code]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-list"></i></a> ';
                 }
 
                 if (Auth::user()->can('View Roadline History')) {
-                    $content .= '<a title="History" href="' . action("UtilityInfo\RoadlineController@history", [$model->code]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-history"></i></a> ';
+                    $content .= '<a title="' . __("History") . '" href="' . action("UtilityInfo\RoadlineController@history", [$model->code]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-history"></i></a> ';
                 }
 
                 if (Auth::user()->can('Delete Roadline')) {
-                    $content .= '<a href="#" title="Delete"  class="delete btn btn-danger btn-sm mb-1"><i class="fa fa-trash"></i></a> ';
+                    $content .= '<a href="#" title="' . __("Delete") . '"  class="delete btn btn-danger btn-sm mb-1"><i class="fa fa-trash"></i></a> ';
                 }
 
                 if (Auth::user()->can('View Roadline On Map')) {
-                    $content .= '<a title="Map" href="' . action("MapsController@index", ['layer' => 'roadlines_layer', 'field' => 'code', 'val' => $model->code]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-map-marker"></i></a> ';
+                    $content .= '<a title="' . __("Map") . '" href="' . action("MapsController@index", ['layer' => 'roadlines_layer', 'field' => 'code', 'val' => $model->code]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-map-marker"></i></a> ';
                 }
 
                 $content .= \Form::close();
@@ -107,7 +107,7 @@ class RoadlineService {
             $maxcode = Roadline::withTrashed()->max('code');
             $maxcode = str_replace('R', '', $maxcode);
             $roadline = new Roadline();
-            $roadline->code = 'R' . sprintf('%04d', $maxcode + 1);
+            $roadline->code = 'R' . sprintf('%06d', $maxcode + 1);
             $roadline->user_id = Auth::id();
             $roadline->name = $data['name'] ? $data['name'] : null;
             $roadline->hierarchy = $data['hierarchy'] ? $data['hierarchy'] : null;
@@ -147,7 +147,15 @@ class RoadlineService {
         $name = $data['name'] ? $data['name'] : null;
         $carrying_width = $data['carrying_width'] ? $data['carrying_width'] : null;
 
-        $columns = ['Code', 'Road Name', 'Hierarchy', 'Right of Way (m)' , 'Carrying Width (m)', 'Surface Type', 'Road Length (m)'];
+        $columns = [
+            __('Code'),
+            __('Road Name'),
+            __('Hierarchy'),
+            __('Right of Way (m)'),
+            __('Carrying Width (m)'),
+            __('Surface Type'),
+            __('Road Length (m)'),
+        ];
 
         $query = Roadline::select('code', 'name', 'hierarchy', 'right_of_way', 'carrying_width', 'surface_type', 'length')
             ->whereNull('deleted_at');

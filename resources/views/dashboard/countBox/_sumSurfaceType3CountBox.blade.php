@@ -7,6 +7,6 @@
         <span class="info-box-text">
             <h2> {{ number_format($sumSurfaceType3) }}</h2>
         </span>
-        <span class="info-box-number">RCC</span>
+        <span class="info-box-number">{{ __('Gravelled')}}</span>
     </div>
 </div>

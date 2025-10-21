@@ -1,5 +1,5 @@
 @include('layouts.dashboard.chart-card',[
-    'card_title' => "Containment Types Categorized by Land Use",
+    'card_title' => __("Containment Types Categorized by Land Use"),
     'export_chart_btn_id' => "exportcontainmentTypesByLanduseChart",
     'canvas_id' => "containmentTypesByLanduseChart"
 ])

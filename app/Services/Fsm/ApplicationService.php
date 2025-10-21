@@ -54,10 +54,10 @@ class ApplicationService
     {
      $this->createPartialForm = 'fsm.application.partial-form';
      $this->createFormFields = [
-            ["title" => "Address",
+        ["title" =>__('Address'),
                 "fields" => [
                     new FormField(
-                        label: 'Street Name / Street Code',
+                        label: __('Street Name / Street Code'),
                         labelFor: 'road_code',
                         inputType: 'multiple-select',
                         inputId: 'road_code',
@@ -65,7 +65,7 @@ class ApplicationService
                         required: true
                     ),
                     new FormField(
-                        label: 'House Number / BIN',
+                        label: __('House Number / BIN'),
                         labelFor: 'bin',
                         inputType: 'multiple-select',
                         inputId: 'bin',
@@ -73,139 +73,140 @@ class ApplicationService
                         required: true
                     ),
                     new FormField(
-                        label: 'Containment ID',
+                        label: __('Containment ID'),
                         labelFor: 'containment_id',
                         inputType: 'text', 
                         inputId: 'containment_id',
                         selectValues: [],
-                        placeholder: 'Containment ID'
+                        placeholder: __('Containment ID')
                     ),     
                     new FormField(
-                        label: 'Ward Number ',
+                        label: __('Ward Number'),
                         labelFor: 'ward',
                         inputType: 'select',
                         inputId: 'ward',
-                        placeholder: 'Ward Number ',
+                        placeholder: __('Ward Number'),
                         selectValues: Ward::orderBy('ward')->pluck('ward','ward')->toArray(),
                     ),
                 ]],
-            ["title" => "Owner Details",
+            ["title" =>__('Owner Details'),
+
                 "fields" => [
                     new FormField(
-                        label: 'Owner Name',
+                        label: __('Owner Name'),
                         labelFor: 'customer_name',
                         inputType: 'text',
                         inputId: 'customer_name',
-                        placeholder: 'Owner Name',
+                        placeholder: __('Owner Name'),
                     ),
                     new FormField(
-                        label: 'Owner Gender',
+                        label: __('Owner Gender'),
                         labelFor: 'customer_gender',
                         inputType: 'select',
                         inputId: 'customer_gender',
                         selectValues: ["Male"=>"Male","Female"=>"Female","Others"=>"Others"],
-                        placeholder: 'Owner Gender',
+                        placeholder: __('Owner Gender'),
                     ),
                     new FormField(
-                        label: 'Owner Contact (Phone)',
+                        label: __('Owner Contact (Phone)'),
                         labelFor: 'customer_contact',
                         inputType: 'text', 
                         inputId: 'customer_contact',
                         selectValues: [],
-                        placeholder: 'Owner Contact (Phone)',
+                        placeholder: __('Owner Contact (Phone)'),
                         oninput: "validateOwnerContactInput(this)", 
                     )                    
                 ]],
-            ["title" => "Applicant Details",
+            ["title" =>__('Applicant Details'),
                 "copyDetails"=>true,
                 "fields" => [
                     new FormField(
-                        label: "Applicant Name",
+                        label: __('Applicant Name'),
                         labelFor: 'applicant_name',
                         inputType: 'text',
                         inputId: 'applicant_name',
                         selectValues: [],
                         required: true,
-                        placeholder: 'Applicant Name',
+                        placeholder: __('Applicant Name'),
                     ),
                     new FormField(
-                        label: "Applicant Gender",
+                        label: __('Applicant Gender'),
                         labelFor: 'applicant_gender',
                         inputType: 'select',
                         inputId: 'applicant_gender',
                         selectValues: ["Male"=>"Male","Female"=>"Female","Others"=>"Others"],
                         required: true,
-                        placeholder: 'Applicant Gender',
+                        placeholder: __('Applicant Gender'),
                     ),
                     new FormField(
-                        label: "Applicant Contact (Phone)",
+                        label: __('Applicant Contact (Phone)'),
                         labelFor: 'applicant_contact',
                         inputType: 'text',
                         inputId: 'applicant_contact',
                         selectValues: [],
                         required: true,
-                        placeholder: 'Applicant Contact (Phone)',
+                        placeholder: __('Applicant Contact (Phone)'),
                         oninput: "validateOwnerContactInput(this)", 
                     ),
                 ]],
 
-            ["title" => "Application Details",
+            ["title" =>  __('Applicant Details'),
                 "fields" => [
                     new FormField(
-                        label: 'Proposed Emptying Date',
+                        label: __('Proposed Emptying Date'),
                         labelFor: 'proposed_emptying_date',
                         inputType: 'date',
                         inputId: 'proposed_emptying_date',
                         required: true,
-                        placeholder: 'Proposed Emptying Date',
+                        placeholder: __('Proposed Emptying Date'),
                     ),
                     new FormField(
-                        label: 'Service Provider Name',
+                        label: __('Service Provider Name'),
                         labelFor: 'service_provider_id',
                         inputType: 'select',
                         inputId: 'service_provider_id',
                         selectValues: [],
                         required: true,
-                        placeholder: 'Service Provider Name',
+                        placeholder: __('Service Provider Name'),
                     ),
                     new FormField(
-                        label: 'Emergency Desludging',
+                        label: __('Emergency Desludging'),
                         labelFor: 'emergency_desludging_status',
                         inputType: 'select',
                         inputId: 'emergency_desludging_status',
                         selectValues: array("1" => "Yes" , "0" => "No"),
                         required: true,
-                        placeholder: 'Emergency Desludging',
+                        placeholder: __('Emergency Desludging'),
                     ),
                 ]],
-                ["title" => "Household Details",
+                ["title" => __('Household Details'),
                 "fields" => [
                     new FormField(
-                        label: 'Number of Households',
+                        label: __('Number of Households'),
                         labelFor: 'household_served',
                         inputType: 'number',
                         inputId: 'household_served',
                         required: false,
-                        placeholder: 'Number of Households',
+                        placeholder: __('Number of Households'),
                         oninput: "this.value = this.value.replace(/[^0-9]/g, '')" , 
 
                     ),
                     new FormField(
-                        label: 'Population of Building',
+                        label: __('Population of Building'),
                         labelFor: 'population_served',
                         inputType: 'number',
                         inputId: 'population_served',
                         required: false,
-                        placeholder: 'Population of Building',
+                        placeholder: __('Population of Building'),
                         oninput: "this.value = this.value.replace(/[^0-9]/g, '')" , 
                     ),
                     new FormField(
-                        label: 'Number of Toilets',
+                        label: __('Number of Toilets'),
                         labelFor: 'toilet_count',
                         inputType: 'number',
                         inputId: 'toilet_count',
                         required: false,
-                        placeholder: 'Number of Toilets',
+                        placeholder: __('Number of Toilets'),
                         oninput: "this.value = this.value.replace(/[^0-9]/g, '')" , 
                     ),
                 ]],
@@ -218,132 +219,132 @@ class ApplicationService
         $this->filterFormFields = [
             [
                 new FormField(
-                    label: 'BIN',
+                    label: __('BIN'), 
                     labelFor: 'bin',
                     labelClass: 'col-md-2 col-form-label ',
                     inputType: 'text',
                     inputId: 'bin',
                     selectValues: [],
                     required: true,
-                    placeholder: 'BIN',
+                    placeholder:  __('BIN'),
                 ),
 
             new FormField(
-                label: 'House Number',
+                label:__('House Number'),
                 labelFor: 'house_address',
                  labelClass: 'col-md-2 col-form-label ',
                     inputType: 'text',
                 inputId: 'house_address',
-                placeholder: 'House Number',
+                placeholder: __('House Number'),
             ),
                 new FormField(
-                    label: 'Owner Name',
+                    label: __('Owner Name'),
                     labelFor: 'customer_name',
                     labelClass: 'col-md-2 col-form-label ',
                     inputType: 'text',
                     inputId: 'customer_name',
-                    placeholder: 'Owner Name',
+                    placeholder: __('Owner Name'),
                 ),
 
             ],
             [  
                 new FormField(
-                label: 'Application ID',
+                label: __('Application ID'),
                 labelFor: 'application_id',
                 labelClass: 'col-md-2 col-form-label ',
                 inputType: 'text',
                 inputId: 'application_id',
-                placeholder: 'Application ID',
+                placeholder: __('Application ID'),
             ),
                 new FormField(
-                    label: 'Emptying Status',
+                    label: __('Emptying Status'),
                     labelFor: 'emptying_status',
                     labelClass: 'col-md-2 col-form-label ',
                     inputType: 'select',
                     inputId: 'emptying_status',
                     selectValues: ["true"=>"Yes","false"=>"No"],
-                    placeholder: 'Emptying Status',
+                    placeholder: __('Emptying Status'),
                     autoComplete: "off",
                 ),
                 new FormField(
-                    label: 'Sludge Collection Status',
+                    label: __('Sludge Collection Status'),
                     labelFor: 'sludge_collection_status',
                     labelClass: 'col-md-2 col-form-label ',
                     inputType: 'select',
                     inputId: 'sludge_collection_status',
                     selectValues: ["true"=>"Yes","false"=>"No"],
-                    placeholder: 'Sludge Collection Status',
+                    placeholder: __('Sludge Collection Status'),
                     autoComplete: "off",
                 ),
 
             ],
             [
                 new FormField(
-                    label: 'Feedback Status',
+                    label: __('Feedback Status'),
                     labelFor: 'feedback_status',
                     labelClass: 'col-md-2 col-form-label ',
                     inputType: 'select',
                     inputId: 'feedback_status',
                     selectValues: ["true"=>"Yes","false"=>"No"],
-                    placeholder: 'Feedback Status',
+                    placeholder: __('Feedback Status'),
                     autoComplete: "off",
                 ),
                 new FormField(
-                    label: 'Street Name/ Street Code',
+                    label: __('Street Name / Street Code'),
                     labelFor: 'road_code',
                     labelClass: 'col-md-2 col-form-label ',
                     inputType: 'multiple-select',
                     inputId: 'road_code',
                     selectValues: [],
-                    placeholder: 'Street Name/ Street Code',
+                    placeholder: __('Street Name / Street Code'),
                 ),
                 new FormField(
-                    label: 'Proposed Emptying Date',
+                    label: __('Proposed Emptying Date'),
                     labelFor: 'proposed_emptying_date',
                     labelClass: 'col-md-2 col-form-label ',
                     inputType: 'date',
                     inputId: 'proposed_emptying_date',
-                    placeholder: 'Proposed Emptying Date',
+                    placeholder: __('Proposed Emptying Date'),
                 ),
                
             ],
             [
                 new FormField(
-                    label: 'Ward Number ',
+                    label: __('Ward Number'),
                     labelFor: 'ward',
                     labelClass: 'col-md-2 col-form-label ',
                     inputType: 'select',
                     inputId: 'ward',
-                    placeholder: 'Ward Number',
+                    placeholder: __('Ward Number'),
                     selectValues: Ward::orderBy('ward')->pluck('ward','ward')->toArray(),
                 ),
                 new FormField(
-                    label: 'Service Provider Name',
+                    label: __('Service Provider Name'),
                     labelFor: 'service_provider_id',
                     labelClass: 'col-md-2 col-form-label ',
                     inputType: 'select',
                     inputId: 'service_provider_id',
-                    placeholder: 'Service Provider Name',
+                    placeholder: __('Service Provider Name'),
                     selectValues:  [],
                 ),
                 new FormField(
-                    label: 'Date From',
+                    label: __('Date From'),
                     labelFor: 'date_from',
                     labelClass: 'col-md-2 col-form-label ',
                     inputType: 'date',
                     inputId: 'date_from',
-                    placeholder: 'Date From',
+                    placeholder: __('Date From'),
                 ),
             ],
             [
                 new FormField(
-                    label: 'Date To',
+                    label: __('Date To'),
                     labelFor: 'date_to',
                     labelClass: 'col-md-2 col-form-label ',
                     inputType: 'date',
                     inputId: 'date_to',
                     required: true,
-                    placeholder: 'Date To',
+                    placeholder: __('Date To'),
                 ),
             ],
         ];
@@ -374,86 +375,86 @@ class ApplicationService
         ->first();
         
         $this->showFormFields = [
-            ["title" => "Address",
+            ["title" => __('Address'),
                 "fields" => [
                     new FormField(
-                        label: 'Street Name / Street Code',
+                        label: __('Street Name / Street Code'),
                         labelFor: 'road_code',
                         inputType: 'label',
                         inputId: 'road_code',
                         labelValue: $application->road_code,
                     ),
                     new FormField(
-                        label: 'BIN',
+                        label:__('BIN') ,
                         labelFor: 'bin',
                         inputType: 'label',
                         inputId: 'bin',
                         labelValue: $application->bin,
                     ),
                     new FormField(
-                        label: 'House Number',
+                        label:__('House Number') ,
                         labelFor: 'house_address',
                         inputType: 'label',
                         inputId: 'house_address',
                         labelValue: $address->house_address
                     ),
                     new FormField(
-                        label: 'Containment ID',
+                        label:__('Containment ID') ,
                         labelFor: 'containment_id',
                         inputType: 'label', 
                         inputId: 'containment_id',
                         labelValue: $application->containment_id,
                     ),   
                     new FormField(
-                        label: 'Ward Number',
+                        label:__('Ward Number') ,
                         labelFor: 'ward',
                         inputType: 'label',
                         inputId: 'ward',
                         labelValue: $application->ward,
                     ),
                 ]],
-            ["title" => "Owner Details",
+            ["title" => __("Owner Details"),
                 "fields" => [
                     new FormField(
-                        label: 'Owner Name',
+                        label:__('Owner Name') ,
                         labelFor: 'customer_name',
                         inputType: 'label',
                         inputId: 'customer_name',
                         labelValue: $application->customer_name,
                     ),
                     new FormField(
-                        label: 'Owner Gender',
+                        label: __('Owner Gender'),
                         labelFor: 'customer_gender',
                         inputType: 'label',
                         inputId: 'customer_gender',
                         labelValue: $application->customer_gender,
                     ),
                     new FormField(
-                        label: 'Owner Contact (Phone)',
+                        label: __('Owner Contact (Phone)'),
                         labelFor: 'customer_contact',
                         inputType: 'label',
                         inputId: 'customer_contact',
                         labelValue: $application->customer_contact,
                     ),
                 ]],
-            ["title" => "Applicant Details",
+            ["title" => __("Applicant Details"),
                 "fields" => [
                     new FormField(
-                        label: "Applicant Name",
+                        label: __("Applicant Name"),
                         labelFor: 'applicant_name',
                         inputType: 'label',
                         inputId: 'applicant_name',
                         labelValue: $application->applicant_name,
                     ),
                     new FormField(
-                        label: "Applicant Gender",
+                        label:__("Applicant Gender") ,
                         labelFor: 'applicant_gender',
                         inputType: 'label',
                         inputId: 'applicant_gender',
                         labelValue: $application->applicant_gender,
                     ),
                     new FormField(
-                        label: "Applicant Contact (Phone)",
+                        label: __("Applicant Contact (Phone)"),
                         labelFor: 'applicant_contact',
                         inputType: 'label',
                         inputId: 'applicant_contact',
@@ -461,24 +462,24 @@ class ApplicationService
                     ),
                 ]],
 
-            ["title" => "Application Details",
+            ["title" => __("Application Details"),
                 "fields" => [
                     new FormField(
-                        label: 'Proposed Emptying Date',
+                        label: __('Proposed Emptying Date'),
                         labelFor: 'proposed_emptying_date',
                         inputType: 'label',
                         inputId: 'proposed_emptying_date',
                         labelValue: date('m/d/Y', strtotime($application->proposed_emptying_date)),
                     ),
                     new FormField(
-                        label: 'Service Provider Name',
+                        label: __('Service Provider Name'),
                         labelFor: 'service_provider_id',
                         inputType: 'label',
                         inputId: 'service_provider_id',
                         labelValue: $application->service_provider ? $application->service_provider()->withTrashed()->first()->company_name : 'Not Assigned',
                     ),
                      new FormField(
-                        label: 'Emergency Desludging',
+                        label: __('Emergency Desludging'),
                         labelFor: 'emergency_desludging_status',
                         inputType: 'label',
                         inputId: 'emergency_desludging_status',
@@ -506,146 +507,130 @@ class ApplicationService
                  }
                
         $this->editFormFields = [
-            ["title" => "Address",
+            ["title" => __("Address"),
                 "fields" => [
                     new FormField(
-                        label: 'Street Name / Street Code',
+                        label:  __('Street Name / Street Code'),
                         labelFor: 'road_code',
                         inputType: 'label',
                         inputId: 'road_code',
                         labelValue: $application->road_code,
-                        placeholder: 'Street Name / Street Code',
+                        placeholder:  __('Street Name / Street Code'),
                     ),
                     new FormField(
-                        label: 'House Number / BIN',
+                        label: __('House Number / BIN'),
                         labelFor: 'bin',
                         inputType: 'label',
                         inputId: 'bin',
                         labelValue: $application->bin,
-                        placeholder: 'BIN',
+                        placeholder: __('BIN'),
                     ),
                     new FormField(
-                        label: 'Containment ID',
+                        label: __('Containment ID'),
                         labelFor: 'containment_id',
                         inputType: 'label', 
                         inputId: 'containment_id',
                         labelValue: $application->containment_id,
                     ),  
+            
                     new FormField(
-                        label: 'Ward Number ',
-                        labelFor: 'ward',
-                        inputType: 'label',
-                        inputId: 'ward',
-                        labelValue: $application->ward,
-                        placeholder: 'Ward Number',
-                    ),
-                    new FormField(
-                        label: 'Street Name / Street Code',
-                        labelFor: 'road_code',
-                        inputType: 'text',
-                        inputId: 'road_code',
-                        inputValue: $application->road_code,
-                        hidden: true,
-                        placeholder: 'Street Name / Street Code',
-                    ),
-                    new FormField(
-                        label: 'Ward Number ',
+                        label: __('Ward Number'),
                         labelFor: 'ward',
                         inputType: 'label',
                         inputId: 'text',
                         inputValue: $application->ward,
                         hidden: true,
-                        placeholder: 'Ward Number ',
+                        placeholder: __('Ward Number'),
                     ),
                 ]],
                 [
-                    "title" => "Owner Details",
+                    "title" => __("Owner Details"),
                     "fields" => [
                         new FormField(
-                            label: 'Owner Name',
+                            label: __('Owner Name'),
                             labelFor: 'customer_name',
                             inputType: 'text',
                             inputId: 'customer_name',
                             inputValue: $application->customer_name,
-                            placeholder: 'Owner Name',
+                            placeholder: __('Owner Name'),
                             disabled: true 
                         ),
                         new FormField(
-                            label: 'Owner Gender',
+                            label: __('Owner Gender'),
                             labelFor: 'customer_gender',
                             inputType: 'select',
                             inputId: 'customer_gender',
                             selectValues: ["Male" => "Male", "Female" => "Female", "Others" => "Others"],
                             selectedValue: $application->customer_gender,
-                            placeholder: 'Owner Gender',
+                            placeholder: __('Owner Gender'),
                             disabled: true 
                         ),
                         new FormField(
-                            label: 'Owner Contact (Phone)',
+                            label: __('Owner Contact (Phone)'),
                             labelFor: 'customer_contact',
                             inputType: 'number',
                             inputId: 'customer_contact',
                             inputValue: $application->customer_contact,
-                            placeholder: 'Owner Contact (Phone)',
+                            placeholder: __('Owner Contact (Phone)'),
                             disabled: true ,
                             
                         ),
                     ]
                     ],
                 
-            ["title" => "Applicant Details",
+            ["title" => __("Applicant Details"),
                 "copyDetails"=>true,
                 "fields" => [
                     new FormField(
-                        label: "Applicant Name",
+                        label:__("Applicant Name") ,
                         labelFor: 'applicant_name',
                         inputType: 'text',
                         inputId: 'applicant_name',
                         inputValue: $application->applicant_name,
                         selectValues: [],
                         required: true,
-                        placeholder: 'Applicant Name',
+                        placeholder: __('Applicant Name'),
                     ),
                     new FormField(
-                        label: "Applicant Gender",
+                        label:__("Applicant Gender") ,
                         labelFor: 'applicant_gender',
                         inputType: 'select',
                         inputId: 'applicant_gender',
                         selectValues: ["Male"=>"Male","Female"=>"Female","Others"=>"Others"],
                         selectedValue: $application->applicant_gender,
                         required: true,
-                        placeholder: 'Applicant Gender',
+                        placeholder: __('Applicant Gender'),
                     ),
                     new FormField(
-                        label: "Applicant Contact (Phone)",
+                        label: __("Applicant Contact (Phone)"),
                         labelFor: 'applicant_contact',
                         inputType: 'number',
                         inputId: 'applicant_contact',
                         inputValue: $application->applicant_contact,
                         selectValues: [],
                         required: true,
-                        placeholder: 'Applicant Contact (Phone)',
+                        placeholder: __('Applicant Contact (Phone)'),
                         oninput: "validateOwnerContactInput(this)", 
 
                     ),
                 ]],
 
     
-            ["title" => "Application Details",
+            ["title" => __("Application Details"),
                 "fields" => [
                     new FormField(
-                        label: 'Proposed Emptying Date',
+                        label: __('Proposed Emptying Date'),
                         labelFor: 'proposed_emptying_date',
                         inputType: 'date',
                         inputId: 'proposed_emptying_date',
                         inputValue: Carbon::parse($application->proposed_emptying_date)->format('Y-m-d'), // Correct date format for HTML date input
                         required: true,
                         disabled: $application->emptying_status ? true : false, // Correct logic for disabling the field
-                        placeholder: 'Proposed Emptying Date',
+                        placeholder: __('Proposed Emptying Date'),
                     ),
                     
                     new FormField(
-                        label: 'Service Provider Name',
+                        label: __('Service Provider Name'),
                         labelFor: 'service_provider_id',
                         inputType: 'select',
                         inputId: 'service_provider_id',
@@ -653,17 +638,17 @@ class ApplicationService
                         selectedValue: $application->service_provider_id,
                         required: true,
                         disabled:$application->emptying_status?true:'',
-                        placeholder: 'Service Provider Name',
+                        placeholder: __('Service Provider Name'),
                     ),
                      new FormField(
-                        label: 'Emergency Desludging',
+                        label: __('Emergency Desludging'),
                         labelFor: 'emergency_desludging_status',
                         inputType: 'select',
                         inputId: 'emergency_desludging_status',
                         selectValues: array("1" => "Yes" , "0" => "No"),
                         selectedValue: $application->emergency_desludging_status ? "1" : "0",
                         required: true,
-                        placeholder: 'Emergency Desludging',
+                        placeholder: __('Emergency Desludging'),
                     ),
                 ]],
         ];
@@ -827,31 +812,32 @@ class ApplicationService
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['application.destroy', $model->id]]);
                 $content .= '<div class="">';
                 if (Auth::user()->can('Edit Application')){
-                    $content .= '<a title="Edit  Application Details" href="' . route('application.edit', [$model->id]) . '" class="btn btn btn-info btn-sm mb-1 mb-1 '. ($model->emptying_status? ' anchor-disabled' : '') . '"><i class="fa fa-edit"></i></a> ';
+                    $content .= '<a title="' . __('Edit Application Details') . '" href="' . route('application.edit', [$model->id]) . '" class="btn btn btn-info btn-sm mb-1 mb-1 '. ($model->emptying_status? ' anchor-disabled' : '') . '"><i class="fa fa-edit"></i></a> ';
                 }
                 if (Auth::user()->can('View Application')){
-                    $content .= '<a title="View Application Details" href="' . route('application.show', [$model->id]) . '" class="btn btn btn-info btn-sm mb-1 mb-1"><i class="fa fa-list"></i></a> ';
+                    $content .= '<a title="' . __('View Application Details') . '" href="' . route('application.show', [$model->id]) . '" class="btn btn btn-info btn-sm mb-1 mb-1"><i class="fa fa-list"></i></a> ';
                 }
                 if (Auth::user()->can('Edit Emptying') && $model->emptying_status){
-                    $content .= '<a title="Edit Emptying Service Details" href="' . route("emptying.edit", [$model->with('emptying')->where('id',$model->id)->get()->first()->emptying->id]) . '" class="btn btn btn-info btn-sm mb-1 mb-1'. ( $model->sludge_collection_status  ? ' anchor-disabled' : '') . '"><i class="fa fa-recycle"></i></a> ';
+                    $content .= '<a title="' . __("Edit Emptying Service Details") . '" href="' . route("emptying.edit", [$model->with('emptying')->where('id',$model->id)->get()->first()->emptying->id]) . '" class="btn btn btn-info btn-sm mb-1 mb-1'. ( $model->sludge_collection_status  ? ' anchor-disabled' : '') . '"><i class="fa fa-recycle"></i></a> ';
                 }
                 if (Auth::user()->can('Edit Sludge Collection') && $model->sludge_collection_status){
-                    $content .= '<a title="Edit Sludge Collection Details" href="' . route("sludge-collection.edit", [$model->sludge_collection->id]) . '" class="btn btn btn-info btn-sm mb-1 mb-1"><i class="fa fa-truck-moving"></i></a> ';
+                   $content .= '<a title="Edit Sludge Collection Details" href="' . route("sludge-collection.edit", [$model->sludge_collection->id]) . '" class="btn btn-info btn-sm mb-1' . ($model->feedback_status ? ' anchor-disabled' : '') . '"><i class="fa fa-truck-moving"></i></a> ';
+
                 }
                 if (Auth::user()->can('Edit Feedback') && $model->feedback_status){
-                    $content .= '<a title="Edit Feedback Details" href="' . route("feedback.edit", [$model->feedback->id]) . '" class="btn btn btn-info btn-sm mb-1 mb-1"><i class="fa fa-pencil"></i></a> ';
+                    $content .= '<a title="Edit Feedback Details" href="' . route("feedback.edit", [$model->feedback->id]) . '" class="btn btn-info btn-sm mb-1' . ($model->feedback_status ? ' anchor-disabled' : '') . '"><i class="fa fa-pencil"></i></a> ';
                 }
 
 
                 if (Auth::user()->can('View Application History')){
-                $content .= '<a title="History" href="' . route('application.history', $model->id) . '" class="btn btn btn-info btn-sm mb-1 mb-1"><i class="fa fa-history"></i></a> ';
+                $content .= '<a title="' . __("History") . '" href="' . route('application.history', $model->id) . '" class="btn btn btn-info btn-sm mb-1 mb-1"><i class="fa fa-history"></i></a> ';
                 if (Auth::user()->can('Delete Application')){
-                    $content .= '<a title="Delete"  class="delete btn btn-danger  btn-sm mb-1"><i class="fa fa-trash"></i></a> ';
+                    $content .= '<a title="' . __("Delete") . '"   class="delete btn btn-danger  btn-sm mb-1"><i class="fa fa-trash"></i></a> ';
                 }
             }
                 if (Auth::user()->can('Generate Application Report')){
                     if ($model->emptying_status == TRUE) {
-                    $content .= '<a title="Generate Report" href="' . route('application.report', [$model->id]) . '" class="btn btn btn-info btn-sm mb-1 mb-1"><i class="fa-regular fa-file-pdf"></i></a> ';
+                    $content .= '<a title="' . __("Generate Report") . '" href="' . route('application.report', [$model->id]) . '" class="btn btn btn-info btn-sm mb-1 mb-1"><i class="fa-regular fa-file-pdf"></i></a> ';
                     }
                 }
 
@@ -865,11 +851,11 @@ class ApplicationService
                 $content .= $model->emptying_status?'<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>';
                 if ($model->emptying_status == TRUE) {
                     if (Auth::user()->can('View Emptying')){
-                        $content .= '<a title="View Emptying Service Details" href="' . route("emptying.show", [$model->with('emptying')->where('id',$model->id)->get()->first()->emptying->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-recycle"></i></a> ';
+                        $content .= '<a title="' . __("View Emptying Service Details") . '" href="' . route("emptying.show", [$model->with('emptying')->where('id',$model->id)->get()->first()->emptying->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-recycle"></i></a> ';
                     }
                 } else {
                     if (Auth::user()->can('Add Emptying')){
-                        $content .= '<a title="Add Emptying Service Details" href="' . route("emptying.create-id", [$model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-recycle"></i></a> ';
+                        $content .= '<a title="' . __("Add Emptying Service Details") . '" href="' . route("emptying.create-id", [$model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-recycle"></i></a> ';
                     }
                 }
                 $content .= '</div>';
@@ -882,13 +868,13 @@ class ApplicationService
                 if($model->feedback_status == FALSE)
                 {
                     if (Auth::user()->can('Add Feedback')){
-                        $content .= '<a title="Add Feedback Details" href="' . route("feedback.create-Feedback", [$model->id]) . '" class="btn btn-info btn-sm mb-1'. ( $model->emptying_status ? '' : ' anchor-disabled') . '"><i class="fa fa-pencil"></i></a> ';
+                        $content .= '<a title="' . __("Add Feedback Details" ) . '"href="' . route("feedback.create-Feedback", [$model->id]) . '" class="btn btn-info btn-sm mb-1'. ( $model->emptying_status ? '' : ' anchor-disabled') . '"><i class="fa fa-pencil"></i></a> ';
                     }
                 }
                 else
                 {
                     if (Auth::user()->can('View Feedback')){
-                        $content .= '<a title="View Feedback Details" href="' . route("feedback.show", [$model->feedback->id]) . '" class="btn btn-info btn-sm mb-1'. ( $model->emptying_status ? '' : ' anchor-disabled') . '"><i class="fa fa-pencil"></i></a> ';
+                        $content .= '<a title="' . __("View Feedback Details") . '"href="' . route("feedback.show", [$model->feedback->id]) . '" class="btn btn-info btn-sm mb-1'. ( $model->emptying_status ? '' : ' anchor-disabled') . '"><i class="fa fa-pencil"></i></a> ';
                     }
                 }
                 $content .= '</div>';
@@ -901,13 +887,13 @@ class ApplicationService
                 if($model->sludge_collection_status == FALSE)
                 {
                     if (Auth::user()->can('Add Sludge Collection')){
-                        $content .= '<a title="Add Sludge Collection Details" href="' . route("sludge-collection.create-id", [$model->id]) . '" class="btn btn-info btn-sm mb-1'. ( $model->emptying_status ? '' : ' anchor-disabled') . '"><i class="fa fa-truck-moving"></i></a> ';
+                        $content .= '<a title="' . __("Add Sludge Collection Details") . '" href="' . route("sludge-collection.create-id", [$model->id]) . '" class="btn btn-info btn-sm mb-1'. ( $model->emptying_status ? '' : ' anchor-disabled') . '"><i class="fa fa-truck-moving"></i></a> ';
                     }
                 }
                 else
                 {
                     if (Auth::user()->can('View Sludge Collection')){
-                        $content .= '<a title="View Sludge Collection Details" href="' . route("sludge-collection.show", [$model->sludge_collection->id]) . '" class="btn btn-info btn-sm mb-1'. ( $model->emptying_status ? '' : ' anchor-disabled') . '"><i class="fa fa-truck-moving"></i></a> ';
+                        $content .= '<a title="' . __("View Sludge Collection Details") . '" href="' . route("sludge-collection.show", [$model->sludge_collection->id]) . '" class="btn btn-info btn-sm mb-1'. ( $model->emptying_status ? '' : ' anchor-disabled') . '"><i class="fa fa-truck-moving"></i></a> ';
                     }
                 }
                 $content .= '</div>';
@@ -1003,7 +989,7 @@ class ApplicationService
         $previous_application_status = Application::where('containment_id',$request->containment_id)->where('emptying_status',false)->whereNULL('deleted_at')->exists();
         if($previous_application_status)
         {
-            return redirect()->back()->withInput()->with('error',"Error! Containment already has running Application. ");
+            return redirect()->back()->withInput()->with('error', __("Error! Containment already has running Application."));
         }
         $application = '';
         if ($request->validated()){
@@ -1044,11 +1030,11 @@ class ApplicationService
                     $application->save();
                 });
             } catch (\Throwable $e) {
-                return redirect()->back()->withInput()->with('error',"Error! Application couldn't be created. ".$e);
+                return redirect()->back()->withInput()->with('error',__("Error! Application couldn't be created. ").$e);
             }
         }
 
-        return redirect(route('application.index'))->with('success','Application created successfully');
+        return redirect(route('application.index'))->with('success',__('Application created successfully.'));
     }
 
     /**
@@ -1088,9 +1074,9 @@ class ApplicationService
             }
             $application->save();
         } catch (\Throwable $e) {
-            return redirect()->back()->withInput()->with('error','Failed to update Application' . $e);
+            return redirect()->back()->withInput()->with('error',__('Failed to update Application.') . $e);
         }
-        return redirect(route('application.index'))->with('success','Application updated successfully');
+        return redirect(route('application.index'))->with('success',__('Application updated successfully.'));
     }
 
     /**
@@ -1113,7 +1099,7 @@ class ApplicationService
                 ->sortByDesc('created_at')
                 ->reverse();
         } catch (\Throwable $e) {
-            return redirect(route('application.index'))->with('error','Failed to generate history.');
+            return redirect(route('application.index'))->with('error',__('Failed to generate history.'));
         }
         return view('fsm.applications.history',compact('application','revisions'));
     }
@@ -1145,27 +1131,28 @@ class ApplicationService
     
         // Define CSV column headers
         $columns = [
-            'Road Code',
-            'BIN',
-            'House Number',
-            'Ward Number',
-            'Owner Name',
-            'Owner Gender',
-            'Owner Contact (Phone)',
-            'Application Date',
-            'Applicant Name',
-            'Applicant Gender',
-            'Applicant Contact (Phone)',
-            'Proposed Emptying Date',
-            'Service Provider Name',
-            'Emergency Desludging',
-            'Number of Households',
-            'Population of Building',
-            'Number of Toilets',
-            'Emptying Status',
-            'Sludge Collection Status',
-            'Feedback Status',
+            __('Road Code'),
+            __('BIN'),
+            __('House Number'),
+            __('Ward Number'),
+            __('Owner Name'),
+            __('Owner Gender'),
+            __('Owner Contact (Phone)'),
+            __('Application Date'),
+            __('Applicant Name'),
+            __('Applicant Gender'),
+            __('Applicant Contact (Phone)'),
+            __('Proposed Emptying Date'),
+            __('Service Provider Name'),
+            __('Emergency Desludging'),
+            __('Number of Households'),
+            __('Population of Building'),
+            __('Number of Toilets'),
+            __('Emptying Status'),
+            __('Sludge Collection Status'),
+            __('Feedback Status'),
         ];
+        
     
         // Build the base query
         $query = DB::table('fsm.applications as a')
@@ -1515,7 +1502,7 @@ class ApplicationService
             } catch (Throwable $e) {
                 // Handle exceptions
                 return JsonResponse::fromJsonString(json_encode([
-                    "error" => "Error getting building details!",
+                    "error" => __("Error getting building details!"),
                     "details" => $e->getMessage()
                 ]), 500);
             }

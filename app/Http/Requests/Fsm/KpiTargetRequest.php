@@ -85,14 +85,15 @@ class KpiTargetRequest extends FormRequest
     public function messages()
     {
         return [
-            'indicator_id.required' => 'The Indicator is required.',
-            'year.required' => 'The Year is required.',
-            'year.unique' => 'The Indicator for the year is already present.',
-            'year.integer' => 'The Year must be an integer.',
-            'year.before_or_equal' => 'The Year must not be greater than current year.',
-            'year.digits' => 'The Year must be in 20** format.',
-            'target.required' => 'The Target (%) is required.',
-            'target.integer' => 'The Target (%) must be an integer.',
+            'indicator_id.required' => __('The Indicator is required.'),
+            'year.required' => __('The Year is required.'),
+            'year.unique' => __('The Indicator for the year is already present.'),
+            'year.integer' => __('The Year must be an integer.'),
+            'year.before_or_equal' => __('The Year must not be greater than current year.'),
+            'year.digits' => __('The Year must be in 20** format.'),
+            'target.required' => __('The Target (%) is required.'),
+            'target.integer' => __('The Target (%) must be an integer.'),
+            'target.max' => __('The target must not be greater than 100.'),
         ];
     }
 }

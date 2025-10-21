@@ -47,72 +47,85 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
 <div class="card-body">
     <div class="form-group row required">
-        {!! Form::label('name','Name',['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('name', __('Name'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::text('name',null,['class' => 'form-control', 'placeholder' => 'Name']) !!}
-        </div>
-    </div>
-    <div class="form-group row required">
-        {!! Form::label('location','Location',['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-3">
-            {!! Form::text('location',null,['class' => 'form-control', 'placeholder' => 'Location']) !!}
-        </div>
-    </div>
-    <div class="form-group row required">
-        {!! Form::label('type','Treatment Plant Type',['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-3">
-            {!! Form::select('type', $tpType, null, ['class' => 'form-control chosen-select', 'placeholder' => 'Treatment Plant Type']) !!}
+            {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => __('Name')]) !!}
         </div>
     </div>
 
-   <div class="form-group row required">
-        {!! Form::label('capacity_per_day','Capacity Per Day (m³)',['class' => 'col-sm-3 control-label']) !!}
+    <div class="form-group row required">
+        {!! Form::label('location', __('Location'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::text('capacity_per_day',null,['class' => 'form-control', 'placeholder' => 'Capacity Per Day (m³)', 'oninput' => "this.value = this.value.replace(/[^0-9.]/g, ''); ",]) !!}
+            {!! Form::text('location', null, ['class' => 'form-control', 'placeholder' => __('Location')]) !!}
         </div>
     </div>
 
-   
     <div class="form-group row required">
-        {!! Form::label('caretaker_name','Caretaker Name',['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('type', __('Treatment Plant Type'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::text('caretaker_name',null,['class' => 'form-control', 'placeholder' => 'Caretaker Name']) !!}
+            {!! Form::select('type', $tpType, null, ['class' => 'form-control chosen-select', 'placeholder' => __('Treatment Plant Type')]) !!}
         </div>
     </div>
-    <div class="form-group row re">
-        {!! Form::label('caretaker_gender','Caretaker Gender',array('class'=>'col-sm-3 control-label')) !!}
+
+    <div class="form-group row required">
+        {!! Form::label('capacity_per_day', __('Capacity Per Day (m³)'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-        {!! Form::select('caretaker_gender',array("Male"=>"Male","Female"=>"Female", 'Others' => 'Others'), null,['class' => 'form-control ', 'placeholder' => 'Caretaker Gender']) !!}
+            {!! Form::text('capacity_per_day', null, [
+                'class' => 'form-control',
+                'placeholder' => __('Capacity Per Day (m³)'),
+                'oninput' => "this.value = this.value.replace(/[^0-9.]/g, '');",
+            ]) !!}
         </div>
     </div>
-    <div class="form-group row required">
-    {!! Form::label('caretaker_number', 'Caretaker Number', ['class' => 'col-sm-3 control-label']) !!}
-    <div class="col-sm-3">
-        {!! Form::text('caretaker_number', null, [
-            'class' => 'form-control',
-            'placeholder' => 'Caretaker Number',
-            'oninput' => "validateOwnerContactInput(this)",
-        ]) !!}
-    </div>
-</div>
-
-
 
     <div class="form-group row required">
-        {!! Form::label('status','Status',['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('caretaker_name', __('Caretaker Name'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::select('status', $status, null, ['class' => 'form-control chosen-select', 'placeholder' => 'Status']) !!}
+            {!! Form::text('caretaker_name', null, ['class' => 'form-control', 'placeholder' => __('Caretaker Name')]) !!}
+        </div>
+    </div>
+
+    <div class="form-group row required">
+        {!! Form::label('caretaker_gender', __('Caretaker Gender'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::select('caretaker_gender', [
+                "Male" => 'Male',
+                "Female" => 'Female',
+                "Others" => 'Others'
+            ], null, ['class' => 'form-control', 'placeholder' => __('Caretaker Gender')]) !!}
+        </div>
+    </div>
+
+    <div class="form-group row required">
+        {!! Form::label('caretaker_number', __('Caretaker Number'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::text('caretaker_number', null, [
+                'class' => 'form-control',
+                'placeholder' => __('Caretaker Number'),
+                'oninput' => "validateOwnerContactInput(this)",
+            ]) !!}
+        </div>
+    </div>
+
+
+
+
+
+    <div class="form-group row required">
+        {!! Form::label('status',__('Status'),['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::select('status', $status, null, ['class' => 'form-control chosen-select', 'placeholder' => __('Status')]) !!}
         </div>
     </div>
 
     @if(!isset($treatmentPlant))
-        <div class="form-group row required">
-            {!! Form::label('','Click to set Latitude and Longitude',['class' => 'col-sm-3 control-label']) !!}
-            <div class="col-sm-6">
-                <div id="olmap" xstyle="position: absolute; top: 0; left: 0; right: 0; bottom:0;"></div>
-            </div>
+    <div class="form-group row required">
+        {!! Form::label('', __('Click to set Latitude and Longitude'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-6">
+            <div id="olmap" xstyle="position: absolute; top: 0; left: 0; right: 0; bottom:0;"></div>
         </div>
-    @endif
+    </div>
+@endif
     @if(!isset($treatmentPlant))
     <div class="form-group row required" style="display: none;">
         {!! Form::label('longitude', null, ['class' => 'col-sm-3 control-label']) !!}
@@ -132,62 +145,63 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
     @if(!$treatmentPlant)
 
 	<div class="form-group row">
-		{!! Form::label('create_user','Create User?',['class' => 'col-sm-3 control-label']) !!}
+		{!! Form::label('create_user',__('Create User?'),['class' => 'col-sm-3 control-label']) !!}
 		<div class="col-sm-3">
-        <input type="checkbox" 
-       name="create_user" 
-       id="create_user" 
-       class="create_user" 
-       value="on" 
+        <input type="checkbox"
+       name="create_user"
+       id="create_user"
+       class="create_user"
+       value="on"
        {{ old('create_user') ? 'checked' : '' }}>
 
 		</div>
 	</div>
 	 <div id="user-password">
     <div class="form-group row required">
-        {!! Form::label('email',null,['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('email',__("Email"),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::text('email',null,['class' => 'form-control', 'placeholder' => 'Email']) !!}
+            {!! Form::text('email',null,['class' => 'form-control', 'placeholder' => __('Email')]) !!}
         </div>
     </div>
     <div class="form-group row ">
-    {!! Form::label('password', 'Password', ['class' => 'col-sm-3 control-label']) !!}
+    {!! Form::label('password', __('Password'), ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-3">
         <!-- Password Input -->
-        <input type="password" 
-               class="form-control" 
-               name="password" 
-               id="password" 
-               placeholder="Password">
+        <input type="password"
+        class="form-control"
+        name="password"
+        id="password"
+        placeholder="{{ __('Password') }}">
+
 
         <!-- Error/Requirement Message Container -->
         <div id="password-error" class="mt-1" style="display: none; color: red;">
             <ul style="margin-bottom: 0; padding-left: 1rem;">
-                <li id="char-count">The password must be at least 8 characters.</li>
-                <li id="uppercase-lowercase">The password must contain at least one uppercase and one lowercase letter.</li>
-                <li id="symbol">The password must contain at least one symbol.</li>
-                <li id="number">The password must contain at least one number.</li>
+                <li id="char-count">{{__('The Password must be at least 8 characters.')}}</li>
+                <li id="uppercase-lowercase">{{__('The Password must contain at least one uppercase and one lowercase letter.')}}</li>
+                <li id="symbol">{{__('The Password must contain at least one symbol.')}}</li>
+                <li id="number">{{__('The Password must contain at least one number.')}}</li>
             </ul>
         </div>
     </div>
 </div>
 <div class="form-group row">
-    {!! Form::label('password_confirmation', 'Confirm Password', ['class' => 'col-sm-3 control-label']) !!}
+    {!! Form::label('password_confirmation', __('Confirm Password'), ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-3">
-        <input type="password" 
-               class="form-control" 
-               name="password_confirmation" 
-               id="password_confirmation" 
-               placeholder="Confirm Password">
+        <input type="password"
+               class="form-control"
+               name="password_confirmation"
+               id="password_confirmation"
+               placeholder="{{__('Confirm Password')}}">
 
         <!-- Confirm Password Requirements -->
         <div id="confirm-password-error" class="mt-1" style="display: none; color: red;">
             <ul style="margin-bottom: 0; padding-left: 1rem;">
-                <li id="confirm-char-count">The password must be at least 8 characters.</li>
-                <li id="confirm-uppercase-lowercase">The password must contain at least one uppercase and one lowercase letter.</li>
-                <li id="confirm-symbol">The password must contain at least one symbol.</li>
-                <li id="confirm-number">The password must contain at least one number.</li>
-                <li id="confirm-match">Passwords must match.</li>
+                <li id="confirm-char-count">{{__('The Password must be at least 8 characters.')}}</li>
+                <li id="confirm-uppercase-lowercase">{{__('The Password must contain at least one uppercase and one lowercase letter.')}}</li>
+                <li id="confirm-symbol">{{__('The Password must contain at least one symbol.')}}</li>
+                <li id="confirm-number">{{__('The Password must contain at least one number.')}}</li>
+                <li id="confirm-match">{{__('Passwords must match.')}}</li>
             </ul>
         </div>
     </div>
@@ -196,8 +210,8 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 	@endif
 </div><!-- /.box-body -->
 <div class="card-footer">
-    <a href="{{ action('Fsm\TreatmentPlantController@index') }}" class="btn btn-info">Back to List</a>
-    {!! Form::submit('Save', ['class' => 'btn btn-info']) !!}
+    <a href="{{ action('Fsm\TreatmentPlantController@index') }}" class="btn btn-info">{{ __('Back to List') }}</a>
+    {!! Form::submit(__('Save'), ['class' => 'btn btn-info']) !!}
 </div><!-- /.box-footer -->
 
 @push('scripts')
@@ -435,10 +449,10 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
     }
 });
 
-          
+
     $('#create_user').on('change', function () {
         if ($('#create_user').is(":checked")) {
-            
+
             $('#user-password').show();
         }
         else {

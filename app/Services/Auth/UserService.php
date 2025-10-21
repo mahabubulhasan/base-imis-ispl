@@ -251,16 +251,17 @@ class UserService
     public function download($data)
     {
         $columns = [
-            'User ID',
-            'Name',
-            'Gender',
-            'Username',
-            'Email',
-            'Treatment Plant', // This will be the name from the TreatmentPlant table
-            'Help Desk ', // This will be the name from the HelpDesk table
-            'Service Provider ', // This will be the name from the ServiceProvider table
-            'User Type',
-            'Status'
+            __('User ID'),
+            __('Name'),
+            __('Gender'),
+            __('Username'),
+            __('Email'),
+            __('Treatment Plant'), // This will be the name from the TreatmentPlant table
+            __('Help Desk'), // This will be the name from the HelpDesk table
+            __('Service Provider'), // This will be the name from the ServiceProvider table
+            __('User Type'),
+            __('Status')
+
         ];
 
         // Query with joins to the fsm.treatment_plants, fsm.service_providers, and fsm.help_desks tables

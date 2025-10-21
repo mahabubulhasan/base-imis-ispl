@@ -58,13 +58,13 @@ class TreatmentplantPerformanceTestRequest extends FormRequest
     public function messages()
     {
         return [
-            'tss_standard.numeric' => 'The TSS Standard is numeric.',
-            'ecoli_standard.integer' => 'The ECOLI Standard is integer.',
-            'ph_min.numeric' => 'The pH Minimum is numeric.',
-            'ph_min.between' => 'The pH Minimum between or equal to 0 and 14.',
-            'ph_max.numeric' => 'The pH Maximum is numeric.',
-            'ph_max.between' => 'The pH Maximum between or equal to 0 and 14.',
-            'bod_standard.numeric' => 'The BOD Standard is numeric.',
+            'tss_standard.numeric' => __('The TSS Standard is numeric.'),
+            'ecoli_standard.integer' => __('The ECOLI Standard is integer.'),
+            'ph_min.numeric' => __('The pH Minimum is numeric.'),
+            'ph_min.between' => __('The pH Minimum between or equal to 0 and 14.'),
+            'ph_max.numeric' => __('The pH Maximum is numeric.'),
+            'ph_max.between' => __('The pH Maximum between or equal to 0 and 14.'),
+            'bod_standard.numeric' => __('The BOD Standard is numeric.'),
 
         ];
     }

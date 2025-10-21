@@ -75,18 +75,18 @@ class VacutugTypeService {
                     $content = \Form::open(['method' => 'DELETE', 'route' => ['desludging-vehicles.destroy', $model->id]]);
 
                     if (Auth::user()->can('Edit Desludging Vehicle')) {
-                        $content .= '<a title="Edit" href="' . action("Fsm\VacutugTypeController@edit", [$model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-edit"></i></a> ';
+                        $content .= '<a title="' . __("Edit") . '" href="' . action("Fsm\VacutugTypeController@edit", [$model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-edit"></i></a> ';
                     }
                     if (Auth::user()->can('View Desludging Vehicle')) {
-                        $content .= '<a title="Detail" href="' . action("Fsm\VacutugTypeController@show", [$model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-list"></i></a> ';
+                        $content .= '<a title="' . __("Detail") . '" href="' . action("Fsm\VacutugTypeController@show", [$model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-list"></i></a> ';
                     }
 
                     if (Auth::user()->can('View Desludging Vehicle History')) {
-                        $content .= '<a title="History" href="' . action("Fsm\VacutugTypeController@history", [$model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-history"></i></a> ';
+                        $content .= '<a title="' . __("History") . '"  href="' . action("Fsm\VacutugTypeController@history", [$model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-history"></i></a> ';
                     }
 
                     if (Auth::user()->can('Delete Desludging Vehicle')) {
-                        $content .= '<a href title="Delete" class="delete btn btn-danger btn-sm mb-1"><i class="fa fa-trash"></i></a> ';
+                        $content .= '<a href title="' . __("Delete") . '" class="delete btn btn-danger btn-sm mb-1"><i class="fa fa-trash"></i></a> ';
                     }
 
                     $content .= \Form::close();
@@ -149,7 +149,15 @@ class VacutugTypeService {
         $license_plate_number = $data['license_plate_number'] ? $data['license_plate_number'] : null;
         $capacity = $data['capacity'] ? $data['capacity'] : null;
         $width = $data['width'] ? $data['width'] : null;
-        $columns = ['Service Provider', 'Vehicle License Plate Number', 'Capacity (m³)', 'Width (m)','Comply With Maintainance Standards', 'Status'];
+        $columns = [
+            __('Service Provider'),
+            __('Vehicle License Plate Number'),
+            __('Capacity (m³)'),
+            __('Width (m)'),
+            __('Comply with Maintenance Standards'),
+            __('Status')
+        ];
+        
         $status = $data['status'] ? $data['status'] : 0;
         $query =  VacutugType::select('*')->with('serviceProvider')->whereNull('deleted_at');
         

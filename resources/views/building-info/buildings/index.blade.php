@@ -1,5 +1,5 @@
 @extends('layouts.dashboard')
-@section('title', 'Buildings')
+@section('title', $page_title)
 
 
 @section('content')
@@ -23,22 +23,23 @@
     <div class="card">
         <div class="card-header">
             @can('Add Building Structure')
-                <a href="{{ action('BuildingInfo\BuildingController@create') }}" class="btn btn-info">Add Building</a>
+                <a href="{{ action('BuildingInfo\BuildingController@create') }}"
+                    class="btn btn-info">{{ __('Add Building') }}</a>
             @endcan
             @can('Export Building Structures')
-                <a href="{{ action('BuildingInfo\BuildingController@export') }}" id="export" class="btn btn-info">Export to
-                    CSV</a>
+                <a href="{{ action('BuildingInfo\BuildingController@export') }}" id="export"
+                    class="btn btn-info">{{ __('Export to CSV') }}</a>
             @endcan
             @can('Export Building Structures')
-                <a href="#" id="export-shp" class="btn btn-info">Export to Shape File</a>
+                <a href="#" id="export-shp" class="btn btn-info">{{ __('Export to Shape File') }}</a>
             @endcan
             @can('Export Building Structures')
-                <a href="#" id="export-kml" class="btn btn-info">Export to KML</a>
+                <a href="#" id="export-kml" class="btn btn-info">{{ __('Export to KML') }}</a>
             @endcan
 
             <a href="#" class="btn btn-info float-right" id="headingOne" type="button" data-toggle="collapse"
                 data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                Show Filter
+                {{ __('Show Filter') }}
             </a>
         </div><!-- /.card-header -->
         <div class="card-body">
@@ -51,26 +52,29 @@
                                 <div class="accordion-body">
                                     <form class="form-horizontal" id="filter-form">
                                         <div class="form-group row">
-                                            <label for="bin_text" class="control-label col-md-2">BIN </label>
+                                            <label for="bin_text" class="control-label col-md-2">{{ __('BIN') }}
+                                            </label>
                                             <div class="col-md-2">
                                                 <input type="text" class="form-control" id="bin_text"
-                                                    placeholder="BIN"
-                                                    oninput = "this.value = this.value.replace(/[^a-zA-Z0-9]/g, ''); "/> <!-- Allow only alphabetic and numeric characters -->
+                                                    placeholder="{{ __('BIN') }}"
+                                                    oninput = "this.value = this.value.replace(/[^a-zA-Z0-9]/g, ''); " />
+                                                <!-- Allow only alphabetic and numeric characters -->
                                             </div>
-                                            <label for="structype_select" class="control-label col-md-2">Structure
-                                                Type</label>
+                                            <label for="structype_select" class="control-label col-md-2">
+                                                {{ __('Structure Type') }}</label>
                                             <div class="col-md-2">
                                                 <select class="form-control" id="structype_select">
-                                                    <option value="">Structure Type</option>
+                                                    <option value="">{{ __('Structure Type') }}</option>
                                                     @foreach ($structure_type as $key => $value)
                                                         <option value="{{ $key }}">{{ $value }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <label for="ward_select" class="control-label col-md-2">Ward Number</label>
+                                            <label for="ward_select"
+                                                class="control-label col-md-2">{{ __('Ward Number') }}</label>
                                             <div class="col-md-2">
                                                 <select class="form-control" id="ward_select">
-                                                    <option value="">Ward Number</option>
+                                                    <option value="">{{ __('Ward Number') }}</option>
                                                     @foreach ($ward as $key => $value)
                                                         <option value="{{ $key }}">{{ $value }}</option>
                                                     @endforeach
@@ -78,50 +82,57 @@
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <label for="functional_use_select" class="control-label col-md-2">Functional Use</label>
+                                            <label for="functional_use_select"
+                                                class="control-label col-md-2">{{ __('Functional Use') }}</label>
                                             <div class="col-md-2">
                                                 <select class="form-control" id="functional_use_select">
-                                                    <option value="">Functional Use</option>
+                                                    <option value="">{{ __('Functional Use') }}</option>
                                                     @foreach ($functional_use as $key => $value)
                                                         <option value="{{ $key }}">{{ $value }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <label for="use_category_select" class="control-label col-md-2">Use Category</label>
+                                            <label for="use_category_select"
+                                                class="control-label col-md-2">{{ __('Use Category') }}</label>
                                             <div class="col-md-2">
                                                 <select class="form-control" id="use_category_select">
-                                                    <option value="">Use Category</option>
+                                                    <option value="">{{ __('Use Category') }}</option>
                                                 </select>
                                             </div>
-                                            <label for="owner_name" class="control-label col-md-2">Owner Name</label>
+                                            <label for="owner_name"
+                                                class="control-label col-md-2">{{ __('Owner Name') }}</label>
                                             <div class="col-md-2">
                                                 <input type="text" class="form-control" id="owner_name"
-                                                    placeholder="Owner Name" />
+                                                    placeholder="{{ __('Owner Name') }}" />
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <label for="toilet" class="control-label col-md-2">Presence of Toilet</label>
+                                            <label for="toilet"
+                                                class="control-label col-md-2">{{ __('Presence of Toilet') }}</label>
                                             <div class="col-md-2">
                                                 <select class="form-control" id="toilet">
-                                                    <option value="">Presence of Toilet</option>
+                                                    <option value="">{{ __('Presence of Toilet') }}</option>
                                                     <option value="Yes">Yes</option>
                                                     <option value="No">No</option>
                                                 </select>
                                             </div>
 
-                                            <label for="sanitation_system_id" class="control-label col-md-2">Sanitation Systems</label>
+                                            <label for="sanitation_system_id"
+                                                class="control-label col-md-2">{{ __('Sanitation Systems') }}</label>
                                             <div class="col-md-2">
                                                 <select class="form-control" id="sanitation_system_id">
-                                                    <option value="">Sanitation Systems</option>
+                                                    <option value="">{{ __('Sanitation Systems') }}</option>
                                                     @foreach ($sanitation_systems as $key => $value)
                                                         <option value="{{ $key }}">{{ $value }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <label for="watersourc" class="control-label col-md-2">Main Drinking Water Source</label>
+                                            <label for="watersourc"
+                                                class="control-label col-md-2">{{ __('Main Drinking Water Source') }}</label>
+
                                             <div class="col-md-2">
                                                 <select class="form-control" id="watersourc">
-                                                    <option value="">Main Drinking Water Source</option>
+                                                    <option value="">{{ __('Main Drinking Water Source') }}</option>
                                                     @foreach ($water_sources as $key => $value)
                                                         <option value="{{ $key }}">{{ $value }}</option>
                                                     @endforeach
@@ -130,92 +141,100 @@
                                         </div>
 
                                         <div class="form-group row">
-                                            <label for="well_prese" class="control-label col-md-2">Well in Premises</label>
+                                            <label for="well_prese"
+                                                class="control-label col-md-2">{{ __('Well in Premises') }}</label>
                                             <div class="col-md-2">
                                                 <select class="form-control" id="well_prese">
-                                                    <option value="">Well in Premises</option>
+                                                    <option value="">{{ __('Well in Premises') }}</option>
                                                     <option value="Yes">Yes</option>
                                                     <option value="No">No</option>
                                                 </select>
                                             </div>
-                                            <label for="floor_count" class="control-label col-md-2">Number of Floors </label>
+                                            <label for="floor_count"
+                                                class="control-label col-md-2">{{ __('Number of Floors') }}
+                                            </label>
                                             <div class="col-md-2">
                                                 <input type="text" class="form-control" id="floor_count"
-                                                placeholder="Number of Floors" />
+                                                    placeholder="{{ __('Number of Floors') }}" />
                                             </div>
-                                            <label for="house_number" class="control-label col-md-2">House Number</label>
+                                            <label for="house_number"
+                                                class="control-label col-md-2">{{ __('House Number') }}</label>
                                             <div class="col-md-2">
                                                 <input type="text" class="form-control" id="house_number"
-                                                    placeholder="House Number"
-                                                    oninput = "this.value = this.value.replace(/[^a-zA-Z0-9-]/g, ''); "/> <!-- Allow only alphabetic characters, numbers, and the hyphen (-) -->
-                                            </div>
-                                        </div>
-
-
-                                        <div class="form-group row">
-                                             <label for="date_from" class="control-label col-md-2"> Construction Date From</label>
-                                            <div class="col-md-2">
-                                                <input type="date" class="form-control" id="date_from"
-                                                    placeholder=" Construction Date From" onclick = 'this.showPicker();'/>
-                                            </div>
-                                            <label for="date_to" class="control-label col-md-2">Construction Date To</label>
-                                            <div class="col-md-2">
-                                                <input type="date" class="form-control" id="date_to"
-                                                    placeholder="Construction Date To" onclick = 'this.showPicker();'/>
+                                                    placeholder="{{ __('House Number') }}
+                                                    oninput = "this.value=this.value.replace(/[^a-zA-Z0-9-]/g, ''
+                                                    ); " />
+                                                    <!-- Allow only alphabetic characters, numbers, and the hyphen (-) -->
+                                                </div>
                                             </div>
 
 
+                                            <div class="form-group row">
+                                                <label for="date_from" class="control-label col-md-2"> {{ __('Construction Date From') }}</label>
+                                                <div class="col-md-2">
+                                                    <input type="date" class="form-control" id="date_from"
+                                                        placeholder=" {{ __('Construction Date From') }}"
+                                                        onclick = 'this.showPicker();' />
+                                                </div>
+                                                <label for="date_to" class="control-label col-md-2">{{ __('Construction Date To') }}</label>
 
-                                            <label for="road_code" class="control-label col-md-2">Road Code</label>
-                                            <div class="col-md-2">
-                                                <select class="form-control" id="road_code">
-                                                </select>
+                                                <div class="col-md-2">
+                                                    <input type="date" class="form-control" id="date_to"
+                                                        placeholder="{{ __('Construction Date To') }}" onclick = 'this.showPicker();' />
+                                                </div>
+
+
+
+                                                <label for="road_code" class="control-label col-md-2">{{ __('Road Code') }}</label>
+                                                <div class="col-md-2">
+                                                    <select class="form-control" id="road_code">
+                                                    </select>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="card-footer text-right">
-                                            <button type="submit" class="btn btn-info">Filter</button>
-                                            <button type="reset" id="reset-filter" class="btn btn-info">Reset</button>
-                                        </div>
-                                    </form>
+                                            <div class="card-footer text-right">
+                                                <button type="submit" class="btn btn-info">{{ __('Filter') }}</button>
+                                                <button type="reset" id="reset-filter" class="btn btn-info">{{ __('Reset') }}</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <!--- accordion body!-->
                                 </div>
-                                <!--- accordion body!-->
+                                <!--- collapseOne!-->
                             </div>
-                            <!--- collapseOne!-->
+                            <!--- accordion item!-->
                         </div>
-                        <!--- accordion item!-->
+                        <!--- accordion !-->
                     </div>
-                    <!--- accordion !-->
+                    <!---col!-->
                 </div>
-                <!---col!-->
+                <!--- row !-->
             </div>
-            <!--- row !-->
-        </div>
-        <!--- card body !-->
-        <div class="card-body">
+            <!--- card body !-->
+            <div class="card-body">
 
-        <div style="overflow: auto; width: 100%;">
+                <div style="overflow: auto; width: 100%;">
 
-            <table id="data-table" class="table table-bordered table-striped dataTable dtr-inline"  width="100%">
-                <thead>
-                    <tr>
-                        <th>BIN</th>
-                        <th>House Number</th>
-                        <th>Road Code</th>
-                        <th>Ward Number</th>
-                        <th>Structure Type</th>
-                        <th>Number of Floors</th>
-                        <th>Presence of Toilet</th>
-                        <th>Sanitation System</th>
-                        <th>Owner Name</th>
-                        <th>Actions</th>
+                    <table id="data-table" class="table table-bordered table-striped dataTable dtr-inline" width="100%">
+                        <thead>
+                            <tr>
+                                <th>{{ __('BIN') }}</th>
+                                <th>{{ __('House Number') }}</th>
+                                <th>{{ __('Road Code') }}</th>
+                                <th>{{ __('Ward Number') }}</th>
+                                <th>{{ __('Structure Type') }}</th>
+                                <th>{{ __('Number of Floors') }}</th>
+                                <th>{{ __('Presence of Toilet') }}</th>
+                                <th>{{ __('Sanitation System') }}</th>
+                                <th>{{ __('Owner Name') }}</th>
+                                <th>{{ __('Actions') }}</th>
 
-                    </tr>
-                </thead>
-            </table>
-        </div>
-        </div>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
 
-    </div> <!-- /.card -->
+        </div> <!-- /.card -->
 
 @stop
 
@@ -226,7 +245,7 @@
         $(function() {
 
             var bin = '';
-            var house_number ='';
+            var house_number = '';
             var structype = '';
             var ward = '';
             var functional_use = '';
@@ -234,7 +253,7 @@
             var ownername = '';
             var ownername = '';
             var sanitation_system_id = '';
-            var floor_count ='';
+            var floor_count = '';
 
             var dataTable = $('#data-table').DataTable({
 
@@ -243,7 +262,7 @@
                 serverSide: true,
                 scrollCollapse: true,
                 "bStateSave": true,
-                "stateDuration" : 1800, // In seconds; keep state for half an hour
+                "stateDuration": 1800, // In seconds; keep state for half an hour
                 ajax: {
                     url: '{!! url('building-info/buildings/data') !!}',
                     data: function(d) {
@@ -269,8 +288,7 @@
 
                     }
                 },
-                columns: [
-                    {
+                columns: [{
                         data: 'bin',
                         name: 'bin'
                     },
@@ -318,25 +336,24 @@
                 ]
             }).on('draw', function() {
                 $('.delete').on('click', function(e) {
-
-                    var form = $(this).closest("form");
-                    event.preventDefault();
-                    Swal.fire({
-                        title: 'Are you sure?',
-                        text: "You won't be able to revert this!",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, delete it!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            form.submit();
-
-                        }
-                    })
-                });
+                var form = $(this).closest("form");
+                event.preventDefault();
+                Swal.fire({
+                    title: "{{__('Are you sure?')}}",
+                    text: "{!! __('You won\'t be able to revert this!') !!}",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: "{{ __('Yes, delete it!') }}",
+                    cancelButtonText: '{{ __('Cancel') }}',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                })
             });
+        });
 
 
 
@@ -346,7 +363,7 @@
 
 
             var bin = '',
-            house_number ='',
+                house_number = '',
                 structype = '',
                 ward = '',
                 roadcd = '',
@@ -357,8 +374,8 @@
             var watersourc = '';
             var well_prese = '';
             var sanitation_system_id = '';
-            var floor_count ='';
-            var date_from ='';
+            var floor_count = '';
+            var date_from = '';
             var date_to = '';
 
             $('#filter-form').on('submit', function(e) {
@@ -382,27 +399,27 @@
                 if ((date_from !== '') && (date_to === '')) {
 
                     Swal.fire({
-                        title: 'Construction Date To is required',
-                        text: "Please Select Construction Date From ",
+                        title: "{{ __('Construction Date To is required') }}",
+                        text: "{{ __('Please Select Construction Date From') }}",
                         icon: 'warning',
                         showCancelButton: false,
                         confirmButtonColor: '#3085d6',
                         cancelButtonColor: '#d33',
-                        confirmButtonText: 'close'
-                    })
+                        confirmButtonText: "{{ __('Close') }}"
+                    });
 
                     return false;
                 }
                 if ((date_from === '') && (date_to !== '')) {
 
                     Swal.fire({
-                        title: 'Construction Date From is Required',
-                        text: "Please Select Construction Date To ",
+                        title: "{{ __('Construction Date From is Required') }}",
+                        text: "{{ __('Please Select Construction Date To') }}",
                         icon: 'warning',
                         showCancelButton: false,
                         confirmButtonColor: '#3085d6',
                         cancelButtonColor: '#d33',
-                        confirmButtonText: 'Close'
+                        confirmButtonText: "{{ __('Close') }}"
                     })
 
                     return false;
@@ -424,8 +441,8 @@
                 date_from = $('#date_from').val();
                 date_to = $('#date_to').val();
                 use_category_select = $('#use_category_select').val();
-                date_from =  $('#date_from').val();
-                date_to =  $('#date_to').val();
+                date_from = $('#date_from').val();
+                date_to = $('#date_to').val();
 
                 //save filter data in local storage
             });
@@ -441,7 +458,7 @@
                         };
                     },
                 },
-                placeholder: 'Road Code',
+                placeholder: "{{ __('Road Code') }}",
                 allowClear: true,
                 closeOnSelect: true,
                 width: '100%'
@@ -455,7 +472,7 @@
 
                 var searchData = $('input[type=search]').val();
                 var bin = $('#bin_text').val();
-                 var house_number = $('#house_number').val();
+                var house_number = $('#house_number').val();
                 var structype = $('#structype_select').val();
                 var ward = $('#ward_select').val();
                 var roadcd = $('#road_code').val();
@@ -491,12 +508,16 @@
             $("#export-shp").on("click", function(e) {
                 e.preventDefault();
                 var cql_param = getCQLParams();
-                window.location.href ="{{ Config::get('constants.GEOSERVER_URL') }}wfs?service=WFS&version=1.0.0&request=GetFeature&authkey={{ Config::get('constants.AUTH_KEY') }}&typeName={{ Config::get('constants.GEOSERVER_WORKSPACE') }}:buildings_layer+&CQL_FILTER=" + cql_param + " &outputFormat=SHAPE-ZIP&format_options=filename:Buildings.zip";
+                window.location.href =
+                    "{{ Config::get('constants.GEOSERVER_URL') }}wfs?service=WFS&version=1.0.0&request=GetFeature&authkey={{ Config::get('constants.AUTH_KEY') }}&typeName={{ Config::get('constants.GEOSERVER_WORKSPACE') }}:buildings_layer+&CQL_FILTER=" +
+                    cql_param + " &outputFormat=SHAPE-ZIP&format_options=filename:Buildings.zip";
             });
             $("#export-kml").on("click", function(e) {
                 e.preventDefault();
                 var cql_param = getCQLParams();
-                window.location.href = "{{ Config::get('constants.GEOSERVER_URL') }}wfs?service=WFS&version=1.0.0&request=GetFeature&authkey={{ Config::get('constants.AUTH_KEY') }}&typeName={{ Config::get('constants.GEOSERVER_WORKSPACE') }}:buildings_layer+&CQL_FILTER=" +cql_param + " &outputFormat=KML&format_options=filename:Buildings.kml";
+                window.location.href =
+                    "{{ Config::get('constants.GEOSERVER_URL') }}wfs?service=WFS&version=1.0.0&request=GetFeature&authkey={{ Config::get('constants.AUTH_KEY') }}&typeName={{ Config::get('constants.GEOSERVER_WORKSPACE') }}:buildings_layer+&CQL_FILTER=" +
+                    cql_param + " &outputFormat=KML&format_options=filename:Buildings.kml";
 
             });
 
@@ -516,8 +537,8 @@
                 sanitation_system_id = $('#sanitation_system_id').val();
                 floor_count = $('#floor_count').val();
                 house_number = $('#house_number').val();
-                date_from  = $('#date_from').val();
-                date_to  = $('#date_to').val();
+                date_from = $('#date_from').val();
+                date_to = $('#date_to').val();
 
                 var cql_param = "deleted_at IS NULL";
                 if (bin) {
@@ -562,7 +583,7 @@
                     cql_param += " AND house_number ILIKE '%" + house_number + "%'";
                 }
                 if (use_category_select) {
-                    cql_param += " AND use_category_id ILIKE '%" + use_category_select + "%'";
+                    cql_param += " AND use_category_id = '" + use_category_select + "'";
                 }
                 if (date_from && date_to) {
                     cql_param += " AND construction_year BETWEEN '" + date_from.trim() + "' AND '" + date_to
@@ -588,74 +609,75 @@
         });
 
 
-        document.getElementById('toilet').addEventListener('change', function () {
-        const toiletPresence = this.value;
-        const sanitationSelect = document.getElementById('sanitation_system_id');
+        document.getElementById('toilet').addEventListener('change', function() {
+            const toiletPresence = this.value;
+            const sanitationSelect = document.getElementById('sanitation_system_id');
 
-        // Clear existing options
-        sanitationSelect.innerHTML = '<option value="">Sanitation Systems</option>';
+            // Clear existing options
+            sanitationSelect.innerHTML = '<option value="">Sanitation Systems</option>';
 
-        if (toiletPresence === "Yes") {
-            // Add options for IDs 1 to 8 and 11
-            @foreach ($sanitation_systems as $key => $value)
-                @if (($key >= 1 && $key <= 8) || $key == 11)
-                    sanitationSelect.innerHTML += `<option value="{{ $key }}">{{ $value }}</option>`;
-                @endif
-            @endforeach
-        } else if (toiletPresence === "No") {
-            // Add remaining options (IDs not in 1 to 8 and 11)
-            @foreach ($sanitation_systems as $key => $value)
-                @if (($key < 1 || $key > 8) && $key != 11)
-                    sanitationSelect.innerHTML += `<option value="{{ $key }}">{{ $value }}</option>`;
-                @endif
-            @endforeach
-        }
-    });
-
-
-
-
-    $('#functional_use_select').on('change', function () {
-    var functionalUseId = $(this).val();
-
-    // Generate the URL correctly with the parameter
-    var url = '{!! route("functionaluse.getusecat", ":functionalUseId") !!}'.replace(':functionalUseId', functionalUseId);
-
-    $('#use_category_select').empty().append('<option value="">Use Category</option>');
-
-    if (functionalUseId) {
-        $.ajax({
-            url: url,
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                $.each(data, function (id, name) {
-                    // Populate the dropdown with options
-                    $('#use_category_select').append('<option value="' + id + '">' + name + '</option>');
-                });
-            },
-            error: function () {
-                alert('Error fetching use categories.');
+            if (toiletPresence === "Yes") {
+                // Add options for IDs 1 to 8 and 11
+                @foreach ($sanitation_systems as $key => $value)
+                    @if (($key >= 1 && $key <= 8) || $key == 11)
+                        sanitationSelect.innerHTML +=
+                            `<option value="{{ $key }}">{{ $value }}</option>`;
+                    @endif
+                @endforeach
+            } else if (toiletPresence === "No") {
+                // Add remaining options (IDs not in 1 to 8 and 11)
+                @foreach ($sanitation_systems as $key => $value)
+                    @if (($key < 1 || $key > 8) && $key != 11)
+                        sanitationSelect.innerHTML +=
+                            `<option value="{{ $key }}">{{ $value }}</option>`;
+                    @endif
+                @endforeach
             }
         });
-    }
-});
-
-// Add change event for the second dropdown to show input dynamically
-$('#use_category_select').on('change', function () {
-    var selectedOption = $(this).val();
-
-    // Remove any previously added input field
-    $('#dynamic-input').remove();
-
-    // Check the condition and add input field if needed
-    if (selectedOption) {
-        $('<div id="dynamic-input" class="col-md-2">' +
-
-          '</div>').insertAfter('#use_category_select');
-    }
-});
 
 
+
+
+        $('#functional_use_select').on('change', function() {
+            var functionalUseId = $(this).val();
+
+            // Generate the URL correctly with the parameter
+            var url = '{!! route('functionaluse.getusecat', ':functionalUseId') !!}'.replace(':functionalUseId', functionalUseId);
+
+            $('#use_category_select').empty().append('<option value="">Use Category</option>');
+
+            if (functionalUseId) {
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        $.each(data, function(id, name) {
+                            // Populate the dropdown with options
+                            $('#use_category_select').append('<option value="' + id + '">' +
+                                name + '</option>');
+                        });
+                    },
+                    error: function() {
+                        alert('Error fetching use categories.');
+                    }
+                });
+            }
+        });
+
+        // Add change event for the second dropdown to show input dynamically
+        $('#use_category_select').on('change', function() {
+            var selectedOption = $(this).val();
+
+            // Remove any previously added input field
+            $('#dynamic-input').remove();
+
+            // Check the condition and add input field if needed
+            if (selectedOption) {
+                $('<div id="dynamic-input" class="col-md-2">' +
+
+                    '</div>').insertAfter('#use_category_select');
+            }
+        });
     </script>
 @endpush

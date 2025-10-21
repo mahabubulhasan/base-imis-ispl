@@ -40,7 +40,7 @@ class VacutugTypeController extends Controller
     public function index()
     {
         //Vacutug is the correct spelling
-        $page_title = "Desludging Vehicles";
+        $page_title =__("Desludging Vehicles") ;
         $status = VacutugStatus::asSelectArray();
         $license_plate_number = VacutugType::pluck('license_plate_number','license_plate_number');
         $service_provider_id = VacutugType::with('serviceProvider')
@@ -66,7 +66,7 @@ class VacutugTypeController extends Controller
      */
     public function create()
     {
-        $page_title = "Add Desludging Vehicle";
+        $page_title = __("Add Desludging Vehicle");
         $serviceProviders = ServiceProvider::Operational()->orderBy('id')->pluck('company_name', 'id');
         $status = VacutugStatus::asSelectArray();
         $complyMaintainStandard = VacutugComplyMaintainStandard::asSelectArray();
@@ -84,7 +84,7 @@ class VacutugTypeController extends Controller
         $data = $request->all();
         $this->vacutugTypeService->storeOrUpdate(null,$data);
 
-        return redirect('fsm/desludging-vehicles')->with('success','Desludging Vehicle created successfully');
+        return redirect('fsm/desludging-vehicles')->with('success',__('Desludging Vehicle created successfully.'));
     }
 
     /**
@@ -101,7 +101,7 @@ class VacutugTypeController extends Controller
             $serviceProviders = $service_provider_id ? $service_provider_id->company_name : null;
             $status = VacutugStatus::getDescription($vacutugType->status);
             $vacutugComplyMaintainStandard = VacutugComplyMaintainStandard::getDescription($vacutugType->comply_with_maintainance_standards);
-            $page_title = "Desludging Vehicle Details";
+            $page_title = __("Desludging Vehicle Details");
             return view('fsm/vacutug-types.show', compact('page_title', 'vacutugType', 'serviceProviders', 'status', 'vacutugComplyMaintainStandard'));
         } else {
             abort(404);
@@ -122,7 +122,7 @@ class VacutugTypeController extends Controller
         $complyMaintainStandard = VacutugComplyMaintainStandard::asSelectArray();
 
         if ($vacutugType) {
-            $page_title = "Edit Desludging Vehicle";
+            $page_title = __("Edit Desludging Vehicle");
             return view('fsm/vacutug-types.edit', compact('page_title', 'vacutugType', 'serviceProviders', 'status', 'complyMaintainStandard'));
         } else {
             abort(404);
@@ -142,9 +142,9 @@ class VacutugTypeController extends Controller
         if ($vacutugType) {
             $data = $request->all();
             $this->vacutugTypeService->storeOrUpdate($vacutugType->id,$data);
-            return redirect('fsm/desludging-vehicles')->with('success','Desludging Vehicle updated successfully');
+            return redirect('fsm/desludging-vehicles')->with('success',__('Desludging Vehicle updated successfully.'));
         } else {
-            return redirect('fsm/desludging-vehicles')->with('error','Failed to update Desludging Vehicle');
+            return redirect('fsm/desludging-vehicles')->with('error',__('Failed to update Desludging Vehicle.'));
         }
     }
 
@@ -160,14 +160,14 @@ class VacutugTypeController extends Controller
         if ($VacutugType) {
             if($VacutugType->sludgeCollections()->exists())
             {
-                return redirect('fsm/desludging-vehicles')->with('error','Cannot delete Desludging Vehicle that has associated Sludge Collection Information');
+                return redirect('fsm/desludging-vehicles')->with('error',__('Cannot delete Desludging Vehicle that has associated Sludge Collection Information.'));
 
             }
             $VacutugType->delete();
-            return redirect('fsm/desludging-vehicles')->with('success','Desludging Vehicle deleted successfully');
+            return redirect('fsm/desludging-vehicles')->with('success',__('Desludging Vehicle deleted successfully.'));
 
         } else {
-            return redirect('fsm/desludging-vehicles')->with('error','Failed to delete Desludging Vehicle');
+            return redirect('fsm/desludging-vehicles')->with('error',__('Failed to delete Desludging Vehicle.'));
         }
     }
 
@@ -181,7 +181,7 @@ class VacutugTypeController extends Controller
     {
         $vacutugType = VacutugType::find($id);
         if ($vacutugType) {
-            $page_title = "Desludging Vehicle History";
+            $page_title = __("Desludging Vehicle History");
             return view('fsm/vacutug-types.history', compact('page_title', 'vacutugType'));
         } else {
             abort(404);

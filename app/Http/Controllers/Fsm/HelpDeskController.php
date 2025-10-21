@@ -45,7 +45,7 @@ class HelpDeskController extends Controller
      */
     public function index()
     {
-        $page_title = "Help Desks";
+        $page_title =__('Help Desks');
         // Fetch operational service provider
         $service_providers = ServiceProvider::Operational()->pluck('company_name','id');
         return view('fsm/help-desks.index', compact('page_title','service_providers'));
@@ -72,7 +72,7 @@ class HelpDeskController extends Controller
      */
     public function create()
     {
-        $page_title = "Add Help Desk";
+        $page_title = __("Add Help Desk");
         $helpDesk = null;
         $serviceProviders = ServiceProvider::Operational()->orderBy('company_name')->pluck('company_name', 'id');
         return view('fsm/help-desks.create', compact('page_title','helpDesk', 'serviceProviders' ));
@@ -114,7 +114,7 @@ class HelpDeskController extends Controller
             $this->userService->storeOrUpdate($id = null,$data);
             
         }
-        return redirect('fsm/help-desks')->with('success','Help Desk created successfully!');
+        return redirect('fsm/help-desks')->with('success', __('Help Desk created successfully!'));
     }
 
     /**
@@ -127,7 +127,7 @@ class HelpDeskController extends Controller
     {
         $helpDesk = HelpDesk::find($id);
         if ($helpDesk) {
-            $page_title = "Help Desk Details";
+            $page_title = __("Help Desk Details");
             return view('fsm/help-desks.show', compact('page_title', 'helpDesk'));
         } else {
             abort(404);
@@ -145,7 +145,7 @@ class HelpDeskController extends Controller
         $helpDesk = HelpDesk::find($id);
         $serviceProviders = ServiceProvider::Operational()->orderBy('company_name')->pluck('company_name', 'id');
         if ($helpDesk) {
-            $page_title = "Edit Help Desk";
+            $page_title = __("Edit Help Desk");
             return view('fsm/help-desks.edit', compact('page_title', 'helpDesk','serviceProviders'));
         } else {
             abort(404);
@@ -165,10 +165,10 @@ class HelpDeskController extends Controller
         if ($helpDesk) {
             $data = $request->all();
             $this->helpDeskService->storeOrUpdate($helpDesk->id,$data);
-            return redirect('fsm/help-desks')->with('success','Help Desk updated successfully!');
+            return redirect('fsm/help-desks')->with('success', __('Help Desk updated successfully.'));
         } else {
             Flash::error('Failed to update help desks');
-            return redirect('fsm/help-desks')->with('error','Failed to update help desks!');
+            return redirect('fsm/help-desks')->with('error', __('Failed to update help desks.'));
         }
     }
 
@@ -183,12 +183,12 @@ class HelpDeskController extends Controller
         $helpDesk = HelpDesk::find($id);
         if ($helpDesk) {
             if($helpDesk->users()->exists()){
-                return redirect('fsm/help-desks')->with('error','Cannot delete Help Desk that has associated User Information');
+                return redirect('fsm/help-desks')->with('error', __('Cannot delete Help Desk that has associated User Information.'));
             }
             $helpDesk->delete();
-            return redirect('fsm/help-desks')->with('success','Help Desk deleted successfully');
+            return redirect('fsm/help-desks')->with('success', __('Help Desk deleted successfully.'));
         } else {
-            return redirect('fsm/help-desks')->with('error','Failed to delete help desks');
+            return redirect('fsm/help-desks')->with('error', __('Failed to delete help desks.'));
         }
     }
     
@@ -202,7 +202,7 @@ class HelpDeskController extends Controller
     {
         $helpDesk = HelpDesk::find($id);
         if ($helpDesk) {
-            $page_title = "Help Desk History";
+            $page_title = __("Help Desk History");
             return view('fsm/help-desks.history', compact('page_title', 'helpDesk'));
         } else {
             abort(404);

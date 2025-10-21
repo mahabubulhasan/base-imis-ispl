@@ -1,5 +1,5 @@
 @extends('layouts.dashboard')
-@section('title', 'Import Property Tax Collection Information Support System')
+@section('title', __('Import Property Tax Collection Information Support System'))
 @section('content')
 @include('layouts.components.error-list')
 @include('layouts.components.success-alert')
@@ -10,15 +10,15 @@
 
         <div class="card-body">
             <div class="form-group row">
-                {!! Form::label('Upload Property Tax Collection Information Support System File',null,['class' => 'col-sm-3 control-label', 'style'=>'padding-top:3px;']) !!}
+                {!! Form::label(__('Upload Property Tax Collection Information Support System File'),null,['class' => 'col-sm-3 control-label', 'style'=>'padding-top:3px;']) !!}
                 <div class="col-sm-3">
                     {!! Form::file('csvfile') !!}
                 </div>
             </div>
         </div><!-- /.card-body -->
         <div class="card-footer">
-            <a href="{{ route('tax-payment.index') }}" class="btn btn-info">Back to List</a>
-            {!! Form::submit('Upload', ['class' => 'btn btn-info']) !!}
+            <a href="{{ route('tax-payment.index') }}" class="btn btn-info">{{ __('Back to List') }}</a>
+            {!! Form::submit(__('Upload'), ['class' => 'btn btn-info']) !!}
         </div><!-- /.card-footer -->
     {!! Form::close() !!}
 

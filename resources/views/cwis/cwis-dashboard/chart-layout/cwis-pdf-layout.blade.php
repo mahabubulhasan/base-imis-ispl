@@ -405,8 +405,8 @@ span {
 <div class="container">
     <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('img/logo-imis.png'))) }}" class="logo" style=" width: 120px;">
        <div class="header">
-           <h1 class="heading" style="text-transform:uppercase; margin: 0; text-align:center">Municipality</h1>
-           <h2 style="text-transform:uppercase; margin: 10px; text-align:center ">CWIS Indicator</h2>
+           <h1 class="heading" style="text-transform:uppercase; margin: 0; text-align:center">{{__('Municipality')}}</h1>
+           <h2 style="text-transform:uppercase; margin: 10px; text-align:center ">{{__('CWIS Indicator')}}</h2>
 
        </div>
    <hr>
@@ -417,7 +417,7 @@ span {
         <input class="input" name="tabs" type="radio" id="tab-1" checked="checked" />
         <label class="label" for="tab-1"></label>
         <div class="" >
-            <h1>Equity</h1>
+            <h1>{{__('Equity')}}</h1>
             <div class="card card1" > 
 
 
@@ -426,7 +426,7 @@ span {
                    
                 </div>
 
-                <p>Ratio of LIC access to total population access</p>
+                <p>{{__('Ratio of LIC access to total population access')}}</p>
         </div>
             <h1 >Safety</h1>
             <div class="hi" >
@@ -441,7 +441,7 @@ span {
                             </figure>
                         </div>
 
-                        <p>Percentage of population with access to safe, private, individual toilets/latrines</p>
+                        <p>{{__('Population with access to safe individual toilets')}}</p>
                     </div>
                     <div class="sf1">
                         <div class="chart" id="sf1bContainer">
@@ -451,7 +451,7 @@ span {
                             </figure>
                         </div>
 
-                        <p>Percentage of on-site sanitation that have been desludged</p>
+                        <p>{{__('Percentage of on-site sanitation that have been desludged')}}</p>
                     </div>
                     <div class="sf1">
 
@@ -462,9 +462,9 @@ span {
                             </figure>
                         </div>
 
-                        <p>Percentage of collected FS disposed at a treatment plant or at designated disposal site</p>
+                        <p>{{__('Percentage of collected FS disposed at a treatment plant or at designated disposal site')}}</p>
                     </div>
-                    <h1 style="border-bottom: 1px solid 	#B2BEB5; margin-bottom:1%;"></h1>
+                    <h1 style="border-bottom: 1px solid #B2BEB5; margin-bottom:1%;"></h1>
                     <div class="sf1">
                         <div class="chart" id="sf1dContainer">
                             <figure class="chart__figure">
@@ -474,7 +474,7 @@ span {
                             </figure>
                         </div>
 
-                        <p>FS treatment capacity as a percentage of total FS generated from NSS connections (excluding safely disposed in situ)</p>
+                        <p>{{__('FS treatment capacity as a percentage of total FS generated from NSS connections (excluding safely disposed in situ)')}}</p>
                     </div>
                     <div class="sf1">
                         <div class="chart" id="sf1eContainer">
@@ -485,7 +485,7 @@ span {
                             </figure>
                         </div>
 
-                        <p>FS treatment capacity as a percentage of total FS collected from NSS connections</p>
+                        <p>{{__('FS treatment capacity as a percentage of total FS collected from NSS connections')}}</p>
                     </div>
                     <div class="sf1">
 
@@ -497,7 +497,7 @@ span {
                             </figure>
                         </div>
 
-                        <p>Wastewater treatment capacity as a percentage of total wastewater generated from sewered connections and greywater generated from non-sewered connections</p>
+                        <p>{{__('Wastewater treatment capacity as a percentage of total wastewater generated from sewered connections and greywater generated from non-sewered connections')}}</p>
                     </div>
                     <h1 style="border-bottom: 1px solid 	#B2BEB5; margin-bottom:1%;"></h1>
                     <div class="sf1" style="margin-top: 6.5%">
@@ -506,18 +506,15 @@ span {
                                  <img  src="data:image/png;base64,{{ $encodedDatasf1g }}" alt="Image">
                             </figure>
                         </div>
-                        <p>Effectiveness of FS/WW treatment in meeting prescribed standards for effluent discharge and biosolids disposal</p>
+                        <p>{{__('Effectiveness of FS/WW treatment in meeting prescribed standards for effluent discharge and biosolids disposal')}}</p>
                     </div>
                     <div class="sf2" style="margin-top: 6.5%">
                         <div class="chart" id="sf2aContainer">
                             <figure class="chart__figure">
                                  <img  src="data:image/png;base64,{{ $encodedDatasf2a }}" alt="Image">
-
-
                             </figure>
                         </div>
-
-                        <p>Percentage LIC population with access to safe individual toilets</p>
+                        <p>{{__('Percentage LIC population with access to safe individual toilets')}}</p>
                     </div>
                     <div class="sf2" style="margin-top: 6.5%">
                         <div class="chart" id="sf2bContainer">
@@ -527,7 +524,7 @@ span {
                             </figure>
                         </div>
 
-                        <p>Percentage of LIC, NSS, IHHLs that have been desludged</p>
+                        <p>{{__('Percentage of LIC, NSS, IHHLs that have been desludged')}}</p>
                     </div>
                     <h1 style="border-bottom: 1px solid 	#B2BEB5; margin-bottom:1%;"></h1>
                     <div class="sf2">
@@ -540,7 +537,7 @@ span {
                             </figure>
                         </div>
 
-                        <p>Percentage of collected FS (collected from LIC) disposed at treatment plant or designated disposal sites</p>
+                        <p>{{__('Percentage of collected FS (collected from LIC) disposed at treatment plant or designated disposal sites')}}</p>
                     </div>
                     <div class="sf3">
                         <div class="chart" id="sf3aContainer">
@@ -550,7 +547,7 @@ span {
                             </figure>
                         </div>
 
-                        <p>Percentage of dependent population (those without access to a private toilet/latrine) with access to safe shared facilities (CT/PT)</p>
+                        <p>{{__('Percentage of dependent population (those without access to a private toilet/latrine) with access to safe shared facilities (CT/PT)')}}</p>
                     </div>
                     <div class="sf3">
                         <div class="chart" id="sf3bContainer">
@@ -560,7 +557,7 @@ span {
                             </figure>
                         </div>
 
-                        <p>Percentage of CTs that adhere to principles of universal design</p>
+                        <p>{{__('Percentage of CTs that adhere to principles of universal design')}}</p>
                     </div>
                     <h1 style="border-bottom: 1px solid 	#B2BEB5; margin-bottom:1%;"></h1>
                     <div class="sf3">
@@ -572,13 +569,13 @@ span {
                             </figure>
                         </div>
 
-                        <p>Percentage of users of CTs that are women</p>
+                        <p>{{__('Percentage of users of CTs that are women')}}</p>
                     </div>
                     <div class="sf3" >
                         <div style="margin-left:30%">
                             <h2 style="color: #29ab87; font-weight: bold; font-size: 100px; margin-top:7%; ">{{$sf3d}}</h2>
                         </div>
-                        <p>Average distance from the house to the closest CT (in meters)</p>
+                        <p>{{__('Average distance from the house to the closest CT (in meters)')}}</p>
                     </div>
                     <div class="sf4">
                         <div class="chart" id="sf4aContainer">
@@ -588,7 +585,7 @@ span {
                             </figure>
                         </div>
 
-                        <p>Percentage of PTs where FS and WW generated is safely transported to TP or safely disposed in situ</p>
+                        <p>{{__('Percentage of PTs where FS and WW generated is safely transported to TP or safely disposed in situ')}}</p>
                     </div>
                     <h1 style="border-bottom: 1px solid 	#B2BEB5; margin-bottom:1%;"></h1>
                     <div class="sf4">
@@ -599,7 +596,7 @@ span {
                             </figure>
                         </div>
 
-                        <p>Percentage of PTs that adhere to principles of universal design</p>
+                        <p>{{__('Percentage of PTs that adhere to principles of universal design')}}</p>
                     </div>
                     <div class="sf4">
 
@@ -609,7 +606,7 @@ span {
                             </figure>
                         </div>
 
-                        <p>Percentage of users of PTs that are women</p>
+                        <p>{{__('Percentage of users of PTs that are women')}}</p>
                     </div>
                     <div class="sf4">
                         <div class="chart" id="sf5Container">
@@ -618,7 +615,7 @@ span {
 
                             </figure>
                         </div>
-                        <p> Percentage of educational institutions where FS/WW generated is safely transported to TP or safely disposed in situ</p>
+                        <p> {{__('Percentage of educational institutions where FS/WW generated is safely transported to TP or safely disposed in situ')}}</p>
                     </div>
                     <h1 style="border-bottom: 1px solid 	#B2BEB5; margin-bottom:1%;"></h1>
                     <div class="sf4" style="margin-top: 16%;">
@@ -628,7 +625,7 @@ span {
                                 <img  src="data:image/png;base64,{{ $encodedDatasf6 }}" alt="Image">
                             </figure>
                         </div>
-                        <p>Percentage of healthcare facilities where FS/WW generated is safely transported to TP or safely disposed in situ</p>
+                        <p>{{__('Percentage of healthcare facilities where FS/WW generated is safely transported to TP or safely disposed in situ')}}</p>
                 </div>
                 <div class="sf4" style="margin-top: 16%;">
                         <div class="chart" id="sf7Container">
@@ -637,7 +634,7 @@ span {
                                 <img  src="data:image/png;base64,{{ $encodedDatasf7 }}" alt="Image">
                             </figure>
                         </div>
-                        <p>Percentage of desludging services completed mechanically or semi-mechanically (by a gulper)</p>
+                        <p>{{__('Percentage of desludging services completed mechanically or semi-mechanically (by a gulper)')}}</p>
                 </div>
                 <div class="sf4" style="margin-top: 16%;">
                     <div class="chart" id="sf9Container">
@@ -646,7 +643,7 @@ span {
                              <img  src="data:image/png;base64,{{ $encodedDatasf9 }}" alt="Image">
                         </figure>
                     </div>
-                    <p>Percentage of tests which are in compliance with water quality standards for fecal coliform</p>
+                    <p>{{__('Percentage of tests which are in compliance with water quality standards for fecal coliform')}}</p>
                 </div>
                 </div>
               </div>

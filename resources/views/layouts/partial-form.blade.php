@@ -16,7 +16,7 @@ A dynamic form layout
                                 <div class="icheck-primary d-inline">
                                     <input type="checkbox" name="autofill" id="autofill" onclick="autoFillDetails()">
                                     <label for="autofill">
-                                        Same as Owner
+                                    {{ __('Same as Owner') }} 
                                     </label>
                                 </div>
                             </div>
@@ -92,6 +92,7 @@ A dynamic form layout
                                     @endpush
                                 </div>
                                 @endif
+                                
                             @if($field->inputType === 'geom_viewer')
                                     <div class="input-group mb-3">
                                         <div id="map" style="width: 100%;height: 500px">
@@ -130,7 +131,7 @@ A dynamic form layout
                     {!! Form::text($formField->inputId,$formField->inputValue,['class' => $formField->inputClass, 'placeholder' => $formField->placeholder,'disabled' => $formField->disabled,'autocomplete'=>$formField->autoComplete, 'oninput'=>$formField->oninput]) !!}
                 @endif
                 @if($formField->inputType === 'textarea')
-                    {!! Form::textarea($formField->inputId, $formField->inputValue, ['class' => 'form-control', 'rows' => 4, 'cols' => 54, 'style' => 'resize:none']) !!}
+                    {!! Form::textarea($formField->inputId, $formField->inputValue, ['class' => 'form-control', 'placeholder' => $formField->placeholder, 'rows' => 4, 'cols' => 54, 'style' => 'resize:none']) !!}
                 @endif
                 @if($formField->inputType === 'number')
                     {!! Form::number($formField->inputId,$formField->inputValue,['class' => $formField->inputClass, 'placeholder' => $formField->placeholder,'disabled' => $formField->disabled, 'oninput'=>$formField->oninput]) !!}
@@ -318,7 +319,7 @@ A dynamic form layout
 @if(Request::is('*/create') || Request::is('*/edit') || Request::is('*/create/*') || !empty($submitButtonText))
     <div class="card-footer">
         @if(Request::is('*/create') || Request::is('*/edit') || Request::is('*/create/*'))
-         <a href="{{ $indexAction }}" class="btn btn-info">Back to List</a>
+         <a href="{{ $indexAction }}" class="btn btn-info">{{ __('Back to List') }}</a>
         @endif
         @if(!empty($submitButtonText))
         {!! Form::submit($submitButtonText, ['class' => 'btn btn-info']) !!}

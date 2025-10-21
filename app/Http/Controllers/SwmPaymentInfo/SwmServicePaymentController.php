@@ -42,7 +42,7 @@ class SwmServicePaymentController extends Controller
      */
     public function index()
     {
-        $page_title = "Solid Waste Information Support System";
+        $page_title = __("Solid Waste Information Support System");
         $wards = Ward::getInAscOrder();
         $dueYears = DueYear::getInAscOrder();
 
@@ -94,7 +94,7 @@ class SwmServicePaymentController extends Controller
      */
     public function create()
     {
-        $page_title = "Import Solid Waste Information Support System";
+        $page_title = __("Import Solid Waste Information Support System");
         return view('swmpayment-info.create', compact('page_title'));
     }
     /**
@@ -112,15 +112,15 @@ class SwmServicePaymentController extends Controller
             else {
                 return true;
             }
-        }, 'File must be csv format');
+        }, __('File must be csv format.') );
         $this->validate($request,
                 ['csvfile' => 'required|file_extension:csv'],
-                ['required' => 'The csv file is required.'],
+                ['required' => __('The csv file is required.')],
         );
 
         if (!$request->hasfile('csvfile')) {
 
-            return redirect('swm-payment/data')->with('error','The csv file is required.');
+            return redirect('swm-payment/data')->with('error',__('The csv file is required.'));
         }
         if ($request->hasFile('csvfile')) {
 
@@ -162,7 +162,7 @@ class SwmServicePaymentController extends Controller
                     $import = new SwmImport();
                     $import->import($location.$filename);
 
-                    $message = 'Successfully Imported SWM Service Payments From CSV.';
+                    $message = __('Successfully Imported SWM Service Payments From CSV.');
                     \DB::statement("select swm_info.fnc_swmpaymentstatus()");
 
                     \DB::statement('select swm_info.fnc_updonimprt_gridnward_swm()');
@@ -171,7 +171,7 @@ class SwmServicePaymentController extends Controller
 
                 }
                 else{
-                    $message = 'Building Tax Payments Not Imported From CSV.';
+                    $message = __('Building Tax Payments Not Imported From CSV.');
                 }
 
         }
@@ -192,7 +192,15 @@ class SwmServicePaymentController extends Controller
         $bin = $_GET['bin'] ?? null;
         $tax_code = $_GET['tax_code'] ?? null;
 
-        $columns = ['SWM Customer ID', 'BIN', 'Tax Code', 'Ward', 'Customer Name', 'Customer Contact', 'Due Years'];
+        $columns = [
+            __('SWM Customer ID'),
+            __('BIN'),
+            __('Tax Code'),
+            __('Ward'),
+            __('Customer Name'),
+            __('Customer Contact'),
+            __('Due Years')
+        ];
 
         $query = DB::table('swm_info.swmservice_payment_status AS pmt')
                                 ->leftjoin('swm_info.due_years AS due', 'due.value', '=', 'pmt.due_year')
@@ -248,7 +256,12 @@ class SwmServicePaymentController extends Controller
     }
     public function exportunmatched()
     {
-        $columns = ['SWM Customer ID', 'Customer Name', 'Customer Contact', 'Last Payment date'];
+        $columns = [
+            __('SWM Customer ID'),
+            __('Customer Name'),
+            __('Customer Contact'),
+            __('Last Payment date')
+        ];
 
         $query = DB::table('swm_info.swmservice_payments AS pmt')
                  ->leftjoin('building_info.buildings as b', 'pmt.swm_customer_id', '=', 'b.swm_customer_id')

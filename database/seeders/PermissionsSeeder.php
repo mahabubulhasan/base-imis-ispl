@@ -73,6 +73,50 @@ class PermissionsSeeder extends Seeder
                     ],
                 ]
             ],
+
+            [
+                "group" => "Language",
+                "perms" => [
+                    [
+                        "type" => "List",
+                        "name" => "List Languages"
+                    ],
+                    [
+                        "type" => "View",
+                        "name" => "View Language"
+                    ],
+                    [
+                        "type" => "Add",
+                        "name" => "Add Language"
+                    ],
+                    [
+                        "type" => "Edit",
+                        "name" => "Edit Language"
+                    ],
+                    [
+                        "type" => "Delete",
+                        "name" => "Delete Language"
+                    ],
+
+                    [
+                        "type" => "Import",
+                        "name" => "Import Translation"
+                    ],
+                    [
+                        "type" => "Import",
+                        "name" => "Generate Translation"
+                    ],
+                    [
+                        "type" => "Add",
+                        "name" => "Add Translation"
+                    ],
+                    [
+                        "type" => "Export",
+                        "name" => "Export CSV Template"
+                    ],
+
+                ]
+            ],
             [
                 "group" => "Roles",
                 "perms" => [
@@ -101,6 +145,10 @@ class PermissionsSeeder extends Seeder
             [
                 "group" => "Roads",
                 "perms" => [
+                    [
+                        "type" => "Add",
+                        "name" => "Add Road On Map"
+                    ],
                     [
                         "type" => "List",
                         "name" => "List Roadlines"
@@ -139,11 +187,21 @@ class PermissionsSeeder extends Seeder
                         "type" => "View on map",
                         "name" => "View Roadline On Map"
                     ],
+                     [
+                        "type" => "Edit on map",
+                        "name" => "Edit Road on Map"
+                    ],
+
+                    
                 ]
             ],
             [
                 "group" => "Drain",
                 "perms" => [
+                    [
+                        "type" => "Add",
+                        "name" => "Add Drain On Map"
+                    ],
                     [
                         "type" => "List",
                         "name" => "List Drains"
@@ -180,11 +238,19 @@ class PermissionsSeeder extends Seeder
                         "type" => "View on map",
                         "name" => "View Drain On Map"
                     ],
+                     [
+                        "type" => "Edit on map",
+                        "name" => "Edit Drain on Map"
+                    ],
                 ]
             ],
             [
                 "group" => "Sewers",
                 "perms" => [
+                    [
+                        "type" => "Add",
+                        "name" => "Add Sewer On Map"
+                    ],
                     [
                         "type" => "List",
                         "name" => "List Sewers"
@@ -221,11 +287,19 @@ class PermissionsSeeder extends Seeder
                         "type" => "View on map",
                         "name" => "View Sewer On Map"
                     ],
+                     [
+                        "type" => "Edit on map",
+                        "name" => "Edit Sewer on Map"
+                    ],
                 ]
             ],
             [
                 "group" => "WaterSupply Network",
                 "perms" => [
+                    [
+                        "type" => "Add",
+                        "name" => "Add WaterSupply On Map"
+                    ],
                     [
                         "type" => "List",
                         "name" => "List WaterSupply Network"
@@ -261,6 +335,10 @@ class PermissionsSeeder extends Seeder
                     [
                         "type" => "View on map",
                         "name" => "View WaterSupply Network On Map"
+                    ],
+                     [
+                        "type" => "Edit on map",
+                        "name" => "Edit WaterSupply on Map"
                     ],
                 ]
             ],
@@ -1142,7 +1220,7 @@ class PermissionsSeeder extends Seeder
                         "type" => "History",
                         "name" => "View Employee Info History"
                     ],
-                    
+
                 ]
             ],
             [
@@ -1223,10 +1301,6 @@ class PermissionsSeeder extends Seeder
                     [
                         "type" => "Map Layer",
                         "name" => "Water Samples Map Layer"
-                    ],
-                    [
-                        "type" => "Map Tool",
-                        "name" => "Add Roads Map Tools"
                     ],
                     [
                         "type" => "Map Tool",
@@ -1366,6 +1440,18 @@ class PermissionsSeeder extends Seeder
                     [
                         "type" => "Map Layer",
                         "name" => "WaterSupply Network Map Layer"
+                    ],
+                    [
+                        "type" => "Map Tool",
+                        "name" => "Containments Emptied Info Map Tools"
+                    ],
+                    [
+                        "type" => "Map Tool",
+                        "name" => "Toilet Isochrone Map Tools"
+                    ],
+                    [
+                        "type" => "Export",
+                        "name" => "Export Containment Report"
                     ],
                 ],
 

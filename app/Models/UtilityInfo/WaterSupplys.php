@@ -11,6 +11,8 @@ class WaterSupplys extends Model
 {
     use HasFactory;
     use RevisionableTrait;
+    use SoftDeletes;
+
     protected $revisionCreationsEnabled = true;
     protected $table = 'utility_info.water_supplys';
     protected $primaryKey = 'code';

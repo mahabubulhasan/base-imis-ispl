@@ -33,20 +33,21 @@ class TreatmentPlantTestRequest extends FormRequest
     public function messages()
     {
         return [
-            'treatment_plant_id.required' => 'Treatment Plant is required.',
-            'date.required' => 'Sample Date is required.',
-            'temperature.integer' => 'Temperature °C must be number',
-            'ph.integer' => 'pH must be number',
-            'cod.integer' => 'COD (mg/l) must be number',
-            'bod.integer' => 'BOD (mg/l) must be number',
-            'tss.integer' => 'TSS (mg/l) must be number',
-            'ecoli.integer' => 'Ecoli must be an integer',
-            'cod.required' => 'COD (mg/l) is required.',
-            'ph.required' => 'pH is required.',
-            'bod.required' => 'BOD (mg/l) is required.',
-            'tss.required' => 'TSS (mg/l) is required.',
-            'ecoli.required' => 'Ecoli is required.',
-            'temperature.required' => 'Temperature °C is required.',
+            'treatment_plant_id.required' => __('Treatment Plant is required.'),
+            'date.required' => __('Sample Date is required.'),
+            'temperature.integer' => __('Temperature °C must be number.'),
+            'ph.integer' => __('pH must be number.'),
+            'cod.integer' => __('COD (mg/l) must be number.'),
+            'bod.integer' => __('BOD (mg/l) must be number.'),
+            'tss.integer' => __('TSS (mg/l) must be number.'),
+            'ecoli.integer' => __('Ecoli must be an integer.'),
+            'cod.required' => __('COD (mg/l) is required.'),
+            'ph.required' => __('pH is required.'),
+            'bod.required' => __('BOD (mg/l) is required.'),
+            'tss.required' => __('TSS (mg/l) is required.'),
+            'ecoli.required' => __('Ecoli is required.'),
+            'temperature.required' => __('Temperature °C is required.'),
+            'ph.between' => __('pH must be between 0 and 14.'),
         ];
     }
 

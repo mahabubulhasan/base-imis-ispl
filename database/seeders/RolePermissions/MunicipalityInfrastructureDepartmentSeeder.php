@@ -43,7 +43,7 @@ class MunicipalityInfrastructureDepartmentSeeder extends Seeder
                     ,'Sewer Potential Map Tool','Buildings to Sewer Map Tools','Buildings to Road Map Tools','Building Close to Water Bodies Map Tools','Summary Information Buffer Map Tools','Summary Information Water Bodies Map Tools','Summary Information Wards Map Tools','Summary Information Road Map Tools','Summary Information Point Map Tools',
                     'Export in Decision Map Tools','Export in Summary Information Map Tools','Area Population Map Tools','Hard to Reach Buildings Map Tools',
                      'Export Data Map Tools','Filter by Wards Map Tools','Data Export Map Tools','Building by Structure Map Tools','Low Income Community Map Layer','Sanitation System Map Layer','Treatment Plants Map Layer',
-                    'Municipality Map Layer','PT/CT Toilets Map Layer','Sewer Potential Map Tools','Ward Boundary Map Layer','General Map Tools'
+                    'Municipality Map Layer','PT/CT Toilets Map Layer','Sewer Potential Map Tools','Ward Boundary Map Layer','General Map Tools',  'Containments Emptied Info Map Tools', 'Toilet Isochrone Map Tools', 'Export Containment Report'
                     ]));
 
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Dashboard'])

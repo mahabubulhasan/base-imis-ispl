@@ -1,6 +1,6 @@
 <?php
 // Last Modified Date: 11-04-2024
-// Developed By: Innovative Solution Pvt. Ltd. (ISPL)  
+// Developed By: Innovative Solution Pvt. Ltd. (ISPL)
 namespace App\Http\Controllers\Fsm;
 
 use App\Http\Controllers\Controller;
@@ -37,7 +37,7 @@ class FsmDashboardController extends Controller
     public function index(){
         {
 
-            $page_title = 'FSM Services';
+            $page_title = __('FSM Services');
             //buildings
             $buildingCount = Building::whereNull('deleted_at')->count();
             $commercialBuildCount = (Building::where('functional_use_id', 2)->whereNull('deleted_at')->count());

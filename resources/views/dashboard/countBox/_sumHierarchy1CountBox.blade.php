@@ -4,6 +4,6 @@
         <span class="info-box-text">
             <h2> {{ number_format($sumHierarchy1) }}</h2>
         </span>
-        <span class="info-box-number">Secondary</span>
+        <span class="info-box-number">{{ __('Strategic Urban Road')}}</span>
     </div>
 </div>

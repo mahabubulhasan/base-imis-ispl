@@ -58,7 +58,8 @@ class CwisMneController extends Controller
         ->unique()
         ->values(); 
         $minyear = collect($applicationYears)->last();
-        $page_title = "CWIS Monitoring and Evaluation Indicators";
+        $page_title = __('CWIS Monitoring and Evaluation Indicators');
+
     
         // Flag to show the Add CWIS Data button if no data is available
         $show_add_cwis_button = cwis_mne::count("year") === 0;
@@ -74,7 +75,7 @@ class CwisMneController extends Controller
                     ->distinct()
                     ->orderby('year', 'desc')->pluck('year');
 
-        $page_title = "CWIS Indicators Monitoring and Evaluation";
+        $page_title = __("CWIS Indicators Monitoring and Evaluation");
 
         $subCategory_titles = DB::Table('cwis.data_cwis as d')
                     ->leftJoin('cwis.data_source as ds', 'ds.id', '=', 'd.source_id')
@@ -174,7 +175,7 @@ class CwisMneController extends Controller
 
         // Redirect with a success message
         return redirect('cwis/cwis/cwis-df-mne/?year=' . $year)
-            ->with('success', 'CWIS data updated successfully');
+            ->with('success', __('CWIS data updated successfully.'));
     }
 
     public function createIndex(Request $request)
@@ -182,7 +183,7 @@ class CwisMneController extends Controller
 
         $currentYear = date('Y');
         $newsurveyear = cwis_mne::latest()->selectRaw("year + 1 as newyear")->limit(1)->get();
-        $page_title = "Data Framework for Monitoring and Evaluation";
+        $page_title = __("Data Framework for Monitoring and Evaluation");
 
         // Fetch unique indicator codes
         $indicator_list = DataSource::orderBy('indicator_code')
@@ -238,9 +239,9 @@ class CwisMneController extends Controller
                 $cwis_mne->save();
             }
 
-            return redirect('cwis/cwis/cwis-df-mne')->with('success','CWIS updated successfully');
+            return redirect('cwis/cwis/cwis-df-mne')->with('success',__('CWIS updated successfully.'));
         }
-        return redirect('cwis/cwis/cwis-df-mne')->with('error','Failed to update Data');
+        return redirect('cwis/cwis/cwis-df-mne')->with('error',__('Failed to update Data.'));
     }
     public function exportMneCsv(Request $request)
     {
