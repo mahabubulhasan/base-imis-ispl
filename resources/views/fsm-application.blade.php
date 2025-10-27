@@ -24,9 +24,17 @@ Developed By: Streamstech Ltd.   -->
         }
 
         @keyframes successPulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.02);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
 
         .alert-success {
@@ -125,41 +133,69 @@ Developed By: Streamstech Ltd.   -->
                     <div class="col-lg-8 mt-5 mt-lg-0">
 
                         @if(session('success'))
-                            <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert" style="border-left: 4px solid #28a745; background-color: #d4edda; border-color: #c3e6cb;">
-                                <i class="fas fa-check-circle mr-2"></i>
-                                <strong>Success!</strong> {{ session('success') }}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
+                        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert" style="border-left: 4px solid #28a745; background-color: #d4edda; border-color: #c3e6cb;">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            <strong>Success!</strong> {{ session('success') }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
                         @endif
 
                         @if(session('error'))
-                            <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert" style="border-left: 4px solid #dc3545;">
-                                <i class="fas fa-exclamation-triangle mr-2"></i>
-                                <strong>Error!</strong> {{ session('error') }}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
+                        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert" style="border-left: 4px solid #dc3545;">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                            <strong>Error!</strong> {{ session('error') }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
                         @endif
 
                         @if($errors->any())
-                            <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert" style="border-left: 4px solid #dc3545;">
-                                <i class="fas fa-exclamation-triangle mr-2"></i>
-                                <ul class="mb-0">
-                                    @foreach($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
+                        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert" style="border-left: 4px solid #dc3545;">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                            <ul class="mb-0">
+                                @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
                         @endif
 
                         <form action="{{ route('client-fsm-application.submit') }}" method="POST">
                             @csrf
+
+                            <div class="form-row">
+                                <div class="form-group row col-12">
+                                    {!! Form::label('has_tax_id', 'Do you have a Tax ID? ', ['class' => 'col-sm-3 control-label']) !!}
+                                    <div class="col-sm-5">
+                                        <select name="has_tax_id" class="form-control @error('has_tax_id') is-invalid @enderror" id="has_tax_id" required>
+                                            <option value="">Please select</option>
+                                            <option value="yes" {{ old('has_tax_id') == 'yes' ? 'selected' : '' }}>Yes</option>
+                                            <option value="no" {{ old('has_tax_id') == 'no' ? 'selected' : '' }}>No</option>
+                                        </select>
+                                        @error('has_tax_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tax ID field: initially shown only when old('has_tax_id') == 'yes' -->
+                            <div class="form-row">
+                                <div class="form-group col-12 col-md-6" id="tax_id_group" style="{{ old('has_tax_id') == 'yes' ? '' : 'display:none;' }}">
+                                    <label for="tax_id">Tax ID <span class="text-danger tax-required-star" style="{{ old('has_tax_id') == 'yes' ? '' : 'display:none;' }}">*</span></label>
+                                    <input type="text" name="tax_id" class="form-control @error('tax_id') is-invalid @enderror" id="tax_id"
+                                        placeholder="##-###-####-##" value="{{ old('tax_id') }}" {{ old('has_tax_id') == 'yes' ? 'required aria-required=true' : '' }}>
+                                    @error('tax_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
 
                             <div class="form-row">
                                 <div class="form-group col-12 col-md-6">
@@ -167,7 +203,7 @@ Developed By: Streamstech Ltd.   -->
                                     <input type="text" name="customer_name" class="form-control @error('customer_name') is-invalid @enderror" id="customer_name"
                                         placeholder="Customer Name" value="{{ old('customer_name') }}" required aria-required="true">
                                     @error('customer_name')
-                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
 
@@ -176,7 +212,7 @@ Developed By: Streamstech Ltd.   -->
                                     <input type="tel" class="form-control @error('customer_contact') is-invalid @enderror" name="customer_contact" id="customer_contact"
                                         placeholder="01#########" value="{{ old('customer_contact') }}" required aria-required="true">
                                     @error('customer_contact')
-                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
@@ -187,7 +223,7 @@ Developed By: Streamstech Ltd.   -->
                                     <input type="text" name="holding_owner_name" class="form-control @error('holding_owner_name') is-invalid @enderror" id="holding_owner_name"
                                         placeholder="Holding Owner Name" value="{{ old('holding_owner_name') }}">
                                     @error('holding_owner_name')
-                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
 
@@ -196,11 +232,11 @@ Developed By: Streamstech Ltd.   -->
                                     <select name="ward" class="form-control @error('ward') is-invalid @enderror" id="ward" required aria-required="true">
                                         <option value="">Select Ward</option>
                                         @foreach($wards as $ward)
-                                            <option value="{{ $ward }}" {{ old('ward') == $ward ? 'selected' : '' }}>{{ $ward }}</option>
+                                        <option value="{{ $ward }}" {{ old('ward') == $ward ? 'selected' : '' }}>{{ $ward }}</option>
                                         @endforeach
                                     </select>
                                     @error('ward')
-                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
@@ -212,25 +248,25 @@ Developed By: Streamstech Ltd.   -->
                                         <option value="">Select Road</option>
                                     </select>
                                     @error('road_code')
-                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
 
-                                <div class="form-group col-12 col-md-6">
+                                <!-- <div class="form-group col-12 col-md-6">
                                     <label for="tax_id">Tax ID <span class="text-danger">*</span></label>
                                     <input type="text" name="tax_id" class="form-control @error('tax_id') is-invalid @enderror" id="tax_id"
                                         placeholder="##-###-####-##" value="{{ old('tax_id') }}" required aria-required="true">
                                     @error('tax_id')
-                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
-                                </div>
+                                </div> -->
                             </div>
 
                             <div class="form-group">
                                 <label for="address">Address <span class="text-danger">*</span></label>
                                 <textarea class="form-control @error('address') is-invalid @enderror" name="address" id="address" rows="3" placeholder="Address" required aria-required="true">{{ old('address') }}</textarea>
                                 @error('address')
-                                    <div class="invalid-feedback">{{ $message }}</div>
+                                <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 
@@ -241,7 +277,7 @@ Developed By: Streamstech Ltd.   -->
                                     <input type="date" class="form-control form-control-sm @error('proposed_emptying_date') is-invalid @enderror" name="proposed_emptying_date" id="proposed_emptying_date"
                                         value="{{ old('proposed_emptying_date') }}" required aria-required="true">
                                     @error('proposed_emptying_date')
-                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
 
@@ -261,16 +297,16 @@ Developed By: Streamstech Ltd.   -->
                                         </div>
                                     </div>
                                     @error('latitude')
-                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
                                     @enderror
                                     @error('longitude')
-                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
 
                             <div class="text-center mt-3">
-                                <button type="submit" class="btn btn-primary btn-block">Send Now!</button>
+                                <button type="submit" class="btn btn-primary btn-block">Submit</button>
                             </div>
                         </form>
                     </div>
@@ -332,10 +368,12 @@ Developed By: Streamstech Ltd.   -->
         }
 
         $(document).ready(function() {
-            var error = @js($errors->messages());
-            var hasSuccess = @js(session('success') ? true : false);
+            // Safely serialize server-side errors and success flag for the client
+            var errors = @json($errors->messages());
+            var hasSuccess = @json(session('success') ? true : false);
 
-            if (error.length > 0) {
+            // If there are validation errors, open the login modal.
+            if (errors && Object.keys(errors).length > 0) {
                 $('#loginModal').modal('show');
             }
 
@@ -354,19 +392,37 @@ Developed By: Streamstech Ltd.   -->
                 }, 300);
             }
 
+            // Toggle Tax ID visibility based on selection
+            function setTaxVisibility(show) {
+                var $group = $('#tax_id_group');
+                var $input = $('#tax_id');
+                var $star = $('.tax-required-star');
+
+                if (show) {
+                    $group.slideDown(150);
+                    $input.prop('required', true).attr('aria-required', 'true');
+                    $star.show();
+                } else {
+                    $group.slideUp(150);
+                    $input.prop('required', false).removeAttr('aria-required');
+                    $star.hide();
+                }
+            }
+
+            // initialize select2 and other things
             function initSelect2() {
                 $('#road_code').select2({
                     ajax: {
                         url: "{{ route('client-fsm-application.get-road-names') }}",
                         dataType: 'json',
                         delay: 250,
-                        data: function (params) {
+                        data: function(params) {
                             return {
                                 search: params.term,
                                 page: params.page || 1
                             };
                         },
-                        processResults: function (data, params) {
+                        processResults: function(data, params) {
                             params.page = params.page || 1;
                             return {
                                 results: data.results,
@@ -385,18 +441,28 @@ Developed By: Streamstech Ltd.   -->
             }
             initSelect2();
 
+            // ensure Tax ID visibility matches current selection on load
+            var initialHasTax = @json(old('has_tax_id', ''));
+            setTaxVisibility(initialHasTax === 'yes');
+
+            // listen for changes
+            $('#has_tax_id').on('change', function() {
+                setTaxVisibility($(this).val() === 'yes');
+            });
+
             /**
              * Pre-select the road code if it exists
              */
-            function preSelect()
-            {
+            function preSelect() {
                 var preselectedRoadCode = "{{ old('road_code') }}";
                 if (preselectedRoadCode) {
                     $.ajax({
                         type: 'GET',
                         url: "{{ route('client-fsm-application.get-road-names') }}",
-                        data: { search: preselectedRoadCode }
-                    }).then(function (data) {
+                        data: {
+                            search: preselectedRoadCode
+                        }
+                    }).then(function(data) {
                         if (data.results && data.results.length) {
                             var road = data.results[0];
                             var option = new Option(road.text, road.id, true, true);
@@ -460,13 +526,21 @@ Developed By: Streamstech Ltd.   -->
                 let msg = 'Unable to retrieve your location.';
                 if (err && err.code) {
                     switch (err.code) {
-                        case 1: msg = 'Permission denied. Please allow location access in your browser.'; break;
-                        case 2: msg = 'Position unavailable.'; break;
-                        case 3: msg = 'Location request timed out.'; break;
+                        case 1:
+                            msg = 'Permission denied. Please allow location access in your browser.';
+                            break;
+                        case 2:
+                            msg = 'Position unavailable.';
+                            break;
+                        case 3:
+                            msg = 'Location request timed out.';
+                            break;
                     }
                 }
                 // Minimal UI feedback
-                try { alert(msg); } catch(e){}
+                try {
+                    alert(msg);
+                } catch (e) {}
             }
 
             if (btn) {
