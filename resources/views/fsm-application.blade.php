@@ -44,6 +44,34 @@ Developed By: Streamstech Ltd.   -->
         .alert-success i {
             color: #155724;
         }
+
+        /* Fieldset / legend styling for grouped form sections */
+        .app_fieldset {
+            border: 1px solid #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.4rem;
+            margin-bottom: 1.25rem;
+            background: #ffffff;
+        }
+
+        .app_fieldset>legend {
+            padding: 0 .5rem;
+            font-weight: 600;
+            color: #0f394c;
+            font-size: 1rem;
+            width: auto;
+        }
+
+        /* Keep small screens comfortable */
+        @media (max-width: 576px) {
+            .app_fieldset {
+                padding: 0.75rem;
+            }
+
+            .app_fieldset>legend {
+                font-size: 0.95rem;
+            }
+        }
     </style>
 
 </head>
@@ -169,145 +197,145 @@ Developed By: Streamstech Ltd.   -->
                         <form action="{{ route('client-fsm-application.submit') }}" method="POST">
                             @csrf
 
-                            <div class="form-row">
-                                <div class="form-group row col-12">
-                                    {!! Form::label('has_tax_id', 'Do you have a Tax ID? ', ['class' => 'col-sm-3 control-label']) !!}
-                                    <div class="col-sm-5">
-                                        <select name="has_tax_id" class="form-control @error('has_tax_id') is-invalid @enderror" id="has_tax_id" required>
-                                            <option value="">Please select</option>
-                                            <option value="yes" {{ old('has_tax_id') == 'yes' ? 'selected' : '' }}>Yes</option>
-                                            <option value="no" {{ old('has_tax_id') == 'no' ? 'selected' : '' }}>No</option>
-                                        </select>
-                                        @error('has_tax_id')
+                            <!-- Tax Information Section -->
+                            <fieldset class="app_fieldset">
+                                <legend>Tax Information</legend>
+
+                                <div class="form-row">
+                                    <div class="form-group row col-12">
+                                        {!! Form::label('has_tax_id', 'Do you have a Tax ID? ', ['class' => 'col-sm-3 control-label']) !!}
+                                        <div class="col-sm-5">
+                                            <select name="has_tax_id" class="form-control @error('has_tax_id') is-invalid @enderror" id="has_tax_id" required>
+                                                <option value="">Please select</option>
+                                                <option value="yes" {{ old('has_tax_id') == 'yes' ? 'selected' : '' }}>Yes</option>
+                                                <option value="no" {{ old('has_tax_id') == 'no' ? 'selected' : '' }}>No</option>
+                                            </select>
+                                            @error('has_tax_id')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Tax ID field: initially shown only when old('has_tax_id') == 'yes' -->
+                                <div class="form-row">
+                                    <div class="form-group col-12 col-md-6" id="tax_id_group" style="{{ old('has_tax_id') == 'yes' ? '' : 'display:none;' }}">
+                                        <label for="tax_id">Tax ID <span class="text-danger tax-required-star" style="{{ old('has_tax_id') == 'yes' ? '' : 'display:none;' }}">*</span></label>
+                                        <input type="text" name="tax_id" class="form-control @error('tax_id') is-invalid @enderror" id="tax_id"
+                                            placeholder="##-###-####-##" value="{{ old('tax_id') }}" {{ old('has_tax_id') == 'yes' ? 'required aria-required=true' : '' }}>
+                                        @error('tax_id')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
-                            </div>
+                            </fieldset>
 
-                            <!-- Tax ID field: initially shown only when old('has_tax_id') == 'yes' -->
-                            <div class="form-row">
-                                <div class="form-group col-12 col-md-6" id="tax_id_group" style="{{ old('has_tax_id') == 'yes' ? '' : 'display:none;' }}">
-                                    <label for="tax_id">Tax ID <span class="text-danger tax-required-star" style="{{ old('has_tax_id') == 'yes' ? '' : 'display:none;' }}">*</span></label>
-                                    <input type="text" name="tax_id" class="form-control @error('tax_id') is-invalid @enderror" id="tax_id"
-                                        placeholder="##-###-####-##" value="{{ old('tax_id') }}" {{ old('has_tax_id') == 'yes' ? 'required aria-required=true' : '' }}>
-                                    @error('tax_id')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
+                            <!-- Customer Information Section -->
+                            <fieldset class="app_fieldset">
+                                <legend>Customer Information</legend>
 
-                            <div class="form-row">
-                                <div class="form-group col-12 col-md-6">
-                                    <label for="customer_name">Customer Name <span class="text-danger">*</span></label>
-                                    <input type="text" name="customer_name" class="form-control @error('customer_name') is-invalid @enderror" id="customer_name"
-                                        placeholder="Customer Name" value="{{ old('customer_name') }}" required aria-required="true">
-                                    @error('customer_name')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="form-group col-12 col-md-6">
-                                    <label for="customer_contact">Contact No. <span class="text-danger">*</span></label>
-                                    <input type="tel" class="form-control @error('customer_contact') is-invalid @enderror" name="customer_contact" id="customer_contact"
-                                        placeholder="01#########" value="{{ old('customer_contact') }}" required aria-required="true">
-                                    @error('customer_contact')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group col-12 col-md-6">
-                                    <label for="holding_owner_name">Holding Owner Name</label>
-                                    <input type="text" name="holding_owner_name" class="form-control @error('holding_owner_name') is-invalid @enderror" id="holding_owner_name"
-                                        placeholder="Holding Owner Name" value="{{ old('holding_owner_name') }}">
-                                    @error('holding_owner_name')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="form-group col-12 col-md-6">
-                                    <label for="ward">Ward <span class="text-danger">*</span></label>
-                                    <select name="ward" class="form-control @error('ward') is-invalid @enderror" id="ward" required aria-required="true">
-                                        <option value="">Select Ward</option>
-                                        @foreach($wards as $ward)
-                                        <option value="{{ $ward }}" {{ old('ward') == $ward ? 'selected' : '' }}>{{ $ward }}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('ward')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group col-12 col-md-6">
-                                    <label for="road_code">Road Name <small class="text-muted">(Optional)</small></label>
-                                    <select name="road_code" class="form-control @error('road_code') is-invalid @enderror" id="road_code">
-                                        <option value="">Select Road</option>
-                                    </select>
-                                    @error('road_code')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <!-- <div class="form-group col-12 col-md-6">
-                                    <label for="tax_id">Tax ID <span class="text-danger">*</span></label>
-                                    <input type="text" name="tax_id" class="form-control @error('tax_id') is-invalid @enderror" id="tax_id"
-                                        placeholder="##-###-####-##" value="{{ old('tax_id') }}" required aria-required="true">
-                                    @error('tax_id')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div> -->
-                            </div>
-
-                            <div class="form-group">
-                                <label for="address">Address <span class="text-danger">*</span></label>
-                                <textarea class="form-control @error('address') is-invalid @enderror" name="address" id="address" rows="3" placeholder="Address" required aria-required="true">{{ old('address') }}</textarea>
-                                @error('address')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="form-row">
-                                <!-- Smaller date picker column -->
-                                <div class="form-group col-12 col-md-4">
-                                    <label for="proposed_emptying_date">Proposed Emptying Date <span class="text-danger">*</span></label>
-                                    <input type="date" class="form-control form-control-sm @error('proposed_emptying_date') is-invalid @enderror" name="proposed_emptying_date" id="proposed_emptying_date"
-                                        value="{{ old('proposed_emptying_date') }}" required aria-required="true">
-                                    @error('proposed_emptying_date')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <!-- Joined coordinates + button as a single input-group (sm) -->
-                                <div class="form-group col-12 col-md-8">
-                                    <label class="d-block mb-2">Coordinates <small class="text-muted">(Optional)</small></label>
-                                    <div class="input-group input-group-sm">
-                                        <input type="text" class="form-control @error('latitude') is-invalid @enderror" name="latitude" id="latitude"
-                                            placeholder="Latitude" value="{{ old('latitude') }}" aria-label="Latitude">
-                                        <input type="text" class="form-control @error('longitude') is-invalid @enderror" name="longitude" id="longitude"
-                                            placeholder="Longitude" value="{{ old('longitude') }}" aria-label="Longitude">
-                                        <div class="input-group-append">
-                                            <button type="button" class="btn btn-outline-secondary btn-sm" id="btn-get-location" title="Use browser to detect location">
-                                                <i class="fa fa-map-marker-alt" aria-hidden="true"></i>
-                                                <span id="btn-get-location-text" class="text-nowrap ml-1">Use my location</span>
-                                            </button>
-                                        </div>
+                                <div class="form-row">
+                                    <div class="form-group col-12 col-md-6">
+                                        <label for="customer_name">Customer Name <span class="text-danger">*</span></label>
+                                        <input type="text" name="customer_name" class="form-control @error('customer_name') is-invalid @enderror" id="customer_name"
+                                            placeholder="Customer Name" value="{{ old('customer_name') }}" required aria-required="true">
+                                        @error('customer_name')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
-                                    @error('latitude')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                    @enderror
-                                    @error('longitude')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+
+                                    <div class="form-group col-12 col-md-6">
+                                        <label for="customer_contact">Contact No. <span class="text-danger">*</span></label>
+                                        <input type="tel" class="form-control @error('customer_contact') is-invalid @enderror" name="customer_contact" id="customer_contact"
+                                            placeholder="01#########" value="{{ old('customer_contact') }}" required aria-required="true">
+                                        @error('customer_contact')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group col-12 col-md-6">
+                                        <label for="holding_owner_name">Holding Owner Name</label>
+                                        <input type="text" name="holding_owner_name" class="form-control @error('holding_owner_name') is-invalid @enderror" id="holding_owner_name"
+                                            placeholder="Holding Owner Name" value="{{ old('holding_owner_name') }}">
+                                        @error('holding_owner_name')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <div class="form-group col-12 col-md-6">
+                                        <label for="ward">Ward <span class="text-danger">*</span></label>
+                                        <select name="ward" class="form-control @error('ward') is-invalid @enderror" id="ward" required aria-required="true">
+                                            <option value="">Select Ward</option>
+                                            @foreach($wards as $ward)
+                                            <option value="{{ $ward }}" {{ old('ward') == $ward ? 'selected' : '' }}>{{ $ward }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('ward')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group col-12 col-md-6">
+                                        <label for="road_code">Road Name <small class="text-muted">(Optional)</small></label>
+                                        <select name="road_code" class="form-control @error('road_code') is-invalid @enderror" id="road_code">
+                                            <option value="">Select Road</option>
+                                        </select>
+                                        @error('road_code')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="address">Address <span class="text-danger">*</span></label>
+                                    <textarea class="form-control @error('address') is-invalid @enderror" name="address" id="address" rows="3" placeholder="Address" required aria-required="true">{{ old('address') }}</textarea>
+                                    @error('address')
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                            </div>
+
+                                <div class="form-row">
+                                    <div class="form-group col-12 col-md-4">
+                                        <label for="proposed_emptying_date">Proposed Emptying Date <span class="text-danger">*</span></label>
+                                        <input type="date" class="form-control form-control-sm @error('proposed_emptying_date') is-invalid @enderror" name="proposed_emptying_date" id="proposed_emptying_date"
+                                            value="{{ old('proposed_emptying_date') }}" required aria-required="true">
+                                        @error('proposed_emptying_date')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <div class="form-group col-12 col-md-8">
+                                        <label class="d-block mb-2">Coordinates <small class="text-muted">(Optional)</small></label>
+                                        <div class="input-group input-group-sm">
+                                            <input type="text" class="form-control @error('latitude') is-invalid @enderror" name="latitude" id="latitude"
+                                                placeholder="Latitude" value="{{ old('latitude') }}" aria-label="Latitude">
+                                            <input type="text" class="form-control @error('longitude') is-invalid @enderror" name="longitude" id="longitude"
+                                                placeholder="Longitude" value="{{ old('longitude') }}" aria-label="Longitude">
+                                            <div class="input-group-append">
+                                                <button type="button" class="btn btn-outline-secondary btn-sm" id="btn-get-location" title="Use browser to detect location">
+                                                    <i class="fa fa-map-marker-alt" aria-hidden="true"></i>
+                                                    <span id="btn-get-location-text" class="text-nowrap ml-1">Use my location</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        @error('latitude')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
+                                        @error('longitude')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                            </fieldset>
 
                             <div class="text-center mt-3">
-                                <button type="submit" class="btn btn-primary btn-block">Submit</button>
-                            </div>
+                                 <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                             </div>
                         </form>
                     </div>
 
@@ -369,7 +397,7 @@ Developed By: Streamstech Ltd.   -->
 
         $(document).ready(function() {
             // Safely serialize server-side errors and success flag for the client
-            var errors = @json($errors->messages());
+            var errors = @json($errors-> messages());
             var hasSuccess = @json(session('success') ? true : false);
 
             // If there are validation errors, open the login modal.
