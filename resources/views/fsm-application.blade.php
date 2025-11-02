@@ -524,6 +524,149 @@ Developed By: Streamstech Ltd.   -->
                 numericOnly: true
             });
 
+            /**
+             * Auto-fill form fields based on Tax ID
+             */
+            var taxIdInput = $('#tax_id');
+            var isLoadingData = false;
+
+            // Add loading indicator styling
+            function showTaxIdLoading(show) {
+                if (show) {
+                    taxIdInput.css('background-image', 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'16\' height=\'16\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23007bff\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Cpath d=\'M21 12a9 9 0 1 1-6.219-8.56\'/%3E%3C/svg%3E")');
+                    taxIdInput.css('background-repeat', 'no-repeat');
+                    taxIdInput.css('background-position', 'right 0.75rem center');
+                    taxIdInput.css('background-size', '16px 16px');
+                } else {
+                    taxIdInput.css('background-image', '');
+                }
+            }
+
+            // Function to check if tax_id is valid (format: ##-###-####-##)
+            function isValidTaxId(taxId) {
+                // Tax ID format: ##-###-####-## (11 digits total with dashes)
+                var taxIdPattern = /^\d{2}-\d{3}-\d{4}-\d{2}$/;
+                return taxIdPattern.test(taxId.trim());
+            }
+
+            // Auto-fill function
+            function autoFillFromTaxId() {
+                var taxId = taxIdInput.val().trim();
+                
+                // Don't fetch if tax_id is empty or invalid
+                if (!taxId || !isValidTaxId(taxId)) {
+                    return;
+                }
+
+                // Prevent multiple simultaneous requests
+                if (isLoadingData) {
+                    return;
+                }
+
+                isLoadingData = true;
+                showTaxIdLoading(true);
+
+                // Send tax_id with dashes (database stores it in format: "11-080-0319-00")
+                var url = "{{ route('client-fsm-application.get-building-data') }}";
+
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    data: {
+                        tax_id: taxId.trim()
+                    },
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    success: function(response) {
+                        if (response.success && response.data) {
+                            var data = response.data;
+                            
+                            // Populate customer name
+                            if (data.customer_name) {
+                                $('#customer_name').val(data.customer_name).trigger('input');
+                            }
+                            
+                            // Populate customer contact
+                            if (data.customer_contact) {
+                                $('#customer_contact').val(data.customer_contact).trigger('input');
+                            }
+                            
+                            // Populate holding owner name
+                            if (data.holding_owner_name) {
+                                $('#holding_owner_name').val(data.holding_owner_name).trigger('input');
+                            }
+                            
+                            // Populate ward
+                            if (data.ward) {
+                                $('#ward').val(data.ward).trigger('change');
+                            }
+                            
+                            // Populate road_code (Select2 dropdown)
+                            if (data.road_code && data.road_name_text) {
+                                // Check if option already exists
+                                var $roadCode = $('#road_code');
+                                var optionExists = $roadCode.find('option[value="' + data.road_code + '"]').length > 0;
+                                
+                                if (!optionExists) {
+                                    // Create and append new option
+                                    var newOption = new Option(data.road_name_text, data.road_code, true, true);
+                                    $roadCode.append(newOption);
+                                }
+                                
+                                // Set the value and trigger change
+                                $roadCode.val(data.road_code).trigger('change');
+                            }
+                            
+                            // Populate address
+                            if (data.address) {
+                                $('#address').val(data.address).trigger('input');
+                            }
+
+                            // Show success message (optional, subtle notification)
+                            console.log('Building data loaded successfully');
+                        } else {
+                            // No data found or error
+                            console.log(response.message || 'No building data found');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        var errorMessage = 'Unable to fetch building data.';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMessage = xhr.responseJSON.message;
+                        }
+                        console.error('Error:', errorMessage);
+                        // Optionally show a user-friendly message
+                        // You can uncomment the next line to show an alert
+                        // alert(errorMessage);
+                    },
+                    complete: function() {
+                        isLoadingData = false;
+                        showTaxIdLoading(false);
+                    }
+                });
+            }
+
+            // Add event listeners for tax_id field
+            // Use both blur and change events for better UX
+            var taxIdTimeout;
+            taxIdInput.on('blur', function() {
+                // Clear any existing timeout
+                clearTimeout(taxIdTimeout);
+                // Fetch data after a short delay to ensure value is set
+                taxIdTimeout = setTimeout(function() {
+                    autoFillFromTaxId();
+                }, 300);
+            });
+
+            // Also trigger on Enter key
+            taxIdInput.on('keyup', function(e) {
+                if (e.key === 'Enter' || e.keyCode === 13) {
+                    clearTimeout(taxIdTimeout);
+                    autoFillFromTaxId();
+                }
+            });
+
         })
 
         // --- Geolocation: fill latitude/longitude from browser ---
