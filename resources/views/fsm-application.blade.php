@@ -197,7 +197,6 @@ Developed By: Streamstech Ltd.   -->
                         <form action="{{ route('client-fsm-application.submit') }}" method="POST">
                             @csrf
 
-                            <!-- Tax Information Section -->
                             <fieldset class="app_fieldset">
                                 <legend>Tax Information</legend>
 
@@ -297,6 +296,10 @@ Developed By: Streamstech Ltd.   -->
                                     <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
+                            </fieldset>
+
+                            <fieldset class="app_fieldset">
+                                <legend>Location</legend>
 
                                 <div class="form-row">
                                     <div class="form-group col-12 col-md-4">
