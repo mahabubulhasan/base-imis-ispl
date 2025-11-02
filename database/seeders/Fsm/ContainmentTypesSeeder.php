@@ -15,28 +15,29 @@ class ContainmentTypesSeeder extends Seeder
      */
     public function run()
     {
-        $types =  array(
+        $types = array(
             [ 1 , 'Septic Tank connected to Sewer Network' , 3 , true , 'Septic Tank' ],
             [ 2 , 'Septic Tank connected to Drain Network' , 3 , true , 'Septic Tank' ],
             [ 3 , 'Septic Tank connected to Soak Pit' , 3 , true , 'Septic Tank' ],
             [ 4 , 'Septic Tank connected to Water Body' , 3 , true , 'Septic Tank' ],
             [ 5 , 'Septic Tank connected to Open Ground' , 3 , true , 'Septic Tank' ],
-            [ 6 , 'Septic Tank without Outlet Connection' , 3 , true , 'Septic Tank' ],
-            [ 7 , 'Septic Tank with Unknown Outlet Connection' , 3 , true , 'Septic Tank' ],
-            [ 8 , 'Double Pit' , 4 , true , 'Double Pit' ],
-            [ 9 , 'Permeable/ Unlined Pit' , 4 , true , 'Permeable/ Unlined Pit' ],
-            [ 10 , 'Lined Pit connected to a Soak Pit' , 4 , true , 'Lined Pit' ],
-            [ 11 , 'Lined Pit connected to Water Body' , 4 , true , 'Lined Pit' ],
-            [ 12 , 'Lined Pit connected to Open Ground' , 4 , true , 'Lined Pit' ],
-            [ 13 , 'Lined Pit connected to Sewer Network' , 4 , true , 'Lined Pit' ],
-            [ 14 , 'Lined Pit connected to Drain Network' , 4 , true , 'Lined Pit' ],
-            [ 15 , 'Lined Pit without Outlet' , 4 , true , 'Lined Pit' ],
-            [ 16 , 'Lined Pit with Unknown Outlet Connection' , 4 , true , 'Lined Pit'],
-            [ 17 , 'Lined Pit with Impermeable Walls and Open Bottom' , 4 , true , 'Lined Pit']
+            [ 6 , 'Septic Tank connected to No Outlet Connection' , 3 , true , 'Septic Tank' ],
+            [ 7 , 'Septic Tank connected to Unknown', 3 , true , 'Septic Tank' ],
+            [ 8 , ' Pit/Holding Tank connected to Double Pit' , 4 , true , 'Pit/Holding Tank' ],
+            [ 9 , 'Permeable/ Unlined Pit' , 4 , true , 'Pit/Holding Tank'],
+            [ 10 , 'Pit/Holding Tank connected to Soak Pit' , 4 , true , 'Pit/Holding Tank'],
+            [ 11 , 'Pit/Holding Tank connected to Water Body' , 4 , true , 'Pit/Holding Tank'],
+            [ 12 , 'Pit/Holding Tank connected to Open Ground' , 4 , true , 'Pit/Holding Tank'],
+            [ 13 , 'Pit/Holding Tank connected to Sewer Network' , 4 , true , 'Pit/Holding Tank'],
+            [ 14 , 'Pit/Holding Tank connected to Drain Network' , 4 , true , 'Pit/Holding Tank'],
+            [ 15 , 'Pit/Holding Tank connected to No Outlet Connection ' , 4 , true , 'Pit/Holding Tank'],
+            [ 16 , 'Pit/Holding Tank connected to Unknown' , 4 , true , 'Pit/Holding Tank'],
+            [ 17 , 'Lined Pit with Impermeable Walls and Open Bottom' , 4 , true , 'Pit/Holding Tank'],
+            [ 18 , 'Septic Tank connected to Double Pit' , 3 , true , 'Septic Tank']
         );
-        
+
      foreach ($types as $type) {
-    
+
          $existStructureType =  DB::table('fsm.containment_types')
                  ->where('type', $type[1])
                  ->first();

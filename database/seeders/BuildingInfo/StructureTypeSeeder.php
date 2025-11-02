@@ -16,15 +16,13 @@ class StructureTypeSeeder extends Seeder
     public function run()
     {
         $types =  array(
-            [ 1 , 'RCC framed' ],
-            [ 2 , 'Load bearing' ],
-            [ 3 , 'CGI Sheet' ],
-            [ 4 , 'Wooden/Mud' ]
-
+            [ 1 , 'Katcha' ],
+            [ 2 , 'Semi Pucca' ],
+            [ 3 , 'Pucca' ]
         );
-     
+
      foreach ($types as $type) {
-    
+
          $existStructureType =  DB::table('building_info.structure_types')
                  ->where('type', $type[1])
                  ->first();

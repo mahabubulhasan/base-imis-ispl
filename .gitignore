@@ -16,6 +16,7 @@ yarn-error.log
 # Ignore IDE files
 /.idea
 /.vscode
+/.github
 
 # Ignore composer.lock or package-lock.json if not versioning dependencies
 # Uncomment if needed

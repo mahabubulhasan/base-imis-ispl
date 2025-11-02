@@ -83,8 +83,8 @@ class UseCategorySeeder extends Seeder
             [ 64 , 'Bank' , 13],
             [ 65 , 'Cooperative/Finance' , 13 ],
             [ 66 , 'Vacant building' , 14],
-            [ 67 , 'Building under construction' ,14]
-    );
+            [ 67 , 'Building under construction' ,14],
+        );
 
 
      foreach ($categorys as $category) {

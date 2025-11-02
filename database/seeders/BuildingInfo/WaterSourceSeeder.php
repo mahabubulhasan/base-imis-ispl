@@ -16,16 +16,12 @@ class WaterSourceSeeder extends Seeder
     public function run()
     {
         $types =  array(
-            [1, 'Municipal/Public water supply'],
-            [2, 'Deep boring'],
-            [3, 'Tube well'],
-            [4, 'Dug well'],
-            [5, 'Private Tanker water'],
-            [6, 'Jar Water'],
-            [7, 'Spring/River/Canal'],
-            [8, 'Stone spout/Pond'],
-            [9, 'Rainwater'],
-            [10,'Others']
+            [1, 'Tube Well'],
+            [2, 'Jar Water'],
+            [3, 'Rain Water'],
+            [4, 'Others'],
+            [5, 'Municipal/Public Water Supply'],
+            [6, 'Deep Boring']
 
         );
 

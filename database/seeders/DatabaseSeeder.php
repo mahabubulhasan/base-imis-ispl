@@ -22,11 +22,11 @@ class DatabaseSeeder extends Seeder
 
         // LookUp Table Seeders
         // Building Info
-        $this->call(BuildingInfo\FunctionalUseSeeder::class);
+        $this->call(BuildingInfo\FunctionalUseSeeder::class); // Customized for Laksmipur
         $this->call(BuildingInfo\UseCategorySeeder::class);
-        $this->call(BuildingInfo\StructureTypeSeeder::class);
+        $this->call(BuildingInfo\StructureTypeSeeder::class); // Customized for Laksmipur
         $this->call(BuildingInfo\SanitationSystemTypeSeeder::class);
-        $this->call(BuildingInfo\WaterSourceSeeder::class);
+        $this->call(BuildingInfo\WaterSourceSeeder::class); // Customized for Laksmipur
 
         // FSM
         $this->call(Fsm\ContainmentTypesSeeder::class);
