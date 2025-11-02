@@ -5,6 +5,6 @@
         <span class="info-box-text">
             <h2> {{ number_format($sumSurfaceType) }}</h2>
         </span>
-        <span class="info-box-number">{{__('Metalled')}}</span>
+        <span class="info-box-number">{{__('CC')}}</span>
     </div>
 </div>

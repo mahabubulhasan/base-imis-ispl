@@ -17,7 +17,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 </div>
             </div>
             <div class="form-group row">
-                {!! Form::label('customer_name',__('Customer's Name'),['class' => 'col-sm-6 control-label']) !!}
+                {!! Form::label('customer_name',__('Customer\'s Name'),['class' => 'col-sm-6 control-label']) !!}
                 <div class="col-sm-6">
                     @if(empty($application))
                     {!! Form::text('customer_name',null,['class' => 'form-control', 'placeholder' => "Customer's Name"]) !!}

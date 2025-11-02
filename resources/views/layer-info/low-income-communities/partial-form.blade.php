@@ -314,11 +314,11 @@
                 })
             ],
             view: new ol.View({
-                center: ol.proj.transform([85.37004580498977,27.643296216592432], 'EPSG:4326', 'EPSG:3857'),
+                center: ol.proj.transform([90.8295,22.9441], 'EPSG:4326', 'EPSG:3857'),
                 // zoom: 12,
                 minZoom: 12.5,
                 maxZoom: 19,
-                extent: ol.proj.transformExtent([85.32348539192756,27.58711426558866,85.44082675863419, 27.684646263435823 ], 'EPSG:4326', 'EPSG:3857')
+                extent: ol.proj.transformExtent([90.50,22.70,91.20,23.30], 'EPSG:4326', 'EPSG:3857')
             })
         });
         map.addControl(layerSwitcher);
@@ -374,7 +374,7 @@
 
         function setInitialZoom() {
 
-            map.getView().setCenter(ol.proj.transform([85.38334613018505,27.634613503939818], 'EPSG:4326', 'EPSG:3857'));
+            map.getView().setCenter(ol.proj.transform([90.8295,22.9441], 'EPSG:4326', 'EPSG:3857'));
             map.getView().setZoom(12);
 
         }

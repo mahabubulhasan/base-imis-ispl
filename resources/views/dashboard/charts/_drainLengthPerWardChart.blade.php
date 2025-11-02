@@ -36,7 +36,10 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
                             labelString: 'Wards'
                         },
       }],
-                    yAxes: [{
+                    yAxes: [{scaleLabel: {
+                            display: true,
+                            labelString: 'Length(m)'
+                        },
                         ticks: {
                             beginAtZero: true,
                             userCallback: function(label, index, labels) {

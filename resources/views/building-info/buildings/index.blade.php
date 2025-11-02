@@ -332,7 +332,7 @@
                     }
                 ],
                 order: [
-                    [0, 'desc']
+                    [0, 'asc']
                 ]
             }).on('draw', function() {
                 $('.delete').on('click', function(e) {

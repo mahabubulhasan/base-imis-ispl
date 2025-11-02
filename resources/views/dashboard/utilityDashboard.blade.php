@@ -91,49 +91,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
     
 </div>
 
-@can('Sewer Count Box')
-<h1 style="padding: 15px 0 15px 0;font-size: 24px;">{{ __('Sewer')}}</h1>
-<div class="row">
-    <div class="col-lg-3 col-md-12 col-xs-12  d-flex">
-        @include('dashboard.countBox._sumSewersCountBox')
-    </div> <!-- main col div -->
-    <div class="col-lg-9 col-md-12 col-xs-12  extra-padding">
 
-
-        <h1 style="padding: 15px 0 15px 0;font-size: 18px;">{{ __('Sewer Length by Diameter (m)')}}</h1>
-        <div class="row">
-            <div class="col-md-3  d-flex">
-                @include('dashboard.countBox._sumSewerWidth3CountBox')
-            </div> <!--sub col div -->
-            <div class="col-md-3 d-flex ">
-                @include('dashboard.countBox._sumSewerWidth1CountBox')
-            </div>
-            <div class="col-md-3  d-flex">
-                @include('dashboard.countBox._sumSewerWidthCountBox')
-            </div> <!--sub col div -->
-
-            <div class="col-md-3  d-flex">
-                @include('dashboard.countBox._sumSewerWidth2CountBox')
-            </div> <!--sub col div -->
-        </div>
-    </div> <!-- col div -->
-</div> <!-- row div -->
-@endcan
-
-<div class="row">
-    @can('Ward-Wise Sewer Network Length Chart')
-    <div class="col-md-6">
-        @include('dashboard.sewer._sewerLengthPerWardChart')
-    </div>
-    @endcan
-    
-    @can('Ward-Wise Sewer Length by Diameter Chart')
-    <div class="col-md-6">
-        @include('dashboard.charts._sewerWidthPerWardChart')
-    </div> 
-    @endcan
-    
-</div>
 
 @can('Drain Count Box')
 <h1 style="padding: 15px 0 15px 0;font-size: 24px;">{{ __('Drain')}}</h1>

@@ -1,4 +1,5 @@
 <!-- small box -->
+
 <div class="info-box ">
     <span class="info-box-icon bg-info">
         <img src="{{ asset('img/svg/imis-icons/sewers.svg') }}" alt="Total Length Of Sewers Icon">

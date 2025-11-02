@@ -39,7 +39,10 @@ var myChart = new Chart(ctx, {
                    labelString: 'Month' // The label text
                },
        }],
-        yAxes: [{
+        yAxes: [{scaleLabel: {
+            display: true,
+            labelString: 'Count'
+        },
             stacked: true,
             ticks: {
                 beginAtZero: true,
