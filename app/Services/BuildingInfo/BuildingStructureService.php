@@ -59,7 +59,13 @@ class BuildingStructureService
             $building->road_code = $request->road_code ? $request->road_code : null;
             $building->house_number = $request->house_number ? $request->house_number : null;
             $building->house_locality = $request->house_locality ? $request->house_locality : null;
-            $building->tax_code = $request->tax_code ? $request->tax_code : null;
+            // Store full comma-separated tax codes as a single string (normalized commas/spaces)
+            if ($request->tax_code !== null && $request->tax_code !== '') {
+                $normalizedTaxCode = preg_replace('/\s*,\s*/', ',', trim($request->tax_code));
+                $building->tax_code = $normalizedTaxCode;
+            } else {
+                $building->tax_code = null;
+            }
             $building->structure_type_id = $request->structure_type_id ? $request->structure_type_id : null;
             //year of building construction
             $building->surveyed_date = $request->surveyed_date ? $request->surveyed_date : null;
@@ -396,7 +402,13 @@ class BuildingStructureService
             $building->road_code = $request->road_code ? $request->road_code : null;
             $building->house_number = $request->house_number ? $request->house_number : null;
             $building->house_locality = $request->house_locality ? $request->house_locality : null;
-            $building->tax_code = $request->tax_code ? $request->tax_code : null;
+            // Update full comma-separated tax codes as a single string (normalized commas/spaces)
+            if ($request->tax_code !== null && $request->tax_code !== '') {
+                $normalizedTaxCode = preg_replace('/\s*,\s*/', ',', trim($request->tax_code));
+                $building->tax_code = $normalizedTaxCode;
+            } else {
+                $building->tax_code = null;
+            }
             $building->structure_type_id = $request->structure_type_id ? $request->structure_type_id : null;
             $building->surveyed_date = $request->surveyed_date ? $request->surveyed_date : null;
             $building->construction_year = $request->construction_year ? $request->construction_year : null;

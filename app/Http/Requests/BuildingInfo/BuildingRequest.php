@@ -143,7 +143,14 @@ class BuildingRequest extends FormRequest
             'ward' => 'required',
             'road_code' => 'required',
             'house_number' => 'nullable|unique:pgsql.building_info.buildings,house_number',
-            'tax_code' => 'required',
+            // Allow comma-separated tax codes; max length ~250 chars
+            'tax_code' => [
+                'required',
+                'string',
+                'max:250',
+                // Pattern: code or multiple codes separated by commas with optional spaces
+                'regex:/^\s*\d{2}-\d{3}-\d{4}-\d{2}(\s*,\s*\d{2}-\d{3}-\d{4}-\d{2})*\s*$/'
+            ],
             'structure_type_id' => 'required',
              //year of building Construction
             'construction_year' => 'required|date|before_or_equal:today',
@@ -243,7 +250,13 @@ class BuildingRequest extends FormRequest
             'ward' => 'required',
             'road_code' => 'required',
             'house_number' => 'nullable|unique:pgsql.building_info.buildings,bin,' . $bin . ',bin',
-            'tax_code' => 'required',
+            // Allow comma-separated tax codes; max length ~250 chars
+            'tax_code' => [
+                'required',
+                'string',
+                'max:250',
+                'regex:/^\s*\d{2}-\d{3}-\d{4}-\d{2}(\s*,\s*\d{2}-\d{3}-\d{4}-\d{2})*\s*$/'
+            ],
             'structure_type_id' => 'required',
             'use_category_id' => 'required_with:functional_use_id',
             //year of building Construction
