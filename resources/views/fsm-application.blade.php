@@ -17,6 +17,8 @@ Developed By: Streamstech Ltd.   -->
     <!-- <link href="{{ asset('landingpage/vendor/aos/aos.css') }}" rel="stylesheet" /> -->
     <link rel="stylesheet" href="{{asset('css/app.css')}}">
     <link rel="stylesheet" href="{{asset('css/style.css')}}">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
 
     <style>
         .animated-success {
@@ -71,6 +73,11 @@ Developed By: Streamstech Ltd.   -->
             .app_fieldset>legend {
                 font-size: 0.95rem;
             }
+        }
+
+        /* Map container height */
+        #map {
+            height: 360px;
         }
     </style>
 
@@ -299,40 +306,45 @@ Developed By: Streamstech Ltd.   -->
                             </fieldset>
 
                             <fieldset class="app_fieldset">
-                                <legend>Location</legend>
+                                <legend>Service Info</legend>
 
                                 <div class="form-row">
-                                    <div class="form-group col-12 col-md-4">
+                                    <div class="form-group col-12 col-md-6">
                                         <label for="proposed_emptying_date">Proposed Emptying Date <span class="text-danger">*</span></label>
-                                        <input type="date" class="form-control form-control-sm @error('proposed_emptying_date') is-invalid @enderror" name="proposed_emptying_date" id="proposed_emptying_date"
+                                        <input type="date" class="form-control @error('proposed_emptying_date') is-invalid @enderror" name="proposed_emptying_date" id="proposed_emptying_date"
                                             value="{{ old('proposed_emptying_date') }}" required aria-required="true">
                                         @error('proposed_emptying_date')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
 
-                                    <div class="form-group col-12 col-md-8">
-                                        <label class="d-block mb-2">Coordinates <small class="text-muted">(Optional)</small></label>
-                                        <div class="input-group input-group-sm">
-                                            <input type="text" class="form-control @error('latitude') is-invalid @enderror" name="latitude" id="latitude"
-                                                placeholder="Latitude" value="{{ old('latitude') }}" aria-label="Latitude">
-                                            <input type="text" class="form-control @error('longitude') is-invalid @enderror" name="longitude" id="longitude"
-                                                placeholder="Longitude" value="{{ old('longitude') }}" aria-label="Longitude">
-                                            <div class="input-group-append">
-                                                <button type="button" class="btn btn-outline-secondary btn-sm" id="btn-get-location" title="Use browser to detect location">
-                                                    <i class="fa fa-map-marker-alt" aria-hidden="true"></i>
-                                                    <span id="btn-get-location-text" class="text-nowrap ml-1">Use my location</span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        @error('latitude')
-                                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                                        @enderror
-                                        @error('longitude')
-                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    <div class="form-group col-12">
+                                        <label for="notes">Notes / Comments <span class="text-danger">*</span></label>
+                                        <textarea class="form-control @error('notes') is-invalid @enderror" name="notes" id="notes" rows="3" placeholder="Additional Notes/Comments" required aria-required="true">{{ old('notes') }}</textarea>
+                                        @error('notes')
+                                        <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
+
+                            </fieldset>
+
+                            <fieldset class="app_fieldset">
+                                <legend>Location</legend>
+
+                                <div class="form-group">
+                                    <div id="map" class="w-100 rounded-lg shadow-sm border border-gray-300"></div>
+                                </div>
+
+                                <!-- Hidden inputs updated by the map -->
+                                <input type="hidden" name="latitude" id="latitude" value="{{ old('latitude') }}">
+                                <input type="hidden" name="longitude" id="longitude" value="{{ old('longitude') }}">
+                                @error('latitude')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                                @error('longitude')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
 
                             </fieldset>
 
@@ -387,6 +399,8 @@ Developed By: Streamstech Ltd.   -->
     <script src="{{asset('js/app.js')}}"></script>
     <!-- Template Main JS File -->
     <script src="{{ asset('js/main.js')}}"></script>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cleave.js/1.0.2/cleave.min.js" integrity="sha512-SvgzybymTn9KvnNGu0HxXiGoNeOi0TTK7viiG0EGn2Qbeu/NFi3JdWrJs2JHiGA1Lph+dxiDv5F9gDlcgBzjfA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         function myFunction() {
@@ -400,7 +414,7 @@ Developed By: Streamstech Ltd.   -->
 
         $(document).ready(function() {
             // Safely serialize server-side errors and success flag for the client
-            var errors = @json($errors-> messages());
+            var errors = @json($errors->messages());
             var hasSuccess = @json(session('success') ? true : false);
 
             // If there are validation errors, open the login modal.
@@ -743,68 +757,49 @@ Developed By: Streamstech Ltd.   -->
 
         })
 
-        // --- Geolocation: fill latitude/longitude from browser ---
+        // --- Leaflet Map Initialization ---
         document.addEventListener('DOMContentLoaded', function() {
-            const btn = document.getElementById('btn-get-location');
-            const btnText = document.getElementById('btn-get-location-text');
-            const latInput = document.getElementById('latitude');
-            const lonInput = document.getElementById('longitude');
+            var latInput = document.getElementById('latitude');
+            var lonInput = document.getElementById('longitude');
 
-            function formatCoord(v) {
-                if (!isFinite(v)) return '';
-                return parseFloat(v).toFixed(6); // 6 decimal places
+            function toFloatOrNull(v) {
+                var f = parseFloat(v);
+                return isFinite(f) ? f : null;
             }
 
-            function setButtonLoading(loading) {
-                if (!btn) return;
-                btn.disabled = loading;
-                btn.classList.toggle('loading', loading);
-                btnText.textContent = loading ? 'Detecting...' : 'Use my location';
+            var defaultLat = 23.780887; // fallback center
+            var defaultLon = 90.279237;
+
+            var startLat = toFloatOrNull(latInput && latInput.value) ?? defaultLat;
+            var startLon = toFloatOrNull(lonInput && lonInput.value) ?? defaultLon;
+
+            var mapEl = document.getElementById('map');
+            if (!mapEl) return;
+
+            var map = L.map('map');
+            map.setView([startLat, startLon], 13);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            var marker = L.marker([startLat, startLon], { draggable: true }).addTo(map);
+
+            function updateLocation(lat, lon) {
+                if (latInput) latInput.value = Number(lat).toFixed(6);
+                if (lonInput) lonInput.value = Number(lon).toFixed(6);
             }
 
-            function success(pos) {
-                const coords = pos.coords;
-                if (latInput) latInput.value = formatCoord(coords.latitude);
-                if (lonInput) lonInput.value = formatCoord(coords.longitude);
-                setButtonLoading(false);
-            }
+            marker.on('dragend', function(e) {
+                var p = e.target.getLatLng();
+                updateLocation(p.lat, p.lng);
+            });
 
-            function error(err) {
-                setButtonLoading(false);
-                let msg = 'Unable to retrieve your location.';
-                if (err && err.code) {
-                    switch (err.code) {
-                        case 1:
-                            msg = 'Permission denied. Please allow location access in your browser.';
-                            break;
-                        case 2:
-                            msg = 'Position unavailable.';
-                            break;
-                        case 3:
-                            msg = 'Location request timed out.';
-                            break;
-                    }
-                }
-                // Minimal UI feedback
-                try {
-                    alert(msg);
-                } catch (e) {}
-            }
-
-            if (btn) {
-                btn.addEventListener('click', function() {
-                    if (!navigator.geolocation) {
-                        alert('Geolocation is not supported by your browser.');
-                        return;
-                    }
-                    setButtonLoading(true);
-                    navigator.geolocation.getCurrentPosition(success, error, {
-                        enableHighAccuracy: false,
-                        timeout: 10000,
-                        maximumAge: 60000
-                    });
-                });
-            }
+            map.on('click', function(e) {
+                marker.setLatLng(e.latlng);
+                updateLocation(e.latlng.lat, e.latlng.lng);
+            });
         });
     </script>
 </body>
