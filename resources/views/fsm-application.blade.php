@@ -526,9 +526,14 @@ Developed By: Streamstech Ltd.   -->
 
             /**
              * Auto-fill form fields based on Tax ID
+             * Uses debounced input event for real-time auto-population
              */
             var taxIdInput = $('#tax_id');
             var isLoadingData = false;
+            var debounceTimeout = null;
+            var minTaxIdLength = 10; // Minimum characters (including dashes) before making request
+            // Format: ##-###-####-## = 13 characters with dashes, 11 digits
+            // We'll check for at least 10 characters to ensure we're close to complete
 
             // Add loading indicator styling
             function showTaxIdLoading(show) {
@@ -549,13 +554,47 @@ Developed By: Streamstech Ltd.   -->
                 return taxIdPattern.test(taxId.trim());
             }
 
+            // Function to get minimum length check (digits only, minimum 8)
+            function hasMinimumLength(taxId) {
+                var digitsOnly = taxId.replace(/[^0-9]/g, '');
+                return digitsOnly.length >= 8; // At least 8 digits
+            }
+
+            // Function to clear all auto-populated fields
+            function clearAutoPopulatedFields() {
+                $('#customer_name').val('').trigger('input');
+                $('#customer_contact').val('').trigger('input');
+                $('#holding_owner_name').val('').trigger('input');
+                $('#ward').val('').trigger('change');
+                $('#road_code').val(null).trigger('change'); // Clear Select2
+                $('#address').val('').trigger('input');
+            }
+
             // Auto-fill function
             function autoFillFromTaxId() {
                 var taxId = taxIdInput.val().trim();
                 
-                // Don't fetch if tax_id is empty or invalid
-                if (!taxId || !isValidTaxId(taxId)) {
+                // Clear fields if tax_id is empty or too short
+                if (!taxId || taxId.length < minTaxIdLength) {
+                    clearAutoPopulatedFields();
                     return;
+                }
+
+                // Check minimum length (at least 8 digits)
+                if (!hasMinimumLength(taxId)) {
+                    clearAutoPopulatedFields();
+                    return;
+                }
+
+                // Don't fetch if tax_id format is invalid (but only check format if we have enough length)
+                if (!isValidTaxId(taxId)) {
+                    // If we have minimum length but invalid format, still try to fetch
+                    // (in case user is still typing)
+                    if (taxId.length >= 13) {
+                        // Only clear if we're sure the format is wrong and it's complete
+                        clearAutoPopulatedFields();
+                        return;
+                    }
                 }
 
                 // Prevent multiple simultaneous requests
@@ -585,21 +624,29 @@ Developed By: Streamstech Ltd.   -->
                             // Populate customer name
                             if (data.customer_name) {
                                 $('#customer_name').val(data.customer_name).trigger('input');
+                            } else {
+                                $('#customer_name').val('').trigger('input');
                             }
                             
                             // Populate customer contact
                             if (data.customer_contact) {
                                 $('#customer_contact').val(data.customer_contact).trigger('input');
+                            } else {
+                                $('#customer_contact').val('').trigger('input');
                             }
                             
                             // Populate holding owner name
                             if (data.holding_owner_name) {
                                 $('#holding_owner_name').val(data.holding_owner_name).trigger('input');
+                            } else {
+                                $('#holding_owner_name').val('').trigger('input');
                             }
                             
                             // Populate ward
                             if (data.ward) {
                                 $('#ward').val(data.ward).trigger('change');
+                            } else {
+                                $('#ward').val('').trigger('change');
                             }
                             
                             // Populate road_code (Select2 dropdown)
@@ -616,17 +663,22 @@ Developed By: Streamstech Ltd.   -->
                                 
                                 // Set the value and trigger change
                                 $roadCode.val(data.road_code).trigger('change');
+                            } else {
+                                $('#road_code').val(null).trigger('change');
                             }
                             
                             // Populate address
                             if (data.address) {
                                 $('#address').val(data.address).trigger('input');
+                            } else {
+                                $('#address').val('').trigger('input');
                             }
 
                             // Show success message (optional, subtle notification)
                             console.log('Building data loaded successfully');
                         } else {
-                            // No data found or error
+                            // No data found - clear fields
+                            clearAutoPopulatedFields();
                             console.log(response.message || 'No building data found');
                         }
                     },
@@ -636,9 +688,8 @@ Developed By: Streamstech Ltd.   -->
                             errorMessage = xhr.responseJSON.message;
                         }
                         console.error('Error:', errorMessage);
-                        // Optionally show a user-friendly message
-                        // You can uncomment the next line to show an alert
-                        // alert(errorMessage);
+                        // Clear fields on error to avoid stale data
+                        clearAutoPopulatedFields();
                     },
                     complete: function() {
                         isLoadingData = false;
@@ -647,24 +698,47 @@ Developed By: Streamstech Ltd.   -->
                 });
             }
 
-            // Add event listeners for tax_id field
-            // Use both blur and change events for better UX
-            var taxIdTimeout;
-            taxIdInput.on('blur', function() {
+            // Debounce function
+            function debounceAutoFill(delay) {
                 // Clear any existing timeout
-                clearTimeout(taxIdTimeout);
-                // Fetch data after a short delay to ensure value is set
-                taxIdTimeout = setTimeout(function() {
+                if (debounceTimeout) {
+                    clearTimeout(debounceTimeout);
+                }
+                
+                // Set new timeout
+                debounceTimeout = setTimeout(function() {
                     autoFillFromTaxId();
-                }, 300);
+                    debounceTimeout = null;
+                }, delay);
+            }
+
+            // Add input event listener with debounce (400ms delay)
+            taxIdInput.on('input', function() {
+                var taxId = taxIdInput.val().trim();
+                
+                // If tax_id is cleared or too short, clear fields immediately
+                if (!taxId || taxId.length < minTaxIdLength || !hasMinimumLength(taxId)) {
+                    // Cancel any pending debounced request
+                    if (debounceTimeout) {
+                        clearTimeout(debounceTimeout);
+                        debounceTimeout = null;
+                    }
+                    clearAutoPopulatedFields();
+                    return;
+                }
+                
+                // Debounce the AJAX call (400ms delay)
+                debounceAutoFill(400);
             });
 
-            // Also trigger on Enter key
-            taxIdInput.on('keyup', function(e) {
-                if (e.key === 'Enter' || e.keyCode === 13) {
-                    clearTimeout(taxIdTimeout);
-                    autoFillFromTaxId();
+            // Also handle blur event to ensure data is fetched if user leaves field
+            taxIdInput.on('blur', function() {
+                // If there's a pending debounce, cancel it and fetch immediately
+                if (debounceTimeout) {
+                    clearTimeout(debounceTimeout);
+                    debounceTimeout = null;
                 }
+                autoFillFromTaxId();
             });
 
         })
