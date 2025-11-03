@@ -130,15 +130,15 @@
     {!! Form::label('tax_code', 'Tax Code/Holding ID', ['class' => 'col-sm-3 control-label ']) !!}
     <div class="col-sm-5">
         {{-- Hidden input that will contain the final comma-separated values for submission --}}
-        {!! Form::hidden('tax_code', null, ['id' => 'tax_code_hidden']) !!}
+        {!! Form::hidden('tax_code', old('tax_code', isset($building) ? $building->tax_code : null), ['id' => 'tax_code_hidden']) !!}
 
         {{-- Visible tag input UI --}}
         <div id="tax-code-tag-input" class="form-control col-sm-10" style="min-height:42px;padding:6px;display:flex;align-items:center;flex-wrap:wrap;cursor:text;">
             <ul id="tax-code-tags" style="list-style:none;display:flex;flex-wrap:wrap;padding:0;margin:0"></ul>
-            <input id="tax_code_input" type="text" placeholder="Type tax code and press Enter or comma" autocomplete="off" 
+            <input id="tax_code_input" type="text" placeholder="" autocomplete="off" 
                 style="border:0;outline:0;flex:1;min-width:150px;padding:5px;" />
         </div>
-        <small id="tax-code-hint" class="form-text text-muted">Format: 00-000-0000-00 — digits only; 'x' allowed in the last group (e.g. 12-345-6789-xx)</small>
+        <!-- <small id="tax-code-hint" class="form-text text-muted">Format: 00-000-0000-00 </small> -->
         <small id="tax-code-error" class="form-text text-danger" style="display:none;margin-top:4px;"></small>
     </div>
 </div>
@@ -705,11 +705,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
         el.value = groups.join('-');
     }
 
-    // format existing value on load
-    document.addEventListener('DOMContentLoaded', function () {
-        const el = document.querySelector('input[name="tax_code"]');
-        if (el) formatTaxCode(el);
-    });
+    // NOTE: Do not auto-format the hidden tax_code input; the tag UI handles display and formatting.
 </script>
 <script>
     // Tag input for Tax Code/Holding ID
