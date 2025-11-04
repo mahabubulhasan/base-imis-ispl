@@ -16,6 +16,7 @@ use App\Models\Fsm\Feedback;
 use App\Models\Fsm\TreatmentPlant;
 use App\Models\Fsm\SludgeCollection;
 use App\Services\DashboardService;
+use App\Services\UtilityInfo\UtilityDashboardService;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use App\Models\UtilityInfo\Roadline;
@@ -38,10 +39,12 @@ class HomeController extends Controller
      * @return void
      */
     protected DashboardService $dashboardService;
-    public function __construct(DashboardService $dashboardService)
+    protected UtilityDashboardService $utilitydashboardService;
+    public function __construct(DashboardService $dashboardService, UtilityDashboardService $utilitydashboardService)
     {
         $this->middleware('auth');
         $this->dashboardService = $dashboardService;
+        $this->utilitydashboardService = $utilitydashboardService;
     }
 
     /**
@@ -297,6 +300,8 @@ class HomeController extends Controller
 
         // Fetching data for road length per ward chart
         $roadLengthPerWardChart = $this->dashboardService->getRoadLengthPerWardChart();
+        // Utility: drain length per ward (needed by _drainLengthPerWardChart)
+        $drainLengthPerWardChart = $this->utilitydashboardService->getDrainLengthPerWardChart();
 
         // Fetching data for waterborne cases chart
         $waterborneCasesChart = $this->dashboardService->getWaterborneCasesChart();
@@ -368,6 +373,7 @@ class HomeController extends Controller
             'totalHotspot',
             'totalWaterborne',
             'roadLengthPerWardChart',
+            'drainLengthPerWardChart',
             'waterborneCasesChart',
             'minDate',
             'maxDate',
