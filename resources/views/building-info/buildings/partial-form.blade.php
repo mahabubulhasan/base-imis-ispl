@@ -134,15 +134,6 @@
 
     <!-- Tax ID -->
     <div class="form-group row required">
-<<<<<<< HEAD
-        {!! Form::label('tax_code', __('Tax Code/Holding ID'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-5">
-            {!! Form::text('tax_code', null, [
-                'class' => 'form-control col-sm-10',
-                'placeholder' => __('Tax Code/Holding ID'),
-                'autocomplete' => 'off',
-            ]) !!}
-=======
     {!! Form::label('tax_code', 'Tax Code/Holding ID', ['class' => 'col-sm-3 control-label ']) !!}
     <div class="col-sm-5">
         {{-- Hidden input that will contain the final comma-separated values for submission --}}
@@ -153,7 +144,6 @@
             <ul id="tax-code-tags" style="list-style:none;display:flex;flex-wrap:wrap;padding:0;margin:0"></ul>
             <input id="tax_code_input" type="text" placeholder="Type tax code and press Enter or comma" autocomplete="off" 
                 style="border:0;outline:0;flex:1;min-width:150px;padding:5px;" />
->>>>>>> nabil-dev
         </div>
         <small id="tax-code-hint" class="form-text text-muted">Format: 00-000-0000-00 — digits only; 'x' allowed in the last group (e.g. 12-345-6789-xx)</small>
         <small id="tax-code-error" class="form-text text-danger" style="display:none;margin-top:4px;"></small>
