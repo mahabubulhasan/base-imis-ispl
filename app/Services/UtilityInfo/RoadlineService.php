@@ -104,8 +104,10 @@ class RoadlineService {
             /*$roadlineTemp = DB::select("SELECT ST_AsText(geom) AS geom FROM roadline_temp");
             $geom = ($roadlineTemp[0]->geom);*/
 
-            $maxcode = Roadline::withTrashed()->max('code');
-            $maxcode = str_replace('R', '', $maxcode);
+            $maxcode = Roadline::withTrashed()
+                ->selectRaw("COALESCE(MAX(CAST(SUBSTRING(code FROM '[0-9]+') AS INTEGER)), 0) as max_num")
+                ->value('max_num');
+            // $maxcode = str_replace('R', '', $maxcode);
             $roadline = new Roadline();
             $roadline->code = 'R' . sprintf('%06d', $maxcode + 1);
             $roadline->user_id = Auth::id();
