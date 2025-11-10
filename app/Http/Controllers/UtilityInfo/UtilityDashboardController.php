@@ -45,8 +45,8 @@ class UtilityDashboardController extends Controller
      ** Road Carrying Width
      */
     $sumWidth = Roadline::where('carrying_width', '<', '3')->sum('length');
-    $sumWidth1 = Roadline::where('carrying_width', [3, 5])->sum('length');
-    $sumWidth2 = Roadline::where('carrying_width', [5, 8])->sum('length');
+    $sumWidth1 = Roadline::whereBetween('carrying_width', [3, 5])->sum('length');
+    $sumWidth2 = Roadline::whereBetween('carrying_width', [5, 8])->sum('length');
     $sumWidth3 = Roadline::where('carrying_width', '>', '8')->sum('length');
     $sumWidth4 = Roadline::where('carrying_width', null)->sum('length');
     /**
