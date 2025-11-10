@@ -84,8 +84,10 @@ class HomeController extends Controller
         // Calculate the total length of water supply (Displayed as "Total length (m) of water supply" in UI)
         $sumWatersupply = WaterSupplys::sum('length');
         //Ptct count
-        $ctCount = Ctpt::where('type', 'Community Toilet')->where('status', true)->whereNull('deleted_at')->count();
-        $ptCount = Ctpt::where('type', 'Public Toilet')->where('status', true)->whereNull('deleted_at')->count();
+        //$ctCount = Ctpt::where('type', 'Community Toilet')->where('status', true)->whereNull('deleted_at')->count();
+		$ctCount = Ctpt::where('type', 'Community Toilet')->whereNull('deleted_at')->count();
+        //$ptCount = Ctpt::where('type', 'Public Toilet')->where('status', true)->whereNull('deleted_at')->count();
+		$ptCount = Ctpt::where('type', 'Public Toilet')->whereNull('deleted_at')->count();
         // Query to calculate the total number of users served by community toilets for the specified year
         $communityToilet = DB::table('fsm.toilets as t')
             ->select(DB::raw('sum(b.population_served) as toilet_users')) // Selecting the sum of users served by community toilets
@@ -287,7 +289,7 @@ class HomeController extends Controller
         $proposedEmptiedDateContainmentsByWardChart = $this->dashboardService->getProposedEmptiedDateContainmentsByWard();
 
         // Fetching data for sewer length per ward chart
-        $sewerLengthPerWardChart = $this->dashboardService->getSewerLengthPerWard();
+        $drainLengthPerWardChart = $this->dashboardService->getDrainLengthPerWardChart();
 
         // Setting max and min date variables
         $maxDate = date('Y');
@@ -353,7 +355,7 @@ class HomeController extends Controller
             'hotspotsPerWardChart',
             'sanitationSystemOther',
             'sanitationSystemOthername',
-            'sewerLengthPerWardChart',
+            'drainLengthPerWardChart',
             'industrialBuildingCount',
             'institutionBuildingCount',
             'othersCount',

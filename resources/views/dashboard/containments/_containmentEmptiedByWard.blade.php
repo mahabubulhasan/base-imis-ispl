@@ -47,7 +47,10 @@ var myChart = new Chart(ctx, {
           }
       },
     scales: {
-        yAxes: [{
+        yAxes: [{scaleLabel: {
+            display: true,
+            labelString: 'Count'
+        },
             ticks: {
                 beginAtZero: true,
                 userCallback: function(label, index, labels) {

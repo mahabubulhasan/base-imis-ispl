@@ -47,14 +47,24 @@ document.addEventListener('DOMContentLoaded', function() {
       },
 
     scales: {
-      xAxes: [{
+            xAxes: [{
+                stacked: true, // Make sure X-axis is stacked
                 scaleLabel: {
-                    display: true, // Enable the scale label
-                    labelString: 'Year' // The label text
+                    display: true, 
+                    labelString: 'Year'
                 }
             }],
-        }
-    };
+            yAxes: [{
+                stacked: true, // Make sure Y-axis is stacked
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Sludge Volume (m³)' // FIXED: More descriptive label
+                },
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+	}};
     var ctx = document.getElementById('sludgeCollectionByTreatmentPlantChart').getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'bar',

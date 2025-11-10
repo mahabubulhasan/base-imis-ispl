@@ -56,6 +56,11 @@ var myChart = new Chart(ctx, {
         yAxes: [{
 
             stacked: true,
+			scaleLabel: {
+        display: true,
+        labelString: 'BDT',
+        //fontSize: 10,
+      },
             ticks: {
                 beginAtZero: true,
                 userCallback: function(label, index, labels) {

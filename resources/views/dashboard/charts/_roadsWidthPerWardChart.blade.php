@@ -38,7 +38,10 @@ var myChart = new Chart(ctx, {
                             labelString: 'Wards'
                         },
       }],
-      yAxes: [{
+      yAxes: [{scaleLabel: {
+                            display: true,
+                            labelString: 'Length(m)'
+                        },
         stacked: true,
         ticks: {
                 beginAtZero: true,

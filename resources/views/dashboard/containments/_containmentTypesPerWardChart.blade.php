@@ -50,7 +50,11 @@ var myChart = new Chart(ctx, {
                 beginAtZero: true
             }
         }],
-        yAxes: [{
+        yAxes: [{scaleLabel: {
+            display: true,
+            labelString: 'Count'
+        },
+
             stacked: true,
             ticks: {
               beginAtZero: true,

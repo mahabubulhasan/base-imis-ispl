@@ -52,7 +52,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 @endcan
 
 @can('Sanitation CountBox')
-    <h1 style="padding: 15px 0 15px 0; font-size: 24px;">{{ __("Sanitation Systems") }}</h1>
+    <h1 style="padding: 15px 0 15px 0; font-size: 24px;">{{ __("Building Sanitation Facilities") }}</h1>
     <div class="row">
         @foreach ($sanitationSystems as $sanitationSystem)
             <div class="col-lg-3 col-xs-6">
@@ -90,9 +90,6 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
     <div class="row">
         <div class="col-lg-3 col-xs-6">
             @include('dashboard.countBox._sumRoadsCountBox')
-        </div> <!--sub col div -->
-        <div class="col-lg-3 col-xs-6">
-            @include('dashboard.countBox._sumSewersCountBox')
         </div> <!--sub col div -->
         <div class="col-lg-3 col-xs-6">
             @include('dashboard.countBox._sumDrainsCountBox')
@@ -217,39 +214,10 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
     </div>
 @endcan
 
-<div class="row">
-    @can('Property Tax Payment Chart')
-            <div class="col-md-6">
-                @include('dashboard.tax-revenue._taxRevenueChart')
-            </div>
-    @endcan
-    @can('Distribution of Water Supply Payment Dues Chart')
-            <div class="col-md-6">
-                @include('dashboard.water-supply._waterSupplyPaymentChart')
-            </div>
-    @endcan
-</div>
 
-<div class="row">
-    @can('Distribution of Water Supply Services by Ward Chart')
-        <div class="col-md-6">
-            @include('dashboard.buildings._waterSupplyPipeCodePresencebyWardChart')
-        </div>
-    @endcan
 
-    @can('Outstanding Payments for SWM Services Chart')
-        <div class="col-md-6">
-            @include('dashboard.swm.swm_chart')
-        </div>
-    @endcan
-</div>
-@can('Distribution of SWM Services by Ward Chart')
-    <div class="row">
-        <div class="col-md-6">
-            @include('dashboard.buildings._swmPresencebyWardChart')
-        </div>
-    </div>
-@endcan
+
+
 
 
 <div class="row">
@@ -258,11 +226,11 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
                 @include('dashboard.charts._roadLengthPerWardChart')
             </div>
         @endcan
-        @can('Ward-Wise Sewer Network Length Chart')
-            <div class="col-md-6">
-                @include('dashboard.sewer._sewerLengthPerWardChart')
-            </div>
-        @endcan
+       @can('Ward-Wise Roadside Drain Length Chart')
+    <div class="col-md-6">
+        @include('dashboard.charts._drainLengthPerWardChart')
+    </div>
+    @endcan
     </div>
     <div class="row">
         @can('Yearly Distribution of Waterborne Disease Chart')

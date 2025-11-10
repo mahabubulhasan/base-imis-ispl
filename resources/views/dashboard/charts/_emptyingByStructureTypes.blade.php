@@ -37,7 +37,10 @@ var myChart = new Chart(ctx, {
                     labelString: 'Structure Type' // The label text
                 },
         }],
-         yAxes: [{
+         yAxes: [{scaleLabel: {
+            display: true,
+            labelString: 'Count'
+        },
              ticks: {
                  beginAtZero: true,
                  userCallback: function(label, index, labels) {
