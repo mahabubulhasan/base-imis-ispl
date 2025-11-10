@@ -65,4 +65,75 @@ class PublicApplicationController extends Controller
 
         return response()->json(['results' => $json, 'pagination' => ['more' => $more]]);
     }
+
+    public function getBuildingDataByTaxId(Request $request)
+    {
+        try {
+            $taxId = $request->get('tax_id');
+            
+            if (!$taxId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tax ID is required'
+                ], 400);
+            }
+
+            // Query building by tax_code with relationships
+            // Tax ID in database is stored in format: "11-080-0319-00" (with dashes)
+            // Load Owners relationship, but load roadlines conditionally to avoid SQL errors when road_code is null/empty
+            $building = Building::with(['Owners'])
+                ->where('tax_code', $taxId)
+                ->whereNull('deleted_at')
+                ->first();
+
+            if (!$building) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No building found with this Tax ID'
+                ], 404);
+            }
+
+            // Get owner information
+            $owner = $building->Owners;
+            
+            // Get road information - only load if road_code exists and is valid (not null, empty, or 0)
+            $roadline = null;
+            if (!empty($building->road_code) && $building->road_code !== '0' && $building->road_code !== 0) {
+                try {
+                    $roadline = $building->roadlines;
+                } catch (\Exception $e) {
+                    // If road_code doesn't exist in roads table, set to null
+                    $roadline = null;
+                }
+            }
+            
+            // Build address from house_number, house_locality, and road name
+            $addressParts = array_filter([
+                $building->house_number,
+                $building->house_locality,
+                $roadline ? $roadline->name : null
+            ]);
+            $address = implode(', ', $addressParts);
+
+            // Return JSON response
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'customer_name' => $owner ? $owner->owner_name : null,
+                    'customer_contact' => $owner ? $owner->owner_contact : null,
+                    'holding_owner_name' => $owner ? $owner->owner_name : null,
+                    'ward' => $building->ward,
+                    'road_code' => $building->road_code,
+                    'road_name_text' => $roadline ? $roadline->name : null,
+                    'address' => $address
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while fetching building data: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

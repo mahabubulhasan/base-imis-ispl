@@ -17,6 +17,8 @@ Developed By: Streamstech Ltd.   -->
     <!-- <link href="{{ asset('landingpage/vendor/aos/aos.css') }}" rel="stylesheet" /> -->
     <link rel="stylesheet" href="{{asset('css/app.css')}}">
     <link rel="stylesheet" href="{{asset('css/style.css')}}">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
 
     <style>
         .animated-success {
@@ -24,9 +26,17 @@ Developed By: Streamstech Ltd.   -->
         }
 
         @keyframes successPulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.02);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
 
         .alert-success {
@@ -35,6 +45,39 @@ Developed By: Streamstech Ltd.   -->
 
         .alert-success i {
             color: #155724;
+        }
+
+        /* Fieldset / legend styling for grouped form sections */
+        .app_fieldset {
+            border: 1px solid #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.4rem;
+            margin-bottom: 1.25rem;
+            background: #ffffff;
+        }
+
+        .app_fieldset>legend {
+            padding: 0 .5rem;
+            font-weight: 600;
+            color: #0f394c;
+            font-size: 1rem;
+            width: auto;
+        }
+
+        /* Keep small screens comfortable */
+        @media (max-width: 576px) {
+            .app_fieldset {
+                padding: 0.75rem;
+            }
+
+            .app_fieldset>legend {
+                font-size: 0.95rem;
+            }
+        }
+
+        /* Map container height */
+        #map {
+            height: 360px;
         }
     </style>
 
@@ -125,153 +168,189 @@ Developed By: Streamstech Ltd.   -->
                     <div class="col-lg-8 mt-5 mt-lg-0">
 
                         @if(session('success'))
-                            <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert" style="border-left: 4px solid #28a745; background-color: #d4edda; border-color: #c3e6cb;">
-                                <i class="fas fa-check-circle mr-2"></i>
-                                <strong>Success!</strong> {{ session('success') }}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
+                        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert" style="border-left: 4px solid #28a745; background-color: #d4edda; border-color: #c3e6cb;">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            <strong>Success!</strong> {{ session('success') }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
                         @endif
 
                         @if(session('error'))
-                            <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert" style="border-left: 4px solid #dc3545;">
-                                <i class="fas fa-exclamation-triangle mr-2"></i>
-                                <strong>Error!</strong> {{ session('error') }}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
+                        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert" style="border-left: 4px solid #dc3545;">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                            <strong>Error!</strong> {{ session('error') }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
                         @endif
 
                         @if($errors->any())
-                            <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert" style="border-left: 4px solid #dc3545;">
-                                <i class="fas fa-exclamation-triangle mr-2"></i>
-                                <ul class="mb-0">
-                                    @foreach($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
+                        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert" style="border-left: 4px solid #dc3545;">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                            <ul class="mb-0">
+                                @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
                         @endif
 
                         <form action="{{ route('client-fsm-application.submit') }}" method="POST">
                             @csrf
 
-                            <div class="form-row">
-                                <div class="form-group col-12 col-md-6">
-                                    <label for="customer_name">Customer Name <span class="text-danger">*</span></label>
-                                    <input type="text" name="customer_name" class="form-control @error('customer_name') is-invalid @enderror" id="customer_name"
-                                        placeholder="Customer Name" value="{{ old('customer_name') }}" required aria-required="true">
-                                    @error('customer_name')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
+                            <fieldset class="app_fieldset">
+                                <legend>Tax Information</legend>
 
-                                <div class="form-group col-12 col-md-6">
-                                    <label for="customer_contact">Contact No. <span class="text-danger">*</span></label>
-                                    <input type="tel" class="form-control @error('customer_contact') is-invalid @enderror" name="customer_contact" id="customer_contact"
-                                        placeholder="01#########" value="{{ old('customer_contact') }}" required aria-required="true">
-                                    @error('customer_contact')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group col-12 col-md-6">
-                                    <label for="holding_owner_name">Holding Owner Name</label>
-                                    <input type="text" name="holding_owner_name" class="form-control @error('holding_owner_name') is-invalid @enderror" id="holding_owner_name"
-                                        placeholder="Holding Owner Name" value="{{ old('holding_owner_name') }}">
-                                    @error('holding_owner_name')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="form-group col-12 col-md-6">
-                                    <label for="ward">Ward <span class="text-danger">*</span></label>
-                                    <select name="ward" class="form-control @error('ward') is-invalid @enderror" id="ward" required aria-required="true">
-                                        <option value="">Select Ward</option>
-                                        @foreach($wards as $ward)
-                                            <option value="{{ $ward }}" {{ old('ward') == $ward ? 'selected' : '' }}>{{ $ward }}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('ward')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group col-12 col-md-6">
-                                    <label for="road_code">Road Name <small class="text-muted">(Optional)</small></label>
-                                    <select name="road_code" class="form-control @error('road_code') is-invalid @enderror" id="road_code">
-                                        <option value="">Select Road</option>
-                                    </select>
-                                    @error('road_code')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="form-group col-12 col-md-6">
-                                    <label for="tax_id">Tax ID <span class="text-danger">*</span></label>
-                                    <input type="text" name="tax_id" class="form-control @error('tax_id') is-invalid @enderror" id="tax_id"
-                                        placeholder="##-###-####-##" value="{{ old('tax_id') }}" required aria-required="true">
-                                    @error('tax_id')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="address">Address <span class="text-danger">*</span></label>
-                                <textarea class="form-control @error('address') is-invalid @enderror" name="address" id="address" rows="3" placeholder="Address" required aria-required="true">{{ old('address') }}</textarea>
-                                @error('address')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="form-row">
-                                <!-- Smaller date picker column -->
-                                <div class="form-group col-12 col-md-4">
-                                    <label for="proposed_emptying_date">Proposed Emptying Date <span class="text-danger">*</span></label>
-                                    <input type="date" class="form-control form-control-sm @error('proposed_emptying_date') is-invalid @enderror" name="proposed_emptying_date" id="proposed_emptying_date"
-                                        value="{{ old('proposed_emptying_date') }}" required aria-required="true">
-                                    @error('proposed_emptying_date')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <!-- Joined coordinates + button as a single input-group (sm) -->
-                                <div class="form-group col-12 col-md-8">
-                                    <label class="d-block mb-2">Coordinates <small class="text-muted">(Optional)</small></label>
-                                    <div class="input-group input-group-sm">
-                                        <input type="text" class="form-control @error('latitude') is-invalid @enderror" name="latitude" id="latitude"
-                                            placeholder="Latitude" value="{{ old('latitude') }}" aria-label="Latitude">
-                                        <input type="text" class="form-control @error('longitude') is-invalid @enderror" name="longitude" id="longitude"
-                                            placeholder="Longitude" value="{{ old('longitude') }}" aria-label="Longitude">
-                                        <div class="input-group-append">
-                                            <button type="button" class="btn btn-outline-secondary btn-sm" id="btn-get-location" title="Use browser to detect location">
-                                                <i class="fa fa-map-marker-alt" aria-hidden="true"></i>
-                                                <span id="btn-get-location-text" class="text-nowrap ml-1">Use my location</span>
-                                            </button>
+                                <div class="form-row">
+                                    <div class="form-group row col-12">
+                                        {!! Form::label('has_tax_id', 'Do you have a Tax ID? ', ['class' => 'col-sm-3 control-label']) !!}
+                                        <div class="col-sm-5">
+                                            <select name="has_tax_id" class="form-control @error('has_tax_id') is-invalid @enderror" id="has_tax_id" required>
+                                                <option value="">Please select</option>
+                                                <option value="yes" {{ old('has_tax_id') == 'yes' ? 'selected' : '' }}>Yes</option>
+                                                <option value="no" {{ old('has_tax_id') == 'no' ? 'selected' : '' }}>No</option>
+                                            </select>
+                                            @error('has_tax_id')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
-                                    @error('latitude')
-                                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                                    @enderror
-                                    @error('longitude')
-                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                </div>
+
+                                <!-- Tax ID field: initially shown only when old('has_tax_id') == 'yes' -->
+                                <div class="form-row">
+                                    <div class="form-group col-12 col-md-6" id="tax_id_group" style="{{ old('has_tax_id') == 'yes' ? '' : 'display:none;' }}">
+                                        <label for="tax_id">Tax ID <span class="text-danger tax-required-star" style="{{ old('has_tax_id') == 'yes' ? '' : 'display:none;' }}">*</span></label>
+                                        <input type="text" name="tax_id" class="form-control @error('tax_id') is-invalid @enderror" id="tax_id"
+                                            placeholder="##-###-####-##" value="{{ old('tax_id') }}" {{ old('has_tax_id') == 'yes' ? 'required aria-required=true' : '' }}>
+                                        @error('tax_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <!-- Customer Information Section -->
+                            <fieldset class="app_fieldset">
+                                <legend>Customer Information</legend>
+
+                                <div class="form-row">
+                                    <div class="form-group col-12 col-md-6">
+                                        <label for="customer_name">Customer Name <span class="text-danger">*</span></label>
+                                        <input type="text" name="customer_name" class="form-control @error('customer_name') is-invalid @enderror" id="customer_name"
+                                            placeholder="Customer Name" value="{{ old('customer_name') }}" required aria-required="true">
+                                        @error('customer_name')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <div class="form-group col-12 col-md-6">
+                                        <label for="customer_contact">Contact No. <span class="text-danger">*</span></label>
+                                        <input type="tel" class="form-control @error('customer_contact') is-invalid @enderror" name="customer_contact" id="customer_contact"
+                                            placeholder="01#########" value="{{ old('customer_contact') }}" required aria-required="true">
+                                        @error('customer_contact')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group col-12 col-md-6">
+                                        <label for="holding_owner_name">Holding Owner Name</label>
+                                        <input type="text" name="holding_owner_name" class="form-control @error('holding_owner_name') is-invalid @enderror" id="holding_owner_name"
+                                            placeholder="Holding Owner Name" value="{{ old('holding_owner_name') }}">
+                                        @error('holding_owner_name')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <div class="form-group col-12 col-md-6">
+                                        <label for="ward">Ward <span class="text-danger">*</span></label>
+                                        <select name="ward" class="form-control @error('ward') is-invalid @enderror" id="ward" required aria-required="true">
+                                            <option value="">Select Ward</option>
+                                            @foreach($wards as $ward)
+                                            <option value="{{ $ward }}" {{ old('ward') == $ward ? 'selected' : '' }}>{{ $ward }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('ward')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group col-12 col-md-6">
+                                        <label for="road_code">Road Name <small class="text-muted">(Optional)</small></label>
+                                        <select name="road_code" class="form-control @error('road_code') is-invalid @enderror" id="road_code">
+                                            <option value="">Select Road</option>
+                                        </select>
+                                        @error('road_code')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="address">Address <span class="text-danger">*</span></label>
+                                    <textarea class="form-control @error('address') is-invalid @enderror" name="address" id="address" rows="3" placeholder="Address" required aria-required="true">{{ old('address') }}</textarea>
+                                    @error('address')
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                            </div>
+                            </fieldset>
+
+                            <fieldset class="app_fieldset">
+                                <legend>Service Info</legend>
+
+                                <div class="form-row">
+                                    <div class="form-group col-12 col-md-6">
+                                        <label for="proposed_emptying_date">Proposed Emptying Date <span class="text-danger">*</span></label>
+                                        <input type="date" class="form-control @error('proposed_emptying_date') is-invalid @enderror" name="proposed_emptying_date" id="proposed_emptying_date"
+                                            value="{{ old('proposed_emptying_date') }}" required aria-required="true">
+                                        @error('proposed_emptying_date')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <div class="form-group col-12">
+                                        <label for="notes">Notes / Comments <span class="text-danger">*</span></label>
+                                        <textarea class="form-control @error('notes') is-invalid @enderror" name="notes" id="notes" rows="3" placeholder="Additional Notes/Comments" required aria-required="true">{{ old('notes') }}</textarea>
+                                        @error('notes')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                            </fieldset>
+
+                            <fieldset class="app_fieldset">
+                                <legend>Location</legend>
+
+                                <div class="form-group">
+                                    <div id="map" class="w-100 rounded-lg shadow-sm border border-gray-300"></div>
+                                </div>
+
+                                <!-- Hidden inputs updated by the map -->
+                                <input type="hidden" name="latitude" id="latitude" value="{{ old('latitude') }}">
+                                <input type="hidden" name="longitude" id="longitude" value="{{ old('longitude') }}">
+                                @error('latitude')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                                @error('longitude')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+
+                            </fieldset>
 
                             <div class="text-center mt-3">
-                                <button type="submit" class="btn btn-primary btn-block">Send Now!</button>
-                            </div>
+                                 <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                             </div>
                         </form>
                     </div>
 
@@ -320,6 +399,8 @@ Developed By: Streamstech Ltd.   -->
     <script src="{{asset('js/app.js')}}"></script>
     <!-- Template Main JS File -->
     <script src="{{ asset('js/main.js')}}"></script>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cleave.js/1.0.2/cleave.min.js" integrity="sha512-SvgzybymTn9KvnNGu0HxXiGoNeOi0TTK7viiG0EGn2Qbeu/NFi3JdWrJs2JHiGA1Lph+dxiDv5F9gDlcgBzjfA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         function myFunction() {
@@ -332,10 +413,12 @@ Developed By: Streamstech Ltd.   -->
         }
 
         $(document).ready(function() {
-            var error = @js($errors->messages());
-            var hasSuccess = @js(session('success') ? true : false);
+            // Safely serialize server-side errors and success flag for the client
+            var errors = @json($errors->messages());
+            var hasSuccess = @json(session('success') ? true : false);
 
-            if (error.length > 0) {
+            // If there are validation errors, open the login modal.
+            if (errors && Object.keys(errors).length > 0) {
                 $('#loginModal').modal('show');
             }
 
@@ -354,19 +437,37 @@ Developed By: Streamstech Ltd.   -->
                 }, 300);
             }
 
+            // Toggle Tax ID visibility based on selection
+            function setTaxVisibility(show) {
+                var $group = $('#tax_id_group');
+                var $input = $('#tax_id');
+                var $star = $('.tax-required-star');
+
+                if (show) {
+                    $group.slideDown(150);
+                    $input.prop('required', true).attr('aria-required', 'true');
+                    $star.show();
+                } else {
+                    $group.slideUp(150);
+                    $input.prop('required', false).removeAttr('aria-required');
+                    $star.hide();
+                }
+            }
+
+            // initialize select2 and other things
             function initSelect2() {
                 $('#road_code').select2({
                     ajax: {
                         url: "{{ route('client-fsm-application.get-road-names') }}",
                         dataType: 'json',
                         delay: 250,
-                        data: function (params) {
+                        data: function(params) {
                             return {
                                 search: params.term,
                                 page: params.page || 1
                             };
                         },
-                        processResults: function (data, params) {
+                        processResults: function(data, params) {
                             params.page = params.page || 1;
                             return {
                                 results: data.results,
@@ -385,18 +486,28 @@ Developed By: Streamstech Ltd.   -->
             }
             initSelect2();
 
+            // ensure Tax ID visibility matches current selection on load
+            var initialHasTax = @json(old('has_tax_id', ''));
+            setTaxVisibility(initialHasTax === 'yes');
+
+            // listen for changes
+            $('#has_tax_id').on('change', function() {
+                setTaxVisibility($(this).val() === 'yes');
+            });
+
             /**
              * Pre-select the road code if it exists
              */
-            function preSelect()
-            {
+            function preSelect() {
                 var preselectedRoadCode = "{{ old('road_code') }}";
                 if (preselectedRoadCode) {
                     $.ajax({
                         type: 'GET',
                         url: "{{ route('client-fsm-application.get-road-names') }}",
-                        data: { search: preselectedRoadCode }
-                    }).then(function (data) {
+                        data: {
+                            search: preselectedRoadCode
+                        }
+                    }).then(function(data) {
                         if (data.results && data.results.length) {
                             var road = data.results[0];
                             var option = new Option(road.text, road.id, true, true);
@@ -427,62 +538,268 @@ Developed By: Streamstech Ltd.   -->
                 numericOnly: true
             });
 
-        })
+            /**
+             * Auto-fill form fields based on Tax ID
+             * Uses debounced input event for real-time auto-population
+             */
+            var taxIdInput = $('#tax_id');
+            var isLoadingData = false;
+            var debounceTimeout = null;
+            var minTaxIdLength = 10; // Minimum characters (including dashes) before making request
+            // Format: ##-###-####-## = 13 characters with dashes, 11 digits
+            // We'll check for at least 10 characters to ensure we're close to complete
 
-        // --- Geolocation: fill latitude/longitude from browser ---
-        document.addEventListener('DOMContentLoaded', function() {
-            const btn = document.getElementById('btn-get-location');
-            const btnText = document.getElementById('btn-get-location-text');
-            const latInput = document.getElementById('latitude');
-            const lonInput = document.getElementById('longitude');
-
-            function formatCoord(v) {
-                if (!isFinite(v)) return '';
-                return parseFloat(v).toFixed(6); // 6 decimal places
-            }
-
-            function setButtonLoading(loading) {
-                if (!btn) return;
-                btn.disabled = loading;
-                btn.classList.toggle('loading', loading);
-                btnText.textContent = loading ? 'Detecting...' : 'Use my location';
-            }
-
-            function success(pos) {
-                const coords = pos.coords;
-                if (latInput) latInput.value = formatCoord(coords.latitude);
-                if (lonInput) lonInput.value = formatCoord(coords.longitude);
-                setButtonLoading(false);
-            }
-
-            function error(err) {
-                setButtonLoading(false);
-                let msg = 'Unable to retrieve your location.';
-                if (err && err.code) {
-                    switch (err.code) {
-                        case 1: msg = 'Permission denied. Please allow location access in your browser.'; break;
-                        case 2: msg = 'Position unavailable.'; break;
-                        case 3: msg = 'Location request timed out.'; break;
-                    }
+            // Add loading indicator styling
+            function showTaxIdLoading(show) {
+                if (show) {
+                    taxIdInput.css('background-image', 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'16\' height=\'16\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23007bff\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Cpath d=\'M21 12a9 9 0 1 1-6.219-8.56\'/%3E%3C/svg%3E")');
+                    taxIdInput.css('background-repeat', 'no-repeat');
+                    taxIdInput.css('background-position', 'right 0.75rem center');
+                    taxIdInput.css('background-size', '16px 16px');
+                } else {
+                    taxIdInput.css('background-image', '');
                 }
-                // Minimal UI feedback
-                try { alert(msg); } catch(e){}
             }
 
-            if (btn) {
-                btn.addEventListener('click', function() {
-                    if (!navigator.geolocation) {
-                        alert('Geolocation is not supported by your browser.');
+            // Function to check if tax_id is valid (format: ##-###-####-##)
+            function isValidTaxId(taxId) {
+                // Tax ID format: ##-###-####-## (11 digits total with dashes)
+                var taxIdPattern = /^\d{2}-\d{3}-\d{4}-\d{2}$/;
+                return taxIdPattern.test(taxId.trim());
+            }
+
+            // Function to get minimum length check (digits only, minimum 8)
+            function hasMinimumLength(taxId) {
+                var digitsOnly = taxId.replace(/[^0-9]/g, '');
+                return digitsOnly.length >= 8; // At least 8 digits
+            }
+
+            // Function to clear all auto-populated fields
+            function clearAutoPopulatedFields() {
+                $('#customer_name').val('').trigger('input');
+                $('#customer_contact').val('').trigger('input');
+                $('#holding_owner_name').val('').trigger('input');
+                $('#ward').val('').trigger('change');
+                $('#road_code').val(null).trigger('change'); // Clear Select2
+                $('#address').val('').trigger('input');
+            }
+
+            // Auto-fill function
+            function autoFillFromTaxId() {
+                var taxId = taxIdInput.val().trim();
+                
+                // Clear fields if tax_id is empty or too short
+                if (!taxId || taxId.length < minTaxIdLength) {
+                    clearAutoPopulatedFields();
+                    return;
+                }
+
+                // Check minimum length (at least 8 digits)
+                if (!hasMinimumLength(taxId)) {
+                    clearAutoPopulatedFields();
+                    return;
+                }
+
+                // Don't fetch if tax_id format is invalid (but only check format if we have enough length)
+                if (!isValidTaxId(taxId)) {
+                    // If we have minimum length but invalid format, still try to fetch
+                    // (in case user is still typing)
+                    if (taxId.length >= 13) {
+                        // Only clear if we're sure the format is wrong and it's complete
+                        clearAutoPopulatedFields();
                         return;
                     }
-                    setButtonLoading(true);
-                    navigator.geolocation.getCurrentPosition(success, error, {
-                        enableHighAccuracy: false,
-                        timeout: 10000,
-                        maximumAge: 60000
-                    });
+                }
+
+                // Prevent multiple simultaneous requests
+                if (isLoadingData) {
+                    return;
+                }
+
+                isLoadingData = true;
+                showTaxIdLoading(true);
+
+                // Send tax_id with dashes (database stores it in format: "11-080-0319-00")
+                var url = "{{ route('client-fsm-application.get-building-data') }}";
+
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    data: {
+                        tax_id: taxId.trim()
+                    },
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    success: function(response) {
+                        if (response.success && response.data) {
+                            var data = response.data;
+                            
+                            // Populate customer name
+                            if (data.customer_name) {
+                                $('#customer_name').val(data.customer_name).trigger('input');
+                            } else {
+                                $('#customer_name').val('').trigger('input');
+                            }
+                            
+                            // Populate customer contact
+                            if (data.customer_contact) {
+                                $('#customer_contact').val(data.customer_contact).trigger('input');
+                            } else {
+                                $('#customer_contact').val('').trigger('input');
+                            }
+                            
+                            // Populate holding owner name
+                            if (data.holding_owner_name) {
+                                $('#holding_owner_name').val(data.holding_owner_name).trigger('input');
+                            } else {
+                                $('#holding_owner_name').val('').trigger('input');
+                            }
+                            
+                            // Populate ward
+                            if (data.ward) {
+                                $('#ward').val(data.ward).trigger('change');
+                            } else {
+                                $('#ward').val('').trigger('change');
+                            }
+                            
+                            // Populate road_code (Select2 dropdown)
+                            if (data.road_code && data.road_name_text) {
+                                // Check if option already exists
+                                var $roadCode = $('#road_code');
+                                var optionExists = $roadCode.find('option[value="' + data.road_code + '"]').length > 0;
+                                
+                                if (!optionExists) {
+                                    // Create and append new option
+                                    var newOption = new Option(data.road_name_text, data.road_code, true, true);
+                                    $roadCode.append(newOption);
+                                }
+                                
+                                // Set the value and trigger change
+                                $roadCode.val(data.road_code).trigger('change');
+                            } else {
+                                $('#road_code').val(null).trigger('change');
+                            }
+                            
+                            // Populate address
+                            if (data.address) {
+                                $('#address').val(data.address).trigger('input');
+                            } else {
+                                $('#address').val('').trigger('input');
+                            }
+
+                            // Show success message (optional, subtle notification)
+                            console.log('Building data loaded successfully');
+                        } else {
+                            // No data found - clear fields
+                            clearAutoPopulatedFields();
+                            console.log(response.message || 'No building data found');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        var errorMessage = 'Unable to fetch building data.';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMessage = xhr.responseJSON.message;
+                        }
+                        console.error('Error:', errorMessage);
+                        // Clear fields on error to avoid stale data
+                        clearAutoPopulatedFields();
+                    },
+                    complete: function() {
+                        isLoadingData = false;
+                        showTaxIdLoading(false);
+                    }
                 });
             }
+
+            // Debounce function
+            function debounceAutoFill(delay) {
+                // Clear any existing timeout
+                if (debounceTimeout) {
+                    clearTimeout(debounceTimeout);
+                }
+                
+                // Set new timeout
+                debounceTimeout = setTimeout(function() {
+                    autoFillFromTaxId();
+                    debounceTimeout = null;
+                }, delay);
+            }
+
+            // Add input event listener with debounce (400ms delay)
+            taxIdInput.on('input', function() {
+                var taxId = taxIdInput.val().trim();
+                
+                // If tax_id is cleared or too short, clear fields immediately
+                if (!taxId || taxId.length < minTaxIdLength || !hasMinimumLength(taxId)) {
+                    // Cancel any pending debounced request
+                    if (debounceTimeout) {
+                        clearTimeout(debounceTimeout);
+                        debounceTimeout = null;
+                    }
+                    clearAutoPopulatedFields();
+                    return;
+                }
+                
+                // Debounce the AJAX call (400ms delay)
+                debounceAutoFill(400);
+            });
+
+            // Also handle blur event to ensure data is fetched if user leaves field
+            taxIdInput.on('blur', function() {
+                // If there's a pending debounce, cancel it and fetch immediately
+                if (debounceTimeout) {
+                    clearTimeout(debounceTimeout);
+                    debounceTimeout = null;
+                }
+                autoFillFromTaxId();
+            });
+
+        })
+
+        // --- Leaflet Map Initialization ---
+        document.addEventListener('DOMContentLoaded', function() {
+            var latInput = document.getElementById('latitude');
+            var lonInput = document.getElementById('longitude');
+
+            function toFloatOrNull(v) {
+                var f = parseFloat(v);
+                return isFinite(f) ? f : null;
+            }
+
+            var defaultLat = 23.780887; // fallback center
+            var defaultLon = 90.279237;
+
+            var startLat = toFloatOrNull(latInput && latInput.value) ?? defaultLat;
+            var startLon = toFloatOrNull(lonInput && lonInput.value) ?? defaultLon;
+
+            var mapEl = document.getElementById('map');
+            if (!mapEl) return;
+
+            var map = L.map('map');
+            map.setView([startLat, startLon], 13);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            var marker = L.marker([startLat, startLon], { draggable: true }).addTo(map);
+
+            function updateLocation(lat, lon) {
+                if (latInput) latInput.value = Number(lat).toFixed(6);
+                if (lonInput) lonInput.value = Number(lon).toFixed(6);
+            }
+
+            marker.on('dragend', function(e) {
+                var p = e.target.getLatLng();
+                updateLocation(p.lat, p.lng);
+            });
+
+            map.on('click', function(e) {
+                marker.setLatLng(e.latlng);
+                updateLocation(e.latlng.lat, e.latlng.lng);
+            });
         });
     </script>
 </body>
