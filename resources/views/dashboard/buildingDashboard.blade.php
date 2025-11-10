@@ -49,7 +49,7 @@
   @endcan
 
   @can('Sanitation CountBox')
-  <h1 style="padding: 15px 0 15px 0; font-size: 24px;">{{ __("Sanitation Systems") }}</h1>
+  <h1 style="padding: 15px 0 15px 0; font-size: 24px;">{{ __("Building Sanitation Facilities") }}</h1>
   <div class="row">
       @foreach ($sanitationSystems as $sanitationSystem)
           <div class="col-lg-3 col-xs-6">
@@ -58,7 +58,8 @@
                       @if (
                           $sanitationSystem->icon_name &&
                               $sanitationSystem->icon_name != 'no_icon' &&
-                              $sanitationSystem->icon_name != 'others.svg')
+                              $sanitationSystem->icon_name != 'others.svg' 
+                              )
                           <img src="{{ asset('img/svg/imis-icons/' . $sanitationSystem->icon_name) }}"
                               alt="{{ __($sanitationSystem->sanitation_system) }}">
                       @else
