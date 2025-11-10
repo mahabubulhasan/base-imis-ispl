@@ -1508,6 +1508,31 @@ class DashboardService
 
         return $chart;
     }
+	public function getDrainLengthPerWardChart()
+    {
+        $chart = array();
+        $query = "SELECT w.ward, round(CAST(sum(ST_Length(ST_TRANSFORM(ST_Intersection(drains.geom,w.geom),32645))) as numeric ),2) as length
+        FROM layer_info.wards w, utility_info.drains drains
+        WHERE drains.deleted_at IS NULL
+        GROUP BY w.ward
+        ORDER BY w.ward";
+
+        $results = DB::select($query);
+
+        $labels = array();
+        $values = array();
+        foreach ($results as $row) {
+            $labels[] = '"' . $row->ward . '"';
+            $values[] = $row->length;
+        }
+
+        $chart = array(
+            'labels' => $labels,
+            'values' => $values,
+        );
+
+        return $chart;
+    }
 
     public function getWaterborneCasesChart($year = null)
     {
