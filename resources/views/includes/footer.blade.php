@@ -1,6 +1,6 @@
 <footer class="main-footer">
     <div class="float-right d-none d-sm-inline ">
-        <strong>Developed by:</strong> <a href="http://www.innovativesolution.com.np">Innovative Solution Pvt. Ltd.</a>
+        <strong>Developed by:</strong> <a href="https://streamstech.com/" target="_blank" rel="noopener noreferrer">Streams Tech Ltd.</a>
     </div>
 
 <strong> Base IMIS <i class="fa-regular fa-copyright"> </i>  2022-{{ \Carbon\Carbon::now()->format('Y') }} by <a href="https://www.innovativesolution.com.np">
@@ -9,7 +9,7 @@
 </footer>
 <aside class="control-sidebar control-sidebar-dark" >
     <div class="p-3" >
-    <h4>{{ Auth::user()->name }}</h4>
+    <h4>Laxmipur Municipality</h4>
     <hr class="mb-2">
     <div class="mb-4">
                 <p>

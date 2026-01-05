@@ -479,8 +479,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 </strong>
     </div>
             <div class="credits">
-                Developed by
-                <a href="https://innovativesolution.com.np/">Innovative Solution Pvt. Ltd.</a>
+                Developed by: <a href="https://streamstech.com/" target="_blank" rel="noopener noreferrer">Streams Tech Ltd.</a>
             </div>
         </div>
     </footer>
