@@ -221,7 +221,7 @@ Developed By: Streamstech Ltd.   -->
                                     <div class="form-group col-12 col-md-6" id="tax_id_group" style="{{ old('has_tax_id') == 'yes' ? '' : 'display:none;' }}">
                                         <label for="tax_id">Tax ID <span class="text-danger tax-required-star" style="{{ old('has_tax_id') == 'yes' ? '' : 'display:none;' }}">*</span></label>
                                         <input type="text" name="tax_id" class="form-control @error('tax_id') is-invalid @enderror" id="tax_id"
-                                            placeholder="##-###-####-##" value="{{ old('tax_id') }}" {{ old('has_tax_id') == 'yes' ? 'required aria-required=true' : '' }}>
+                                            placeholder="##-###-####-##" value="{{ old('tax_id') }}">
                                         @error('tax_id')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -431,8 +431,8 @@ Developed By: Streamstech Ltd.   -->
 
                 if (show) {
                     $group.slideDown(150);
-                    $input.prop('required', true).attr('aria-required', 'true');
-                    $star.show();
+                    $input.prop('required', false).removeAttr('aria-required');
+                    $star.hide();
                 } else {
                     $group.slideUp(150);
                     $input.prop('required', false).removeAttr('aria-required');
