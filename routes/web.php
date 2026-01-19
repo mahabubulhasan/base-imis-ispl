@@ -260,6 +260,18 @@ Route::group([
     'namespace' => 'Fsm'
 ], function () {
 
+    Route::post('/nsd/authenticate', 'NsdDashboardController@getBearerToken');
+    Route::get('/nsd/push-nsd/{year}', 'NsdDashboardController@pushToNsd');
+    Route::get('/nsd/cwis-data/{year}', 'NsdDashboardController@getCwisData');
+    Route::get('/nsd/cwis-status', 'NsdDashboardController@checkNsdStatus');
+    Route::get('/nsd-setting', 'NsdSettingController@index')->name('nsd-setting.index');
+    Route::get('/nsd-setting/create', 'NsdSettingController@create')->name('nsd-setting.create'); 
+    Route::post('/nsd-setting', 'NsdSettingController@store')->name('nsd-setting.store'); 
+    Route::get('/nsd-setting/{id}/edit', 'NsdSettingController@edit')->name('nsd-setting.edit'); 
+    Route::put('/nsd-setting/{id}', 'NsdSettingController@update')->name('nsd-setting.update'); 
+
+
+
     Route::get('/cwis-setting/data', 'CwisSettingController@getData');
     Route::resource('/cwis-setting', 'CwisSettingController');
 

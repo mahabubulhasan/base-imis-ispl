@@ -51,6 +51,12 @@ class GuestSeeder extends Seeder
                     //For Public Health Module
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Hotspots', 'Yearly Waterborne Cases'])->whereIn('type', ['List', 'View', 'View on map']));
 
+                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['NSD Setting'])
+                        ->whereIn('type', ['List']));
+
+                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['NSD'])
+                        ->whereIn('type', ['Show']));
+
                     $createdRole->givePermissionTo(
                         Permission::all()->whereIn('group', ['Dashboard'])
                             ->whereIn('name', [

@@ -375,6 +375,12 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
         </select>
     </div>
     <div class="buttons-container">
+        @can('Push CWIS Indicator to NSD')
+        <button class="export-button" style="margin-right:none" id="nsd-push">Push Data to NSD</button>
+        @endcan
+        @can('Check Status of Indicator in NSD')
+        <button class="export-button" style="margin-right:none" id="nsd-status">Check Publication status in NSD</button>
+        @endcan
         <button class="export-button" style="margin-right:none" id="export">{{__("Export to Excel")}}</button>
         <button class="pdf">{{__("Generate PDF")}}</button>
     </div>
@@ -948,6 +954,83 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 
         document.querySelector('.pdf').addEventListener('click', downloadPDF);
     });
+
+    $('#nsd-push').on('click', function (e) {
+    e.preventDefault();
+
+    let selectedYear = $('#cwis-year-select').val();
+    if (!selectedYear) {
+        toastr.error("Please select a year first.");
+        return;
+    }
+
+    let url = "{{ url('fsm/nsd/push-nsd') }}/" + selectedYear;
+
+    // Disable the button and show a loading spinner
+    let $button = $(this);
+    $button.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Processing...');
+
+    // Make an AJAX request to check and push data
+    $.get(url, function(response) {
+        if (response.error) {
+            $button.prop('disabled', false).html('Push NSD'); // Re-enable button
+        } else {
+            setTimeout(function () {
+                window.location.href = url;
+            });
+        }
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+      toastr.error("CWIS Data Could Not be Pushed. Please Check NSD Integration Settings");
+      $button.prop('disabled', false).html('Push CWIS Indicator to NSD'); // Re-enable button
+    });
+});
+
+
+
+   $('#nsd-status').on('click', function (e) {
+    e.preventDefault();
+    let selectedYear = $('#cwis-year-select').val();
+    if (!selectedYear) {
+        toastr.error("Please select a year first.");
+        return;
+    }
+
+    let url = "{{ url('fsm/nsd/cwis-status') }}" ;
+
+    $.ajax({
+        url: url,
+        type: "GET",
+        dataType: "json",
+        success: function (response) {
+            console.log(response);            
+
+            if (Array.isArray(response) && response.length > 0) {
+                let data = response[0]; 
+                let city = data.city;
+                let publishedYears = data.published_years || [];
+                let draftYears = data.draft_years || [];
+               
+                Swal.fire({
+                    title: 'CWIS Status of Published and Draft Years',
+                    html: `<p><strong>City:</strong> ${city}</p>
+                        <p><strong>Published Years:</strong> ${publishedYears.length ? publishedYears.join(", ") : "None"}</p>
+                           <p><strong>Draft Years:</strong> ${draftYears.length ? draftYears.join(", ") : "None"}</p>`,
+                    icon: 'info',
+                    confirmButtonText: 'OK'
+                });
+            } 
+        },
+        error: function (xhr, status, error) {
+            Swal.fire({
+                title: 'Error',
+                text: "Unable to retrieve year data from NSD. Please verify your NSD integration settings",
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+        }
+    });
+});
+
 </script>
 
 @endif

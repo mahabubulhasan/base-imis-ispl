@@ -1712,6 +1712,36 @@ class PermissionsSeeder extends Seeder
                     ]
                 ]
             ],
+            [
+                "group" => "NSD",
+                "perms" => [
+                    [
+                       "type" => "Push",
+                       "name" => "Push CWIS Indicator to NSD"
+                    ],
+                    [
+                        "type" => "Show",
+                        "name" => "Check Status of Indicator in NSD"
+                    ]
+                ]
+            ],
+            [
+                "group" => "NSD Setting",
+                "perms" => [
+                    [
+                        "type" => "List",
+                        "name" => "LisT NSD Setting"
+                    ],
+                    [
+                        "type" => "Save",
+                        "name" => "Save NSD Setting"
+                    ],
+                    [
+                        "type" => "Edit",
+                        "name" => "Edit NSD Setting"
+                    ]
+                ]
+            ]
         ];
 
 

@@ -57,6 +57,12 @@ class MunicipalityExecutiveSeeder extends Seeder
                     //For Settings
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Users', 'Roles'])->whereIn('type', ['List', 'View']));
 
+                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['NSD Setting'])
+                        ->whereIn('type', ['List']));
+
+                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['NSD'])
+                        ->whereIn('type', ['Show']));
+
                     //Main Dashboard
                     $createdRole->givePermissionTo(
                         Permission::all()->whereIn('group', ['Dashboard'])

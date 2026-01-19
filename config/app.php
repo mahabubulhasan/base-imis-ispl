@@ -14,6 +14,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'Integrated Municipal Information System'),
+    'city' => env('CITY', 'DefaultCity'),
 
     /*
     |--------------------------------------------------------------------------

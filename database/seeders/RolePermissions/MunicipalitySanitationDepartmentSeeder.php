@@ -58,6 +58,12 @@ class MunicipalitySanitationDepartmentSeeder extends Seeder
 
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['CWIS', 'KPI Dashboard', 'KPI Target']));
 
+                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['NSD Setting'])
+                        ->whereIn('type', ['List', 'Save']));
+
+                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['NSD'])
+                        ->whereIn('type', ['Push', 'Show']));    
+
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group',['Data Export'])->whereIn('type',['Export']));
 
                     $createdRole->givePermissionTo(

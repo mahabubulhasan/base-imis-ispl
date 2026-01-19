@@ -77,6 +77,12 @@ class MunicipalityITAdminSeeder extends Seeder
                         ->whereIn('type', ['View', 'List', 'Export', 'History', 'View on map'])
                     );
 
+                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['NSD Setting'])
+                        ->whereIn('type', ['List', 'Save']));
+
+                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['NSD'])
+                        ->whereIn('type', ['Show']));
+
                     //CWIS IMS
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['CWIS'])
                             ->whereIn('type', ['List','View', 'Export'])
