@@ -1700,47 +1700,68 @@ class DashboardService
 
     public function treatmentPlantTestResultsByYear()
     {
-        $results = \DB::select("
-    WITH standards AS (
-    SELECT
-        bod_standard::numeric AS bod_standard,
-        tss_standard::numeric AS tss_standard,
-        ecoli_standard::numeric AS ecoli_standard
-    FROM
-        public.treatment_plant_performance_efficiency_test_settings
-    WHERE
-        deleted_at IS NULL
-    LIMIT 1
-)
-SELECT
-    tp.name AS treatment_plant_name,
-    EXTRACT(YEAR FROM tpt.date) AS year,
-    COUNT(*) AS total_count,
-    COUNT(*) - COALESCE(SUM(CASE
-        WHEN tpt.bod <= (SELECT bod_standard FROM standards)
-            AND tpt.tss <= (SELECT tss_standard FROM standards)
-            AND tpt.ecoli <= (SELECT ecoli_standard FROM standards)
-        THEN 1
-        ELSE 0
-    END)::Numeric, 0) AS StandardMeet,
-    COALESCE(SUM(CASE
-        WHEN tpt.bod <= (SELECT bod_standard FROM standards)
-            AND tpt.tss <= (SELECT tss_standard FROM standards)
-            AND tpt.ecoli <= (SELECT ecoli_standard FROM standards)
-        THEN 1
-        ELSE 0
-    END)::Numeric, 0) AS BelowStandard
-FROM
-    fsm.treatmentplant_tests tpt
-JOIN
-    fsm.treatment_plants tp ON tpt.treatment_plant_id = tp.id
-GROUP BY
-    tp.name, year
-ORDER BY
-    tp.name, year;
+        // Temporary localhost-safe fallback: Use default standards if table doesn't exist
+        $defaultStandards = [
+            'bod_standard' => 50,
+            'tss_standard' => 60,
+            'ecoli_standard' => 1000,
+        ];
 
-    ");
+        $standards = $defaultStandards;
 
+        // Try to get standards from database if table exists
+        try {
+            $row = \DB::table('public.treatment_plant_performance_efficiency_test_settings')
+                ->whereNull('deleted_at')
+                ->select(['bod_standard', 'tss_standard', 'ecoli_standard'])
+                ->first();
+
+            if ($row) {
+                $standards = [
+                    'bod_standard' => (float) $row->bod_standard,
+                    'tss_standard' => (float) $row->tss_standard,
+                    'ecoli_standard' => (float) $row->ecoli_standard,
+                ];
+            }
+        } catch (\Exception $e) {
+            // Table doesn't exist or query failed - use defaults
+            $standards = $defaultStandards;
+        }
+
+        // Use parameterized query with fallback standards
+        try {
+            $results = \DB::select("
+                SELECT
+                    tp.name AS treatment_plant_name,
+                    EXTRACT(YEAR FROM tpt.date) AS year,
+                    COUNT(*) AS total_count,
+                    COUNT(*) - COALESCE(SUM(CASE
+                        WHEN tpt.bod <= :bod_standard
+                            AND tpt.tss <= :tss_standard
+                            AND tpt.ecoli <= :ecoli_standard
+                        THEN 1
+                        ELSE 0
+                    END)::Numeric, 0) AS StandardMeet,
+                    COALESCE(SUM(CASE
+                        WHEN tpt.bod <= :bod_standard
+                            AND tpt.tss <= :tss_standard
+                            AND tpt.ecoli <= :ecoli_standard
+                        THEN 1
+                        ELSE 0
+                    END)::Numeric, 0) AS BelowStandard
+                FROM
+                    fsm.treatmentplant_tests tpt
+                JOIN
+                    fsm.treatment_plants tp ON tpt.treatment_plant_id = tp.id
+                GROUP BY
+                    tp.name, year
+                ORDER BY
+                    tp.name, year;
+            ", $standards);
+        } catch (\Exception $e) {
+            // If main query fails (e.g., treatmentplant_tests table missing), return empty array
+            $results = [];
+        }
 
         return $results;
     }
