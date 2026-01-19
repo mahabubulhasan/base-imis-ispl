@@ -51,7 +51,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                         <a href="#" id="kml_drag_drop" class="btn btn-default map-control"data-toggle="tooltip" data-placement="bottom" title="{{ __('KML Drag and Drop') }}" ><img src="{{ asset('img/kml_icon.png')}}" style="height:22px;"alt="Location Icon"> </a>
                         <a href="#" id="removemarkers_control" class="btn btn-default map-control" data-toggle="tooltip"
                            data-placement="bottom" title="{{ __('Remove Markers') }}"><i class="fa fa-trash fa-fw"></i></a>
-                          
+
                     </ul>
 
                 </div>
@@ -128,13 +128,13 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     <form method="POST" action="{{ url('maps/get-kml-info-report-csv') }}" id="kml-export-form">
                         @csrf
                         <input type="hidden" name="kml_dragdrop_geom" value="" id="kml_dragdrop_geom"/>
-                        
+
                         <button type="submit" id="kml-dragdrop-export-excel-btn" class="btn btn-default">
                             {{ __('Export to Excel') }}
                         </button>
                     </form>
 
-                        
+
                     </div>
                 </div>
                 @endcan
@@ -169,7 +169,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
             </div>
             <div class="box-footer" id="add-tool-box" style="display:none;position: absolute;top: 10px;left: 15px;filter: drop-shadow(0 10px 4px rgba(0,0,0,0.2));border-radius: 5px;border: 1px solid #cccccc;">
                 <div id="add-road-tool-box-content">
-                  
+
                         <div xclass="form-group">
                             <div class="input-group">
 
@@ -203,34 +203,34 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                         {!! Form::label('name',__('Road Name') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
                                         {!! Form::text('name',null,['class' => 'form-control', 'placeholder' => __('Road Name')]) !!}
                                     </div>
-                                    
+
                                       <div class="add-road-form-group pt-2">
                                         {!! Form::label('hierarchy',__('Hierarchy'),['class' => 'control-label'],false) !!}
                                         {!! Form::select('hierarchy', $roadHierarchy, null, ['class' => 'form-control', 'placeholder' => __('Road Hierarchy')]);!!}
                                     </div>
-                                    
+
                                     <div class="add-road-form-group pt-2">
                                         {!! Form::label('right_of_way',__('Right of Way (m)') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
                                         {!! Form::number('right_of_way',null,['class' => 'form-control', 'placeholder' => __('Right of Way (m)'),'min' => 1]) !!}
                                     </div>
-                                   
+
                                     <div class="add-road-form-group pt-2">
                                         {!! Form::label('carrying_width',__('Carrying Width (m)') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
                                         {!! Form::number('carrying_width',null,['class' => 'form-control', 'placeholder' => __('Carrying Width (m)'),'min' => 1]) !!}
                                     </div>
-                                    
+
 
                                     <div class="add-road-form-group pt-2">
                                         {!! Form::label('surface_type',__('Surface Type'),['class' => 'control-label'],false) !!}
                                         {!! Form::select('surface_type', $roadSurfaceTypes, null, ['class' => 'form-control', 'placeholder' => __('Road Surface Type')]);!!}
                                     </div>
-                                    
+
                                     <div class="add-road-form-group pt-2">
                                         {!! Form::label('length',__('Length (m)') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
                                         {!! Form::number('length',null,['class' => 'form-control', 'placeholder' => __('Road Length (m)'),'min' => 1]) !!}
                                     </div>
-                                   
-                                    
+
+
                                     <div class="add-road-form-group pt-2">
                                         {!! Form::button(__('Save'), ['class' => 'btn btn-info', 'id' => 'add_road_submit_btn']) !!}
                                     </div>
@@ -316,7 +316,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                         {!! Form::button(__('Save'), ['class' => 'btn btn-info','id'=>'add_drain_submit_btn', 'style' => 'width: -webkit-fill-available; margin-top: 12px;']) !!}
                                     </div>
                             </div>
-                       
+
                     </form>
 
                     <form class="form-horizontal" id="add-watersupply-form">
@@ -328,7 +328,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                 <div id="add-watersupply-errors" tabindex='1'>
 
                                 </div>
-                               
+
                                     <div class="add-watersupply-form-group">
                                     {!! Form::label('road_code', __('Road Code') .' <span style="color: red">*</span>', ['class' => 'control-label d-block'], false) !!}
                                         {!! Form::select('road_code', $road_code, null, ['class' => 'form-control','id'=>'road_code_watersupply', 'placeholder' =>  __('Road Code'), 'style' => 'width: 350px;']) !!}
@@ -355,14 +355,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                         {!! Form::text('length', null, ['class' => 'form-control', 'id' => 'length_watersupply', 'placeholder' =>  __('Length (m)'), 'oninput' => "this.value = this.value.replace(/[^0-9.]/g, '');"]) !!}
 
                                     </div>
-                                   
+
                                     <div class="add-watersupply-form-group pt-2" >
                                     {!! Form::button(__('Save'), ['class' => 'btn btn-info', 'id' => 'add_watersupply_submit_btn', 'style' => 'width: -webkit-fill-available; margin-top: 12px;']) !!}
 
 
                                     </div>
                             </div>
-                       
+
                     </form>
                 </div>
                     <div id="feature_info_content"></div>
@@ -960,7 +960,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                             <!-- Swm -->
                                             <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Solid Waste Payment Status') }}">
                                                 <a class="btn btn-default collapse-control" role="button" data-toggle="collapse" href="#collapse_swm" aria-expanded="false" aria-controls="collapse_building_tax_status"><i class="fa fa-building"></i>{{ __('Solid Waste Payment Status') }}</a>
-                                            </span> 
+                                            </span>
                                             <div class="collapse" id="collapse_swm">
                                                 <div class="card">
                                                     <div class="card-body">
@@ -1721,11 +1721,11 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     <form class="form-horizontal" id="form-toilet-isochrone-map">
                         <div class="form-group row">
                             <label class="col-form-label col-md-4">{{ __('Estimated Travel Distance (m)') }}</label>
-                            <input type="number" 
-                                class="form-control col-md-4" 
-                                id="toilet-isochrone-distance" 
-                                placeholder="{{ __('Distance in meter') }}" 
-                                min="1" 
+                            <input type="number"
+                                class="form-control col-md-4"
+                                id="toilet-isochrone-distance"
+                                placeholder="{{ __('Distance in meter') }}"
+                                min="1"
                                 step="1" />
 
                         </div>
@@ -1743,7 +1743,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                         </div>
                     </form>
                 </div>
-              
+
             </div>
 
         </div>
@@ -2019,7 +2019,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     });
                     return; // Stop the function execution here
                 }
-             displayAjaxLoader(); 
+             displayAjaxLoader();
             var format = new ol.format.WKT();
             var geometries = []; // Store all geometries
 
@@ -2040,7 +2040,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function(data) {
-                 
+
                     // Check if at least one geometry does NOT intersect
                     var hasNonIntersection = data.details.some(item => item.intersects === false);
 
@@ -2094,8 +2094,8 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
                     map.getView().fit(
                         eLayer.kml_features.layer.getSource().getExtent(), /** @type {ol.Size} */ (map.getSize())
-                    ); 
-                    
+                    );
+
                     var center = ol.extent.getCenter(eLayer.kml_features.layer.getSource().getExtent());
 
                     if (eLayer.kmlbuildings) {
@@ -2156,7 +2156,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                 displayAjaxErrorModal(error.statusText);
                             }
                         });
-               
+
                         $('#kml_dragdrop_geom').val(polygonGeometries.join(','));
                         document.getElementById('kml-export-form').addEventListener('submit', function (e) {
                             const sourceGeom = document.getElementById('kml_dragdrop_geom').value;
@@ -3351,7 +3351,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 disableAllControls();
                 $('.map-control').removeClass('map-control-active');
                 currentControl = '';
-            
+
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(showLoc, errHand);
                 }
@@ -3359,7 +3359,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                  function showLoc(pos) {
                     latt = pos.coords.latitude;
                     long = pos.coords.longitude;
-                    
+
                 displayAjaxLoader();
                 $.ajax({
                     url: "{{url('/maps/check-location-within-boundary')}}",
@@ -3370,20 +3370,20 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     },
                     success: function (data) {
                         if (data.length > 0) {
-                                
+
                                 displayPointByCoordinates(latt, long);
                                 removeAjaxLoader();
                             }
                          else {
                              displayAjaxErrorModal( "{{ __('Your Current Location is Outside the Municipality Boundary')}}");
                         }
-                        
+
                     },
                     error: function (data) {
                         displayAjaxError();
                     }
                 })
-                    
+
                 }
 
                     function errHand(err) {
@@ -3403,8 +3403,8 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                         break;
                     }
                     }
-           
-           
+
+
                $('#kml_drag_drop').click(function (e) {
                 e.preventDefault();
                 disableAllControls();
@@ -3854,7 +3854,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     $('#add_delete_control').hide();
                     $('#add_edit_control').hide();
                      handleAddRoadControlClick(code);
-                     currentAddControl = 'Modify Road'; 
+                     currentAddControl = 'Modify Road';
                     addModifyInteractions(currentAddControl, code, 'roadlines');
 
                 }
@@ -3888,13 +3888,13 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 // On page load, check if the hash is #add_road_control
                 if (window.location.hash.startsWith('#edit_sewer_control-')) {
                     const code = window.location.hash.split('-')[1];
-                    
+
                     $('#add_start_control').hide();
                     $('#add_undo_last_point_control').hide();
                     $('#add_delete_control').hide();
                     $('#add_edit_control').hide();
                     handleAddSewerControlClick(code);
-                    currentAddControl = 'Modify Sewer'; 
+                    currentAddControl = 'Modify Sewer';
                     addModifyInteractions(currentAddControl, code , 'sewerlines');
 
                 }
@@ -3930,14 +3930,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 // On page load, check if the hash is #add_road_control
                 if (window.location.hash.startsWith('#edit_drain_control-')) {
                     const code = window.location.hash.split('-')[1];
-                                        
+
                     $('#add_start_control').hide();
                     $('#add_undo_last_point_control').hide();
                     $('#add_delete_control').hide();
                     $('#add_edit_control').hide();
 
                     handleAddDrainControlClick(code);
-                    currentAddControl = 'Modify Drain'; 
+                    currentAddControl = 'Modify Drain';
                     addModifyInteractions(currentAddControl, code , 'drains');
                 }
 
@@ -3978,13 +3978,13 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     $('#add_delete_control').hide();
                     $('#add_edit_control').hide();
                      handleAddWatersupplyControlClick(code);
-                     currentAddControl = 'Modify Watersupply'; 
+                     currentAddControl = 'Modify Watersupply';
                      addModifyInteractions(currentAddControl, code , 'watersupplys');
                 }
 
 
                 function handleMapControl(controlId, layerName, toolBoxId, geoServerLayer) {
-                
+
                         disableAllControls();
                         var allLayers = map.getLayers().getArray();
                         $('.map-control').removeClass('map-control-active');
@@ -4038,7 +4038,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                         }
                 }
 
-                
+
             // Add draw,snap & undo interactions.
             $('#add_start_control').click(function (e) {
                 e.preventDefault();
@@ -4097,7 +4097,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
             $('#add_submit_control').click(function (e) {
                     e.preventDefault();
-                 
+
                     let code = $('#add_submit_control').data('code');
 
                     const layerTypeLower = currentLayerType.toLowerCase();
@@ -4132,8 +4132,8 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                 if (result.isConfirmed) {
                                     displayAjaxLoader();
 
-                                    const geometry = modifiedFeature.getGeometry().clone(); 
-    
+                                    const geometry = modifiedFeature.getGeometry().clone();
+
                                     // Check the type of geometry and calculate length
                                     if (geometry instanceof ol.geom.LineString) {
                                         var length = geometry.getLength(); // Get length in meters
@@ -4147,12 +4147,12 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                         });
 
                                     }
-                                   
+
                                     const lineFormat = new ol.format.WKT();
                                     const geom = lineFormat.writeGeometry(
                                         modifiedFeature.getGeometry().clone().transform('EPSG:3857', 'EPSG:4326')
                                     );
-            
+
                                     // Dynamic values based on the layer type
                                     let formData = {};
                                     let updateUrl = '';
@@ -4205,7 +4205,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                             Swal.fire("{{ __('Error') }}", "{{ __('Invalid Layer') }}", 'error');
                                             return;
                                     }
-                                    
+
 
                                     $.ajaxSetup({
                                         headers: {
@@ -4303,7 +4303,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     "geom": geom
                 };
 
-                
+
                 url = '{{url("/utilityinfo/sewerlines/add-sewer")}}';
                 return_url = '{{ route("sewerlines.index") }}';
 
@@ -4325,7 +4325,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     "surface_type": $('#surface_type_drain').val(),
                     'size': $('#size').val(),
                     'length': $('#length_drain').val(),
-                    'treatment_plant_id': $('#tp_drain').val(), 
+                    'treatment_plant_id': $('#tp_drain').val(),
                     "geom": geom
                 };
                 url = '{{url("/utilityinfo/drains/add-drain")}}';
@@ -4349,7 +4349,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     "length": $('#length_watersupply').val(),
                     'project_name': $('#project_name').val(),
                     'type': $('#type').val(),
-                    'material_type': $('#material_type').val(), 
+                    'material_type': $('#material_type').val(),
                     "geom": geom
                 };
                 url = '{{url("/utilityinfo/watersupplys/add-watersupply")}}';
@@ -4371,7 +4371,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 success: function(data) {
                     $('#add-' + controlType + '-errors').empty();
                     $('.add-' + controlType + '-form').slideUp();
-                    removeAjaxLoader(); 
+                    removeAjaxLoader();
                     Swal.fire({
                         title: 'Success!',
                         text: `${controlType === 'watersupply' ? 'Water Supply' : controlType.charAt(0).toUpperCase() + controlType.slice(1)} {{ __('added successfully') }}`,
@@ -4379,7 +4379,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                         confirmButtonText: 'OK!',
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            window.location.href = return_url; 
+                            window.location.href = return_url;
                              displayAjaxLoader();
                         }
                     });
@@ -4439,7 +4439,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
             e.preventDefault();
             submitDetails('watersupply');
         });
-        
+
             function hideAddForm(){
                 $('.add-road-form').slideUp();
                 $('.add-drain-form').slideUp();
@@ -4466,7 +4466,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     hideAddForm();
                     removeDrawnFeatures();
                 });
-    
+
                 layerDrawInteraction.on("drawend", function(e) {
                 // Get the geometry of the drawn feature
                 var feature = e.feature;
@@ -4498,10 +4498,10 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 else if(window.location.hash === '#add_watersupply_control'){
                     document.getElementById('length_watersupply').value = length.toFixed(2);
                 }
-                
+
             });
             }
-            
+
             function addModifyInteractions(currentAddControl, code, utilityType) {
 
                 // Clear existing interactions
@@ -5568,7 +5568,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 reportContainmentPopupCloser.blur();
                 return false;
             };
-            
+
 
             /**
              * Elements that make up the popup for feedback.
@@ -5961,7 +5961,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 return false;
             };
 
-            
+
             var drag;
 
             /**
@@ -6349,7 +6349,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                         // Row for dropdown and button
                                         html += '<div class="row justify-content-end align-items-center">';
                                         html += '<form class="form-inline d-flex align-items-center">';
-                                       
+
                                         // Year selection dropdown
                                         html += '<div class="form-group d-flex align-items-center pr-3">';
                                         html += '<label class="p-2" for="year_select">Select Year</label>';
@@ -6432,7 +6432,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                        }
                                       chart.update();
                                     });
-                                
+
 
                                 } else {
                                     reportContainmentPopupContent.innerHTML = "No Containment data available.";
@@ -6448,10 +6448,10 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                 displayAjaxError();
                             }
                         });
-                    
-                       
-                       
-                       
+
+
+
+
                     });
 
                     map.addInteraction(draw);
@@ -6605,7 +6605,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 currentControl = '';
                 $("#wmsModal").modal('show');
             });
-            
+
 
             // Handler for building structype checkbox change
             $('#building_structype_checkbox_container').on('change', 'input[type=checkbox]', function () {
@@ -9015,7 +9015,7 @@ $.ajax({
                     });
                 addExtraLayer('toilets_isochrone_buildings', 'Toilets Isochrone Buffer Buildings', layer);
                 }
-               
+
                 var urliso = '{{ url("maps/toilet-isochrone") }}';
 
                 var distance = $('#toilet-isochrone-distance').val() ; //distance calculated in meter
@@ -9060,7 +9060,7 @@ $.ajax({
                         displayAjaxError();
                     }
                 });
-                
+
              });
 
              function styleFunction(i, resolution) {
@@ -9093,7 +9093,7 @@ $.ajax({
                 var b = Math.floor(Math.random() * 256);
                 var color = [r, g, b];
                 return(color);
-            } 
+            }
              $("#form-road-inaccessible").submit(function (event) {
                 event.preventDefault();
                 roadInaccessiblePopupOverlay.setPosition(undefined);
@@ -9285,7 +9285,7 @@ $.ajax({
                 if (layer == 'buildings_layer')
                 {
                     params.PROPERTYNAME = 'bin,owner_name,nid,owner_gender,owner_contact,building_associated_to,ward,road_code,house_number,house_locality,tax_code,structure_type_name,surveyed_date,construction_year,floor_count,functional_use_name,use_category_name,office_business_name,household_served,male_population,female_population,other_population,population_served,diff_abled_male_pop,diff_abled_female_pop,diff_abled_others_pop,lic_community,lic_community,water_source_name,water_customer_id,watersupply_pipe_code,well_presence_status,distance_from_well,swm_customer_id,toilet_status,toilet_count,household_with_private_toilet,population_with_private_toilet,building_sanitation_system,sewer_code,drain_code,desludging_vehicle_accessible,estimated_area,toilet_name,verification_status,house_image'
-                    // 'bin,house_number,house_locality,ward,road_code,estimated_area,floor_count,household_served,population_served,office_business_name,building_associated_to,well_presence_status,toilet_status,toilet_count,sewer_code,drain_code,surveyed_date,tax_code,desludging_vehicle_accessible,construction_year,distance_from_well,owner_name,owner_gender,owner_contact,nid,functional_use_name,structure_type_type,use_category_name,sanitation_system_technology_name,water_source_source,house_image'; 
+                    // 'bin,house_number,house_locality,ward,road_code,estimated_area,floor_count,household_served,population_served,office_business_name,building_associated_to,well_presence_status,toilet_status,toilet_count,sewer_code,drain_code,surveyed_date,tax_code,desludging_vehicle_accessible,construction_year,distance_from_well,owner_name,owner_gender,owner_contact,nid,functional_use_name,structure_type_type,use_category_name,sanitation_system_technology_name,water_source_source,house_image';
                 }
 
                 if (layer == 'wardboundary_layer') {
@@ -9519,7 +9519,7 @@ $.ajax({
                                     else if (k == 'toilet_name') {
                                         kk = 'Community Toilet Name';
                                     }
-                                    
+
                                     else if (k == 'verification_status') {
                                         kk = 'Verification Status';
                                     }
@@ -9896,9 +9896,9 @@ $.ajax({
                                         html += '<td><strong>' + vv + '</strong>@can('Edit Building Structure')<br>Click <a href="{{ url("building-info/buildings") }}/'+vv+'/edit">here</a> to edit building info @endcan</td>';
                                     }
                                 else if (k == 'house_image' && layer == 'buildings_layer') {
-                                        let vv = data.features[0].properties.bin; 
+                                        let vv = data.features[0].properties.bin;
                                         let basePath = "{{ asset('') }}";
-                                      
+
                                         let imagePathJpg = basePath + 'storage/emptyings/houses/' + vv + '.jpg';
                                         let imagePathJpeg = basePath + 'storage/emptyings/houses/' + vv + '.jpeg';
                                         // let defaultImage ="{{ asset('emptyings/houses/default_img.jpg') }}";
@@ -10008,7 +10008,7 @@ $.ajax({
                 return false;
             };
 
-            //DRAGGABLE OVERLAYS 
+            //DRAGGABLE OVERLAYS
 // Drag interaction
             var ol_Drag = new ol.interaction.DragOverlay({
                 overlays: [
@@ -10080,7 +10080,7 @@ $.ajax({
             }
 
 
-             // Display popup form isochrone map 
+             // Display popup form isochrone map
              function displayPopupToiletIsochrone(evt) {
                 var coordinate = ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326');
                 $('#isochrone-long-pos').val(evt.coordinate[0].toFixed(6));
@@ -10093,7 +10093,7 @@ $.ajax({
                 $('#popup-toilet-isochrone').modal('show');
 
             }
-            
+
 
             function displayContainmentBuildings(field, val) {
                 var url = '{{ url("maps/containment-buildings") }}' + '/' + field + '/' + val;
@@ -11326,8 +11326,8 @@ $.ajax({
                     'next_emptying_date':'Next Emptying Date',
                     'no_of_times_emptied':'Number of Times Emptied',
                     'responsible_bin':'Responsible BIN',
-                   
-                    // For LIC 
+
+                    // For LIC
                     'population_total':'Population',
                     'number_of_households':'No. of Households',
                     'population_male':'Male Population',

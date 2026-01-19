@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Fsm\Nsd;
 use Illuminate\Support\Facades\Crypt;
 use App\Http\Controllers\Fsm\NsdDashboardController;
+use Illuminate\Support\Facades\Log;
 
 class NsdSettingController extends Controller
 {
@@ -20,7 +21,7 @@ class NsdSettingController extends Controller
     }
 
     public function create()
-    {   
+    {
         $page_title = 'National Sanitation Dashboard Integration Settings';
         return view('fsm.nsd-setting.create', compact('page_title'));
     }
@@ -50,6 +51,14 @@ class NsdSettingController extends Controller
             'api_login_url.url' => 'The URL To Authenticate must be a valid URL.',
         ]);
 
+        $req_data = [
+            'nsd_username'   => $data['nsd_username'],
+            'nsd_password'   => !empty($data['nsd_password']) ? Crypt::encrypt($data['nsd_password']) : null,
+            'city'           => $data['city'],
+            'api_post_url'   => $data['api_post_url'],
+            'api_login_url'  => $data['api_login_url'],
+        ]; // TODO remove it
+
         $nsd = NSD::create([
             'nsd_username'   => $data['nsd_username'],
             'nsd_password'   => !empty($data['nsd_password']) ? Crypt::encrypt($data['nsd_password']) : null,
@@ -58,12 +67,16 @@ class NsdSettingController extends Controller
             'api_login_url'  => $data['api_login_url'],
         ]);
 
+        // Log::debug(json_encode($req_data));
+
         $credentials = [
             'nsd_username' => $data['nsd_username'],
             'nsd_password' => !empty($data['nsd_password']) ? $data['nsd_password'] : Crypt::decrypt($nsd->nsd_password),
             'api_login_url' => $data['api_login_url'],
-        ];  
-        
+        ];
+
+        // Log::debug(json_encode($credentials));
+
         $dashboardController = new NsdDashboardController();
         $bearerToken = $dashboardController->getBearerToken($credentials);
 
@@ -73,9 +86,12 @@ class NsdSettingController extends Controller
                 ->with('error', 'Invalid username, password, or URL For Authentication.');
         }
 
+        // Log::debug('Bearer Token: ' . $bearerToken);
+
         $city = $data['city'];
         $checkStatus = $dashboardController->checkNsdStatus($city);
-       
+        Log::debug($city . ' Status: ' . json_encode($checkStatus));
+
         if (!$checkStatus) {
             return redirect()->back()
                 ->withInput($request->all())
@@ -122,7 +138,7 @@ class NsdSettingController extends Controller
 
         $dashboardController = new NsdDashboardController();
         $bearerToken = $dashboardController->getBearerToken($credentials);
-        
+
         if (!$bearerToken) {
             return redirect()->back()
                 ->withInput($request->all())
@@ -139,7 +155,7 @@ class NsdSettingController extends Controller
                 ->withInput($request->all())
                 ->with('error', 'Invalid City or URL To Send Data.');
         }
-       
+
         // Save the data if both checks pass
         $nsd->nsd_username = $data['nsd_username'];
         if (!empty($data['nsd_password'])) {
@@ -153,5 +169,5 @@ class NsdSettingController extends Controller
         return redirect()->route('nsd-setting.edit', $id)
             ->with('success', 'National Sanitation Dashboard settings updated successfully');
         }
-       
+
 }
