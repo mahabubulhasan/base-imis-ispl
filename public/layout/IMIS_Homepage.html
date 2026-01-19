@@ -1,5 +1,3 @@
-<!-- Last Modified Date: 23-12-2024
-Developed By: Streams Tech Ltd. -->
 <!DOCTYPE html>
 <html lang="en" class="overflow-x-hidden">
 <head>
@@ -12,17 +10,17 @@ Developed By: Streams Tech Ltd. -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="{{ asset('layout/css/styles.css') }}">
+  <!-- Minimal Custom CSS -->
+  <link rel="stylesheet" href="styles.css">
 </head>
 
-<body class="m-0 font-sans overflow-x-hidden min-h-screen relative" style="background: url('{{ asset('layout/img/background.png') }}') no-repeat center center fixed; background-size: cover; background-color: #f0f4f8;">
+<body class="m-0 font-sans overflow-x-hidden min-h-screen relative" style="background: url('background.png') no-repeat center center fixed; background-size: cover; background-color: #f0f4f8;">
   <!-- Background overlay -->
   <div class="fixed inset-0 bg-white/85 -z-10"></div>
 
   <header class="bg-gradient-to-br from-[#0056b3] to-[#003d82] text-white px-4 md:px-8 py-3 md:py-4 flex flex-wrap items-center justify-between shadow-lg sticky top-0 z-50">
     <div class="flex items-center gap-3 md:gap-4 flex-shrink-0">
-      <img src="{{ asset('layout/img/logo-Lakshmipur.png') }}" alt="Lakshmipur Paurashava Logo" class="h-10 md:h-12 lg:h-14 w-auto transition-transform duration-300 hover:scale-105">
+      <img src="logo-Lakshmipur.png" alt="Lakshmipur Paurashava Logo" class="h-10 md:h-12 lg:h-14 w-auto transition-transform duration-300 hover:scale-105">
       <h1 class="text-base md:text-xl lg:text-2xl font-semibold tracking-wide whitespace-nowrap">Lakshmipur Paurashava</h1>
     </div>
     <button class="hidden max-md:block text-white text-3xl p-1 bg-transparent border-none cursor-pointer transition-transform duration-300 hover:scale-110 order-3" onclick="toggleMenu()" aria-label="Toggle menu">
@@ -53,52 +51,16 @@ Developed By: Streams Tech Ltd. -->
       <!-- Login Box (Right) -->
       <div class="md:flex-none">
         <div class="relative rounded-2xl p-6 md:p-10 w-full max-w-[420px] ml-auto animate-scaleIn border border-white/65 shadow-2xl bg-white/45 ring-1 ring-white/55 overflow-hidden">
+          <!-- liquid glass highlights -->
           <h3 class="text-[#0056b3] text-xl md:text-2xl mb-5 md:mb-6 text-center font-semibold">Welcome Back</h3>
-          
-          @if(isset($errors) && count($errors) > 0)
-              <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-4 rounded">
-                  <ul class="list-disc list-inside text-red-700 text-sm">
-                      @foreach($errors->all() as $error)
-                          <li>{{ $error }}</li>
-                      @endforeach
-                  </ul>
-              </div>
-          @endif
-
-          @if(Session::get('success', false))
-              <?php $data = Session::get('success'); ?>
-              @if (is_array($data))
-                  @foreach ($data as $msg)
-                      <div class="bg-green-50 border-l-4 border-green-500 p-4 mb-4 rounded">
-                          <p class="text-green-700 text-sm">{{ $msg }}</p>
-                      </div>
-                  @endforeach
-              @else
-                  <div class="bg-green-50 border-l-4 border-green-500 p-4 mb-4 rounded">
-                      <p class="text-green-700 text-sm">{{ $data }}</p>
-                  </div>
-              @endif
-          @endif
-
-          <form method="POST" action="{{ route('login.perform') }}">
-            @csrf
-            <input type="text" name="username" placeholder="Username" required aria-label="Username" value="{{ old('username') }}" class="w-full px-4 py-3 md:py-3.5 my-2 md:my-3 border-2 border-gray-300 rounded-lg text-base transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10 @error('username') border-red-500 @enderror">
-            @error('username')
-                <span class="text-red-500 text-sm">{{ $message }}</span>
-            @enderror
-            
-            <input type="password" name="password" placeholder="Password" required aria-label="Password" class="w-full px-4 py-3 md:py-3.5 my-2 md:my-3 border-2 border-gray-300 rounded-lg text-base transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10 @error('password') border-red-500 @enderror">
-            @error('password')
-                <span class="text-red-500 text-sm">{{ $message }}</span>
-            @enderror
-            
+          <form>
+            <input type="text" placeholder="Username" required aria-label="Username" class="w-full px-4 py-3 md:py-3.5 my-2 md:my-3 border-2 border-gray-300 rounded-lg text-base transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10">
+            <input type="password" placeholder="Password" required aria-label="Password" class="w-full px-4 py-3 md:py-3.5 my-2 md:my-3 border-2 border-gray-300 rounded-lg text-base transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center text-sm my-4 md:my-5 gap-3 sm:gap-2">
               <label class="flex items-center gap-2 cursor-pointer text-gray-600">
-                <input type="checkbox" name="remember" value="1" class="cursor-pointer w-4 h-4"> Remember Me
+                <input type="checkbox" class="cursor-pointer w-4 h-4"> Remember Me
               </label>
-              @if (Route::has('password.request'))
-                  <a href="{{ route('password.request') }}" class="text-[#0056b3] font-medium hover:text-[#003d82] hover:underline transition-colors duration-300">Forgot Password?</a>
-              @endif
+              <a href="#" class="text-[#0056b3] font-medium hover:text-[#003d82] hover:underline transition-colors duration-300">Forgot Password?</a>
             </div>
             <button type="submit" class="relative w-full py-3 md:py-3.5 rounded-lg text-base md:text-lg font-semibold cursor-pointer transition-all duration-300 tracking-wide uppercase active:translate-y-0 text-[#003d82] shadow-lg hover:shadow-2xl hover:-translate-y-0.5
               bg-white/45 backdrop-blur-lg border border-white/60 ring-1 ring-white/50">
@@ -123,12 +85,7 @@ Developed By: Streams Tech Ltd. -->
   <div id="fsm" class="tab-content hidden p-5 md:p-10 bg-transparent min-h-[calc(100vh-100px)] animate-fadeIn">
     <div class="bg-white p-5 md:p-8 rounded-2xl shadow-2xl w-full max-w-6xl mx-auto">
       <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold text-center text-[#1f3b7d] mb-6 md:mb-8">FSM Application Form</h1>
-      <div class="text-center">
-        <p class="text-gray-600 mb-6">Click the button below to access the FSM Application Form:</p>
-        <a href="{{ route('client-fsm-application.form') }}" class="inline-block px-8 py-3 bg-gradient-to-br from-[#007bff] to-[#0056b3] text-white border-none rounded-lg text-base md:text-lg font-semibold cursor-pointer transition-all duration-300 hover:from-[#0056b3] hover:to-[#003d82] hover:-translate-y-0.5 hover:shadow-xl hover:shadow-[#0056b3]/30">
-          Open FSM Application Form
-        </a>
-      </div>
+      <iframe src="FSM_Application_Form.html" title="FSM Application Form" class="w-full h-[65vh] md:h-[75vh] lg:h-[80vh] border-none rounded-lg"></iframe>
     </div>
   </div>
 
@@ -137,19 +94,15 @@ Developed By: Streams Tech Ltd. -->
     <div class="max-w-3xl mx-auto bg-white p-6 md:p-10 rounded-2xl shadow-2xl">
       <h2 class="text-[#1f3b7d] text-2xl md:text-3xl lg:text-4xl mb-4 text-center font-bold">Feedback Form</h2>
       <p class="text-center text-gray-600 mb-6 md:mb-8 text-base md:text-lg">We value your feedback. Please share your comments, suggestions, or concerns with us:</p>
-      <form method="POST" action="{{ route('contact.send') }}">
-        @csrf
+      <form>
         <label for="name" class="block text-gray-800 font-semibold mt-4 mb-2 text-base">Full Name *</label>
-        <input type="text" id="name" name="name" placeholder="Enter your full name" required class="w-full px-4 py-3 mb-4 rounded-lg border-2 border-gray-300 text-base transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10">
+        <input type="text" id="name" placeholder="Enter your full name" required class="w-full px-4 py-3 mb-4 rounded-lg border-2 border-gray-300 text-base transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10">
 
-        <label for="email" class="block text-gray-800 font-semibold mt-4 mb-2 text-base">Email Address *</label>
-        <input type="email" id="email" name="email" placeholder="Enter your email" required class="w-full px-4 py-3 mb-4 rounded-lg border-2 border-gray-300 text-base transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10">
-
-        <label for="subject" class="block text-gray-800 font-semibold mt-4 mb-2 text-base">Subject *</label>
-        <input type="text" id="subject" name="subject" placeholder="Enter subject" required class="w-full px-4 py-3 mb-4 rounded-lg border-2 border-gray-300 text-base transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10">
+        <label for="email" class="block text-gray-800 font-semibold mt-4 mb-2 text-base">Email Address</label>
+        <input type="email" id="email" placeholder="Enter your email (optional)" class="w-full px-4 py-3 mb-4 rounded-lg border-2 border-gray-300 text-base transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10">
 
         <label for="message" class="block text-gray-800 font-semibold mt-4 mb-2 text-base">Your Message *</label>
-        <textarea id="message" name="message" rows="5" placeholder="Share your feedback with us..." required class="w-full px-4 py-3 mb-4 rounded-lg border-2 border-gray-300 text-base resize-y min-h-[120px] transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10"></textarea>
+        <textarea id="message" rows="5" placeholder="Share your feedback with us..." required class="w-full px-4 py-3 mb-4 rounded-lg border-2 border-gray-300 text-base resize-y min-h-[120px] transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10"></textarea>
 
         <button type="submit" class="w-full md:w-auto px-8 py-3 bg-gradient-to-br from-[#007bff] to-[#0056b3] text-white border-none rounded-lg text-base md:text-lg font-semibold cursor-pointer transition-all duration-300 mt-3 hover:from-[#0056b3] hover:to-[#003d82] hover:-translate-y-0.5 hover:shadow-xl hover:shadow-[#0056b3]/30">Submit Feedback</button>
       </form>
@@ -171,7 +124,7 @@ Developed By: Streams Tech Ltd. -->
 
   <footer class="text-center py-5 text-sm md:text-base text-gray-800 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.05)] mt-10">
     Developed by <b class="text-[#0056b3] font-semibold">Streams Tech Ltd.</b><br>
-    © Lakshmipur Municipality {{ \Carbon\Carbon::now()->format('Y') }}. All rights reserved.
+    © Lakshmipur Municipality 2025. All rights reserved.
   </footer>
 
   <script>
