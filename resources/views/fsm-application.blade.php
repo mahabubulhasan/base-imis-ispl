@@ -366,14 +366,14 @@ Developed By: Streamstech Ltd.   -->
         <div class="container py-4">
             <div class="copyright">
                 <strong> Base IMIS <i class="fa-regular fa-copyright"> </i> 2022-{{ \Carbon\Carbon::now()->format('Y')
-                    }} by <a href="http://www.innovativesolution.com.np">
-                        ISPL</a> & <a href="https://www.gwsc.ait.ac.th/">GWSC-AIT</a> is licensed under <a
+                    }} by <a href="https://streamstech.com">
+                        StreamsTech Ltd.</a> & <a href="https://www.gwsc.ait.ac.th/">GWSC-AIT</a> is licensed under <a
                         href="https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1">CC BY-NC-SA 4.0 </a>
                 </strong>
             </div>
             <div class="credits">
                 Developed by
-                <a href="https://innovativesolution.com.np/">Innovative Solution Pvt. Ltd.</a>
+                <a href="https://streamstech.com">StreamsTech Ltd.</a>
             </div>
         </div>
     </footer>
@@ -587,7 +587,7 @@ Developed By: Streamstech Ltd.   -->
             // Auto-fill function
             function autoFillFromTaxId() {
                 var taxId = taxIdInput.val().trim();
-                
+
                 // Clear fields if tax_id is empty or too short
                 if (!taxId || taxId.length < minTaxIdLength) {
                     clearAutoPopulatedFields();
@@ -634,53 +634,53 @@ Developed By: Streamstech Ltd.   -->
                     success: function(response) {
                         if (response.success && response.data) {
                             var data = response.data;
-                            
+
                             // Populate customer name
                             if (data.customer_name) {
                                 $('#customer_name').val(data.customer_name).trigger('input');
                             } else {
                                 $('#customer_name').val('').trigger('input');
                             }
-                            
+
                             // Populate customer contact
                             if (data.customer_contact) {
                                 $('#customer_contact').val(data.customer_contact).trigger('input');
                             } else {
                                 $('#customer_contact').val('').trigger('input');
                             }
-                            
+
                             // Populate holding owner name
                             if (data.holding_owner_name) {
                                 $('#holding_owner_name').val(data.holding_owner_name).trigger('input');
                             } else {
                                 $('#holding_owner_name').val('').trigger('input');
                             }
-                            
+
                             // Populate ward
                             if (data.ward) {
                                 $('#ward').val(data.ward).trigger('change');
                             } else {
                                 $('#ward').val('').trigger('change');
                             }
-                            
+
                             // Populate road_code (Select2 dropdown)
                             if (data.road_code && data.road_name_text) {
                                 // Check if option already exists
                                 var $roadCode = $('#road_code');
                                 var optionExists = $roadCode.find('option[value="' + data.road_code + '"]').length > 0;
-                                
+
                                 if (!optionExists) {
                                     // Create and append new option
                                     var newOption = new Option(data.road_name_text, data.road_code, true, true);
                                     $roadCode.append(newOption);
                                 }
-                                
+
                                 // Set the value and trigger change
                                 $roadCode.val(data.road_code).trigger('change');
                             } else {
                                 $('#road_code').val(null).trigger('change');
                             }
-                            
+
                             // Populate address
                             if (data.address) {
                                 $('#address').val(data.address).trigger('input');
@@ -718,7 +718,7 @@ Developed By: Streamstech Ltd.   -->
                 if (debounceTimeout) {
                     clearTimeout(debounceTimeout);
                 }
-                
+
                 // Set new timeout
                 debounceTimeout = setTimeout(function() {
                     autoFillFromTaxId();
@@ -729,7 +729,7 @@ Developed By: Streamstech Ltd.   -->
             // Add input event listener with debounce (400ms delay)
             taxIdInput.on('input', function() {
                 var taxId = taxIdInput.val().trim();
-                
+
                 // If tax_id is cleared or too short, clear fields immediately
                 if (!taxId || taxId.length < minTaxIdLength || !hasMinimumLength(taxId)) {
                     // Cancel any pending debounced request
@@ -740,7 +740,7 @@ Developed By: Streamstech Ltd.   -->
                     clearAutoPopulatedFields();
                     return;
                 }
-                
+
                 // Debounce the AJAX call (400ms delay)
                 debounceAutoFill(400);
             });
