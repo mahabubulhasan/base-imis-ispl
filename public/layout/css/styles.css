@@ -58,7 +58,7 @@
   transform: translateX(-50%);
   width: 0;
   height: 2px;
-  background: white;
+  background: #0056b3; /* Changed from white to blue for visibility on white background */
   transition: width 0.3s ease;
 }
 
@@ -67,7 +67,7 @@
 }
 
 .nav-item.active-tab {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(0, 86, 179, 0.2); /* Changed from white to blue tint for better contrast */
   font-weight: 600;
 }
 

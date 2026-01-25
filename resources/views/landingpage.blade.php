@@ -17,10 +17,12 @@ Developed By: Streams Tech Ltd. -->
 </head>
 
 <body class="m-0 font-sans overflow-x-hidden min-h-screen relative" style="background: url('{{ asset(config('constants.BACKGROUND_IMAGE_URL')) }}') no-repeat center center fixed; background-size: cover; background-color: #f0f4f8;">
+  <div class="h-10 bg-gradient-to-br to-[#343a40] from-[#403a40]">
+    <div class="text-white "></div>
+  </div>
   <!-- Background overlay -->
   <div class="fixed inset-0 bg-white/85 -z-10"></div>
-
-  <header class="bg-gradient-to-br to-[#343a40] from-[#403a40] text-white px-4 md:px-8 py-3 md:py-4 flex flex-wrap items-center justify-between shadow-lg sticky top-0 z-50">
+  <header class="px-4 md:px-8 py-3 md:py-4 flex flex-wrap items-center justify-between shadow-lg sticky top-0 z-50 bg-white">
     <div class="flex items-center gap-3 md:gap-4 flex-shrink-0">
       <img src="{{ asset(config('constants.LOGO_URL')) }}" alt="{{ config('constants.SITE_NAME') }} Logo" class="h-10 md:h-12 lg:h-14 w-auto transition-transform duration-300 hover:scale-105">
       <h1 class="text-base md:text-xl lg:text-2xl font-semibold tracking-wide whitespace-nowrap">{{ config('constants.SITE_NAME') }}</h1>
@@ -30,18 +32,18 @@ Developed By: Streams Tech Ltd. -->
     </button>
     <nav id="navMenu" class="w-full md:w-auto order-4 md:order-none max-h-0 md:max-h-none overflow-hidden md:overflow-visible transition-all duration-300 md:transition-none">
       <ul class="flex flex-col md:flex-row gap-0 md:gap-6 lg:gap-8 m-0 p-0 list-none items-center md:bg-transparent bg-white/10 md:bg-none rounded-lg md:rounded-none md:p-0 py-2">
-        <li class="nav-item cursor-pointer font-medium text-sm lg:text-base px-4 py-3 md:py-2 rounded-md transition-all duration-300 hover:bg-white/10 w-full md:w-auto text-center whitespace-nowrap relative" onclick="openTab('login', this)">Login</li>
-        <li class="nav-item cursor-pointer font-medium text-sm lg:text-base px-4 py-3 md:py-2 rounded-md transition-all duration-300 hover:bg-white/10 w-full md:w-auto text-center whitespace-nowrap relative" onclick="openTab('dashboard', this)">Public Dashboard</li>
-        <li class="nav-item cursor-pointer font-medium text-sm lg:text-base px-4 py-3 md:py-2 rounded-md transition-all duration-300 hover:bg-white/10 w-full md:w-auto text-center whitespace-nowrap relative" onclick="openTab('fsm', this)">FSM Application</li>
-        <li class="nav-item cursor-pointer font-medium text-sm lg:text-base px-4 py-3 md:py-2 rounded-md transition-all duration-300 hover:bg-white/10 w-full md:w-auto text-center whitespace-nowrap relative" onclick="openTab('feedback', this)">Feedback</li>
-        <li class="nav-item cursor-pointer font-medium text-sm lg:text-base px-4 py-3 md:py-2 rounded-md transition-all duration-300 hover:bg-white/10 w-full md:w-auto text-center whitespace-nowrap relative" onclick="openTab('contact', this)">Contact</li>
+        <li class="nav-item cursor-pointer font-medium text-sm lg:text-base px-4 py-3 md:py-2 rounded-md transition-all duration-300 hover:bg-[#3b3a40]/20 w-full md:w-auto text-center whitespace-nowrap relative" onclick="openTab('login', this)">Login</li>
+        <li class="nav-item cursor-pointer font-medium text-sm lg:text-base px-4 py-3 md:py-2 rounded-md transition-all duration-300 hover:bg-[#3b3a40]/20 w-full md:w-auto text-center whitespace-nowrap relative" onclick="openTab('dashboard', this)">Public Dashboard</li>
+        <li class="nav-item cursor-pointer font-medium text-sm lg:text-base px-4 py-3 md:py-2 rounded-md transition-all duration-300 hover:bg-[#3b3a40]/20 w-full md:w-auto text-center whitespace-nowrap relative" onclick="openTab('fsm', this)">FSM Application</li>
+        <li class="nav-item cursor-pointer font-medium text-sm lg:text-base px-4 py-3 md:py-2 rounded-md transition-all duration-300 hover:bg-[#3b3a40]/20 w-full md:w-auto text-center whitespace-nowrap relative" onclick="openTab('feedback', this)">Feedback</li>
+        <li class="nav-item cursor-pointer font-medium text-sm lg:text-base px-4 py-3 md:py-2 rounded-md transition-all duration-300 hover:bg-[#3b3a40]/20 w-full md:w-auto text-center whitespace-nowrap relative" onclick="openTab('contact', this)">Contact</li>
       </ul>
     </nav>
   </header>
 
   <!-- LOGIN TAB -->
-  <div id="login" class="tab-content hidden p-5 md:p-10 bg-transparent min-h-[calc(100vh-100px)] animate-fadeIn">
-    <div class="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12 min-h-[calc(100vh-120px)] px-4 py-5">
+  <div id="login" class="tab-content hidden p-5 md:p-10 bg-transparent min-h-[calc(60vh-100px)] animate-fadeIn">
+    <div class="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12 min-h-[calc(70vh-120px)] px-4 py-5">
       <!-- Banner (Left) -->
       <div class="w-full md:flex-1">
         <div class="text-left mb-6 md:mb-8 animate-slideDown">
