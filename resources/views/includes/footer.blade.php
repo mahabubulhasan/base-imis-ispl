@@ -1,6 +1,6 @@
 <footer class="main-footer">
     <div class="float-right d-none d-sm-inline ">
-        <strong>Developed by:</strong> <a href="http://www.innovativesolution.com.np">Innovative Solution Pvt. Ltd.</a>
+        <strong>Developed by:</strong> <a href="https://streamstech.com" target="_blank">StreamsTech Ltd.</a>
     </div>
 
 <strong> Base IMIS <i class="fa-regular fa-copyright"> </i>  2022-{{ \Carbon\Carbon::now()->format('Y') }} by <a href="https://streamstech.com" target="_blank">
