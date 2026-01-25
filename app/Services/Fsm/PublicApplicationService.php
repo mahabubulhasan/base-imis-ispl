@@ -19,14 +19,9 @@ class PublicApplicationService
             'ward' => 'required|string',
             'road_code' => 'nullable|string|max:255',
             'tax_id' => [
-                'required',
+                'nullable',
                 'string',
                 'max:50',
-                function ($attribute, $value, $fail) {
-                    if (!$this->getBuilding($value)) {
-                        $fail('Invalid Tax ID.');
-                    }
-                }
             ],
             'address' => 'required|string|max:500',
             'proposed_emptying_date' => 'required|date|after_or_equal:today',
@@ -75,10 +70,10 @@ class PublicApplicationService
                 ->withInput();
         }
 
-        $building = $this->getBuilding($request->tax_id);
-        $containment_id = $this->getContainmentId($building);
+        $building = $request->tax_id ? $this->getBuilding($request->tax_id) : null;
+        $containment_id = $building ? $this->getContainmentId($building) : null;
 
-        if($this->getApplicationStatus($containment_id))
+        if($containment_id && $this->getApplicationStatus($containment_id))
         {
             return redirect()->back()->withInput()->with('error',"Error! Containment already has running Application.");
         }
@@ -86,19 +81,28 @@ class PublicApplicationService
         try {
             $application = Application::create($request->all());
             $application->containment_id = $containment_id;
-            $application->bin = $building->bin;
+
+            if ($building) {
+                $application->bin = $building->bin;
+            }
+
             $application->road_code = $request->road_code;
             $application->proposed_emptying_date = $request->proposed_emptying_date;
             $application->address = $request->address;
 
-            $owner = $building->owners;
-            $application->customer_name = $request->holding_owner_name ?? $request->customer_name ?? $owner->owner_name;
-            $application->customer_contact = $request->customer_contact ?? $owner->owner_contact;
-            $application->customer_gender = $owner->owner_gender;
+            $owner = $building ? $building->owners : null;
+
+            $ownerName = $owner ? $owner->owner_name : null;
+            $ownerContact = $owner ? $owner->owner_contact : null;
+            $ownerGender = $owner ? $owner->owner_gender : null;
+
+            $application->customer_name = $request->holding_owner_name ?? $request->customer_name ?? $ownerName;
+            $application->customer_contact = $request->customer_contact ?? $ownerContact;
+            $application->customer_gender = $ownerGender;
 
             $application->application_date = now()->format('Y-m-d H:i:s');
-            $application->applicant_name = $request->customer_name ?? $owner->owner_name ?? null;
-            $application->applicant_contact = $request->customer_contact ?? $owner->owner_contact ?? null;
+            $application->applicant_name = $request->customer_name ?? $ownerName ?? null;
+            $application->applicant_contact = $request->customer_contact ?? $ownerContact ?? null;
             $application->save();
         } catch (\Throwable $e) {
             return redirect()->back()->withInput()->with('error', "Error! Application couldn't be created.");

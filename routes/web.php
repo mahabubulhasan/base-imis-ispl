@@ -33,6 +33,7 @@ Route::get('/', function () {
 Route::get('/fsm-application', 'Fsm\PublicApplicationController@getForm')->name('client-fsm-application.form');
 Route::post('/fsm-application', 'Fsm\PublicApplicationController@submitForm')->name('client-fsm-application.submit');
 Route::get('/fsm-road-names', 'Fsm\PublicApplicationController@getRoadNames')->name('client-fsm-application.get-road-names');
+Route::get('/fsm-application/get-building-data', 'Fsm\PublicApplicationController@getBuildingDataByTaxId')->name('client-fsm-application.get-building-data');
 
 
 Route::get('/files', 'FileController@index')->name('files.index');
