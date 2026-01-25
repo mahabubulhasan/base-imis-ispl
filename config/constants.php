@@ -11,5 +11,9 @@ return [
     # BASE MAP API KEYS
     'API_KEY_BING' => env('API_KEY_BING'),
     'API_KEY_GOOGLE' => env('API_KEY_GOOGLE'),
+    # Deployment Site Information
+    'LOGO_URL' => env('LOGO_URL', 'img/stl/logo-Lakshmipur.png'),
+    'BACKGROUND_IMAGE_URL' => env('BACKGROUND_IMAGE_URL', 'img/stl/background.png'),
+    'SITE_NAME' => env('SITE_NAME', 'Lakshmipur Paurashava'),
 ];
 ?>

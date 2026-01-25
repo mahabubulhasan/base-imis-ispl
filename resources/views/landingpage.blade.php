@@ -5,7 +5,7 @@ Developed By: Streams Tech Ltd. -->
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lakshmipur Paurashava - IMIS Portal</title>
+  <title>{{ config('constants.SITE_NAME') }} - IMIS Portal</title>
 
   <!-- Tailwind & Leaflet for FSM form -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -16,14 +16,14 @@ Developed By: Streams Tech Ltd. -->
   <link rel="stylesheet" href="{{ asset('layout/css/styles.css') }}">
 </head>
 
-<body class="m-0 font-sans overflow-x-hidden min-h-screen relative" style="background: url('{{ asset('layout/img/background.png') }}') no-repeat center center fixed; background-size: cover; background-color: #f0f4f8;">
+<body class="m-0 font-sans overflow-x-hidden min-h-screen relative" style="background: url('{{ asset(config('constants.BACKGROUND_IMAGE_URL')) }}') no-repeat center center fixed; background-size: cover; background-color: #f0f4f8;">
   <!-- Background overlay -->
   <div class="fixed inset-0 bg-white/85 -z-10"></div>
 
   <header class="bg-gradient-to-br to-[#343a40] from-[#403a40] text-white px-4 md:px-8 py-3 md:py-4 flex flex-wrap items-center justify-between shadow-lg sticky top-0 z-50">
     <div class="flex items-center gap-3 md:gap-4 flex-shrink-0">
-      <img src="{{ asset('layout/img/logo-Lakshmipur.png') }}" alt="Lakshmipur Paurashava Logo" class="h-10 md:h-12 lg:h-14 w-auto transition-transform duration-300 hover:scale-105">
-      <h1 class="text-base md:text-xl lg:text-2xl font-semibold tracking-wide whitespace-nowrap">Lakshmipur Paurashava</h1>
+      <img src="{{ asset(config('constants.LOGO_URL')) }}" alt="{{ config('constants.SITE_NAME') }} Logo" class="h-10 md:h-12 lg:h-14 w-auto transition-transform duration-300 hover:scale-105">
+      <h1 class="text-base md:text-xl lg:text-2xl font-semibold tracking-wide whitespace-nowrap">{{ config('constants.SITE_NAME') }}</h1>
     </div>
     <button class="hidden max-md:block text-white text-3xl p-1 bg-transparent border-none cursor-pointer transition-transform duration-300 hover:scale-110 order-3" onclick="toggleMenu()" aria-label="Toggle menu">
       ☰
@@ -115,7 +115,7 @@ Developed By: Streams Tech Ltd. -->
   <div id="dashboard" class="tab-content hidden p-5 md:p-10 bg-transparent min-h-[calc(100vh-100px)] animate-fadeIn">
     <div class="max-w-6xl mx-auto bg-white p-6 md:p-10 rounded-2xl shadow-2xl">
       <h2 class="text-[#1f3b7d] text-2xl md:text-3xl lg:text-4xl mb-5 border-b-4 border-[#0056b3] pb-4">Public Dashboard</h2>
-      <p class="text-gray-600 text-base md:text-lg leading-relaxed">Welcome to the Lakshmipur Paurashava Public Dashboard. This section will display general statistics, announcements, and municipal data to keep citizens informed about local services and developments.</p>
+      <p class="text-gray-600 text-base md:text-lg leading-relaxed">Welcome to the {{ config('constants.SITE_NAME') }} Public Dashboard. This section will display general statistics, announcements, and municipal data to keep citizens informed about local services and developments.</p>
     </div>
   </div>
 
@@ -170,8 +170,8 @@ Developed By: Streams Tech Ltd. -->
   </div>
 
   <footer class="text-center py-5 text-sm md:text-base text-gray-800 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.05)] mt-10">
-    Developed by <b class="text-[#0056b3] font-semibold">Streams Tech Ltd.</b><br>
-    © Lakshmipur Municipality {{ \Carbon\Carbon::now()->format('Y') }}. All rights reserved.
+    Developed by <a href="https://streamstech.com" target="_blank" rel="noopener noreferrer" class="text-[#0056b3] font-semibold">Streams Tech Ltd.</a><br>
+    © {{ config('constants.SITE_NAME') }} {{ \Carbon\Carbon::now()->format('Y') }}. All rights reserved.
   </footer>
 
   <script>
