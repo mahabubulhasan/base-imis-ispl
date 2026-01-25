@@ -1326,7 +1326,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
     <footer class="main-footer" style="position:fixed;right:0;bottom:0;width: 100%;z-index:35;padding:7px;height:35px;">
         <!-- To the right -->
         <div class="float-right d-none d-sm-inline ">
-        	<strong>Developed by:</strong> <a href="https://streamstech.com">StreamsTech Ltd.</a>
+        	<strong>Implemented by:</strong> <a href="https://streamstech.com">StreamsTech Ltd.</a>
     	</div>
         <strong> Base IMIS <i class="fa-regular fa-copyright"> </i>  2022-{{ \Carbon\Carbon::now()->format('Y') }} by <a href="https://streamstech.com">
     StreamsTech Ltd.</a> & <a href="https://www.gwsc.ait.ac.th/">Global Water & Sanitation Center-Asian Institute of Technology (GWSC-AIT)</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1">CC BY-NC-SA 4.0 </a>

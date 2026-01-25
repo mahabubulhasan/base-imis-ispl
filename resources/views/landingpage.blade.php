@@ -172,7 +172,7 @@ Developed By: Streams Tech Ltd. -->
   </div>
 
   <footer class="text-center py-5 text-sm md:text-base text-gray-800 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.05)] mt-10">
-    Developed by <a href="https://streamstech.com" target="_blank" rel="noopener noreferrer" class="text-[#0056b3] font-semibold">Streams Tech Ltd.</a><br>
+    Implemented by <a href="https://streamstech.com" target="_blank" rel="noopener noreferrer" class="text-[#0056b3] font-semibold">Streams Tech Ltd.</a><br>
     © {{ config('constants.SITE_NAME') }} {{ \Carbon\Carbon::now()->format('Y') }}. All rights reserved.
   </footer>
 
