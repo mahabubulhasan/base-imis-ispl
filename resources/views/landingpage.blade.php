@@ -479,7 +479,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 </strong>
     </div>
             <div class="credits">
-                Developed by
+                Implemented by
                 <a href="https://streamstech.com">StreamsTech Ltd.</a>
             </div>
         </div>

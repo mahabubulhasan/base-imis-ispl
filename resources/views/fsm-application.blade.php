@@ -359,7 +359,7 @@ Developed By: Streamstech Ltd.   -->
                 </strong>
             </div>
             <div class="credits">
-                Developed by
+                Implemented by
                 <a target="_blank" href="https://streamstech.com">StreamsTech Ltd.</a>
             </div>
         </div>
