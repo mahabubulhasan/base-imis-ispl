@@ -474,13 +474,13 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
     <footer id="footer" class="section-bg">
         <div class="container py-4">
         <div class="copyright">
-        <strong> Base IMIS <i class="fa-regular fa-copyright"> </i>  2022-{{ \Carbon\Carbon::now()->format('Y') }} by <a href="http://www.innovativesolution.com.np">
-            ISPL</a> & <a href="https://www.gwsc.ait.ac.th/">GWSC-AIT</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1">CC BY-NC-SA 4.0 </a>
+        <strong> Base IMIS <i class="fa-regular fa-copyright"> </i>  2022-{{ \Carbon\Carbon::now()->format('Y') }} by <a href="https://streamstech.com" target="_blank">
+            StreamsTech Ltd.</a> & <a href="https://www.gwsc.ait.ac.th/">GWSC-AIT</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1">CC BY-NC-SA 4.0 </a>
 </strong>
     </div>
             <div class="credits">
                 Developed by
-                <a href="https://innovativesolution.com.np/">Innovative Solution Pvt. Ltd.</a>
+                <a href="https://streamstech.com">StreamsTech Ltd.</a>
             </div>
         </div>
     </footer>
