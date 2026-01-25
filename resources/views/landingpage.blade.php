@@ -20,7 +20,7 @@ Developed By: Streams Tech Ltd. -->
   <!-- Background overlay -->
   <div class="fixed inset-0 bg-white/85 -z-10"></div>
 
-  <header class="bg-gradient-to-br from-[#0056b3] to-[#003d82] text-white px-4 md:px-8 py-3 md:py-4 flex flex-wrap items-center justify-between shadow-lg sticky top-0 z-50">
+  <header class="bg-gradient-to-br to-[#343a40] from-[#403a40] text-white px-4 md:px-8 py-3 md:py-4 flex flex-wrap items-center justify-between shadow-lg sticky top-0 z-50">
     <div class="flex items-center gap-3 md:gap-4 flex-shrink-0">
       <img src="{{ asset('layout/img/logo-Lakshmipur.png') }}" alt="Lakshmipur Paurashava Logo" class="h-10 md:h-12 lg:h-14 w-auto transition-transform duration-300 hover:scale-105">
       <h1 class="text-base md:text-xl lg:text-2xl font-semibold tracking-wide whitespace-nowrap">Lakshmipur Paurashava</h1>
@@ -54,7 +54,7 @@ Developed By: Streams Tech Ltd. -->
       <div class="md:flex-none">
         <div class="relative rounded-2xl p-6 md:p-10 w-full max-w-[420px] ml-auto animate-scaleIn border border-white/65 shadow-2xl bg-white/45 ring-1 ring-white/55 overflow-hidden">
           <h3 class="text-[#0056b3] text-xl md:text-2xl mb-5 md:mb-6 text-center font-semibold">Welcome Back</h3>
-          
+
           @if(isset($errors) && count($errors) > 0)
               <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-4 rounded">
                   <ul class="list-disc list-inside text-red-700 text-sm">
@@ -86,12 +86,12 @@ Developed By: Streams Tech Ltd. -->
             @error('username')
                 <span class="text-red-500 text-sm">{{ $message }}</span>
             @enderror
-            
+
             <input type="password" name="password" placeholder="Password" required aria-label="Password" class="w-full px-4 py-3 md:py-3.5 my-2 md:my-3 border-2 border-gray-300 rounded-lg text-base transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10 @error('password') border-red-500 @enderror">
             @error('password')
                 <span class="text-red-500 text-sm">{{ $message }}</span>
             @enderror
-            
+
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center text-sm my-4 md:my-5 gap-3 sm:gap-2">
               <label class="flex items-center gap-2 cursor-pointer text-gray-600">
                 <input type="checkbox" name="remember" value="1" class="cursor-pointer w-4 h-4"> Remember Me
