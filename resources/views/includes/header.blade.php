@@ -28,7 +28,7 @@
 
         <!-- Display the user's name and roles on the right side -->
         <div style="display: flex; justify-content: flex-end; margin-top: 0.5%;">
-            <small>Hi, Lakshmipur Paurashava ({{ Auth::user()->name }}), {{ implode(', ', get_current_user_roles()) }}</small>
+            <small>Hi, Lakshmipur Paurashava, {{ implode(', ', get_current_user_roles()) }}</small>
         </div>
 
         <li class="nav-item ml-auto">
