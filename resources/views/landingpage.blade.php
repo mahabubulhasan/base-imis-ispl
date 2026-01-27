@@ -475,12 +475,12 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
         <div class="container py-4">
         <div class="copyright">
         <strong> Base IMIS <i class="fa-regular fa-copyright"> </i>  2022-{{ \Carbon\Carbon::now()->format('Y') }} by <a href="https://streamstech.com" target="_blank">
-            StreamsTech Ltd.</a> & <a href="https://www.gwsc.ait.ac.th/">GWSC-AIT</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1">CC BY-NC-SA 4.0 </a>
+            Streams Tech Ltd.</a> & <a href="https://www.gwsc.ait.ac.th/">GWSC-AIT</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1">CC BY-NC-SA 4.0 </a>
 </strong>
     </div>
             <div class="credits">
                 Implemented by
-                <a href="https://streamstech.com">StreamsTech Ltd.</a>
+                <a href="https://streamstech.com">Streams Tech Ltd.</a>
             </div>
         </div>
     </footer>
