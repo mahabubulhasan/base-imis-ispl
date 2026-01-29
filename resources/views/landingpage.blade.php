@@ -130,10 +130,10 @@ Developed By: Streams Tech Ltd. -->
                                 Password?</a>
                             @endif
                         </div>
-                        <button type="submit" class="relative w-full py-3 md:py-3.5 rounded-lg text-base md:text-lg font-semibold cursor-pointer transition-all duration-300 tracking-wide uppercase active:translate-y-0 text-[#003d82] shadow-lg hover:shadow-2xl hover:-translate-y-0.5
-              bg-white/45 backdrop-blur-lg border border-white/60 ring-1 ring-white/50">
+                        <button type="submit" style="box-shadow: 2px 2px 5px rgba(0,0,0,0.2), -2px -2px 5px rgba(255,255,255,0.7), inset 0 0 0 rgba(0,0,0,0);"
+                            class="relative w-full py-3 md:py-3.5 rounded-lg text-base md:text-lg font-semibold cursor-pointer transition-all duration-200 tracking-wide uppercase text-[#003d82] bg-white/30 backdrop-blur-md border border-white/40 hover:bg-[#722f37] hover:text-white active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.3),_inset_-2px_-2px_5px_rgba(255,255,255,0.1)] active:translate-y-0.5">
                             <span
-                                class="pointer-events-none absolute inset-0 rounded-lg bg-[linear-gradient(180deg,_rgba(255,255,255,0.7)_0%,_rgba(255,255,255,0.4)_45%,_rgba(255,255,255,0.2)_100%)]"></span>
+                                class="pointer-events-none absolute inset-0 rounded-lg bg-[linear-gradient(135deg,_rgba(255,255,255,0.4)_0%,_rgba(255,255,255,0.1)_50%,_rgba(255,255,255,0)_100%)]"></span>
                             <span class="relative">LOGIN</span>
                         </button>
                     </form>
