@@ -1,3 +1,9 @@
+<!-- Branding -->
+<div class="main-footer">
+    @include('includes.branding')
+</div>
+<!-- End Branding -->
+
 <footer class="main-footer">
     <div class="float-right d-none d-sm-inline ">
         <strong>Implemented by:</strong> <a href="https://streamstech.com" target="_blank">Streams Tech Ltd.</a>

@@ -1149,8 +1149,12 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
 
 
-
-    <footer class="main-footer" style="position:fixed;right:0;bottom:0;width: 100%;z-index:35;padding:7px;height:35px;">
+    <footer class="main-footer" style="position:fixed;right:0;bottom:0;width: 100%;z-index:35;padding:7px;height:95px;">
+        <div style="border:1px solid navy">
+            <!-- Branding -->
+            @include('includes.branding')
+            <!-- End Branding -->
+        </div>
         <!-- To the right -->
         <div class="float-right d-none d-sm-inline ">
         	<strong>Implemented by:</strong> <a href="https://streamstech.com">Streams Tech Ltd.</a>

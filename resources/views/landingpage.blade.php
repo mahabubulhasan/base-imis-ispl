@@ -89,43 +89,60 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
 
     <main id="main">
-         <!-- ======= About Section ======= -->
-         <section id="about" class="about section-bg">
+        <!-- ======= About Section ======= -->
+        <section id="about" class="about section-bg">
             <div class="container" data-aos="fade-up">
                 <div class="section-title">
                     <!--<h2>About</h2>-->
                     <h3>About <span>IMIS</span></h3>
                 </div>
-               <div class="text-left">
-                <p>
-                IMIS is an open-source GIS-based Digital Public Infrastructure (DPI) which functions as both a municipal information system and a software solution, integrating data, processes, and services to enhance municipal governance—particularly in sanitation management with Citywide Inclusive Sanitation (CWIS) approach to achieve SDG 6.2. It offers municipalities data-driven decision-making tools to strengthen governance across various sectors. By leveraging open-source technologies and Geographic Information Systems (GIS), it facilitates:
-                <ul>
-                   <li>Planning, management, and monitoring of sanitation systems using the CWIS approach.</li>
-                    <li>End-to-end FSM (Faecal Sludge Management) service chain oversight, including real-time data tracking.</li>
-                    <li>Generation and visualization of CWIS indicators for performance assessment.</li>
-                    <li>Intuitive dashboards for tracking CWIS indicators, Key Performance Indicators (KPIs), and other essential municipal governance metrics.</li>
-                </ul>
-                IMIS as a sub-national public data system contributes to national-level monitoring by feeding data into centralized systems, supporting CWIS indicators and other critical metrics for achieving sanitation targets.
-                Beyond sanitation management, with its modular and scalable design, Base IMIS empowers local authorities by providing a unified, data-driven framework that enhances efficiency, accountability, and service delivery in municipal governance.
-                </p>
+                <div class="text-left">
+                    <p>
+                        IMIS is an open-source GIS-based Digital Public Infrastructure (DPI) which functions as both a
+                        municipal information system and a software solution, integrating data, processes, and services
+                        to enhance municipal governance—particularly in sanitation management with Citywide Inclusive
+                        Sanitation (CWIS) approach to achieve SDG 6.2. It offers municipalities data-driven
+                        decision-making tools to strengthen governance across various sectors. By leveraging open-source
+                        technologies and Geographic Information Systems (GIS), it facilitates:
+                    <ul>
+                        <li>Planning, management, and monitoring of sanitation systems using the CWIS approach.</li>
+                        <li>End-to-end FSM (Faecal Sludge Management) service chain oversight, including real-time data
+                            tracking.</li>
+                        <li>Generation and visualization of CWIS indicators for performance assessment.</li>
+                        <li>Intuitive dashboards for tracking CWIS indicators, Key Performance Indicators (KPIs), and
+                            other essential municipal governance metrics.</li>
+                    </ul>
+                    IMIS as a sub-national public data system contributes to national-level monitoring by feeding data
+                    into centralized systems, supporting CWIS indicators and other critical metrics for achieving
+                    sanitation targets.
+                    Beyond sanitation management, with its modular and scalable design, Base IMIS empowers local
+                    authorities by providing a unified, data-driven framework that enhances efficiency, accountability,
+                    and service delivery in municipal governance.
+                    </p>
                 </div>
             </div>
         </section>
         <!-- End About Section -->
 
-          <!-- ======= About Section ======= -->
-          <section id="cwis" class="about">
+        <!-- ======= About Section ======= -->
+        <section id="cwis" class="about">
             <div class="container" data-aos="fade-up">
                 <div class="section-title">
                     <!--<h2>About</h2>-->
                     <h3>Citywide Inclusive Sanitation <span>(CWIS)</span></h3>
                 </div>
                 <div class="text-left">
-                <p>
-                CWIS is an approach to achieve SDG 6.2 for safe, equitable and financially viable sanitation systems and services. CWIS ensures everyone in a city has access to safely managed sanitation, and human waste is safely managed along the whole sanitation service chain ensuring protection of the environment and human health.
-                </p>
-                <img src="{{ asset('img/svg/landing-page/cwis.jpg') }}" class="cwis-img" alt="CWIS">
-                <p>CWIS approach focuses on service provision and its enabling environment rather than on building infrastructure, therefore, reliable data is the key success factor for CWIS. UN Water SDG 6 global acceleration framework has also identified data and information as one of the five accelerators of SDG 6 outcomes.</p>
+                    <p>
+                        CWIS is an approach to achieve SDG 6.2 for safe, equitable and financially viable sanitation
+                        systems and services. CWIS ensures everyone in a city has access to safely managed sanitation,
+                        and human waste is safely managed along the whole sanitation service chain ensuring protection
+                        of the environment and human health.
+                    </p>
+                    <img src="{{ asset('img/svg/landing-page/cwis.jpg') }}" class="cwis-img" alt="CWIS">
+                    <p>CWIS approach focuses on service provision and its enabling environment rather than on building
+                        infrastructure, therefore, reliable data is the key success factor for CWIS. UN Water SDG 6
+                        global acceleration framework has also identified data and information as one of the five
+                        accelerators of SDG 6 outcomes.</p>
                 </div>
             </div>
         </section>
@@ -139,18 +156,22 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     <h3>Features of <span>IMIS</span></h3>
                 </div>
                 <div class="text-left">
-                <ul>
-                    <li>Spatial context for municipal data - infrastructure, services, and resources</li>
-<li>Efficient storage and management of municipal data, including infrastructure and essential services</li>
-<li>Integration of CWIS data to support planning, management, and evaluation of sanitation systems and services</li>
-<li>Decision support tools for decision-making based on spatial analysis and modelling</li>
-<li>Real-time dashboard for monitoring KPIs and CWIS indicators</li>
-<li>User-friendly interfaces with access control features</li>
-<li>Scalability to adapt to the evolving technology and information needs</li>
-<li>Mainstreaming CWIS service chain into the city's business process</li>
-<li>Interoperable with external data sources, including tax/revenue, public health, emergency response data and more</li>
-<li>Robust security measures to safeguard sensitive data, ensuring city data privacy compliance</li>
-</ul>
+                    <ul>
+                        <li>Spatial context for municipal data - infrastructure, services, and resources</li>
+                        <li>Efficient storage and management of municipal data, including infrastructure and essential
+                            services</li>
+                        <li>Integration of CWIS data to support planning, management, and evaluation of sanitation
+                            systems and services</li>
+                        <li>Decision support tools for decision-making based on spatial analysis and modelling</li>
+                        <li>Real-time dashboard for monitoring KPIs and CWIS indicators</li>
+                        <li>User-friendly interfaces with access control features</li>
+                        <li>Scalability to adapt to the evolving technology and information needs</li>
+                        <li>Mainstreaming CWIS service chain into the city's business process</li>
+                        <li>Interoperable with external data sources, including tax/revenue, public health, emergency
+                            response data and more</li>
+                        <li>Robust security measures to safeguard sensitive data, ensuring city data privacy compliance
+                        </li>
+                    </ul>
                 </div>
                 <div style="text-align: center">
                     <!-- <button class="btn-get-started"> Learn More</button> -->
@@ -171,15 +192,18 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 <div class="row">
                     <div class="col-md-4 mb-4 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="100">
                         <div class="icon-box">
-                           <img src="{{ asset('img/svg/landing-page/buildingIMS.svg') }}" class="icon" alt="Building Icon">
+                            <img src="{{ asset('img/svg/landing-page/buildingIMS.svg') }}" class="icon"
+                                alt="Building Icon">
                             <div class="card-body float-right ">
 
                                 <h5 class=" text-center ">Building Information Management System</h5>
 
                                 <div class="card-text text-left">
                                     <ul>
-                                        <li>Maintains information about all existing and new buildings with their building footprints, sanitation system, socio-economic condition, etc</li>
-                                        <li>Maintains information about low-income communities with their geographic coverage and sanitation system
+                                        <li>Maintains information about all existing and new buildings with their
+                                            building footprints, sanitation system, socio-economic condition, etc</li>
+                                        <li>Maintains information about low-income communities with their geographic
+                                            coverage and sanitation system
                                         </li>
                                     </ul>
 
@@ -193,7 +217,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     <div class="col-md-4 mb-4 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="200">
 
                         <div class="icon-box">
-                        <img src="{{ asset('img/svg/landing-page/propertyTaxCollectionIMS.svg')}}" class="icon">
+                            <img src="{{ asset('img/svg/landing-page/propertyTaxCollectionIMS.svg')}}" class="icon">
 
                             <!--Card content-->
                             <div class="card-body">
@@ -202,7 +226,9 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                 <!--Text-->
                                 <div class="card-text text-left ">
                                     <ul>
-                                    <li>Enables to import of property tax or other revenue data into IMIS for spatial visualization of buildings or containments with their tax or revenue collection status</li>
+                                        <li>Enables to import of property tax or other revenue data into IMIS for
+                                            spatial visualization of buildings or containments with their tax or revenue
+                                            collection status</li>
                                     </ul>
                                 </div>
                             </div>
@@ -214,35 +240,40 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
                     <div class="col-md-4 mb-4 d-flex align-items-stretch " data-aos="zoom-in" data-aos-delay="300">
                         <div class="icon-box">
-                        <img src="{{ asset('img/svg/landing-page/urbanManagementDSS.svg')}}" class="icon" alt="Urban Management DSS">
+                            <img src="{{ asset('img/svg/landing-page/urbanManagementDSS.svg')}}" class="icon"
+                                alt="Urban Management DSS">
 
-                                <div class="card-body">
-                                    <!--Title-->
-                                    <h5 class=" text-center ">Urban Management Decision Support System</h5>
-                                    <!--Text-->
-                                    <div class="card-text text-left">
-                                        <ul>
-                                        <li>Dashboard for monitoring the situation of sanitation and other elements required for planning, management and monitoring and evaluation of CWIS </li>
+                            <div class="card-body">
+                                <!--Title-->
+                                <h5 class=" text-center ">Urban Management Decision Support System</h5>
+                                <!--Text-->
+                                <div class="card-text text-left">
+                                    <ul>
+                                        <li>Dashboard for monitoring the situation of sanitation and other elements
+                                            required for planning, management and monitoring and evaluation of CWIS
+                                        </li>
                                         <li>Dashboards for monitoring KPIs and CWIS indicators</li>
                                         <li>Tools for real-time monitoring of the sanitation service chain</li>
                                         <li>Spatial analysis tools</li>
                                         <li>Query and attribute analysis tools</li>
-                                        <li>Basic navigation tools for exploration, analysis, and visualization of spatial data within a GIS environment and tools for printing maps</li>
+                                        <li>Basic navigation tools for exploration, analysis, and visualization of
+                                            spatial data within a GIS environment and tools for printing maps</li>
 
-                                        </ul>
-                                    </div>
+                                    </ul>
                                 </div>
-
                             </div>
-                            <!--/.Card-->
+
                         </div>
+                        <!--/.Card-->
                     </div>
+                </div>
 
 
                 <div class="row">
                     <div class="col-md-4 mb-4 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="100">
                         <div class="icon-box">
-                        <img src="{{ asset('img/svg/landing-page/utilityIMS.svg')}}" class="icon" alt="Utility Icon">
+                            <img src="{{ asset('img/svg/landing-page/utilityIMS.svg')}}" class="icon"
+                                alt="Utility Icon">
                             <!--Card content-->
                             <div class="card-body">
                                 <!--Title-->
@@ -250,10 +281,10 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                 <!--Text-->
                                 <div class="card-text text-left ">
                                     <ul>
-                                    <li>Maintains road network information</li>
-                                    <li>Maintains water supply network information</li>
-                                    <li>Maintains sewerage network information</li>
-                                    <li>Maintains drainage network information</li>
+                                        <li>Maintains road network information</li>
+                                        <li>Maintains water supply network information</li>
+                                        <li>Maintains sewerage network information</li>
+                                        <li>Maintains drainage network information</li>
                                     </ul>
                                 </div>
                             </div>
@@ -265,7 +296,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     <div class="col-md-4 mb-4 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="100">
 
                         <div class="icon-box">
-                        <img src="{{ asset('img/svg/landing-page/swmPaymentStatus.svg')}}" class="icon">
+                            <img src="{{ asset('img/svg/landing-page/swmPaymentStatus.svg')}}" class="icon">
                             <!--Card content-->
                             <div class="card-body">
                                 <!--Title-->
@@ -273,7 +304,8 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                 <!--Text-->
                                 <div class="card-text text-left ">
                                     <ul>
-                                    <li>Enables import of solid waste management data into the system for spatial visualization of buildings with their solid waste management status</li>
+                                        <li>Enables import of solid waste management data into the system for spatial
+                                            visualization of buildings with their solid waste management status</li>
                                     </ul>
                                 </div>
                             </div>
@@ -286,14 +318,18 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     <div class="col-md-4 mb-4 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="300">
 
                         <div class="icon-box">
-                        <img src="{{ asset('img/svg/landing-page/watersupplyISS.svg')}}" class="icon" alt="Water Supply ISS Icon">
+                            <img src="{{ asset('img/svg/landing-page/watersupplyISS.svg')}}" class="icon"
+                                alt="Water Supply ISS Icon">
                             <!--Card content-->
                             <div class="card-body">
                                 <!--Title-->
                                 <h5 class=" text-center ">Water Supply Information Support System</h5>
                                 <!--Text-->
                                 <div class="card-text text-left">
-                                    <ul><li>Enables to import of water supply bill payment data into the system for spatial visualization of buildings with their bill payment status</li></ul>
+                                    <ul>
+                                        <li>Enables to import of water supply bill payment data into the system for
+                                            spatial visualization of buildings with their bill payment status</li>
+                                    </ul>
                                 </div>
                             </div>
 
@@ -306,100 +342,38 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     <div class="col-md-4 mb-4 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="200">
 
                         <div class="icon-box">
-                        <img src="{{ asset('img/svg/landing-page/publicHealthISS.svg')}}" class="icon" alt="Fecal Sludge Icon">
+                            <img src="{{ asset('img/svg/landing-page/fecalSludgeIMS.svg') }}" class="icon"
+                                alt="Fecal Sludge Icon">
+
                             <!--Card content-->
-                            <div class="card-body">
+                            <div class="card-body p">
                                 <!--Title-->
-                                <h5 class=" text-center ">Public Health Information Support System</h5>
+                                <h5 class=" text-center ">Fecal Sludge Information Management System</h5>
                                 <!--Text-->
-                                <div class="card-text text-left ">
-                                    <ul><li>Maintains information about hotspot areas where waterborne diseases occurred </li></ul>
+                                <div class="card-text text-left">
+                                    <ul>
+                                        <li>Maintains information about all containments with their geographic location
+                                        </li>
+                                        <li>Maintains information about FSM service providers and their resources</li>
+                                        <li>Maintains information about the Fecal Sludge Treatment Plant and the FS
+                                            disposed records</li>
+                                        <li>Maintains the quality test record of treated wastewater and compost
+                                            generated from the treatment plant</li>
+                                        <li>Maintains records of services from containment emptying to transport, and
+                                            desludging of FS in the treatment plant</li>
+                                        <li>Maintains the customer feedback data</li>
+
+                                    </ul>
+
                                 </div>
                             </div>
 
                         </div>
                         <!--/.Card-->
-
-                    </div>
-                    <div class="col-md-4 mb-4 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="200">
-
-                        <div class="icon-box">
-                        <img src="{{ asset('img/svg/landing-page/ptctIMS.svg')}}" class="icon" alt="PTCT  Icon">
-
-                                <!--Card content-->
-                                <div class="card-body">
-                                    <!--Title-->
-                                    <h5 class=" text-center ">Public/Community Toilet (PT/CT) Information Management System</h5>
-                                    <!--Text-->
-                                    <div class="card-text text-left ">
-                                        <ul>
-                                            <li>
-                                                Maintains information about all PTs and CTs in the city with the number of users used and their feedback
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-
-                        </div>
-                        <!--/.Card-->
                     </div>
 
-                    <div class="col-md-4 mb-4 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="200">
-
-                        <div class="icon-box">
-                        <img src="{{ asset('img/svg/landing-page/sewerConnectionIMS.svg')}}" class="icon" alt="PTCT  Icon">
-
-
-                                <!--Card content-->
-                                <div class="card-body">
-                                    <!--Title-->
-                                    <h5 class=" text-center ">Sewer Connection Information Management System</h5>
-                                    <!--Text-->
-                                    <div class="card-text text-left ">
-                                        <ul>
-                                            <li>
-                                                Maintains information about all buildings and their corresponding sewer network
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-
-                        </div>
-                        <!--/.Card-->
-                    </div>
                 </div>
-
-                <div class="row">
-                    <div class="col-md-4 mb-4 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="200">
-
-                            <div class="icon-box">
-                            <img src="{{ asset('img/svg/landing-page/fecalSludgeIMS.svg') }}" class="icon" alt="Fecal Sludge Icon">
-
-                                    <!--Card content-->
-                                    <div class="card-body p">
-                                        <!--Title-->
-                                        <h5 class=" text-center ">Fecal Sludge Information Management System</h5>
-                                        <!--Text-->
-                                        <div class="card-text text-left">
-                                            <ul>
-                                                <li>Maintains information about all containments with their geographic location </li>
-                                                <li>Maintains information about FSM service providers and their resources</li>
-                                                <li>Maintains information about the Fecal Sludge Treatment Plant and the FS disposed records</li>
-                                                <li>Maintains the quality test record of treated wastewater and compost generated from the treatment plant</li>
-                                                <li>Maintains records of services from containment emptying to transport, and desludging of FS in the treatment plant</li>
-                                                <li>Maintains the customer feedback data</li>
-
-                                            </ul>
-
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <!--/.Card-->
-                            </div>
-
-                    </div>
-                </div>
+            </div>
             </div>
 
         </section>
@@ -445,17 +419,21 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                             @csrf
                             <div class="row">
                                 <div class="col-md-6 form-group">
-                                    <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required>
+                                    <input type="text" name="name" class="form-control" id="name"
+                                        placeholder="Your Name" required>
                                 </div>
                                 <div class="col-md-6 form-group mt-3 mt-md-0">
-                                    <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" required>
+                                    <input type="email" class="form-control" name="email" id="email"
+                                        placeholder="Your Email" required>
                                 </div>
                             </div>
                             <div class="form-group mt-3">
-                                <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject" required>
+                                <input type="text" class="form-control" name="subject" id="subject"
+                                    placeholder="Subject" required>
                             </div>
                             <div class="form-group mt-3">
-                                <textarea class="form-control" name="message" rows="5" placeholder="Message" required></textarea>
+                                <textarea class="form-control" name="message" rows="5" placeholder="Message"
+                                    required></textarea>
                             </div>
                             <div class="text-center">
                                 <button type="submit" class="btn btn-block">Send Now!</button>
@@ -470,14 +448,23 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
     </main>
     <!-- End #main -->
 
+    <!-- Branding -->
+    <div style="background: white">
+        <div class="container">
+            @include('includes.branding')
+        </div>
+    </div>
+    <!-- End Branding -->
+
     <!-- ======= Footer ======= -->
     <footer id="footer" class="section-bg">
         <div class="container py-4">
-        <div class="copyright">
-        <strong> Base IMIS <i class="fa-regular fa-copyright"> </i>  2022-{{ \Carbon\Carbon::now()->format('Y') }} by <a href="https://streamstech.com" target="_blank">
-            Streams Tech Ltd.</a> & <a href="https://www.gwsc.ait.ac.th/">GWSC-AIT</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1">CC BY-NC-SA 4.0 </a>
-</strong>
-    </div>
+            <div class="copyright">
+                <strong> Base IMIS <i class="fa-regular fa-copyright"> </i> 2022-{{ \Carbon\Carbon::now()->format('Y') }} by <a href="https://streamstech.com" target="_blank">
+                        Streams Tech Ltd.</a> & <a href="https://www.gwsc.ait.ac.th/">GWSC-AIT</a> is licensed under <a
+                        href="https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1">CC BY-NC-SA 4.0 </a>
+                </strong>
+            </div>
             <div class="credits">
                 Implemented by
                 <a href="https://streamstech.com">Streams Tech Ltd.</a>
@@ -525,7 +512,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
     }
     })
     </script>
-     <script>
+    <script>
         // JavaScript code to get and display the current year
         // var currentYear = new Date().getFullYear();
         // document.getElementById("currentYear").textContent = currentYear;

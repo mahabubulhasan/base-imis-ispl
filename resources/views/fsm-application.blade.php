@@ -349,6 +349,14 @@ Developed By: Streamstech Ltd.   -->
     </main>
     <!-- End #main -->
 
+    <!-- Branding -->
+    <div style="background: white">
+        <div class="container">
+            @include('includes.branding')
+        </div>
+    </div>
+    <!-- End Branding -->
+
     <!-- ======= Footer ======= -->
     <footer id="footer" class="section-bg">
         <div class="container py-4">
