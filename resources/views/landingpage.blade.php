@@ -75,7 +75,7 @@ Developed By: Streams Tech Ltd. -->
             <div class="md:flex-none">
                 <div
                     class="relative rounded-2xl p-6 md:p-10 w-full max-w-[420px] ml-auto animate-scaleIn border border-white/65 shadow-2xl bg-white/45 ring-1 ring-white/55 overflow-hidden">
-                    <h3 class="text-[#0056b3] text-xl md:text-2xl mb-5 md:mb-6 text-center font-semibold">Log In
+                    <h3 class="text-[#0056b3] text-xl md:text-2xl mb-5 md:mb-6 text-center font-semibold">Sign In
                     </h3>
 
                     @if(isset($errors) && count($errors) > 0)
