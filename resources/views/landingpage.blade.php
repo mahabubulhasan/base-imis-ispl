@@ -171,9 +171,15 @@ Developed By: Streams Tech Ltd. -->
     </div>
   </div>
 
+
   <footer class="text-center py-5 text-sm md:text-base text-gray-800 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.05)] mt-10">
-    Implemented by <a href="https://streamstech.com" target="_blank" rel="noopener noreferrer" class="text-[#0056b3] font-semibold">Streams Tech Ltd.</a><br>
+    <div class="px-5">
+        @include('includes.branding')
+    </div>
+    <div class="pt-5">
+        Implemented by <a href="https://streamstech.com" target="_blank" rel="noopener noreferrer" class="text-[#0056b3] font-semibold">Streams Tech Ltd.</a> |
     © {{ config('constants.SITE_NAME') }} {{ \Carbon\Carbon::now()->format('Y') }}. All rights reserved.
+    </div>
   </footer>
 
   <script>
