@@ -42,6 +42,8 @@ Developed By: Streams Tech Ltd. -->
             <ul
                 class="flex flex-col md:flex-row gap-0 md:gap-6 lg:gap-8 m-0 p-0 list-none items-center md:bg-transparent bg-white/10 md:bg-none rounded-lg md:rounded-none md:p-0 py-2">
                 <li class="nav-item cursor-pointer font-medium text-sm lg:text-base px-4 py-3 md:py-2 rounded-md transition-all duration-300 hover:bg-[#3b3a40]/20 w-full md:w-auto text-center whitespace-nowrap relative no-underline"
+                    onclick="openTab('about', this)">About</li>
+                <li class="nav-item cursor-pointer font-medium text-sm lg:text-base px-4 py-3 md:py-2 rounded-md transition-all duration-300 hover:bg-[#3b3a40]/20 w-full md:w-auto text-center whitespace-nowrap relative no-underline"
                     onclick="openTab('dashboard', this)">Public Dashboard</li>
                 <li class="nav-item cursor-pointer font-medium text-sm lg:text-base px-4 py-3 md:py-2 rounded-md transition-all duration-300 hover:bg-[#3b3a40]/20 w-full md:w-auto text-center whitespace-nowrap relative no-underline"
                     onclick="openTab('feedback', this)">Feedback</li>
@@ -139,6 +141,14 @@ Developed By: Streams Tech Ltd. -->
                     </form>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- PUBLIC DASHBOARD -->
+    <div id="about" class="tab-content hidden p-5 md:p-10 bg-transparent min-h-[calc(100vh-100px)] animate-fadeIn">
+        <div class="max-w-6xl mx-auto bg-white p-6 md:p-10 rounded-2xl shadow-2xl">
+            <h2 class="text-[#1f3b7d] text-2xl md:text-3xl lg:text-4xl mb-5 border-b-4 border-[#0056b3] pb-4">About</h2>
+            About sectoin text goes here.
         </div>
     </div>
 
