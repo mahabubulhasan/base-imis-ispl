@@ -164,45 +164,47 @@ Developed By: Streams Tech Ltd. -->
     </div>
 
     <!-- ABOUT TAB -->
+    <!-- ABOUT TAB -->
     <div id="about" class="tab-content hidden p-5 md:p-10 bg-transparent min-h-[calc(100vh-100px)] animate-fadeIn">
         <div class="max-w-6xl mx-auto space-y-8">
-
             <!-- ABOUT SECTION -->
             <div class="bg-white p-6 md:p-10 rounded-2xl shadow-2xl">
-                <h2 class="text-[#1f3b7d] text-2xl md:text-3xl lg:text-4xl mb-6 border-b-4 border-[#0056b3] pb-4 font-bold">About <span class="text-[#0056b3]">IMIS</span></h2>
-                <div class="text-left space-y-4">
-                    <p class="text-gray-700 text-base md:text-lg leading-relaxed">
+                <div class="section-title">
+                    <h3>About <span>IMIS</span></h3>
+                </div>
+                <div class="text-left">
+                    <p>
                         IMIS is an open-source GIS-based Digital Public Infrastructure (DPI) which functions as both a
                         municipal information system and a software solution, integrating data, processes, and services
                         to enhance municipal governance—particularly in sanitation management with Citywide Inclusive
                         Sanitation (CWIS) approach to achieve SDG 6.2. It offers municipalities data-driven
                         decision-making tools to strengthen governance across various sectors. By leveraging open-source
                         technologies and Geographic Information Systems (GIS), it facilitates:
-                    </p>
-                    <ul class="list-disc list-inside space-y-2 text-gray-700 text-base md:text-lg ml-2">
+                    <ul>
                         <li>Planning, management, and monitoring of sanitation systems using the CWIS approach.</li>
-                        <li>End-to-end FSM (Faecal Sludge Management) service chain oversight, including real-time data tracking.</li>
+                        <li>End-to-end FSM (Faecal Sludge Management) service chain oversight, including real-time data
+                            tracking.</li>
                         <li>Generation and visualization of CWIS indicators for performance assessment.</li>
-                        <li>Intuitive dashboards for tracking CWIS indicators, Key Performance Indicators (KPIs), and other essential municipal governance metrics.</li>
+                        <li>Intuitive dashboards for tracking CWIS indicators, Key Performance Indicators (KPIs), and
+                            other essential municipal governance metrics.</li>
                     </ul>
-                    <p class="text-gray-700 text-base md:text-lg leading-relaxed">
-                        IMIS as a sub-national public data system contributes to national-level monitoring by feeding data
-                        into centralized systems, supporting CWIS indicators and other critical metrics for achieving
-                        sanitation targets.
-                    </p>
-                    <p class="text-gray-700 text-base md:text-lg leading-relaxed">
-                        Beyond sanitation management, with its modular and scalable design, Base IMIS empowers local
-                        authorities by providing a unified, data-driven framework that enhances efficiency, accountability,
-                        and service delivery in municipal governance.
+                    IMIS as a sub-national public data system contributes to national-level monitoring by feeding data
+                    into centralized systems, supporting CWIS indicators and other critical metrics for achieving
+                    sanitation targets.
+                    Beyond sanitation management, with its modular and scalable design, Base IMIS empowers local
+                    authorities by providing a unified, data-driven framework that enhances efficiency, accountability,
+                    and service delivery in municipal governance.
                     </p>
                 </div>
             </div>
 
             <!-- CWIS SECTION -->
             <div class="bg-white p-6 md:p-10 rounded-2xl shadow-2xl">
-                <h2 class="text-[#1f3b7d] text-2xl md:text-3xl lg:text-4xl mb-6 border-b-4 border-[#0056b3] pb-4 font-bold">Citywide Inclusive Sanitation <span class="text-[#0056b3]">(CWIS)</span></h2>
-                <div class="text-left space-y-4">
-                    <p class="text-gray-700 text-base md:text-lg leading-relaxed">
+                <div class="section-title">
+                    <h3>Citywide Inclusive Sanitation <span>(CWIS)</span></h3>
+                </div>
+                <div class="text-left">
+                    <p>
                         CWIS is an approach to achieve SDG 6.2 for safe, equitable and financially viable sanitation
                         systems and services. CWIS ensures everyone in a city has access to safely managed sanitation,
                         and human waste is safely managed along the whole sanitation service chain ensuring protection
@@ -211,37 +213,46 @@ Developed By: Streams Tech Ltd. -->
                     <div class="flex justify-center my-6">
                         <img src="{{ asset('img/svg/landing-page/cwis.jpg') }}" alt="CWIS" class="max-w-full h-auto rounded-lg shadow-lg">
                     </div>
-                    <p class="text-gray-700 text-base md:text-lg leading-relaxed">
-                        CWIS approach focuses on service provision and its enabling environment rather than on building
+                    <p>CWIS approach focuses on service provision and its enabling environment rather than on building
                         infrastructure, therefore, reliable data is the key success factor for CWIS. UN Water SDG 6
                         global acceleration framework has also identified data and information as one of the five
-                        accelerators of SDG 6 outcomes.
-                    </p>
+                        accelerators of SDG 6 outcomes.</p>
                 </div>
             </div>
 
             <!-- FEATURES SECTION -->
             <div class="bg-white p-6 md:p-10 rounded-2xl shadow-2xl">
-                <h2 class="text-[#1f3b7d] text-2xl md:text-3xl lg:text-4xl mb-6 border-b-4 border-[#0056b3] pb-4 font-bold">Features of <span class="text-[#0056b3]">IMIS</span></h2>
+                <div class="section-title">
+                    <h3>Features of <span>IMIS</span></h3>
+                </div>
                 <div class="text-left">
-                    <ul class="list-disc list-inside space-y-3 text-gray-700 text-base md:text-lg ml-2">
+                    <ul>
                         <li>Spatial context for municipal data - infrastructure, services, and resources</li>
-                        <li>Efficient storage and management of municipal data, including infrastructure and essential services</li>
-                        <li>Integration of CWIS data to support planning, management, and evaluation of sanitation systems and services</li>
+                        <li>Efficient storage and management of municipal data, including infrastructure and essential
+                            services</li>
+                        <li>Integration of CWIS data to support planning, management, and evaluation of sanitation
+                            systems and services</li>
                         <li>Decision support tools for decision-making based on spatial analysis and modelling</li>
                         <li>Real-time dashboard for monitoring KPIs and CWIS indicators</li>
                         <li>User-friendly interfaces with access control features</li>
                         <li>Scalability to adapt to the evolving technology and information needs</li>
                         <li>Mainstreaming CWIS service chain into the city's business process</li>
-                        <li>Interoperable with external data sources, including tax/revenue, public health, emergency response data and more</li>
-                        <li>Robust security measures to safeguard sensitive data, ensuring city data privacy compliance</li>
+                        <li>Interoperable with external data sources, including tax/revenue, public health, emergency
+                            response data and more</li>
+                        <li>Robust security measures to safeguard sensitive data, ensuring city data privacy compliance
+                        </li>
                     </ul>
+                </div>
+                <div style="text-align: center">
+                    <!-- <button class="btn-get-started"> Learn More</button> -->
                 </div>
             </div>
 
             <!-- FUNCTIONAL MODULES SECTION -->
             <div class="bg-white p-6 md:p-10 rounded-2xl shadow-2xl">
-                <h2 class="text-[#1f3b7d] text-2xl md:text-3xl lg:text-4xl mb-6 border-b-4 border-[#0056b3] pb-4 font-bold">Functional <span class="text-[#0056b3]">Modules</span></h2>
+                <div class="section-title">
+                    <h3>Functional<span> Modules</span></h3>
+                </div>
 
                 <!-- Grid of modules -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
