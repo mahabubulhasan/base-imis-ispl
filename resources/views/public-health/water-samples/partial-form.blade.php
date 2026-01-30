@@ -49,7 +49,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 </style>
 
 <div class="card-body">
-    
+
     <div class="form-group required row">
         {!! Form::label('sample_date',__('Sample Date'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-4">
@@ -69,7 +69,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
         {!! Form::label('water_coliform_test_result',__('Water Coliform Test Result'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-4">
         {!! Form::select('water_coliform_test_result', $water_coliform_test_result, null, ['class' => 'form-control chosen-select', 'placeholder' => __('Water Coliform Test Result')]) !!}
-           
+
         </div>
     </div>
 
@@ -93,12 +93,12 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
         {!! Form::submit(__('Save'), ['class' => 'btn btn-info']) !!}
     </div>
 
- 
+
     @push('scripts')
-   
+
     <script src="https://openlayers.org/en/v4.6.5/build/ol.js"></script>
     <script src="https://unpkg.com/ol-layerswitcher@3.8.3"></script>
-    
+
     <script>
 
         var workspace = '<?php echo Config::get("constants.GEOSERVER_WORKSPACE"); ?>';
@@ -240,11 +240,11 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 })
             ],
             view: new ol.View({
-                center: ol.proj.transform([85.37004580498977,27.643296216592432], 'EPSG:4326', 'EPSG:3857'),
+                center: ol.proj.transform([90.8295, 22.9441], 'EPSG:4326', 'EPSG:3857'),
                 // zoom: 12,
                 minZoom: 12.5,
                 maxZoom: 19,
-                extent: ol.proj.transformExtent([85.32348539192756,27.58711426558866,85.44082675863419, 27.684646263435823 ], 'EPSG:4326', 'EPSG:3857')
+                extent: ol.proj.transformExtent([90.50, 22.70, 91.20, 23.30], 'EPSG:4326', 'EPSG:3857')
             })
         });
         map.addControl(layerSwitcher);
@@ -258,7 +258,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
             map.addLayer(layer);
 
         }
-    
+
         map.on('singleclick', function (evt) {
             var geom = ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326');
             displayPointByCoordinates(geom[1], geom[0]);
@@ -303,7 +303,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
         setInitialZoom();
 
         function setInitialZoom() {
-            map.getView().setCenter(ol.proj.transform([85.38334613018505,27.634613503939818], 'EPSG:4326', 'EPSG:3857'));
+            map.getView().setCenter(ol.proj.transform([90.8295, 22.9441], 'EPSG:4326', 'EPSG:3857'));
             map.getView().setZoom(12);
         }
         $(document).ready(function(){
