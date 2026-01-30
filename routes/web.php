@@ -33,7 +33,7 @@ Route::get('/', function () {
     }
 });
 
-Route::get('/public-dashboard', [App\Http\Controllers\PublicDashboardController::class, 'index'])->name('public-dashboard');
+Route::get('/public-dashboard', 'PublicDashboardController@index')->name('public-dashboard');
 
 Route::get('/fsm-application', 'Fsm\PublicApplicationController@getForm')->name('client-fsm-application.form');
 Route::post('/fsm-application', 'Fsm\PublicApplicationController@submitForm')->name('client-fsm-application.submit');
