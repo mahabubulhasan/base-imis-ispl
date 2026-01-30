@@ -37,11 +37,7 @@ Route::get('/fsm-application', 'Fsm\PublicApplicationController@getForm')->name(
 Route::post('/fsm-application', 'Fsm\PublicApplicationController@submitForm')->name('client-fsm-application.submit');
 Route::get('/fsm-road-names', 'Fsm\PublicApplicationController@getRoadNames')->name('client-fsm-application.get-road-names');
 Route::get('/fsm-application/get-building-data', 'Fsm\PublicApplicationController@getBuildingDataByTaxId')->name('client-fsm-application.get-building-data');
-
-
 Route::middleware('fixed_token_auth')->get('redirect-to-map/{ebps_id}', [ApiServiceController::class, 'getMapUrl'])->name('maps.view');
-Route::get('/fsm-application/get-building-data', 'Fsm\PublicApplicationController@getBuildingDataByTaxId')->name('client-fsm-application.get-building-data');
-
 
 Route::get('/files', 'FileController@index')->name('files.index');
 Route::post('/files/upload', 'FileController@upload')->name('files.upload');
@@ -265,10 +261,10 @@ Route::group([
     Route::get('/nsd/cwis-data/{year}', 'NsdDashboardController@getCwisData');
     Route::get('/nsd/cwis-status', 'NsdDashboardController@checkNsdStatus');
     Route::get('/nsd-setting', 'NsdSettingController@index')->name('nsd-setting.index');
-    Route::get('/nsd-setting/create', 'NsdSettingController@create')->name('nsd-setting.create'); 
-    Route::post('/nsd-setting', 'NsdSettingController@store')->name('nsd-setting.store'); 
-    Route::get('/nsd-setting/{id}/edit', 'NsdSettingController@edit')->name('nsd-setting.edit'); 
-    Route::put('/nsd-setting/{id}', 'NsdSettingController@update')->name('nsd-setting.update'); 
+    Route::get('/nsd-setting/create', 'NsdSettingController@create')->name('nsd-setting.create');
+    Route::post('/nsd-setting', 'NsdSettingController@store')->name('nsd-setting.store');
+    Route::get('/nsd-setting/{id}/edit', 'NsdSettingController@edit')->name('nsd-setting.edit');
+    Route::put('/nsd-setting/{id}', 'NsdSettingController@update')->name('nsd-setting.update');
 
 
 
