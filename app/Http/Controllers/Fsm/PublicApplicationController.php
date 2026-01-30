@@ -26,7 +26,75 @@ class PublicApplicationController extends Controller
 
     public function submitForm(Request $request)
     {
+        // Check if it's an AJAX request
+        if ($request->ajax() || $request->wantsJson()) {
+            try {
+                $result = $this->_applicationService->createApplication($request);
+
+                // Check if result is a redirect (success or error)
+                if ($result instanceof \Illuminate\Http\RedirectResponse) {
+                    $session = $result->getSession();
+
+                    // Check for success message
+                    if ($session && $session->has('success')) {
+                        return response()->json([
+                            'success' => true,
+                            'message' => $session->get('success')
+                        ]);
+                    }
+
+                    // Check for error message
+                    if ($session && $session->has('error')) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => $session->get('error')
+                        ], 400);
+                    }
+
+                    // Check for validation errors
+                    $errors = $session ? $session->get('errors') : null;
+                    if ($errors) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Validation failed',
+                            'errors' => $errors->toArray()
+                        ], 422);
+                    }
+                }
+
+                // Default success response
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Your application submitted successfully, Thank You.'
+                ]);
+
+            } catch (\Exception $e) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'An error occurred while processing your application: ' . $e->getMessage()
+                ], 500);
+            }
+        }
+
+        // Non-AJAX request - use original behavior
         return $this->_applicationService->createApplication($request);
+    }
+
+    public function getWardsData()
+    {
+        try {
+            $wards = Ward::orderBy('ward')->pluck('ward')->toArray();
+
+            return response()->json([
+                'success' => true,
+                'wards' => $wards
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to load wards data: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     public function getRoadNames()
@@ -70,7 +138,7 @@ class PublicApplicationController extends Controller
     {
         try {
             $taxId = $request->get('tax_id');
-            
+
             if (!$taxId) {
                 return response()->json([
                     'success' => false,
@@ -95,7 +163,7 @@ class PublicApplicationController extends Controller
 
             // Get owner information
             $owner = $building->Owners;
-            
+
             // Get road information - only load if road_code exists and is valid (not null, empty, or 0)
             $roadline = null;
             if (!empty($building->road_code) && $building->road_code !== '0' && $building->road_code !== 0) {
@@ -106,7 +174,7 @@ class PublicApplicationController extends Controller
                     $roadline = null;
                 }
             }
-            
+
             // Build address from house_number, house_locality, and road name
             $addressParts = array_filter([
                 $building->house_number,
