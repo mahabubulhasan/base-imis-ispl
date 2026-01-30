@@ -13,8 +13,27 @@ Developed By: Streams Tech Ltd. -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 
+    <!-- Chart.js for Dashboard Charts (v2.9.4 for compatibility) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
+
+    <!-- jQuery for Dashboard Functionality -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Bootstrap for Dashboard -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- AdminLTE for Dashboard Card Widgets -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+
+    <!-- Font Awesome for Dashboard Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('layout/css/styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
 
 <body class="m-0 font-sans overflow-x-hidden min-h-screen relative"
@@ -326,12 +345,24 @@ Developed By: Streams Tech Ltd. -->
 
     <!-- PUBLIC DASHBOARD -->
     <div id="dashboard" class="tab-content hidden p-5 md:p-10 bg-transparent min-h-[calc(100vh-100px)] animate-fadeIn">
-        <div class="max-w-6xl mx-auto bg-white p-6 md:p-10 rounded-2xl shadow-2xl">
-            <h2 class="text-[#1f3b7d] text-2xl md:text-3xl lg:text-4xl mb-5 border-b-4 border-[#0056b3] pb-4">Public
-                Dashboard</h2>
-            <p class="text-gray-600 text-base md:text-lg leading-relaxed">Welcome to the {{
-                config('constants.SITE_NAME') }} Public Dashboard. This section will display general statistics,
-                announcements, and municipal data to keep citizens informed about local services and developments.</p>
+        <div class="max-w-7xl mx-auto bg-white p-6 md:p-10 rounded-2xl shadow-2xl">
+            <h2 class="text-[#1f3b7d] text-2xl md:text-3xl lg:text-4xl mb-8 border-b-4 border-[#0056b3] pb-4 font-bold">Public Dashboard</h2>
+
+            <!-- Loading Spinner -->
+            <div id="dashboard-loader" class="flex justify-center items-center py-20">
+                <div class="animate-spin rounded-full h-12 w-12 border-4 border-[#0056b3] border-t-transparent"></div>
+                <span class="ml-4 text-gray-600 text-lg">Loading Dashboard...</span>
+            </div>
+
+            <!-- Dashboard Content Container -->
+            <div id="dashboard-content" class="hidden">
+                <!-- Content will be loaded via AJAX -->
+            </div>
+
+            <!-- Error Message Container -->
+            <div id="dashboard-error" class="hidden bg-red-50 border border-red-200 p-4 rounded-lg text-red-700">
+                Failed to load dashboard. Please try again later.
+            </div>
         </div>
     </div>
 
@@ -444,6 +475,11 @@ Developed By: Streams Tech Ltd. -->
         nav.classList.remove('menu-active');
         nav.classList.add('max-h-0');
       }
+
+      // Load dashboard content if dashboard tab is opened
+      if (tabId === 'dashboard') {
+        loadPublicDashboard();
+      }
     }
 
     function toggleMenu() {
@@ -483,6 +519,73 @@ Developed By: Streams Tech Ltd. -->
         nav.classList.add('max-h-0');
       }
     });
+
+    // Load Public Dashboard via AJAX
+    function loadPublicDashboard() {
+      const loader = document.getElementById('dashboard-loader');
+      const content = document.getElementById('dashboard-content');
+      const error = document.getElementById('dashboard-error');
+
+      // Show loader, hide content and error
+      loader.classList.remove('hidden');
+      content.classList.add('hidden');
+      error.classList.add('hidden');
+
+      $.ajax({
+        url: '{{ route("public-dashboard") }}',
+        method: 'GET',
+        dataType: 'html',
+        success: function(response) {
+          // Hide loader
+          loader.classList.add('hidden');
+
+          // Parse HTML and extract scripts
+          var tempDiv = document.createElement('div');
+          tempDiv.innerHTML = response;
+
+          // Extract all script tags
+          var scripts = tempDiv.querySelectorAll('script');
+          var scriptsArray = Array.from(scripts);
+
+          // Remove scripts from the HTML temporarily
+          scriptsArray.forEach(function(script) {
+            script.parentNode.removeChild(script);
+          });
+
+          // Insert the HTML without scripts
+          content.innerHTML = tempDiv.innerHTML;
+          content.classList.remove('hidden');
+
+          // Execute scripts after a brief delay to ensure DOM is ready
+          setTimeout(function() {
+            scriptsArray.forEach(function(oldScript) {
+              var newScript = document.createElement('script');
+              if (oldScript.src) {
+                newScript.src = oldScript.src;
+              } else {
+                newScript.textContent = oldScript.textContent;
+              }
+              document.body.appendChild(newScript);
+            });
+
+            console.log('Dashboard loaded with ' + scriptsArray.length + ' scripts executed');
+          }, 100);
+
+          // Initialize tooltips
+          if ($.fn.tooltip) {
+            $('[data-toggle="tooltip"]').tooltip({ html: true });
+          }
+        },
+        error: function() {
+          // Hide loader
+          loader.classList.add('hidden');
+
+          // Show error
+          error.classList.remove('hidden');
+          console.error('Failed to load public dashboard');
+        }
+      });
+    }
     </script>
 </body>
 

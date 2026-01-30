@@ -27,7 +27,7 @@ class DashboardService
             ->count();
     }
 
-    
+
     public function countBuildingsByUseExact($useName)
     {
         return Building::whereIn('functional_use_id', function ($query) use ($useName) {
@@ -48,7 +48,7 @@ class DashboardService
             $leftJoin .= " AND extract(year from a.created_at) = '$year'";
         }
 
-        if (Auth::user()->hasRole('Service Provider - Admin') || Auth::user()->hasRole('Service Provider - Help Desk')) {
+        if (Auth::check() && (Auth::user()->hasRole('Service Provider - Admin') || Auth::user()->hasRole('Service Provider - Help Desk'))) {
 
             $whereRawServiceProvider = " AND a.service_provider_id = " . Auth::user()->service_provider_id;
         } else {
@@ -189,7 +189,7 @@ class DashboardService
         if ($year) {
             $where .= " AND extract(year from fb.created_at) = '$year'";
         }
-        if (Auth::user()->hasRole('Service Provider - Admin') || Auth::user()->hasRole('Service Provider - Help Desk')) {
+        if (Auth::check() && (Auth::user()->hasRole('Service Provider - Admin') || Auth::user()->hasRole('Service Provider - Help Desk'))) {
 
             $whereRawServiceProvider = " AND fb.service_provider_id = " . Auth::user()->service_provider_id;
         } else {
@@ -227,7 +227,7 @@ class DashboardService
         if ($year) {
             $where .= " AND extract(year from fb.created_at) = '$year'";
         }
-        if (Auth::user()->hasRole('Service Provider - Admin') || Auth::user()->hasRole('Service Provider - Help Desk')) {
+        if (Auth::check() && (Auth::user()->hasRole('Service Provider - Admin') || Auth::user()->hasRole('Service Provider - Help Desk'))) {
 
             $whereRawServiceProvider = " AND fb.service_provider_id = " . Auth::user()->service_provider_id;
         } else {
@@ -260,7 +260,7 @@ class DashboardService
     {
         $where = " WHERE deleted_at IS NULL";
 
-        if (Auth::user()->hasRole('Service Provider - Admin') || Auth::user()->hasRole('Service Provider - Help Desk')) {
+        if (Auth::check() && (Auth::user()->hasRole('Service Provider - Admin') || Auth::user()->hasRole('Service Provider - Help Desk'))) {
 
             $whereRawServiceProvider = " AND fb.service_provider_id = " . Auth::user()->service_provider_id;
         } else {
@@ -576,7 +576,7 @@ class DashboardService
         if ($year) {
             $where .= " AND extract(year from c.created_at) = '$year'";
         }
-        if (Auth::user()->hasRole('Treatment Plant - Admin')) {
+        if (Auth::check() && Auth::user()->hasRole('Treatment Plant - Admin')) {
             $treatment_plant_id = " AND s.treatment_plant_id  = " . Auth::user()->treatment_plant_id;
         } else {
             $treatment_plant_id = " AND 1 = 1";
@@ -616,7 +616,7 @@ class DashboardService
 
     public function getEmptyingServiceByTypeYear()
     {
-        if (Auth::user()->hasRole('Service Provider - Admin') || Auth::user()->hasRole('Service Provider - Help Desk')) {
+        if (Auth::check() && (Auth::user()->hasRole('Service Provider - Admin') || Auth::user()->hasRole('Service Provider - Help Desk'))) {
             $whereRawServiceProvider = " AND e.service_provider_id = " . Auth::user()->service_provider_id;
         } else {
             $whereRawServiceProvider = " AND 1 = 1";
@@ -726,7 +726,7 @@ class DashboardService
     {
         // Get landuse data
         $class = Landuse::orderBy('class')->pluck('class', 'class')->toArray();
-        
+
         // Query landuse summary data
         $results = DB::select("SELECT class, type, count, totalclass, percentage_proportion FROM public.landuse_summaryforchart");
 
@@ -754,7 +754,7 @@ class DashboardService
             '"rgba(251, 176, 64, 0.8)"',
             '"rgba(247, 142, 49, 0.8)"'
         ];
-        
+
         // Initialize an empty dataset structure
         $datasets = [];
         $count = 0;
@@ -768,7 +768,7 @@ class DashboardService
                 'value' => array_fill_keys($class, 0),
             ];
         }
-        
+
         // Populate the dataset with counts from $results
         foreach ($results as $result) {
             foreach ($datasets as &$dataset) {
@@ -810,12 +810,12 @@ class DashboardService
 
         $query = "SELECT a.ward, a.type, a.count, b.totalward,
                     ROUND(a.count * 100/b.totalward) as percentage_proportion
-                        FROM ( 
+                        FROM (
                         Select ct.type, count(c.*), b.ward
-                        FROM building_info.buildings b 
-                        JOIN building_info.build_contains bc on b.bin = bc.bin 
-                            AND bc.deleted_at IS NULL 
-                            AND bc.bin IS NOT NULL 
+                        FROM building_info.buildings b
+                        JOIN building_info.build_contains bc on b.bin = bc.bin
+                            AND bc.deleted_at IS NULL
+                            AND bc.bin IS NOT NULL
                             AND bc.containment_id IS NOT NULL
                         JOIN fsm.containments c on bc.containment_id = c.id
                             AND c.deleted_at IS NULL
@@ -1040,7 +1040,7 @@ class DashboardService
             (a.count * 100/b.totalward::numeric) as percentage_proportion
             FROM (
                 SELECT b.ward, ct.map_display AS type, count(c.*) as count
-                FROM fsm.containments c  
+                FROM fsm.containments c
                 JOIN building_info.buildings b ON b.bin = c.responsible_bin
                 JOIN fsm.containment_types ct ON c.type_id = ct.id
                 WHERE c.deleted_at IS NULL
@@ -1048,7 +1048,7 @@ class DashboardService
             ) a
             JOIN (
                	SELECT ward, count(b.ward) AS totalward
-                 FROM fsm.containments c  
+                 FROM fsm.containments c
                 JOIN building_info.buildings b ON b.bin = c.responsible_bin
                 WHERE c.deleted_at IS NULL
                 GROUP BY b.ward
@@ -1243,7 +1243,7 @@ class DashboardService
 
     public function getproposedEmptyingDateContainmentsChart()
     {
-        if (Auth::user()->hasRole('Service Provider - Admin') || Auth::user()->hasRole('Service Provider - Help Desk')) {
+        if (Auth::check() && (Auth::user()->hasRole('Service Provider - Admin') || Auth::user()->hasRole('Service Provider - Help Desk'))) {
 
             $whereRawServiceProvider = "WHERE a.service_provider_id = " . Auth::user()->service_provider_id;
         } else {
@@ -1278,7 +1278,7 @@ class DashboardService
     public function getProposedEmptiedDateContainmentsByWard()
     {
         $chart = array();
-        if (Auth::user()->hasRole('Service Provider - Admin') || Auth::user()->hasRole('Service Provider - Help Desk')) {
+        if (Auth::check() && (Auth::user()->hasRole('Service Provider - Admin') || Auth::user()->hasRole('Service Provider - Help Desk'))) {
 
             $whereRawServiceProvider = "WHERE a.service_provider_id = " . Auth::user()->service_provider_id;
         } else {
