@@ -313,7 +313,7 @@ Developed By: Streams Tech Ltd. -->
                             class="relative w-full py-3 md:py-3.5 rounded-lg text-base md:text-lg font-semibold cursor-pointer transition-all duration-200 tracking-wide uppercase text-[#003d82] bg-white/30 backdrop-blur-md border border-white/40 hover:bg-[#722f37] hover:text-white active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.3),_inset_-2px_-2px_5px_rgba(255,255,255,0.1)] active:translate-y-0.5">
                             <span
                                 class="pointer-events-none absolute inset-0 rounded-lg bg-[linear-gradient(135deg,_rgba(255,255,255,0.4)_0%,_rgba(255,255,255,0.1)_50%,_rgba(255,255,255,0)_100%)]"></span>
-                            <span class="relative">LOGIN</span>
+                            <span class="relative">SIGN IN</span>
                         </button>
                     </form>
                 </div>
