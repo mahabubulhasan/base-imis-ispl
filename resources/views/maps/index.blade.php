@@ -1328,8 +1328,8 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
         <div class="float-right d-none d-sm-inline ">
         	<strong>Implemented by:</strong> <a href="https://streamstech.com">Streams Tech Ltd.</a>
     	</div>
-        <strong> Base IMIS <i class="fa-regular fa-copyright"> </i>  2022-{{ \Carbon\Carbon::now()->format('Y') }} by <a href="https://streamstech.com">
-    Streams Tech Ltd.</a> & <a href="https://www.gwsc.ait.ac.th/">Global Water & Sanitation Center-Asian Institute of Technology (GWSC-AIT)</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1">CC BY-NC-SA 4.0 </a>
+            <strong> Base IMIS <i class="fa-regular fa-copyright"> </i>  2022-{{ \Carbon\Carbon::now()->format('Y') }} by <a href="http://www.innovativesolution.com.np">
+	ISPL</a> & <a href="https://www.gwsc.ait.ac.th/">GWSC-AIT</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1">CC BY-NC-SA 4.0 </a>
 </strong>
 
         <!-- Default to the left -->
