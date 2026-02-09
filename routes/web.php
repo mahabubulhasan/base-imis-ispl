@@ -47,6 +47,10 @@ Route::post('/files/upload', 'FileController@upload')->name('files.upload');
 
 Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.send');
 
+// Public Feedback Routes
+Route::get('/feedback-application-data', 'Fsm\PublicFeedbackController@getApplicationData')->name('public-feedback.get-application');
+Route::post('/public-feedback', 'Fsm\PublicFeedbackController@submitFeedback')->middleware('throttle:10,1')->name('public-feedback.submit');
+
 Route::group(['middleware' => ['guest']], function () {
     /**
      * Register Routes

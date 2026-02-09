@@ -1,6 +1,6 @@
 <?php
 // Last Modified Date: 18-04-2024
-// Developed By: Innovative Solution Pvt. Ltd. (ISPL)  
+// Developed By: Innovative Solution Pvt. Ltd. (ISPL)
 namespace App\Http\Controllers\Fsm;
 
 use App\Http\Controllers\Controller;
@@ -66,7 +66,7 @@ class FeedbackController extends Controller{
             ->select('f.created_at','f.id','f.application_id', 'u.username', 'a.ward')
             ->whereNull('f.deleted_at')
            ->where('a.service_provider_id','=',Auth::user()->service_provider_id);
-           
+
         }
         else
         {
@@ -78,7 +78,7 @@ class FeedbackController extends Controller{
 
         return Datatables::of($feedbacksData)
             ->filter(function ($query) use ($request) {
-                
+
                 if ($request->application_id) {
                     $query->where('f.application_id', $request->application_id);
                 }
@@ -103,7 +103,7 @@ class FeedbackController extends Controller{
             })
             ->addColumn('action', function ($model) {
                 $application = Application::find($model->application_id);
-                
+
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['feedback.destroy', $model->id]]);
 
                 if (Auth::user()->can('View Feedback')) {
@@ -118,7 +118,7 @@ class FeedbackController extends Controller{
             })
             ->make(true);
     }
-    
+
     /**
     * Get the minimum and maximum years from the 'created_at' field of the 'fsm.feedbacks' table.
     *
@@ -131,7 +131,7 @@ class FeedbackController extends Controller{
         $results = DB::select($query);
         return $results[0];
     }
-    
+
     /**
     * Display the specified feedback.
     *
@@ -148,7 +148,7 @@ class FeedbackController extends Controller{
             abort(404);
         }
     }
-    
+
     /**
     * Display a form for creating a new feedback for the specified application.
     *
@@ -169,7 +169,7 @@ class FeedbackController extends Controller{
             abort(404);
         }
     }
-    
+
     /**
     * Display a form for editing the specified feedback.
     *
@@ -199,7 +199,7 @@ class FeedbackController extends Controller{
             abort(404);
         }
     }
-    
+
     /**
     * Update the specified feedback in storage.
     *
@@ -222,7 +222,7 @@ class FeedbackController extends Controller{
         $feedback->service_provider_id = $application->service_provider_id;
 
         $feedback->save();
-        
+
         $application->feedback_status = TRUE;
         $application->save();
             return redirect('fsm/application')->with('success',__('Feedback Details updated successfully.'));
@@ -258,7 +258,7 @@ class FeedbackController extends Controller{
             return redirect('fsm/application')->with('success',__('Feedback Details Created Successfully.'));
 
     }
-    
+
     /**
     * Remove the specified feedback from storage.
     *
@@ -292,7 +292,7 @@ class FeedbackController extends Controller{
             return redirect('fsm/feedback')->with('error',__('Failed to delete feedback.'));
         }
     }
-    
+
     /**
     * Export feedback data to a CSV file.
     *
@@ -313,7 +313,7 @@ class FeedbackController extends Controller{
             __('Did the sanitation workers wear PPE during desludging?'),
             __('Comments')
         ];
-        
+
         $query = DB::table('fsm.feedbacks AS f')
             ->join('auth.users AS u', 'f.user_id', '=', 'u.id')
             ->join('fsm.applications AS a', 'f.application_id', '=', 'a.id')
@@ -323,7 +323,7 @@ class FeedbackController extends Controller{
 
         if (!Auth::user()->hasRole('Super Admin') && !Auth::user()->hasRole('Municipality - Super Admin') && !Auth::user()->hasRole('Municipality - Help Desk') && !Auth::user()->hasRole('Municipality - Sanitation Department')) {
             $query->where('a.service_provider_id','=',Auth::user()->service_provider_id);
-        } 
+        }
         if ($application_id) {
             $query->where('f.application_id', $application_id);
         }
@@ -343,7 +343,7 @@ class FeedbackController extends Controller{
         $writer = WriterFactory::create(Type::CSV);
         $writer->openToBrowser('Feedbacks.csv')
             ->addRowWithStyle($columns, $style); //Top row of excel
-         
+
         $query->chunk(5000, function ($applications) use ($writer) {
             foreach($applications as $application) {
                 $values = [];
