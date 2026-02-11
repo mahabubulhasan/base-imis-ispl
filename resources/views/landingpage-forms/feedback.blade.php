@@ -82,9 +82,9 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-12 col-md-6 mb-3">
+                    <div class="col-12 mb-3">
                         <label class="block text-gray-800 font-semibold mb-2 text-base">2. How would you rate the attitude of the emptiers during service? <span class="text-red-500">*</span></label>
-                        <div class="space-y-2">
+                        <div class="flex flex-wrap gap-3">
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="fsm_quality_level" value="4" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Very Satisfied</span>
@@ -104,10 +104,20 @@
                         </div>
                         <span class="error-message" id="error-fsm_quality_level"></span>
                     </div>
+                </div>
 
-                    <div class="col-12 col-md-6 mb-3">
+                <div class="row" id="dissatisfaction_q2" style="display: none;">
+                    <div class="col-12 mb-3">
+                        <textarea id="dissatisfaction_comment_q2" name="dissatisfaction_comment_q2" rows="3" placeholder="Please explain..."
+                            class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-base resize-y transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10"></textarea>
+                        <span class="error-message" id="error-dissatisfaction_comment_q2"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12 mb-3">
                         <label class="block text-gray-800 font-semibold mb-2 text-base">3. How do you assess the response time of the emptying service? <span class="text-red-500">*</span></label>
-                        <div class="space-y-2">
+                        <div class="flex flex-wrap gap-3">
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="service_delivery_efficiency" value="4" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Very Satisfied</span>
@@ -129,10 +139,18 @@
                     </div>
                 </div>
 
+                <div class="row" id="dissatisfaction_q3" style="display: none;">
+                    <div class="col-12 mb-3">
+                        <textarea id="dissatisfaction_comment_q3" name="dissatisfaction_comment_q3" rows="3" placeholder="Please explain..."
+                            class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-base resize-y transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10"></textarea>
+                        <span class="error-message" id="error-dissatisfaction_comment_q3"></span>
+                    </div>
+                </div>
+
                 <div class="row">
-                    <div class="col-12 col-md-6 mb-3">
+                    <div class="col-12 mb-3">
                         <label class="block text-gray-800 font-semibold mb-2 text-base">4. How satisfied are you with the overall emptying service? <span class="text-red-500">*</span></label>
-                        <div class="space-y-2">
+                        <div class="flex flex-wrap gap-3">
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="overall_satisfaction" value="4" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Very Satisfied</span>
@@ -152,10 +170,20 @@
                         </div>
                         <span class="error-message" id="error-overall_satisfaction"></span>
                     </div>
+                </div>
 
-                    <div class="col-12 col-md-6 mb-3">
+                <div class="row" id="dissatisfaction_q4" style="display: none;">
+                    <div class="col-12 mb-3">
+                        <textarea id="dissatisfaction_comment_q4" name="dissatisfaction_comment_q4" rows="3" placeholder="Please explain..."
+                            class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-base resize-y transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10"></textarea>
+                        <span class="error-message" id="error-dissatisfaction_comment_q4"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12 mb-3">
                         <label class="block text-gray-800 font-semibold mb-2 text-base">5. How satisfied are you with the price of this service? <span class="text-red-500">*</span></label>
-                        <div class="space-y-2">
+                        <div class="flex flex-wrap gap-3">
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="service_quality_price" value="4" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Very Satisfied</span>
@@ -177,12 +205,11 @@
                     </div>
                 </div>
 
-                <div class="row" id="dissatisfaction_section" style="display: none;">
+                <div class="row" id="dissatisfaction_q5" style="display: none;">
                     <div class="col-12 mb-3">
-                        <label for="comments" class="block text-gray-800 font-semibold mb-2 text-base">6. If you are "Not Satisfied" or "Disappointed", please indicate why:</label>
-                        <textarea id="comments" name="comments" rows="4" placeholder="Please share your concerns..."
-                            class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-base resize-y min-h-[100px] transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10"></textarea>
-                        <span class="error-message" id="error-comments"></span>
+                        <textarea id="dissatisfaction_comment_q5" name="dissatisfaction_comment_q5" rows="3" placeholder="Please explain..."
+                            class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-base resize-y transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10"></textarea>
+                        <span class="error-message" id="error-dissatisfaction_comment_q5"></span>
                     </div>
                 </div>
             </fieldset>
@@ -377,17 +404,19 @@
 
   // Conditional display logic for comment fields
   function setupConditionalFields() {
-    // Show dissatisfaction section if any rating is 1 or 2
-    const ratingFields = ['fsm_quality_level', 'service_delivery_efficiency', 'overall_satisfaction', 'service_quality_price'];
-    ratingFields.forEach(fieldName => {
-      const radios = document.querySelectorAll(`input[name="${fieldName}"]`);
+    // Per-question dissatisfaction handling for questions 2-5
+    const questionMappings = [
+      { name: 'fsm_quality_level', id: 'dissatisfaction_q2' },
+      { name: 'service_delivery_efficiency', id: 'dissatisfaction_q3' },
+      { name: 'overall_satisfaction', id: 'dissatisfaction_q4' },
+      { name: 'service_quality_price', id: 'dissatisfaction_q5' }
+    ];
+
+    questionMappings.forEach(mapping => {
+      const radios = document.querySelectorAll(`input[name="${mapping.name}"]`);
       radios.forEach(radio => {
         radio.addEventListener('change', function() {
-          const hasLowRating = ratingFields.some(name => {
-            const selected = document.querySelector(`input[name="${name}"]:checked`);
-            return selected && (selected.value === '1' || selected.value === '2');
-          });
-          document.getElementById('dissatisfaction_section').style.display = hasLowRating ? 'block' : 'none';
+          document.getElementById(mapping.id).style.display = this.value === '1' ? 'block' : 'none';
         });
       });
     });
