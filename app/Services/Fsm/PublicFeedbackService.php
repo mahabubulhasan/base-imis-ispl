@@ -1,6 +1,7 @@
 <?php
 // Last Modified Date: 09-02-2026
-// Developed By: Innovative Solution Pvt. Ltd. (ISPL)
+// Developed By: Streams Tech Ltd.
+// Description: Service class for handling public feedback operations
 namespace App\Services\Fsm;
 
 use App\Models\Fsm\Application;
