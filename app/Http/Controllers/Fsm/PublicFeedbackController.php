@@ -1,6 +1,7 @@
 <?php
 // Last Modified Date: 09-02-2026
-// Developed By: Innovative Solution Pvt. Ltd. (ISPL)
+// Developed By: Streams Tech Ltd.
+// Description: Controller for handling public feedback form submissions and AJAX lookups for FSM applications
 namespace App\Http\Controllers\Fsm;
 
 use App\Http\Controllers\Controller;
