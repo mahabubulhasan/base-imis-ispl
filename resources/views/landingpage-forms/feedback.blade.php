@@ -1,3 +1,8 @@
+{{--
+// Last Modified: 2026-02-11
+// Developed By: Streams Tech Ltd.
+// Description: Public feedback landing page form
+--}}
 <!-- FEEDBACK TAB -->
 <div id="feedback" class="tab-content hidden p-5 md:p-10 bg-transparent min-h-[calc(100vh-100px)] animate-fadeIn">
     <div class="bg-white p-5 md:p-8 rounded-2xl shadow-2xl w-full max-w-6xl mx-auto">
@@ -467,6 +472,26 @@
     });
     formData.delete('advertising_media[]');
     formData.append('advertising_media', advertisingMedia.join(', '));
+
+        const getSelectedValue = function(name) {
+            const selected = document.querySelector(`input[name="${name}"]:checked`);
+            return selected ? selected.value : null;
+        };
+
+        const q2Rating = getSelectedValue('fsm_quality_level');
+        const q3Rating = getSelectedValue('service_delivery_efficiency');
+        const q4Rating = getSelectedValue('overall_satisfaction');
+        const q5Rating = getSelectedValue('service_quality_price');
+
+        const q2Comment = q2Rating === '1' ? document.getElementById('dissatisfaction_comment_q2').value.trim() : '';
+        const q3Comment = q3Rating === '1' ? document.getElementById('dissatisfaction_comment_q3').value.trim() : '';
+        const q4Comment = q4Rating === '1' ? document.getElementById('dissatisfaction_comment_q4').value.trim() : '';
+        const q5Comment = q5Rating === '1' ? document.getElementById('dissatisfaction_comment_q5').value.trim() : '';
+
+        formData.set('dissatisfaction_comment_q2', q2Comment);
+        formData.set('dissatisfaction_comment_q3', q3Comment);
+        formData.set('dissatisfaction_comment_q4', q4Comment);
+        formData.set('dissatisfaction_comment_q5', q5Comment);
 
     // Validation
     if (!formData.get('application_id')) {

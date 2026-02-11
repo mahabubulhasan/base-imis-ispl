@@ -1,5 +1,5 @@
 <?php
-// Last Modified Date: 09-02-2026
+// Last Modified: 2026-02-11
 // Developed By: Streams Tech Ltd.
 // Description: Service class for handling public feedback operations
 namespace App\Services\Fsm;
@@ -122,7 +122,13 @@ class PublicFeedbackService
             $feedback->fsm_service_quality = ($overallSatisfaction >= 3);
 
             // Q6 Dissatisfaction comments
-            $feedback->comments = $validatedData['comments'] ?? null;
+            $feedback->comments = $this->buildDissatisfactionComments(
+                $validatedData['comments'] ?? null,
+                $validatedData['dissatisfaction_comment_q2'] ?? null,
+                $validatedData['dissatisfaction_comment_q3'] ?? null,
+                $validatedData['dissatisfaction_comment_q4'] ?? null,
+                $validatedData['dissatisfaction_comment_q5'] ?? null
+            );
 
             // Q7 Payment mechanism
             $feedback->payment_mechanism_comments = $validatedData['payment_mechanism_comments'] ?? null;
@@ -160,5 +166,45 @@ class PublicFeedbackService
             DB::rollBack();
             throw $e;
         }
+    }
+
+    /**
+     * Build consolidated dissatisfaction comments from per-question notes.
+     *
+     * @param string|null $baseComments
+     * @param string|null $q2Comment
+     * @param string|null $q3Comment
+     * @param string|null $q4Comment
+     * @param string|null $q5Comment
+     * @return string|null
+     */
+    private function buildDissatisfactionComments($baseComments, $q2Comment, $q3Comment, $q4Comment, $q5Comment)
+    {
+        $compiled = [];
+        $baseComments = is_string($baseComments) ? trim($baseComments) : '';
+
+        $commentMap = [
+            'Attitude of the emptiers (Q2)' => $q2Comment,
+            'Response time (Q3)' => $q3Comment,
+            'Overall service (Q4)' => $q4Comment,
+            'Price (Q5)' => $q5Comment,
+        ];
+
+        foreach ($commentMap as $label => $comment) {
+            $trimmed = is_string($comment) ? trim($comment) : '';
+            if ($trimmed !== '') {
+                $compiled[] = $label . ': ' . $trimmed;
+            }
+        }
+
+        if ($baseComments !== '') {
+            array_unshift($compiled, $baseComments);
+        }
+
+        if (empty($compiled)) {
+            return null;
+        }
+
+        return implode("\n", $compiled);
     }
 }

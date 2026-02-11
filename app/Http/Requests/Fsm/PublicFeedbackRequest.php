@@ -1,6 +1,7 @@
 <?php
-// Last Modified Date: 09-02-2026
-// Developed By: Innovative Solution Pvt. Ltd. (ISPL)
+// Last Modified: 2026-02-11
+// Developed By: Streams Tech Ltd.
+// Description: Validates public feedback form submissions
 namespace App\Http\Requests\Fsm;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -39,15 +40,19 @@ class PublicFeedbackRequest extends FormRequest
 
             // Q2: Attitude of emptiers (1-4 scale)
             'fsm_quality_level' => 'required|integer|between:1,4',
+            'dissatisfaction_comment_q2' => 'nullable|string|max:1000|required_if:fsm_quality_level,1',
 
             // Q3: Response time of emptying service (1-4 scale)
             'service_delivery_efficiency' => 'required|integer|between:1,4',
+            'dissatisfaction_comment_q3' => 'nullable|string|max:1000|required_if:service_delivery_efficiency,1',
 
             // Q4: Overall service satisfaction (1-4 scale) - stored as boolean conversion
             'overall_satisfaction' => 'required|integer|between:1,4',
+            'dissatisfaction_comment_q4' => 'nullable|string|max:1000|required_if:overall_satisfaction,1',
 
             // Q5: Price satisfaction (1-4 scale)
             'service_quality_price' => 'required|integer|between:1,4',
+            'dissatisfaction_comment_q5' => 'nullable|string|max:1000|required_if:service_quality_price,1',
 
             // Q6: Dissatisfaction reasons (conditional, can be null)
             'comments' => 'nullable|string|max:1000',
@@ -90,10 +95,14 @@ class PublicFeedbackRequest extends FormRequest
             'fsm_quality_level.between' => 'Invalid rating value.',
             'service_delivery_efficiency.required' => 'Please rate the response time.',
             'service_delivery_efficiency.between' => 'Invalid rating value.',
+            'dissatisfaction_comment_q3.required_if' => 'Please explain the dissatisfaction for response time.',
             'overall_satisfaction.required' => 'Please rate your overall satisfaction with the service.',
             'overall_satisfaction.between' => 'Invalid rating value.',
+            'dissatisfaction_comment_q4.required_if' => 'Please explain the dissatisfaction for overall service.',
             'service_quality_price.required' => 'Please rate your satisfaction with the price.',
             'service_quality_price.between' => 'Invalid rating value.',
+            'dissatisfaction_comment_q5.required_if' => 'Please explain the dissatisfaction for price.',
+            'dissatisfaction_comment_q2.required_if' => 'Please explain the dissatisfaction for attitude of the emptiers.',
             'apply_in_future.required' => 'Please indicate if you would apply in the future.',
             'apply_in_future.in' => 'Invalid value for future application.',
             'recommend_service.required' => 'Please indicate if you would recommend this service.',
