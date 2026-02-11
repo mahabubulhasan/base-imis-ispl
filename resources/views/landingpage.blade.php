@@ -216,8 +216,8 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 <div class="hidden md:flex items-center space-x-8">
                     <a class="text-sm font-medium hover:text-primary transition-colors cursor-pointer" onclick="openTab('about', this)">About</a>
                     <a class="text-sm font-medium hover:text-primary transition-colors cursor-pointer" onclick="openTab('dashboard', this)">Public Dashboard</a>
-                    <a class="text-sm font-medium hover:text-primary transition-colors cursor-pointer" onclick="openTab('feedback', this)">Feedback</a>
                     <a class="text-sm font-medium hover:text-primary transition-colors cursor-pointer" onclick="openTab('fsm', this)">FSM Application</a>
+                    <a class="text-sm font-medium hover:text-primary transition-colors cursor-pointer" onclick="openTab('feedback', this)">Feedback</a>
                     <a class="text-sm font-medium hover:text-primary transition-colors cursor-pointer" onclick="openTab('contact', this)">Contact</a>
                 </div>
                 <button class="md:hidden p-2 rounded-full hover:bg-slate-100 transition-colors" onclick="toggleMenu()" aria-label="Toggle menu">
@@ -228,8 +228,8 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
             <div id="mobileMenu" class="hidden md:hidden pb-4 border-t border-slate-200">
                 <a class="block px-4 py-2 text-sm font-medium hover:bg-slate-100 rounded" onclick="openTab('about', this)">About</a>
                 <a class="block px-4 py-2 text-sm font-medium hover:bg-slate-100 rounded" onclick="openTab('dashboard', this)">Public Dashboard</a>
-                <a class="block px-4 py-2 text-sm font-medium hover:bg-slate-100 rounded" onclick="openTab('feedback', this)">Feedback</a>
                 <a class="block px-4 py-2 text-sm font-medium hover:bg-slate-100 rounded" onclick="openTab('fsm', this)">FSM Application</a>
+                <a class="block px-4 py-2 text-sm font-medium hover:bg-slate-100 rounded" onclick="openTab('feedback', this)">Feedback</a>
                 <a class="block px-4 py-2 text-sm font-medium hover:bg-slate-100 rounded" onclick="openTab('contact', this)">Contact</a>
             </div>
         </div>
@@ -246,15 +246,37 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
             <div class="grid lg:grid-cols-2 gap-12 items-center">
                 <!-- Left Column: Hero Content -->
                 <div class="max-w-xl">
-                    <div class="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-primary text-xs font-bold uppercase tracking-wider mb-6">
+                    <div class="inline-flex items-center px-3 py-0 rounded-full bg-blue-100 text-primary text-xs font-bold uppercase tracking-wider mb-6">
                         Municipal Services Portal
                     </div>
-                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 leading-tight mb-6">
+                    <h1 class="text-4xl md:text-5xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-6">
                         Integrated Municipal Information System <span class="text-primary">(IMIS)</span>
                     </h1>
-                    <p class="text-lg text-slate-600 mb-8 leading-relaxed">
-                        Secure access to municipal services and information. This product was developed under the <span class="font-semibold text-slate-900 underline decoration-primary decoration-2 underline-offset-4">Inclusive and Integrated Sanitation & Hygiene Project</span> in 10 towns.
+                    <p class="text-lg text-slate-600 mb-4 leading-relaxed">
+                        This application was implemented under the following project:
                     </p>
+                    <div class="text-sm text-slate-700 space-y-1 mb-8 bg-gradient-to-r from-blue-50/40 to-transparent p-5 rounded-lg border-l-4 border-primary/30">
+                        <div>
+                            <span class="font-semibold text-slate-900">Project:</span>
+                            <span class="text-slate-700"> Inclusive and Integrated Sanitation and Hygiene Project in 10 Priority Towns in Bangladesh</span>
+                        </div>
+                        <div>
+                            <span class="font-semibold text-slate-900">Implementing Organization:</span>
+                            <span class="text-slate-700"> Department of Public Health Engineering (DPHE)</span>
+                        </div>
+                        <div>
+                            <span class="font-semibold text-slate-900">Funded by:</span>
+                            <span class="text-slate-700"> Government of Bangladesh, Islamic Development Bank, and Gates Foundation</span>
+                        </div>
+                        <div>
+                            <span class="font-semibold text-slate-900">Technical Partners:</span>
+                            <div class="text-slate-700 ml-1 mt-2 space-y-1">
+                                <div class="flex items-start"><span class="mr-2">•</span><span>Global Water and Sanitation Center (GWSC) under the Asian Institute of Technology (AIT), Thailand</span></div>
+                                <div class="flex items-start"><span class="mr-2">•</span><span>Innovative Solution Pvt. Limited, Nepal</span></div>
+                                <div class="flex items-start"><span class="mr-2">•</span><span>Streams Tech Ltd., Bangladesh</span></div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="flex flex-wrap gap-4">
                         <button onclick="document.getElementById('dashboardBtn').click()" class="bg-primary text-white px-8 py-4 rounded-xl font-bold hover:shadow-lg hover:shadow-primary/25 transition-all flex items-center group">
                             Explore Dashboard
