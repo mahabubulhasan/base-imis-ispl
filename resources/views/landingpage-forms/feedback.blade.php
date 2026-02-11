@@ -225,7 +225,7 @@
 
                 <div class="row">
                     <div class="col-12 mb-3">
-                        <label class="block text-gray-800 font-semibold mb-2 text-base">7. Are you satisfied with the payment mechanism? <span class="text-red-500">*</span></label>
+                        <label class="block text-gray-800 font-semibold mb-2 text-base">6. Are you satisfied with the payment mechanism? <span class="text-red-500">*</span></label>
                         <div class="flex flex-wrap gap-3">
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="payment_mechanism_satisfied" value="1" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
@@ -250,7 +250,7 @@
 
                 <div class="row">
                     <div class="col-12 mb-3">
-                        <label class="block text-gray-800 font-semibold mb-2 text-base">8. Are you willing to apply again in the future? <span class="text-red-500">*</span></label>
+                        <label class="block text-gray-800 font-semibold mb-2 text-base">7. Are you willing to apply again in the future? <span class="text-red-500">*</span></label>
                         <div class="flex flex-wrap gap-3">
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="apply_in_future" value="1" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
@@ -275,7 +275,7 @@
 
                 <div class="row">
                     <div class="col-12 mb-3">
-                        <label class="block text-gray-800 font-semibold mb-2 text-base">9. Would you recommend this FSM service to others? <span class="text-red-500">*</span></label>
+                        <label class="block text-gray-800 font-semibold mb-2 text-base">8. Would you recommend this FSM service to others? <span class="text-red-500">*</span></label>
                         <div class="flex flex-wrap gap-3">
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="recommend_service" value="1" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
@@ -305,7 +305,7 @@
 
                 <div class="row">
                     <div class="col-12 mb-3">
-                        <label class="block text-gray-800 font-semibold mb-2 text-base">10. How did you hear about the FSM service? <span class="text-red-500">*</span></label>
+                        <label class="block text-gray-800 font-semibold mb-2 text-base">9. How did you hear about the FSM service? <span class="text-red-500">*</span></label>
                         <div class="space-y-2">
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="checkbox" name="advertising_media[]" value="Social Media" class="w-5 h-5 text-[#0056b3] border-gray-300 rounded focus:ring-[#0056b3]">
