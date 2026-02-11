@@ -219,9 +219,9 @@
                 <legend>Payment & Future Service</legend>
 
                 <div class="row">
-                    <div class="col-12 col-md-6 mb-3">
+                    <div class="col-12 mb-3">
                         <label class="block text-gray-800 font-semibold mb-2 text-base">7. Are you satisfied with the payment mechanism? <span class="text-red-500">*</span></label>
-                        <div class="space-y-2">
+                        <div class="flex flex-wrap gap-3">
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="payment_mechanism_satisfied" value="1" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Yes</span>
@@ -233,10 +233,20 @@
                         </div>
                         <span class="error-message" id="error-payment_mechanism_satisfied"></span>
                     </div>
+                </div>
 
-                    <div class="col-12 col-md-6 mb-3">
+                <div class="row" id="payment_comments_section" style="display: none;">
+                    <div class="col-12 mb-3">
+                        <textarea id="payment_mechanism_comments" name="payment_mechanism_comments" rows="3" placeholder="Please explain..."
+                            class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-base resize-y transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10"></textarea>
+                        <span class="error-message" id="error-payment_mechanism_comments"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12 mb-3">
                         <label class="block text-gray-800 font-semibold mb-2 text-base">8. Are you willing to apply again in the future? <span class="text-red-500">*</span></label>
-                        <div class="space-y-2">
+                        <div class="flex flex-wrap gap-3">
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="apply_in_future" value="1" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Yes</span>
@@ -250,18 +260,8 @@
                     </div>
                 </div>
 
-                <div class="row" id="payment_comments_section" style="display: none;">
-                    <div class="col-12 mb-3">
-                        <label for="payment_mechanism_comments" class="block text-gray-700 mb-2 text-base italic">If no, why?</label>
-                        <textarea id="payment_mechanism_comments" name="payment_mechanism_comments" rows="3" placeholder="Please explain..."
-                            class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-base resize-y transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10"></textarea>
-                        <span class="error-message" id="error-payment_mechanism_comments"></span>
-                    </div>
-                </div>
-
                 <div class="row" id="apply_future_comments_section" style="display: none;">
                     <div class="col-12 mb-3">
-                        <label for="apply_in_future_comments" class="block text-gray-700 mb-2 text-base italic">If no, why?</label>
                         <textarea id="apply_in_future_comments" name="apply_in_future_comments" rows="3" placeholder="Please explain..."
                             class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-base resize-y transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10"></textarea>
                         <span class="error-message" id="error-apply_in_future_comments"></span>
@@ -269,9 +269,9 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-12 col-md-6 mb-3">
+                    <div class="col-12 mb-3">
                         <label class="block text-gray-800 font-semibold mb-2 text-base">9. Would you recommend this FSM service to others? <span class="text-red-500">*</span></label>
-                        <div class="space-y-2">
+                        <div class="flex flex-wrap gap-3">
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="recommend_service" value="1" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Yes</span>
@@ -287,7 +287,6 @@
 
                 <div class="row" id="recommend_comments_section" style="display: none;">
                     <div class="col-12 mb-3">
-                        <label for="recommend_service_comments" class="block text-gray-700 mb-2 text-base italic">If no, why?</label>
                         <textarea id="recommend_service_comments" name="recommend_service_comments" rows="3" placeholder="Please explain..."
                             class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-base resize-y transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10"></textarea>
                         <span class="error-message" id="error-recommend_service_comments"></span>
