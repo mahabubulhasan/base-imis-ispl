@@ -246,9 +246,6 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
             <div class="grid lg:grid-cols-2 gap-12 items-center">
                 <!-- Left Column: Hero Content -->
                 <div class="max-w-xl">
-                    <div class="inline-flex items-center px-3 py-0 rounded-full bg-blue-100 text-primary text-xs font-bold uppercase tracking-wider mb-6">
-                        Municipal Services Portal
-                    </div>
                     <h1 class="text-4xl md:text-5xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-6">
                         Integrated Municipal Information System <span class="text-primary">(IMIS)</span>
                     </h1>
