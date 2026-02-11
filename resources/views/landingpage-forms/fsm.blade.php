@@ -1,7 +1,7 @@
 <!-- FSM APPLICATION TAB -->
-<div id="fsm" class="tab-content hidden p-5 md:p-10 bg-transparent min-h-[calc(100vh-100px)] animate-fadeIn">
-    <div class="bg-white p-5 md:p-8 rounded-2xl shadow-2xl w-full max-w-6xl mx-auto">
-        <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold text-center text-[#1f3b7d] mb-6 md:mb-8">FSM Application Form</h1>
+<div id="fsm" class="tab-content hidden p-5 md:p-10 bg-background-light min-h-[calc(100vh-100px)] animate-fadeIn">
+    <div class="bg-white p-5 md:p-8 rounded-xl shadow-lg border border-slate-200 w-full max-w-6xl mx-auto">
+        <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold text-center text-slate-900 mb-6 md:mb-8">FSM Application Form</h1>
 
         <!-- Alert Container for general errors -->
         <div id="fsm-alert-container"></div>

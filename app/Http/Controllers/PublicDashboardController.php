@@ -202,78 +202,61 @@ class PublicDashboardController extends Controller
         $pipeCodePresenceWard = $this->dashboardService->waterSupplyPipeCodePresenceByWard();
         $treatmentPlantTest = $this->dashboardService->treatmentPlantTestResultsByYear();
 
-        // Check if AJAX request - return only content without layout
+        // Check if AJAX request - return JSON data structure
         if (request()->ajax()) {
-            return view('dashboard.public-dashboard', compact(
-                'page_title',
-                'buildingCount',
-                'commercialBuildCount',
-                'residentialBuildingCount',
-                'mixedBuildCount',
-                'educationBuildingCount',
-                'containmentCount',
-                'emptyingServiceCount',
-                'serviceProviderCount',
-                'sludgeCollectionsCount',
-                'uniqueContainCodeEmptiedCount',
-                'desludgingVehicleCount',
-                'applicationCount',
-                'buildingsPerWardChart',
-                'sanitationSystemsChart',
-                'numberOfEmptyingbyMonthsChart',
-                'emptyingRequestsbyStructureTypesChart',
-                'containmentTypesPerWardChart',
-                'emptyingServicePerWardsChart',
-                'emptyingServiceByTypeYearChart',
-                'containmentEmptiedByWardChart',
-                'containTypeChart',
-                'buildingUseChart',
-                'nextEmptyingContainmentsChart',
-                'sludgeCollectionByTreatmentPlantChart',
-                'fsmSrvcQltyChart',
-                'ppe',
-                'taxRevenueChart',
-                'waterSupplyPaymentChart',
-                'proposedEmptyingDateContainmentsChart',
-                'proposedEmptiedDateContainmentsByWardChart',
-                'maxDate',
-                'minDate',
-                'containmentTypesByBldgUsesChart',
-                'monthlyAppRequestByoperators',
-                'containmentTypesByBldgUsesResidentialsChart',
-                'containmentTypesByLanduseChart',
-                'costPaidByOwnerWithReceipt',
-                'costPaidByContainmentOwnerPerwardChart',
-                'sludgeCollectionEmptyingServices',
-                'treatmentPlantCount',
-                'hotspotsPerWardChart',
-                'sanitationSystemOther',
-                'sanitationSystemOthername',
-                'drainLengthPerWardChart',
-                'industrialBuildingCount',
-                'institutionBuildingCount',
-                'othersCount',
-                'sumRoads',
-                'sumDrains',
-                'sumSewers',
-                'sumWatersupply',
-                'ctCount',
-                'ptCount',
-                'totalCtUser',
-                'totalPtUser',
-                'totalHotspot',
-                'totalWaterborne',
-                'roadLengthPerWardChart',
-                'waterborneCasesChart',
-                'sanitationSystems',
-                'sanitationSystemsOthers',
-                'institutionNames',
-                'solidWasteChart',
-                'swmPresenceward',
-                'taxCodePresenceward',
-                'pipeCodePresenceWard',
-                'treatmentPlantTest',
-            ));
+            return response()->json([
+                'buildings' => [
+                    'total' => $buildingCount,
+                    'residential' => $residentialBuildingCount,
+                    'commercial' => $commercialBuildCount,
+                    'industrial' => $industrialBuildingCount,
+                    'mixed_use' => $mixedBuildCount,
+                    'institution' => $institutionBuildingCount,
+                    'educational' => $educationBuildingCount,
+                    'others' => $othersCount,
+                ],
+                'sanitation' => [
+                    'sewer' => intval($sumSewers),
+                    'septic' => intval(DB::table('building_info.buildings as b')
+                        ->join('building_info.sanitation_systems as s', 'b.sanitation_system_id', '=', 's.id')
+                        ->where('s.sanitation_system', 'like', '%Septic%')
+                        ->whereNull('b.deleted_at')
+                        ->count()),
+                    'pit' => intval(DB::table('building_info.buildings as b')
+                        ->join('building_info.sanitation_systems as s', 'b.sanitation_system_id', '=', 's.id')
+                        ->where('s.sanitation_system', 'like', '%Pit%')
+                        ->whereNull('b.deleted_at')
+                        ->count()),
+                    'treatment' => intval(DB::table('building_info.buildings as b')
+                        ->join('building_info.sanitation_systems as s', 'b.sanitation_system_id', '=', 's.id')
+                        ->where('s.sanitation_system', 'like', '%Treatment%')
+                        ->whereNull('b.deleted_at')
+                        ->count()),
+                    'composting' => intval(DB::table('building_info.buildings as b')
+                        ->join('building_info.sanitation_systems as s', 'b.sanitation_system_id', '=', 's.id')
+                        ->where('s.sanitation_system', 'like', '%Composting%')
+                        ->whereNull('b.deleted_at')
+                        ->count()),
+                ],
+                'utilities' => [
+                    'road' => intval($sumRoads),
+                    'drainage' => intval($sumDrains),
+                    'water' => intval($sumWatersupply),
+                ],
+                'fsm' => [
+                    'providers' => $serviceProviderCount,
+                    'vehicles' => $desludgingVehicleCount,
+                    'plants' => $treatmentPlantCount,
+                    'applications' => $applicationCount,
+                    'volume' => intval($sludgeCollectionsCount),
+                    'revenue' => intval($costPaidByOwnerWithReceipt),
+                ],
+                'health' => [
+                    'hotspots' => $totalHotspot,
+                    'waterborne' => intval($totalWaterborne),
+                    'toilet_users' => intval($totalPtUser),
+                ],
+            ]);
         }
 
         // Return full page view for direct access
