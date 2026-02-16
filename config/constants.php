@@ -15,5 +15,10 @@ return [
     'LOGO_URL' => env('LOGO_URL', 'img/stl/logo-Lakshmipur.png'),
     'BACKGROUND_IMAGE_URL' => env('BACKGROUND_IMAGE_URL', 'img/stl/background.png'),
     'SITE_NAME' => env('SITE_NAME', 'Lakshmipur Paurashava'),
+    'ROAD_TYPES' => [
+        'NationalHighway' => ['name' => 'National Highway', 'bn_name' => 'জাতীয় মহাসড়ক', 'is_default' => false],
+        'RegionalHighway' => ['name' => 'Regional Highway', 'bn_name' => 'আঞ্চলিক মহাসড়ক', 'is_default' => false],
+        'ZillaRoad' => ['name' => 'Zilla Road', 'bn_name' => 'জেলা সড়ক', 'is_default' => false],
+        'MunicipalityRoad' => ['name' => 'Municipality Road', 'bn_name' => 'পৌরসভা সড়ক', 'is_default' => true],
+    ],
 ];
-?>

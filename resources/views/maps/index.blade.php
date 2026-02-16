@@ -1,9 +1,21 @@
-<!-- Last Modified Date: 07-05-2024
-Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
+{{--
+// Last Modified: 2026-02-23
+// Developed By: Streams Tech Ltd.
+// Description: Map interface view with tools for road, sewer, drain, and water supply network addition.
+--}}
+<!-- Last Modified Date: 22-02-2026
+Developed By: Streams Tech Ltd. & Innovative Solution Pvt. Ltd. (ISPL)
+Description: Map interface view with tools for road, sewer, drain, and water supply network addition. Ward select field border removed. Road Code text field and Use Extension checkbox added to Add Road Network form. Base Road Code and Extension fields appear/hide based on Use Extension checkbox state. Road Code auto-populates with base road code + extension. Ward and Hierarchy fields visibility toggled based on Road Type selection (visible only for Municipality Road). -->
 
 @extends('layouts.maps')
 @section('title', __('Map'))
 @section('content')
+
+<style type="text/css">
+    #add-road-form .ms-choice {
+        border: none;
+    }
+</style>
 
     <div class="content-wrapper map-container">
         <div class="map-toolbar clearfix">
@@ -204,9 +216,23 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                         {!! Form::text('name',null,['class' => 'form-control', 'placeholder' => __('Road Name')]) !!}
                                     </div>
 
-                                      <div class="add-road-form-group pt-2">
-                                        {!! Form::label('hierarchy',__('Hierarchy'),['class' => 'control-label'],false) !!}
-                                        {!! Form::select('hierarchy', $roadHierarchy, null, ['class' => 'form-control', 'placeholder' => __('Road Hierarchy')]);!!}
+                                    <div class="add-road-form-group pt-2">
+                                        {!! Form::label('road_type',__('Road Type') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
+                                        {!! Form::select('road_type', $roadTypes, null, ['class' => 'form-control', 'placeholder' => __('Road Type')]);!!}
+                                    </div>
+
+                                    <div id="municipality_fields_container" style="display: none;">
+                                        <div class="add-road-form-group pt-2">
+                                            {!! Form::label('ward',__('Ward') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
+                                            {!! Form::select('ward', $wards, null, ['class' => 'form-control', 'placeholder' => __('Ward'), 'id' => 'ward_select']);!!}
+                                        </div>
+
+                                        <div class="add-road-form-group pt-2">
+                                            {!! Form::label('hierarchy',__('Hierarchy'),['class' => 'control-label'],false) !!}
+                                            {!! Form::select('hierarchy', $roadHierarchy, null, ['class' => 'form-control', 'placeholder' => __('Road Hierarchy')]);!!}
+                                        </div>
+
+                                        {!! Form::hidden('serial_number', null, ['id' => 'serial_number']) !!}
                                     </div>
 
                                     <div class="add-road-form-group pt-2">
@@ -230,6 +256,33 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                         {!! Form::number('length',null,['class' => 'form-control', 'placeholder' => __('Road Length (m)'),'min' => 1]) !!}
                                     </div>
 
+                                    <div class="add-road-form-group pt-2">
+                                        {!! Form::label('road_code',__('Road Code') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
+                                        {!! Form::text('road_code',null,['class' => 'form-control', 'placeholder' => __('Road Code'), 'id' => 'road_code_field']) !!}
+                                        <small style="color: #666; display: block; margin-top: 5px;">{{ __('Municipality Road: auto-generated as 20512510 + Ward(2 digits) + Serial(4 digits)') }}</small>
+                                    </div>
+
+                                    <div class="add-road-form-group pt-2">
+                                        <div class="custom-control custom-checkbox">
+                                            {!! Form::checkbox('use_extension', 1, false, ['class' => 'custom-control-input', 'id' => 'use_extension']) !!}
+                                            {!! Form::label('use_extension',__('Use Extension'),['class' => 'custom-control-label'],false) !!}
+                                        </div>
+                                        <small style="color: #666; display: block; margin-top: 5px;">{{ __('If enabled, Road Code above will be filled by Base Road Code selection + 2-digit extension.') }}</small>
+                                    </div>
+
+                                    <div id="extension_fields_container" style="display: none;">
+                                        <div class="add-road-form-group pt-2">
+                                            {!! Form::label('base_road_code',__('Base Road Code') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
+                                            {!! Form::select('base_road_code', isset($baseRoadCodes) ? $baseRoadCodes : [], null, ['class' => 'form-control', 'placeholder' => __('Select existing road code'), 'id' => 'base_road_code']) !!}
+                                            <small style="color: #666; display: block; margin-top: 5px;">{{ __('Loaded from existing dataset (API/db).') }}</small>
+                                        </div>
+
+                                        <div class="add-road-form-group pt-2">
+                                            {!! Form::label('extension',__('Extension (2 digits)') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
+                                            {!! Form::text('extension',null,['class' => 'form-control', 'placeholder' => __('01'), 'id' => 'extension', 'maxlength' => '2', 'pattern' => '[0-9]{2}']) !!}
+                                            <small style="color: #666; display: block; margin-top: 5px;">{{ __('Auto-generated: 01, 02, 03...') }}</small>
+                                        </div>
+                                    </div>
 
                                     <div class="add-road-form-group pt-2">
                                         {!! Form::button(__('Save'), ['class' => 'btn btn-info', 'id' => 'add_road_submit_btn']) !!}
@@ -1835,9 +1888,187 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 }
             });
 
-            $('#ward, #tax_zone, #watlog_overlay, #ward_tax_due, #tax_zone_tax_due').multipleSelect({
+            $('#ward_select, #tax_zone, #watlog_overlay, #ward_tax_due, #tax_zone_tax_due').multipleSelect({
                 placeholder: '{{__('Wards')}}',
                 filter: true
+            });
+
+            // Extension fields visibility toggle
+            const useExtensionCheckbox = $('#use_extension');
+            const extensionFieldsContainer = $('#extension_fields_container');
+
+            // Toggle fields visibility on checkbox change
+            useExtensionCheckbox.change(function() {
+                if (this.checked) {
+                    extensionFieldsContainer.slideDown();
+                    // Load base road codes when extension is enabled and ward is selected
+                    const ward = $('#ward_select').val();
+                    if (ward) {
+                        loadBaseRoadCodes(ward);
+                    }
+                } else {
+                    extensionFieldsContainer.slideUp();
+                    // Clear base road code select when extension is disabled
+                    $('#base_road_code').html('<option value="">{{ __("Select existing road code") }}</option>');
+                }
+            });
+
+            /**
+             * Load base road codes (road_uid) from database filtered by ward
+             */
+            function loadBaseRoadCodes(ward) {
+                if (!ward) {
+                    $('#base_road_code').html('<option value="">{{ __("Select existing road code") }}</option>');
+                    return;
+                }
+
+                $('#base_road_code').html('<option value="">{{ __("Loading...") }}</option>');
+
+                $.ajax({
+                    url: '{{ url("/utilityinfo/roadlines/get-by-ward") }}',
+                    type: 'GET',
+                    data: { ward: ward },
+                    dataType: 'json',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(data) {
+                        let options = '<option value="">{{ __("Select existing road code") }}</option>';
+                        if (data && data.length > 0) {
+                            $.each(data, function(index, road) {
+                                options += '<option value="' + road.road_uid + '">' + road.road_uid + ' (' + road.code + ')</option>';
+                            });
+                        } else {
+                            options = '<option value="">{{ __("No roads found for this ward") }}</option>';
+                        }
+                        $('#base_road_code').html(options);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error loading roads:', status, error);
+                        $('#base_road_code').html('<option value="">{{ __("Error loading roads") }}</option>');
+                    }
+                });
+            }
+
+            // Load roads when ward changes and extension is enabled
+            // Note: This is added to the existing wardSelect.change handler logic below
+
+            // Populate Road Code field when base road code and extension are selected
+            $('#base_road_code, #extension').change(function() {
+                const baseRoadCode = $('#base_road_code').val();
+                const extension = $('#extension').val();
+
+                if (baseRoadCode && extension) {
+                    $('#road_code_field').val(baseRoadCode + extension);
+                }
+            });
+
+            // Municipality fields visibility toggle based on Road Type selection
+            const roadTypeSelect = $('#road_type');
+            const municipalityFieldsContainer = $('#municipality_fields_container');
+
+            // Toggle fields visibility on road type change
+            roadTypeSelect.change(function() {
+                const selectedValue = $(this).val();
+                if (selectedValue === 'MunicipalityRoad') {
+                    municipalityFieldsContainer.slideDown();
+                    $('#road_code_field').prop('readonly', true).data('auto-generated', true);
+                } else {
+                    municipalityFieldsContainer.slideUp();
+                    $('#road_code_field').prop('readonly', false).data('auto-generated', false);
+                    // Clear fields when switching away from Municipality Road
+                    $('#road_code_field').val('');
+                    $('#ward_select').val('');
+                    $('#serial_number').val('');
+                }
+            });
+
+            // Road code auto-generation logic for Municipality Road
+            const wardSelect = $('#ward_select');
+            const serialNumberInput = $('#serial_number');
+            const roadCodeField = $('#road_code_field');
+
+            /**
+             * Generate road code from ward and serial
+             * Format: 20512510 + Ward(padded 2 digits) + Serial(padded 4 digits)
+             */
+            function generateMunicipalityRoadCode(ward, serial) {
+                const paddedWard = String(ward).padStart(2, '0');
+                const paddedSerial = String(serial).padStart(4, '0');
+                return '20512510' + paddedWard + paddedSerial;
+            }
+
+            /**
+             * Update road code field based on current ward and serial
+             */
+            function updateRoadCode() {
+                if (roadTypeSelect.val() === 'MunicipalityRoad') {
+                    const ward = wardSelect.val();
+                    const serial = serialNumberInput.val();
+
+                    if (ward && serial) {
+                        const generatedCode = generateMunicipalityRoadCode(ward, serial);
+                        roadCodeField.val(generatedCode);
+                    }
+                }
+            }
+
+            /**
+             * Fetch next serial from server based on ward
+             */
+            wardSelect.change(function() {
+                const ward = $(this).val();
+
+                if (roadTypeSelect.val() === 'MunicipalityRoad') {
+                    if (ward) {
+                        // Show loading state
+                        serialNumberInput.val('Loading...');
+
+                        // Call API endpoint to get next serial
+                        $.ajax({
+                            url: '{{ url("maps/get-next-road-serial") }}/' + ward,
+                            type: 'GET',
+                            dataType: 'json',
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    serialNumberInput.val(response.serial);
+                                    updateRoadCode();
+                                } else {
+                                    console.error('Error:', response.error);
+                                    serialNumberInput.val('');
+                                    roadCodeField.val('');
+                                    alert('Error: ' + (response.error || 'Failed to get next serial'));
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('AJAX Error:', status, error);
+                                serialNumberInput.val('');
+                                roadCodeField.val('');
+                                alert('Error fetching next serial number');
+                            }
+                        });
+                    } else {
+                        serialNumberInput.val('');
+                        roadCodeField.val('');
+                    }
+                }
+
+                // Load base road codes for extension mode
+                if (useExtensionCheckbox.is(':checked')) {
+                    loadBaseRoadCodes(ward);
+                }
+            });
+
+            /**
+             * Update road code when serial number changes
+             */
+            serialNumberInput.on('input', function() {
+                if (roadTypeSelect.val() === 'MunicipalityRoad') {
+                    updateRoadCode();
+                }
             });
 
             function displayAjaxLoader() {
@@ -4271,19 +4502,33 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 geom = getGeometryLayer();
                 fieldNameMapping = {
                     "name": "{{ __('Road Name') }}",
+                    "road_type": "{{ __('Road Type') }}",
+                    "ward": "{{ __('Ward') }}",
+                    "hierarchy": "{{ __('Hierarchy') }}",
                     "length": "{{ __('Length (m)') }}",
                     "carrying_width": "{{ __('Carrying Width (m)') }}",
                     "right_of_way": "{{ __('Right of Way (m)') }}"
                 };
 
+                const useExtension = $('#use_extension').is(':checked');
+                const baseRoadCode = $('#base_road_code').val();
+                const extension = $('#extension').val();
+                const roadUid = useExtension ? baseRoadCode : $('#road_code_field').val();
+                const roadExt = useExtension ? extension : null;
+                const wardValue = $('#ward_select').val() || $('[name="ward"]').val();
+
                 // Dynamically get the road form data
                 formData = {
                     'name': $('#name').val(),
+                    'road_type': $('#road_type').val(),
+                    'ward': wardValue,
                     'hierarchy': $('#hierarchy').val(),
                     'surface_type': $('#surface_type').val(),
                     'length': $('#length').val(),
                     'carrying_width': $('#carrying_width').val(),
                     'right_of_way': $('#right_of_way').val(),
+                    'road_uid': roadUid,
+                    'road_ext': roadExt,
                     "geom": geom
                 };
 

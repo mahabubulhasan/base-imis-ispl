@@ -1,6 +1,7 @@
 <?php
-// Last Modified Date: 12-04-2024
-// Developed By: Innovative Solution Pvt. Ltd. (ISPL)
+// Last Modified Date: 16-02-2026
+// Developed By: Streams Tech Ltd. & Innovative Solution Pvt. Ltd. (ISPL)
+// Description: Maps service handling map index data retrieval including road network, wards, hierarchy, and utility information
 namespace App\Services\Maps;
 
 use App\BuildOwner;
@@ -108,9 +109,18 @@ class MapsService {
 
         $location = SewerLine::whereNotNull('location')->distinct('location')->pluck('location','location')->all();
 
+        // Transform ROAD_TYPES from config into key-value array for form select
+        $roadTypes = [];
+        $roadTypesConfig = config('constants.ROAD_TYPES');
+        if ($roadTypesConfig) {
+            foreach ($roadTypesConfig as $key => $type) {
+                $roadTypes[$key] = $type['name'];
+            }
+        }
+
         return view('maps.index', compact('page_title', 'wards', 'location','dueYears', 'maxDate','treatmentPlants',
         'minDate', 'bldguse', 'usecatg', 'pickWardResults', 'pickDateResults', 'pickStructureResults', 'cover_type','roadHierarchy', 'roadSurfaceTypes','surface_type',
-        'bboxstring','road_code'
+        'bboxstring','road_code', 'roadTypes'
     ));
     }
 

@@ -1,4 +1,7 @@
 <?php
+// Last Modified: 2026-02-23
+// Developed By: Streams Tech Ltd.
+// Description: Handles road network data operations.
 
 namespace App\Services\UtilityInfo;
 
@@ -101,9 +104,6 @@ class RoadlineService {
     public function storeOrUpdate($code = null,$data)
     {
         if(empty($code)){
-            /*$roadlineTemp = DB::select("SELECT ST_AsText(geom) AS geom FROM roadline_temp");
-            $geom = ($roadlineTemp[0]->geom);*/
-
             $maxcode = Roadline::withTrashed()
                 ->selectRaw("COALESCE(MAX(CAST(SUBSTRING(code FROM '[0-9]+') AS INTEGER)), 0) as max_num")
                 ->value('max_num');
@@ -112,23 +112,33 @@ class RoadlineService {
             $roadline->code = 'R' . sprintf('%06d', $maxcode + 1);
             $roadline->user_id = Auth::id();
             $roadline->name = $data['name'] ? $data['name'] : null;
+            $roadline->road_type = $data['road_type'] ? $data['road_type'] : null;
+            $roadline->ward = $data['ward'] ? $data['ward'] : null;
             $roadline->hierarchy = $data['hierarchy'] ? $data['hierarchy'] : null;
             $roadline->surface_type = $data['surface_type'] ? $data['surface_type'] : null;
             $roadline->length = $data['length'] ? $data['length'] : null;
             $roadline->right_of_way = $data['right_of_way'] ? $data['right_of_way'] : null;
             $roadline->carrying_width = $data['carrying_width'] ? $data['carrying_width'] : null;
+            $roadline->road_uid = $data['road_uid'] ? $data['road_uid'] : null;
+            $roadline->road_ext = $data['road_ext'] ? $data['road_ext'] : null;
             $roadline->geom = $data['geom'] ? DB::raw("ST_Multi(ST_GeomFromText('" . $data['geom'] . "', 4326))") : null;
             $roadline->save();
+
+            \Log::info('Road saved successfully', ['code' => $roadline->code]);
         }
         else{
             $roadline = Roadline::find($code);
             $roadline->user_id = Auth::id();
             $roadline->name = $data['name'] ? $data['name'] : null;
+            $roadline->road_type = $data['road_type'] ? $data['road_type'] : null;
+            $roadline->ward = $data['ward'] ? $data['ward'] : null;
             $roadline->hierarchy = $data['hierarchy'] ? $data['hierarchy'] : null;
             $roadline->surface_type = $data['surface_type'] ? $data['surface_type'] : null;
             $roadline->length = $data['length'] ? $data['length'] : null;
             $roadline->right_of_way = $data['right_of_way'] ? $data['right_of_way'] : null;
             $roadline->carrying_width = $data['carrying_width'] ? $data['carrying_width'] : null;
+            $roadline->road_uid = $data['road_uid'] ? $data['road_uid'] : null;
+            $roadline->road_ext = $data['road_ext'] ? $data['road_ext'] : null;
             $roadline->save();
         }
     }

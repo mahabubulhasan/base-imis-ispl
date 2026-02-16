@@ -21,6 +21,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Models\LayerInfo\Ward;
 use App\Models\LayerInfo\Taxzone;
+use App\Models\UtilityInfo\Roadline;
 //use App\Models\WaterSupplyInfo\DueYear;
 use App\Models\TaxPaymentInfo\DueYear;
 use DB;
@@ -56,7 +57,7 @@ class MapsController extends Controller
     }
 
 
-   
+
 
 
     /**
@@ -88,7 +89,7 @@ class MapsController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    
+
     public function getWaterBodyReportCsv()
     {
         $waterbodyQuery = "SELECT ST_AsText(geom) AS geom from layer_info.waterbodys WHERE id = '" . request()->wb_code . "'";
@@ -662,14 +663,14 @@ class MapsController extends Controller
      */
     public function getMultiplePointBufferBuildings(Request $request)
     {
-        $points = $request->input('points'); 
+        $points = $request->input('points');
         $distance = 0;
         $results = [];
 
         foreach ($points as $point) {
             // Retrieve building data within the specified distance from the Maps Service
             $response = $this->mapsService->getPointBufferBuildingsSummary($distance, $point['long'], $point['lat']);
-            
+
             $results[] = [
                 'buildings' => $response['buildings'] ?? [],
                 'popContentsHtml' => $response['popContentsHtml'] ?? '',
@@ -693,13 +694,13 @@ class MapsController extends Controller
      */
     public function getPointBufferBuildings(Request $request)
     {
-   
+
         if (request()->distance > 0) {
             $distance = request()->distance;
         } else {
             $distance = 0;
         }
-       
+
         $long = $request->long;
         $lat = $request->lat;
         // Retrieve building data within the specified distance from the Maps Service
@@ -885,15 +886,15 @@ class MapsController extends Controller
     // Initialize an empty array to store results
     $allResults = [];
 
- 
+
         $results = $this->mapsService->buildingsKmlPopContentPolygon($bufferDistancePolygon, $bufferPolygonGeoms);
-    
+
         return [
            'buildings' => $results['buildings'],
             'popContentsHtml' => $results['popContentsHtml'],
             'polygon' => $results['polygon'],
         ];
-  
+
 }
 
 
@@ -1030,7 +1031,7 @@ class MapsController extends Controller
         $result = DB::select($checkGeometryQuery, [$geometry]);
         return $result[0]->geometry_type ?? null;
     }
-    
+
     /**
      * Retrieves summary information about road inaccessibility based on provided road width and vacuum range.
      *
@@ -1286,12 +1287,12 @@ class MapsController extends Controller
     public function checkLocationWithinBoundary(Request $request) {
         $latt = $request->input('latt');  // Ensure that these keys are correct
         $long = $request->input('long');
-       
+
         $query = "SELECT * FROM layer_info.citypolys WHERE ST_Intersects(ST_PointFromText('POINT(" . $long . " " . $latt .  ")', 4326), geom)";
         $result = DB::select($query);
         return $result;
     }
-    
+
 
     /**
      * Generates and downloads a summary report in Excel format based on multiple KML geometries.
@@ -1303,14 +1304,14 @@ class MapsController extends Controller
     public function getKmlInfoReportCsv(Request $request)
     {
         ob_end_clean();
-    
+
         // Get the raw geometry string
-        $geometriesString = $request->input('kml_dragdrop_geom'); 
+        $geometriesString = $request->input('kml_dragdrop_geom');
         // Split the string by `),POLYGON Z(` while keeping `POLYGON Z(` in the result
         $geometries = preg_split('/\,POLYGON Z\(/', $geometriesString);
-    
+
         // Add back the missing prefix `POLYGON Z(` to each geometry (except the first one)
-    
+
         foreach ($geometries as $key => &$geometry) {
             if ($key !== 0) {
                 $geometry = 'POLYGON Z(' . $geometry;
@@ -1320,8 +1321,8 @@ class MapsController extends Controller
 
         return $this->excel->download(new SummaryInfoMultiSheetExport($geometries, 0), 'Summary Information KML Drag and Drop.xlsx');
     }
-    
-    
+
+
     /**
      * Checks whether the provided geometries intersect with municipality boundaries.
      *
@@ -1336,7 +1337,7 @@ class MapsController extends Controller
             foreach ($geometries as $geometry) {
                 // Detect geometry type
                 $geometryType = $this->checkGeometryType($geometry);
-            
+
                 if (!in_array(strtoupper($geometryType), ['ST_POINT', 'ST_POLYGON', 'ST_LINESTRING'])) {
                     $results[] = [
                         'geometry' => $geometry,
@@ -1373,15 +1374,15 @@ class MapsController extends Controller
         {
             // Get all the geometries sent in the request
             $geometries = $request->geometries;
-        
+
             $validPolygons = []; // Array to store valid polygons (ST_POLYGON)
-       
+
             // Iterate over each geometry
             foreach ($geometries as $geom) {
-              
+
                 // Check the geometry type for each geometry
                 $geometry_type = $this->checkGeometryType($geom);
-        
+
                 // If the geometry type is ST_POLYGON, add it to the validPolygons array
                 if (strtoupper($geometry_type) == "ST_POLYGON") {
                     $validPolygons[] = $geom;
@@ -1392,11 +1393,11 @@ class MapsController extends Controller
                 $polygon_request = new Request([
                     'bufferPolygonGeoms' => $validPolygons, // Pass the array of polygons
                 ]);
- 
+
                 // Call the function to get buildings for the polygons
                 return $this->getKmlBufferPolygonBuildings($polygon_request);
-        
-            } 
+
+            }
         }
 
 
@@ -1442,7 +1443,7 @@ class MapsController extends Controller
 
     public function getContainmentReport(Request $request)
     {
-        
+
         if ($request->geom) {
 
         if (Auth::user()->hasRole('Service Provider - Admin')){
@@ -1450,76 +1451,76 @@ class MapsController extends Controller
         }else{
             $whereUser = " AND a.user_id = " . Auth::id();
         }
-            
+
         /**No of containment emptied**/
-        
+
         $current_year = date('Y');
         $from_year = $current_year - 4;
-        
+
             $colors = ['rgba(57, 142, 61, 0.2)', 'rgba(62, 199, 68, 0.2)', 'rgba(255, 229, 0, 0.2)', 'rgba(255, 179, 3, 0.2)', 'rgba(219, 61, 61, 0.2)'];
             $borderColor = ['rgba(57, 142, 61, 0.65)', 'rgba(62, 199, 68, 0.8)', 'rgba(255, 229, 0, 0.8)', 'rgba(255, 179, 3, 0.8)', 'rgba(219, 61, 61, 0.65)'];
             $hoverBackgroundColor = ['rgba(57, 142, 61, 0.45)', '"rgba(62, 199, 68, 0.45)', 'rgba(255, 229, 0, 0.45)', 'rgba(255, 179, 3, 0.45)', 'rgba(219, 61, 61, 0.45)'];
             $hoverBorderColor = ['rgba(57, 142, 61, 1)', 'rgba(62, 199, 68, 1)', 'rgba(255, 229, 0, 1)', 'rgba(255, 179, 3, 1)', 'rgba(219, 61, 61, 1)'];
-          
-         
+
+
         $queryAll = "SELECT months.month_val AS month, count(c.id) AS count
-        FROM (select m as month_val from GENERATE_SERIES(1,12) m) AS months  
-		LEFT JOIN  fsm.emptyings e 
+        FROM (select m as month_val from GENERATE_SERIES(1,12) m) AS months
+		LEFT JOIN  fsm.emptyings e
         ON months.month_val = extract(month from e.created_at)
         LEFT JOIN fsm.applications a ON e.application_id = a.id
-		
+
         LEFT JOIN fsm.containments c ON c.id = a.containment_id AND c.emptied_status = true
         AND (ST_Intersects(c.geom, ST_GeomFromText('" . $request->geom . "', 4326)))
         AND e.deleted_at is null
-         
+
         GROUP BY months.month_val
         ORDER BY months.month_val ASC";
-		
-       
+
+
         $resultsAll = DB::select($queryAll);
 
-        
+
         $valuesAll = array();
         foreach($resultsAll as $row) {
             $valuesAll[] = $row->count;
         }
-            
+
         $query = "SELECT months.month_val AS month, count(c.id) AS count
-        FROM (select m as month_val from GENERATE_SERIES(1,12) m) AS months  
-		LEFT JOIN  fsm.emptyings e 
+        FROM (select m as month_val from GENERATE_SERIES(1,12) m) AS months
+		LEFT JOIN  fsm.emptyings e
         ON months.month_val = extract(month from e.created_at)
                 AND extract(year from e.created_at) = '$current_year'
 
         LEFT JOIN fsm.applications a ON e.application_id = a.id
-		
+
         LEFT JOIN fsm.containments c ON c.id = a.containment_id AND c.emptied_status = true
         AND (ST_Intersects(c.geom, ST_GeomFromText('" . $request->geom . "', 4326)))
         AND e.deleted_at is null
-         
+
         GROUP BY months.month_val
         ORDER BY months.month_val ASC";
         $results = DB::select($query);
 
         $values = array();
         foreach($results as $row) {
-          
+
             $values[] = $row->count;
         }
         //***subtract current by 1
         $year_1 = $current_year-1;
-        
+
         $query_m_one = "SELECT months.month_val AS month, count(c.id) AS count
-        FROM (select m as month_val from GENERATE_SERIES(1,12) m) AS months  
-		LEFT JOIN  fsm.emptyings e 
+        FROM (select m as month_val from GENERATE_SERIES(1,12) m) AS months
+		LEFT JOIN  fsm.emptyings e
         ON months.month_val = extract(month from e.created_at)
                 AND extract(year from e.created_at) = '$year_1'
 
         LEFT JOIN fsm.applications a ON e.application_id = a.id
-		
+
         LEFT JOIN fsm.containments c ON c.id = a.containment_id AND c.emptied_status = true
         AND (ST_Intersects(c.geom, ST_GeomFromText('" . $request->geom . "', 4326)))
         AND e.deleted_at is null
-         
+
         GROUP BY months.month_val
         ORDER BY months.month_val ASC";
 
@@ -1532,20 +1533,20 @@ class MapsController extends Controller
         //***subtract current by 2
         $year_2 = $current_year-2;
         $query_m_two = "SELECT months.month_val AS month, count(c.id) AS count
-        FROM (select m as month_val from GENERATE_SERIES(1,12) m) AS months  
-		LEFT JOIN  fsm.emptyings e 
+        FROM (select m as month_val from GENERATE_SERIES(1,12) m) AS months
+		LEFT JOIN  fsm.emptyings e
         ON months.month_val = extract(month from e.created_at)
                 AND extract(year from e.created_at) = '$year_2'
 
         LEFT JOIN fsm.applications a ON e.application_id = a.id
-		
+
         LEFT JOIN fsm.containments c ON c.id = a.containment_id AND c.emptied_status = true
         AND (ST_Intersects(c.geom, ST_GeomFromText('" . $request->geom . "', 4326)))
         AND e.deleted_at is null
-         
+
         GROUP BY months.month_val
         ORDER BY months.month_val ASC";
-        
+
         $results_m_two = DB::select($query_m_two);
 
         $values_m_two = array();
@@ -1555,17 +1556,17 @@ class MapsController extends Controller
         //***subtract current by 3
         $year_3 = $current_year-3;
         $query_m_three = "SELECT months.month_val AS month, count(c.id) AS count
-        FROM (select m as month_val from GENERATE_SERIES(1,12) m) AS months  
-		LEFT JOIN  fsm.emptyings e 
+        FROM (select m as month_val from GENERATE_SERIES(1,12) m) AS months
+		LEFT JOIN  fsm.emptyings e
         ON months.month_val = extract(month from e.created_at)
                 AND extract(year from e.created_at) = '$year_3'
 
         LEFT JOIN fsm.applications a ON e.application_id = a.id
-		
+
         LEFT JOIN fsm.containments c ON c.id = a.containment_id AND c.emptied_status = true
         AND (ST_Intersects(c.geom, ST_GeomFromText('" . $request->geom . "', 4326)))
         AND e.deleted_at is null
-         
+
         GROUP BY months.month_val
         ORDER BY months.month_val ASC";
 
@@ -1577,19 +1578,19 @@ class MapsController extends Controller
         }
         //***subtract current by 4
         $year_4 = $current_year-4;
-       
+
         $query_m_four = "SELECT months.month_val AS month, count(c.id) AS count
-        FROM (select m as month_val from GENERATE_SERIES(1,12) m) AS months  
-		LEFT JOIN  fsm.emptyings e 
+        FROM (select m as month_val from GENERATE_SERIES(1,12) m) AS months
+		LEFT JOIN  fsm.emptyings e
         ON months.month_val = extract(month from e.created_at)
                 AND extract(year from e.created_at) = '$year_4'
 
         LEFT JOIN fsm.applications a ON e.application_id = a.id
-		
+
         LEFT JOIN fsm.containments c ON c.id = a.containment_id AND c.emptied_status = true
         AND (ST_Intersects(c.geom, ST_GeomFromText('" . $request->geom . "', 4326)))
         AND e.deleted_at is null
-         
+
         GROUP BY months.month_val
         ORDER BY months.month_val ASC";
 
@@ -1599,7 +1600,7 @@ class MapsController extends Controller
         foreach($results_m_four as $row) {
             $values_m_four[] = $row->count;
         }
-        
+
 
          $chart = [
                 'values' => $values,
@@ -1614,9 +1615,9 @@ class MapsController extends Controller
                 'hoverBorderColor' => $hoverBorderColor,
                 'current_year' => $current_year,
                 'from_year' => $from_year,
-              
+
             ];
-         
+
           return $chart;
         } else {
             return "The 'geom' field is required";
@@ -1636,7 +1637,7 @@ class MapsController extends Controller
     public function getContainmentReportCsv(Request $request)
     {
         ob_end_clean();
-        
+
         return $this->excel->download(new ContainmentSummaryInfoMultiSheetExport(request()->containment_report_polygon, request()->containment_report_year), 'Summary Information Containments Emtpied Monthly.xlsx');
     }
 
@@ -1666,7 +1667,7 @@ class MapsController extends Controller
 
 //     try {
 //         $response = Http::withOptions([
-//             'verify' => false   
+//             'verify' => false
 //         ])->withHeaders([
 //             'Accept' => 'application/xml',
 //         ])->get($externalUrl, $queryParams);
@@ -1688,7 +1689,7 @@ class MapsController extends Controller
 
 //     return $res;
 // }
-   
+
 
 public function proxyWms(Request $request)
 {
@@ -1718,5 +1719,45 @@ public function proxyWms(Request $request)
         ->header('Content-Type', $response->header('Content-Type') ?? 'application/xml')
         ->header('Access-Control-Allow-Origin', '*');
 }
+
+    /**
+     * Retrieves the next available road serial number for a given ward and generates the corresponding road code.
+     *
+     * @param Request $request The HTTP request object.
+     * @param int $ward The ward number for which to generate the next serial.
+     * @return \Illuminate\Http\JsonResponse JSON response containing the next serial, road code, and ward number.
+     */
+    public function getNextRoadSerial(Request $request, $ward)
+    {
+        try {
+            // Validate ward parameter
+            if (!is_numeric($ward) || $ward < 1) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Invalid ward number.',
+                ], 400);
+            }
+
+            // Get the next serial for the ward
+            $nextSerial = Roadline::getNextSerialForWard($ward);
+
+            // Generate the municipality road code
+            $roadCode = Roadline::generateMunicipalityRoadCode($ward, $nextSerial);
+
+            return response()->json([
+                'success' => true,
+                'serial' => $nextSerial,
+                'road_code' => $roadCode,
+                'ward' => $ward,
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Failed to generate road serial.',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
 
 }

@@ -214,6 +214,7 @@ Route::group([
     Route::get('roadlines/{code}/geometry', 'RoadlineController@getGeometry');
 
     Route::get('roadlines/get-road-names', 'RoadlineController@getRoadNames')->name('roadlines.get-road-names');
+    Route::get('roadlines/get-by-ward', 'RoadlineController@getByWard')->name('roadlines.get-by-ward');
     Route::get('roadlines/{id}/history', 'RoadlineController@history');
     Route::post('roadlines/add-road', 'RoadlineController@store');
     Route::post('roadlines/update-road-geom', 'RoadlineController@updateRoadGeom');
@@ -540,6 +541,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('maps/check-location-within-boundary','MapsController@checkLocationWithinBoundary');
     Route::get('maps/toilet-isochrone', 'MapsController@getToiletIsochroneAreaLayers');
    Route::get('/proxy-wms', 'MapsController@proxyWms');
+    Route::get('maps/get-next-road-serial/{ward}', 'MapsController@getNextRoadSerial');
 
 });
 

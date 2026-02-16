@@ -154,16 +154,16 @@ class RoadlineController extends Controller
         if ($roadline) {
             if ($roadline->buildings()->exists()) {
                 return redirect('utilityinfo/roadlines')->with('error',__('Cannot delete Road that is associated with Building Information.'));
-            } 
+            }
             if($roadline->sewers()->exists()) {
                 return redirect('utilityinfo/roadlines')->with('error',__('Cannot delete Road that is associated with Sewer Information.'));
-            } 
+            }
             if($roadline->drains()->exists()) {
                 return redirect('utilityinfo/roadlines')->with('error',__('Cannot delete Road that is associated with Drain Information.'));
-            } 
+            }
             if($roadline->water_supply()->exists()) {
                 return redirect('utilityinfo/roadlines')->with('error',__('Cannot delete Road that is associated with Water Supply Network Information.'));
-            } 
+            }
             $roadline->delete();
             return redirect('utilityinfo/roadlines')->with('success',__('Road deleted successfully.'));
         } else {
@@ -201,7 +201,7 @@ class RoadlineController extends Controller
     }
 
     public function getRoadNames(){
-       
+
         $query = Roadline::all()->toQuery();
         if (request()->search){
             $query->where('name', 'ilike', '%'.request()->search.'%')
@@ -255,7 +255,7 @@ class RoadlineController extends Controller
      public function updateRoadGeom(Request $request)
      {
          $roadcd = $request->roadcd ? $request->roadcd : null;
-     
+
          if ($roadcd) {
              $roadline = Roadline::find($roadcd);
          } else {
@@ -265,12 +265,12 @@ class RoadlineController extends Controller
                  'error' => "Couldn't find the required road!",
              ]);
          }
-     
+
          // Update the geometry field
          $roadline->geom = DB::raw("ST_SetSRID(ST_GeomFromText('". $request->geom ."'), 4326)"); // Ensure the SRID is set properly
          $roadline->length = $request->length;
          $roadline->save();
-         
+
          return response()->json([
              'success' => true,
              'data' => [],
@@ -283,9 +283,35 @@ class RoadlineController extends Controller
          $geometry = DB::table('utility_info.roads')
          ->where('code', $code)
          ->value(DB::raw('ST_AsText(geom) as geometry'));
-     
+
          return response()->json(['geometry' => $geometry]);
-     
+
+     }
+
+     /**
+      * Get roads by ward for extension mode select population
+      *
+      * Returns roads that have a road_uid (non-null) filtered by ward
+      *
+      * @param Request $request
+      * @return \Illuminate\Http\JsonResponse
+      */
+     public function getByWard(Request $request)
+     {
+         $ward = $request->input('ward');
+
+         if (!$ward) {
+             return response()->json([]);
+         }
+
+         $roads = Roadline::where('ward', $ward)
+             ->whereNotNull('road_uid')
+             ->select('road_uid', 'code', 'name')
+             ->distinct()
+             ->orderBy('road_uid')
+             ->get();
+
+         return response()->json($roads);
      }
 
 }
