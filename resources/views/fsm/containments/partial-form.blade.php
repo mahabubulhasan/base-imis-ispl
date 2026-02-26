@@ -192,7 +192,7 @@
                             'class' => 'form-control',
                             'placeholder' => __('Latitude'),
                             'id' => 'latitude',
-                            'readonly' => true,
+                            'readonly' => false,
                             'style' => 'background-color: #f5f5f5;'
                         ]) !!}
                     </div>
@@ -201,7 +201,7 @@
                             'class' => 'form-control',
                             'placeholder' => __('Longitude'),
                             'id' => 'longitude',
-                            'readonly' => true,
+                            'readonly' => false,
                             'style' => 'background-color: #f5f5f5;'
                         ]) !!}
                     </div>
