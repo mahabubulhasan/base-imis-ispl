@@ -1,6 +1,8 @@
 <?php
-// Last Modified Date: 14-04-2024
-// Developed By: Innovative Solution Pvt. Ltd. (ISPL)  
+// Last Modified: 2026-02-26
+// Developed By: Streams Tech Ltd.
+// Description: Handles drain network data operations with road-based code generation.
+
 namespace App\Services\UtilityInfo;
 
 use App\Models\UtilityInfo\Drain;
@@ -16,6 +18,7 @@ use Box\Spout\Writer\Style\StyleBuilder;
 use Box\Spout\Writer\WriterFactory;
 use Illuminate\Support\Facades\Auth as FacadesAuth;
 use Yajra\DataTables\DataTables;
+use Illuminate\Database\QueryException;
 
 class DrainService {
 
@@ -96,30 +99,94 @@ class DrainService {
     /**
      * Store or update a newly created resource in storage.
      *
-     * @param character $code
+     * @param string|null $code
      * @param array $data
      * @return bool
      */
     public function storeOrUpdate($code = null,$data)
     {
         if(empty($code)){
-            // $drainTemp = DB::select("SELECT ST_AsText(geom) AS geom FROM drain_temp");
-            // $geom = ($drainTemp[0]->geom);
+            // Validate road_code exists
+            if (empty($data['road_code'])) {
+                \Log::error('Road code is required for drain creation');
+                throw new \Exception('Road code is required to generate drain code.');
+            }
 
-            $maxcode = Drain::withTrashed()->max('code');
-            $maxcode = str_replace('D', '', $maxcode);
-            $drain = new Drain();
-            $drain->code = 'D' . sprintf('%06d', $maxcode + 1);
-            $drain->user_id = Auth::id();
-            $drain->road_code = $data['road_code'] ? $data['road_code'] : null;
-            $drain->surface_type = $data['surface_type'] ? $data['surface_type'] : null;
-            $drain->cover_type = $data['cover_type'] ? $data['cover_type'] : null;
-            $drain->treatment_plant_id = $data['treatment_plant_id'] ? $data['treatment_plant_id'] : null;
-            $drain->size = $data['size'] ? $data['size'] : null;
-            $drain->length = $data['length'] ? $data['length'] : null;
-            $drain->geom = $data['geom'] ? DB::raw("ST_Multi(ST_GeomFromText('" . $data['geom'] . "', 4326))") : null;
+            DB::beginTransaction();
+            try {
+                // Generate base drain code from road_code
+                $roadCode = $data['road_code'];
 
-            $drain->save();
+                // Check if road_code has '10' at positions 6-7 (0-indexed)
+                // If yes, replace with '20' for drain type indicator
+                // Otherwise, use road_code as-is
+                if (strlen($roadCode) >= 8 && substr($roadCode, 6, 2) === '10') {
+                    $baseCode = substr($roadCode, 0, 6) . '20' . substr($roadCode, 8);
+                } else {
+                    $baseCode = 'D-'.$roadCode;
+                }
+
+                // Find the maximum suffix for this base code
+                $maxDrainCode = Drain::withTrashed()
+                    ->where('code', 'LIKE', $baseCode . '-%')
+                    ->max('code');
+
+                $suffix = 0;
+                if ($maxDrainCode) {
+                    // Extract suffix from the last drain code (e.g., "20512520130007-05" -> "05")
+                    $lastSuffix = substr($maxDrainCode, -2);
+                    $suffix = intval($lastSuffix) + 1;
+                }
+
+                // Validate suffix doesn't exceed 99 (two-digit limit)
+                if ($suffix > 99) {
+                    throw new \Exception('Maximum number of drains (100) reached for this road.');
+                }
+
+                // Format final code with two-digit suffix
+                $drainCode = $baseCode . '-' . sprintf('%02d', $suffix);
+
+                $drain = new Drain();
+                $drain->code = $drainCode;
+                $drain->user_id = Auth::id();
+                $drain->road_code = $data['road_code'];
+                $drain->surface_type = $data['surface_type'] ? $data['surface_type'] : null;
+                $drain->cover_type = $data['cover_type'] ? $data['cover_type'] : null;
+                $drain->treatment_plant_id = $data['treatment_plant_id'] ? $data['treatment_plant_id'] : null;
+                $drain->size = $data['size'] ? $data['size'] : null;
+                $drain->length = $data['length'] ? $data['length'] : null;
+                $drain->geom = $data['geom'] ? DB::raw("ST_Multi(ST_GeomFromText('" . $data['geom'] . "', 4326))") : null;
+
+                $drain->save();
+
+                DB::commit();
+
+                return true;
+            } catch (QueryException $e) {
+                DB::rollback();
+
+                // Handle PostgreSQL unique constraint or duplicate key violations
+                if ($e->getCode() === '23505') {
+                    \Log::warning('Duplicate key constraint violation', [
+                        'road_code' => $data['road_code'],
+                        'error' => $e->getMessage()
+                    ]);
+                    throw new \Exception('A drain with this code already exists. Please try again.');
+                } else {
+                    \Log::error('Database error occurred', [
+                        'road_code' => $data['road_code'],
+                        'error' => $e->getMessage()
+                    ]);
+                    throw $e;
+                }
+            } catch (\Exception $e) {
+                DB::rollback();
+                \Log::error('Error creating drain', [
+                    'road_code' => $data['road_code'],
+                    'error' => $e->getMessage()
+                ]);
+                throw $e;
+            }
         }
         else{
             $drain = Drain::find($code);
@@ -129,8 +196,10 @@ class DrainService {
             $drain->cover_type = $data['cover_type'] ? $data['cover_type'] : null;
             $drain->size = $data['size'] ? $data['size'] : null;
             $drain->length = $data['length'] ? $data['length'] : null;
-          
+
             $drain->save();
+
+            return true;
         }
     }
 
