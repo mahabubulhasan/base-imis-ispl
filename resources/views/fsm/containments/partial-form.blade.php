@@ -3,9 +3,6 @@
 <div id="containment-info" style="display: none;margin:12px">
     <h2 class=""> {{ __("Containment Information") }} </h2>
 
-
-
-
     <div class="form-group row required" id='containment-type'>
         {!! Form::label('type_id',__('Containment Type'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-5">
@@ -161,34 +158,102 @@
         </div>
     </div>
 
-
-
-    <div id="septic-tank">
-        <div class="form-group row">
-            {!! Form::label('septic_criteria', __('Septic Tank Standard Compliance'), ['class' => 'col-sm-3 control-label']) !!}
+        <div id="septic-tank">
+            <div class="form-group row">
+                {!! Form::label('septic_criteria', __('Septic Tank Standard Compliance'), ['class' => 'col-sm-3 control-label']) !!}
+                <div class="col-sm-5">
+                    {!! Form::select('septic_criteria', [true => 'Yes', false => 'No'], null, [
+                        'class' => 'form-control col-sm-10',
+                        'placeholder' => __('Septic Tank Standard Compliance'),
+                    ]) !!}
+                </div>
+            </div>
+        </div>
+        <div class="form-group row ">
+            {!! Form::label('construction_date', __('Containment Construction Date'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-5">
-                {!! Form::select('septic_criteria', [true => 'Yes', false => 'No'], null, [
+                {!! Form::date('construction_date', null, [
                     'class' => 'form-control col-sm-10',
-                    'placeholder' => __('Septic Tank Standard Compliance'),
+                    'autocomplete' => 'off',
+                    'placeholder' => __('Containment Construction Date'),
+                    'max' => now()->format('Y-m-d'),
+                    'onclick' => 'this.showPicker();'
                 ]) !!}
             </div>
         </div>
-    </div>
-    <div class="form-group row ">
-        {!! Form::label('construction_date', __('Containment Construction Date'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-5">
-            {!! Form::date('construction_date', null, [
-                'class' => 'form-control col-sm-10',
-                'autocomplete' => 'off',
-                'placeholder' => __('Containment Construction Date'),
-                'max' => now()->format('Y-m-d'),
-                'onclick' => 'this.showPicker();'
-            ]) !!}
+
+        <!-- Coordinate -->
+        <div class="form-group row">
+            <div class="col-sm-7">
+                <h5 style="color: #999; margin-bottom: 12px;">{{ __('Coordinates') }}</h5>
+                <div style="display: flex; gap: 16px; align-items: flex-end;">
+                    <div style="flex: 1;">
+                        {!! Form::text('latitude', null, [
+                            'class' => 'form-control',
+                            'placeholder' => __('Latitude'),
+                            'id' => 'latitude',
+                            'readonly' => true,
+                            'style' => 'background-color: #f5f5f5;'
+                        ]) !!}
+                    </div>
+                    <div style="flex: 1;">
+                        {!! Form::text('longitude', null, [
+                            'class' => 'form-control',
+                            'placeholder' => __('Longitude'),
+                            'id' => 'longitude',
+                            'readonly' => true,
+                            'style' => 'background-color: #f5f5f5;'
+                        ]) !!}
+                    </div>
+                    <button type="button" class="btn btn-primary" id="use-my-location" style="margin-bottom: 0; white-space: nowrap;">
+                        <i class="fa fa-map-marker"></i> {{ __('USE MY LOCATION') }}
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
-
-
-
-
-
 </div> <!-- containmend id -->
+
+<script>
+document.getElementById('use-my-location').addEventListener('click', function() {
+    if (navigator.geolocation) {
+        var button = this;
+        button.disabled = true;
+        button.innerHTML = '<i class="fa fa-spinner fa-spin"></i> {{ __("Getting Location...") }}';
+
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                var latitude = position.coords.latitude;
+                var longitude = position.coords.longitude;
+
+                document.getElementById('latitude').value = latitude.toFixed(6);
+                document.getElementById('longitude').value = longitude.toFixed(6);
+
+                button.disabled = false;
+                button.innerHTML = '<i class="fa fa-map-marker"></i> {{ __("USE MY LOCATION") }}';
+            },
+            function(error) {
+                var errorMessage = '';
+                switch(error.code) {
+                    case error.PERMISSION_DENIED:
+                        errorMessage = '{{ __("Permission denied. Please enable location access.") }}';
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        errorMessage = '{{ __("Location information is unavailable.") }}';
+                        break;
+                    case error.TIMEOUT:
+                        errorMessage = '{{ __("The request to get user location timed out.") }}';
+                        break;
+                    default:
+                        errorMessage = '{{ __("An error occurred while retrieving location.") }}';
+                }
+                alert(errorMessage);
+                button.disabled = false;
+                button.innerHTML = '<i class="fa fa-map-marker"></i> {{ __("USE MY LOCATION") }}';
+            }
+        );
+    } else {
+        alert('{{ __("Geolocation is not supported by your browser.") }}');
+    }
+});
+</script>

@@ -280,15 +280,29 @@ class BuildingStructureService
                 $geom = $building->geom;
                 $building->save();
                 if ($geom) {
-
                     $containment_point = DB::select(DB::raw("SELECT (ST_AsText(st_centroid(st_union(geom)))) AS central_point FROM building_info.buildings WHERE bin = '$building->bin'"));
                     $containment->geom = DB::raw("ST_GeomFromText('" . $containment_point[0]->central_point . "', 4326)");
                 }
             } elseif ($type == 'update') {
-                // do no changes to geom if containment data is being updated only
-            } else {
+                // Check if latitude and longitude are provided for update
+                if (!empty($request->latitude) && !empty($request->longitude)) {
+                    // Sanitize and validate coordinates
+                    $latitude = floatval($request->latitude);
+                    $longitude = floatval($request->longitude);
 
-                // create new point from buildings centroid if new building and containment
+                    // Validate coordinate ranges
+                    if ($latitude >= -90 && $latitude <= 90 && $longitude >= -180 && $longitude <= 180) {
+                        // Create POINT geometry from coordinates
+                        $containment->geom = DB::raw("ST_GeomFromText('POINT(" . $longitude . " " . $latitude . ")', 4326)");
+                    } else {
+                        \Log::warning('Invalid coordinates provided for update', [
+                            'latitude' => $latitude,
+                            'longitude' => $longitude
+                        ]);
+                    }
+                }
+                // Otherwise, do no changes to geom if containment data is being updated only
+            } else {
                 $containment->geom = $this->storeGeomInfo($request,  'containment', 'create');
             }
             $containment->save();
