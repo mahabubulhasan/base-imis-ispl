@@ -6,6 +6,7 @@
 namespace App\Services\UtilityInfo;
 
 use App\Models\UtilityInfo\Roadline;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 use Illuminate\Session\SessionManager;
 use DB;
@@ -104,25 +105,39 @@ class RoadlineService {
     public function storeOrUpdate($code = null,$data)
     {
         if(empty($code)){
-            $maxcode = Roadline::withTrashed()
-                ->selectRaw("COALESCE(MAX(CAST(SUBSTRING(code FROM '[0-9]+') AS INTEGER)), 0) as max_num")
-                ->value('max_num');
-            // $maxcode = str_replace('R', '', $maxcode);
-            $roadline = new Roadline();
-            $roadline->code = 'R' . sprintf('%06d', $maxcode + 1);
-            $roadline->user_id = Auth::id();
-            $roadline->name = $data['name'] ? $data['name'] : null;
-            $roadline->road_type = $data['road_type'] ? $data['road_type'] : null;
-            $roadline->ward = $data['ward'] ? $data['ward'] : null;
-            $roadline->hierarchy = $data['hierarchy'] ? $data['hierarchy'] : null;
-            $roadline->surface_type = $data['surface_type'] ? $data['surface_type'] : null;
-            $roadline->length = $data['length'] ? $data['length'] : null;
-            $roadline->right_of_way = $data['right_of_way'] ? $data['right_of_way'] : null;
-            $roadline->carrying_width = $data['carrying_width'] ? $data['carrying_width'] : null;
-            $roadline->road_uid = $data['road_uid'] ? $data['road_uid'] : null;
-            $roadline->road_ext = $data['road_ext'] ? $data['road_ext'] : null;
-            $roadline->geom = $data['geom'] ? DB::raw("ST_Multi(ST_GeomFromText('" . $data['geom'] . "', 4326))") : null;
-            $roadline->save();
+
+            try{
+                $roadline = new Roadline();
+                $roadline->code = $data['road_uid'];
+                $roadline->user_id = Auth::id();
+                $roadline->name = $data['name'] ? $data['name'] : null;
+                $roadline->road_type = $data['road_type'] ? $data['road_type'] : null;
+                $roadline->ward = $data['ward'] ? $data['ward'] : null;
+                $roadline->hierarchy = $data['hierarchy'] ? $data['hierarchy'] : null;
+                $roadline->surface_type = $data['surface_type'] ? $data['surface_type'] : null;
+                $roadline->length = $data['length'] ? $data['length'] : null;
+                $roadline->right_of_way = $data['right_of_way'] ? $data['right_of_way'] : null;
+                $roadline->carrying_width = $data['carrying_width'] ? $data['carrying_width'] : null;
+                $roadline->road_uid = $data['road_uid'] ? $data['road_uid'] : null;
+                $roadline->road_ext = $data['road_ext'] ? $data['road_ext'] : null;
+                $roadline->geom = $data['geom'] ? DB::raw("ST_Multi(ST_GeomFromText('" . $data['geom'] . "', 4326))") : null;
+                $roadline->save();
+            }catch(QueryException $e){
+                // Handle PostgreSQL unique constraint or duplicate key violations
+                if ($e->getCode() === '23505') {
+                    \Log::warning('Duplicate key constraint violation', [
+                        'code' => $data['road_uid'],
+                        'error' => $e->getMessage()
+                    ]);
+                    throw new \Exception('A roadline with this code already exists.');
+                } else {
+                    \Log::error('Database error occurred', [
+                        'code' => $data['road_uid'],
+                        'error' => $e->getMessage()
+                    ]);
+                    throw $e;
+                }
+            }
 
             \Log::info('Road saved successfully', ['code' => $roadline->code]);
         }
