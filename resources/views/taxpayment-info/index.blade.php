@@ -138,18 +138,20 @@ $(function() {
         ]
     }).on('draw', function() {
       $('.delete').on('click', function(e) {
-
       var form =  $(this).closest("form");
       event.preventDefault();
-      swal({
-          title: '{{__(`Are you sure you want to delete this record?`)}}',
+      Swal.fire({
+          title: '{{__('Are you sure you want to delete this record?')}}',
           text: '{{__("If you delete this, it will be gone forever.")}}',
           icon: "warning",
-          buttons: true,
-          dangerMode: true,
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: '{{__('Yes, delete it!')}}',
+          cancelButtonText: '{{__('Cancel')}}'
       })
-      .then((willDelete) => {
-        if (willDelete) {
+      .then((result) => {
+        if (result.isConfirmed) {
           form.submit();
         }
       })
