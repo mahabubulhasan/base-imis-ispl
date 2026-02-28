@@ -1,6 +1,7 @@
 <?php
-// Last Modified Date: 18-04-2024
-//Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024)
+// Last Modified Date: 28-02-2026
+// Developed By: Streams Tech Ltd.
+// Description: Handles tax payment collection operations
 namespace App\Http\Controllers\TaxPaymentInfo;
 
 use App\Http\Controllers\Controller;
@@ -8,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\TaxPaymentInfo\TaxPaymentStatus;
 use App\Models\LayerInfo\Ward;
 use App\Models\TaxPaymentInfo\DueYear;
+use App\Services\TaxPaymentInfo\TaxPaymentService;
 use DataTables;
 use Illuminate\Support\Facades\DB as DB;
 use Illuminate\Support\Facades\Validator;
@@ -25,13 +27,15 @@ use App\Models\TaxPaymentInfo\TaxPayment;
 
 class TaxPaymentController extends Controller
 {
-    public function __construct()
+    protected $taxPaymentService;
+
+    public function __construct(TaxPaymentService $taxPaymentService)
     {
         $this->middleware('auth');
         $this->middleware('permission:List Property Tax Collection', ['only' => ['index']]);
         $this->middleware('permission:Import Property Tax Collection From CSV', ['only' => ['create', 'store']]);
         $this->middleware('permission:Export Property Tax Collection Info', ['only' => ['export', 'exportunmatched']]);
-
+        $this->taxPaymentService = $taxPaymentService;
     }
     /**
      * Display a listing of the resource.
@@ -55,30 +59,7 @@ class TaxPaymentController extends Controller
      */
     public function getData(Request $request)
     {
-        $buildingData = DB::table(DB::raw('(SELECT tax_code, bin, ward, owner_name, owner_contact, due_year 
-            FROM taxpayment_info.tax_payment_status
-            ORDER BY tax_code) tax'))
-            ->leftjoin('taxpayment_info.due_years AS due', 'due.value', '=', 'tax.due_year')
-            ->select('tax.*', 'due.name', 'tax.bin');
-
-        return DataTables::of($buildingData)
-            ->filter(function ($query) use ($request) {
-                if ($request->dueyear_select) {
-                    $query->where('due.name', $request->dueyear_select);
-                }
-                if ($request->ward_select) {
-                    $query->where('tax.ward', $request->ward_select);
-                }
-                if ($request->tax_code) {
-                    $query->where('tax_code', 'ILIKE', '%' . $request->tax_code . '%');
-                }
-                if ($request->bin) {
-                    $query->where('tax.bin', 'ILIKE', '%' . $request->bin . '%');
-                }
-            })
-            ->make(true);
-
-
+        return $this->taxPaymentService->fetchData($request);
     }
     /**
      * Display the form for creating a new resource.
@@ -210,7 +191,7 @@ class TaxPaymentController extends Controller
         if (!empty($bin)) {
             $query->where('tax.bin', 'ILIKE', '%' . $bin . '%');
         }
-        
+
         $style = (new StyleBuilder())
             ->setFontBold()
             ->setFontSize(13)
@@ -250,8 +231,8 @@ class TaxPaymentController extends Controller
                  ->leftjoin('building_info.buildings as b', 'tax.tax_code', '=', 'b.tax_code')
                  ->select('tax.*')
                  ->whereNull('b.tax_code')
-                 ->orderBy('tax.tax_code', 'ASC');    
-       
+                 ->orderBy('tax.tax_code', 'ASC');
+
         $style = (new StyleBuilder())
             ->setFontBold()
             ->setFontSize(13)
@@ -274,5 +255,66 @@ class TaxPaymentController extends Controller
         });
 
         $writer->close();
+    }
+
+    /**
+     * Display the specified tax payment record.
+     *
+     * @param string $tax_code
+     * @return \Illuminate\Http\Response
+     */
+    public function show($tax_code)
+    {
+        $page_title = __('Property Tax Collection Details');
+        $taxPayment = TaxPayment::where('tax_code', $tax_code)->firstOrFail();
+        return view('taxpayment-info.show', compact('page_title', 'taxPayment'));
+    }
+
+    /**
+     * Show the form for editing the specified tax payment record.
+     *
+     * @param string $tax_code
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($tax_code)
+    {
+        $page_title = __('Edit Property Tax Collection');
+        $taxPayment = TaxPayment::where('tax_code', $tax_code)->firstOrFail();
+        return view('taxpayment-info.edit', compact('page_title', 'taxPayment'));
+    }
+
+    /**
+     * Update the specified tax payment record in storage.
+     *
+     * @param Request $request
+     * @param string $tax_code
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function update(Request $request, $tax_code)
+    {
+        $this->validate($request, [
+            'owner_name' => 'required|string',
+            'owner_contact' => 'required|string',
+            'last_payment_date' => 'nullable|date',
+        ]);
+
+        $taxPayment = TaxPayment::where('tax_code', $tax_code)->firstOrFail();
+        $taxPayment->update($request->only('owner_name', 'owner_contact', 'last_payment_date'));
+
+        return redirect()->route('tax-payment.index', $tax_code)->with('success', __('Property tax collection record updated successfully.'));
+    }
+
+    /**
+     * Remove the specified tax payment record from storage.
+     *
+     * @param string $tax_code
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function destroy($tax_code)
+    {
+        $taxPayment = TaxPayment::where('tax_code', $tax_code)->firstOrFail();
+        $taxPayment->delete();
+
+        return redirect()->route('tax-payment.index')->with('success', __('Property tax collection record deleted successfully.'));
     }
 }

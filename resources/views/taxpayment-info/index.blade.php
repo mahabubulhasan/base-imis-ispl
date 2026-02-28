@@ -57,16 +57,16 @@
                                          <label for="bin" class="control-label col-md-2">{{__('BIN')}}</label>
                                             <div class="col-md-2">
                                                 <input type="text" class="form-control" id="bin"
-                                                    placeholder="{{__('BIN')}}" 
+                                                    placeholder="{{__('BIN')}}"
                                                     oninput = "this.value = this.value.replace(/[^a-zA-Z0-9]/g, ''); "/> <!-- Allow only alphabetic and numeric characters -->
-                                            </div> 
-                                                                                   
+                                            </div>
+
                                     </div>
                                     <div class="form-group row">
                                         <label for="tax_code" class="control-label col-md-2">{{__('Tax Code')}}</label>
                                             <div class="col-md-2">
                                                 <input type="text" class="form-control" id="tax_code"
-                                                    placeholder="{{__('Tax Code')}}" 
+                                                    placeholder="{{__('Tax Code')}}"
                                                     oninput = "this.value = this.value.replace(/[^a-zA-Z0-9-]/g, ''); "/> <!-- Allow only alphabetic characters, numbers, and the hyphen (-) -->
                                             </div>
                                     </div>
@@ -99,6 +99,7 @@
                     <th>{{__('Owner Name')}}</th>
                     <th>{{__('Years Due')}}</th>
                     <th>{{__('Ward')}}</th>
+                    <th>{{__('Action')}}</th>
                     </tr>
                 </thead>
             </table>
@@ -132,7 +133,8 @@ $(function() {
             { data: 'bin', name: 'bin' },
             { data: 'owner_name', name: 'owner_name' },
             { data: 'name', name: 'name' },
-            { data: 'ward', name: 'ward' }
+            { data: 'ward', name: 'ward' },
+            { data: 'action', name: 'action', orderable: false, searchable: false }
         ]
     }).on('draw', function() {
       $('.delete').on('click', function(e) {
@@ -158,7 +160,7 @@ $(function() {
 
 
     $('#filter-form').on('submit', function(e) {
-     
+
         e.preventDefault();
         dataTable.draw();
         ward_select = $('#ward_select').val();
@@ -177,18 +179,18 @@ $(function() {
         var dueyear_select = $('#dueyear_select').val();
         var tax_code = $('#tax_code').val();
         var bin = $('#bin').val();
-        window.location.href = "{!! url('tax-payment/export?searchData=') !!}"+ searchData + 
-        "&ward=" + ward_select + 
-        "&due_year=" + dueyear_select + 
+        window.location.href = "{!! url('tax-payment/export?searchData=') !!}"+ searchData +
+        "&ward=" + ward_select +
+        "&due_year=" + dueyear_select +
         "&tax_code=" + tax_code +
-        "&bin=" + bin 
+        "&bin=" + bin
     });
 
     $("#exportunmatched").on("click", function(e) {
         e.preventDefault();
         window.location.href = "{!! url('tax-payment/exportunmatched') !!}";
     });
- 
+
 
 
 });

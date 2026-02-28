@@ -12,8 +12,8 @@ class TaxPayment extends Model
     protected $table = 'taxpayment_info.tax_payments';
     protected $fillable = [
         'tax_code', 'owner_name', 'owner_contact', 'last_payment_date'
-        
     ];
+
     public static function selectAll(){
         return TaxPayment::select('tax_code', 'owner_name', 'owner_contact', 'last_payment_date');
     }
