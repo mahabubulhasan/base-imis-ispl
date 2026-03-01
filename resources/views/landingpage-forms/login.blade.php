@@ -68,7 +68,7 @@
         </div>
 
         <button type="submit" class="w-full bg-primary text-white py-4 rounded-2xl font-bold text-lg hover:shadow-lg hover:shadow-primary/30 active:scale-[0.98] transition-all uppercase tracking-wider">
-            Login to Portal
+            Sign in to Portal
         </button>
     </form>
 </div>
