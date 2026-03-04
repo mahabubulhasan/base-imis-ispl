@@ -1,20 +1,28 @@
+{{--
+// Last Modified: 2026-03-04
+// Developed By: Streams Tech Ltd.
+// Description: Renders landing page About tab sections and feature/module content.
+--}}
+
 <!-- ABOUT TAB -->
 <div id="about" class="tab-content hidden p-5 md:p-10 bg-background-light min-h-[calc(100vh-100px)] animate-fadeIn">
     <div class="max-w-6xl mx-auto space-y-8">
         <!-- ABOUT SECTION -->
         <div class="bg-white p-6 md:p-10 rounded-xl shadow-lg border border-slate-200">
-            <div class="section-title">
+            <div class="section-title text-center">
                 <h3 class="text-slate-900">About <span class="text-primary">IMIS</span></h3>
             </div>
-            <div class="text-left">
-                <p class="text-slate-700">
+            <div class="text-left space-y-6">
+                <p class="text-slate-700 leading-relaxed">
                     IMIS is an open-source GIS-based Digital Public Infrastructure (DPI) which functions as both a
                     municipal information system and a software solution, integrating data, processes, and services
                     to enhance municipal governance—particularly in sanitation management with Citywide Inclusive
                     Sanitation (CWIS) approach to achieve SDG 6.2. It offers municipalities data-driven
                     decision-making tools to strengthen governance across various sectors. By leveraging open-source
                     technologies and Geographic Information Systems (GIS), it facilitates:
-                <ul class="text-slate-700">
+                </p>
+
+                <ul class="text-slate-700 list-disc pl-8 space-y-1">
                     <li>Planning, management, and monitoring of sanitation systems using the CWIS approach.</li>
                     <li>End-to-end FSM (Faecal Sludge Management) service chain oversight, including real-time data
                         tracking.</li>
@@ -22,12 +30,13 @@
                     <li>Intuitive dashboards for tracking CWIS indicators, Key Performance Indicators (KPIs), and
                         other essential municipal governance metrics.</li>
                 </ul>
-                IMIS as a sub-national public data system contributes to national-level monitoring by feeding data
-                into centralized systems, supporting CWIS indicators and other critical metrics for achieving
-                sanitation targets.
-                Beyond sanitation management, with its modular and scalable design, Base IMIS empowers local
-                authorities by providing a unified, data-driven framework that enhances efficiency, accountability,
-                and service delivery in municipal governance.
+
+                <p class="text-slate-700 leading-relaxed">
+                    IMIS as a sub-national public data system contributes to national-level monitoring by feeding data
+                    into centralized systems, supporting CWIS indicators and other critical metrics for achieving
+                    sanitation targets. Beyond sanitation management, with its modular and scalable design, Base IMIS
+                    empowers local authorities by providing a unified, data-driven framework that enhances efficiency,
+                    accountability, and service delivery in municipal governance.
                 </p>
             </div>
         </div>
