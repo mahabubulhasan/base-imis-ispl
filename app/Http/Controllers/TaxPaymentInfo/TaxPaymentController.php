@@ -266,8 +266,12 @@ class TaxPaymentController extends Controller
     public function show($tax_code)
     {
         $page_title = __('Property Tax Collection Details');
-        // $taxPayment = TaxPayment::where('tax_code', $tax_code)->firstOrFail();
         $taxPayment = $this->taxPaymentService->getDetails($tax_code);
+
+        if ($taxPayment === null) {
+            abort(404);
+        }
+
         return view('taxpayment-info.show', compact('page_title', 'taxPayment'));
     }
 

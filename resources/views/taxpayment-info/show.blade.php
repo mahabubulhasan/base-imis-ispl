@@ -27,6 +27,10 @@
                         <td>{{ $taxPayment->ward }}</td>
                     </tr>
                     <tr>
+                        <th>{{ __('Due Year') }}</th>
+                        <td>{{ $taxPayment->due_year === 99 ? 'No Data' : $taxPayment->due_year }}</td>
+                    </tr>
+                    <tr>
                         <th>{{ __('Last Payment Date') }}</th>
                         <td>{{ $taxPayment->last_payment_date ?? '---' }}</td>
                     </tr>
