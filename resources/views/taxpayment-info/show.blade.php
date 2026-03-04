@@ -27,7 +27,7 @@
                         <td>{{ $taxPayment->ward }}</td>
                     </tr>
                     <tr>
-                        <th>{{ __('Due Year') }}</th>
+                        <th>{{ __('Years Due') }}</th>
                         <td>{{ $taxPayment->due_year === 99 ? 'No Data' : $taxPayment->due_year }}</td>
                     </tr>
                     <tr>
