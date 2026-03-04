@@ -5,8 +5,6 @@
 
 namespace App\Services\TaxPaymentInfo;
 
-use App\Models\TaxPaymentInfo\TaxPayment;
-use App\Models\TaxPaymentInfo\TaxPaymentStatus;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 use Illuminate\Http\Request;
@@ -29,12 +27,6 @@ class TaxPaymentService
         $taxpaymentData = DB::table(DB::raw("($sql) AS tax"))
             ->leftjoin('taxpayment_info.due_years AS due', 'due.value', '=', 'tax.due_year')
             ->select('tax.*', 'due.name', 'tax.bin');
-
-        /* $taxpaymentData = DB::table(DB::raw('(SELECT tax_code, bin, ward, owner_name, owner_contact, due_year
-            FROM taxpayment_info.tax_payment_status
-            ORDER BY tax_code) tax'))
-            ->leftjoin('taxpayment_info.due_years AS due', 'due.value', '=', 'tax.due_year')
-            ->select('tax.*', 'due.name', 'tax.bin'); */
 
         return DataTables::of($taxpaymentData)
             ->filter(function ($query) use ($request) {
