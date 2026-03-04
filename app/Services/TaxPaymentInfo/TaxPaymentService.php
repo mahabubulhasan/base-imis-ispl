@@ -21,11 +21,20 @@ class TaxPaymentService
      */
     public function fetchData(Request $request)
     {
-        $taxpaymentData = DB::table(DB::raw('(SELECT tax_code, bin, ward, owner_name, owner_contact, due_year
+        $sql = "SELECT ts.tax_code, ts.bin, ts.ward, ts.owner_name, ts.owner_contact, ts.due_year
+                FROM taxpayment_info.tax_payment_status as ts
+                JOIN taxpayment_info.tax_payments as tp on tp.tax_code = ts.tax_code
+                ORDER BY ts.tax_code";
+
+        $taxpaymentData = DB::table(DB::raw("($sql) AS tax"))
+            ->leftjoin('taxpayment_info.due_years AS due', 'due.value', '=', 'tax.due_year')
+            ->select('tax.*', 'due.name', 'tax.bin');
+
+        /* $taxpaymentData = DB::table(DB::raw('(SELECT tax_code, bin, ward, owner_name, owner_contact, due_year
             FROM taxpayment_info.tax_payment_status
             ORDER BY tax_code) tax'))
             ->leftjoin('taxpayment_info.due_years AS due', 'due.value', '=', 'tax.due_year')
-            ->select('tax.*', 'due.name', 'tax.bin');
+            ->select('tax.*', 'due.name', 'tax.bin'); */
 
         return DataTables::of($taxpaymentData)
             ->filter(function ($query) use ($request) {
@@ -55,5 +64,24 @@ class TaxPaymentService
                 return $content;
             })
             ->make(true);
+    }
+
+    public function getDetails($tax_code)
+    {
+        return DB::table('taxpayment_info.tax_payment_status as ts')
+            ->join('taxpayment_info.tax_payments as tp', 'tp.tax_code', '=', 'ts.tax_code')
+            ->where('ts.tax_code', $tax_code)
+            ->select(
+                'ts.tax_code',
+                'ts.bin',
+                'ts.ward',
+                'tp.owner_name',
+                'tp.owner_contact',
+                'ts.due_year',
+                'tp.created_at',
+                'tp.updated_at',
+                'tp.last_payment_date'
+            )
+            ->first();
     }
 }

@@ -23,6 +23,10 @@
                         <td>{{ $taxPayment->owner_contact }}</td>
                     </tr>
                     <tr>
+                        <th>{{ __('Ward') }}</th>
+                        <td>{{ $taxPayment->ward }}</td>
+                    </tr>
+                    <tr>
                         <th>{{ __('Last Payment Date') }}</th>
                         <td>{{ $taxPayment->last_payment_date ?? '---' }}</td>
                     </tr>
