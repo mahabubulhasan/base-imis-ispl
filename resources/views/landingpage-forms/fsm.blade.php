@@ -106,21 +106,6 @@
                 </div>
             </fieldset>
 
-            <!-- Location Section -->
-            <fieldset class="app_fieldset">
-                <legend>Location</legend>
-
-                <div class="mb-3">
-                    <div id="map" class="w-full rounded-lg shadow-sm border-2 border-gray-300"></div>
-                </div>
-
-                <!-- Hidden inputs for coordinates -->
-                <input type="hidden" name="latitude" id="latitude">
-                <input type="hidden" name="longitude" id="longitude">
-                <span class="error-message" id="error-latitude"></span>
-                <span class="error-message" id="error-longitude"></span>
-            </fieldset>
-
             <div class="text-center mt-4">
                 <button type="submit" id="fsm-submit-btn" class="mx-auto bg-primary text-white py-4 rounded-2xl font-bold text-lg hover:shadow-lg hover:shadow-primary/30 active:scale-[0.98] transition-all uppercase tracking-wider px-8">
                     Submit Application
@@ -152,8 +137,6 @@
   // ========== FSM APPLICATION FORM FUNCTIONALITY ==========
 
   // Global variables for FSM form
-  var fsmMap = null;
-  var fsmMarker = null;
   var fsmWardsLoaded = false;
   var fsmFormInitialized = false;
   var fsmAutoDismissTimeout = null;
@@ -266,15 +249,7 @@
       $('#road_code').val(null).trigger('change');
     }
 
-    // Reset map marker to default position
-    if (fsmMap && fsmMarker) {
-      var defaultLat = 23.780887;
-      var defaultLon = 90.279237;
-      fsmMarker.setLatLng([defaultLat, defaultLon]);
-      fsmMap.setView([defaultLat, defaultLon], 13);
-      $('#latitude').val('');
-      $('#longitude').val('');
-    }
+
   }
 
   // Initialize FSM form functionality
@@ -450,33 +425,7 @@
       autoFillFromTaxId();
     });
 
-    // Initialize Leaflet Map
-    var defaultLat = 23.780887;
-    var defaultLon = 90.279237;
 
-    fsmMap = L.map('map').setView([defaultLat, defaultLon], 13);
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(fsmMap);
-
-    fsmMarker = L.marker([defaultLat, defaultLon], { draggable: true }).addTo(fsmMap);
-
-    function updateLocation(lat, lon) {
-      $('#latitude').val(Number(lat).toFixed(6));
-      $('#longitude').val(Number(lon).toFixed(6));
-    }
-
-    fsmMarker.on('dragend', function(e) {
-      var p = e.target.getLatLng();
-      updateLocation(p.lat, p.lng);
-    });
-
-    fsmMap.on('click', function(e) {
-      fsmMarker.setLatLng(e.latlng);
-      updateLocation(e.latlng.lat, e.latlng.lng);
-    });
 
     // Form submission
     $('#fsm-application-form').on('submit', function(e) {
@@ -566,17 +515,11 @@
         if (!fsmFormInitialized) {
           setTimeout(function() {
             initializeFsmForm();
-            // Invalidate map size after tab is visible
-            if (fsmMap) {
-              fsmMap.invalidateSize();
-            }
           }, 100);
         } else {
-          // Just invalidate map size if already initialized
+          // Form already initialized
           setTimeout(function() {
-            if (fsmMap) {
-              fsmMap.invalidateSize();
-            }
+            // no map to invalidate
           }, 100);
         }
       }
