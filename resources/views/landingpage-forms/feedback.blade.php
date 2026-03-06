@@ -334,8 +334,7 @@
             <div id="feedback-error" class="hidden mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg"></div>
 
             <div class="text-center mt-4">
-                <button type="submit" id="feedback-submit-btn"
-                    class="px-8 py-3 bg-gradient-to-br from-[#007bff] to-[#0056b3] text-white border-none rounded-lg text-base md:text-lg font-semibold cursor-pointer transition-all duration-300 hover:from-[#0056b3] hover:to-[#003d82] hover:-translate-y-0.5 hover:shadow-xl hover:shadow-[#0056b3]/30">
+                <button type="submit" id="feedback-submit-btn" class="mx-auto bg-primary text-white py-4 rounded-2xl font-bold text-lg hover:shadow-lg hover:shadow-primary/30 active:scale-[0.98] transition-all uppercase tracking-wider px-8">
                     Submit Feedback
                 </button>
             </div>
