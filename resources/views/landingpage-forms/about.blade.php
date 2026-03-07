@@ -5,7 +5,7 @@
 --}}
 
 <!-- ABOUT TAB -->
-<div id="about" class="tab-content hidden p-5 md:p-10 bg-background-light min-h-[calc(100vh-100px)] animate-fadeIn">
+<div id="about" class="tab-content p-5 md:p-10 min-h-[calc(100vh-100px)] animate-fadeIn">
     <div class="max-w-6xl mx-auto space-y-8">
         <!-- ABOUT SECTION -->
         <div class="bg-white p-6 md:p-10 rounded-xl shadow-lg border border-slate-200">

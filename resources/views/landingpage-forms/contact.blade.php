@@ -1,5 +1,5 @@
 <!-- CONTACT TAB -->
-<div id="contact" class="tab-content hidden p-5 md:p-10 bg-background-light min-h-[calc(100vh-100px)] animate-fadeIn">
+<div id="contact" class="tab-content p-5 md:p-10 min-h-[calc(100vh-100px)] animate-fadeIn">
     <div class="max-w-6xl mx-auto bg-white p-6 md:p-10 rounded-xl shadow-lg border border-slate-200">
         <h2 class="text-slate-900 text-2xl md:text-3xl lg:text-4xl mb-5 border-b-4 border-primary pb-4">Contact Us
         </h2>

@@ -2,7 +2,7 @@
 // Developed By: Streams Tech Ltd.
 // Description: Public Dashboard with infographic card layout for municipal data visualization -->
 
-<div id="dashboard" class="tab-content hidden p-5 md:p-10 bg-background-light min-h-[calc(100vh-100px)] animate-fadeIn">
+<div id="dashboard" class="tab-content p-5 md:p-10 bg-background-light min-h-[calc(100vh-100px)] animate-fadeIn">
     <!-- Loading Spinner -->
     <div id="dashboard-loader" class="flex justify-center items-center py-20">
         <div class="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent"></div>

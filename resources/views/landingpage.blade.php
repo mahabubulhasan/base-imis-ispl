@@ -16,9 +16,10 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 
     <!-- Material Icons -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
 
     <!-- Chart.js for Dashboard Charts (v2.9.4) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
@@ -66,7 +67,9 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
     </script>
 
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
 
         .glass-nav {
             background: rgba(255, 255, 255, 0.8);
@@ -109,7 +112,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
             background: #ffffff;
         }
 
-        .app_fieldset > legend {
+        .app_fieldset>legend {
             padding: 0 .5rem;
             font-weight: 600;
             color: #0f394c;
@@ -152,6 +155,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 opacity: 0;
                 transform: scale(0.95) translateY(-20px);
             }
+
             to {
                 opacity: 1;
                 transform: scale(1) translateY(0);
@@ -171,8 +175,15 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
         }
 
         @keyframes checkmarkPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
         }
 
         .fsm-modal-icon i {
@@ -182,8 +193,13 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
 
         /* Tab animations */
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         .animate-fadeIn {
@@ -195,7 +211,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 padding: 0.75rem;
             }
 
-            .app_fieldset > legend {
+            .app_fieldset>legend {
                 font-size: 0.95rem;
             }
         }
@@ -211,26 +227,36 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 <a href="/" class="flex items-center space-x-3 hover:opacity-80 transition-opacity">
                     <img alt="{{ config('constants.SITE_NAME') }} Logo" class="h-12 w-auto rounded-full shadow-sm"
                         src="{{ asset(config('constants.LOGO_URL')) }}" />
-                    <span class="text-xl font-bold tracking-tight text-primary">{{ config('constants.SITE_NAME') }}</span>
+                    <span class="text-xl font-bold tracking-tight text-primary">{{ config('constants.SITE_NAME')
+                        }}</span>
                 </a>
                 <div class="hidden md:flex items-center space-x-8">
-                    <a class="text-sm font-medium hover:text-primary transition-colors cursor-pointer" onclick="openTab('about', this)">About</a>
-                    <a class="text-sm font-medium hover:text-primary transition-colors cursor-pointer" onclick="openTab('dashboard', this)">Public Dashboard</a>
-                    <a class="text-sm font-medium hover:text-primary transition-colors cursor-pointer" onclick="openTab('fsm', this)">FSM Application</a>
-                    <a class="text-sm font-medium hover:text-primary transition-colors cursor-pointer" onclick="openTab('feedback', this)">Feedback</a>
-                    <a class="text-sm font-medium hover:text-primary transition-colors cursor-pointer" onclick="openTab('contact', this)">Contact</a>
+                    <a class="text-sm font-medium hover:text-primary transition-colors cursor-pointer"
+                        href="/#/about">About</a>
+                    <a class="text-sm font-medium hover:text-primary transition-colors cursor-pointer"
+                        href="/#/dashboard">Public Dashboard</a>
+                    <a class="text-sm font-medium hover:text-primary transition-colors cursor-pointer" href="/#/fsm">FSM
+                        Application</a>
+                    <a class="text-sm font-medium hover:text-primary transition-colors cursor-pointer"
+                        href="/#/feedback">Feedback</a>
+                    <a class="text-sm font-medium hover:text-primary transition-colors cursor-pointer"
+                        href="/#/contact">Contact</a>
                 </div>
-                <button class="md:hidden p-2 rounded-full hover:bg-slate-100 transition-colors" onclick="toggleMenu()" aria-label="Toggle menu">
+                <button class="md:hidden p-2 rounded-full hover:bg-slate-100 transition-colors" onclick="toggleMenu()"
+                    aria-label="Toggle menu">
                     <span class="material-icons text-xl">menu</span>
                 </button>
             </div>
             <!-- Mobile Menu -->
             <div id="mobileMenu" class="hidden md:hidden pb-4 border-t border-slate-200">
-                <a class="block px-4 py-2 text-sm font-medium hover:bg-slate-100 rounded" onclick="openTab('about', this)">About</a>
-                <a class="block px-4 py-2 text-sm font-medium hover:bg-slate-100 rounded" onclick="openTab('dashboard', this)">Public Dashboard</a>
-                <a class="block px-4 py-2 text-sm font-medium hover:bg-slate-100 rounded" onclick="openTab('fsm', this)">FSM Application</a>
-                <a class="block px-4 py-2 text-sm font-medium hover:bg-slate-100 rounded" onclick="openTab('feedback', this)">Feedback</a>
-                <a class="block px-4 py-2 text-sm font-medium hover:bg-slate-100 rounded" onclick="openTab('contact', this)">Contact</a>
+                <a class="block px-4 py-2 text-sm font-medium hover:bg-slate-100 rounded" href="/#/about">About</a>
+                <a class="block px-4 py-2 text-sm font-medium hover:bg-slate-100 rounded" href="/#/dashboard">Public
+                    Dashboard</a>
+                <a class="block px-4 py-2 text-sm font-medium hover:bg-slate-100 rounded" href="/#/fsm">FSM
+                    Application</a>
+                <a class="block px-4 py-2 text-sm font-medium hover:bg-slate-100 rounded"
+                    href="/#/feedback">Feedback</a>
+                <a class="block px-4 py-2 text-sm font-medium hover:bg-slate-100 rounded" href="/#/contact">Contact</a>
             </div>
         </div>
     </nav>
@@ -242,60 +268,72 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 src="{{ asset(config('constants.BACKGROUND_IMAGE_URL')) }}" />
             <div class="absolute inset-0 hero-overlay"></div>
         </div>
-        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-            <div class="grid lg:grid-cols-2 gap-12 items-center">
-                <!-- Left Column: Hero Content -->
-                <div class="max-w-xl">
-                    <h1 class="text-4xl md:text-5xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-6">
-                        Integrated Municipal Information System <span class="text-primary">(IMIS)</span>
-                    </h1>
-                    <p class="text-lg text-slate-600 mb-4 leading-relaxed">
-                        This application was implemented under the following project:
-                    </p>
-                    <div class="text-sm text-slate-700 space-y-1 mb-8 bg-gradient-to-r from-blue-50/40 to-transparent p-5 rounded-lg border-l-4 border-primary/30">
-                        <div>
-                            <span class="font-semibold text-slate-900">Project:</span>
-                            <span class="text-slate-700"> Inclusive and Integrated Sanitation and Hygiene Project in 10 Priority Towns in Bangladesh</span>
-                        </div>
-                        <div>
-                            <span class="font-semibold text-slate-900">Implementing Organization:</span>
-                            <span class="text-slate-700"> Department of Public Health Engineering (DPHE)</span>
-                        </div>
-                        <div>
-                            <span class="font-semibold text-slate-900">Funded by:</span>
-                            <span class="text-slate-700"> Government of Bangladesh, Islamic Development Bank, and Gates Foundation</span>
-                        </div>
-                        <div>
-                            <span class="font-semibold text-slate-900">Technical Partners:</span>
-                            <div class="text-slate-700 ml-1 mt-2 space-y-1">
-                                <div class="flex items-start"><span class="mr-2">•</span><span>Global Water and Sanitation Center (GWSC) under the Asian Institute of Technology (AIT), Thailand</span></div>
-                                <div class="flex items-start"><span class="mr-2">•</span><span>Innovative Solution Pvt. Limited, Nepal</span></div>
-                                <div class="flex items-start"><span class="mr-2">•</span><span>Streams Tech Ltd., Bangladesh</span></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex flex-wrap gap-4">
-                        <button onclick="document.getElementById('dashboardBtn').click()" class="bg-primary text-white px-8 py-4 rounded-xl font-bold hover:shadow-lg hover:shadow-primary/25 transition-all flex items-center group">
-                            Explore Dashboard
-                            <span class="material-icons ml-2 group-hover:translate-x-1 transition-transform">arrow_forward</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Right Column: Login Card -->
-                <div class="flex justify-center lg:justify-end">
-                    @include('landingpage-forms.login')
-                </div>
-            </div>
+        <div id="vue_app" class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+            <router-view></router-view>
         </div>
     </main>
 
-    <!-- Tab Content Sections Below Hero -->
-    @include('landingpage-forms.about')
-    @include('landingpage-forms.dashboard')
-    @include('landingpage-forms.fsm')
-    @include('landingpage-forms.feedback')
-    @include('landingpage-forms.contact')
+    <script type="text/x-template" id="loginPage">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+            <!-- Left Column: Hero Content -->
+            <div class="max-w-xl">
+                <h1 class="text-4xl md:text-5xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-6">
+                    Integrated Municipal Information System <span class="text-primary">(IMIS)</span>
+                </h1>
+                <p class="text-lg text-slate-600 mb-4 leading-relaxed">
+                    This application was implemented under the following project:
+                </p>
+                <div class="text-sm text-slate-700 space-y-1 mb-8 bg-gradient-to-r from-blue-50/40 to-transparent p-5 rounded-lg border-l-4 border-primary/30">
+                    <div>
+                        <span class="font-semibold text-slate-900">Project:</span>
+                        <span class="text-slate-700"> Inclusive and Integrated Sanitation and Hygiene Project in 10 Priority Towns in Bangladesh</span>
+                    </div>
+                    <div>
+                        <span class="font-semibold text-slate-900">Implementing Organization:</span>
+                        <span class="text-slate-700"> Department of Public Health Engineering (DPHE)</span>
+                    </div>
+                    <div>
+                        <span class="font-semibold text-slate-900">Funded by:</span>
+                        <span class="text-slate-700"> Government of Bangladesh, Islamic Development Bank, and Gates Foundation</span>
+                    </div>
+                    <div>
+                        <span class="font-semibold text-slate-900">Technical Partners:</span>
+                        <div class="text-slate-700 ml-1 mt-2 space-y-1">
+                            <div class="flex items-start"><span class="mr-2">•</span><span>Global Water and Sanitation Center (GWSC) under the Asian Institute of Technology (AIT), Thailand</span></div>
+                            <div class="flex items-start"><span class="mr-2">•</span><span>Innovative Solution Pvt. Limited, Nepal</span></div>
+                            <div class="flex items-start"><span class="mr-2">•</span><span>Streams Tech Ltd., Bangladesh</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-4 hidden">
+                    <button onclick="document.getElementById('dashboardBtn').click()" class="bg-primary text-white px-8 py-4 rounded-xl font-bold hover:shadow-lg hover:shadow-primary/25 transition-all flex items-center group">
+                        Explore Dashboard
+                        <span class="material-icons ml-2 group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Column: Login Card -->
+            <div class="flex justify-center lg:justify-end">
+                @include('landingpage-forms.login')
+            </div>
+        </div>
+    </script>
+    <script type="text/x-template" id="contactPage">
+        @include('landingpage-forms.contact')
+    </script>
+    <script type="text/x-template" id="aboutPage">
+        @include('landingpage-forms.about')
+    </script>
+    <script type="text/x-template" id="dashboardPage">
+        @include('landingpage-forms.dashboard')
+    </script>
+    <script type="text/x-template" id="fsmPage">
+        @include('landingpage-forms.fsm')
+    </script>
+    <script type="text/x-template" id="feedbackPage">
+        @include('landingpage-forms.feedback')
+    </script>
 
     <!-- Footer -->
     <footer
@@ -381,6 +419,60 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 console.error('Error loading dashboard:', error);
             });
         }
+    </script>
+
+    <!-- somewhere in the <body> (above the closing </body>) -->
+    <script type="importmap">
+        {
+        "imports": {
+            "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js",
+            "vue-router": "https://unpkg.com/vue-router@4/dist/vue-router.esm-browser.js",
+            "@vue/devtools-api": "https://unpkg.com/@vue/devtools-api@8/dist/vue-devtools-api.esm-browser.js"
+        }
+    }
+    </script>
+    <script type="module">
+        import { createApp, ref } from 'vue';
+    import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router';
+
+    const Login = {
+        template: '#loginPage'
+    };
+    const Contact = {
+        template: '#contactPage'
+    };
+    const About = {
+        template: '#aboutPage'
+    }
+    const Dashboard = {
+        template: '#dashboardPage'
+    }
+    const FsmApplication = {
+        template: '#fsmPage'
+    }
+    const Feedback = {
+        template: '#feedbackPage'
+    }
+
+    const router = createRouter({
+        history: createWebHashHistory(),      // hash history mode
+        routes: [
+            { path: '/', component: Login},
+            { path: '/about', component: About},
+            { path: '/dashboard', component: Dashboard},
+            { path: '/fsm', component: FsmApplication},
+            { path: '/feedback', component: Feedback},
+            { path: '/contact', component: Contact }
+        ]
+    });
+
+    const app = createApp();
+
+    // mount router *before* mounting the app
+    app.use(router);
+
+    // 4. attach the app to the DOM
+    app.mount('#vue_app');
     </script>
     @stack('scripts')
 </body>
