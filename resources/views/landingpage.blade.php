@@ -347,48 +347,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
             © {{ config('constants.SITE_NAME') }} {{ \Carbon\Carbon::now()->format('Y') }}. All rights reserved.
         </div>
     </footer>
-
-    <button id="dashboardBtn" class="hidden" onclick="openTab('dashboard', this)"></button>
-
     <script>
-        // Set initial active tab on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            // Show login tab initially (hero section, no need to show separately)
-            // All other tabs hidden by default
-        });
-
-        function openTab(tabId, el) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(div => {
-                div.classList.remove('block');
-                div.classList.add('hidden');
-            });
-
-            // Show selected tab
-            const selectedTab = document.getElementById(tabId);
-            if (selectedTab) {
-                selectedTab.classList.remove('hidden');
-                selectedTab.classList.add('block');
-                // Scroll to tab content
-                setTimeout(() => {
-                    selectedTab.scrollIntoView({ behavior: 'smooth' });
-                }, 100);
-            }
-
-            // Close mobile menu after selection
-            if (window.innerWidth <= 768) {
-                const mobileMenu = document.getElementById('mobileMenu');
-                if (mobileMenu) {
-                    mobileMenu.classList.add('hidden');
-                }
-            }
-
-            // Load dashboard content if dashboard tab is opened
-            if (tabId === 'dashboard') {
-                loadPublicDashboard();
-            }
-        }
-
         function toggleMenu() {
             const mobileMenu = document.getElementById('mobileMenu');
             if (mobileMenu) {
@@ -445,7 +404,10 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
         template: '#aboutPage'
     }
     const Dashboard = {
-        template: '#dashboardPage'
+        template: '#dashboardPage',
+        mounted() {
+            loadPublicDashboard();
+        }
     }
     const FsmApplication = {
         template: '#fsmPage'
@@ -467,11 +429,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
     });
 
     const app = createApp();
-
-    // mount router *before* mounting the app
     app.use(router);
-
-    // 4. attach the app to the DOM
     app.mount('#vue_app');
     </script>
     @stack('scripts')
