@@ -1,9 +1,12 @@
 <?php
+// Last Modified: March 8, 2026
+// Developed By: Streams Tech Ltd.
+// Description: Handles public FSM application workflows and tax-ID based autofill endpoints.
 namespace App\Http\Controllers\Fsm;
 
 use App\Http\Controllers\Controller;
-use App\Models\BuildingInfo\Building;
 use App\Models\LayerInfo\Ward;
+use App\Models\TaxPaymentInfo\TaxPaymentStatus;
 use App\Models\UtilityInfo\Roadline;
 use App\Services\Fsm\PublicApplicationService;
 use Illuminate\Http\Request;
@@ -146,54 +149,25 @@ class PublicApplicationController extends Controller
                 ], 400);
             }
 
-            // Query building by tax_code with relationships
-            // Tax ID in database is stored in format: "11-080-0319-00" (with dashes)
-            // Load Owners relationship, but load roadlines conditionally to avoid SQL errors when road_code is null/empty
-            $building = Building::with(['Owners'])
+            $taxPaymentStatus = TaxPaymentStatus::query()
+                ->select('owner_name', 'owner_contact', 'ward')
                 ->where('tax_code', $taxId)
-                ->whereNull('deleted_at')
+                ->where('deleted_at', null)
                 ->first();
 
-            if (!$building) {
+            if (!$taxPaymentStatus) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'No building found with this Tax ID'
+                    'message' => 'No tax payment record found with this Tax ID'
                 ], 404);
             }
 
-            // Get owner information
-            $owner = $building->Owners;
-
-            // Get road information - only load if road_code exists and is valid (not null, empty, or 0)
-            $roadline = null;
-            if (!empty($building->road_code) && $building->road_code !== '0' && $building->road_code !== 0) {
-                try {
-                    $roadline = $building->roadlines;
-                } catch (\Exception $e) {
-                    // If road_code doesn't exist in roads table, set to null
-                    $roadline = null;
-                }
-            }
-
-            // Build address from house_number, house_locality, and road name
-            $addressParts = array_filter([
-                $building->house_number,
-                $building->house_locality,
-                $roadline ? $roadline->name : null
-            ]);
-            $address = implode(', ', $addressParts);
-
-            // Return JSON response
             return response()->json([
                 'success' => true,
                 'data' => [
-                    'customer_name' => $owner ? $owner->owner_name : null,
-                    'customer_contact' => $owner ? $owner->owner_contact : null,
-                    'holding_owner_name' => $owner ? $owner->owner_name : null,
-                    'ward' => $building->ward,
-                    'road_code' => $building->road_code,
-                    'road_name_text' => $roadline ? $roadline->name : null,
-                    'address' => $address
+                    'owner_name' => $taxPaymentStatus->owner_name,
+                    'owner_contact' => $taxPaymentStatus->owner_contact,
+                    'ward' => $taxPaymentStatus->ward
                 ]
             ]);
 

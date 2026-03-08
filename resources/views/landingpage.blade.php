@@ -1,4 +1,4 @@
-<!-- Last Modified: February 11, 2026
+<!-- Last Modified: March 8, 2026
 Developed By: Streams Tech Ltd.
 Description: Modern municipal portal with hero section, glassmorphic design, and tab-based content sections -->
 <!DOCTYPE html>
@@ -627,7 +627,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 address.value = '';
             }
 
-            // Fetch building data by tax ID
+            // Fetch owner data by tax ID
             async function fetchBuildingData(taxIdValue) {
                 if (!taxIdValue || !isValidTaxId(taxIdValue)) {
                     clearAutoPopulatedFields();
@@ -648,30 +648,15 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                     const data = await res.json();
 
                     if (data.success && data.data) {
-                        customerName.value = data.data.customer_name || '';
-                        customerContact.value = data.data.customer_contact || '';
-                        holdingOwnerName.value = data.data.holding_owner_name || '';
+                        customerName.value = data.data.owner_name || '';
+                        customerContact.value = data.data.owner_contact || '';
+                        holdingOwnerName.value = data.data.owner_name || '';
                         ward.value = data.data.ward || '';
-                        address.value = data.data.address || '';
-
-                        if (data.data.road_code && data.data.road_name_text) {
-                            // Add the road to options if not already present
-                            const roadObj = {
-                                id: data.data.road_code,
-                                text: data.data.road_name_text
-                            };
-                            const exists = roadOptions.value.find(r => r.id === data.data.road_code);
-                            if (!exists) {
-                                roadOptions.value.push(roadObj);
-                            }
-                            roadCode.value = data.data.road_code;
-                            selectedRoad.value = roadObj;
-                        }
                     } else {
                         clearAutoPopulatedFields();
                     }
                 } catch (err) {
-                    console.error('Failed to fetch building data:', err);
+                    console.error('Failed to fetch owner data:', err);
                     clearAutoPopulatedFields();
                 } finally {
                     isLoadingData.value = false;
