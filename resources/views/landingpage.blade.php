@@ -314,6 +314,8 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                         href="/#/feedback">Feedback</a>
                     <a class="text-sm font-medium hover:text-primary transition-colors cursor-pointer"
                         href="/#/contact">Contact</a>
+                    <a class="text-sm font-medium hover:text-primary transition-colors cursor-pointer"
+                        href="/#/">Sign In</a>
                 </div>
                 <button class="md:hidden p-2 rounded-full hover:bg-slate-100 transition-colors" onclick="toggleMenu()"
                     aria-label="Toggle menu">
@@ -330,6 +332,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 <a class="block px-4 py-2 text-sm font-medium hover:bg-slate-100 rounded"
                     href="/#/feedback">Feedback</a>
                 <a class="block px-4 py-2 text-sm font-medium hover:bg-slate-100 rounded" href="/#/contact">Contact</a>
+                <a class="block px-4 py-2 text-sm font-medium hover:bg-slate-100 rounded" href="/#/">Sign In</a>
             </div>
         </div>
     </nav>
