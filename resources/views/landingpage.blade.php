@@ -440,12 +440,17 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
             const errorMessage = ref('');
             const fieldErrors = ref({});
             const isSubmitting = ref(false);
+            const isFetchingData = ref(false);
             const showModal = ref(false);
             const countdown = ref(5);
             let countdownTimer = null;
 
             async function fetchApplicationData() {
                 if (!applicationId.value) return;
+
+                isFetchingData.value = true;
+                errorMessage.value = ''; // Clear previous errors
+
                 try {
                     const res = await fetch(`/feedback-application-data?application_id=${encodeURIComponent(applicationId.value)}`);
                     const data = await res.json();
@@ -463,6 +468,8 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 } catch (err) {
                     console.error('Error:', err);
                     errorMessage.value = 'Error fetching application data. Please try again.';
+                } finally {
+                    isFetchingData.value = false;
                 }
             }
 
@@ -615,6 +622,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 errorMessage,
                 fieldErrors,
                 isSubmitting,
+                isFetchingData,
                 showModal,
                 countdown,
                 fetchApplicationData,
