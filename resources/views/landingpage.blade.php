@@ -391,8 +391,8 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
     }
     </script>
     <script type="module">
-        import { createApp, ref } from 'vue';
-    import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router';
+        import { createApp, ref, watch } from 'vue';
+        import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router';
 
     const Login = {
         template: '#loginPage'
@@ -414,287 +414,220 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
     }
     const Feedback = {
         template: '#feedbackPage',
-        data() {
-            return {
-                countdownTimer: null
-            }
-        },
-        mounted() {
-            // Set form loaded timestamp
-            const formLoadedInput = document.getElementById('form_loaded_at');
-            if (formLoadedInput) {
-                formLoadedInput.value = Math.floor(Date.now() / 1000);
-            }
+        setup() {
+            const applicationId = ref('');
+            const customerName = ref('');
+            const customerNumber = ref('');
+            const customerGender = ref('');
+            const serviceProviderName = ref('');
+            const serviceProviderContact = ref('');
 
-            // Setup conditional field displays
-            this.setupConditionalFields();
+            const safetyMeasures = ref([]);
+            const advertisingMedia = ref([]);
 
-            // Setup application number lookup on blur
-            const appIdInput = document.getElementById('application_id');
-            if (appIdInput) {
-                appIdInput.addEventListener('blur', this.handleApplicationBlur);
-            }
+            const fsmQualityLevel = ref(null);
+            const serviceDeliveryEfficiency = ref(null);
+            const overallSatisfaction = ref(null);
+            const serviceQualityPrice = ref(null);
 
-            // Setup form submission handler
-            const feedbackForm = document.getElementById('feedback-form');
-            if (feedbackForm) {
-                feedbackForm.addEventListener('submit', this.handleSubmit);
-            }
+            const dissatisfactionCommentQ2 = ref('');
+            const dissatisfactionCommentQ3 = ref('');
+            const dissatisfactionCommentQ4 = ref('');
+            const dissatisfactionCommentQ5 = ref('');
 
-            // Make closeFeedbackModal globally accessible for onclick handler
-            window.closeFeedbackModal = this.closeFeedbackModal;
-        },
-        methods: {
-            handleApplicationBlur(event) {
-                const applicationId = event.target.value.trim();
-                if (applicationId) {
-                    this.fetchApplicationData(applicationId);
-                }
-            },
+            const paymentMechanismSatisfied = ref(null);
+            const paymentMechanismComments = ref('');
 
-            fetchApplicationData(applicationId) {
-                fetch('/feedback-application-data?application_id=' + applicationId)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Auto-populate fields
-                            document.getElementById('customer_name').value = data.data.customer_name || '';
-                            document.getElementById('customer_number').value = data.data.customer_contact || '';
-                            document.getElementById('customer_gender').value = data.data.customer_gender || '';
-                            document.getElementById('service_provider_name').value = data.data.service_provider_name || '';
-                            document.getElementById('service_provider_contact').value = data.data.service_provider_contact || '';
-                        } else {
-                            this.showFeedbackError(data.message);
-                            // Clear fields
-                            document.getElementById('customer_name').value = '';
-                            document.getElementById('customer_number').value = '';
-                            document.getElementById('customer_gender').value = '';
-                            document.getElementById('service_provider_name').value = '';
-                            document.getElementById('service_provider_contact').value = '';
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        this.showFeedbackError('Error fetching application data. Please try again.');
-                    });
-            },
+            const applyInFuture = ref(null);
+            const applyInFutureComments = ref('');
 
-            setupConditionalFields() {
-                // Per-question dissatisfaction handling for questions 2-5
-                const questionMappings = [
-                    { name: 'fsm_quality_level', id: 'dissatisfaction_q2' },
-                    { name: 'service_delivery_efficiency', id: 'dissatisfaction_q3' },
-                    { name: 'overall_satisfaction', id: 'dissatisfaction_q4' },
-                    { name: 'service_quality_price', id: 'dissatisfaction_q5' }
-                ];
+            const recommendService = ref(null);
+            const recommendServiceComments = ref('');
 
-                questionMappings.forEach(mapping => {
-                    const radios = document.querySelectorAll(`input[name="${mapping.name}"]`);
-                    radios.forEach(radio => {
-                        radio.addEventListener('change', function() {
-                            const section = document.getElementById(mapping.id);
-                            if (section) {
-                                section.style.display = this.value === '1' ? 'block' : 'none';
-                            }
-                        });
-                    });
-                });
+            const website = ref('');
+            const formLoadedAt = ref(Math.floor(Date.now() / 1000));
 
-                // Payment mechanism comments
-                document.querySelectorAll('input[name="payment_mechanism_satisfied"]').forEach(radio => {
-                    radio.addEventListener('change', function() {
-                        const section = document.getElementById('payment_comments_section');
-                        if (section) {
-                            section.style.display = this.value === '0' ? 'block' : 'none';
-                        }
-                    });
-                });
+            const errorMessage = ref('');
+            const isSubmitting = ref(false);
+            const showModal = ref(false);
+            const countdown = ref(5);
+            let countdownTimer = null;
 
-                // Apply in future comments
-                document.querySelectorAll('input[name="apply_in_future"]').forEach(radio => {
-                    radio.addEventListener('change', function() {
-                        const section = document.getElementById('apply_future_comments_section');
-                        if (section) {
-                            section.style.display = this.value === '0' ? 'block' : 'none';
-                        }
-                    });
-                });
-
-                // Recommend service comments
-                document.querySelectorAll('input[name="recommend_service"]').forEach(radio => {
-                    radio.addEventListener('change', function() {
-                        const section = document.getElementById('recommend_comments_section');
-                        if (section) {
-                            section.style.display = this.value === '0' ? 'block' : 'none';
-                        }
-                    });
-                });
-            },
-
-            handleSubmit(e) {
-                e.preventDefault();
-                // debugger;
-                const form = e.target;
-                const submitBtn = document.getElementById('feedback-submit-btn');
-                const formData = new FormData(form);
-
-                // Convert checkbox arrays to comma-separated strings
-                const safetyMeasures = [];
-                document.querySelectorAll('input[name="safety_measures[]"]:checked').forEach(cb => {
-                    safetyMeasures.push(cb.value);
-                });
-                formData.delete('safety_measures[]');
-                formData.append('safety_measures', safetyMeasures.join(', '));
-
-                const advertisingMedia = [];
-                document.querySelectorAll('input[name="advertising_media[]"]:checked').forEach(cb => {
-                    advertisingMedia.push(cb.value);
-                });
-                formData.delete('advertising_media[]');
-                formData.append('advertising_media', advertisingMedia.join(', '));
-
-                const getSelectedValue = function(name) {
-                    const selected = document.querySelector(`input[name="${name}"]:checked`);
-                    return selected ? selected.value : null;
-                };
-
-                const q2Rating = getSelectedValue('fsm_quality_level');
-                const q3Rating = getSelectedValue('service_delivery_efficiency');
-                const q4Rating = getSelectedValue('overall_satisfaction');
-                const q5Rating = getSelectedValue('service_quality_price');
-
-                const q2Comment = q2Rating === '1' ? document.getElementById('dissatisfaction_comment_q2').value.trim() : '';
-                const q3Comment = q3Rating === '1' ? document.getElementById('dissatisfaction_comment_q3').value.trim() : '';
-                const q4Comment = q4Rating === '1' ? document.getElementById('dissatisfaction_comment_q4').value.trim() : '';
-                const q5Comment = q5Rating === '1' ? document.getElementById('dissatisfaction_comment_q5').value.trim() : '';
-
-                formData.set('dissatisfaction_comment_q2', q2Comment);
-                formData.set('dissatisfaction_comment_q3', q3Comment);
-                formData.set('dissatisfaction_comment_q4', q4Comment);
-                formData.set('dissatisfaction_comment_q5', q5Comment);
-
-                // Validation
-                if (!formData.get('application_id')) {
-                    this.showFeedbackError('Please enter Application Number');
-                    return;
-                }
-                if (!formData.get('customer_name')) {
-                    this.showFeedbackError('Please enter Service Receiver Name');
-                    return;
-                }
-                if (!formData.get('customer_number')) {
-                    this.showFeedbackError('Please enter Service Receiver Contact');
-                    return;
-                }
-                if (!safetyMeasures.length) {
-                    this.showFeedbackError('Please select at least one safety measure');
-                    return;
-                }
-                if (!advertisingMedia.length) {
-                    this.showFeedbackError('Please select how you heard about the service');
-                    return;
-                }
-
-                // Disable submit button
-                if (submitBtn) {
-                    submitBtn.disabled = true;
-                    submitBtn.textContent = 'Submitting...';
-                }
-
-                // Clear error message
-                this.hideFeedbackError();
-
-                // Submit via AJAX
-                fetch('/public-feedback', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
+            async function fetchApplicationData() {
+                if (!applicationId.value) return;
+                try {
+                    const res = await fetch(`/feedback-application-data?application_id=${encodeURIComponent(applicationId.value)}`);
+                    const data = await res.json();
                     if (data.success) {
-                        // Show success modal
-                        document.getElementById('feedback-success-message').textContent = data.message;
-                        this.showFeedbackSuccessModal();
-
-                        // Reset form
-                        form.reset();
-                        document.getElementById('form_loaded_at').value = Math.floor(Date.now() / 1000);
+                        customerName.value = data.data.customer_name || '';
+                        customerNumber.value = data.data.customer_contact || '';
+                        customerGender.value = data.data.customer_gender || '';
+                        serviceProviderName.value = data.data.service_provider_name || '';
+                        serviceProviderContact.value = data.data.service_provider_contact || '';
                     } else {
-                        this.showFeedbackError(data.message || 'An error occurred. Please try again.');
+                        errorMessage.value = data.message;
+                        customerName.value = customerNumber.value = customerGender.value = '';
+                        serviceProviderName.value = serviceProviderContact.value = '';
                     }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    this.showFeedbackError('An error occurred while submitting feedback. Please try again.');
-                })
-                .finally(() => {
-                    if (submitBtn) {
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = 'Submit Feedback';
-                    }
-                });
-            },
-
-            showFeedbackError(message) {
-                const errorDiv = document.getElementById('feedback-error');
-                if (errorDiv) {
-                    errorDiv.textContent = message;
-                    errorDiv.classList.remove('hidden');
-                    errorDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                }
-            },
-
-            hideFeedbackError() {
-                const errorDiv = document.getElementById('feedback-error');
-                if (errorDiv) {
-                    errorDiv.classList.add('hidden');
-                }
-            },
-
-            showFeedbackSuccessModal() {
-                const modal = document.getElementById('feedback-success-modal');
-                if (!modal) return;
-
-                modal.style.display = 'flex';
-
-                // Countdown timer
-                let countdown = 5;
-                const countdownSpan = document.getElementById('feedback-countdown');
-
-                // Clear any existing timer
-                if (this.countdownTimer) {
-                    clearInterval(this.countdownTimer);
-                }
-
-                this.countdownTimer = setInterval(() => {
-                    countdown--;
-                    if (countdownSpan) {
-                        countdownSpan.textContent = countdown;
-                    }
-
-                    if (countdown <= 0) {
-                        clearInterval(this.countdownTimer);
-                        this.closeFeedbackModal();
-                    }
-                }, 1000);
-            },
-
-            closeFeedbackModal() {
-                // Clear timer if active
-                if (this.countdownTimer) {
-                    clearInterval(this.countdownTimer);
-                    this.countdownTimer = null;
-                }
-
-                const modal = document.getElementById('feedback-success-modal');
-                if (modal) {
-                    modal.style.display = 'none';
+                } catch (err) {
+                    console.error('Error:', err);
+                    errorMessage.value = 'Error fetching application data. Please try again.';
                 }
             }
+
+            function resetForm() {
+                applicationId.value = '';
+                customerName.value = '';
+                customerNumber.value = '';
+                customerGender.value = '';
+                serviceProviderName.value = '';
+                serviceProviderContact.value = '';
+
+                safetyMeasures.value = [];
+                advertisingMedia.value = [];
+
+                fsmQualityLevel.value = null;
+                serviceDeliveryEfficiency.value = null;
+                overallSatisfaction.value = null;
+                serviceQualityPrice.value = null;
+
+                dissatisfactionCommentQ2.value = '';
+                dissatisfactionCommentQ3.value = '';
+                dissatisfactionCommentQ4.value = '';
+                dissatisfactionCommentQ5.value = '';
+
+                paymentMechanismSatisfied.value = null;
+                paymentMechanismComments.value = '';
+
+                applyInFuture.value = null;
+                applyInFutureComments.value = '';
+
+                recommendService.value = null;
+                recommendServiceComments.value = '';
+
+                website.value = '';
+                formLoadedAt.value = Math.floor(Date.now() / 1000);
+            }
+
+            async function handleSubmit() {
+                errorMessage.value = '';
+
+                // simple validation
+                if (!applicationId.value) { errorMessage.value = 'Please enter Application Number'; return; }
+                if (!customerName.value) { errorMessage.value = 'Please enter Service Receiver Name'; return; }
+                if (!customerNumber.value) { errorMessage.value = 'Please enter Service Receiver Contact'; return; }
+                if (safetyMeasures.value.length === 0) { errorMessage.value = 'Please select at least one safety measure'; return; }
+                if (advertisingMedia.value.length === 0) { errorMessage.value = 'Please select how you heard about the service'; return; }
+
+                isSubmitting.value = true;
+                const payload = new FormData();
+                payload.append('application_id', applicationId.value);
+                payload.append('customer_name', customerName.value);
+                payload.append('customer_number', customerNumber.value);
+                payload.append('customer_gender', customerGender.value);
+                payload.append('service_provider_name', serviceProviderName.value);
+                payload.append('service_provider_contact', serviceProviderContact.value);
+
+                payload.append('safety_measures', safetyMeasures.value.join(', '));
+                payload.append('advertising_media', advertisingMedia.value.join(', '));
+
+                payload.append('fsm_quality_level', fsmQualityLevel.value || '');
+                payload.append('service_delivery_efficiency', serviceDeliveryEfficiency.value || '');
+                payload.append('overall_satisfaction', overallSatisfaction.value || '');
+                payload.append('service_quality_price', serviceQualityPrice.value || '');
+                payload.append('dissatisfaction_comment_q2', dissatisfactionCommentQ2.value);
+                payload.append('dissatisfaction_comment_q3', dissatisfactionCommentQ3.value);
+                payload.append('dissatisfaction_comment_q4', dissatisfactionCommentQ4.value);
+                payload.append('dissatisfaction_comment_q5', dissatisfactionCommentQ5.value);
+
+                payload.append('payment_mechanism_satisfied', paymentMechanismSatisfied.value || '');
+                payload.append('payment_mechanism_comments', paymentMechanismComments.value);
+                payload.append('apply_in_future', applyInFuture.value || '');
+                payload.append('apply_in_future_comments', applyInFutureComments.value);
+                payload.append('recommend_service', recommendService.value || '');
+                payload.append('recommend_service_comments', recommendServiceComments.value);
+
+                payload.append('website', website.value);
+                payload.append('form_loaded_at', formLoadedAt.value);
+
+                try {
+                    const res = await fetch('/public-feedback', {
+                        method: 'POST',
+                        body: payload,
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        showModal.value = true;
+                        resetForm();
+                    } else {
+                        errorMessage.value = data.message || 'An error occurred. Please try again.';
+                    }
+                } catch (err) {
+                    console.error(err);
+                    errorMessage.value = 'An error occurred while submitting feedback. Please try again.';
+                } finally {
+                    isSubmitting.value = false;
+                }
+            }
+
+            function closeFeedbackModal() {
+                showModal.value = false;
+            }
+
+            watch(showModal, (val) => {
+                if (val) {
+                    countdown.value = 5;
+                    countdownTimer = setInterval(() => {
+                        countdown.value--;
+                        if (countdown.value <= 0) {
+                            closeFeedbackModal();
+                        }
+                    }, 1000);
+                } else {
+                    if (countdownTimer) {
+                        clearInterval(countdownTimer);
+                        countdownTimer = null;
+                    }
+                }
+            });
+
+            return {
+                applicationId,
+                customerName,
+                customerNumber,
+                customerGender,
+                serviceProviderName,
+                serviceProviderContact,
+                safetyMeasures,
+                advertisingMedia,
+                fsmQualityLevel,
+                serviceDeliveryEfficiency,
+                overallSatisfaction,
+                serviceQualityPrice,
+                dissatisfactionCommentQ2,
+                dissatisfactionCommentQ3,
+                dissatisfactionCommentQ4,
+                dissatisfactionCommentQ5,
+                paymentMechanismSatisfied,
+                paymentMechanismComments,
+                applyInFuture,
+                applyInFutureComments,
+                recommendService,
+                recommendServiceComments,
+                website,
+                formLoadedAt,
+                errorMessage,
+                isSubmitting,
+                showModal,
+                countdown,
+                fetchApplicationData,
+                handleSubmit,
+                closeFeedbackModal
+            };
         }
     }
 

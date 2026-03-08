@@ -8,7 +8,7 @@
     <div class="bg-white p-5 md:p-8 rounded-xl shadow-lg border border-slate-200 w-full max-w-6xl mx-auto">
         <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold text-center text-slate-900 mb-6 md:mb-8">Feedback Form</h1>
 
-        <form id="feedback-form" class="needs-validation" novalidate>
+        <form id="feedback-form" class="needs-validation" novalidate @submit.prevent="handleSubmit">
             @csrf
 
             <!-- Application Information Section -->
@@ -19,6 +19,7 @@
                     <div class="col-12 col-md-6 mb-3">
                         <label for="application_id" class="block text-gray-800 font-semibold mb-2 text-base">Application Number <span class="text-red-500">*</span></label>
                         <input type="text" id="application_id" name="application_id" placeholder="Enter your application number" required
+                            v-model="applicationId" @blur="fetchApplicationData"
                             class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-base transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10">
                         <span class="error-message" id="error-application_id"></span>
                     </div>
@@ -26,6 +27,7 @@
                     <div class="col-12 col-md-6 mb-3">
                         <label for="customer_name" class="block text-gray-800 font-semibold mb-2 text-base">Service Receiver Name <span class="text-red-500">*</span></label>
                         <input type="text" id="customer_name" name="customer_name" placeholder="Will be filled automatically" required
+                            v-model="customerName"
                             class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-base transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10">
                         <span class="error-message" id="error-customer_name"></span>
                     </div>
@@ -35,6 +37,7 @@
                     <div class="col-12 col-md-6 mb-3">
                         <label for="customer_number" class="block text-gray-800 font-semibold mb-2 text-base">Service Receiver Contact <span class="text-red-500">*</span></label>
                         <input type="text" id="customer_number" name="customer_number" placeholder="Will be filled automatically" required
+                            v-model="customerNumber"
                             class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-base transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10">
                         <span class="error-message" id="error-customer_number"></span>
                     </div>
@@ -42,6 +45,7 @@
                     <div class="col-12 col-md-6 mb-3">
                         <label for="service_provider_name" class="block text-gray-800 font-semibold mb-2 text-base">Service Provider Name</label>
                         <input type="text" id="service_provider_name" name="service_provider_name" readonly
+                            v-model="serviceProviderName"
                             class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-200 bg-gray-50 text-base cursor-not-allowed">
                         <span class="error-message" id="error-service_provider_name"></span>
                     </div>
@@ -51,7 +55,8 @@
                     <div class="col-12 col-md-6 mb-3">
                         <label for="service_provider_contact" class="block text-gray-800 font-semibold mb-2 text-base">Service Provider Contact</label>
                         <input type="text" id="service_provider_contact" name="service_provider_contact" readonly
-                            class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-200 bg-gray-50 text-base cursor-not-allowed">
+                            v-model="serviceProviderContact"
+                            class="form-control w/full px-4 py-3 rounded-lg border-2 border-gray-200 bg-gray-50 text-base cursor-not-allowed">
                         <span class="error-message" id="error-service_provider_contact"></span>
                     </div>
                 </div>
@@ -66,19 +71,19 @@
                         <label class="block text-gray-800 font-semibold mb-2 text-base">1. Safety of emptiers and customer is very important. Please indicate which measures the emptiers followed during the service: <span class="text-red-500">*</span></label>
                         <div class="space-y-2">
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="checkbox" name="safety_measures[]" value="Used hand gloves" class="w-5 h-5 text-[#0056b3] border-gray-300 rounded focus:ring-[#0056b3]">
+                                <input type="checkbox" name="safety_measures[]" value="Used hand gloves" v-model="safetyMeasures" class="w-5 h-5 text-[#0056b3] border-gray-300 rounded focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Used hand gloves</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="checkbox" name="safety_measures[]" value="Used mask" class="w-5 h-5 text-[#0056b3] border-gray-300 rounded focus:ring-[#0056b3]">
+                                <input type="checkbox" name="safety_measures[]" value="Used mask" v-model="safetyMeasures" class="w-5 h-5 text-[#0056b3] border-gray-300 rounded focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Used mask</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="checkbox" name="safety_measures[]" value="Used apron" class="w-5 h-5 text-[#0056b3] border-gray-300 rounded focus:ring-[#0056b3]">
+                                <input type="checkbox" name="safety_measures[]" value="Used apron" v-model="safetyMeasures" class="w-5 h-5 text-[#0056b3] border-gray-300 rounded focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Used apron</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="checkbox" name="safety_measures[]" value="Did not wear the glovespic tank" class="w-5 h-5 text-[#0056b3] border-gray-300 rounded focus:ring-[#0056b3]">
+                                <input type="checkbox" name="safety_measures[]" value="Did not wear the glovespic tank" v-model="safetyMeasures" class="w-5 h-5 text-[#0056b3] border-gray-300 rounded focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Did not wear the glovespic tank</span>
                             </label>
                         </div>
@@ -91,19 +96,19 @@
                         <label class="block text-gray-800 font-semibold mb-2 text-base">2. How would you rate the attitude of the emptiers during service? <span class="text-red-500">*</span></label>
                         <div class="flex flex-wrap gap-3">
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="fsm_quality_level" value="4" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
+                                <input type="radio" name="fsm_quality_level" value="4" v-model="fsmQualityLevel" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Very Satisfied</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="fsm_quality_level" value="3" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
+                                <input type="radio" name="fsm_quality_level" value="3" v-model="fsmQualityLevel" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Satisfied</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="fsm_quality_level" value="2" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
+                                <input type="radio" name="fsm_quality_level" value="2" v-model="fsmQualityLevel" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Not Satisfied</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="fsm_quality_level" value="1" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
+                                <input type="radio" name="fsm_quality_level" value="1" v-model="fsmQualityLevel" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Disappointed</span>
                             </label>
                         </div>
@@ -111,7 +116,7 @@
                     </div>
                 </div>
 
-                <div class="row" id="dissatisfaction_q2" style="display: none;">
+                <div class="row" v-if="fsmQualityLevel === '1'">
                     <div class="col-12 mb-3">
                         <textarea id="dissatisfaction_comment_q2" name="dissatisfaction_comment_q2" rows="3" placeholder="Please explain..."
                             class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-base resize-y transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10"></textarea>
@@ -124,19 +129,19 @@
                         <label class="block text-gray-800 font-semibold mb-2 text-base">3. How do you assess the response time of the emptying service? <span class="text-red-500">*</span></label>
                         <div class="flex flex-wrap gap-3">
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="service_delivery_efficiency" value="4" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
+                                <input type="radio" name="service_delivery_efficiency" value="4" v-model="serviceDeliveryEfficiency" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Very Satisfied</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="service_delivery_efficiency" value="3" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
+                                <input type="radio" name="service_delivery_efficiency" value="3" v-model="serviceDeliveryEfficiency" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Satisfied</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="service_delivery_efficiency" value="2" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
+                                <input type="radio" name="service_delivery_efficiency" value="2" v-model="serviceDeliveryEfficiency" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Not Satisfied</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="service_delivery_efficiency" value="1" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
+                                <input type="radio" name="service_delivery_efficiency" value="1" v-model="serviceDeliveryEfficiency" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Disappointed</span>
                             </label>
                         </div>
@@ -144,7 +149,7 @@
                     </div>
                 </div>
 
-                <div class="row" id="dissatisfaction_q3" style="display: none;">
+                <div class="row" v-if="serviceDeliveryEfficiency === '1'">
                     <div class="col-12 mb-3">
                         <textarea id="dissatisfaction_comment_q3" name="dissatisfaction_comment_q3" rows="3" placeholder="Please explain..."
                             class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-base resize-y transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10"></textarea>
@@ -157,19 +162,19 @@
                         <label class="block text-gray-800 font-semibold mb-2 text-base">4. How satisfied are you with the overall emptying service? <span class="text-red-500">*</span></label>
                         <div class="flex flex-wrap gap-3">
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="overall_satisfaction" value="4" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
+                                <input type="radio" name="overall_satisfaction" value="4" v-model="overallSatisfaction" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Very Satisfied</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="overall_satisfaction" value="3" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
+                                <input type="radio" name="overall_satisfaction" value="3" v-model="overallSatisfaction" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Satisfied</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="overall_satisfaction" value="2" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
+                                <input type="radio" name="overall_satisfaction" value="2" v-model="overallSatisfaction" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Not Satisfied</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="overall_satisfaction" value="1" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
+                                <input type="radio" name="overall_satisfaction" value="1" v-model="overallSatisfaction" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Disappointed</span>
                             </label>
                         </div>
@@ -177,7 +182,7 @@
                     </div>
                 </div>
 
-                <div class="row" id="dissatisfaction_q4" style="display: none;">
+                <div class="row" v-if="overallSatisfaction === '1'">
                     <div class="col-12 mb-3">
                         <textarea id="dissatisfaction_comment_q4" name="dissatisfaction_comment_q4" rows="3" placeholder="Please explain..."
                             class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-base resize-y transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10"></textarea>
@@ -190,19 +195,19 @@
                         <label class="block text-gray-800 font-semibold mb-2 text-base">5. How satisfied are you with the price of this service? <span class="text-red-500">*</span></label>
                         <div class="flex flex-wrap gap-3">
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="service_quality_price" value="4" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
+                                <input type="radio" name="service_quality_price" value="4" v-model="serviceQualityPrice" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Very Satisfied</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="service_quality_price" value="3" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
+                                <input type="radio" name="service_quality_price" value="3" v-model="serviceQualityPrice" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Satisfied</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="service_quality_price" value="2" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
+                                <input type="radio" name="service_quality_price" value="2" v-model="serviceQualityPrice" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Not Satisfied</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="service_quality_price" value="1" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
+                                <input type="radio" name="service_quality_price" value="1" v-model="serviceQualityPrice" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Disappointed</span>
                             </label>
                         </div>
@@ -210,7 +215,7 @@
                     </div>
                 </div>
 
-                <div class="row" id="dissatisfaction_q5" style="display: none;">
+                <div class="row" v-if="serviceQualityPrice === '1'">
                     <div class="col-12 mb-3">
                         <textarea id="dissatisfaction_comment_q5" name="dissatisfaction_comment_q5" rows="3" placeholder="Please explain..."
                             class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-base resize-y transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10"></textarea>
@@ -228,11 +233,11 @@
                         <label class="block text-gray-800 font-semibold mb-2 text-base">6. Are you satisfied with the payment mechanism? <span class="text-red-500">*</span></label>
                         <div class="flex flex-wrap gap-3">
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="payment_mechanism_satisfied" value="1" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
+                                <input type="radio" name="payment_mechanism_satisfied" value="1" v-model="paymentMechanismSatisfied" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Yes</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="payment_mechanism_satisfied" value="0" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
+                                <input type="radio" name="payment_mechanism_satisfied" value="0" v-model="paymentMechanismSatisfied" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">No</span>
                             </label>
                         </div>
@@ -240,7 +245,7 @@
                     </div>
                 </div>
 
-                <div class="row" id="payment_comments_section" style="display: none;">
+                <div class="row" v-if="paymentMechanismSatisfied === '0'">
                     <div class="col-12 mb-3">
                         <textarea id="payment_mechanism_comments" name="payment_mechanism_comments" rows="3" placeholder="Please explain..."
                             class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-base resize-y transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10"></textarea>
@@ -253,11 +258,11 @@
                         <label class="block text-gray-800 font-semibold mb-2 text-base">7. Are you willing to apply again in the future? <span class="text-red-500">*</span></label>
                         <div class="flex flex-wrap gap-3">
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="apply_in_future" value="1" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
+                                <input type="radio" name="apply_in_future" value="1" v-model="applyInFuture" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Yes</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="apply_in_future" value="0" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
+                                <input type="radio" name="apply_in_future" value="0" v-model="applyInFuture" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">No</span>
                             </label>
                         </div>
@@ -265,7 +270,7 @@
                     </div>
                 </div>
 
-                <div class="row" id="apply_future_comments_section" style="display: none;">
+                <div class="row" v-if="applyInFuture === '0'">
                     <div class="col-12 mb-3">
                         <textarea id="apply_in_future_comments" name="apply_in_future_comments" rows="3" placeholder="Please explain..."
                             class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-base resize-y transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10"></textarea>
@@ -278,11 +283,11 @@
                         <label class="block text-gray-800 font-semibold mb-2 text-base">8. Would you recommend this FSM service to others? <span class="text-red-500">*</span></label>
                         <div class="flex flex-wrap gap-3">
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="recommend_service" value="1" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
+                                <input type="radio" name="recommend_service" value="1" v-model="recommendService" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Yes</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="recommend_service" value="0" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
+                                <input type="radio" name="recommend_service" value="0" v-model="recommendService" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">No</span>
                             </label>
                         </div>
@@ -290,7 +295,7 @@
                     </div>
                 </div>
 
-                <div class="row" id="recommend_comments_section" style="display: none;">
+                <div class="row" v-if="recommendService === '0'">
                     <div class="col-12 mb-3">
                         <textarea id="recommend_service_comments" name="recommend_service_comments" rows="3" placeholder="Please explain..."
                             class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-base resize-y transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10"></textarea>
@@ -308,15 +313,15 @@
                         <label class="block text-gray-800 font-semibold mb-2 text-base">9. How did you hear about the FSM service? <span class="text-red-500">*</span></label>
                         <div class="space-y-2">
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="checkbox" name="advertising_media[]" value="Social Media" class="w-5 h-5 text-[#0056b3] border-gray-300 rounded focus:ring-[#0056b3]">
+                                <input type="checkbox" name="advertising_media[]" value="Social Media" v-model="advertisingMedia" class="w-5 h-5 text-[#0056b3] border-gray-300 rounded focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Social Media</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="checkbox" name="advertising_media[]" value="Neighbours" class="w-5 h-5 text-[#0056b3] border-gray-300 rounded focus:ring-[#0056b3]">
+                                <input type="checkbox" name="advertising_media[]" value="Neighbours" v-model="advertisingMedia" class="w-5 h-5 text-[#0056b3] border-gray-300 rounded focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Neighbours</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="checkbox" name="advertising_media[]" value="Campaign" class="w-5 h-5 text-[#0056b3] border-gray-300 rounded focus:ring-[#0056b3]">
+                                <input type="checkbox" name="advertising_media[]" value="Campaign" v-model="advertisingMedia" class="w-5 h-5 text-[#0056b3] border-gray-300 rounded focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Campaign</span>
                             </label>
                         </div>
@@ -326,16 +331,18 @@
             </fieldset>
 
             <!-- Hidden fields for anti-spam -->
-            <input type="text" name="website" id="website" style="display:none" tabindex="-1" autocomplete="off">
-            <input type="hidden" name="form_loaded_at" id="form_loaded_at">
-            <input type="hidden" name="customer_gender" id="customer_gender">
+            <input type="text" name="website" id="website" style="display:none" tabindex="-1" autocomplete="off" v-model="website">
+            <input type="hidden" name="form_loaded_at" id="form_loaded_at" v-model="formLoadedAt">
+            <input type="hidden" name="customer_gender" id="customer_gender" v-model="customerGender">
 
             <!-- Error Message Display -->
-            <div id="feedback-error" class="hidden mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg"></div>
+            <div v-if="errorMessage" class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+                @{{ errorMessage }}
+            </div>
 
             <div class="text-center mt-4">
-                <button type="submit" id="feedback-submit-btn" class="mx-auto bg-primary text-white py-4 rounded-2xl font-bold text-lg hover:shadow-lg hover:shadow-primary/30 active:scale-[0.98] transition-all uppercase tracking-wider px-8">
-                    Submit Feedback
+                <button type="submit" id="feedback-submit-btn" :disabled="isSubmitting" class="mx-auto bg-primary text-white py-4 rounded-2xl font-bold text-lg hover:shadow-lg hover:shadow-primary/30 active:scale-[0.98] transition-all uppercase tracking-wider px-8">
+                    @{{ isSubmitting ? 'Submitting...' : 'Submit Feedback' }}
                 </button>
             </div>
         </form>
@@ -343,7 +350,7 @@
 </div>
 
 <!-- Feedback Success Modal -->
-<div id="feedback-success-modal" class="fsm-modal-overlay" style="display: none;">
+<div v-if="showModal" class="fsm-modal-overlay">
     <div class="fsm-modal-content">
         <div class="fsm-modal-icon">
             <svg class="w-16 h-16 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -352,7 +359,7 @@
         </div>
         <h3 class="text-2xl font-bold text-center text-gray-800 mb-3">Success!</h3>
         <p class="text-center text-gray-600 mb-4" id="feedback-success-message">Your feedback has been submitted successfully!</p>
-        <p class="text-center text-sm text-gray-500 mb-4">This modal will close in <span id="feedback-countdown">5</span> seconds...</p>
+        <p class="text-center text-sm text-gray-500 mb-4">This modal will close in <span id="feedback-countdown">@{{ countdown }}</span> seconds...</p>
         <div class="text-center">
             <button onclick="closeFeedbackModal()" class="px-6 py-2 bg-gradient-to-br from-[#007bff] to-[#0056b3] text-white rounded-lg font-semibold hover:from-[#0056b3] hover:to-[#003d82]">Close</button>
         </div>
