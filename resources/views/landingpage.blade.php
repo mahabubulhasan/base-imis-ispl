@@ -294,7 +294,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
 <body class="font-display bg-background-light text-slate-900 min-h-screen overflow-x-hidden">
 
     <!-- Fixed Navigation Bar -->
-    <nav class="fixed top-0 w-full z-50 glass-nav border-b border-slate-200">
+    <nav class="fixed top-0 w-full z-50 glass-nav border-b border-slate-200 shadow-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
                 <a href="/" class="flex items-center space-x-3 hover:opacity-80 transition-opacity">
