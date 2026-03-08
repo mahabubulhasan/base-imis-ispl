@@ -122,13 +122,31 @@ Description: FSM Application Form - Vue 3 Implementation -->
                         <label class="block text-gray-800 font-semibold mb-2 text-base">
                             Road Name <small class="text-gray-500">(Optional)</small>
                         </label>
-                        <select
-                            v-model="roadCode"
-                            :class="['form-control w-full px-4 py-3 rounded-lg border-2 text-base transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10', fieldErrors.road_code ? 'border-red-500' : 'border-gray-300']"
+                        <multiselect
+                            v-model="selectedRoad"
+                            :options="roadOptions"
+                            :searchable="true"
+                            :loading="isSearchingRoads"
+                            :internal-search="false"
+                            :clear-on-select="false"
+                            :close-on-select="true"
+                            :options-limit="300"
+                            :max-height="600"
+                            :show-no-results="true"
+                            :hide-selected="false"
+                            @search-change="onRoadSearch"
+                            placeholder="Search by road name or code"
+                            label="text"
+                            track-by="id"
+                            :class="fieldErrors.road_code ? 'multiselect-error' : ''"
                         >
-                            <option value="">Select Road</option>
-                            <option v-for="road in roadOptions" :key="road.id" :value="road.id">@{{ road.text }}</option>
-                        </select>
+                            <template #noResult>
+                                <span>No roads found. Try a different search term.</span>
+                            </template>
+                            <template #noOptions>
+                                <span>Start typing to search for roads...</span>
+                            </template>
+                        </multiselect>
                         <span v-if="fieldErrors.road_code" class="text-red-500 text-sm mt-1 block">@{{ fieldErrors.road_code }}</span>
                     </div>
                 </div>

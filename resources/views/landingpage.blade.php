@@ -206,6 +206,77 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
             animation: fadeIn 0.3s ease-in-out;
         }
 
+        /* Vue Multiselect Custom Styles */
+        .multiselect__tags {
+            border: 2px solid #d1d5db !important;
+            border-radius: 0.5rem !important;
+            padding: 0.625rem 2.5rem 0 0.75rem !important;
+            min-height: 3rem !important;
+            font-size: 1rem !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .multiselect__tags:hover {
+            border-color: #9ca3af !important;
+        }
+
+        .multiselect__tags:focus-within {
+            border-color: #0056b3 !important;
+            box-shadow: 0 0 0 4px rgba(0, 86, 179, 0.1) !important;
+            outline: none !important;
+        }
+
+        .multiselect-error .multiselect__tags {
+            border-color: #ef4444 !important;
+        }
+
+        .multiselect__input,
+        .multiselect__single {
+            font-size: 1rem !important;
+            padding: 0.25rem 0 !important;
+            margin-bottom: 0 !important;
+            line-height: 1.5 !important;
+        }
+
+        .multiselect__placeholder {
+            font-size: 1rem !important;
+            color: #9ca3af !important;
+            padding-top: 0.25rem !important;
+            margin-bottom: 0 !important;
+        }
+
+        .multiselect__select {
+            height: 3rem !important;
+            padding: 0 0.5rem !important;
+        }
+
+        .multiselect__content-wrapper {
+            border: 2px solid #d1d5db !important;
+            border-radius: 0.5rem !important;
+            margin-top: 0.25rem !important;
+        }
+
+        .multiselect__option {
+            font-size: 1rem !important;
+            padding: 0.75rem 1rem !important;
+            min-height: auto !important;
+        }
+
+        .multiselect__option--highlight {
+            background: #0056b3 !important;
+        }
+
+        .multiselect__option--selected {
+            background: #e0f2fe !important;
+            color: #0369a1 !important;
+            font-weight: 500 !important;
+        }
+
+        .multiselect__option--selected.multiselect__option--highlight {
+            background: #0056b3 !important;
+            color: white !important;
+        }
+
         @media (max-width: 576px) {
             .app_fieldset {
                 padding: 0.75rem;
@@ -380,19 +451,21 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
         }
     </script>
 
-    <!-- somewhere in the <body> (above the closing </body>) -->
+    <link rel="stylesheet" href="https://unpkg.com/vue-multiselect@3.4.0/dist/vue-multiselect.min.css">
     <script type="importmap">
-        {
+    {
         "imports": {
             "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js",
             "vue-router": "https://unpkg.com/vue-router@4/dist/vue-router.esm-browser.js",
-            "@vue/devtools-api": "https://unpkg.com/@vue/devtools-api@8/dist/vue-devtools-api.esm-browser.js"
+            "@vue/devtools-api": "https://unpkg.com/@vue/devtools-api@8/dist/vue-devtools-api.esm-browser.js",
+            "vue-multiselect": "https://unpkg.com/vue-multiselect@3.4.0/dist/vue-multiselect.esm.js"
         }
     }
     </script>
     <script type="module">
         import { createApp, ref, watch, computed, onMounted } from 'vue';
         import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router';
+        import Multiselect from 'vue-multiselect';
 
     const Login = {
         template: '#loginPage'
@@ -411,6 +484,9 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
     }
     const FsmApplication = {
         template: '#fsmPage',
+        components: {
+            Multiselect
+        },
         setup() {
             // Form fields
             const hasTaxId = ref('');
@@ -420,6 +496,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
             const holdingOwnerName = ref('');
             const ward = ref('');
             const roadCode = ref('');
+            const selectedRoad = ref(null);
             const address = ref('');
             const proposedEmptyingDate = ref('');
             const notes = ref('');
@@ -526,6 +603,17 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 }
             }
 
+            // Handle road search from multiselect
+            function onRoadSearch(query) {
+                if (debounceTimeout) {
+                    clearTimeout(debounceTimeout);
+                }
+
+                debounceTimeout = setTimeout(() => {
+                    searchRoadNames(query);
+                }, 300);
+            }
+
             // Clear auto-populated fields
             function clearAutoPopulatedFields() {
                 customerName.value = '';
@@ -533,6 +621,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 holdingOwnerName.value = '';
                 ward.value = '';
                 roadCode.value = '';
+                selectedRoad.value = null;
                 address.value = '';
             }
 
@@ -565,14 +654,16 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
 
                         if (data.data.road_code && data.data.road_name_text) {
                             // Add the road to options if not already present
+                            const roadObj = {
+                                id: data.data.road_code,
+                                text: data.data.road_name_text
+                            };
                             const exists = roadOptions.value.find(r => r.id === data.data.road_code);
                             if (!exists) {
-                                roadOptions.value.push({
-                                    id: data.data.road_code,
-                                    text: data.data.road_name_text
-                                });
+                                roadOptions.value.push(roadObj);
                             }
                             roadCode.value = data.data.road_code;
+                            selectedRoad.value = roadObj;
                         }
                     } else {
                         clearAutoPopulatedFields();
@@ -602,6 +693,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 holdingOwnerName.value = '';
                 ward.value = '';
                 roadCode.value = '';
+                selectedRoad.value = null;
                 address.value = '';
                 proposedEmptyingDate.value = '';
                 notes.value = '';
@@ -652,7 +744,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 formData.append('customer_contact', customerContact.value);
                 formData.append('holding_owner_name', holdingOwnerName.value);
                 formData.append('ward', ward.value);
-                formData.append('road_code', roadCode.value);
+                formData.append('road_code', selectedRoad.value ? selectedRoad.value.id : '');
                 formData.append('address', address.value);
                 formData.append('proposed_emptying_date', proposedEmptyingDate.value);
                 formData.append('notes', notes.value);
@@ -746,15 +838,14 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 }
             });
 
-            // Watch road search term
-            watch(roadSearchTerm, (newVal) => {
-                if (debounceTimeout) {
-                    clearTimeout(debounceTimeout);
+            // Watch selectedRoad to sync with roadCode
+            watch(selectedRoad, (newVal) => {
+                if (newVal && newVal.id) {
+                    roadCode.value = newVal.id;
+                } else {
+                    roadCode.value = '';
                 }
-
-                debounceTimeout = setTimeout(() => {
-                    searchRoadNames(newVal);
-                }, 300);
+                clearFieldError('road_code');
             });
 
             // Clear field errors when typing
@@ -762,7 +853,6 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
             watch(customerContact, () => clearFieldError('customer_contact'));
             watch(holdingOwnerName, () => clearFieldError('holding_owner_name'));
             watch(ward, () => clearFieldError('ward'));
-            watch(roadCode, () => clearFieldError('road_code'));
             watch(address, () => clearFieldError('address'));
             watch(proposedEmptyingDate, () => clearFieldError('proposed_emptying_date'));
             watch(notes, () => clearFieldError('notes'));
@@ -780,6 +870,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 holdingOwnerName,
                 ward,
                 roadCode,
+                selectedRoad,
                 address,
                 proposedEmptyingDate,
                 notes,
@@ -791,13 +882,14 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 successMessage,
                 countdown,
                 showTaxIdField,
-                roadSearchTerm,
                 isSearchingRoads,
+                isLoadingData,
                 formatTaxId,
                 formatPhone,
                 handleSubmit,
                 closeModal,
-                searchRoadNames
+                searchRoadNames,
+                onRoadSearch
             };
         }
     }
