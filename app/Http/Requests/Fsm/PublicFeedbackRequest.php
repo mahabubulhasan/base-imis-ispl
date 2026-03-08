@@ -5,6 +5,8 @@
 namespace App\Http\Requests\Fsm;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class PublicFeedbackRequest extends FormRequest
 {
@@ -34,6 +36,10 @@ class PublicFeedbackRequest extends FormRequest
             'customer_number' => 'required|string|max:20',
             'customer_gender' => 'nullable|string|in:Male,Female,Other',
             'customer_address' => 'nullable|string|max:255',
+
+            // Service provider info (readonly fields filled via AJAX)
+            'service_provider_name' => 'nullable|string|max:255',
+            'service_provider_contact' => 'nullable|string|max:20',
 
             // Q1: Safety measures (checkboxes as comma-separated string)
             'safety_measures' => 'required|string|max:250',
@@ -90,6 +96,8 @@ class PublicFeedbackRequest extends FormRequest
             'application_id.exists' => 'Invalid Application Number. Please check and try again.',
             'customer_name.required' => 'Service Receiver Name is required.',
             'customer_number.required' => 'Service Receiver Contact is required.',
+            'service_provider_name.string' => 'Invalid service provider name.',
+            'service_provider_contact.string' => 'Invalid service provider contact.',
             'safety_measures.required' => 'Please select at least one safety measure.',
             'fsm_quality_level.required' => 'Please rate the attitude of the emptiers.',
             'fsm_quality_level.between' => 'Invalid rating value.',
@@ -124,5 +132,23 @@ class PublicFeedbackRequest extends FormRequest
         if (!$this->has('website')) {
             $this->merge(['website' => null]);
         }
+    }
+
+    /**
+     * Prepare the data for validation.
+     *
+     * @return void
+     */
+    protected function failedValidation(Validator $validator)
+    {
+        if ($this->expectsJson()) {
+            throw new HttpResponseException(response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors'  => $validator->errors(),
+            ], 422));
+        }
+
+        parent::failedValidation($validator);
     }
 }
