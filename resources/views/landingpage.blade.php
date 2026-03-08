@@ -236,6 +236,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
             padding: 0.25rem 0 !important;
             margin-bottom: 0 !important;
             line-height: 1.5 !important;
+            --tw-ring-color: #fff !important;
         }
 
         .multiselect__placeholder {
@@ -251,9 +252,10 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
         }
 
         .multiselect__content-wrapper {
-            border: 2px solid #d1d5db !important;
+            border: 2px solid #0056b3 !important;
             border-radius: 0.5rem !important;
             margin-top: 0.25rem !important;
+            background: #d1d5db !important;
         }
 
         .multiselect__option {
@@ -857,9 +859,10 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
             watch(proposedEmptyingDate, () => clearFieldError('proposed_emptying_date'));
             watch(notes, () => clearFieldError('notes'));
 
-            // Load wards on mount
+            // Load wards and initial roads on mount
             onMounted(() => {
                 loadWards();
+                searchRoadNames(); // Preload initial roads
             });
 
             return {
