@@ -637,9 +637,6 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 if (!proposedEmptyingDate.value) {
                     fieldErrors.value.proposed_emptying_date = 'Proposed Emptying Date is required';
                 }
-                if (!notes.value) {
-                    fieldErrors.value.notes = 'Notes / Comments is required';
-                }
 
                 // If errors exist, stop submission
                 if (Object.keys(fieldErrors.value).length > 0) {
