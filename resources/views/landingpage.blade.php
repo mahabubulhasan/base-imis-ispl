@@ -391,7 +391,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
     }
     </script>
     <script type="module">
-        import { createApp, ref, watch } from 'vue';
+        import { createApp, ref, watch, computed, onMounted } from 'vue';
         import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router';
 
     const Login = {
@@ -410,7 +410,399 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
         }
     }
     const FsmApplication = {
-        template: '#fsmPage'
+        template: '#fsmPage',
+        setup() {
+            // Form fields
+            const hasTaxId = ref('');
+            const taxId = ref('');
+            const customerName = ref('');
+            const customerContact = ref('');
+            const holdingOwnerName = ref('');
+            const ward = ref('');
+            const roadCode = ref('');
+            const address = ref('');
+            const proposedEmptyingDate = ref('');
+            const notes = ref('');
+
+            // State
+            const wards = ref([]);
+            const roadOptions = ref([]);
+            const fieldErrors = ref({});
+            const isSubmitting = ref(false);
+            const showModal = ref(false);
+            const successMessage = ref('');
+            const countdown = ref(5);
+            const wardsLoaded = ref(false);
+            const isLoadingData = ref(false);
+            const roadSearchTerm = ref('');
+            const isSearchingRoads = ref(false);
+
+            let debounceTimeout = null;
+            let countdownTimer = null;
+
+            // Computed
+            const showTaxIdField = computed(() => hasTaxId.value === 'yes');
+
+            // Format tax ID: ##-###-####-##
+            function formatTaxId(value) {
+                const digitsOnly = value.replace(/[^0-9]/g, '');
+                const blocks = [2, 3, 4, 2];
+                let formatted = '';
+                let index = 0;
+
+                for (let i = 0; i < blocks.length && index < digitsOnly.length; i++) {
+                    if (i > 0 && formatted.length > 0) {
+                        formatted += '-';
+                    }
+                    formatted += digitsOnly.substr(index, blocks[i]);
+                    index += blocks[i];
+                }
+
+                return formatted;
+            }
+
+            // Format phone: 11 digits only
+            function formatPhone(value) {
+                const digitsOnly = value.replace(/[^0-9]/g, '');
+                return digitsOnly.substring(0, 11);
+            }
+
+            // Validate tax ID format
+            function isValidTaxId(taxIdValue) {
+                const taxIdPattern = /^\d{2}-\d{3}-\d{4}-\d{2}$/;
+                return taxIdPattern.test(taxIdValue.trim());
+            }
+
+            // Check minimum length
+            function hasMinimumLength(taxIdValue) {
+                const digitsOnly = taxIdValue.replace(/[^0-9]/g, '');
+                return digitsOnly.length >= 8;
+            }
+
+            // Load wards
+            async function loadWards() {
+                if (wardsLoaded.value) return;
+
+                try {
+                    const res = await fetch('{{ route("client-fsm-application.get-wards") }}', {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+                    const data = await res.json();
+
+                    if (data.success && data.wards) {
+                        wards.value = data.wards;
+                        wardsLoaded.value = true;
+                    }
+                } catch (err) {
+                    console.error('Failed to load wards:', err);
+                }
+            }
+
+            // Search road names
+            async function searchRoadNames(search = '') {
+                if (isSearchingRoads.value) return;
+
+                isSearchingRoads.value = true;
+
+                try {
+                    const res = await fetch(`{{ route("client-fsm-application.get-road-names") }}?search=${encodeURIComponent(search)}&page=1`, {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+                    const data = await res.json();
+
+                    if (data.results) {
+                        roadOptions.value = data.results;
+                    }
+                } catch (err) {
+                    console.error('Failed to search roads:', err);
+                } finally {
+                    isSearchingRoads.value = false;
+                }
+            }
+
+            // Clear auto-populated fields
+            function clearAutoPopulatedFields() {
+                customerName.value = '';
+                customerContact.value = '';
+                holdingOwnerName.value = '';
+                ward.value = '';
+                roadCode.value = '';
+                address.value = '';
+            }
+
+            // Fetch building data by tax ID
+            async function fetchBuildingData(taxIdValue) {
+                if (!taxIdValue || !isValidTaxId(taxIdValue)) {
+                    clearAutoPopulatedFields();
+                    return;
+                }
+
+                if (isLoadingData.value) return;
+
+                isLoadingData.value = true;
+
+                try {
+                    const res = await fetch(`{{ route("client-fsm-application.get-building-data") }}?tax_id=${encodeURIComponent(taxIdValue)}`, {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+                    const data = await res.json();
+
+                    if (data.success && data.data) {
+                        customerName.value = data.data.customer_name || '';
+                        customerContact.value = data.data.customer_contact || '';
+                        holdingOwnerName.value = data.data.holding_owner_name || '';
+                        ward.value = data.data.ward || '';
+                        address.value = data.data.address || '';
+
+                        if (data.data.road_code && data.data.road_name_text) {
+                            // Add the road to options if not already present
+                            const exists = roadOptions.value.find(r => r.id === data.data.road_code);
+                            if (!exists) {
+                                roadOptions.value.push({
+                                    id: data.data.road_code,
+                                    text: data.data.road_name_text
+                                });
+                            }
+                            roadCode.value = data.data.road_code;
+                        }
+                    } else {
+                        clearAutoPopulatedFields();
+                    }
+                } catch (err) {
+                    console.error('Failed to fetch building data:', err);
+                    clearAutoPopulatedFields();
+                } finally {
+                    isLoadingData.value = false;
+                }
+            }
+
+            // Clear field error
+            function clearFieldError(fieldName) {
+                if (fieldErrors.value[fieldName]) {
+                    delete fieldErrors.value[fieldName];
+                    fieldErrors.value = { ...fieldErrors.value };
+                }
+            }
+
+            // Reset form
+            function resetForm() {
+                hasTaxId.value = '';
+                taxId.value = '';
+                customerName.value = '';
+                customerContact.value = '';
+                holdingOwnerName.value = '';
+                ward.value = '';
+                roadCode.value = '';
+                address.value = '';
+                proposedEmptyingDate.value = '';
+                notes.value = '';
+                fieldErrors.value = {};
+                roadOptions.value = [];
+                roadSearchTerm.value = '';
+            }
+
+            // Handle form submission
+            async function handleSubmit() {
+                // Clear previous errors
+                fieldErrors.value = {};
+
+                // Validate required fields
+                if (!hasTaxId.value) {
+                    fieldErrors.value.has_tax_id = 'Please select if you have a Tax ID';
+                }
+                if (hasTaxId.value === 'yes' && !taxId.value) {
+                    fieldErrors.value.tax_id = 'Tax ID is required';
+                }
+                if (!customerName.value) {
+                    fieldErrors.value.customer_name = 'Customer Name is required';
+                }
+                if (!customerContact.value) {
+                    fieldErrors.value.customer_contact = 'Contact No. is required';
+                }
+                if (!ward.value) {
+                    fieldErrors.value.ward = 'Ward is required';
+                }
+                if (!address.value) {
+                    fieldErrors.value.address = 'Address is required';
+                }
+                if (!proposedEmptyingDate.value) {
+                    fieldErrors.value.proposed_emptying_date = 'Proposed Emptying Date is required';
+                }
+                if (!notes.value) {
+                    fieldErrors.value.notes = 'Notes / Comments is required';
+                }
+
+                // If errors exist, stop submission
+                if (Object.keys(fieldErrors.value).length > 0) {
+                    return;
+                }
+
+                isSubmitting.value = true;
+
+                const formData = new FormData();
+                formData.append('has_tax_id', hasTaxId.value);
+                formData.append('tax_id', taxId.value);
+                formData.append('customer_name', customerName.value);
+                formData.append('customer_contact', customerContact.value);
+                formData.append('holding_owner_name', holdingOwnerName.value);
+                formData.append('ward', ward.value);
+                formData.append('road_code', roadCode.value);
+                formData.append('address', address.value);
+                formData.append('proposed_emptying_date', proposedEmptyingDate.value);
+                formData.append('notes', notes.value);
+
+                try {
+                    const res = await fetch('{{ route("client-fsm-application.submit") }}', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    const data = await res.json();
+
+                    if (res.ok && data.success) {
+                        successMessage.value = data.message || 'Your FSM application has been submitted successfully!';
+                        showModal.value = true;
+                        resetForm();
+                    } else if (res.status === 422 && data.errors) {
+                        // Validation errors
+                        fieldErrors.value = {};
+                        Object.keys(data.errors).forEach(key => {
+                            fieldErrors.value[key] = data.errors[key][0];
+                        });
+                    } else {
+                        // General error
+                        alert(data.message || 'An error occurred. Please try again.');
+                    }
+                } catch (err) {
+                    console.error('Submission error:', err);
+                    alert('An unexpected error occurred. Please try again.');
+                } finally {
+                    isSubmitting.value = false;
+                }
+            }
+
+            // Close modal
+            function closeModal() {
+                showModal.value = false;
+            }
+
+            // Watch hasTaxId to clear tax ID when switching to "No"
+            watch(hasTaxId, (newVal) => {
+                if (newVal !== 'yes') {
+                    taxId.value = '';
+                    clearFieldError('tax_id');
+                }
+                clearFieldError('has_tax_id');
+            });
+
+            // Watch taxId for auto-fill with debounce
+            watch(taxId, (newVal) => {
+                clearFieldError('tax_id');
+
+                if (!newVal || newVal.length < 10 || !hasMinimumLength(newVal)) {
+                    if (debounceTimeout) {
+                        clearTimeout(debounceTimeout);
+                        debounceTimeout = null;
+                    }
+                    clearAutoPopulatedFields();
+                    return;
+                }
+
+                if (debounceTimeout) {
+                    clearTimeout(debounceTimeout);
+                }
+
+                debounceTimeout = setTimeout(() => {
+                    fetchBuildingData(newVal);
+                    debounceTimeout = null;
+                }, 400);
+            });
+
+            // Watch showModal for countdown
+            watch(showModal, (val) => {
+                if (val) {
+                    countdown.value = 5;
+                    countdownTimer = setInterval(() => {
+                        countdown.value--;
+                        if (countdown.value <= 0) {
+                            closeModal();
+                        }
+                    }, 1000);
+                } else {
+                    if (countdownTimer) {
+                        clearInterval(countdownTimer);
+                        countdownTimer = null;
+                    }
+                }
+            });
+
+            // Watch road search term
+            watch(roadSearchTerm, (newVal) => {
+                if (debounceTimeout) {
+                    clearTimeout(debounceTimeout);
+                }
+
+                debounceTimeout = setTimeout(() => {
+                    searchRoadNames(newVal);
+                }, 300);
+            });
+
+            // Clear field errors when typing
+            watch(customerName, () => clearFieldError('customer_name'));
+            watch(customerContact, () => clearFieldError('customer_contact'));
+            watch(holdingOwnerName, () => clearFieldError('holding_owner_name'));
+            watch(ward, () => clearFieldError('ward'));
+            watch(roadCode, () => clearFieldError('road_code'));
+            watch(address, () => clearFieldError('address'));
+            watch(proposedEmptyingDate, () => clearFieldError('proposed_emptying_date'));
+            watch(notes, () => clearFieldError('notes'));
+
+            // Load wards on mount
+            onMounted(() => {
+                loadWards();
+            });
+
+            return {
+                hasTaxId,
+                taxId,
+                customerName,
+                customerContact,
+                holdingOwnerName,
+                ward,
+                roadCode,
+                address,
+                proposedEmptyingDate,
+                notes,
+                wards,
+                roadOptions,
+                fieldErrors,
+                isSubmitting,
+                showModal,
+                successMessage,
+                countdown,
+                showTaxIdField,
+                roadSearchTerm,
+                isSearchingRoads,
+                formatTaxId,
+                formatPhone,
+                handleSubmit,
+                closeModal,
+                searchRoadNames
+            };
+        }
     }
     const Feedback = {
         template: '#feedbackPage',
