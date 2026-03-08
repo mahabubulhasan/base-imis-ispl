@@ -11,6 +11,10 @@
         <form id="feedback-form" class="needs-validation" novalidate @submit.prevent="handleSubmit">
             @csrf
 
+            <!-- Error Message Display -->
+            <div v-if="errorMessage" class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+                @{{ errorMessage }}
+            </div>
             <!-- Application Information Section -->
             <fieldset class="app_fieldset">
                 <legend>Application Information</legend>
@@ -21,7 +25,7 @@
                         <input type="text" id="application_id" name="application_id" placeholder="Enter your application number" required
                             v-model="applicationId" @blur="fetchApplicationData"
                             class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-base transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10">
-                        <span class="error-message" id="error-application_id"></span>
+                        <span v-if="fieldErrors.application_id" class="text-red-600 text-sm mt-1 block">@{{ fieldErrors.application_id }}</span>
                     </div>
 
                     <div class="col-12 col-md-6 mb-3">
@@ -29,7 +33,7 @@
                         <input type="text" id="customer_name" name="customer_name" placeholder="Will be filled automatically" required
                             v-model="customerName"
                             class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-base transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10">
-                        <span class="error-message" id="error-customer_name"></span>
+                        <span v-if="fieldErrors.customer_name" class="text-red-600 text-sm mt-1 block">@{{ fieldErrors.customer_name }}</span>
                     </div>
                 </div>
 
@@ -39,7 +43,7 @@
                         <input type="text" id="customer_number" name="customer_number" placeholder="Will be filled automatically" required
                             v-model="customerNumber"
                             class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-base transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10">
-                        <span class="error-message" id="error-customer_number"></span>
+                        <span v-if="fieldErrors.customer_number" class="text-red-600 text-sm mt-1 block">@{{ fieldErrors.customer_number }}</span>
                     </div>
 
                     <div class="col-12 col-md-6 mb-3">
@@ -47,7 +51,7 @@
                         <input type="text" id="service_provider_name" name="service_provider_name" readonly
                             v-model="serviceProviderName"
                             class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-200 bg-gray-50 text-base cursor-not-allowed">
-                        <span class="error-message" id="error-service_provider_name"></span>
+                        <span v-if="fieldErrors.service_provider_name" class="text-red-600 text-sm mt-1 block">@{{ fieldErrors.service_provider_name }}</span>
                     </div>
                 </div>
 
@@ -56,8 +60,8 @@
                         <label for="service_provider_contact" class="block text-gray-800 font-semibold mb-2 text-base">Service Provider Contact</label>
                         <input type="text" id="service_provider_contact" name="service_provider_contact" readonly
                             v-model="serviceProviderContact"
-                            class="form-control w/full px-4 py-3 rounded-lg border-2 border-gray-200 bg-gray-50 text-base cursor-not-allowed">
-                        <span class="error-message" id="error-service_provider_contact"></span>
+                            class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-200 bg-gray-50 text-base cursor-not-allowed">
+                        <span v-if="fieldErrors.service_provider_contact" class="text-red-600 text-sm mt-1 block">@{{ fieldErrors.service_provider_contact }}</span>
                     </div>
                 </div>
             </fieldset>
@@ -87,7 +91,7 @@
                                 <span class="text-gray-700">Did not wear the glovespic tank</span>
                             </label>
                         </div>
-                        <span class="error-message" id="error-safety_measures"></span>
+                        <span v-if="fieldErrors.safety_measures" class="text-red-600 text-sm mt-1 block">@{{ fieldErrors.safety_measures }}</span>
                     </div>
                 </div>
 
@@ -112,7 +116,7 @@
                                 <span class="text-gray-700">Disappointed</span>
                             </label>
                         </div>
-                        <span class="error-message" id="error-fsm_quality_level"></span>
+                        <span v-if="fieldErrors.fsm_quality_level" class="text-red-600 text-sm mt-1 block">@{{ fieldErrors.fsm_quality_level }}</span>
                     </div>
                 </div>
 
@@ -120,7 +124,7 @@
                     <div class="col-12 mb-3">
                         <textarea id="dissatisfaction_comment_q2" name="dissatisfaction_comment_q2" rows="3" placeholder="Please explain..."
                             class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-base resize-y transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10"></textarea>
-                        <span class="error-message" id="error-dissatisfaction_comment_q2"></span>
+                        <span v-if="fieldErrors.dissatisfaction_comment_q2" class="text-red-600 text-sm mt-1 block">@{{ fieldErrors.dissatisfaction_comment_q2 }}</span>
                     </div>
                 </div>
 
@@ -145,7 +149,7 @@
                                 <span class="text-gray-700">Disappointed</span>
                             </label>
                         </div>
-                        <span class="error-message" id="error-service_delivery_efficiency"></span>
+                        <span v-if="fieldErrors.service_delivery_efficiency" class="text-red-600 text-sm mt-1 block">@{{ fieldErrors.service_delivery_efficiency }}</span>
                     </div>
                 </div>
 
@@ -153,7 +157,7 @@
                     <div class="col-12 mb-3">
                         <textarea id="dissatisfaction_comment_q3" name="dissatisfaction_comment_q3" rows="3" placeholder="Please explain..."
                             class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-base resize-y transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10"></textarea>
-                        <span class="error-message" id="error-dissatisfaction_comment_q3"></span>
+                        <span v-if="fieldErrors.dissatisfaction_comment_q3" class="text-red-600 text-sm mt-1 block">@{{ fieldErrors.dissatisfaction_comment_q3 }}</span>
                     </div>
                 </div>
 
@@ -178,7 +182,7 @@
                                 <span class="text-gray-700">Disappointed</span>
                             </label>
                         </div>
-                        <span class="error-message" id="error-overall_satisfaction"></span>
+                        <span v-if="fieldErrors.overall_satisfaction" class="text-red-600 text-sm mt-1 block">@{{ fieldErrors.overall_satisfaction }}</span>
                     </div>
                 </div>
 
@@ -186,7 +190,7 @@
                     <div class="col-12 mb-3">
                         <textarea id="dissatisfaction_comment_q4" name="dissatisfaction_comment_q4" rows="3" placeholder="Please explain..."
                             class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-base resize-y transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10"></textarea>
-                        <span class="error-message" id="error-dissatisfaction_comment_q4"></span>
+                        <span v-if="fieldErrors.dissatisfaction_comment_q4" class="text-red-600 text-sm mt-1 block">@{{ fieldErrors.dissatisfaction_comment_q4 }}</span>
                     </div>
                 </div>
 
@@ -211,7 +215,7 @@
                                 <span class="text-gray-700">Disappointed</span>
                             </label>
                         </div>
-                        <span class="error-message" id="error-service_quality_price"></span>
+                        <span v-if="fieldErrors.service_quality_price" class="text-red-600 text-sm mt-1 block">@{{ fieldErrors.service_quality_price }}</span>
                     </div>
                 </div>
 
@@ -219,113 +223,7 @@
                     <div class="col-12 mb-3">
                         <textarea id="dissatisfaction_comment_q5" name="dissatisfaction_comment_q5" rows="3" placeholder="Please explain..."
                             class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-base resize-y transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10"></textarea>
-                        <span class="error-message" id="error-dissatisfaction_comment_q5"></span>
-                    </div>
-                </div>
-            </fieldset>
-
-            <!-- Payment & Future Service Section -->
-            <fieldset class="app_fieldset">
-                <legend>Payment & Future Service</legend>
-
-                <div class="row">
-                    <div class="col-12 mb-3">
-                        <label class="block text-gray-800 font-semibold mb-2 text-base">6. Are you satisfied with the payment mechanism? <span class="text-red-500">*</span></label>
-                        <div class="flex flex-wrap gap-3">
-                            <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="payment_mechanism_satisfied" value="1" v-model="paymentMechanismSatisfied" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Yes</span>
-                            </label>
-                            <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="payment_mechanism_satisfied" value="0" v-model="paymentMechanismSatisfied" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">No</span>
-                            </label>
-                        </div>
-                        <span class="error-message" id="error-payment_mechanism_satisfied"></span>
-                    </div>
-                </div>
-
-                <div class="row" v-if="paymentMechanismSatisfied === '0'">
-                    <div class="col-12 mb-3">
-                        <textarea id="payment_mechanism_comments" name="payment_mechanism_comments" rows="3" placeholder="Please explain..."
-                            class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-base resize-y transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10"></textarea>
-                        <span class="error-message" id="error-payment_mechanism_comments"></span>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-12 mb-3">
-                        <label class="block text-gray-800 font-semibold mb-2 text-base">7. Are you willing to apply again in the future? <span class="text-red-500">*</span></label>
-                        <div class="flex flex-wrap gap-3">
-                            <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="apply_in_future" value="1" v-model="applyInFuture" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Yes</span>
-                            </label>
-                            <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="apply_in_future" value="0" v-model="applyInFuture" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">No</span>
-                            </label>
-                        </div>
-                        <span class="error-message" id="error-apply_in_future"></span>
-                    </div>
-                </div>
-
-                <div class="row" v-if="applyInFuture === '0'">
-                    <div class="col-12 mb-3">
-                        <textarea id="apply_in_future_comments" name="apply_in_future_comments" rows="3" placeholder="Please explain..."
-                            class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-base resize-y transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10"></textarea>
-                        <span class="error-message" id="error-apply_in_future_comments"></span>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-12 mb-3">
-                        <label class="block text-gray-800 font-semibold mb-2 text-base">8. Would you recommend this FSM service to others? <span class="text-red-500">*</span></label>
-                        <div class="flex flex-wrap gap-3">
-                            <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="recommend_service" value="1" v-model="recommendService" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Yes</span>
-                            </label>
-                            <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="recommend_service" value="0" v-model="recommendService" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">No</span>
-                            </label>
-                        </div>
-                        <span class="error-message" id="error-recommend_service"></span>
-                    </div>
-                </div>
-
-                <div class="row" v-if="recommendService === '0'">
-                    <div class="col-12 mb-3">
-                        <textarea id="recommend_service_comments" name="recommend_service_comments" rows="3" placeholder="Please explain..."
-                            class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-base resize-y transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10"></textarea>
-                        <span class="error-message" id="error-recommend_service_comments"></span>
-                    </div>
-                </div>
-            </fieldset>
-
-            <!-- Additional Information Section -->
-            <fieldset class="app_fieldset">
-                <legend>Additional Information</legend>
-
-                <div class="row">
-                    <div class="col-12 mb-3">
-                        <label class="block text-gray-800 font-semibold mb-2 text-base">9. How did you hear about the FSM service? <span class="text-red-500">*</span></label>
-                        <div class="space-y-2">
-                            <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="checkbox" name="advertising_media[]" value="Social Media" v-model="advertisingMedia" class="w-5 h-5 text-[#0056b3] border-gray-300 rounded focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Social Media</span>
-                            </label>
-                            <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="checkbox" name="advertising_media[]" value="Neighbours" v-model="advertisingMedia" class="w-5 h-5 text-[#0056b3] border-gray-300 rounded focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Neighbours</span>
-                            </label>
-                            <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="checkbox" name="advertising_media[]" value="Campaign" v-model="advertisingMedia" class="w-5 h-5 text-[#0056b3] border-gray-300 rounded focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Campaign</span>
-                            </label>
-                        </div>
-                        <span class="error-message" id="error-advertising_media"></span>
+                        <span v-if="fieldErrors.dissatisfaction_comment_q5" class="text-red-600 text-sm mt-1 block">@{{ fieldErrors.dissatisfaction_comment_q5 }}</span>
                     </div>
                 </div>
             </fieldset>
@@ -334,11 +232,6 @@
             <input type="text" name="website" id="website" style="display:none" tabindex="-1" autocomplete="off" v-model="website">
             <input type="hidden" name="form_loaded_at" id="form_loaded_at" v-model="formLoadedAt">
             <input type="hidden" name="customer_gender" id="customer_gender" v-model="customerGender">
-
-            <!-- Error Message Display -->
-            <div v-if="errorMessage" class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
-                @{{ errorMessage }}
-            </div>
 
             <div class="text-center mt-4">
                 <button type="submit" id="feedback-submit-btn" :disabled="isSubmitting" class="mx-auto bg-primary text-white py-4 rounded-2xl font-bold text-lg hover:shadow-lg hover:shadow-primary/30 active:scale-[0.98] transition-all uppercase tracking-wider px-8">

@@ -423,7 +423,6 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
             const serviceProviderContact = ref('');
 
             const safetyMeasures = ref([]);
-            const advertisingMedia = ref([]);
 
             const fsmQualityLevel = ref(null);
             const serviceDeliveryEfficiency = ref(null);
@@ -435,19 +434,11 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
             const dissatisfactionCommentQ4 = ref('');
             const dissatisfactionCommentQ5 = ref('');
 
-            const paymentMechanismSatisfied = ref(null);
-            const paymentMechanismComments = ref('');
-
-            const applyInFuture = ref(null);
-            const applyInFutureComments = ref('');
-
-            const recommendService = ref(null);
-            const recommendServiceComments = ref('');
-
             const website = ref('');
             const formLoadedAt = ref(Math.floor(Date.now() / 1000));
 
             const errorMessage = ref('');
+            const fieldErrors = ref({});
             const isSubmitting = ref(false);
             const showModal = ref(false);
             const countdown = ref(5);
@@ -484,7 +475,6 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 serviceProviderContact.value = '';
 
                 safetyMeasures.value = [];
-                advertisingMedia.value = [];
 
                 fsmQualityLevel.value = null;
                 serviceDeliveryEfficiency.value = null;
@@ -496,28 +486,45 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 dissatisfactionCommentQ4.value = '';
                 dissatisfactionCommentQ5.value = '';
 
-                paymentMechanismSatisfied.value = null;
-                paymentMechanismComments.value = '';
-
-                applyInFuture.value = null;
-                applyInFutureComments.value = '';
-
-                recommendService.value = null;
-                recommendServiceComments.value = '';
-
                 website.value = '';
                 formLoadedAt.value = Math.floor(Date.now() / 1000);
             }
 
             async function handleSubmit() {
                 errorMessage.value = '';
+                fieldErrors.value = {}; // Clear previous errors
 
-                // simple validation
-                if (!applicationId.value) { errorMessage.value = 'Please enter Application Number'; return; }
-                if (!customerName.value) { errorMessage.value = 'Please enter Service Receiver Name'; return; }
-                if (!customerNumber.value) { errorMessage.value = 'Please enter Service Receiver Contact'; return; }
-                if (safetyMeasures.value.length === 0) { errorMessage.value = 'Please select at least one safety measure'; return; }
-                if (advertisingMedia.value.length === 0) { errorMessage.value = 'Please select how you heard about the service'; return; }
+                // Field-by-field validation
+                if (!applicationId.value) {
+                    fieldErrors.value.application_id = 'Application Number is required';
+                }
+                if (!customerName.value) {
+                    fieldErrors.value.customer_name = 'Service Receiver Name is required';
+                }
+                if (!customerNumber.value) {
+                    fieldErrors.value.customer_number = 'Service Receiver Contact is required';
+                }
+                if (safetyMeasures.value.length === 0) {
+                    fieldErrors.value.safety_measures = 'Please select at least one safety measure';
+                }
+                if (!fsmQualityLevel.value) {
+                    fieldErrors.value.fsm_quality_level = 'Please rate the attitude of emptiers';
+                }
+                if (!serviceDeliveryEfficiency.value) {
+                    fieldErrors.value.service_delivery_efficiency = 'Please rate the response time';
+                }
+                if (!overallSatisfaction.value) {
+                    fieldErrors.value.overall_satisfaction = 'Please rate overall satisfaction';
+                }
+                if (!serviceQualityPrice.value) {
+                    fieldErrors.value.service_quality_price = 'Please rate price satisfaction';
+                }
+
+                // If any field errors exist, stop submission
+                if (Object.keys(fieldErrors.value).length > 0) {
+                    errorMessage.value = 'Please fix the errors before submitting';
+                    return;
+                }
 
                 isSubmitting.value = true;
                 const payload = new FormData();
@@ -529,7 +536,6 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 payload.append('service_provider_contact', serviceProviderContact.value);
 
                 payload.append('safety_measures', safetyMeasures.value.join(', '));
-                payload.append('advertising_media', advertisingMedia.value.join(', '));
 
                 payload.append('fsm_quality_level', fsmQualityLevel.value || '');
                 payload.append('service_delivery_efficiency', serviceDeliveryEfficiency.value || '');
@@ -539,13 +545,6 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 payload.append('dissatisfaction_comment_q3', dissatisfactionCommentQ3.value);
                 payload.append('dissatisfaction_comment_q4', dissatisfactionCommentQ4.value);
                 payload.append('dissatisfaction_comment_q5', dissatisfactionCommentQ5.value);
-
-                payload.append('payment_mechanism_satisfied', paymentMechanismSatisfied.value || '');
-                payload.append('payment_mechanism_comments', paymentMechanismComments.value);
-                payload.append('apply_in_future', applyInFuture.value || '');
-                payload.append('apply_in_future_comments', applyInFutureComments.value);
-                payload.append('recommend_service', recommendService.value || '');
-                payload.append('recommend_service_comments', recommendServiceComments.value);
 
                 payload.append('website', website.value);
                 payload.append('form_loaded_at', formLoadedAt.value);
@@ -603,7 +602,6 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 serviceProviderName,
                 serviceProviderContact,
                 safetyMeasures,
-                advertisingMedia,
                 fsmQualityLevel,
                 serviceDeliveryEfficiency,
                 overallSatisfaction,
@@ -612,15 +610,10 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 dissatisfactionCommentQ3,
                 dissatisfactionCommentQ4,
                 dissatisfactionCommentQ5,
-                paymentMechanismSatisfied,
-                paymentMechanismComments,
-                applyInFuture,
-                applyInFutureComments,
-                recommendService,
-                recommendServiceComments,
                 website,
                 formLoadedAt,
                 errorMessage,
+                fieldErrors,
                 isSubmitting,
                 showModal,
                 countdown,
