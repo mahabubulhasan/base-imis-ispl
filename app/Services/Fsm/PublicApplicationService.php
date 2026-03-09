@@ -2,9 +2,8 @@
 namespace App\Services\Fsm;
 
 use App\Models\BuildingInfo\Building;
-use App\Models\Fsm\Application;
+use App\Models\Fsm\PendingApplication;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class PublicApplicationService
@@ -19,14 +18,10 @@ class PublicApplicationService
             'ward' => 'required|string',
             'road_code' => 'nullable|string|max:255',
             'tax_id' => [
-                'required',
+                'required_if:has_tax_id,yes',
+                'nullable',
                 'string',
                 'max:50',
-                function ($attribute, $value, $fail) {
-                    if (!$this->getBuilding($value)) {
-                        $fail('Invalid Tax ID.');
-                    }
-                }
             ],
             'address' => 'required|string|max:500',
             'proposed_emptying_date' => 'required|date|after_or_equal:today',
@@ -36,7 +31,7 @@ class PublicApplicationService
             'customer_name.required' => 'Customer Name is required.',
             'customer_contact.required' => 'Contact No. is required.',
             'ward.required' => 'Ward is required.',
-            'tax_id.required' => 'Tax ID is required.',
+            'tax_id.required_if' => 'Tax ID is required when you indicate you have one.',
             'address.required' => 'Address is required.',
             'proposed_emptying_date.required' => 'Proposed Emptying Date is required.',
             'proposed_emptying_date.after_or_equal' => 'Proposed Emptying Date must be today or a future date.',
@@ -45,25 +40,6 @@ class PublicApplicationService
             'longitude.numeric' => 'Longitude must be a valid number.',
             'longitude.between' => 'Longitude must be between -180 and 180.',
         ]);
-    }
-
-    private function getApplicationStatus($containment_id)
-    {
-        return Application::where('containment_id', $containment_id)
-            ->where('emptying_status', false)
-            ->whereNull('deleted_at')
-            ->exists();
-    }
-
-    private function getBuilding($tax_code)
-    {
-        return Building::where('tax_code', $tax_code)->first();
-    }
-
-    private function getContainmentId(Building $building)
-    {
-        $firstContainment = $building->containments()->first();
-        return $firstContainment?->pivot?->containment_id;
     }
 
     public function createApplication(Request $request)
@@ -75,31 +51,19 @@ class PublicApplicationService
                 ->withInput();
         }
 
-        $building = $this->getBuilding($request->tax_id);
-        $containment_id = $this->getContainmentId($building);
-
-        if($this->getApplicationStatus($containment_id))
-        {
-            return redirect()->back()->withInput()->with('error',"Error! Containment already has running Application.");
-        }
-
         try {
-            $application = Application::create($request->all());
-            $application->containment_id = $containment_id;
-            $application->bin = $building->bin;
-            $application->road_code = $request->road_code;
-            $application->proposed_emptying_date = $request->proposed_emptying_date;
-            $application->address = $request->address;
-
-            $owner = $building->owners;
-            $application->customer_name = $request->holding_owner_name ?? $request->customer_name ?? $owner->owner_name;
-            $application->customer_contact = $request->customer_contact ?? $owner->owner_contact;
-            $application->customer_gender = $owner->owner_gender;
-
-            $application->application_date = now()->format('Y-m-d H:i:s');
-            $application->applicant_name = $request->customer_name ?? $owner->owner_name ?? null;
-            $application->applicant_contact = $request->customer_contact ?? $owner->owner_contact ?? null;
-            $application->save();
+            PendingApplication::create([
+                'tax_id' => $request->tax_id,
+                'customer_name' => $request->customer_name,
+                'customer_contact' => $request->customer_contact,
+                'holding_owner_name' => $request->holding_owner_name,
+                'ward' => $request->ward,
+                'road_code' => $request->road_code,
+                'address' => $request->address,
+                'proposed_emptying_date' => $request->proposed_emptying_date,
+                'notes' => $request->notes,
+                'is_approved' => false,
+            ]);
         } catch (\Throwable $e) {
             return redirect()->back()->withInput()->with('error', "Error! Application couldn't be created.");
         }
