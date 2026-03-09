@@ -381,12 +381,6 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                         </div>
                     </div>
                 </div>
-                <div class="flex flex-wrap gap-4 hidden">
-                    <button onclick="document.getElementById('dashboardBtn').click()" class="bg-primary text-white px-8 py-4 rounded-xl font-bold hover:shadow-lg hover:shadow-primary/25 transition-all flex items-center group">
-                        Explore Dashboard
-                        <span class="material-icons ml-2 group-hover:translate-x-1 transition-transform">arrow_forward</span>
-                    </button>
-                </div>
             </div>
 
             <!-- Right Column: Login Card -->
