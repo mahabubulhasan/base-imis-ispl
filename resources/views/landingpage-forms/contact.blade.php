@@ -6,7 +6,7 @@
         <p class="text-slate-700 text-base md:text-lg leading-relaxed">Address: Lakshmipur Municipality Office,
             Lakshmipur, Bangladesh</p>
         <p class="text-slate-700 text-base md:text-lg leading-relaxed">Phone: [Contact Number]</p>
-        <p class="text-slate-700 text-base md:text-lg leading-relaxed">Email: [Email Address]</p>
+        <p class="text-slate-700 text-base md:text-lg leading-relaxed">Email: <a href="mailto:lakshmipurpourashava@gmail.com" class="text-primary hover:underline">lakshmipurpourashava@gmail.com</a></p>
         <p class="text-gray-600 text-base md:text-lg leading-relaxed">Office Hours: Sunday to Thursday, 9:00 AM -
             5:00 PM</p>
         <p class="text-gray-600 text-base md:text-lg leading-relaxed mt-5">For any inquiries or assistance, please
