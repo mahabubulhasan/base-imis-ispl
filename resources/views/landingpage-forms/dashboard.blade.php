@@ -1,4 +1,4 @@
-<!-- Last Modified: 2024
+<!-- Last Modified: 2026-03-18
 // Developed By: Streams Tech Ltd.
 // Description: Public Dashboard with infographic card layout for municipal data visualization -->
 
@@ -173,86 +173,6 @@
             </div>
         </section>
 
-        <!-- FSM Services & Public Health Section -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            <section>
-                <h3 class="text-2xl font-extrabold text-slate-900 mb-6 flex items-center gap-2">
-                    <span class="w-8 h-1 bg-accent-purple rounded-full"></span>
-                    FSM Services
-                </h3>
-                <div class="bg-white rounded-2xl border border-slate-200 divide-y divide-slate-100 overflow-hidden">
-                    <div class="grid grid-cols-2">
-                        <div class="p-6">
-                            <p class="text-slate-500 font-bold text-xs uppercase mb-2">Service Providers</p>
-                            <h5 class="text-3xl font-black fsm-providers">-</h5>
-                        </div>
-                        <div class="p-6 border-l border-slate-100">
-                            <p class="text-slate-500 font-bold text-xs uppercase mb-2">Desludging Vehicles</p>
-                            <h5 class="text-3xl font-black fsm-vehicles">-</h5>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-2">
-                        <div class="p-6">
-                            <p class="text-slate-500 font-bold text-xs uppercase mb-2">Treatment Plants</p>
-                            <h5 class="text-3xl font-black fsm-plants">-</h5>
-                        </div>
-                        <div class="p-6 border-l border-slate-100">
-                            <p class="text-slate-500 font-bold text-xs uppercase mb-2">Applications Responded</p>
-                            <h5 class="text-3xl font-black text-primary fsm-applications">-</h5>
-                        </div>
-                    </div>
-                    <div class="p-6 bg-slate-50 flex justify-between items-center">
-                        <div>
-                            <p class="text-slate-500 font-bold text-xs uppercase">Volume of Sludge Emptied</p>
-                            <h5 class="text-2xl font-black"><span class="fsm-volume">-</span> <span class="text-sm font-normal">m³</span></h5>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-slate-500 font-bold text-xs uppercase">Revenue Generated</p>
-                            <h5 class="text-2xl font-black text-green-600"><span class="fsm-revenue">-</span> <span class="text-sm font-normal">BDT</span></h5>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section>
-                <h3 class="text-2xl font-extrabold text-slate-900 mb-6 flex items-center gap-2">
-                    <span class="w-8 h-1 bg-accent-pink rounded-full"></span>
-                    Public Health Monitoring
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="bg-rose-50 p-8 rounded-2xl border border-rose-100 relative overflow-hidden group">
-                        <div class="relative z-10">
-                            <h5 class="text-4xl font-black text-rose-900 health-hotspots">-</h5>
-                            <p class="text-rose-700 font-bold">Health Hotspots</p>
-                        </div>
-                        <span class="material-icons-round absolute -right-4 -bottom-4 text-8xl text-rose-200/50 group-hover:scale-110 transition-transform">biotech</span>
-                    </div>
-                    <div class="bg-sky-50 p-8 rounded-2xl border border-sky-100 relative overflow-hidden group">
-                        <div class="relative z-10">
-                            <h5 class="text-4xl font-black text-sky-900 health-waterborne">-</h5>
-                            <p class="text-sky-700 font-bold">Waterborne Cases</p>
-                        </div>
-                        <span class="material-icons-round absolute -right-4 -bottom-4 text-8xl text-sky-200/50 group-hover:scale-110 transition-transform">coronavirus</span>
-                    </div>
-                </div>
-                <div class="mt-6 bg-white p-6 rounded-2xl border border-slate-200">
-                    <div class="flex items-center gap-4">
-                        <div class="bg-purple-100 p-3 rounded-full text-purple-600">
-                            <span class="material-icons-round">wc</span>
-                        </div>
-                        <div class="flex-1">
-                            <div class="flex justify-between items-end mb-1">
-                                <span class="text-sm font-bold text-slate-500 uppercase">Public Toilet Users</span>
-                                <span class="text-xl font-black health-toilet-users">-</span>
-                            </div>
-                            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                                <div class="bg-purple-500 h-full w-[65%]"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
     </div>
 
     <!-- Error Message Container -->
