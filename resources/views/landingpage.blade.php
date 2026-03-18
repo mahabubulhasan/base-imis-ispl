@@ -1,4 +1,4 @@
-<!-- Last Modified: March 8, 2026
+<!-- Last Modified: March 18, 2026
 Developed By: Streams Tech Ltd.
 Description: Modern municipal portal with hero section, glassmorphic design, and tab-based content sections -->
 <!DOCTYPE html>
@@ -411,10 +411,16 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
         <div class="px-5">
             @include('includes.branding')
         </div>
-        <div class="pt-5">
-            Implemented by <a href="https://streamstech.com" target="_blank" rel="noopener noreferrer"
-                class="text-primary font-semibold hover:underline">Streams Tech Ltd.</a> |
-            © {{ config('constants.SITE_NAME') }} {{ \Carbon\Carbon::now()->format('Y') }}. All rights reserved.
+        <div class="pt-5 mt-4 border-t border-slate-200 mx-3">
+            <div class="mx-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-left">
+                <div>
+                    © {{ config('constants.SITE_NAME') }}. All rights reserved.
+                </div>
+                <div class="sm:text-right">
+                    Implemented by <a href="https://streamstech.com" target="_blank" rel="noopener noreferrer"
+                        class="text-primary font-semibold hover:underline">Streams Tech Ltd.</a>
+                </div>
+            </div>
         </div>
     </footer>
     <script>
