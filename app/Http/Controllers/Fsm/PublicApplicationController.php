@@ -1,11 +1,12 @@
 <?php
-// Last Modified: March 8, 2026
+// Last Modified: March 24, 2026
 // Developed By: Streams Tech Ltd.
 // Description: Handles public FSM application workflows and tax-ID based autofill endpoints.
 namespace App\Http\Controllers\Fsm;
 
 use App\Http\Controllers\Controller;
 use App\Models\LayerInfo\Ward;
+use App\Models\TaxPaymentInfo\TaxPayment;
 use App\Models\TaxPaymentInfo\TaxPaymentStatus;
 use App\Models\UtilityInfo\Roadline;
 use App\Services\Fsm\PublicApplicationService;
@@ -149,13 +150,19 @@ class PublicApplicationController extends Controller
                 ], 400);
             }
 
-            $taxPaymentStatus = TaxPaymentStatus::query()
-                ->select('owner_name', 'owner_contact', 'ward')
-                ->where('tax_code', $taxId)
-                ->where('deleted_at', null)
+            $taxPaymentStatusTable = (new TaxPaymentStatus())->getTable();
+
+            $taxPayment = TaxPayment::query()
+                ->leftJoin($taxPaymentStatusTable, 'taxpayment_info.tax_payments.tax_code', '=', $taxPaymentStatusTable . '.tax_code')
+                ->select(
+                    'taxpayment_info.tax_payments.owner_name',
+                    'taxpayment_info.tax_payments.owner_contact',
+                    $taxPaymentStatusTable . '.ward'
+                )
+                ->where('taxpayment_info.tax_payments.tax_code', $taxId)
                 ->first();
 
-            if (!$taxPaymentStatus) {
+            if (!$taxPayment) {
                 return response()->json([
                     'success' => false,
                     'message' => 'No tax payment record found with this Tax ID'
@@ -165,9 +172,9 @@ class PublicApplicationController extends Controller
             return response()->json([
                 'success' => true,
                 'data' => [
-                    'owner_name' => $taxPaymentStatus->owner_name,
-                    'owner_contact' => $taxPaymentStatus->owner_contact,
-                    'ward' => $taxPaymentStatus->ward
+                    'owner_name' => $taxPayment->owner_name,
+                    'owner_contact' => $taxPayment->owner_contact,
+                    'ward' => $taxPayment->ward
                 ]
             ]);
 
