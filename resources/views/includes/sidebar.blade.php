@@ -1,5 +1,6 @@
-<!-- Last Modified Date: 07-05-2024
-Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
+<!-- // Last Modified: 12-03-2026
+// Developed By: Streams Tech Ltd.
+// Description: Sidebar navigation links and active-state handling for dashboard modules. -->
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     @if (request()->is('maps'))
     <a href="{{ url('/') }}" class="brand-link">
@@ -99,6 +100,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                             'fsm/desludging-vehicles','fsm/desludging-vehicles/*',
                             'fsm/treatment-plants/*','fsm/treatment-plants',
                             'fsm/treatment-plant-effectiveness/*','fsm/treatment-plant-effectiveness',
+                            'fsm/pending-application/*','fsm/pending-application',
                             'fsm/application/*','fsm/application',
                             'fsm/emptying/*','fsm/emptying',
                             'fsm/sludge-collection/*','fsm/sludge-collection',
@@ -116,6 +118,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                 'fsm/desludging-vehicles','fsm/desludging-vehicles/*',
                                 'fsm/treatment-plants/*','fsm/treatment-plants',
                                 'fsm/treatment-plant-effectiveness/*', 'fsm/treatment-plant-effectiveness',
+                                'fsm/pending-application/*','fsm/pending-application',
                                 'fsm/application/*','fsm/application',
                                 'fsm/emptying/*','fsm/emptying',
                                 'fsm/sludge-collection','fsm/sludge-collection/*',
@@ -252,8 +255,8 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 'List Feedbacks',
                 'List Sludge Collections',
                 'List Help Desks') || Auth::user()->hasRole('Super Admin'))
-                <li class="nav-item  {{ request()->is('fsm/application/*', 'fsm/application','fsm/emptying', 'fsm/emptying/*','fsm/sludge-collection/*','fsm/sludge-collection', 'fsm/feedback/*','fsm/feedback', 'fsm/help-desks/*','fsm/help-desks') ? 'menu-is-opening menu-open' : '' }}">
-                    <a href="#" class="nav-link {{ request()->is('fsm/application/*', 'fsm/application','fsm/emptying', 'fsm/sludge-collection/*','fsm/sludge-collection', 'fsm/feedback/*','fsm/feedback', 'fsm/help-desks/*','fsm/help-desks') ? 'active subnav' : '' }}">
+                <li class="nav-item  {{ request()->is('fsm/pending-application/*', 'fsm/pending-application', 'fsm/application/*', 'fsm/application','fsm/emptying', 'fsm/emptying/*','fsm/sludge-collection/*','fsm/sludge-collection', 'fsm/feedback/*','fsm/feedback', 'fsm/help-desks/*','fsm/help-desks') ? 'menu-is-opening menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ request()->is('fsm/pending-application/*', 'fsm/pending-application', 'fsm/application/*', 'fsm/application','fsm/emptying', 'fsm/sludge-collection/*','fsm/sludge-collection', 'fsm/feedback/*','fsm/feedback', 'fsm/help-desks/*','fsm/help-desks') ? 'active subnav' : '' }}">
                         <i class="nav-icon fa-regular fa-building"></i>
                         <p>
                             {{__('Emptying Service IMS')}} <i class="right fas fa-angle-left"></i>
@@ -261,6 +264,12 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     </a>
                     <ul class="nav nav-treeview">
                         @can('List Applications')
+                        <li class="nav-item">
+                            <a href="{{ route('pending-application.index') }}" class="nav-link {{ request()->is('fsm/pending-application/*','fsm/pending-application') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>{{__('Pending Application')}}</p>
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a href="{{ route('application.index') }}" class="nav-link {{ request()->is('fsm/application/*','fsm/application') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>

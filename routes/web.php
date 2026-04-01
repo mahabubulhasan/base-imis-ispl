@@ -1,6 +1,7 @@
 <?php
-// Last Modified Date: 10-07-2024
-// Developed By: Innovative Solution Pvt. Ltd. (ISPL)
+// Last Modified: 12-03-2026
+// Developed By: Streams Tech Ltd.
+// Description: Registers web routes including FSM pending application index, view, and delete endpoints.
 
 use App\Http\Controllers\BuildingInfo\BuildingController;
 use App\Http\Controllers\ChartController;
@@ -417,6 +418,9 @@ Route::group([
     Route::get('application/{id}/application-report', 'ApplicationController@applicationReport')->name('application.report');
     Route::get('/service-provider/{service_provider_id}', 'ApplicationController@getServiceProvider');
     Route::resource('application', 'ApplicationController');
+
+    Route::get('pending-application/getData', 'PendingApplicationController@getData')->name('pending-application.get-data');
+    Route::resource('pending-application', 'PendingApplicationController')->only(['index', 'show', 'destroy']);
 
     /**
      * Emptying Routes

@@ -121,29 +121,6 @@ class PublicFeedbackService
             $overallSatisfaction = $validatedData['overall_satisfaction'] ?? $validatedData['fsm_quality_level'];
             $feedback->fsm_service_quality = ($overallSatisfaction >= 3);
 
-            // Q6 Dissatisfaction comments
-            $feedback->comments = $this->buildDissatisfactionComments(
-                $validatedData['comments'] ?? null,
-                $validatedData['dissatisfaction_comment_q2'] ?? null,
-                $validatedData['dissatisfaction_comment_q3'] ?? null,
-                $validatedData['dissatisfaction_comment_q4'] ?? null,
-                $validatedData['dissatisfaction_comment_q5'] ?? null
-            );
-
-            // Q7 Payment mechanism
-            $feedback->payment_mechanism_comments = $validatedData['payment_mechanism_comments'] ?? null;
-
-            // Q8 Apply in future
-            $feedback->apply_in_future = $validatedData['apply_in_future'];
-            $feedback->apply_in_future_comments = $validatedData['apply_in_future_comments'] ?? null;
-
-            // Q9 Recommend service
-            $feedback->recommend_service = $validatedData['recommend_service'];
-            $feedback->recommend_service_comments = $validatedData['recommend_service_comments'] ?? null;
-
-            // Q10 Advertising media (checkboxes as comma-separated)
-            $feedback->advertising_media = $validatedData['advertising_media'];
-
             // Auto-populate service provider
             $feedback->service_provider_id = $application->service_provider_id;
 
