@@ -6,7 +6,7 @@
 namespace App\Http\Controllers\Fsm;
 
 use App\Http\Controllers\Controller;
-use App\Models\Fsm\PendingApplication;
+use App\Models\Fsm\Application;
 use App\Services\Fsm\PendingApplicationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -36,7 +36,7 @@ class PendingApplicationController extends Controller
 
     public function show(int $id): View
     {
-        $pendingApplication = PendingApplication::findOrFail($id);
+        $pendingApplication = Application::findOrFail($id);
 
         return view('fsm.pending-applications.show', [
             'pageTitle' => __('Pending Application Details'),
@@ -49,7 +49,7 @@ class PendingApplicationController extends Controller
     public function destroy(int $id): Redirector|RedirectResponse
     {
         try {
-            $pendingApplication = PendingApplication::findOrFail($id);
+            $pendingApplication = Application::findOrFail($id);
             $pendingApplication->delete();
 
             return redirect(route('pending-application.index'))

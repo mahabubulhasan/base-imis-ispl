@@ -108,7 +108,7 @@
                         name: 'id'
                     },
                     {
-                        data: 'tax_id',
+                        data: 'tax_code',
                         name: 'tax_id'
                     },
                     {
@@ -132,7 +132,7 @@
                         name: 'proposed_emptying_date'
                     },
                     {
-                        data: 'is_approved',
+                        data: 'approved_status',
                         name: 'is_approved'
                     },
                     {

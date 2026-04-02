@@ -84,6 +84,7 @@ Route::group([
     */
     Route::group(['name' => 'emptyingService'],function (){
         Route::get('/assessed-applications',[EmptyingServiceController::class,'getAssessedApplications']);
+        Route::get('/pending-applications',[EmptyingServiceController::class,'getPendingApplications']);
         Route::get('/treatment-plants',[EmptyingServiceController::class,'getTreatmentPlants']);
         Route::get('/vacutugs',[EmptyingServiceController::class, 'getVacutugs']);
         Route::get('/drivers',[EmptyingServiceController::class,'getDrivers']);

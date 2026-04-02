@@ -5,7 +5,7 @@
 
 namespace App\Services\Fsm;
 
-use App\Models\Fsm\PendingApplication;
+use App\Models\Fsm\Application;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,21 +27,21 @@ class PendingApplicationService
 
     public function getPendingApplicationsQuery(Request $request): Builder
     {
-        $query = PendingApplication::query();
+        $query = Application::query();
 
         if ($request->filled('tax_id')) {
-            $query->where('tax_id', 'ILIKE', '%' . trim($request->tax_id) . '%');
+            $query->where('tax_code', 'ILIKE', '%' . trim($request->tax_id) . '%');
         }
 
         if ($request->filled('customer_name')) {
-            $query->where('customer_name', 'ILIKE', '%' . trim($request->customer_name) . '%');
+            $query->where('applicant_name', 'ILIKE', '%' . trim($request->customer_name) . '%');
         }
 
         if ($request->filled('ward')) {
             $query->where('ward', 'ILIKE', '%' . trim($request->ward) . '%');
         }
 
-        if ($request->filled('customer_contact')) {
+        if ($request->filled('applicant_contact')) {
             $query->where('customer_contact', 'ILIKE', '%' . trim($request->customer_contact) . '%');
         }
 
@@ -53,7 +53,7 @@ class PendingApplicationService
         $query = $this->getPendingApplicationsQuery($request);
 
         return DataTables::of($query)
-            ->addColumn('action', function (PendingApplication $pendingApplication) {
+            ->addColumn('action', function (Application $pendingApplication) {
                 $actions = '';
 
                 if (Auth::user()->can('View Application')) {
@@ -70,30 +70,30 @@ class PendingApplicationService
 
                 return $actions;
             })
-            ->editColumn('proposed_emptying_date', function (PendingApplication $pendingApplication) {
+            ->editColumn('proposed_emptying_date', function (Application $pendingApplication) {
                 return $pendingApplication->proposed_emptying_date ?: '-';
             })
-            ->editColumn('is_approved', function (PendingApplication $pendingApplication) {
-                return $pendingApplication->is_approved ? __('Approved') : __('Pending');
+            ->editColumn('approved_status', function (Application $pendingApplication) {
+                return $pendingApplication->approved_status ? __('Approved') : __('Pending');
             })
             ->rawColumns(['action'])
             ->make(true);
     }
 
-    public function getShowData(PendingApplication $pendingApplication): array
+    public function getShowData(Application $pendingApplication): array
     {
         return [
             __('ID') => $pendingApplication->id,
-            __('Tax ID') => $pendingApplication->tax_id ?: '-',
-            __('Customer Name') => $pendingApplication->customer_name ?: '-',
-            __('Customer Contact') => $pendingApplication->customer_contact ?: '-',
-            __('Holding Owner Name') => $pendingApplication->holding_owner_name ?: '-',
+            __('Tax ID') => $pendingApplication->tax_code ?: '-',
+            __('Customer Name') => $pendingApplication->applicant_name ?: '-',
+            __('Customer Contact') => $pendingApplication->applicant_contact ?: '-',
+            __('Holding Owner Name') => $pendingApplication->customer_name ?: '-',
             __('Ward') => $pendingApplication->ward ?: '-',
             __('Road Code') => $pendingApplication->road_code ?: '-',
             __('Address') => $pendingApplication->address ?: '-',
             __('Proposed Emptying Date') => $pendingApplication->proposed_emptying_date ?: '-',
-            __('Notes') => $pendingApplication->notes ?: '-',
-            __('Approval Status') => $pendingApplication->is_approved ? __('Approved') : __('Pending'),
+            __('Notes') => $pendingApplication->note ?: '-',
+            __('Approval Status') => $pendingApplication->approved_status ? __('Approved') : __('Pending'),
             __('Created At') => optional($pendingApplication->created_at)->format('Y-m-d H:i:s') ?: '-',
         ];
     }

@@ -1,8 +1,7 @@
 <?php
 namespace App\Services\Fsm;
 
-use App\Models\BuildingInfo\Building;
-use App\Models\Fsm\PendingApplication;
+use App\Models\Fsm\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -52,17 +51,17 @@ class PublicApplicationService
         }
 
         try {
-            PendingApplication::create([
-                'tax_id' => $request->tax_id,
-                'customer_name' => $request->customer_name,
-                'customer_contact' => $request->customer_contact,
-                'holding_owner_name' => $request->holding_owner_name,
+            Application::create([
+                'tax_code' => $request->tax_id,
+                'applicant_name' => $request->customer_name,
+                'applicant_contact' => $request->customer_contact,
+                'customer_name' => $request->holding_owner_name,
                 'ward' => $request->ward,
                 'road_code' => $request->road_code,
                 'address' => $request->address,
                 'proposed_emptying_date' => $request->proposed_emptying_date,
-                'notes' => $request->notes,
-                'is_approved' => false,
+                'note' => $request->notes,
+                'approved_status' => false,
             ]);
         } catch (\Throwable $e) {
             return redirect()->back()->withInput()->with('error', "Error! Application couldn't be created.");

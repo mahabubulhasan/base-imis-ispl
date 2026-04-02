@@ -67,6 +67,8 @@ class Application extends Model
         'service_provider_id',
         'emergency_desludging_status',
         'containment_id',
+        'tax_code',
+        'note'
     ];
 
     /**
