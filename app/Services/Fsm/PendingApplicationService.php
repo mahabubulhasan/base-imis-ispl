@@ -51,6 +51,7 @@ class PendingApplicationService
     public function getDatatable(Request $request)
     {
         $query = $this->getPendingApplicationsQuery($request);
+        $query->where('approved_status', false);
 
         return DataTables::of($query)
             ->addColumn('action', function (Application $pendingApplication) {
