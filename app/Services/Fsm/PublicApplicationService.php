@@ -62,6 +62,7 @@ class PublicApplicationService
                 'proposed_emptying_date' => $request->proposed_emptying_date,
                 'note' => $request->notes,
                 'approved_status' => false,
+                'application_date' => now()->format('Y-m-d H:i:s'),
             ]);
         } catch (\Throwable $e) {
             return redirect()->back()->withInput()->with('error', "Error! Application couldn't be created.");
