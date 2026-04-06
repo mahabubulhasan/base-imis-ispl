@@ -41,7 +41,7 @@ Description: FSM Application Form - Vue 3 Implementation -->
                             v-model="taxId"
                             @input="taxId = formatTaxId($event.target.value)"
                             :class="['form-control w-full px-4 py-3 rounded-lg border-2 text-base transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10', fieldErrors.tax_id ? 'border-red-500' : 'border-gray-300']"
-                            placeholder="##-###-####-##"
+                            placeholder="ww-rrr-hhhh-xx"
                         >
                         <span v-if="fieldErrors.tax_id" class="text-red-500 text-sm mt-1 block">@{{ fieldErrors.tax_id }}</span>
                         <div v-if="isLoadingData" class="flex items-center gap-2 mt-2 text-blue-600">
@@ -55,20 +55,20 @@ Description: FSM Application Form - Vue 3 Implementation -->
                 </div>
             </fieldset>
 
-            <!-- Customer Information Section -->
+            <!-- Applicant Information Section -->
             <fieldset class="app_fieldset">
-                <legend>Customer Information</legend>
+                <legend>Applicant Information</legend>
 
                 <div class="row">
                     <div class="col-12 col-md-6 mb-3">
                         <label class="block text-gray-800 font-semibold mb-2 text-base">
-                            Customer Name <span class="text-red-500">*</span>
+                            Applicant Name <span class="text-red-500">*</span>
                         </label>
                         <input
                             type="text"
                             v-model="customerName"
                             :class="['form-control w-full px-4 py-3 rounded-lg border-2 text-base transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10', fieldErrors.customer_name ? 'border-red-500' : 'border-gray-300']"
-                            placeholder="Customer Name"
+                            placeholder="Applicant Name"
                         >
                         <span v-if="fieldErrors.customer_name" class="text-red-500 text-sm mt-1 block">@{{ fieldErrors.customer_name }}</span>
                     </div>
@@ -160,7 +160,7 @@ Description: FSM Application Form - Vue 3 Implementation -->
                             v-model="address"
                             :class="['form-control w-full px-4 py-3 rounded-lg border-2 text-base resize-y min-h-[100px] transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10', fieldErrors.address ? 'border-red-500' : 'border-gray-300']"
                             rows="3"
-                            placeholder="Address"
+                            placeholder="Holding Number, Road Name, Ward"
                         ></textarea>
                         <span v-if="fieldErrors.address" class="text-red-500 text-sm mt-1 block">@{{ fieldErrors.address }}</span>
                     </div>
@@ -174,7 +174,7 @@ Description: FSM Application Form - Vue 3 Implementation -->
                 <div class="row">
                     <div class="col-12 col-md-6 mb-3">
                         <label class="block text-gray-800 font-semibold mb-2 text-base">
-                            Proposed Emptying Date <span class="text-red-500">*</span>
+                            Proposed Emptying Date (mm/dd/yyyy)<span class="text-red-500">*</span>
                         </label>
                         <input
                             type="date"
