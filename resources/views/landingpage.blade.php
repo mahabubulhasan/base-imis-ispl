@@ -1,4 +1,4 @@
-<!-- Last Modified: March 18, 2026
+<!-- Last Modified: April 6, 2026
 Developed By: Streams Tech Ltd.
 Description: Modern municipal portal with hero section, glassmorphic design, and tab-based content sections -->
 <!DOCTYPE html>
@@ -489,9 +489,6 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
     }
     const FsmApplication = {
         template: '#fsmPage',
-        components: {
-            Multiselect
-        },
         setup() {
             // Form fields
             const hasTaxId = ref('');
@@ -500,26 +497,19 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
             const customerContact = ref('');
             const holdingOwnerName = ref('');
             const ward = ref('');
-            const roadCode = ref('');
-            const selectedRoad = ref(null);
             const address = ref('');
             const proposedEmptyingDate = ref('');
             const notes = ref('');
 
             // State
             const wards = ref([]);
-            const roadOptions = ref([]);
             const fieldErrors = ref({});
             const isSubmitting = ref(false);
             const showModal = ref(false);
             const successMessage = ref('');
             const countdown = ref(5);
             const wardsLoaded = ref(false);
-            const isLoadingData = ref(false);
-            const roadSearchTerm = ref('');
-            const isSearchingRoads = ref(false);
 
-            let debounceTimeout = null;
             let countdownTimer = null;
 
             // Computed
@@ -555,7 +545,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 return taxIdPattern.test(taxIdValue.trim());
             }
 
-            // Check minimum length
+            // Check minimum length before full format validation
             function hasMinimumLength(taxIdValue) {
                 const digitsOnly = taxIdValue.replace(/[^0-9]/g, '');
                 return digitsOnly.length >= 8;
@@ -583,89 +573,6 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 }
             }
 
-            // Search road names
-            async function searchRoadNames(search = '') {
-                if (isSearchingRoads.value) return;
-
-                isSearchingRoads.value = true;
-
-                try {
-                    const res = await fetch(`{{ route("client-fsm-application.get-road-names") }}?search=${encodeURIComponent(search)}&page=1`, {
-                        method: 'GET',
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    });
-                    const data = await res.json();
-
-                    if (data.results) {
-                        roadOptions.value = data.results;
-                    }
-                } catch (err) {
-                    console.error('Failed to search roads:', err);
-                } finally {
-                    isSearchingRoads.value = false;
-                }
-            }
-
-            // Handle road search from multiselect
-            function onRoadSearch(query) {
-                if (debounceTimeout) {
-                    clearTimeout(debounceTimeout);
-                }
-
-                debounceTimeout = setTimeout(() => {
-                    searchRoadNames(query);
-                }, 300);
-            }
-
-            // Clear auto-populated fields
-            function clearAutoPopulatedFields() {
-                customerName.value = '';
-                customerContact.value = '';
-                holdingOwnerName.value = '';
-                ward.value = '';
-                roadCode.value = '';
-                selectedRoad.value = null;
-                address.value = '';
-            }
-
-            // Fetch owner data by tax ID
-            async function fetchBuildingData(taxIdValue) {
-                if (!taxIdValue || !isValidTaxId(taxIdValue)) {
-                    clearAutoPopulatedFields();
-                    return;
-                }
-
-                if (isLoadingData.value) return;
-
-                isLoadingData.value = true;
-
-                try {
-                    const res = await fetch(`{{ route("client-fsm-application.get-building-data") }}?tax_id=${encodeURIComponent(taxIdValue)}`, {
-                        method: 'GET',
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    });
-                    const data = await res.json();
-
-                    if (data.success && data.data) {
-                        customerName.value = data.data.owner_name || '';
-                        customerContact.value = data.data.owner_contact || '';
-                        holdingOwnerName.value = data.data.owner_name || '';
-                        ward.value = data.data.ward || '';
-                    } else {
-                        clearAutoPopulatedFields();
-                    }
-                } catch (err) {
-                    console.error('Failed to fetch owner data:', err);
-                    clearAutoPopulatedFields();
-                } finally {
-                    isLoadingData.value = false;
-                }
-            }
-
             // Clear field error
             function clearFieldError(fieldName) {
                 if (fieldErrors.value[fieldName]) {
@@ -682,14 +589,10 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 customerContact.value = '';
                 holdingOwnerName.value = '';
                 ward.value = '';
-                roadCode.value = '';
-                selectedRoad.value = null;
                 address.value = '';
                 proposedEmptyingDate.value = '';
                 notes.value = '';
                 fieldErrors.value = {};
-                roadOptions.value = [];
-                roadSearchTerm.value = '';
             }
 
             // Handle form submission
@@ -703,6 +606,10 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 }
                 if (hasTaxId.value === 'yes' && !taxId.value) {
                     fieldErrors.value.tax_id = 'Tax ID is required';
+                } else if (hasTaxId.value === 'yes' && !hasMinimumLength(taxId.value)) {
+                    fieldErrors.value.tax_id = 'Tax ID is incomplete';
+                } else if (hasTaxId.value === 'yes' && !isValidTaxId(taxId.value)) {
+                    fieldErrors.value.tax_id = 'Tax ID format must be 00-000-0000-00';
                 }
                 if (!customerName.value) {
                     fieldErrors.value.customer_name = 'Customer Name is required';
@@ -734,7 +641,6 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 formData.append('customer_contact', customerContact.value);
                 formData.append('holding_owner_name', holdingOwnerName.value);
                 formData.append('ward', ward.value);
-                formData.append('road_code', selectedRoad.value ? selectedRoad.value.id : '');
                 formData.append('address', address.value);
                 formData.append('proposed_emptying_date', proposedEmptyingDate.value);
                 formData.append('notes', notes.value);
@@ -787,28 +693,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 clearFieldError('has_tax_id');
             });
 
-            // Watch taxId for auto-fill with debounce
-            watch(taxId, (newVal) => {
-                clearFieldError('tax_id');
-
-                if (!newVal || newVal.length < 10 || !hasMinimumLength(newVal)) {
-                    if (debounceTimeout) {
-                        clearTimeout(debounceTimeout);
-                        debounceTimeout = null;
-                    }
-                    clearAutoPopulatedFields();
-                    return;
-                }
-
-                if (debounceTimeout) {
-                    clearTimeout(debounceTimeout);
-                }
-
-                debounceTimeout = setTimeout(() => {
-                    fetchBuildingData(newVal);
-                    debounceTimeout = null;
-                }, 400);
-            });
+            watch(taxId, () => clearFieldError('tax_id'));
 
             // Watch showModal for countdown
             watch(showModal, (val) => {
@@ -828,16 +713,6 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 }
             });
 
-            // Watch selectedRoad to sync with roadCode
-            watch(selectedRoad, (newVal) => {
-                if (newVal && newVal.id) {
-                    roadCode.value = newVal.id;
-                } else {
-                    roadCode.value = '';
-                }
-                clearFieldError('road_code');
-            });
-
             // Clear field errors when typing
             watch(customerName, () => clearFieldError('customer_name'));
             watch(customerContact, () => clearFieldError('customer_contact'));
@@ -847,10 +722,9 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
             watch(proposedEmptyingDate, () => clearFieldError('proposed_emptying_date'));
             watch(notes, () => clearFieldError('notes'));
 
-            // Load wards and initial roads on mount
+            // Load wards on mount
             onMounted(() => {
                 loadWards();
-                searchRoadNames(); // Preload initial roads
             });
 
             return {
@@ -860,27 +734,20 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 customerContact,
                 holdingOwnerName,
                 ward,
-                roadCode,
-                selectedRoad,
                 address,
                 proposedEmptyingDate,
                 notes,
                 wards,
-                roadOptions,
                 fieldErrors,
                 isSubmitting,
                 showModal,
                 successMessage,
                 countdown,
                 showTaxIdField,
-                isSearchingRoads,
-                isLoadingData,
                 formatTaxId,
                 formatPhone,
                 handleSubmit,
-                closeModal,
-                searchRoadNames,
-                onRoadSearch
+                closeModal
             };
         }
     }

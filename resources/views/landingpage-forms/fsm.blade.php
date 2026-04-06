@@ -1,4 +1,4 @@
-<!-- Last Modified: March 8, 2026
+<!-- Last Modified: April 6, 2026
 Developed By: Streams Tech Ltd.
 Description: FSM Application Form - Vue 3 Implementation -->
 
@@ -44,13 +44,6 @@ Description: FSM Application Form - Vue 3 Implementation -->
                             placeholder="ww-rrr-hhhh-xx"
                         >
                         <span v-if="fieldErrors.tax_id" class="text-red-500 text-sm mt-1 block">@{{ fieldErrors.tax_id }}</span>
-                        <div v-if="isLoadingData" class="flex items-center gap-2 mt-2 text-blue-600">
-                            <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            <span class="text-sm">Loading building data...</span>
-                        </div>
                     </div>
                 </div>
             </fieldset>
@@ -114,40 +107,6 @@ Description: FSM Application Form - Vue 3 Implementation -->
                             <option v-for="wardItem in wards" :key="wardItem" :value="wardItem">@{{ wardItem }}</option>
                         </select>
                         <span v-if="fieldErrors.ward" class="text-red-500 text-sm mt-1 block">@{{ fieldErrors.ward }}</span>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-12 col-md-6 mb-3">
-                        <label class="block text-gray-800 font-semibold mb-2 text-base">
-                            Road Name <small class="text-gray-500">(Optional)</small>
-                        </label>
-                        <multiselect
-                            v-model="selectedRoad"
-                            :options="roadOptions"
-                            :searchable="true"
-                            :loading="isSearchingRoads"
-                            :internal-search="false"
-                            :clear-on-select="false"
-                            :close-on-select="true"
-                            :options-limit="300"
-                            :max-height="600"
-                            :show-no-results="true"
-                            :hide-selected="false"
-                            @search-change="onRoadSearch"
-                            placeholder="Search by road name or code"
-                            label="text"
-                            track-by="id"
-                            :class="fieldErrors.road_code ? 'multiselect-error' : ''"
-                        >
-                            <template #noResult>
-                                <span>No roads found. Try a different search term.</span>
-                            </template>
-                            <template #noOptions>
-                                <span>Start typing to search for roads...</span>
-                            </template>
-                        </multiselect>
-                        <span v-if="fieldErrors.road_code" class="text-red-500 text-sm mt-1 block">@{{ fieldErrors.road_code }}</span>
                     </div>
                 </div>
 
