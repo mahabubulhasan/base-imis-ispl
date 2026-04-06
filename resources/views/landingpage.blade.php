@@ -509,6 +509,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
             const successMessage = ref('');
             const countdown = ref(5);
             const wardsLoaded = ref(false);
+            const lastAutoSelectedWard = ref('');
 
             let countdownTimer = null;
 
@@ -549,6 +550,26 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
             function hasMinimumLength(taxIdValue) {
                 const digitsOnly = taxIdValue.replace(/[^0-9]/g, '');
                 return digitsOnly.length >= 8;
+            }
+
+            function extractWardFromTaxId(taxIdValue) {
+                if (!taxIdValue || !isValidTaxId(taxIdValue)) {
+                    return '';
+                }
+
+                return taxIdValue.substring(0, 2);
+            }
+
+            function findMatchingWardOption(wardCode) {
+                if (!wardCode) {
+                    return '';
+                }
+
+                if (wards.value.includes(parseInt(wardCode, 10))) {
+                    return wardCode;
+                }
+
+                return '';
             }
 
             // Load wards
@@ -593,6 +614,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 proposedEmptyingDate.value = '';
                 notes.value = '';
                 fieldErrors.value = {};
+                lastAutoSelectedWard.value = '';
             }
 
             // Handle form submission
@@ -688,12 +710,37 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
             watch(hasTaxId, (newVal) => {
                 if (newVal !== 'yes') {
                     taxId.value = '';
+                    ward.value = '';
+                    lastAutoSelectedWard.value = '';
                     clearFieldError('tax_id');
                 }
                 clearFieldError('has_tax_id');
             });
 
-            watch(taxId, () => clearFieldError('tax_id'));
+            watch(taxId, (newVal) => {
+                clearFieldError('tax_id');
+
+                if (hasTaxId.value !== 'yes') {
+                    return;
+                }
+
+                const parsedWard = extractWardFromTaxId(newVal);
+                if(parsedWard === '') {
+                    return;
+                }
+                const matchedWard = findMatchingWardOption(parsedWard);
+
+                if (matchedWard) {
+                    ward.value = +matchedWard;
+                    lastAutoSelectedWard.value = +matchedWard;
+                    return;
+                }
+
+                if (lastAutoSelectedWard.value && ward.value === lastAutoSelectedWard.value) {
+                    ward.value = '';
+                }
+                lastAutoSelectedWard.value = '';
+            });
 
             // Watch showModal for countdown
             watch(showModal, (val) => {
