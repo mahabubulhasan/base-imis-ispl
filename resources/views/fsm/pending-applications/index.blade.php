@@ -70,12 +70,12 @@
                         <tr>
                             <th>{{ __('ID') }}</th>
                             <th>{{ __('Tax ID') }}</th>
-                            <th>{{ __('Customer Name') }}</th>
-                            <th>{{ __('Customer Contact') }}</th>
+                            <th>{{ __('Applicant Name') }}</th>
+                            <th>{{ __('Applicant Contact') }}</th>
                             <th>{{ __('Ward') }}</th>
-                            <th>{{ __('Road Code') }}</th>
+                            <th>{{ __('Address') }}</th>
                             <th>{{ __('Proposed Emptying Date') }}</th>
-                            <th>{{ __('Approval Status') }}</th>
+                            <th>{{ __('Application Date') }}</th>
                             <th>{{ __('Actions') }}</th>
                         </tr>
                     </thead>
@@ -112,28 +112,28 @@
                         name: 'tax_id'
                     },
                     {
-                        data: 'customer_name',
-                        name: 'customer_name'
+                        data: 'applicant_name',
+                        name: 'applicant_name'
                     },
                     {
-                        data: 'customer_contact',
-                        name: 'customer_contact'
+                        data: 'applicant_contact',
+                        name: 'applicant_contact'
                     },
                     {
                         data: 'ward',
                         name: 'ward'
                     },
                     {
-                        data: 'road_code',
-                        name: 'road_code'
+                        data: 'address',
+                        name: 'address'
                     },
                     {
                         data: 'proposed_emptying_date',
                         name: 'proposed_emptying_date'
                     },
                     {
-                        data: 'approved_status',
-                        name: 'is_approved'
+                        data: 'application_date',
+                        name: 'application_date'
                     },
                     {
                         data: 'action',

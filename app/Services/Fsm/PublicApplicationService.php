@@ -57,7 +57,6 @@ class PublicApplicationService
                 'applicant_contact' => $request->customer_contact,
                 'customer_name' => $request->holding_owner_name,
                 'ward' => $request->ward,
-                'road_code' => $request->road_code,
                 'address' => $request->address,
                 'proposed_emptying_date' => $request->proposed_emptying_date,
                 'note' => $request->notes,

@@ -71,11 +71,18 @@ class PendingApplicationService
 
                 return $actions;
             })
-            ->editColumn('proposed_emptying_date', function (Application $pendingApplication) {
-                return $pendingApplication->proposed_emptying_date ?: '-';
+            ->editColumn('applicant_contact', function (Application $pendingApplication) {
+                $contact = $pendingApplication->applicant_contact ?: '-';
+                if ($contact !== '-' && strlen($contact) === 10 && is_numeric($contact)) {
+                    $contact = '0' . $contact;
+                }
+                return $contact;
             })
-            ->editColumn('approved_status', function (Application $pendingApplication) {
-                return $pendingApplication->approved_status ? __('Approved') : __('Pending');
+            ->editColumn('proposed_emptying_date', function (Application $pendingApplication) {
+                return $pendingApplication->proposed_emptying_date ? $pendingApplication->proposed_emptying_date->format('Y-m-d') : '-';
+            })
+            ->editColumn('application_date', function (Application $pendingApplication) {
+                return $pendingApplication->application_date ? $pendingApplication->application_date->format('Y-m-d') : '-';
             })
             ->rawColumns(['action'])
             ->make(true);
@@ -86,16 +93,28 @@ class PendingApplicationService
         return [
             __('ID') => $pendingApplication->id,
             __('Tax ID') => $pendingApplication->tax_code ?: '-',
-            __('Customer Name') => $pendingApplication->applicant_name ?: '-',
-            __('Customer Contact') => $pendingApplication->applicant_contact ?: '-',
+            __('Applicant Name') => $pendingApplication->applicant_name ?: '-',
+            __('Applicant Contact') => $this->formatContact($pendingApplication->applicant_contact),
             __('Holding Owner Name') => $pendingApplication->customer_name ?: '-',
             __('Ward') => $pendingApplication->ward ?: '-',
-            __('Road Code') => $pendingApplication->road_code ?: '-',
             __('Address') => $pendingApplication->address ?: '-',
-            __('Proposed Emptying Date') => $pendingApplication->proposed_emptying_date ?: '-',
+            __('Proposed Emptying Date') => $pendingApplication->proposed_emptying_date ? $pendingApplication->proposed_emptying_date->format('Y-m-d') : '-',
             __('Notes') => $pendingApplication->note ?: '-',
             __('Approval Status') => $pendingApplication->approved_status ? __('Approved') : __('Pending'),
-            __('Created At') => optional($pendingApplication->created_at)->format('Y-m-d H:i:s') ?: '-',
+            __('Application Date') => optional($pendingApplication->application_date)->format('Y-m-d') ?: '-',
         ];
+    }
+
+    private function formatContact(?string $contact): string
+    {
+        if (!$contact) {
+            return '-';
+        }
+
+        if (strlen($contact) === 10 && is_numeric($contact)) {
+            return '0' . $contact;
+        }
+
+        return $contact;
     }
 }
