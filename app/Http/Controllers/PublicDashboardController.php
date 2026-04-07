@@ -1,10 +1,11 @@
 <?php
-// Last Modified Date: 30-01-2026
-// Developed By: GitHub Copilot
-// Purpose: Public Dashboard Controller - Provides dashboard data for unauthenticated users without role-based filtering
+// Last Modified: 2026-04-07
+// Developed By: Streams Tech Ltd.
+// Description: Public dashboard controller that returns unauthenticated dashboard metrics, including CWIS equity and safety indicators.
 
 namespace App\Http\Controllers;
 
+use App\Models\Cwis\cwis_mne;
 use App\Models\Fsm\VacutugType;
 use App\Models\BuildingInfo\Building;
 use App\Models\Fsm\Containment;
@@ -46,7 +47,7 @@ class PublicDashboardController extends Controller
      * Show the public dashboard.
      * Returns all dashboard data without role-based filtering for public viewing.
      *
-     * @return \Illuminate\Contracts\Support\Renderable
+        * @return \Illuminate\Contracts\Support\Renderable|\Illuminate\Http\JsonResponse
      */
     public function index()
     {
@@ -204,6 +205,8 @@ class PublicDashboardController extends Controller
 
         // Check if AJAX request - return JSON data structure
         if (request()->ajax()) {
+            $publicCwisData = $this->getPublicCwisData();
+
             return response()->json([
                 'buildings' => [
                     'total' => $buildingCount,
@@ -256,6 +259,7 @@ class PublicDashboardController extends Controller
                     'waterborne' => intval($totalWaterborne),
                     'toilet_users' => intval($totalPtUser),
                 ],
+                'cwis' => $publicCwisData,
             ]);
         }
 
@@ -330,5 +334,121 @@ class PublicDashboardController extends Controller
             'pipeCodePresenceWard',
             'treatmentPlantTest',
         ));
+    }
+
+    /**
+     * Get the latest public CWIS equity and safety indicators.
+     */
+    private function getPublicCwisData(): array
+    {
+        $indicatorMap = [
+            'EQ-1' => ['group' => 'equity', 'key' => 'eq1'],
+            'SF-1a' => ['group' => 'safety', 'key' => 'sf1a'],
+            'SF-1b' => ['group' => 'safety', 'key' => 'sf1b'],
+            'SF-1c' => ['group' => 'safety', 'key' => 'sf1c'],
+            'SF-1d' => ['group' => 'safety', 'key' => 'sf1d'],
+            'SF-1e' => ['group' => 'safety', 'key' => 'sf1e'],
+            'SF-1f' => ['group' => 'safety', 'key' => 'sf1f'],
+            'SF-1g' => ['group' => 'safety', 'key' => 'sf1g'],
+            'SF-2a' => ['group' => 'safety', 'key' => 'sf2a'],
+            'SF-2b' => ['group' => 'safety', 'key' => 'sf2b'],
+            'SF-2c' => ['group' => 'safety', 'key' => 'sf2c'],
+            'SF-3' => ['group' => 'safety', 'key' => 'sf3'],
+            'SF-3b' => ['group' => 'safety', 'key' => 'sf3b'],
+            'SF-3c' => ['group' => 'safety', 'key' => 'sf3c'],
+            'SF-3e' => ['group' => 'safety', 'key' => 'sf3e'],
+            'SF-4a' => ['group' => 'safety', 'key' => 'sf4a'],
+            'SF-4b' => ['group' => 'safety', 'key' => 'sf4b'],
+            'SF-4d' => ['group' => 'safety', 'key' => 'sf4d'],
+            'SF-5' => ['group' => 'safety', 'key' => 'sf5'],
+            'SF-6' => ['group' => 'safety', 'key' => 'sf6'],
+            'SF-7' => ['group' => 'safety', 'key' => 'sf7'],
+            'SF-9' => ['group' => 'safety', 'key' => 'sf9'],
+        ];
+
+        $defaultMetrics = [
+            'year' => null,
+            'equity' => [
+                'eq1' => ['value' => null],
+            ],
+            'safety' => [
+                'sf1a' => ['value' => null],
+                'sf1b' => ['value' => null],
+                'sf1c' => ['value' => null],
+                'sf1d' => ['value' => null],
+                'sf1e' => ['value' => null],
+                'sf1f' => ['value' => null],
+                'sf1g' => ['value' => null],
+                'sf2a' => ['value' => null],
+                'sf2b' => ['value' => null],
+                'sf2c' => ['value' => null],
+                'sf3' => ['value' => null],
+                'sf3b' => ['value' => null],
+                'sf3c' => ['value' => null],
+                'sf3e' => ['value' => null],
+                'sf4a' => ['value' => null],
+                'sf4b' => ['value' => null],
+                'sf4d' => ['value' => null],
+                'sf5' => ['value' => null],
+                'sf6' => ['value' => null],
+                'sf7' => ['value' => null],
+                'sf9' => ['value' => null],
+            ],
+        ];
+
+        $latestYear = cwis_mne::max('year');
+
+        if (!$latestYear) {
+            return $defaultMetrics;
+        }
+
+        $metrics = $defaultMetrics;
+        $metrics['year'] = $latestYear;
+
+        $records = cwis_mne::query()
+            ->where('year', $latestYear)
+            ->whereIn('indicator_code', array_keys($indicatorMap))
+            ->get(['indicator_code', 'data_value']);
+
+        foreach ($records as $record) {
+            if (!isset($indicatorMap[$record->indicator_code])) {
+                continue;
+            }
+
+            $indicator = $indicatorMap[$record->indicator_code];
+            $metrics[$indicator['group']][$indicator['key']]['value'] = $this->normalizeCwisValue($record->data_value);
+        }
+
+        return $metrics;
+    }
+
+    /**
+     * Normalize CWIS values so invalid entries can be rendered safely in the public UI.
+     *
+     * @param mixed $value
+     */
+    private function normalizeCwisValue($value): ?float
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        $normalizedValue = trim(html_entity_decode((string) $value));
+
+        if ($normalizedValue === '') {
+            return null;
+        }
+
+        $lowerValue = strtolower($normalizedValue);
+
+        if ($lowerValue === 'na' || $lowerValue === 'nan') {
+            return null;
+        }
+
+        if (!is_numeric($normalizedValue)) {
+            return null;
+        }
+
+        return (float) $normalizedValue;
     }
 }

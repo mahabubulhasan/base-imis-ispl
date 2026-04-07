@@ -1,6 +1,43 @@
 <!-- Last Modified: 2026-04-07
 // Developed By: Streams Tech Ltd.
-// Description: Public Dashboard with infographic card layout for municipal data visualization -->
+// Description: Public dashboard with infographic card layout for municipal data visualization, including CWIS equity and safety metrics. -->
+
+@php
+    $cwisEquityCards = [
+        [
+            'key' => 'eq1',
+            'code' => 'EQ-1',
+            'label' => 'Ratio of LIC access to total population access',
+            'icon' => 'balance',
+            'unit' => 'number',
+            'valueClass' => 'text-5xl md:text-6xl',
+        ],
+    ];
+
+    $cwisSafetyCards = [
+        ['key' => 'sf1a', 'code' => 'SF-1a', 'label' => 'Population with access to safe individual toilets', 'icon' => 'shield'],
+        ['key' => 'sf1b', 'code' => 'SF-1b', 'label' => 'Percentage of on-site sanitation that have been desludged', 'icon' => 'shield'],
+        ['key' => 'sf1c', 'code' => 'SF-1c', 'label' => 'Percentage of collected FS disposed at a treatment plant or at designated disposal site', 'icon' => 'shield'],
+        ['key' => 'sf1d', 'code' => 'SF-1d', 'label' => 'FS treatment capacity as a percentage of total FS generated from NSS connections (excluding safely disposed in situ)', 'icon' => 'shield'],
+        ['key' => 'sf1e', 'code' => 'SF-1e', 'label' => 'FS treatment capacity as a percentage of total FS collected from NSS connections', 'icon' => 'shield'],
+        ['key' => 'sf1f', 'code' => 'SF-1f', 'label' => 'Wastewater treatment capacity as a percentage of total wastewater generated from sewered connections and greywater generated from non-sewered connections', 'icon' => 'shield'],
+        ['key' => 'sf1g', 'code' => 'SF-1g', 'label' => 'Percentage of wastewater flow from sewered households that is safely treated', 'icon' => 'shield'],
+        ['key' => 'sf2a', 'code' => 'SF-2a', 'label' => 'Percentage LIC population with access to safe individual toilets', 'icon' => 'shield'],
+        ['key' => 'sf2b', 'code' => 'SF-2b', 'label' => 'Percentage of LIC, NSS, IHHLs that have been desludged', 'icon' => 'shield'],
+        ['key' => 'sf2c', 'code' => 'SF-2c', 'label' => 'Percentage of collected FS (collected from LIC) disposed at treatment plant or designated disposal sites', 'icon' => 'shield'],
+        ['key' => 'sf3', 'code' => 'SF-3', 'label' => 'Percentage of dependent population (those without access to a private toilet/latrine) with access to safe shared facilities (CT/PT)', 'icon' => 'shield'],
+        ['key' => 'sf3b', 'code' => 'SF-3b', 'label' => 'Percentage of CTs that adhere to principles of universal design', 'icon' => 'shield'],
+        ['key' => 'sf3c', 'code' => 'SF-3c', 'label' => 'Percentage of users of CTs that are women', 'icon' => 'shield'],
+        ['key' => 'sf3e', 'code' => 'SF-3e', 'label' => 'Percentage of PTs where handwashing stations are functional with soap and water available', 'icon' => 'shield'],
+        ['key' => 'sf4a', 'code' => 'SF-4a', 'label' => 'Percentage of PTs where FS and WW generated is safely transported to TP or safely disposed in situ', 'icon' => 'shield'],
+        ['key' => 'sf4b', 'code' => 'SF-4b', 'label' => 'Percentage of PTs that adhere to principles of universal design', 'icon' => 'shield'],
+        ['key' => 'sf4d', 'code' => 'SF-4d', 'label' => 'Percentage of users of PTs that are women', 'icon' => 'shield'],
+        ['key' => 'sf5', 'code' => 'SF-5', 'label' => 'Percentage of educational institutions where FS/WW generated is safely transported to TP or safely disposed in situ', 'icon' => 'shield'],
+        ['key' => 'sf6', 'code' => 'SF-6', 'label' => 'Percentage of healthcare facilities where FS/WW generated is safely transported to TP or safely disposed in situ', 'icon' => 'shield'],
+        ['key' => 'sf7', 'code' => 'SF-7', 'label' => 'Percentage of desludging services completed mechanically or semi-mechanically (by a gulper)', 'icon' => 'shield'],
+        ['key' => 'sf9', 'code' => 'SF-9', 'label' => 'Percentage of tests which are in compliance with water quality standards for fecal coliform', 'icon' => 'shield'],
+    ];
+@endphp
 
 <div id="dashboard" class="tab-content p-5 md:p-10 bg-white min-h-[calc(100vh-100px)] animate-fadeIn">
     <!-- Loading Spinner -->
@@ -127,6 +164,63 @@
             </div>
         </section>
 
+        <!-- CWIS Dashboard -->
+        <section class="py-5">
+            <div class="flex flex-col gap-3 md:flex-row md:items-end md:justify-between mb-6">
+                <div>
+                    <h3 class="text-2xl font-extrabold text-slate-800 flex items-center gap-2">
+                        <span class="w-8 h-1 bg-cyan-600 rounded-full"></span>
+                        CWIS Dashboard
+                    </h3>
+                    <p class="text-sm text-slate-500 mt-2">Equity and Safety indicators from the latest available CWIS dataset.</p>
+                </div>
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-cyan-100 bg-cyan-50 text-sm font-semibold text-cyan-800">
+                    <span class="material-icons-round text-base">calendar_month</span>
+                    Latest CWIS Year: <span class="cwis-year">-</span>
+                </div>
+            </div>
+
+            <div class="mb-10">
+                <h4 class="text-lg font-extrabold text-slate-800 mb-4">Equity</h4>
+                <div class="grid grid-cols-1 gap-6">
+                    @foreach ($cwisEquityCards as $card)
+                        <div class="infographic-card relative overflow-hidden bg-white p-6 md:p-8 rounded-xl border border-slate-300 shadow-sm">
+                            <div class="absolute inset-x-0 top-0 h-1 bg-cyan-600"></div>
+                            <div class="flex items-start justify-between gap-4">
+                                <div class="min-w-0 flex-1">
+                                    <p class="text-xs font-black uppercase tracking-[0.24em] text-cyan-700">{{ $card['code'] }}</p>
+                                    <p class="text-slate-700 font-bold text-base md:text-lg mt-3 max-w-3xl">{{ __($card['label']) }}</p>
+                                </div>
+                                <span class="material-icons-round stat-icon text-cyan-600">{{ $card['icon'] }}</span>
+                            </div>
+                            <div class="mt-8 flex items-end justify-between gap-4">
+                                <h4 class="{{ $card['valueClass'] }} font-black text-slate-900 leading-none" data-cwis-group="equity" data-cwis-value="{{ $card['key'] }}" data-cwis-unit="{{ $card['unit'] }}">-</h4>
+                                <span class="text-sm font-semibold text-slate-500 uppercase tracking-[0.2em]">Latest value</span>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <div>
+                <h4 class="text-lg font-extrabold text-slate-800 mb-4">Safety</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    @foreach ($cwisSafetyCards as $card)
+                        <div class="infographic-card relative overflow-hidden bg-white p-6 rounded-xl border border-slate-300 shadow-sm h-full">
+                            <div class="absolute inset-x-0 top-0 h-1 bg-cyan-600/75"></div>
+                            <div class="flex items-start justify-between gap-4">
+                                <div class="min-w-0 flex-1">
+                                    <p class="text-xs font-black uppercase tracking-[0.24em] text-cyan-700">{{ $card['code'] }}</p>
+                                    <p class="text-slate-700 font-bold text-sm mt-3">{{ __($card['label']) }}</p>
+                                </div>
+                                <span class="material-icons-round stat-icon text-cyan-600">{{ $card['icon'] }}</span>
+                            </div>
+                            <h4 class="mt-8 text-3xl font-black text-slate-900 leading-none" data-cwis-group="safety" data-cwis-value="{{ $card['key'] }}" data-cwis-unit="percent">-</h4>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </section>
     </div>
 
     <!-- Error Message Container -->
@@ -140,7 +234,6 @@
   // Load Public Dashboard via AJAX
   function loadPublicDashboard() {
     const loader = document.getElementById('dashboard-loader');
-    const content = document.getElementById('dashboard-content');
     const error = document.getElementById('dashboard-error');
 
     // Show loader, hide error
@@ -156,39 +249,29 @@
         loader.classList.add('hidden');
 
         // Update Buildings section
-        document.querySelector('.building-total').textContent = formatNumber(data.buildings?.total || 0);
-        document.querySelector('.building-residential').textContent = formatNumber(data.buildings?.residential || 0);
-        document.querySelector('.building-commercial').textContent = formatNumber(data.buildings?.commercial || 0);
-        document.querySelector('.building-industrial').textContent = formatNumber(data.buildings?.industrial || 0);
-        document.querySelector('.building-mixed').textContent = formatNumber(data.buildings?.mixed_use || 0);
-        document.querySelector('.building-institution').textContent = formatNumber(data.buildings?.institution || 0);
-        document.querySelector('.building-educational').textContent = formatNumber(data.buildings?.educational || 0);
-        document.querySelector('.building-others').textContent = formatNumber(data.buildings?.others || 0);
+                setMetric('.building-total', data.buildings?.total);
+                setMetric('.building-residential', data.buildings?.residential);
+                setMetric('.building-commercial', data.buildings?.commercial);
+                setMetric('.building-industrial', data.buildings?.industrial);
+                setMetric('.building-mixed', data.buildings?.mixed_use);
+                setMetric('.building-institution', data.buildings?.institution);
+                setMetric('.building-educational', data.buildings?.educational);
+                setMetric('.building-others', data.buildings?.others);
 
         // Update Sanitation Facilities
-        document.querySelector('.sewer-count').textContent = formatNumber(data.sanitation?.sewer || 0);
-        document.querySelector('.septic-count').textContent = formatNumber(data.sanitation?.septic || 0);
-        document.querySelector('.pit-count').textContent = formatNumber(data.sanitation?.pit || 0);
-        document.querySelector('.treatment-count').textContent = formatNumber(data.sanitation?.treatment || 0);
-        document.querySelector('.composting-count').textContent = formatNumber(data.sanitation?.composting || 0);
+                setMetric('.sewer-count', data.sanitation?.sewer);
+                setMetric('.septic-count', data.sanitation?.septic);
+                setMetric('.pit-count', data.sanitation?.pit);
+                setMetric('.treatment-count', data.sanitation?.treatment);
+                setMetric('.composting-count', data.sanitation?.composting);
 
         // Update Public Utilities
-        document.querySelector('.road-length').textContent = formatNumber(data.utilities?.road || 0);
-        document.querySelector('.drainage-length').textContent = formatNumber(data.utilities?.drainage || 0);
-        document.querySelector('.water-length').textContent = formatNumber(data.utilities?.water || 0);
+                setMetric('.road-length', data.utilities?.road);
+                setMetric('.drainage-length', data.utilities?.drainage);
+                setMetric('.water-length', data.utilities?.water);
 
-        // Update FSM Services
-        document.querySelector('.fsm-providers').textContent = formatNumber(data.fsm?.providers || 0);
-        document.querySelector('.fsm-vehicles').textContent = formatNumber(data.fsm?.vehicles || 0);
-        document.querySelector('.fsm-plants').textContent = formatNumber(data.fsm?.plants || 0);
-        document.querySelector('.fsm-applications').textContent = formatNumber(data.fsm?.applications || 0);
-        document.querySelector('.fsm-volume').textContent = formatNumber(data.fsm?.volume || 0);
-        document.querySelector('.fsm-revenue').textContent = formatNumber(data.fsm?.revenue || 0);
-
-        // Update Public Health
-        document.querySelector('.health-hotspots').textContent = formatNumber(data.health?.hotspots || 0);
-        document.querySelector('.health-waterborne').textContent = formatNumber(data.health?.waterborne || 0);
-        document.querySelector('.health-toilet-users').textContent = formatNumber(data.health?.toilet_users || 0);
+                // Update CWIS Dashboard
+                updateCwisMetrics(data.cwis || {});
       },
       error: function() {
         // Hide loader
@@ -202,7 +285,56 @@
   }
 
   function formatNumber(num) {
-    return parseInt(num).toLocaleString();
+        const numericValue = Number(num || 0);
+        return Math.round(numericValue).toLocaleString();
+    }
+
+    function setMetric(selector, value) {
+        const element = document.querySelector(selector);
+
+        if (!element) {
+            return;
+        }
+
+        element.textContent = formatNumber(value);
+    }
+
+    function formatCwisValue(value, unit) {
+        if (value === null || value === undefined || value === '') {
+            return '-';
+        }
+
+        const numericValue = Number(value);
+
+        if (Number.isNaN(numericValue)) {
+            return '-';
+        }
+
+        const formattedValue = Number.isInteger(numericValue)
+            ? numericValue.toLocaleString()
+            : numericValue.toLocaleString(undefined, {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2,
+                });
+
+        return unit === 'percent' ? formattedValue + '%' : formattedValue;
+    }
+
+    function updateCwisMetrics(cwis) {
+        const yearElement = document.querySelector('.cwis-year');
+
+        if (yearElement) {
+            yearElement.textContent = cwis.year || '-';
+        }
+
+        document.querySelectorAll('[data-cwis-value]').forEach(function(element) {
+            const group = element.dataset.cwisGroup;
+            const key = element.dataset.cwisValue;
+            const unit = element.dataset.cwisUnit || 'number';
+            const value = cwis?.[group]?.[key]?.value ?? null;
+
+            element.textContent = formatCwisValue(value, unit);
+        });
   }
 </script>
 @endpush
