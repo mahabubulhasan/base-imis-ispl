@@ -36,7 +36,7 @@
             <label class="text-sm font-semibold text-slate-700 ml-1">Email Address</label>
             <div class="relative">
                 <span class="material-icons absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">email</span>
-                <input type="text" name="username" placeholder="superadmin@gmail.com" required aria-label="Username"
+                <input type="text" name="username" placeholder="Email Address" required aria-label="Username"
                     value="{{ old('username') }}"
                     class="w-full pl-12 pr-4 py-4 rounded-2xl bg-slate-50 border-none ring-1 ring-slate-200 focus:ring-2 focus:ring-primary transition-all text-slate-900 @error('username') ring-red-500 @enderror" />
             </div>
@@ -49,7 +49,7 @@
             <label class="text-sm font-semibold text-slate-700 ml-1">Password</label>
             <div class="relative">
                 <span class="material-icons absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">lock</span>
-                <input type="password" name="password" placeholder="••••••••••••" required aria-label="Password"
+                <input type="password" name="password" placeholder="Password" required aria-label="Password"
                     class="w-full pl-12 pr-4 py-4 rounded-2xl bg-slate-50 border-none ring-1 ring-slate-200 focus:ring-2 focus:ring-primary transition-all text-slate-900 @error('password') ring-red-500 @enderror" />
             </div>
             @error('password')

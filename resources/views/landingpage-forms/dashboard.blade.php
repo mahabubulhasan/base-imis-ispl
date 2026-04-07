@@ -1,4 +1,4 @@
-<!-- Last Modified: 2026-03-18
+<!-- Last Modified: 2026-04-07
 // Developed By: Streams Tech Ltd.
 // Description: Public Dashboard with infographic card layout for municipal data visualization -->
 
@@ -71,7 +71,7 @@
         <section class="py-5">
             <h3 class="text-2xl font-extrabold text-slate-800 mb-6 flex items-center gap-2">
                 <span class="w-8 h-1 bg-cyan-600 rounded-full"></span>
-                Sanitation Facilities
+                Building Sanitation Facilities
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
                 <div class="infographic-card relative overflow-hidden bg-white p-6 rounded-xl border border-slate-300 shadow-sm">
@@ -111,18 +111,18 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="infographic-card relative overflow-hidden bg-white p-6 rounded-xl border border-slate-300 shadow-sm">
                     <span class="material-icons-round stat-icon text-cyan-600">add_road</span>
-                    <p class="text-slate-700 font-bold text-sm mb-1">Total length of Road (m)</p>
-                    <h4 class="text-4xl font-black text-slate-900"><span class="road-length">-</span> <span class="text-base font-semibold">m</span></h4>
+                    <p class="text-slate-700 font-bold text-sm mb-1">Total Length of Road (m)</p>
+                    <h4 class="text-4xl font-black text-slate-900"><span class="road-length">-</span></h4>
                 </div>
                 <div class="infographic-card relative overflow-hidden bg-white p-6 rounded-xl border border-slate-300 shadow-sm">
-                    <span class="material-icons-round stat-icon text-cyan-600">water_damage</span>
-                    <p class="text-slate-700 font-bold text-sm mb-1">Total length of Drain (m)</p>
-                    <h4 class="text-4xl font-black text-slate-900"><span class="drainage-length">-</span> <span class="text-base font-semibold">m</span></h4>
+                    <span class="material-icons-round stat-icon text-cyan-600">plumbing</span>
+                    <p class="text-slate-700 font-bold text-sm mb-1">Total Length of Drain (m)</p>
+                    <h4 class="text-4xl font-black text-slate-900"><span class="drainage-length">-</span></h4>
                 </div>
                 <div class="infographic-card relative overflow-hidden bg-white p-6 rounded-xl border border-slate-300 shadow-sm">
                     <span class="material-icons-round stat-icon text-cyan-600">water_drop</span>
-                    <p class="text-slate-700 font-bold text-sm mb-1">Total length of Water Supply (m)</p>
-                    <h4 class="text-4xl font-black text-slate-900"><span class="water-length">-</span> <span class="text-base font-semibold">m</span></h4>
+                    <p class="text-slate-700 font-bold text-sm mb-1">Total Length of Water Supply (m)</p>
+                    <h4 class="text-4xl font-black text-slate-900"><span class="water-length">-</span></h4>
                 </div>
             </div>
         </section>
