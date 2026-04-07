@@ -117,9 +117,9 @@ class PublicFeedbackService
             $feedback->service_delivery_efficiency = $validatedData['service_delivery_efficiency'];
             $feedback->service_quality_price = $validatedData['service_quality_price'];
 
-            // Q4 Overall service - convert 1-4 scale to boolean (3-4 = true, 1-2 = false)
+            // Q4 Overall service - convert 1-3 scale to boolean (3 = true, 1-2 = false)
             $overallSatisfaction = $validatedData['overall_satisfaction'] ?? $validatedData['fsm_quality_level'];
-            $feedback->fsm_service_quality = ($overallSatisfaction >= 3);
+            $feedback->fsm_service_quality = ((int) $overallSatisfaction === 3);
 
             // Auto-populate service provider
             $feedback->service_provider_id = $application->service_provider_id;

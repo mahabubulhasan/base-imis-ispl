@@ -44,20 +44,20 @@ class PublicFeedbackRequest extends FormRequest
             // Q1: Safety equipment usage (single-choice answer)
             'safety_measures' => 'required|string|in:Yes,No,Unknown|max:250',
 
-            // Q2: Attitude of emptiers (1-4 scale)
-            'fsm_quality_level' => 'required|integer|between:1,4',
+            // Q2: Attitude of emptiers (1-3 scale)
+            'fsm_quality_level' => 'required|integer|between:1,3',
             'dissatisfaction_comment_q2' => 'nullable|string|max:1000|required_if:fsm_quality_level,1',
 
-            // Q3: Response time of emptying service (1-4 scale)
-            'service_delivery_efficiency' => 'required|integer|between:1,4',
+            // Q3: Response time of emptying service (1-3 scale)
+            'service_delivery_efficiency' => 'required|integer|between:1,3',
             'dissatisfaction_comment_q3' => 'nullable|string|max:1000|required_if:service_delivery_efficiency,1',
 
-            // Q4: Overall service satisfaction (1-4 scale) - stored as boolean conversion
-            'overall_satisfaction' => 'required|integer|between:1,4',
+            // Q4: Overall service satisfaction (1-3 scale) - stored as boolean conversion
+            'overall_satisfaction' => 'required|integer|between:1,3',
             'dissatisfaction_comment_q4' => 'nullable|string|max:1000|required_if:overall_satisfaction,1',
 
-            // Q5: Price satisfaction (1-4 scale)
-            'service_quality_price' => 'required|integer|between:1,4',
+            // Q5: Price satisfaction (1-3 scale)
+            'service_quality_price' => 'required|integer|between:1,3',
             'dissatisfaction_comment_q5' => 'nullable|string|max:1000|required_if:service_quality_price,1',
 
             // Anti-spam fields
