@@ -1,11 +1,11 @@
 {{--
-// Last Modified: 2026-02-23
+// Last Modified: 2026-04-07
 // Developed By: Streams Tech Ltd.
 // Description: Map interface view with tools for road, sewer, drain, and water supply network addition.
 --}}
-<!-- Last Modified Date: 22-02-2026
+<!-- Last Modified Date: 07-04-2026
 Developed By: Streams Tech Ltd. & Innovative Solution Pvt. Ltd. (ISPL)
-Description: Map interface view with tools for road, sewer, drain, and water supply network addition. Ward select field border removed. Road Code text field and Use Extension checkbox added to Add Road Network form. Base Road Code and Extension fields appear/hide based on Use Extension checkbox state. Road Code auto-populates with base road code + extension. Ward and Hierarchy fields visibility toggled based on Road Type selection (visible only for Municipality Road). -->
+Description: Map interface view with tools for road, sewer, drain, and water supply network addition. Ward select field border removed. Road Code text field and Use Extension checkbox added to Add Road Network form. Base Road Code and Extension fields appear/hide based on Use Extension checkbox state. Road Code auto-populates with base road code + extension. Ward field visibility toggled based on Road Type selection while Hierarchy remains visible and defaults to Primary for Municipality Road only. -->
 
 @extends('layouts.maps')
 @section('title', __('Map'))
@@ -227,12 +227,12 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                                             {!! Form::select('ward', $wards, null, ['class' => 'form-control', 'placeholder' => __('Ward'), 'id' => 'ward_select']);!!}
                                         </div>
 
-                                        <div class="add-road-form-group pt-2">
-                                            {!! Form::label('hierarchy',__('Hierarchy'),['class' => 'control-label'],false) !!}
-                                            {!! Form::select('hierarchy', $roadHierarchy, null, ['class' => 'form-control', 'placeholder' => __('Road Hierarchy')]);!!}
-                                        </div>
-
                                         {!! Form::hidden('serial_number', null, ['id' => 'serial_number']) !!}
+                                    </div>
+
+                                    <div class="add-road-form-group pt-2">
+                                        {!! Form::label('hierarchy',__('Hierarchy'),['class' => 'control-label'],false) !!}
+                                        {!! Form::select('hierarchy', $roadHierarchy, null, ['class' => 'form-control', 'placeholder' => __('Road Hierarchy'), 'id' => 'hierarchy']);!!}
                                     </div>
 
                                     <div class="add-road-form-group pt-2">
@@ -1963,16 +1963,18 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                 }
             });
 
-            // Municipality fields visibility toggle based on Road Type selection
+            // Municipality-only fields visibility toggle based on Road Type selection
             const roadTypeSelect = $('#road_type');
             const municipalityFieldsContainer = $('#municipality_fields_container');
+            const hierarchySelect = $('#hierarchy');
 
-            // Toggle fields visibility on road type change
+            // Toggle municipality-only fields and hierarchy default on road type change
             roadTypeSelect.change(function() {
                 const selectedValue = $(this).val();
                 if (selectedValue === 'MunicipalityRoad') {
                     municipalityFieldsContainer.slideDown();
                     $('#road_code_field').prop('readonly', true).data('auto-generated', true);
+                    hierarchySelect.val('Primary');
                 } else {
                     municipalityFieldsContainer.slideUp();
                     $('#road_code_field').prop('readonly', false).data('auto-generated', false);
@@ -1980,8 +1982,11 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                     $('#road_code_field').val('');
                     $('#ward_select').val('');
                     $('#serial_number').val('');
+                    hierarchySelect.val('');
                 }
             });
+
+            roadTypeSelect.trigger('change');
 
             // Road code auto-generation logic for Municipality Road
             const wardSelect = $('#ward_select');
@@ -4515,14 +4520,16 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                 const extension = $('#extension').val();
                 const roadUid = useExtension ? baseRoadCode : $('#road_code_field').val();
                 const roadExt = useExtension ? extension : null;
+                const roadTypeValue = $('#road_type').val();
                 const wardValue = $('#ward_select').val() || $('[name="ward"]').val();
+                const hierarchyValue = roadTypeValue === 'MunicipalityRoad' ? $('#hierarchy').val() : null;
 
                 // Dynamically get the road form data
                 formData = {
                     'name': $('#name').val(),
-                    'road_type': $('#road_type').val(),
+                    'road_type': roadTypeValue,
                     'ward': wardValue,
-                    'hierarchy': $('#hierarchy').val(),
+                    'hierarchy': hierarchyValue,
                     'surface_type': $('#surface_type').val(),
                     'length': $('#length').val(),
                     'carrying_width': $('#carrying_width').val(),
