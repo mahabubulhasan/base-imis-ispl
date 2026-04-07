@@ -1,5 +1,5 @@
 <?php
-// Last Modified: 2026-02-11
+// Last Modified: 2026-04-07
 // Developed By: Streams Tech Ltd.
 // Description: Service class for handling public feedback operations
 namespace App\Services\Fsm;
@@ -109,7 +109,7 @@ class PublicFeedbackService
             $feedback->customer_number = $validatedData['customer_number'];
             $feedback->customer_address = $validatedData['customer_address'] ?? null;
 
-            // Safety measures (checkboxes as comma-separated)
+            // Safety equipment response (Yes/No/Unknown)
             $feedback->safety_measures = $validatedData['safety_measures'];
 
             // Satisfaction ratings (Q2-Q5)
@@ -128,7 +128,9 @@ class PublicFeedbackService
             $feedback->user_id = null;
 
             // Default values
-            $feedback->wear_ppe = true; // Default assumption
+            $feedback->wear_ppe = $validatedData['safety_measures'] === 'Unknown'
+                ? null
+                : $validatedData['safety_measures'] === 'Yes';
             $feedback->price_reasonable = true; // Default
 
             $feedback->save();

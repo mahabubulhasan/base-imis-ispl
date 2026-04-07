@@ -1,5 +1,5 @@
 <?php
-// Last Modified: 2026-02-11
+// Last Modified: 2026-04-07
 // Developed By: Streams Tech Ltd.
 // Description: Validates public feedback form submissions
 namespace App\Http\Requests\Fsm;
@@ -41,8 +41,8 @@ class PublicFeedbackRequest extends FormRequest
             'service_provider_name' => 'nullable|string|max:255',
             'service_provider_contact' => 'nullable|string|max:20',
 
-            // Q1: Safety measures (checkboxes as comma-separated string)
-            'safety_measures' => 'required|string|max:250',
+            // Q1: Safety equipment usage (single-choice answer)
+            'safety_measures' => 'required|string|in:Yes,No,Unknown|max:250',
 
             // Q2: Attitude of emptiers (1-4 scale)
             'fsm_quality_level' => 'required|integer|between:1,4',
@@ -80,7 +80,8 @@ class PublicFeedbackRequest extends FormRequest
             'customer_number.required' => 'Service Receiver Contact is required.',
             'service_provider_name.string' => 'Invalid service provider name.',
             'service_provider_contact.string' => 'Invalid service provider contact.',
-            'safety_measures.required' => 'Please select at least one safety measure.',
+            'safety_measures.required' => 'Please select Yes, No, or Unknown.',
+            'safety_measures.in' => 'Invalid safety equipment response selected.',
             'fsm_quality_level.required' => 'Please rate the attitude of the emptiers.',
             'fsm_quality_level.between' => 'Invalid rating value.',
             'service_delivery_efficiency.required' => 'Please rate the response time.',

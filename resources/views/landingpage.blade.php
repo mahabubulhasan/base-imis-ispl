@@ -1,4 +1,4 @@
-<!-- Last Modified: April 6, 2026
+<!-- Last Modified: April 7, 2026
 Developed By: Streams Tech Ltd.
 Description: Modern municipal portal with hero section, glassmorphic design, and tab-based content sections -->
 <!DOCTYPE html>
@@ -808,7 +808,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
             const serviceProviderName = ref('');
             const serviceProviderContact = ref('');
 
-            const safetyMeasures = ref([]);
+            const safetyMeasures = ref('');
 
             const fsmQualityLevel = ref(null);
             const serviceDeliveryEfficiency = ref(null);
@@ -867,7 +867,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 serviceProviderName.value = '';
                 serviceProviderContact.value = '';
 
-                safetyMeasures.value = [];
+                safetyMeasures.value = '';
 
                 fsmQualityLevel.value = null;
                 serviceDeliveryEfficiency.value = null;
@@ -897,8 +897,8 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 if (!customerNumber.value) {
                     fieldErrors.value.customer_number = 'Service Receiver Contact is required';
                 }
-                if (safetyMeasures.value.length === 0) {
-                    fieldErrors.value.safety_measures = 'Please select at least one safety measure';
+                if (!safetyMeasures.value) {
+                    fieldErrors.value.safety_measures = 'Please select Yes, No, or Unknown';
                 }
                 if (!fsmQualityLevel.value) {
                     fieldErrors.value.fsm_quality_level = 'Please rate the attitude of emptiers';
@@ -928,7 +928,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 payload.append('service_provider_name', serviceProviderName.value);
                 payload.append('service_provider_contact', serviceProviderContact.value);
 
-                payload.append('safety_measures', safetyMeasures.value.join(', '));
+                payload.append('safety_measures', safetyMeasures.value || '');
 
                 payload.append('fsm_quality_level', fsmQualityLevel.value || '');
                 payload.append('service_delivery_efficiency', serviceDeliveryEfficiency.value || '');

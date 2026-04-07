@@ -1,5 +1,5 @@
 {{--
-// Last Modified: 2026-02-11
+// Last Modified: 2026-04-07
 // Developed By: Streams Tech Ltd.
 // Description: Public feedback landing page form
 --}}
@@ -79,23 +79,19 @@
 
                 <div class="row">
                     <div class="col-12 mb-3">
-                        <label class="block text-gray-800 font-semibold mb-2 text-base">1. Safety of emptiers and customer is very important. Please indicate which measures the emptiers followed during the service: <span class="text-red-500">*</span></label>
-                        <div class="space-y-2">
+                        <label class="block text-gray-800 font-semibold mb-2 text-base">1. Did the emptier wear safety equipment? <span class="text-red-500">*</span></label>
+                        <div class="flex flex-wrap gap-3">
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="checkbox" name="safety_measures[]" value="Used hand gloves" v-model="safetyMeasures" class="w-5 h-5 text-[#0056b3] border-gray-300 rounded focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Used hand gloves</span>
+                                <input type="radio" name="safety_measures" value="Yes" v-model="safetyMeasures" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
+                                <span class="text-gray-700">Yes</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="checkbox" name="safety_measures[]" value="Used mask" v-model="safetyMeasures" class="w-5 h-5 text-[#0056b3] border-gray-300 rounded focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Used mask</span>
+                                <input type="radio" name="safety_measures" value="No" v-model="safetyMeasures" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
+                                <span class="text-gray-700">No</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="checkbox" name="safety_measures[]" value="Used apron" v-model="safetyMeasures" class="w-5 h-5 text-[#0056b3] border-gray-300 rounded focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Used apron</span>
-                            </label>
-                            <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="checkbox" name="safety_measures[]" value="Did not wear the glovespic tank" v-model="safetyMeasures" class="w-5 h-5 text-[#0056b3] border-gray-300 rounded focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Did not wear the glovespic tank</span>
+                                <input type="radio" name="safety_measures" value="Unknown" v-model="safetyMeasures" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
+                                <span class="text-gray-700">Unknown</span>
                             </label>
                         </div>
                         <span v-if="fieldErrors.safety_measures" class="text-red-600 text-sm mt-1 block">@{{ fieldErrors.safety_measures }}</span>
