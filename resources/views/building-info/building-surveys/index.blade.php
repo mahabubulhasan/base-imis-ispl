@@ -1,3 +1,8 @@
+{{--
+// Last Modified: 2026-04-07
+// Developed By: Streams Tech Ltd.
+// Description: Building survey listing page with KML preview modal and survey filters
+--}}
 @extends('layouts.dashboard')
 @section('title', $page_title)
 @push('style')
@@ -435,11 +440,11 @@ var map = new ol.Map({
         }),
     ],
     view: new ol.View({
-        center: ol.proj.transform([85.37004580498977, 27.643296216592432], 'EPSG:4326', 'EPSG:3857'),
+        center: ol.proj.transform([90.83, 22.9443], 'EPSG:4326', 'EPSG:3857'),
         // zoom: 12,
         minZoom: 12.5,
         maxZoom: 25,
-        extent: ol.proj.transformExtent([85.32348539192756, 27.58711426558866, 85.44082675863419, 27.684646263435823], 'EPSG:4326', 'EPSG:3857')
+        extent: ol.proj.transformExtent([90.70, 22.84, 90.96, 23.05], 'EPSG:4326', 'EPSG:3857')
     })
 });
 
@@ -458,7 +463,7 @@ function addExtraLayer(key, name, layer) {
 setInitialZoom();
 
 function setInitialZoom() {
-    map.getView().setCenter(ol.proj.transform([85.38334613018505, 27.634613503939818], 'EPSG:4326', 'EPSG:3857'));
+    map.getView().setCenter(ol.proj.transform([90.83, 22.9443], 'EPSG:4326', 'EPSG:3857'));
     map.getView().setZoom(12);
 };
 
