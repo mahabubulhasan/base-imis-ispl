@@ -113,10 +113,12 @@ class BuildingRequest extends FormRequest
     public function rules()
     {
         // API update route uses POST /building-info/update/{bin},
-        // so prefer update rules whenever a BIN route param is present.
-        $rules = ($this->route('bin') || $this->route('building'))
-            ? $this->update()
-            : ($this->isMethod('POST') ? $this->store() : $this->update());
+        // while create uses POST /building-info/buildings.
+        if ($this->route('bin') || $this->route('building')) {
+            $rules = $this->update();
+        } else {
+            $rules = $this->isMethod('POST') ? $this->store() : $this->update();
+        }
         return $rules;
     }
 
@@ -154,8 +156,6 @@ class BuildingRequest extends FormRequest
                 'regex:/^\s*\d{2}-\d{3}-\d{4}-\d{2}(\s*,\s*\d{2}-\d{3}-\d{4}-\d{2})*\s*$/'
             ],
             'structure_type_id' => 'required',
-             //year of building Construction
-            'construction_year' => 'required|date|before_or_equal:today',
              //year of building Construction
             'construction_year' => 'required|date|before_or_equal:today',
             'floor_count' => 'required|numeric|min:0.1',
@@ -283,12 +283,6 @@ class BuildingRequest extends FormRequest
             'diff_abled_male_pop' => 'nullable|integer|min:0|exclude_if:diff_abled_male_pop,0|lte:male_population',
             'diff_abled_female_pop' => 'nullable|integer|min:0|exclude_if:diff_abled_female_pop,0|lte:female_population',
             'diff_abled_others_pop' => 'nullable|integer|min:0|exclude_if:diff_abled_others_pop,0|lte:other_population',
-            //Lic Information
-            'low_income_hh' => 'required',
-            'lic_id' => 'required_if:lic_status,1',
-            //water source Information
-            'water_source_id' => 'required',
-            //Lic Information
             'low_income_hh' => 'required',
             'lic_id' => 'required_if:lic_status,1',
             //water source Information

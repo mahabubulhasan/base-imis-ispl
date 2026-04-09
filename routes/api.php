@@ -113,6 +113,8 @@ Route::group([
         Route::post('/save-containment',[BuildingSurveyController::class,'saveContainment']);
     });
     Route::group(['name' => 'buildingInfo', 'prefix' => 'building-info'],function (){
+        Route::get('/buildings/create-data', [ApiBuildingController::class, 'createData']);
+        Route::post('/buildings', [ApiBuildingController::class, 'store']);
         Route::get('/buildings/{bin}/edit-data', [ApiBuildingController::class, 'editData']);
         Route::post('/update/{bin}', [ApiBuildingController::class, 'update']);
     });
