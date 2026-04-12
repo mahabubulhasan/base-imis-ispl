@@ -35,6 +35,7 @@ class DatabaseSeeder extends Seeder
 
         // Payment Modules
         $this->call(SwmInfoSeeder::class);
+        $this->call(Swm\WorkTypeSeeder::class);
         $this->call(TaxPaymentInfoSeeder::class);
         $this->call(WaterSupplyInfoSeeder::class);
 

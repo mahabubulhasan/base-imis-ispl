@@ -29,6 +29,11 @@ class Organization extends Model
         return $this->hasMany(User::class, 'swm_organization_id', 'id');
     }
 
+    public function workers()
+    {
+        return $this->hasMany(Worker::class, 'organization_id', 'id');
+    }
+
     public function scopeOperational($query)
     {
         return $query->where('status', true);

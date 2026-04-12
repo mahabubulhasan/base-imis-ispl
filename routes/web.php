@@ -204,6 +204,32 @@ Route::group([
             'update' => 'swm.organizations.update',
             'destroy' => 'swm.organizations.destroy',
         ]);
+
+        Route::get('work-types/data', 'WorkTypeController@getData')->name('swm.work-types.data');
+        Route::get('work-types/export', 'WorkTypeController@export')->name('swm.work-types.export');
+        Route::get('work-types/{work_type}/history', 'WorkTypeController@history')->name('swm.work-types.history');
+        Route::resource('work-types', 'WorkTypeController')->names([
+            'index' => 'swm.work-types.index',
+            'create' => 'swm.work-types.create',
+            'store' => 'swm.work-types.store',
+            'show' => 'swm.work-types.show',
+            'edit' => 'swm.work-types.edit',
+            'update' => 'swm.work-types.update',
+            'destroy' => 'swm.work-types.destroy',
+        ]);
+
+        Route::get('workers/data', 'WorkerController@getData')->name('swm.workers.data');
+        Route::get('workers/export', 'WorkerController@export')->name('swm.workers.export');
+        Route::get('workers/{worker}/history', 'WorkerController@history')->name('swm.workers.history');
+        Route::resource('workers', 'WorkerController')->names([
+            'index' => 'swm.workers.index',
+            'create' => 'swm.workers.create',
+            'store' => 'swm.workers.store',
+            'show' => 'swm.workers.show',
+            'edit' => 'swm.workers.edit',
+            'update' => 'swm.workers.update',
+            'destroy' => 'swm.workers.destroy',
+        ]);
     });
 });
 

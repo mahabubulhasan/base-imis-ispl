@@ -842,6 +842,72 @@ class PermissionsSeeder extends Seeder
                 ],
             ],
             [
+                "group" => "SWM Service Provider Work Types",
+                "perms" => [
+                    [
+                        "type" => "List",
+                        "name" => "List SWM Work Types",
+                    ],
+                    [
+                        "type" => "View",
+                        "name" => "View SWM Work Type",
+                    ],
+                    [
+                        "type" => "Add",
+                        "name" => "Add SWM Work Type",
+                    ],
+                    [
+                        "type" => "Edit",
+                        "name" => "Edit SWM Work Type",
+                    ],
+                    [
+                        "type" => "Delete",
+                        "name" => "Delete SWM Work Type",
+                    ],
+                    [
+                        "type" => "History",
+                        "name" => "View SWM Work Type History",
+                    ],
+                    [
+                        "type" => "Export",
+                        "name" => "Export SWM Work Types to CSV",
+                    ],
+                ],
+            ],
+            [
+                "group" => "SWM Service Provider Workers",
+                "perms" => [
+                    [
+                        "type" => "List",
+                        "name" => "List SWM Workers",
+                    ],
+                    [
+                        "type" => "View",
+                        "name" => "View SWM Worker",
+                    ],
+                    [
+                        "type" => "Add",
+                        "name" => "Add SWM Worker",
+                    ],
+                    [
+                        "type" => "Edit",
+                        "name" => "Edit SWM Worker",
+                    ],
+                    [
+                        "type" => "Delete",
+                        "name" => "Delete SWM Worker",
+                    ],
+                    [
+                        "type" => "History",
+                        "name" => "View SWM Worker History",
+                    ],
+                    [
+                        "type" => "Export",
+                        "name" => "Export SWM Workers to CSV",
+                    ],
+                ],
+            ],
+            [
                 "group" => "Building Structures",
                 "perms" => [
                     [

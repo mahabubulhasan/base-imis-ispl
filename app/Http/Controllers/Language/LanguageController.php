@@ -477,6 +477,8 @@ class LanguageController extends Controller
         'roles' => 'Roles',
         'service_providers' => 'Service Providers',
         'swm_organizations' => 'SWM Organizations',
+        'swm_work_types' => 'SWM Service Provider Work Types',
+        'swm_workers' => 'SWM Service Provider Workers',
         'sewer_page' => 'Sewer System Overview',
         'sewer_connection' => 'Sewer Connections',
         'sewage_network' => 'Sewage Network',

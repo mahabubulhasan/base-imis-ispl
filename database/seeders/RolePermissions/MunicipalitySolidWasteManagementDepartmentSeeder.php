@@ -28,7 +28,13 @@ class MunicipalitySolidWasteManagementDepartmentSeeder extends Seeder
 
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Swm Service Payment']));
 
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['SWM Service Provider Organizations']));
+                    // Solid Waste ISS → Service Providers: organizations, work types, and workers (same area in the app).
+                    $swmServiceProviderGroups = [
+                        'SWM Service Provider Organizations',
+                        'SWM Service Provider Work Types',
+                        'SWM Service Provider Workers',
+                    ];
+                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', $swmServiceProviderGroups));
 
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Maps'])
                         ->whereIn('name', [

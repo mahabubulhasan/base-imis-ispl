@@ -119,6 +119,9 @@ class OrganizationController extends Controller
             if ($organization->users()->exists()) {
                 return redirect()->route('swm.organizations.index')->with('error', __('Cannot delete SWM organization that has associated user information.'));
             }
+            if ($organization->workers()->exists()) {
+                return redirect()->route('swm.organizations.index')->with('error', __('Cannot delete SWM organization that has associated worker information.'));
+            }
             $organization->delete();
 
             return redirect()->route('swm.organizations.index')->with('success', __('SWM organization deleted successfully.'));

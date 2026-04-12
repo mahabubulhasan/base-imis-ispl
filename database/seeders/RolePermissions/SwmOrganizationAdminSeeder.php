@@ -22,6 +22,9 @@ class SwmOrganizationAdminSeeder extends Seeder
                 $createdRole->givePermissionTo(Permission::all()->whereIn('group', [
                     'SWM Service Provider Organizations',
                 ]));
+                $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['SWM Service Provider Workers']));
+                $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['SWM Service Provider Work Types'])
+                    ->whereIn('type', ['List', 'View']));
                 $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Users'])
                     ->whereIn('type', [
                         'List',
