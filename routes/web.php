@@ -187,6 +187,27 @@ Route::group([
 });
 
 Route::group([
+    'prefix' => 'swm',
+    'namespace' => 'Swm',
+    'middleware' => 'auth',
+], function () {
+    Route::prefix('service-providers')->group(function () {
+        Route::get('organizations/data', 'OrganizationController@getData')->name('swm.organizations.data');
+        Route::get('organizations/export', 'OrganizationController@export')->name('swm.organizations.export');
+        Route::get('organizations/{organization}/history', 'OrganizationController@history')->name('swm.organizations.history');
+        Route::resource('organizations', 'OrganizationController')->names([
+            'index' => 'swm.organizations.index',
+            'create' => 'swm.organizations.create',
+            'store' => 'swm.organizations.store',
+            'show' => 'swm.organizations.show',
+            'edit' => 'swm.organizations.edit',
+            'update' => 'swm.organizations.update',
+            'destroy' => 'swm.organizations.destroy',
+        ]);
+    });
+});
+
+Route::group([
     'name' => 'sewerconnection',
     'prefix' => 'sewerconnection',
     'namespace' => 'SewerConnection',

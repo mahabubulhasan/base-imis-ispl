@@ -476,6 +476,7 @@ class LanguageController extends Controller
         'road_network' => 'Road Network',
         'roles' => 'Roles',
         'service_providers' => 'Service Providers',
+        'swm_organizations' => 'SWM Organizations',
         'sewer_page' => 'Sewer System Overview',
         'sewer_connection' => 'Sewer Connections',
         'sewage_network' => 'Sewage Network',

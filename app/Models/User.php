@@ -9,6 +9,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\DB;
 use \App\Models\Fsm\TreatmentPlant;
 use App\Models\Fsm\ServiceProvider;
+use App\Models\Swm\Organization;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Model;
@@ -75,6 +76,11 @@ class User extends Authenticatable
     public function service_provider()
     {
         return $this->belongsTo('App\Models\Fsm\ServiceProvider', 'service_provider_id');
+    }
+
+    public function swmOrganization()
+    {
+        return $this->belongsTo(Organization::class, 'swm_organization_id');
     }
     public function emptyingServices()
     {

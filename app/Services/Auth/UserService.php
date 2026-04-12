@@ -18,6 +18,7 @@ use Spatie\Permission\Models\Role;
 use App\Models\Fsm\HelpDesk;
 use App\Models\Fsm\ServiceProvider;
 use App\Models\Fsm\TreatmentPlant;
+use App\Models\Swm\Organization;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
@@ -51,6 +52,8 @@ class UserService
     {
         if (Auth::user()->hasRole('Service Provider - Admin')) {
             return (User::where('service_provider_id', '=', Auth::user()->service_provider_id)->where('id', '!=', Auth::id())->latest('created_at')->get());
+        } elseif (Auth::user()->hasRole('SWM Organization - Admin')) {
+            return (User::where('swm_organization_id', '=', Auth::user()->swm_organization_id)->where('id', '!=', Auth::id())->latest('created_at')->get());
         } else if (Auth::user()->hasRole('Treatment Plant - Admin')) {
             return (User::where('treatment_plant_id', '=', Auth::user()->treatment_plant_id)->where('id', '!=', Auth::id())->latest('created_at')->get());
         } else if ((Auth::user()->hasRole('Municipality - Sanitation Department'))) {
@@ -123,12 +126,17 @@ class UserService
         } else {
             $serviceProviders = null;
         }
+        if ($userDetail->swm_organization_id) {
+            $swmOrganization = Organization::withTrashed()->find($userDetail->swm_organization_id);
+        } else {
+            $swmOrganization = null;
+        }
 
         $userRoles = array();
         foreach ($userDetail->roles as $role) {
             $userRoles[] = $role->name;
         }
-        return ['roles' => $userRoles, 'helpDesks' => $helpDesks, 'treatmentPlants' => $treatmentPlants, 'serviceProviders' => $serviceProviders];
+        return ['roles' => $userRoles, 'helpDesks' => $helpDesks, 'treatmentPlants' => $treatmentPlants, 'serviceProviders' => $serviceProviders, 'swmOrganization' => $swmOrganization];
     }
 
     /**
@@ -153,9 +161,11 @@ class UserService
             switch ($user->user_type) {
                 case ('Service Provider'):
                     $user->service_provider_id = $input['service_provider_id'];
+                    $user->swm_organization_id = null;
                     break;
                 case ('Treatment Plant'):
                     $user->treatment_plant_id = $input['treatment_plant_id'];
+                    $user->swm_organization_id = null;
                 break;
                 case('Help Desk'):
                     if(isset($input['service_provider_id'])){
@@ -163,7 +173,13 @@ class UserService
 
                     }
                     $user->help_desk_id = isset($input['help_desk_id']) ? $input['help_desk_id'] : (isset($input['help_desk_id_1']) ? $input['help_desk_id_1'] : $input['help_desk_id_2']);
-                
+                    $user->swm_organization_id = null;
+                    break;
+                case ('SWM Organization'):
+                    $user->swm_organization_id = $input['swm_organization_id'];
+                    $user->service_provider_id = null;
+                    $user->treatment_plant_id = null;
+                    $user->help_desk_id = null;
                     break;
                 default:
                     break;
@@ -199,11 +215,13 @@ class UserService
                     $user->service_provider_id = $input['service_provider_id'];
                     $user->help_desk_id =  null;
                     $user->treatment_plant_id =  null;
+                    $user->swm_organization_id = null;
                     break;
                 case ('Treatment Plant'):
                     $user->treatment_plant_id = $input['treatment_plant_id'];
                     $user->help_desk_id =  null;
                     $user->service_provider_id =  null;
+                    $user->swm_organization_id = null;
 
                 break;
                 case('Help Desk'):
@@ -212,7 +230,14 @@ class UserService
                     }
                     $user->help_desk_id = $input['help_desk_id'];
                     $user->treatment_plant_id =  null;
+                    $user->swm_organization_id = null;
                 break;
+                case ('SWM Organization'):
+                    $user->swm_organization_id = $input['swm_organization_id'] ?? null;
+                    $user->service_provider_id = null;
+                    $user->treatment_plant_id = null;
+                    $user->help_desk_id = null;
+                    break;
             default:
                     break;
             }

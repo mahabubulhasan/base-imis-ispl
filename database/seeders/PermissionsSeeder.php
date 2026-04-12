@@ -809,6 +809,39 @@ class PermissionsSeeder extends Seeder
                 ]
             ],
             [
+                "group" => "SWM Service Provider Organizations",
+                "perms" => [
+                    [
+                        "type" => "List",
+                        "name" => "List SWM Organizations",
+                    ],
+                    [
+                        "type" => "View",
+                        "name" => "View SWM Organization",
+                    ],
+                    [
+                        "type" => "Add",
+                        "name" => "Add SWM Organization",
+                    ],
+                    [
+                        "type" => "Edit",
+                        "name" => "Edit SWM Organization",
+                    ],
+                    [
+                        "type" => "Delete",
+                        "name" => "Delete SWM Organization",
+                    ],
+                    [
+                        "type" => "History",
+                        "name" => "View SWM Organization History",
+                    ],
+                    [
+                        "type" => "Export",
+                        "name" => "Export SWM Organizations to CSV",
+                    ],
+                ],
+            ],
+            [
                 "group" => "Building Structures",
                 "perms" => [
                     [

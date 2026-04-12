@@ -73,14 +73,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
         <div class="form-group row">
             {!! Form::label(__('User Type'),null,['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
-                {!! Form::select('user_type', ["Service Provider"=>"Service Provider", "Treatment Plant"=>"Treatment Plant", "Help Desk"=>"Help Desk"], null, ['class' => 'form-control userType', 'placeholder' => __('User Type')]) !!}
+                {!! Form::select('user_type', ["Service Provider"=>"Service Provider", "Treatment Plant"=>"Treatment Plant", "Help Desk"=>"Help Desk", "SWM Organization"=>"SWM Organization"], null, ['class' => 'form-control userType', 'placeholder' => __('User Type')]) !!}
             </div>
         </div>
     @else
         <div class="form-group row required">
             {!! Form::label(__('User Type'),null,['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
-                {!! Form::select('user_type', ["Municipality"=>"Municipality", "Service Provider"=>"Service Provider", "Treatment Plant"=>"Treatment Plant", "Help Desk"=>"Help Desk", "Guest"=>"Guest"], null, ['class' => 'form-control userType', 'placeholder' => __('User Type')]) !!}
+                {!! Form::select('user_type', ["Municipality"=>"Municipality", "Service Provider"=>"Service Provider", "Treatment Plant"=>"Treatment Plant", "Help Desk"=>"Help Desk", "SWM Organization"=>"SWM Organization", "Guest"=>"Guest"], null, ['class' => 'form-control userType', 'placeholder' => __('User Type')]) !!}
             </div>
         </div>
     @endif
@@ -104,6 +104,12 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
         
   
           </div>
+    </div>
+    <div class="form-group row required" id="swm_organization" style="display:none;">
+        {!! Form::label('swm_organization_id', __('SWM Organization'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::select('swm_organization_id', $swmOrganizations ?? [], null, ['class' => 'form-control', 'placeholder' => __('SWM Organization')]) !!}
+        </div>
     </div>
     @if (!$isEdit)
     <div class="form-group row required" id="service_help_desk">
@@ -234,25 +240,30 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
       switch (userType) {
         case 'Service Provider':
           $('#service_provider').show().prop("required", true);
-          $('#treatment_plant, #help_desk').hide();
+          $('#treatment_plant, #help_desk, #swm_organization').hide();
           $('#edit_help_desk').hide();
           break;
         case 'Municipality':
         case 'Guest':
-          $('#service_provider, #treatment_plant, #help_desk').hide();
+          $('#service_provider, #treatment_plant, #help_desk, #swm_organization').hide();
           $('#edit_help_desk').hide();
           break;
         case 'Treatment Plant':
-          $('#service_provider, #help_desk').hide();
+          $('#service_provider, #help_desk, #swm_organization').hide();
           $('#treatment_plant').show();
           $('#edit_help_desk').hide();
           break;
           case'Help Desk':
             $('#edit_help_desk').show();
-            $('#treatment_plant').hide();
+            $('#treatment_plant, #swm_organization').hide();
         break;
+        case 'SWM Organization':
+          $('#swm_organization').show();
+          $('#service_provider, #treatment_plant, #help_desk').hide();
+          $('#edit_help_desk').hide();
+          break;
         default:
-          $('#service_provider, #treatment_plant, #help_desk, #service_help_desk').hide();
+          $('#service_provider, #treatment_plant, #help_desk, #service_help_desk, #swm_organization').hide();
           $('#edit_help_desk').hide();
           break;
       }

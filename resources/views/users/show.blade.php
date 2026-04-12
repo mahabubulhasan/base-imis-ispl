@@ -77,6 +77,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     </div>
                 </div>
             @endisset
+            @if(!empty($swmOrganization))
+                <div class="form-group row">
+                    {!! Form::label(__('SWM Organization'),null,['class' => 'col-sm-3 control-label']) !!}
+                    <div class="col-sm-3">
+                        {!! Form::label($swmOrganization->name,null,['class' => 'form-control']) !!}
+                    </div>
+                </div>
+            @endif
             @isset($helpDesks->name)
             <div class="form-group row">
                 {!! Form::label(__('Help Desk'),null,['class' => 'col-sm-3 control-label']) !!}

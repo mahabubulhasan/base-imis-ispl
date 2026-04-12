@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Fsm\ServiceProvider;
+use App\Models\Swm\Organization;
 use Spatie\Permission\Models\Role;
 use DB;
 use App\Models\Application;
@@ -83,8 +84,9 @@ class UserController extends Controller
         $munhelpDesks = HelpDesk::orderBy('name')->whereNull('service_provider_id')->pluck('name', 'id');
         $treatmentPlants = TreatmentPlant::Operational()->orderBy('id')->pluck('name', 'id');
         $serviceProviders = ServiceProvider::Operational()->orderBy('company_name')->pluck('company_name', 'id');
+        $swmOrganizations = Organization::operational()->orderBy('name')->pluck('name', 'id');
         $status = UserStatus::asSelectArray();
-        return view('users.create', compact('page_title', 'roles', 'treatmentPlants', 'helpDesks', 'serviceProviders', 'status', 'munhelpDesks'))
+        return view('users.create', compact('page_title', 'roles', 'treatmentPlants', 'helpDesks', 'serviceProviders', 'status', 'munhelpDesks', 'swmOrganizations'))
         ->with(['isEdit' => false]);
  
     }
@@ -132,7 +134,7 @@ class UserController extends Controller
         }
         if (!$userDetail->hasRole('Super Admin')) {
             $page_title = __("Users");
-            return view('users.show')->with([ 'userDetail' => $userDetail, 'userRoles' => $userRoles, 'page_title' => $page_title, 'treatmentPlants' => $user['treatmentPlants'], 'helpDesks' => $user['helpDesks'], 'serviceProviders' => $user['serviceProviders'], 'status' => $status,'munhelpDesks'=>$munhelpDesks]);
+            return view('users.show')->with([ 'userDetail' => $userDetail, 'userRoles' => $userRoles, 'page_title' => $page_title, 'treatmentPlants' => $user['treatmentPlants'], 'helpDesks' => $user['helpDesks'], 'serviceProviders' => $user['serviceProviders'], 'swmOrganization' => $user['swmOrganization'], 'status' => $status,'munhelpDesks'=>$munhelpDesks]);
         } else {
             abort(404);
         }
@@ -147,7 +149,8 @@ class UserController extends Controller
     public function edit(Request $request,$id)
     {
         $user = User::findorfail($id);
-      
+        $swmOrganizations = Organization::operational()->orderBy('name')->pluck('name', 'id');
+
         if (!$user->hasRole('Super Admin')) {
             $page_title = __("Edit User");
             if (!$request->user()->hasRole("Super Admin") && !$request->user()->hasRole("Municipality - Super Admin") && !$request->user()->hasRole("Municipality - IT Admin")){
@@ -177,7 +180,7 @@ class UserController extends Controller
             }
             $user->roles = $role_arr;
             $status = UserStatus::asSelectArray();
-            return view('users.edit', compact('page_title', 'user', 'roles', 'treatmentPlants', 'helpDesks', 'serviceProviders', 'status', 'munhelpDesks'))
+            return view('users.edit', compact('page_title', 'user', 'roles', 'treatmentPlants', 'helpDesks', 'serviceProviders', 'status', 'munhelpDesks', 'swmOrganizations'))
             ->with(['isEdit' => true]);
      
         } else {

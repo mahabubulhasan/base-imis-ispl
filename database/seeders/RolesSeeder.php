@@ -69,6 +69,9 @@ class RolesSeeder extends Seeder
                 'name' => 'Treatment Plant - Admin',
             ],
             [
+                'name' => 'SWM Organization - Admin',
+            ],
+            [
                 'name' => 'Guest',
             ],
         ];
@@ -93,6 +96,7 @@ class RolesSeeder extends Seeder
         $this->call(RolePermissions\ServiceProviderEmptyingOperatorSeeder::class);
         $this->call(RolePermissions\ServiceProviderHelpDeskSeeder::class);
         $this->call(RolePermissions\TreatmentPlantAdminSeeder::class);
+        $this->call(RolePermissions\SwmOrganizationAdminSeeder::class);
         $this->call(RolePermissions\GuestSeeder::class);
     }
 }

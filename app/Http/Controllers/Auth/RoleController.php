@@ -209,6 +209,7 @@ class RoleController extends Controller
         $sewers = Permission::where('group','Sewers')->orderBy('type')->get();
         $watersupply_network = Permission::where('group','WaterSupply Network')->orderBy('type')->get();
         $swm_service_payment = Permission::where('group','Swm Service Payment')->orderBy('type')->get();
+        $swm_service_provider_organizations = Permission::where('group', 'SWM Service Provider Organizations')->orderBy('type')->get();
         $property_tax_collection_iss = Permission::where('group','Property Tax Collection ISS')->orderBy('type')->get();
         $water_supply_iss = Permission::where('group','Water Supply ISS')->orderBy('type')->get();
         $data_export = Permission::where('group','Data Export')->orderBy('type')->get();
@@ -252,6 +253,7 @@ class RoleController extends Controller
             'Sewers' => $sewers,
             'WaterSupply Network' => $watersupply_network,
             'Swm Service Payment' => $swm_service_payment,
+            'SWM Service Provider Organizations' => $swm_service_provider_organizations,
             'Property Tax Collection ISS' => $property_tax_collection_iss,
             'Water Supply ISS' => $water_supply_iss,
             'Data Export' => $data_export,

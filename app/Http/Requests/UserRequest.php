@@ -43,6 +43,7 @@ class UserRequest extends Request
             'roles' => 'required',
             'user_type' => 'required',
             'service_provider_id' => 'required_if:user_type,Service Provider',
+            'swm_organization_id' => 'required_if:user_type,SWM Organization',
             'status' => 'required',
         ];
     
@@ -90,6 +91,7 @@ class UserRequest extends Request
                         ->symbols()
                         ->uncompromised(), 'confirmed'],
                     'service_provider_id' => 'required_if:user_type,Service Provider',
+                    'swm_organization_id' => 'required_if:user_type,SWM Organization',
                 ]);
     
                 return $rules;  // Ensure rules are returned after being modified
@@ -125,6 +127,7 @@ public function messages()
         'roles.required' => __('The Roles field is required.'),
         'user_type.required' => __('The User Type field is required.'),
         'service_provider_id.required_if' => __('The Service Provider ID is required when User Type is Service Provider.'),
+        'swm_organization_id.required_if' => __('The SWM organization is required when User Type is SWM Organization.'),
         'help_desk_id_2.required' => __('The Help Desk is required for Municipality Help Desk role.'),
         'help_desk_id_2.integer' => __('The Help Desk must be an integer.'),
         'help_desk_id_1.required' => __('The Help Desk is required for Service Provider Help Desk role.'),

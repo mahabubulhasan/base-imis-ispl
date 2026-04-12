@@ -474,14 +474,40 @@
             </li>
             @endif
 
-            @if(Auth::user()->hasanyPermissionInGroup(['Swm Service Payment']) || Auth::user()->hasRole('Super Admin'))
-            <li class="nav-item">
-                <a href="{{ route('swm-payment.index') }}" class="nav-link {{ request()->is('swm-payment') ? 'active' : '' }}">
+            @if(Auth::user()->hasanyPermissionInGroup(['Swm Service Payment', 'SWM Service Provider Organizations']) || Auth::user()->hasRole('Super Admin'))
+            <li class="nav-item {{ request()->is('swm-payment', 'swm-payment/*', 'swm/service-providers/organizations', 'swm/service-providers/organizations/*') ? 'menu-is-opening menu-open' : '' }}">
+                <a href="#" class="nav-link {{ request()->is('swm-payment', 'swm-payment/*', 'swm/service-providers/organizations', 'swm/service-providers/organizations/*') ? 'active' : '' }}">
                     <img src="{{ asset('img/svg/imis-icons/swmPaymentStatus.svg')}}" class="nav-icon">
                     <p>
-                        {{__('Solid Waste ISS')}}
+                        {{__('Solid Waste ISS')}} <i class="right fas fa-angle-left"></i>
                     </p>
                 </a>
+                <ul class="nav nav-treeview">
+                    @can('List SWM Service Payment Collection')
+                    <li class="nav-item">
+                        <a href="{{ route('swm-payment.index') }}" class="nav-link {{ request()->is('swm-payment', 'swm-payment/*') ? 'active' : '' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>{{__('SWM Service Payment')}}</p>
+                        </a>
+                    </li>
+                    @endcan
+                    @can('List SWM Organizations')
+                    <li class="nav-item {{ request()->is('swm/service-providers/organizations', 'swm/service-providers/organizations/*') ? 'menu-is-opening menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ request()->is('swm/service-providers/organizations', 'swm/service-providers/organizations/*') ? 'active subnav' : '' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>{{__('Service Providers')}} <i class="right fas fa-angle-left"></i></p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ action('Swm\OrganizationController@index') }}" class="nav-link {{ request()->is('swm/service-providers/organizations', 'swm/service-providers/organizations/*') ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>{{__('Organizations')}}</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    @endcan
+                </ul>
             </li>
             @endif
 
