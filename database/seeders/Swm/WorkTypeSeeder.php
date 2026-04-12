@@ -17,6 +17,7 @@ class WorkTypeSeeder extends Seeder
             'Household level collector',
             'Street sweeper',
             'Drain cleaner',
+            'Driver',
         ];
 
         foreach ($names as $name) {

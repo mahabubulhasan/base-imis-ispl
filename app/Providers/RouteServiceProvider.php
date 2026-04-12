@@ -53,6 +53,14 @@ class RouteServiceProvider extends ServiceProvider
             return \App\Models\Swm\Sts::findOrFail($value);
         });
 
+        Route::bind('vehicle_type', function ($value) {
+            return \App\Models\Swm\VehicleType::findOrFail($value);
+        });
+
+        Route::bind('vehicle', function ($value) {
+            return \App\Models\Swm\Vehicle::findOrFail($value);
+        });
+
         $this->routes(function () {
             Route::prefix('api')
                 ->middleware('api')

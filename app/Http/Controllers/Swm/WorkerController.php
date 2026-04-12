@@ -132,6 +132,9 @@ class WorkerController extends Controller
     {
         $worker = Worker::find($id);
         if ($worker && $this->workerBelongsToScopedOrg($worker)) {
+            if ($worker->vehiclesAsDriver()->exists()) {
+                return redirect()->route('swm.workers.index')->with('error', __('Cannot delete SWM worker that is assigned as driver on one or more vehicles.'));
+            }
             $worker->delete();
 
             return redirect()->route('swm.workers.index')->with('success', __('SWM worker deleted successfully.'));

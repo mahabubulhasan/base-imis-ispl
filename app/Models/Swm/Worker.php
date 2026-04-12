@@ -26,4 +26,9 @@ class Worker extends Model
     {
         return $this->belongsTo(WorkType::class, 'work_type_id');
     }
+
+    public function vehiclesAsDriver()
+    {
+        return $this->hasMany(Vehicle::class, 'driver_worker_id', 'id');
+    }
 }

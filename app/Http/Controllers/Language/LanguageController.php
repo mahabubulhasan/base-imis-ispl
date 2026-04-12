@@ -479,6 +479,8 @@ class LanguageController extends Controller
         'swm_organizations' => 'SWM Organizations',
         'swm_work_types' => 'SWM Service Provider Work Types',
         'swm_workers' => 'SWM Service Provider Workers',
+        'swm_vehicle_types' => 'SWM Service Provider Vehicle Types',
+        'swm_vehicles' => 'SWM Service Provider Vehicles',
         'swm_landfills' => 'SWM Service Facility Landfills',
         'swm_sts' => 'SWM Service Facility STS',
         'sewer_page' => 'Sewer System Overview',

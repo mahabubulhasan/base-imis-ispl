@@ -34,6 +34,11 @@ class Organization extends Model
         return $this->hasMany(Worker::class, 'organization_id', 'id');
     }
 
+    public function vehicles()
+    {
+        return $this->hasMany(Vehicle::class, 'organization_id', 'id');
+    }
+
     public function scopeOperational($query)
     {
         return $query->where('status', true);

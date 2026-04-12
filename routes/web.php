@@ -230,6 +230,33 @@ Route::group([
             'update' => 'swm.workers.update',
             'destroy' => 'swm.workers.destroy',
         ]);
+
+        Route::get('vehicle-types/data', 'VehicleTypeController@getData')->name('swm.vehicle-types.data');
+        Route::get('vehicle-types/export', 'VehicleTypeController@export')->name('swm.vehicle-types.export');
+        Route::get('vehicle-types/{vehicle_type}/history', 'VehicleTypeController@history')->name('swm.vehicle-types.history');
+        Route::resource('vehicle-types', 'VehicleTypeController')->names([
+            'index' => 'swm.vehicle-types.index',
+            'create' => 'swm.vehicle-types.create',
+            'store' => 'swm.vehicle-types.store',
+            'show' => 'swm.vehicle-types.show',
+            'edit' => 'swm.vehicle-types.edit',
+            'update' => 'swm.vehicle-types.update',
+            'destroy' => 'swm.vehicle-types.destroy',
+        ]);
+
+        Route::get('vehicles/drivers-for-organization', 'VehicleController@driversForOrganization')->name('swm.vehicles.drivers-for-organization');
+        Route::get('vehicles/data', 'VehicleController@getData')->name('swm.vehicles.data');
+        Route::get('vehicles/export', 'VehicleController@export')->name('swm.vehicles.export');
+        Route::get('vehicles/{vehicle}/history', 'VehicleController@history')->name('swm.vehicles.history');
+        Route::resource('vehicles', 'VehicleController')->names([
+            'index' => 'swm.vehicles.index',
+            'create' => 'swm.vehicles.create',
+            'store' => 'swm.vehicles.store',
+            'show' => 'swm.vehicles.show',
+            'edit' => 'swm.vehicles.edit',
+            'update' => 'swm.vehicles.update',
+            'destroy' => 'swm.vehicles.destroy',
+        ]);
     });
 
     Route::prefix('service-facilities')->group(function () {

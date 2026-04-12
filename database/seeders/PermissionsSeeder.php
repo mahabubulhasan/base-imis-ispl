@@ -908,6 +908,72 @@ class PermissionsSeeder extends Seeder
                 ],
             ],
             [
+                "group" => "SWM Service Provider Vehicle Types",
+                "perms" => [
+                    [
+                        "type" => "List",
+                        "name" => "List SWM Vehicle Types",
+                    ],
+                    [
+                        "type" => "View",
+                        "name" => "View SWM Vehicle Type",
+                    ],
+                    [
+                        "type" => "Add",
+                        "name" => "Add SWM Vehicle Type",
+                    ],
+                    [
+                        "type" => "Edit",
+                        "name" => "Edit SWM Vehicle Type",
+                    ],
+                    [
+                        "type" => "Delete",
+                        "name" => "Delete SWM Vehicle Type",
+                    ],
+                    [
+                        "type" => "History",
+                        "name" => "View SWM Vehicle Type History",
+                    ],
+                    [
+                        "type" => "Export",
+                        "name" => "Export SWM Vehicle Types to CSV",
+                    ],
+                ],
+            ],
+            [
+                "group" => "SWM Service Provider Vehicles",
+                "perms" => [
+                    [
+                        "type" => "List",
+                        "name" => "List SWM Vehicles",
+                    ],
+                    [
+                        "type" => "View",
+                        "name" => "View SWM Vehicle",
+                    ],
+                    [
+                        "type" => "Add",
+                        "name" => "Add SWM Vehicle",
+                    ],
+                    [
+                        "type" => "Edit",
+                        "name" => "Edit SWM Vehicle",
+                    ],
+                    [
+                        "type" => "Delete",
+                        "name" => "Delete SWM Vehicle",
+                    ],
+                    [
+                        "type" => "History",
+                        "name" => "View SWM Vehicle History",
+                    ],
+                    [
+                        "type" => "Export",
+                        "name" => "Export SWM Vehicles to CSV",
+                    ],
+                ],
+            ],
+            [
                 "group" => "SWM Service Facility Landfills",
                 "perms" => [
                     [

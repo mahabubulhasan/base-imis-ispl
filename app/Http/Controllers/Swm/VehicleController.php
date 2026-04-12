@@ -1,0 +1,240 @@
+<?php
+
+namespace App\Http\Controllers\Swm;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Swm\VehicleRequest;
+use App\Models\Swm\Landfill;
+use App\Models\Swm\Organization;
+use App\Models\Swm\Sts;
+use App\Models\Swm\Vehicle;
+use App\Models\Swm\VehicleType;
+use App\Models\Swm\Worker;
+use App\Services\Swm\VehicleService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
+
+class VehicleController extends Controller
+{
+    protected VehicleService $vehicleService;
+
+    public function __construct(VehicleService $vehicleService)
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:List SWM Vehicles', ['only' => ['index', 'getData']]);
+        $this->middleware('permission:View SWM Vehicle', ['only' => ['show']]);
+        $this->middleware('permission:Add SWM Vehicle', ['only' => ['create', 'store']]);
+        $this->middleware('permission:Edit SWM Vehicle', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:Delete SWM Vehicle', ['only' => ['destroy']]);
+        $this->middleware('permission:Export SWM Vehicles to CSV', ['only' => ['export']]);
+        $this->middleware('permission:View SWM Vehicle History', ['only' => ['history']]);
+        $this->vehicleService = $vehicleService;
+    }
+
+    protected function organizationOptionsForForms(): array
+    {
+        $query = Organization::query()->whereNull('deleted_at')->operational()->orderBy('name');
+        if (Auth::user()->swm_organization_id) {
+            $query->where('id', Auth::user()->swm_organization_id);
+        }
+
+        return $query->pluck('name', 'id')->all();
+    }
+
+    protected function vehicleTypeOptionsForForms(): array
+    {
+        return VehicleType::query()->whereNull('deleted_at')->orderBy('name')->pluck('name', 'id')->all();
+    }
+
+    protected function stsOptionsForForms(): array
+    {
+        return Sts::query()->whereNull('deleted_at')->orderBy('name')->pluck('name', 'id')->all();
+    }
+
+    protected function landfillOptionsForForms(): array
+    {
+        return Landfill::query()->whereNull('deleted_at')->orderBy('name')->pluck('name', 'id')->all();
+    }
+
+    protected function vehicleBelongsToScopedOrg(?Vehicle $vehicle): bool
+    {
+        if (! $vehicle) {
+            return false;
+        }
+        $oid = Auth::user()->swm_organization_id;
+
+        return ! $oid || (int) $vehicle->organization_id === (int) $oid;
+    }
+
+    public function driversForOrganization(Request $request)
+    {
+        abort_unless(
+            Auth::user()->can('Add SWM Vehicle') || Auth::user()->can('Edit SWM Vehicle'),
+            403
+        );
+
+        $validated = $request->validate([
+            'organization_id' => [
+                'required',
+                'integer',
+                Rule::exists('pgsql.swm.organizations', 'id')->where(function ($query) {
+                    return $query->whereNull('deleted_at');
+                }),
+            ],
+        ]);
+
+        $orgId = (int) $validated['organization_id'];
+        if (Auth::user()->swm_organization_id && (int) Auth::user()->swm_organization_id !== $orgId) {
+            abort(403);
+        }
+
+        return response()->json(
+            $this->vehicleService->driverWorkersForOrganization($orgId)
+        );
+    }
+
+    public function index()
+    {
+        $page_title = __('SWM Vehicles');
+        $organizations = Organization::query()->whereNull('deleted_at')->operational()->orderBy('name')->pluck('name', 'id');
+        if (Auth::user()->swm_organization_id) {
+            $organizations = Organization::query()->whereNull('deleted_at')->where('id', Auth::user()->swm_organization_id)->orderBy('name')->pluck('name', 'id');
+        }
+        $vehicleTypes = VehicleType::query()->whereNull('deleted_at')->orderBy('name')->pluck('name', 'id');
+        $scopedOrganizationId = Auth::user()->swm_organization_id;
+        if ($scopedOrganizationId) {
+            $driverWorkers = $this->vehicleService->driverWorkersForOrganization((int) $scopedOrganizationId);
+        } else {
+            $wtId = VehicleService::driverWorkTypeId();
+            $driverWorkers = $wtId
+                ? Worker::query()->where('work_type_id', $wtId)->whereNull('deleted_at')->orderBy('name')->pluck('name', 'id')->all()
+                : [];
+        }
+
+        return view('swm.service-providers.vehicles.index', compact(
+            'page_title',
+            'organizations',
+            'vehicleTypes',
+            'driverWorkers',
+            'scopedOrganizationId'
+        ));
+    }
+
+    public function getData(Request $request)
+    {
+        return $this->vehicleService->getAllVehicles($request->all());
+    }
+
+    public function create()
+    {
+        $page_title = __('Add SWM Vehicle');
+        $vehicle = null;
+        $organizations = $this->organizationOptionsForForms();
+        $vehicleTypes = $this->vehicleTypeOptionsForForms();
+        $stsList = $this->stsOptionsForForms();
+        $landfills = $this->landfillOptionsForForms();
+        $scopedOrganizationId = Auth::user()->swm_organization_id;
+        $driverWorkers = $this->vehicleService->driverWorkersForOrganization($scopedOrganizationId);
+
+        $driversListUrl = route('swm.vehicles.drivers-for-organization');
+
+        return view('swm.service-providers.vehicles.create', compact(
+            'page_title',
+            'vehicle',
+            'organizations',
+            'vehicleTypes',
+            'stsList',
+            'landfills',
+            'scopedOrganizationId',
+            'driverWorkers',
+            'driversListUrl'
+        ));
+    }
+
+    public function store(VehicleRequest $request)
+    {
+        $this->vehicleService->storeOrUpdate(null, $request->all());
+
+        return redirect()->route('swm.vehicles.index')->with('success', __('SWM vehicle created successfully.'));
+    }
+
+    public function show(Vehicle $vehicle)
+    {
+        if ($this->vehicleBelongsToScopedOrg($vehicle)) {
+            $vehicle->load(['organization', 'vehicleType', 'driver', 'dumpingSts', 'dumpingLandfill']);
+            $page_title = __('SWM Vehicle Details');
+
+            return view('swm.service-providers.vehicles.show', compact('page_title', 'vehicle'));
+        }
+
+        abort(404);
+    }
+
+    public function edit(Vehicle $vehicle)
+    {
+        if ($this->vehicleBelongsToScopedOrg($vehicle)) {
+            $page_title = __('Edit SWM Vehicle');
+            $organizations = $this->organizationOptionsForForms();
+            $vehicleTypes = $this->vehicleTypeOptionsForForms();
+            $stsList = $this->stsOptionsForForms();
+            $landfills = $this->landfillOptionsForForms();
+            $scopedOrganizationId = Auth::user()->swm_organization_id;
+            $driverWorkers = $this->vehicleService->driverWorkersForOrganization((int) $vehicle->organization_id);
+
+            $driversListUrl = route('swm.vehicles.drivers-for-organization');
+
+            return view('swm.service-providers.vehicles.edit', compact(
+                'page_title',
+                'vehicle',
+                'organizations',
+                'vehicleTypes',
+                'stsList',
+                'landfills',
+                'scopedOrganizationId',
+                'driverWorkers',
+                'driversListUrl'
+            ));
+        }
+
+        abort(404);
+    }
+
+    public function update(VehicleRequest $request, Vehicle $vehicle)
+    {
+        if ($this->vehicleBelongsToScopedOrg($vehicle)) {
+            $this->vehicleService->storeOrUpdate((int) $vehicle->id, $request->all());
+
+            return redirect()->route('swm.vehicles.index')->with('success', __('SWM vehicle updated successfully.'));
+        }
+
+        return redirect()->route('swm.vehicles.index')->with('error', __('Failed to update SWM vehicle.'));
+    }
+
+    public function destroy(Vehicle $vehicle)
+    {
+        if ($this->vehicleBelongsToScopedOrg($vehicle)) {
+            $vehicle->delete();
+
+            return redirect()->route('swm.vehicles.index')->with('success', __('SWM vehicle deleted successfully.'));
+        }
+
+        return redirect()->route('swm.vehicles.index')->with('error', __('Failed to delete SWM vehicle.'));
+    }
+
+    public function history(Vehicle $vehicle)
+    {
+        if ($this->vehicleBelongsToScopedOrg($vehicle)) {
+            $page_title = __('SWM Vehicle History');
+
+            return view('swm.service-providers.vehicles.history', compact('page_title', 'vehicle'));
+        }
+
+        abort(404);
+    }
+
+    public function export(Request $request)
+    {
+        return $this->vehicleService->download($request->all());
+    }
+}

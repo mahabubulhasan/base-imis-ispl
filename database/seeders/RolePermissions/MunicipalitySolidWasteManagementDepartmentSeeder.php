@@ -33,6 +33,8 @@ class MunicipalitySolidWasteManagementDepartmentSeeder extends Seeder
                         'SWM Service Provider Organizations',
                         'SWM Service Provider Work Types',
                         'SWM Service Provider Workers',
+                        'SWM Service Provider Vehicle Types',
+                        'SWM Service Provider Vehicles',
                     ];
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', $swmServiceProviderGroups));
 

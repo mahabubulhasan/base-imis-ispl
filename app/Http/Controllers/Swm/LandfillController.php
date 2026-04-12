@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Swm\LandfillRequest;
 use App\Models\Swm\Landfill;
 use App\Models\Swm\Sts;
+use App\Models\Swm\Vehicle;
 use App\Services\Swm\LandfillService;
 use Illuminate\Http\Request;
 
@@ -78,6 +79,9 @@ class LandfillController extends Controller
     {
         if (Sts::withTrashed()->where('destination_landfill_id', $landfill->id)->exists()) {
             return redirect()->route('swm.landfills.index')->with('error', __('Cannot delete SWM landfill that is set as destination for one or more STS records.'));
+        }
+        if (Vehicle::query()->where('dumping_landfill_id', $landfill->id)->exists()) {
+            return redirect()->route('swm.landfills.index')->with('error', __('Cannot delete SWM landfill that is set as dumping place for one or more vehicles.'));
         }
         $landfill->delete();
 

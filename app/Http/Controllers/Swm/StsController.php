@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Swm\StsRequest;
 use App\Models\Swm\Landfill;
 use App\Models\Swm\Sts;
+use App\Models\Swm\Vehicle;
 use App\Services\Swm\StsService;
 use Illuminate\Http\Request;
 
@@ -85,6 +86,9 @@ class StsController extends Controller
 
     public function destroy(Sts $sts)
     {
+        if (Vehicle::query()->where('dumping_sts_id', $sts->id)->exists()) {
+            return redirect()->route('swm.sts.index')->with('error', __('Cannot delete SWM STS that is set as dumping place for one or more vehicles.'));
+        }
         $sts->delete();
 
         return redirect()->route('swm.sts.index')->with('success', __('SWM STS deleted successfully.'));

@@ -107,6 +107,8 @@ class MunicipalityITAdminSeeder extends Seeder
                         'SWM Service Provider Organizations',
                         'SWM Service Provider Work Types',
                         'SWM Service Provider Workers',
+                        'SWM Service Provider Vehicle Types',
+                        'SWM Service Provider Vehicles',
                         'SWM Service Facility Landfills',
                         'SWM Service Facility STS',
                     ])
