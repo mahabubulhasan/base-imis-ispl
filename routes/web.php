@@ -39,7 +39,7 @@ Route::get('/public-dashboard', 'PublicDashboardController@index')->name('public
 Route::get('/fsm-application', 'Fsm\PublicApplicationController@getForm')->name('client-fsm-application.form');
 Route::post('/fsm-application', 'Fsm\PublicApplicationController@submitForm')->name('client-fsm-application.submit');
 Route::get('/fsm-road-names', 'Fsm\PublicApplicationController@getRoadNames')->name('client-fsm-application.get-road-names');
-Route::get('/fsm-application/get-building-data', 'Fsm\PublicApplicationController@getBuildingDataByTaxId')->name('client-fsm-application.get-building-data');
+Route::get('/fsm-application/get-building-data', 'Fsm\PublicApplicationController@getBuildingDataByTaxId')->middleware('throttle:20,1')->name('client-fsm-application.get-building-data');
 Route::get('/fsm-wards', 'Fsm\PublicApplicationController@getWardsData')->name('client-fsm-application.get-wards');
 Route::middleware('fixed_token_auth')->get('redirect-to-map/{ebps_id}', [ApiServiceController::class, 'getMapUrl'])->name('maps.view');
 
