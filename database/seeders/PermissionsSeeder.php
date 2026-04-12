@@ -908,6 +908,72 @@ class PermissionsSeeder extends Seeder
                 ],
             ],
             [
+                "group" => "SWM Service Facility Landfills",
+                "perms" => [
+                    [
+                        "type" => "List",
+                        "name" => "List SWM Landfills",
+                    ],
+                    [
+                        "type" => "View",
+                        "name" => "View SWM Landfill",
+                    ],
+                    [
+                        "type" => "Add",
+                        "name" => "Add SWM Landfill",
+                    ],
+                    [
+                        "type" => "Edit",
+                        "name" => "Edit SWM Landfill",
+                    ],
+                    [
+                        "type" => "Delete",
+                        "name" => "Delete SWM Landfill",
+                    ],
+                    [
+                        "type" => "History",
+                        "name" => "View SWM Landfill History",
+                    ],
+                    [
+                        "type" => "Export",
+                        "name" => "Export SWM Landfills to CSV",
+                    ],
+                ],
+            ],
+            [
+                "group" => "SWM Service Facility STS",
+                "perms" => [
+                    [
+                        "type" => "List",
+                        "name" => "List SWM STS",
+                    ],
+                    [
+                        "type" => "View",
+                        "name" => "View SWM STS",
+                    ],
+                    [
+                        "type" => "Add",
+                        "name" => "Add SWM STS",
+                    ],
+                    [
+                        "type" => "Edit",
+                        "name" => "Edit SWM STS",
+                    ],
+                    [
+                        "type" => "Delete",
+                        "name" => "Delete SWM STS",
+                    ],
+                    [
+                        "type" => "History",
+                        "name" => "View SWM STS History",
+                    ],
+                    [
+                        "type" => "Export",
+                        "name" => "Export SWM STS to CSV",
+                    ],
+                ],
+            ],
+            [
                 "group" => "Building Structures",
                 "perms" => [
                     [

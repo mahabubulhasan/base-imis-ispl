@@ -45,6 +45,14 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->configureRateLimiting();
 
+        Route::bind('landfill', function ($value) {
+            return \App\Models\Swm\Landfill::findOrFail($value);
+        });
+
+        Route::bind('sts', function ($value) {
+            return \App\Models\Swm\Sts::findOrFail($value);
+        });
+
         $this->routes(function () {
             Route::prefix('api')
                 ->middleware('api')

@@ -212,6 +212,8 @@ class RoleController extends Controller
         $swm_service_provider_organizations = Permission::where('group', 'SWM Service Provider Organizations')->orderBy('type')->get();
         $swm_work_types = Permission::where('group', 'SWM Service Provider Work Types')->orderBy('type')->get();
         $swm_workers = Permission::where('group', 'SWM Service Provider Workers')->orderBy('type')->get();
+        $swm_service_facility_landfills = Permission::where('group', 'SWM Service Facility Landfills')->orderBy('type')->get();
+        $swm_service_facility_sts = Permission::where('group', 'SWM Service Facility STS')->orderBy('type')->get();
         $property_tax_collection_iss = Permission::where('group','Property Tax Collection ISS')->orderBy('type')->get();
         $water_supply_iss = Permission::where('group','Water Supply ISS')->orderBy('type')->get();
         $data_export = Permission::where('group','Data Export')->orderBy('type')->get();
@@ -258,6 +260,8 @@ class RoleController extends Controller
             'SWM Service Provider Organizations' => $swm_service_provider_organizations,
             'SWM Service Provider Work Types' => $swm_work_types,
             'SWM Service Provider Workers' => $swm_workers,
+            'SWM Service Facility Landfills' => $swm_service_facility_landfills,
+            'SWM Service Facility STS' => $swm_service_facility_sts,
             'Property Tax Collection ISS' => $property_tax_collection_iss,
             'Water Supply ISS' => $water_supply_iss,
             'Data Export' => $data_export,

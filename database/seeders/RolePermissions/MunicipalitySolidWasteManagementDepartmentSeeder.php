@@ -36,6 +36,12 @@ class MunicipalitySolidWasteManagementDepartmentSeeder extends Seeder
                     ];
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', $swmServiceProviderGroups));
 
+                    $swmServiceFacilityGroups = [
+                        'SWM Service Facility Landfills',
+                        'SWM Service Facility STS',
+                    ];
+                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', $swmServiceFacilityGroups));
+
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Maps'])
                         ->whereIn('name', [
                             //Export Tools

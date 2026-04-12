@@ -103,7 +103,13 @@ class MunicipalityITAdminSeeder extends Seeder
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Swm Service Payment', 'Property Tax Collection ISS', 'Water Supply ISS'])
                         ->whereIn('type', ['List', 'Export']));
 
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['SWM Service Provider Organizations', 'SWM Service Provider Work Types', 'SWM Service Provider Workers'])
+                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', [
+                        'SWM Service Provider Organizations',
+                        'SWM Service Provider Work Types',
+                        'SWM Service Provider Workers',
+                        'SWM Service Facility Landfills',
+                        'SWM Service Facility STS',
+                    ])
                         ->whereIn('type', ['View', 'List', 'Export', 'History', 'Add', 'Edit', 'Delete']));
 
                     //Public Health

@@ -231,6 +231,34 @@ Route::group([
             'destroy' => 'swm.workers.destroy',
         ]);
     });
+
+    Route::prefix('service-facilities')->group(function () {
+        Route::get('landfills/data', 'LandfillController@getData')->name('swm.landfills.data');
+        Route::get('landfills/export', 'LandfillController@export')->name('swm.landfills.export');
+        Route::get('landfills/{landfill}/history', 'LandfillController@history')->name('swm.landfills.history');
+        Route::resource('landfills', 'LandfillController')->names([
+            'index' => 'swm.landfills.index',
+            'create' => 'swm.landfills.create',
+            'store' => 'swm.landfills.store',
+            'show' => 'swm.landfills.show',
+            'edit' => 'swm.landfills.edit',
+            'update' => 'swm.landfills.update',
+            'destroy' => 'swm.landfills.destroy',
+        ]);
+
+        Route::get('sts/data', 'StsController@getData')->name('swm.sts.data');
+        Route::get('sts/export', 'StsController@export')->name('swm.sts.export');
+        Route::get('sts/{sts}/history', 'StsController@history')->name('swm.sts.history');
+        Route::resource('sts', 'StsController')->names([
+            'index' => 'swm.sts.index',
+            'create' => 'swm.sts.create',
+            'store' => 'swm.sts.store',
+            'show' => 'swm.sts.show',
+            'edit' => 'swm.sts.edit',
+            'update' => 'swm.sts.update',
+            'destroy' => 'swm.sts.destroy',
+        ]);
+    });
 });
 
 Route::group([
