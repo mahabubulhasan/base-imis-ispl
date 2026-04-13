@@ -785,6 +785,9 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                     return;
                 }
 
+                // Tax ID changes should always allow fresh owner-name lookup data to populate.
+                hasManualHoldingOwnerNameOverride.value = false;
+
                 const parsedWard = extractWardFromTaxId(newVal);
                 if (parsedWard !== '') {
                     const matchedWard = findMatchingWardOption(parsedWard);
