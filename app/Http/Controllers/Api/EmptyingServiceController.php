@@ -85,6 +85,28 @@ class EmptyingServiceController extends Controller
         }
     }
 
+    public function getContainmentsByBin($bin)
+    {
+        try {
+            $containments = BuildContain::where('bin', $bin)
+                ->pluck('containment_id')
+                ->toArray();
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'containments' => $containments
+            ],
+            'message' => __('Containments retrieved successfully.'),
+        ]);
+    }
+
     public function getPendingApplications()
     {
         try {

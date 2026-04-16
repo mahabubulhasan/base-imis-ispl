@@ -83,6 +83,7 @@ Route::group([
     |
     */
     Route::group(['name' => 'emptyingService'],function (){
+        Route::get('/containments/{bin}',[EmptyingServiceController::class,'getContainmentsByBin']);
         Route::get('/assessed-applications',[EmptyingServiceController::class,'getAssessedApplications']);
         Route::get('/pending-applications',[EmptyingServiceController::class,'getPendingApplications']);
         Route::get('/treatment-plants',[EmptyingServiceController::class,'getTreatmentPlants']);
