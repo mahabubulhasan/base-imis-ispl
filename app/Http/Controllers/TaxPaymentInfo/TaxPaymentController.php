@@ -1,5 +1,5 @@
 <?php
-// Last Modified: 2026-04-18
+// Last Modified: 2026-04-19
 // Developed By: Streams Tech Ltd.
 // Description: Handles tax payment collection operations
 namespace App\Http\Controllers\TaxPaymentInfo;
@@ -24,6 +24,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\TaxImport;
 use Maatwebsite\Excel\HeadingRowImport;
 use App\Models\TaxPaymentInfo\TaxPayment;
+use App\Models\BuildingInfo\Building;
 
 class TaxPaymentController extends Controller
 {
@@ -36,6 +37,7 @@ class TaxPaymentController extends Controller
         $this->middleware('permission:Import Property Tax Collection From CSV', ['only' => ['create', 'store']]);
         $this->middleware('permission:Export Property Tax Collection Info', ['only' => ['export', 'exportunmatched']]);
         $this->middleware('permission:Add Property Tax Collection', ['only' => ['newTaxPaymentForm', 'storeNewTaxPayment']]);
+        $this->middleware('permission:Edit Property Tax Collection', ['only' => ['edit', 'update']]);
         $this->taxPaymentService = $taxPaymentService;
     }
     /**
@@ -283,13 +285,14 @@ class TaxPaymentController extends Controller
             'owner_name'        => 'required|string',
             'owner_contact'     => 'required|string',
             'last_payment_date' => 'nullable|date',
+            'bin'               => 'nullable|string',
         ]);
 
         if (TaxPayment::where('tax_code', $request->tax_code)->exists()) {
             return back()->withErrors(['tax_code' => __('The tax code has already been taken.')])->withInput();
         }
 
-        $data = $request->only('tax_code', 'owner_name', 'owner_contact', 'last_payment_date');
+        $data = $request->only('tax_code', 'owner_name', 'owner_contact', 'last_payment_date', 'bin');
 
         DB::transaction(function () use ($data) {
             TaxPayment::create($data);
@@ -328,7 +331,10 @@ class TaxPaymentController extends Controller
     public function edit($tax_code)
     {
         $page_title = __('Edit Property Tax Collection');
-        $taxPayment = TaxPayment::where('tax_code', $tax_code)->firstOrFail();
+        $taxPayment = $this->taxPaymentService->getDetails($tax_code);
+        if ($taxPayment === null) {
+            abort(404);
+        }
         return view('taxpayment-info.edit', compact('page_title', 'taxPayment'));
     }
 
@@ -342,15 +348,50 @@ class TaxPaymentController extends Controller
     public function update(Request $request, $tax_code)
     {
         $this->validate($request, [
-            'owner_name' => 'required|string',
-            'owner_contact' => 'required|string',
+            'owner_name'        => 'required|string',
+            'owner_contact'     => 'required|string',
             'last_payment_date' => 'nullable|date',
+            'bin'               => 'nullable|string',
         ]);
 
-        $taxPayment = TaxPayment::where('tax_code', $tax_code)->firstOrFail();
-        $taxPayment->update($request->only('owner_name', 'owner_contact', 'last_payment_date'));
+        DB::transaction(function () use ($request, $tax_code) {
+            $taxPayment = TaxPayment::where('tax_code', $tax_code)->firstOrFail();
+            $taxPayment->update($request->only('owner_name', 'owner_contact', 'last_payment_date'));
+
+            TaxPaymentStatus::where('tax_code', $tax_code)
+                ->update(['bin' => $request->bin]);
+        });
 
         return redirect()->route('tax-payment.index', $tax_code)->with('success', __('Property tax collection record updated successfully.'));
+    }
+
+    /**
+     * Search buildings by BIN for select2 dropdown.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getBins(Request $request)
+    {
+        $search = $request->input('search', '');
+        $limit  = 10;
+        $page   = max(1, (int) $request->input('page', 1));
+
+        $query = Building::select('bin')
+            ->when($search, function ($q) use ($search) {
+                $q->where('bin', 'ilike', '%' . $search . '%');
+            })
+            ->orderBy('bin');
+
+        $total     = $query->count();
+        $buildings = $query->offset(($page - 1) * $limit)->limit($limit)->get();
+
+        $results = $buildings->map(fn ($b) => ['id' => $b->bin, 'text' => $b->bin]);
+
+        return response()->json([
+            'results'    => $results,
+            'pagination' => ['more' => ($page * $limit) < $total],
+        ]);
     }
 
     /**

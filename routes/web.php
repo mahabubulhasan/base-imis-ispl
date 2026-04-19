@@ -157,6 +157,7 @@ Route::group([
     Route::get('tax-payment/data', 'TaxPaymentController@getData')->name('tax-payment.getData');
     Route::get('tax-payment/export', 'TaxPaymentController@export')->name('tax-payment.export');
     Route::get('tax-payment/exportunmatched', 'TaxPaymentController@exportunmatched')->name('tax-payment.exportunmatched');
+    Route::get('tax-payment/get-bins', 'TaxPaymentController@getBins')->name('tax-payment.getBins');
     Route::get('new-tax-payment', 'TaxPaymentController@newTaxPaymentForm')->name('tax-payment.new');
     Route::post('new-tax-payment', 'TaxPaymentController@storeNewTaxPayment')->name('tax-payment.storeNew');
     Route::resource('tax-payment', 'TaxPaymentController');
