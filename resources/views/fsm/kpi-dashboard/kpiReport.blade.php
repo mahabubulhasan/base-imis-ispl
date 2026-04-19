@@ -10,6 +10,7 @@
 
             body {
             padding: 0.5in;
+            font-family: 'Noto Sans Bengali', 'SolaimanLipi', 'Kalpurush', 'Arial Unicode MS', sans-serif;
             }
 
             .logo {

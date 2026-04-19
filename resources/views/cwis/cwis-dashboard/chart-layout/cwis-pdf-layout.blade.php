@@ -1,6 +1,10 @@
 <!-- Last Modified Date: 24-04-2024
 Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 <style>
+    body {
+        font-family: 'Noto Sans Bengali', 'SolaimanLipi', 'Kalpurush', 'Arial Unicode MS', sans-serif;
+    }
+
     h1 {
         margin: 0;
         font-weight: normal;
