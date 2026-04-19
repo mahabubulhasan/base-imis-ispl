@@ -12,10 +12,10 @@
       padding: 0.5in;
     }
                .header {
-    
+
       text-align: center; /* Add margin to the header for separation */
     }
-   
+
             table {
                 letter-spacing: 0.2px;
                 border-collapse: collapse;
@@ -35,7 +35,7 @@
             .text-right {
                 text-align: right !important;
             }
-          
+
         </style>
         <title>{{ __('Application Report') }}</title>
     </head>
@@ -48,16 +48,16 @@
                     <h2 style="text-transform:uppercase; margin: 10px; ">{{ __('Application Report') }}</h2>
                     <!-- <h3 style=" text-transform:uppercase; margin: 0;">Integrated Municipal Information System</h3> -->
                 </div>
-         
+
             <table class="table" width="100%" style="margin-top: 20px; border-collapse: collapse;">
                 <tr>
                 <td style="text-align:left;font-size: 18px; margin: 0; border: none;" >{{ __('Application ID') }}: {{$application->id}} </td>
-                <td style="float:right;font-size: 18px; margin: 0; border: none;">{{ __('Application Date') }}: {{$application->application_date->format('Y-m-d')}}</td>
+                <td style="float:right;font-size: 18px; margin: 0; border: none;">{{ __('Application Date') }}: {{$application->application_date?->format('Y-m-d')}}</td>
                 </tr>
             </table>
 
         </div>
- 
+
 
         <table style="width: 100%; letter-spacing: 0.2px">
         <thead><p style="text-align:left;font-size : 19px; font-weight: bold;background-color: #ddddde; padding: 2px"> {{ __('Building Details') }} </p></thead>
@@ -130,30 +130,30 @@
             </tr>
             @endif
         @endif
-     
+
     </tbody>
 </table>
 
             @foreach($containment as $containments)
-          
+
             <table style="width: 100%;">
 
                         <thead> <p style="text-align:left;font-size : 19px; font-weight: bold;background-color: #ddddde; padding: 2px"> {{ __('Containment Details') }} </p>
                 </thead>
                 <tbody>
                     <tr>
-                    
+
                         <th style="width: 20%;" rowspan="7">
                         <div style="text-align: center;">
                             <img src="{{'data:image/png;base64,'.base64_encode(file_get_contents(public_path('img/report-icon/containment.png')))}}" width="100px" />
                         </div>
                         </th>
-                     
+
                         <td style="width: 20%; font-size : 18px;">{{ __('Containment ID') }}</td>
                         <td style="width: 20%; font-size : 18px;">{{$containments->id?? '-'}}</td>
                     </tr>
                     <tr>
-        
+
                         <td style=" font-size : 18px;">{{ __('Containment Type') }}</td>
                         <td style=" font-size : 18px;">{{$containments->type?? '-'}}</td>
                     </tr>
@@ -161,7 +161,7 @@
                         <td style=" font-size : 18px;">{{ __('Containment Location') }}</td>
                         <td style=" font-size : 18px;">{{$containments->location?? '-'}}</td>
                     </tr>
-                    
+
                 </tbody>
             </table>
         @endforeach
@@ -171,13 +171,13 @@
                 </thead>
                 <tbody>
                     <tr>
-                    
+
                         <th style="width: 20%;" rowspan="7">
                         <div style="text-align: center;">
                             <img src="{{'data:image/png;base64,'.base64_encode(file_get_contents(public_path('img/report-icon/emptying.png')))}}" width="100px" />
                         </div>
                         </th>
-                    
+
                         <td style="width: 20%; font-size : 18px;">{{ __('Service Provider Name') }}</td>
                         <td style="width: 20%; font-size : 18px;">{{$application->emptying->service_provider()->withTrashed()->first()->company_name?? '-'}}</td>
                     </tr>
@@ -193,22 +193,22 @@
                     <td style=" font-size : 18px;">{{ __('Emptied Time') }}</td>
                     <td style=" font-size : 18px;">{{$application->emptying->start_time?? '-'}}</td>
                 </tr>
-                {{--   
+                {{--
                 <!-- <tr>
                     <th colspan="4">Vaccutug Name</th>
                     @if($data->vacutug->name)
                     <th colspan="4">{{$data->vacutug->name}}</th>
                     @else
-                    <th colspan="4">NA </th>           
-                    @endif     
-                </tr> --> 
+                    <th colspan="4">NA </th>
+                    @endif
+                </tr> -->
                 --}}
                 <tr>
                     <td style=" font-size : 18px;">{{ __('Name of Driver') }}</td>
                     <td style=" font-size : 18px;">{{$application->emptying->employee_info_driver->name?? '-'}}</td>
                 </tr>
-                
-               {{-- 
+
+               {{--
                 <!-- <tr>
                     <th>Name of Emptier</th>
                     <th>{{$application->emptying->employee_info_emptier->name}}</th>
@@ -224,7 +224,7 @@
                 </tr>
                 </tbody>
             </table>
-    
+
 
        @if(!empty($application->sludge_collection))
        <table style="width: 100%;">
@@ -236,7 +236,7 @@
                 <tr>
                 <th style="width: 20%;" rowspan="7">
                 <div style="text-align: center;">
-                    <img src="{{'data:image/png;base64,'.base64_encode(file_get_contents(public_path('img/report-icon/sludge.png')))}}" width="100px"/> 
+                    <img src="{{'data:image/png;base64,'.base64_encode(file_get_contents(public_path('img/report-icon/sludge.png')))}}" width="100px"/>
                </div></th>
                     <td style="width: 20%;  font-size : 18px;">{{ __('Disposal Place') }}</td>
                         <td style="width: 20%; font-size : 18px;">{{$application->sludge_collection->treatmentplants->name?? '-'}}</td>
@@ -251,7 +251,7 @@
                     <td style="font-size: 18px;">{{ (date('h:i A', strtotime($application->sludge_collection->entry_time)) ?? '-') . '-' . (date('h:i A', strtotime($application->sludge_collection->exit_time)) ?? '-') }}</td>
                 </tr>
             </tbody>
-        </table>  
+        </table>
         @endif
 
     </body>
