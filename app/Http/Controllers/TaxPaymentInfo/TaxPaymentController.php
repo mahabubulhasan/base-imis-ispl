@@ -1,5 +1,5 @@
 <?php
-// Last Modified Date: 28-02-2026
+// Last Modified: 2026-04-18
 // Developed By: Streams Tech Ltd.
 // Description: Handles tax payment collection operations
 namespace App\Http\Controllers\TaxPaymentInfo;
@@ -35,6 +35,7 @@ class TaxPaymentController extends Controller
         $this->middleware('permission:List Property Tax Collection', ['only' => ['index']]);
         $this->middleware('permission:Import Property Tax Collection From CSV', ['only' => ['create', 'store']]);
         $this->middleware('permission:Export Property Tax Collection Info', ['only' => ['export', 'exportunmatched']]);
+        $this->middleware('permission:Add Property Tax Collection', ['only' => ['newTaxPaymentForm', 'storeNewTaxPayment']]);
         $this->taxPaymentService = $taxPaymentService;
     }
     /**
@@ -255,6 +256,49 @@ class TaxPaymentController extends Controller
         });
 
         $writer->close();
+    }
+
+    /**
+     * Show the form for adding a new tax payment record.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function newTaxPaymentForm()
+    {
+        $page_title = __('Add New Tax Payment');
+        $taxPayment = null;
+        return view('taxpayment-info.new', compact('page_title', 'taxPayment'));
+    }
+
+    /**
+     * Store a newly created tax payment record in storage.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function storeNewTaxPayment(Request $request)
+    {
+        $this->validate($request, [
+            'tax_code'          => 'required|string',
+            'owner_name'        => 'required|string',
+            'owner_contact'     => 'required|string',
+            'last_payment_date' => 'nullable|date',
+        ]);
+
+        if (TaxPayment::where('tax_code', $request->tax_code)->exists()) {
+            return back()->withErrors(['tax_code' => __('The tax code has already been taken.')])->withInput();
+        }
+
+        $data = $request->only('tax_code', 'owner_name', 'owner_contact', 'last_payment_date');
+
+        DB::transaction(function () use ($data) {
+            TaxPayment::create($data);
+            TaxPaymentStatus::create(array_merge($data, [
+                'ward' => substr($data['tax_code'], 0, 2),
+            ]));
+        });
+
+        return redirect()->route('tax-payment.index')->with('success', __('Property tax collection record added successfully.'));
     }
 
     /**
