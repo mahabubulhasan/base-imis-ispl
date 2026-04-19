@@ -20,7 +20,7 @@
             .header {
                 text-align: center; /* Add margin to the header for separation */
             }
-    
+
             td,
             td {
                 border: 0.5px solid #dddddd;
@@ -29,7 +29,7 @@
             }
 
             tr:nth-child(even) {
-               
+
                 border : 0.5px solid;
             }
             .text-right {
@@ -44,12 +44,22 @@
 
     <body>
         <div class="container">
-            <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('img/logo-imis.png'))) }}" class="logo" style=" width: 120px;">
-            <div class="header">
-                <h1 class="heading" style="text-transform:uppercase; margin: 0;">Municipality</h1>
-                <h2 style="text-transform:uppercase; margin: 10px; ">KEY PERFORMANCE INDICATORS REPORT</h2>
-                <!-- <h3 style=" text-transform:uppercase; margin: 0;">Integrated Municipal Information System</h3> -->
-            </div>
+            <table width="100%" cellpadding="0" cellspacing="0" style="border:none; padding: 15px 0;">
+                <tr>
+                    <td style="width:80px; vertical-align:middle; border:none;">
+                        <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('img/stl/logo-Lakshmipur.png'))) }}"
+                            alt="" style="width:100px; display:block;">
+                    </td>
+                    <td style="vertical-align:middle; text-align:center; border:none;">
+                        <h1 class="heading" style="text-transform:uppercase; margin: 0;">{{ __('লক্ষীপুর পৌরসভা কার্যালয়')
+                            }}</h1>
+                        <h2 style="text-transform:uppercase; margin: 10px 0;">{{ __('লক্ষীপুর') }}</h2>
+                        <h3 style="text-transform:uppercase; margin: 10px 0;">KEY PERFORMANCE INDICATORS REPORT</h3>
+                        <!-- <h3 style="text-transform:uppercase; margin: 0;">Integrated Municipal Information System</h3> -->
+                    </td>
+                    <td style="width:80px; border:none;"></td>
+                </tr>
+            </table>
         </div>
 
         @foreach($distinctYears as $year)
@@ -61,7 +71,7 @@
 
             @if (request()->year === "null")
                 <table class="table table-bordered " width="100%" style="margin-top: 30px; border-collapse: collapse;">
-                
+
                     <tr style="background-color: #ddddde;">
                         <td style="letter-spacing: 0.2px; font-size : 18px; ">Indicator</td>
                         <td style="letter-spacing: 0.2px; font-size : 18px; ">Target</td>
@@ -108,13 +118,13 @@
                                                 } else {
                                                     echo '-';
                                                 } ?>
-                                
+
                                             @php
                                                 $targetPrinted = true;
                                             @endphp
                                             </td>
                                         @endif
-                                   
+
                                     @endif
                                 </tr>
                         @endif
@@ -130,7 +140,7 @@
                             <td style="letter-spacing: 0.2px; font-size : 18px; ">Quarter</td>
                             <td style="letter-spacing: 0.2px; font-size : 18px; ">Target</td>
                             <td style="letter-spacing: 0.2px; font-size : 18px; ">Achievement</td>
-                           
+
                             @if($keyPerformanceData[0]['serviceprovider'] != null)
                                 <td style="letter-spacing: 0.2px; font-size : 18px; ">Service Provider</td>
                             @endif
@@ -159,7 +169,7 @@
                                                     @endif
                                         </td>
                                         @if($data['serviceprovider'] != null)
-                        
+
                                         @if(!$tragetSP)
                                         <td style="letter-spacing: 0.2px; font-size : 18px;"  rowspan="{{ count($keyPerformanceData) }}">
                                             <?php
@@ -179,11 +189,11 @@
                                                 } else {
                                                     echo '-';
                                                 } ?>
-                                
+
                                             @php
                                                 $tragetSP = true;
                                             @endphp
-                                        
+
                                         </td>
                                         @endif
                                         @endif
