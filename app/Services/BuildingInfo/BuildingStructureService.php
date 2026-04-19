@@ -34,6 +34,8 @@ use App\Models\BuildingInfo\BuildingSurvey;
 use App\Models\BuildingInfo\SanitationSystem;
 use App\Http\Requests\BuildingInfo\BuildingRequest;
 use App\Models\BuildingInfo\SanitationSystemTechnology;
+use App\Models\TaxPaymentInfo\TaxPayment;
+use App\Models\TaxPaymentInfo\TaxPaymentStatus;
 use Intervention\Image\Facades\Image;
 
 class BuildingStructureService
@@ -171,6 +173,7 @@ class BuildingStructureService
                     $this->storeContainmentInfo($flag = 'communal', $type = 'create', $request);
                 }
             }
+            $this->syncTaxPaymentRecords($building->bin, $building->tax_code, $building->ward, $request->owner_name, $request->owner_contact);
             DB::commit();
             return redirect('building-info/buildings')->with('success', __("Building created successfully"));
         } catch (\Exception $e) {
@@ -325,6 +328,27 @@ class BuildingStructureService
         $owner->nid = $request->nid ? $request->nid : null;
 
         $owner->save();
+    }
+
+    private function syncTaxPaymentRecords(string $bin, ?string $tax_code_raw, ?string $ward, ?string $owner_name, ?string $owner_contact): void
+    {
+        if (empty($tax_code_raw)) {
+            return;
+        }
+
+        $taxCodes = array_filter(array_map('trim', explode(',', $tax_code_raw)));
+
+        foreach ($taxCodes as $taxCode) {
+            TaxPayment::updateOrCreate(
+                ['tax_code' => $taxCode],
+                ['owner_name' => $owner_name, 'owner_contact' => $owner_contact]
+            );
+
+            TaxPaymentStatus::updateOrCreate(
+                ['tax_code' => $taxCode],
+                ['owner_name' => $owner_name, 'owner_contact' => $owner_contact, 'ward' => $ward, 'bin' => $bin]
+            );
+        }
     }
 
     public function storeBuildContainInfo($bin, $containment_id)
@@ -613,6 +637,7 @@ class BuildingStructureService
             $building->save();
             // store owner
             $this->storeOwnerInfo($request);
+            $this->syncTaxPaymentRecords($building->bin, $building->tax_code, $building->ward, $request->owner_name, $request->owner_contact);
             DB::commit();
             return Redirect("building-info/buildings")->with('success', __("Building Information updated successfully"));
         } catch (\Exception $e) {

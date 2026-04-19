@@ -25,6 +25,7 @@ use App\Imports\TaxImport;
 use Maatwebsite\Excel\HeadingRowImport;
 use App\Models\TaxPaymentInfo\TaxPayment;
 use App\Models\BuildingInfo\Building;
+use App\Models\BuildingInfo\Owner;
 
 class TaxPaymentController extends Controller
 {
@@ -285,7 +286,7 @@ class TaxPaymentController extends Controller
             'owner_name'        => 'required|string',
             'owner_contact'     => 'required|string',
             'last_payment_date' => 'nullable|date',
-            'bin'               => 'nullable|string',
+            'bin'               => 'required|string',
         ]);
 
         if (TaxPayment::where('tax_code', $request->tax_code)->exists()) {
@@ -299,6 +300,8 @@ class TaxPaymentController extends Controller
             TaxPaymentStatus::create(array_merge($data, [
                 'ward' => substr($data['tax_code'], 0, 2),
             ]));
+
+            $this->syncBuildingAndOwner($data['bin'], $data['tax_code'], $data['owner_name'], $data['owner_contact']);
         });
 
         return redirect()->route('tax-payment.index')->with('success', __('Property tax collection record added successfully.'));
@@ -351,7 +354,7 @@ class TaxPaymentController extends Controller
             'owner_name'        => 'required|string',
             'owner_contact'     => 'required|string',
             'last_payment_date' => 'nullable|date',
-            'bin'               => 'nullable|string',
+            'bin'               => 'required|string',
         ]);
 
         DB::transaction(function () use ($request, $tax_code) {
@@ -360,6 +363,8 @@ class TaxPaymentController extends Controller
 
             TaxPaymentStatus::where('tax_code', $tax_code)
                 ->update(['bin' => $request->bin]);
+
+            $this->syncBuildingAndOwner($request->bin, $tax_code, $request->owner_name, $request->owner_contact);
         });
 
         return redirect()->route('tax-payment.index', $tax_code)->with('success', __('Property tax collection record updated successfully.'));
@@ -392,6 +397,27 @@ class TaxPaymentController extends Controller
             'results'    => $results,
             'pagination' => ['more' => ($page * $limit) < $total],
         ]);
+    }
+
+    /**
+     * Upsert Building and Owner records from tax payment data.
+     *
+     * @param string $bin
+     * @param string $tax_code
+     * @param string $owner_name
+     * @param string $owner_contact
+     */
+    private function syncBuildingAndOwner(string $bin, string $tax_code, string $owner_name, string $owner_contact): void
+    {
+        Building::updateOrCreate(
+            ['bin' => $bin],
+            ['ward' => substr($tax_code, 0, 2), 'tax_code' => $tax_code]
+        );
+
+        Owner::updateOrCreate(
+            ['bin' => $bin],
+            ['owner_name' => $owner_name, 'owner_contact' => $owner_contact]
+        );
     }
 
     /**
