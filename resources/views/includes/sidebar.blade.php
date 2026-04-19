@@ -474,7 +474,7 @@
             </li>
             @endif
 
-            @if(Auth::user()->hasanyPermissionInGroup(['Swm Service Payment', 'SWM Service Provider Organizations', 'SWM Service Provider Work Types', 'SWM Service Provider Workers', 'SWM Service Provider Vehicle Types', 'SWM Service Provider Vehicles', 'SWM Service Facility Landfills', 'SWM Service Facility STS', 'SW Service Coverage LIC', 'SW Service Coverage Primary Collection Sites']) || Auth::user()->hasRole('Super Admin'))
+            @if(Auth::user()->hasanyPermissionInGroup(['Swm Service Payment', 'SWM Service Provider Organizations', 'SWM Service Provider Work Types', 'SWM Service Provider Workers', 'SWM Service Provider Vehicle Types', 'SWM Service Provider Vehicles', 'SWM Service Facility Landfills', 'SWM Service Facility STS', 'SW Service Coverage LIC', 'SW Service Coverage Primary Collection Sites', 'SWM Bill Collection Payments']) || Auth::user()->hasRole('Super Admin'))
             <li class="nav-item {{ request()->is('swm-payment', 'swm-payment/*', 'swm/service-providers/*', 'swm/service-facilities/*', 'swm/service-coverage/*') ? 'menu-is-opening menu-open' : '' }}">
                 <a href="#" class="nav-link {{ request()->is('swm-payment', 'swm-payment/*', 'swm/service-providers/*', 'swm/service-facilities/*', 'swm/service-coverage/*') ? 'active' : '' }}">
                     <img src="{{ asset('img/svg/imis-icons/swmPaymentStatus.svg')}}" class="nav-icon">
@@ -568,24 +568,26 @@
                     </li>
                     @endif
                     @if(Auth::user()->can('List SWM LIC') || Auth::user()->can('List SWM Primary Collection Sites'))
-                    <li class="nav-item {{ request()->is('swm/service-coverage/*') ? 'menu-is-opening menu-open' : '' }}">
-                        <a href="#" class="nav-link {{ request()->is('swm/service-coverage/*') ? 'active subnav' : '' }}">
+                    <li class="nav-item {{ request()->is('swm/service-coverage/lic', 'swm/service-coverage/lic/*', 'swm/service-coverage/primary-collection-sites', 'swm/service-coverage/primary-collection-sites/*') ? 'menu-is-opening menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ request()->is('swm/service-coverage/lic', 'swm/service-coverage/lic/*', 'swm/service-coverage/primary-collection-sites', 'swm/service-coverage/primary-collection-sites/*') ? 'active subnav' : '' }}">
                             <i class="far fa-circle nav-icon"></i>
                             <p>{{__('SW Service Coverage')}} <i class="right fas fa-angle-left"></i></p>
                         </a>
                         <ul class="nav nav-treeview">
-                            <li class="nav-item {{ request()->is('swm/service-coverage/lic*') ? 'menu-is-opening menu-open' : '' }}">
-                                <a href="#" class="nav-link {{ request()->is('swm/service-coverage/lic*') ? 'active subnav' : '' }}">
+                            <li class="nav-item {{ request()->is('swm/service-coverage/lic*', 'swm/service-coverage/primary-collection-sites*') ? 'menu-is-opening menu-open' : '' }}">
+                                <a href="#" class="nav-link {{ request()->is('swm/service-coverage/lic*', 'swm/service-coverage/primary-collection-sites*') ? 'active subnav' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>{{__('Primary Collection Sites')}} <i class="right fas fa-angle-left"></i></p>
                                 </a>
                                 <ul class="nav nav-treeview">
+                                    @can('List SWM LIC')
                                     <li class="nav-item">
                                         <a href="{{ action('Swm\LicController@index') }}" class="nav-link {{ request()->is('swm/service-coverage/lic', 'swm/service-coverage/lic/*') ? 'active' : '' }}">
                                             <i class="far fa-circle nav-icon"></i>
                                             <p>{{__('LIC')}}</p>
                                         </a>
                                     </li>
+                                    @endcan
                                     @can('List SWM Primary Collection Sites')
                                     <li class="nav-item">
                                         <a href="{{ action('Swm\PrimaryCollectionSiteController@index') }}" class="nav-link {{ request()->is('swm/service-coverage/primary-collection-sites', 'swm/service-coverage/primary-collection-sites/*') ? 'active' : '' }}">
@@ -599,6 +601,22 @@
                         </ul>
                     </li>
                     @endif
+                    @can('List SWM Bill Collection Payments')
+                    <li class="nav-item {{ request()->is('swm/service-coverage/bill-collection', 'swm/service-coverage/bill-collection/*') ? 'menu-is-opening menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ request()->is('swm/service-coverage/bill-collection', 'swm/service-coverage/bill-collection/*') ? 'active subnav' : '' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>{{ __('Billing') }} <i class="right fas fa-angle-left"></i></p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('swm.bill-collection-payments.index') }}" class="nav-link {{ request()->is('swm/service-coverage/bill-collection/payments', 'swm/service-coverage/bill-collection/payments/*') ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>{{ __('Payment') }}</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    @endcan
                 </ul>
             </li>
             @endif

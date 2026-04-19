@@ -214,6 +214,7 @@ class RoleController extends Controller
         $swm_workers = Permission::where('group', 'SWM Service Provider Workers')->orderBy('type')->get();
         $swm_vehicle_types = Permission::where('group', 'SWM Service Provider Vehicle Types')->orderBy('type')->get();
         $swm_vehicles = Permission::where('group', 'SWM Service Provider Vehicles')->orderBy('type')->get();
+        $swm_bill_collection_payments = Permission::where('group', 'SWM Bill Collection Payments')->orderBy('type')->get();
         $swm_service_facility_landfills = Permission::where('group', 'SWM Service Facility Landfills')->orderBy('type')->get();
         $swm_service_facility_sts = Permission::where('group', 'SWM Service Facility STS')->orderBy('type')->get();
         $property_tax_collection_iss = Permission::where('group','Property Tax Collection ISS')->orderBy('type')->get();
@@ -264,6 +265,7 @@ class RoleController extends Controller
             'SWM Service Provider Workers' => $swm_workers,
             'SWM Service Provider Vehicle Types' => $swm_vehicle_types,
             'SWM Service Provider Vehicles' => $swm_vehicles,
+            'SWM Bill Collection Payments' => $swm_bill_collection_payments,
             'SWM Service Facility Landfills' => $swm_service_facility_landfills,
             'SWM Service Facility STS' => $swm_service_facility_sts,
             'Property Tax Collection ISS' => $property_tax_collection_iss,

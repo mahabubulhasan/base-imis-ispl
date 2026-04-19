@@ -25,6 +25,7 @@ class PrimaryCollectionSite extends Model
         'waste_bin_provided' => 'boolean',
         'using_this_service_since' => 'date',
         'survey_date' => 'date',
+        'waste_charge' => 'decimal:2',
     ];
 
     public function building()
@@ -40,5 +41,10 @@ class PrimaryCollectionSite extends Model
     public function lic()
     {
         return $this->belongsTo(Lic::class, 'lic_id', 'lic_id');
+    }
+
+    public function billCollectionPayments()
+    {
+        return $this->hasMany(BillCollectionPayment::class, 'primary_collection_site_id');
     }
 }

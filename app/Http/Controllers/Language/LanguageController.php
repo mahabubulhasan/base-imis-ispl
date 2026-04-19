@@ -483,6 +483,8 @@ class LanguageController extends Controller
         'swm_vehicles' => 'SWM Service Provider Vehicles',
         'swm_landfills' => 'SWM Service Facility Landfills',
         'swm_sts' => 'SWM Service Facility STS',
+        'swm_bill_collection_payments' => 'SWM Bill Collection Payments',
+        'swm_billing' => 'SWM Billing',
         'sewer_page' => 'Sewer System Overview',
         'sewer_connection' => 'Sewer Connections',
         'sewage_network' => 'Sewage Network',

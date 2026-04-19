@@ -314,6 +314,27 @@ Route::group([
             'update' => 'swm.primary-collection-sites.update',
             'destroy' => 'swm.primary-collection-sites.destroy',
         ]);
+
+        Route::prefix('bill-collection')->group(function () {
+            Route::get('holdings-search', 'BillCollectionPaymentController@holdingsSearch')->name('swm.bill-collection.holdings-search');
+            Route::get('customers-by-holding', 'BillCollectionPaymentController@customersByHolding')->name('swm.bill-collection.customers-by-holding');
+
+            Route::get('payments/data', 'BillCollectionPaymentController@getData')->name('swm.bill-collection-payments.data');
+            Route::get('payments/export', 'BillCollectionPaymentController@export')->name('swm.bill-collection-payments.export');
+            Route::get('payments/balance-through-month', 'BillCollectionPaymentController@balanceThroughMonth')->name('swm.bill-collection-payments.balance-through-month');
+            Route::get('payments/import', 'BillCollectionPaymentController@importForm')->name('swm.bill-collection-payments.import');
+            Route::post('payments/import', 'BillCollectionPaymentController@importStore')->name('swm.bill-collection-payments.import.store');
+            Route::get('payments/{payment}/history', 'BillCollectionPaymentController@history')->name('swm.bill-collection-payments.history');
+            Route::resource('payments', 'BillCollectionPaymentController')->names([
+                'index' => 'swm.bill-collection-payments.index',
+                'create' => 'swm.bill-collection-payments.create',
+                'store' => 'swm.bill-collection-payments.store',
+                'show' => 'swm.bill-collection-payments.show',
+                'edit' => 'swm.bill-collection-payments.edit',
+                'update' => 'swm.bill-collection-payments.update',
+                'destroy' => 'swm.bill-collection-payments.destroy',
+            ]);
+        });
     });
 });
 

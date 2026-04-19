@@ -1106,6 +1106,43 @@ class PermissionsSeeder extends Seeder
                 ],
             ],
             [
+                "group" => "SWM Bill Collection Payments",
+                "perms" => [
+                    [
+                        "type" => "List",
+                        "name" => "List SWM Bill Collection Payments",
+                    ],
+                    [
+                        "type" => "View",
+                        "name" => "View SWM Bill Collection Payment",
+                    ],
+                    [
+                        "type" => "Add",
+                        "name" => "Add SWM Bill Collection Payment",
+                    ],
+                    [
+                        "type" => "Edit",
+                        "name" => "Edit SWM Bill Collection Payment",
+                    ],
+                    [
+                        "type" => "Delete",
+                        "name" => "Delete SWM Bill Collection Payment",
+                    ],
+                    [
+                        "type" => "History",
+                        "name" => "View SWM Bill Collection Payment History",
+                    ],
+                    [
+                        "type" => "Export",
+                        "name" => "Export SWM Bill Collection Payments to CSV",
+                    ],
+                    [
+                        "type" => "Import",
+                        "name" => "Import SWM Bill Collection Payments From CSV",
+                    ],
+                ],
+            ],
+            [
                 "group" => "Building Structures",
                 "perms" => [
                     [

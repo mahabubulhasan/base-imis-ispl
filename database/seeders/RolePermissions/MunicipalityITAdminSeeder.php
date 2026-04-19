@@ -113,8 +113,9 @@ class MunicipalityITAdminSeeder extends Seeder
                         'SWM Service Facility STS',
                         'SW Service Coverage LIC',
                         'SW Service Coverage Primary Collection Sites',
+                        'SWM Bill Collection Payments',
                     ])
-                        ->whereIn('type', ['View', 'List', 'Export', 'History', 'Add', 'Edit', 'Delete']));
+                        ->whereIn('type', ['View', 'List', 'Export', 'History', 'Add', 'Edit', 'Delete', 'Import']));
 
                     //Public Health
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Water Samples', 'Hotspots', 'Yearly Waterborne Cases'])
