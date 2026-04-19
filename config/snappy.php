@@ -50,6 +50,8 @@ return [
             'javascript-delay' => 1000,
             'enable-smart-shrinking'=> true,
             'no-stop-slow-scripts' => true,
+            'footer-line' => true,
+            'footer-spacing' => 5,
             'footer-html' => (function () {
                 $logoPath = public_path('img/logo-imis.png');
                 $imgTag   = file_exists($logoPath)
