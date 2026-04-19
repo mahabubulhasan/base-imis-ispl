@@ -11,7 +11,7 @@
 <div class="card">
     <div class="card-header">
     @can('Add Property Tax Collection')
-      <a href="{{ route('tax-payment.new') }}" class="btn btn-info">{{ __('Add New Tax Payment') }}</a>
+      <a href="{{ route('tax-payment.new') }}" class="btn btn-info">{{ __('Add New Tax ID') }}</a>
     @endcan
     @can('Import Property Tax Collection From CSV')
       <a href="{{ route('tax-payment.create') }}" class="btn btn-info">{{__('Import from CSV')}} </a>
