@@ -1040,6 +1040,72 @@ class PermissionsSeeder extends Seeder
                 ],
             ],
             [
+                "group" => "SW Service Coverage LIC",
+                "perms" => [
+                    [
+                        "type" => "List",
+                        "name" => "List SWM LIC",
+                    ],
+                    [
+                        "type" => "View",
+                        "name" => "View SWM LIC",
+                    ],
+                    [
+                        "type" => "Add",
+                        "name" => "Add SWM LIC",
+                    ],
+                    [
+                        "type" => "Edit",
+                        "name" => "Edit SWM LIC",
+                    ],
+                    [
+                        "type" => "Delete",
+                        "name" => "Delete SWM LIC",
+                    ],
+                    [
+                        "type" => "History",
+                        "name" => "View SWM LIC History",
+                    ],
+                    [
+                        "type" => "Export",
+                        "name" => "Export SWM LIC to CSV",
+                    ],
+                ],
+            ],
+            [
+                "group" => "SW Service Coverage Primary Collection Sites",
+                "perms" => [
+                    [
+                        "type" => "List",
+                        "name" => "List SWM Primary Collection Sites",
+                    ],
+                    [
+                        "type" => "View",
+                        "name" => "View SWM Primary Collection Site",
+                    ],
+                    [
+                        "type" => "Add",
+                        "name" => "Add SWM Primary Collection Site",
+                    ],
+                    [
+                        "type" => "Edit",
+                        "name" => "Edit SWM Primary Collection Site",
+                    ],
+                    [
+                        "type" => "Delete",
+                        "name" => "Delete SWM Primary Collection Site",
+                    ],
+                    [
+                        "type" => "History",
+                        "name" => "View SWM Primary Collection Site History",
+                    ],
+                    [
+                        "type" => "Export",
+                        "name" => "Export SWM Primary Collection Sites to CSV",
+                    ],
+                ],
+            ],
+            [
                 "group" => "Building Structures",
                 "perms" => [
                     [

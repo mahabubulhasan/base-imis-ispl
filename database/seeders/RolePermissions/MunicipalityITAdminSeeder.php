@@ -111,6 +111,8 @@ class MunicipalityITAdminSeeder extends Seeder
                         'SWM Service Provider Vehicles',
                         'SWM Service Facility Landfills',
                         'SWM Service Facility STS',
+                        'SW Service Coverage LIC',
+                        'SW Service Coverage Primary Collection Sites',
                     ])
                         ->whereIn('type', ['View', 'List', 'Export', 'History', 'Add', 'Edit', 'Delete']));
 

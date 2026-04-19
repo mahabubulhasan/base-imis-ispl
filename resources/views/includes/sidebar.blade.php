@@ -474,9 +474,9 @@
             </li>
             @endif
 
-            @if(Auth::user()->hasanyPermissionInGroup(['Swm Service Payment', 'SWM Service Provider Organizations', 'SWM Service Provider Work Types', 'SWM Service Provider Workers', 'SWM Service Provider Vehicle Types', 'SWM Service Provider Vehicles', 'SWM Service Facility Landfills', 'SWM Service Facility STS']) || Auth::user()->hasRole('Super Admin'))
-            <li class="nav-item {{ request()->is('swm-payment', 'swm-payment/*', 'swm/service-providers/*', 'swm/service-facilities/*') ? 'menu-is-opening menu-open' : '' }}">
-                <a href="#" class="nav-link {{ request()->is('swm-payment', 'swm-payment/*', 'swm/service-providers/*', 'swm/service-facilities/*') ? 'active' : '' }}">
+            @if(Auth::user()->hasanyPermissionInGroup(['Swm Service Payment', 'SWM Service Provider Organizations', 'SWM Service Provider Work Types', 'SWM Service Provider Workers', 'SWM Service Provider Vehicle Types', 'SWM Service Provider Vehicles', 'SWM Service Facility Landfills', 'SWM Service Facility STS', 'SW Service Coverage LIC', 'SW Service Coverage Primary Collection Sites']) || Auth::user()->hasRole('Super Admin'))
+            <li class="nav-item {{ request()->is('swm-payment', 'swm-payment/*', 'swm/service-providers/*', 'swm/service-facilities/*', 'swm/service-coverage/*') ? 'menu-is-opening menu-open' : '' }}">
+                <a href="#" class="nav-link {{ request()->is('swm-payment', 'swm-payment/*', 'swm/service-providers/*', 'swm/service-facilities/*', 'swm/service-coverage/*') ? 'active' : '' }}">
                     <img src="{{ asset('img/svg/imis-icons/swmPaymentStatus.svg')}}" class="nav-icon">
                     <p>
                         {{__('Solid Waste ISS')}} <i class="right fas fa-angle-left"></i>
@@ -564,6 +564,38 @@
                                 </a>
                             </li>
                             @endcan
+                        </ul>
+                    </li>
+                    @endif
+                    @if(Auth::user()->can('List SWM LIC') || Auth::user()->can('List SWM Primary Collection Sites'))
+                    <li class="nav-item {{ request()->is('swm/service-coverage/*') ? 'menu-is-opening menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ request()->is('swm/service-coverage/*') ? 'active subnav' : '' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>{{__('SW Service Coverage')}} <i class="right fas fa-angle-left"></i></p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item {{ request()->is('swm/service-coverage/lic*') ? 'menu-is-opening menu-open' : '' }}">
+                                <a href="#" class="nav-link {{ request()->is('swm/service-coverage/lic*') ? 'active subnav' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>{{__('Primary Collection Sites')}} <i class="right fas fa-angle-left"></i></p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="{{ action('Swm\LicController@index') }}" class="nav-link {{ request()->is('swm/service-coverage/lic', 'swm/service-coverage/lic/*') ? 'active' : '' }}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>{{__('LIC')}}</p>
+                                        </a>
+                                    </li>
+                                    @can('List SWM Primary Collection Sites')
+                                    <li class="nav-item">
+                                        <a href="{{ action('Swm\PrimaryCollectionSiteController@index') }}" class="nav-link {{ request()->is('swm/service-coverage/primary-collection-sites', 'swm/service-coverage/primary-collection-sites/*') ? 'active' : '' }}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>{{__('Primary Collection Site')}}</p>
+                                        </a>
+                                    </li>
+                                    @endcan
+                                </ul>
+                            </li>
                         </ul>
                     </li>
                     @endif

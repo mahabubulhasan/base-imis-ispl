@@ -286,6 +286,35 @@ Route::group([
             'destroy' => 'swm.sts.destroy',
         ]);
     });
+
+    Route::prefix('service-coverage')->group(function () {
+        Route::get('lic/data', 'LicController@getData')->name('swm.lic.data');
+        Route::get('lic/export', 'LicController@export')->name('swm.lic.export');
+        Route::get('lic/{lic}/history', 'LicController@history')->name('swm.lic.history');
+        Route::resource('lic', 'LicController')->names([
+            'index' => 'swm.lic.index',
+            'create' => 'swm.lic.create',
+            'store' => 'swm.lic.store',
+            'show' => 'swm.lic.show',
+            'edit' => 'swm.lic.edit',
+            'update' => 'swm.lic.update',
+            'destroy' => 'swm.lic.destroy',
+        ]);
+
+        Route::get('primary-collection-sites/building-snapshot', 'PrimaryCollectionSiteController@getBuildingSnapshot')->name('swm.primary-collection-sites.building-snapshot');
+        Route::get('primary-collection-sites/data', 'PrimaryCollectionSiteController@getData')->name('swm.primary-collection-sites.data');
+        Route::get('primary-collection-sites/export', 'PrimaryCollectionSiteController@export')->name('swm.primary-collection-sites.export');
+        Route::get('primary-collection-sites/{primary_collection_site}/history', 'PrimaryCollectionSiteController@history')->name('swm.primary-collection-sites.history');
+        Route::resource('primary-collection-sites', 'PrimaryCollectionSiteController')->names([
+            'index' => 'swm.primary-collection-sites.index',
+            'create' => 'swm.primary-collection-sites.create',
+            'store' => 'swm.primary-collection-sites.store',
+            'show' => 'swm.primary-collection-sites.show',
+            'edit' => 'swm.primary-collection-sites.edit',
+            'update' => 'swm.primary-collection-sites.update',
+            'destroy' => 'swm.primary-collection-sites.destroy',
+        ]);
+    });
 });
 
 Route::group([
