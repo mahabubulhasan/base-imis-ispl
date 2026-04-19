@@ -215,7 +215,7 @@
                 </tr> -->
                 --}}
                 <tr>
-                    <td style=" font-size : 18px;">{{ __('Total Cost') }}</td>
+                    <td style=" font-size : 18px;">{{ __('Total Cost (BDT)') }}</td>
                     <td style=" font-size : 18px;">{{number_format($application->emptying->total_cost)?? '-'}}</td>
                 </tr>
                 <tr>
