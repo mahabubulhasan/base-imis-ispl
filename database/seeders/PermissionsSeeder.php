@@ -1143,6 +1143,43 @@ class PermissionsSeeder extends Seeder
                 ],
             ],
             [
+                "group" => "SWM Billing Status",
+                "perms" => [
+                    [
+                        "type" => "List",
+                        "name" => "List SWM Billing Status",
+                    ],
+                    [
+                        "type" => "View",
+                        "name" => "View SWM Billing Status",
+                    ],
+                    [
+                        "type" => "Add",
+                        "name" => "Add SWM Billing Status",
+                    ],
+                    [
+                        "type" => "Edit",
+                        "name" => "Edit SWM Billing Status",
+                    ],
+                    [
+                        "type" => "Delete",
+                        "name" => "Delete SWM Billing Status",
+                    ],
+                    [
+                        "type" => "History",
+                        "name" => "View SWM Billing Status History",
+                    ],
+                    [
+                        "type" => "Export",
+                        "name" => "Export SWM Billing Status to CSV",
+                    ],
+                    [
+                        "type" => "Import",
+                        "name" => "Import SWM Billing Status From CSV",
+                    ],
+                ],
+            ],
+            [
                 "group" => "Building Structures",
                 "perms" => [
                     [

@@ -114,6 +114,7 @@ class MunicipalityITAdminSeeder extends Seeder
                         'SW Service Coverage LIC',
                         'SW Service Coverage Primary Collection Sites',
                         'SWM Bill Collection Payments',
+                        'SWM Billing Status',
                     ])
                         ->whereIn('type', ['View', 'List', 'Export', 'History', 'Add', 'Edit', 'Delete', 'Import']));
 

@@ -319,6 +319,11 @@ Route::group([
             Route::get('holdings-search', 'BillCollectionPaymentController@holdingsSearch')->name('swm.bill-collection.holdings-search');
             Route::get('customers-by-holding', 'BillCollectionPaymentController@customersByHolding')->name('swm.bill-collection.customers-by-holding');
 
+            Route::get('billing-status/summary', 'BillCollectionBillingStatusController@summary')->name('swm.billing-status.summary');
+            Route::get('billing-status/customers-search', 'BillCollectionBillingStatusController@customersSearch')->name('swm.billing-status.customers-search');
+            Route::get('billing-status/data', 'BillCollectionBillingStatusController@getData')->name('swm.billing-status.data');
+            Route::get('billing-status', 'BillCollectionBillingStatusController@index')->name('swm.billing-status.index');
+
             Route::get('payments/data', 'BillCollectionPaymentController@getData')->name('swm.bill-collection-payments.data');
             Route::get('payments/export', 'BillCollectionPaymentController@export')->name('swm.bill-collection-payments.export');
             Route::get('payments/balance-through-month', 'BillCollectionPaymentController@balanceThroughMonth')->name('swm.bill-collection-payments.balance-through-month');

@@ -23,7 +23,7 @@ class BillCollectionPaymentController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('permission:List SWM Bill Collection Payments', ['only' => ['index', 'getData']]);
-        $this->middleware('permission:List SWM Bill Collection Payments|Add SWM Bill Collection Payment|Edit SWM Bill Collection Payment', ['only' => [
+        $this->middleware('permission:List SWM Bill Collection Payments|Add SWM Bill Collection Payment|Edit SWM Bill Collection Payment|List SWM Billing Status', ['only' => [
             'holdingsSearch', 'customersByHolding', 'balanceThroughMonth',
         ]]);
         $this->middleware('permission:View SWM Bill Collection Payment', ['only' => ['show']]);

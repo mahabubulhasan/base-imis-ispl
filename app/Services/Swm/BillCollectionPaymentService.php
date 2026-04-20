@@ -78,6 +78,62 @@ class BillCollectionPaymentService
             ->all();
     }
 
+    /**
+     * Billing status filter: customers under one or more holdings, or global search when no holdings (q min 2 chars).
+     *
+     * @param  array<int, string>|null  $holdingNumbers
+     * @return array<int, array<string, mixed>>
+     */
+    public function customersForBillingFilter(?array $holdingNumbers, ?string $q = null, int $limit = 200): array
+    {
+        $holdingNumbers = is_array($holdingNumbers) ? $holdingNumbers : [];
+
+        $holdings = array_values(array_unique(array_filter(array_map(static function ($h) {
+            return is_string($h) ? trim($h) : '';
+        }, $holdingNumbers), static fn (string $h) => $h !== '')));
+
+        $query = PrimaryCollectionSite::query()
+            ->whereNull('deleted_at');
+
+        if ($holdings !== []) {
+            $query->whereIn('holding_number', $holdings);
+        } else {
+            $term = trim((string) ($q ?? ''));
+            if (strlen($term) < 2) {
+                return [];
+            }
+            $like = '%'.$term.'%';
+            $query->where(function ($sub) use ($like) {
+                $sub->where('customer_id', 'ILIKE', $like)
+                    ->orWhere('customer_name', 'ILIKE', $like);
+            });
+        }
+
+        if ($q !== null && $q !== '' && $holdings !== []) {
+            $like = '%'.trim((string) $q).'%';
+            $query->where(function ($sub) use ($like) {
+                $sub->where('customer_id', 'ILIKE', $like)
+                    ->orWhere('customer_name', 'ILIKE', $like);
+            });
+        }
+
+        return $query->orderBy('holding_number')
+            ->orderBy('customer_id')
+            ->limit($limit)
+            ->get(['id', 'customer_id', 'customer_name', 'holding_number', 'waste_charge', 'using_this_service_since', 'survey_date'])
+            ->map(fn ($site) => [
+                'id' => $site->id,
+                'text' => ($site->customer_id ?? '').' — '.($site->customer_name ?? '').($site->holding_number ? ' ('.$site->holding_number.')' : ''),
+                'customer_id' => $site->customer_id,
+                'holding_number' => $site->holding_number,
+                'waste_charge' => $site->waste_charge,
+                'using_this_service_since' => $site->using_this_service_since?->format('Y-m-d'),
+                'survey_date' => $site->survey_date?->format('Y-m-d'),
+            ])
+            ->values()
+            ->all();
+    }
+
     public function billingAnchor(PrimaryCollectionSite $site): ?Carbon
     {
         if ($site->using_this_service_since) {
@@ -157,6 +213,57 @@ class BillCollectionPaymentService
             'cumulative_paid_through' => $cumulativePaid,
             'due' => $due,
         ];
+    }
+
+    /**
+     * Billable months gained when moving from the prior calendar month into {@see $monthStart} (0 or 1 with current rules).
+     */
+    public function marginalBillableUnitCount(PrimaryCollectionSite $site, Carbon $monthStart): int
+    {
+        $monthStart = $monthStart->copy()->startOfMonth();
+        $prev = $monthStart->copy()->subMonthNoOverflow()->startOfMonth();
+        $cNow = $this->billableMonthCount($site, $monthStart);
+        $cPrev = $this->billableMonthCount($site, $prev);
+
+        return max(0, $cNow - $cPrev);
+    }
+
+    /**
+     * Sum of payments recorded for exactly this billing month (payment_for_month = first day of month).
+     */
+    public function paidForPaymentMonth(PrimaryCollectionSite $site, Carbon $monthStart): string
+    {
+        $d = $monthStart->copy()->startOfMonth()->toDateString();
+        $sum = BillCollectionPayment::query()
+            ->where('primary_collection_site_id', $site->id)
+            ->whereNull('deleted_at')
+            ->whereDate('payment_for_month', $d)
+            ->sum('amount');
+
+        return number_format((float) $sum, 2, '.', '');
+    }
+
+    /**
+     * Amount still owed for this calendar month only (marginal obligation for the month minus payments tagged to that month).
+     */
+    public function marginalDueForMonth(PrimaryCollectionSite $site, Carbon $monthStart): string
+    {
+        $w = $site->waste_charge;
+        if ($w === null) {
+            return '0.00';
+        }
+        $units = $this->marginalBillableUnitCount($site, $monthStart);
+        if ($units <= 0) {
+            return '0.00';
+        }
+        $obligation = bcmul((string) $w, (string) $units, 2);
+        $paid = $this->paidForPaymentMonth($site, $monthStart);
+        $due = bcsub($obligation, $paid, 2);
+        if (bccomp($due, '0', 2) < 0) {
+            return '0.00';
+        }
+
+        return $due;
     }
 
     protected function baseQuery(): Builder

@@ -44,6 +44,7 @@ class MunicipalitySolidWasteManagementDepartmentSeeder extends Seeder
                         'SW Service Coverage LIC',
                         'SW Service Coverage Primary Collection Sites',
                         'SWM Bill Collection Payments',
+                        'SWM Billing Status',
                     ];
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', $swmServiceFacilityGroups));
 
