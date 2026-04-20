@@ -259,6 +259,21 @@ Route::group([
         ]);
     });
 
+    Route::prefix('complaints')->group(function () {
+        Route::get('holdings-search', 'ComplaintController@holdingsSearch')->name('swm.complaints.holdings-search');
+        Route::get('customers-search', 'ComplaintController@customersSearch')->name('swm.complaints.customers-search');
+        Route::get('data', 'ComplaintController@getData')->name('swm.complaints.data');
+        Route::get('export', 'ComplaintController@export')->name('swm.complaints.export');
+        Route::get('/', 'ComplaintController@index')->name('swm.complaints.index');
+        Route::get('create', 'ComplaintController@create')->name('swm.complaints.create');
+        Route::post('/', 'ComplaintController@store')->name('swm.complaints.store');
+        Route::get('{complaint}', 'ComplaintController@show')->name('swm.complaints.show');
+        Route::get('{complaint}/edit', 'ComplaintController@edit')->name('swm.complaints.edit');
+        Route::patch('{complaint}', 'ComplaintController@update')->name('swm.complaints.update');
+        Route::delete('{complaint}', 'ComplaintController@destroy')->name('swm.complaints.destroy');
+        Route::get('{complaint}/history', 'ComplaintController@history')->name('swm.complaints.history');
+    });
+
     Route::prefix('service-facilities')->group(function () {
         Route::get('landfills/data', 'LandfillController@getData')->name('swm.landfills.data');
         Route::get('landfills/export', 'LandfillController@export')->name('swm.landfills.export');

@@ -474,7 +474,7 @@
             </li>
             @endif
 
-            @if(Auth::user()->hasanyPermissionInGroup(['Swm Service Payment', 'SWM Service Provider Organizations', 'SWM Service Provider Work Types', 'SWM Service Provider Workers', 'SWM Service Provider Vehicle Types', 'SWM Service Provider Vehicles', 'SWM Service Facility Landfills', 'SWM Service Facility STS', 'SW Service Coverage LIC', 'SW Service Coverage Primary Collection Sites', 'SWM Bill Collection Payments', 'SWM Billing Status']) || Auth::user()->hasRole('Super Admin'))
+            @if(Auth::user()->hasanyPermissionInGroup(['Swm Service Payment', 'SWM Service Provider Organizations', 'SWM Service Provider Work Types', 'SWM Service Provider Workers', 'SWM Service Provider Vehicle Types', 'SWM Service Provider Vehicles', 'SWM Service Facility Landfills', 'SWM Service Facility STS', 'SW Service Coverage LIC', 'SW Service Coverage Primary Collection Sites', 'SWM Bill Collection Payments', 'SWM Billing Status', 'SWM Complaints']) || Auth::user()->hasRole('Super Admin'))
             <li class="nav-item {{ request()->is('swm-payment', 'swm-payment/*', 'swm/service-providers/*', 'swm/service-facilities/*', 'swm/service-coverage/*') ? 'menu-is-opening menu-open' : '' }}">
                 <a href="#" class="nav-link {{ request()->is('swm-payment', 'swm-payment/*', 'swm/service-providers/*', 'swm/service-facilities/*', 'swm/service-coverage/*') ? 'active' : '' }}">
                     <img src="{{ asset('img/svg/imis-icons/swmPaymentStatus.svg')}}" class="nav-icon">
@@ -612,6 +612,14 @@
                         </ul>
                     </li>
                     @endif
+                    @can('List SWM Complaints')
+                    <li class="nav-item">
+                        <a href="{{ route('swm.complaints.index') }}" class="nav-link {{ request()->is('swm/complaints', 'swm/complaints/*') ? 'active' : '' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>{{ __('Complaints Management') }}</p>
+                        </a>
+                    </li>
+                    @endcan
                     @if(Auth::user()->can('List SWM Work Types') || Auth::user()->can('List SWM Vehicle Types'))
                     <li class="nav-item {{ request()->is('swm/service-providers/work-types*', 'swm/service-providers/vehicle-types*') ? 'menu-is-opening menu-open' : '' }}">
                         <a href="#" class="nav-link {{ request()->is('swm/service-providers/work-types*', 'swm/service-providers/vehicle-types*') ? 'active subnav' : '' }}">

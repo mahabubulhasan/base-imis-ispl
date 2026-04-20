@@ -1180,6 +1180,39 @@ class PermissionsSeeder extends Seeder
                 ],
             ],
             [
+                "group" => "SWM Complaints",
+                "perms" => [
+                    [
+                        "type" => "List",
+                        "name" => "List SWM Complaints",
+                    ],
+                    [
+                        "type" => "View",
+                        "name" => "View SWM Complaint",
+                    ],
+                    [
+                        "type" => "Add",
+                        "name" => "Add SWM Complaint",
+                    ],
+                    [
+                        "type" => "Edit",
+                        "name" => "Edit SWM Complaint",
+                    ],
+                    [
+                        "type" => "Delete",
+                        "name" => "Delete SWM Complaint",
+                    ],
+                    [
+                        "type" => "History",
+                        "name" => "View SWM Complaint History",
+                    ],
+                    [
+                        "type" => "Export",
+                        "name" => "Export SWM Complaints to CSV",
+                    ],
+                ],
+            ],
+            [
                 "group" => "Building Structures",
                 "perms" => [
                     [
