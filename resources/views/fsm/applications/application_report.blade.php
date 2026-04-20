@@ -52,7 +52,7 @@
                 <td style="vertical-align:middle; text-align:center; border:none;">
                     <h1 class="heading" style="text-transform:uppercase; margin: 0;">{{ __('লক্ষীপুর পৌরসভা কার্যালয়') }}</h1>
                     <h2 style="text-transform:uppercase; margin: 10px 0;">{{ __('লক্ষীপুর') }}</h2>
-                    <!-- <h3 style="text-transform:uppercase; margin: 0;">Integrated Municipal Information System</h3> -->
+                    <h3 style="text-transform:uppercase; margin: 10px 0;">{{ __('Application Report') }}</h3>
                 </td>
                 <td style="width:80px; border:none;"></td>
             </tr>
