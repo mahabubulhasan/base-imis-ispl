@@ -1023,6 +1023,7 @@ class BuildingStructureService
             ->select(
                 'building_info.buildings.bin AS bin',
                 'building_info.buildings.house_number AS house_number',
+                'building_info.buildings.tax_code AS tax_code',
                 'building_info.buildings.structure_type_id AS structure_type_id',
                 'building_info.structure_types.type AS type',
                 'building_info.buildings.ward AS ward',
@@ -1080,9 +1081,9 @@ class BuildingStructureService
 
                     $query->where('floor_count','ILIKE', $request->floor_count .'%');
                 }
-                if ($request->house_number) {
+                if ($request->tax_code) {
 
-                    $query->where('house_number','ILIKE', '%'.  $request->house_number.'%');
+                    $query->where('tax_code','ILIKE', '%'.  $request->tax_code.'%');
                 }
                 if ($request->date_from && $request->date_to) {
                     $query->whereDate('construction_year', '>=', $request->date_from);
