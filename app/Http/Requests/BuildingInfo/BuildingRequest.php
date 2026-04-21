@@ -128,7 +128,7 @@ class BuildingRequest extends FormRequest
                     return true;
                 }
             },
-            __('Building Footprint (KML) file must be kml format.') 
+            __('Building Footprint (KML) file must be kml format.')
         );
         $use_cat = $this->input('use_category_id');
         return [
@@ -144,7 +144,7 @@ class BuildingRequest extends FormRequest
             'house_number' => 'nullable|unique:pgsql.building_info.buildings,house_number',
             // Allow comma-separated tax codes; max length ~250 chars
             'tax_code' => [
-                'required',
+                'nullable',
                 'string',
                 'max:250',
                 // Pattern: code or multiple codes separated by commas with optional spaces
@@ -178,7 +178,7 @@ class BuildingRequest extends FormRequest
                 'integer',
                 'min:0',
             ],
-           
+
             //Lic Information
             'low_income_hh' => 'required',
             // 'lic_status' => 'required_if:low_income_hh,1',
@@ -200,13 +200,13 @@ class BuildingRequest extends FormRequest
             'ctpt_name' => 'exclude_if:toilet_status,1 | required_if:defecation_place,9',
             'household_with_private_toilet' => 'nullable |min:0 | lte:household_served',
             'population_with_private_toilet' =>'nullable|min:0| lte:population_served',
-           
+
             // containment validation
-            // exclude if has been used to ensure cascading parent values are also checked below 
+            // exclude if has been used to ensure cascading parent values are also checked below
             // child values are validated. E.g., dont validation type_id if toilet is no
             'type_id' => 'exclude_if:toilet_status,0 | required_if:sanitation_system_id,3,4',
             'size' =>  'exclude_if:toilet_status,0 | required_if:sanitation_system_id,3,4',
-            // exclude if has been used to ensure cascading parent values are also checked below 
+            // exclude if has been used to ensure cascading parent values are also checked below
             // child values are validated. E.g., dont validation type_id if toilet is no
             'type_id' => 'exclude_if:toilet_status,0 | required_if:sanitation_system_id,3,4',
             'size' =>  'exclude_if:toilet_status,0 | required_if:sanitation_system_id,3,4',
@@ -227,7 +227,7 @@ class BuildingRequest extends FormRequest
 
     public function update()
     {
-        $bin = $this->input('building'); 
+        $bin = $this->input('building');
         $use_cat = $this->input('use_category_id');
         Validator::extend('file_extension', function ($attribute, $value, $parameters, $validator) {
             if (!in_array($value->getClientOriginalExtension(), $parameters)) {
@@ -251,7 +251,7 @@ class BuildingRequest extends FormRequest
             'house_number' => 'nullable|unique:pgsql.building_info.buildings,bin,' . $bin . ',bin',
             // Allow comma-separated tax codes; max length ~250 chars
             'tax_code' => [
-                'required',
+                'nullable',
                 'string',
                 'max:250',
                 'regex:/^\s*\d{2}-\d{3}-\d{4}-\d{2}(\s*,\s*\d{2}-\d{3}-\d{4}-\d{2})*\s*$/'
