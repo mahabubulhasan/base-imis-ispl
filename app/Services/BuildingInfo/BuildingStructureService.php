@@ -1034,6 +1034,8 @@ class BuildingStructureService
                 'building_info.owners.owner_name AS owner_name',
                 'building_info.sanitation_systems.sanitation_system as sanitation_system_id'
             )
+            ->orderBy('building_info.buildings.ward')
+            ->orderBy('building_info.owners.owner_name')
             ->whereNull('building_info.buildings.deleted_at');
         return DataTables::of($buildingData)
             ->filter(function ($query) use ($request) {
