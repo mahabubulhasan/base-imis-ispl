@@ -1,3 +1,6 @@
+{{-- Last Modified: 2026-04-21 --}}
+{{-- Developed By: Streams Tech Ltd. --}}
+{{-- Description: FSM application report view with owner/applicant contact formatting --}}
 <!DOCTYPE html>
 <html>
 
@@ -46,12 +49,12 @@
     <div class="container">
         <table width="100%" cellpadding="0" cellspacing="0" style="border:none;">
             <tr>
-                <td style="width:80px; vertical-align:middle; border:none;">
+                <td style="width:80px; vertical-align:top; border:none;">
                     <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('img/stl/logo-Lakshmipur.png'))) }}" alt="" style="width:100px; display:block;">
                 </td>
                 <td style="vertical-align:middle; text-align:center; border:none;">
-                    <h1 class="heading" style="text-transform:uppercase; margin: 0;">{{ __('লক্ষীপুর পৌরসভা কার্যালয়') }}</h1>
-                    <h2 style="text-transform:uppercase; margin: 10px 0;">{{ __('লক্ষীপুর') }}</h2>
+                    <h1 class="heading" style="text-transform:uppercase; margin: 0;">{{ __('লক্ষ্মীপুর পৌরসভা কার্যালয়') }}</h1>
+                    <h2 style="text-transform:uppercase; margin: 10px 0;">{{ __('লক্ষ্মীপুর') }}</h2>
                     <h3 style="text-transform:uppercase; margin: 10px 0;">{{ __('Application Report') }}</h3>
                 </td>
                 <td style="width:80px; border:none;"></td>
@@ -130,19 +133,19 @@
             @if(($application->applicant_contact == $application->customer_contact))
             <tr>
                 <td style=" font-size : 18px;">{{ __('Owner/Applicant Contact') }}</td>
-                <td style=" font-size : 18px;">{{$application->customer_contact?? '-'}}</td>
+                <td style=" font-size : 18px;">{{ $application->customer_contact ? (strlen($application->customer_contact) == 10 ? '0'.$application->customer_contact : $application->customer_contact) : '-' }}</td>
             </tr>
             @else
             @if(isset($application->customer_contact))
             <tr>
                 <td style=" font-size : 18px;">{{ __('Owner Contact') }}</td>
-                <td style=" font-size : 18px;">{{$application->customer_contact?? '-'}}</td>
+                <td style=" font-size : 18px;">{{ $application->customer_contact ? (strlen($application->customer_contact) == 10 ? '0'.$application->customer_contact : $application->customer_contact) : '-' }}</td>
             </tr>
             @endif
             @if(isset($application->applicant_contact))
             <tr>
                 <td style=" font-size : 18px;">{{ __('Applicant Contact') }}</td>
-                <td style=" font-size : 18px;">{{$application->applicant_contact?? '-'}}</td>
+                <td style=" font-size : 18px;">{{ $application->applicant_contact ? (strlen($application->applicant_contact) == 10 ? '0'.$application->applicant_contact : $application->applicant_contact) : '-' }}</td>
             </tr>
             @endif
             @endif

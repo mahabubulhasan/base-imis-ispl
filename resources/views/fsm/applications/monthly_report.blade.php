@@ -51,14 +51,14 @@
     <div class="container">
         <table width="100%" cellpadding="0" cellspacing="0" style="border:none;">
             <tr>
-                <td style="width:80px; vertical-align:middle; border:none;">
+                <td style="width:80px; vertical-align:top; border:none;">
                     <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('img/stl/logo-Lakshmipur.png'))) }}"
                         alt="" style="width:100px; display:block;">
                 </td>
                 <td style="vertical-align:middle; text-align:center; border:none;">
-                    <h1 class="heading" style="text-transform:uppercase; margin: 0;">{{ __('লক্ষীপুর পৌরসভা কার্যালয়')
+                    <h1 class="heading" style="text-transform:uppercase; margin: 0;">{{ __('লক্ষ্মীপুর পৌরসভা কার্যালয়')
                         }}</h1>
-                    <h2 style="text-transform:uppercase; margin: 10px 0;">{{ __('লক্ষীপুর') }}</h2>
+                    <h2 style="text-transform:uppercase; margin: 10px 0;">{{ __('লক্ষ্মীপুর') }}</h2>
                     <h3 style="text-transform:uppercase; margin: 10px 0;">{{ __('Monthly Report') }}</h3>
                 </td>
                 <td style="width:80px; border:none;"></td>
