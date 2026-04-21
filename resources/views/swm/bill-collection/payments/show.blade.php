@@ -26,6 +26,14 @@
             <dd class="col-sm-9">{{ config('bill_collection.payment_methods')[$payment->payment_method] ?? $payment->payment_method }}</dd>
             <dt class="col-sm-3">{{ __('Received By') }}</dt>
             <dd class="col-sm-9">{{ optional($payment->receivedBy)->name }}</dd>
+            <dt class="col-sm-3">{{ __('Payment receipt copy') }}</dt>
+            <dd class="col-sm-9">
+                @if(!empty($payment->receipt_copy_url))
+                    <a href="{{ $payment->receipt_copy_url }}" target="_blank" rel="noopener">{{ __('View receipt') }}</a>
+                @else
+                    —
+                @endif
+            </dd>
         </dl>
     </div>
 </div>

@@ -8,7 +8,7 @@
 <div class="alert alert-warning">{{ session('warning') }}</div>
 @endif
 <div class="card card-info">
-    {!! Form::open(['route' => 'swm.bill-collection-payments.store', 'class' => 'form-horizontal', 'id' => 'bill-collection-payment-form']) !!}
+    {!! Form::open(['route' => 'swm.bill-collection-payments.store', 'class' => 'form-horizontal', 'id' => 'bill-collection-payment-form', 'files' => true]) !!}
         @include('swm.bill-collection.payments.partial-form')
     {!! Form::close() !!}
 </div>

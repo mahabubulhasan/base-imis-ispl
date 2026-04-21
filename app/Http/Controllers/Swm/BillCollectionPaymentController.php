@@ -139,6 +139,7 @@ class BillCollectionPaymentController extends Controller
         if (empty($data['received_by_user_id'])) {
             $data['received_by_user_id'] = Auth::id();
         }
+        $data['receipt_copy_path'] = $this->storeReceiptCopyIfPresent($request);
         $id = $this->billCollectionPaymentService->storeOrUpdate(null, $data);
         if (! $id) {
             return redirect()->back()->withInput()->withErrors(['primary_collection_site_id' => __('Invalid primary collection site.')]);
@@ -180,6 +181,14 @@ class BillCollectionPaymentController extends Controller
         if (empty($data['received_by_user_id'])) {
             $data['received_by_user_id'] = Auth::id();
         }
+        $data['receipt_copy_path'] = $payment->receipt_copy_path;
+        if ($request->hasFile('receipt_copy')) {
+            $newReceiptPath = $this->storeReceiptCopyIfPresent($request);
+            if ($newReceiptPath) {
+                $this->deleteReceiptCopyIfPresent($payment->receipt_copy_path);
+                $data['receipt_copy_path'] = $newReceiptPath;
+            }
+        }
         $id = $this->billCollectionPaymentService->storeOrUpdate($payment->id, $data);
         if (! $id) {
             return redirect()->back()->withInput()->withErrors(['primary_collection_site_id' => __('Invalid primary collection site.')]);
@@ -191,6 +200,7 @@ class BillCollectionPaymentController extends Controller
 
     public function destroy(BillCollectionPayment $payment)
     {
+        $this->deleteReceiptCopyIfPresent($payment->receipt_copy_path);
         $payment->delete();
 
         return redirect()->route('swm.bill-collection-payments.index')->with('success', __('Bill collection payment deleted successfully.'));
@@ -307,5 +317,24 @@ class BillCollectionPaymentController extends Controller
         }
 
         return $data;
+    }
+
+    protected function storeReceiptCopyIfPresent(Request $request): ?string
+    {
+        if (! $request->hasFile('receipt_copy')) {
+            return null;
+        }
+
+        return $request->file('receipt_copy')->store('bill-collection-receipts', 'public');
+    }
+
+    protected function deleteReceiptCopyIfPresent(?string $path): void
+    {
+        if (! $path) {
+            return;
+        }
+        if (Storage::disk('public')->exists($path)) {
+            Storage::disk('public')->delete($path);
+        }
     }
 }

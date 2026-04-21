@@ -373,6 +373,9 @@ class BillCollectionPaymentService
         $payment->payment_time = isset($data['payment_time']) ? Carbon::parse($data['payment_time']) : now();
         $payment->payment_method = $data['payment_method'] ?? '';
         $payment->received_by_user_id = $data['received_by_user_id'] ?? Auth::id();
+        if (array_key_exists('receipt_copy_path', $data)) {
+            $payment->receipt_copy_path = $data['receipt_copy_path'];
+        }
         $payment->save();
 
         return $payment->id;

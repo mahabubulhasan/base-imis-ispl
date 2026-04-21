@@ -47,7 +47,7 @@
         <div class="info-box">
             <span class="info-box-icon bg-success"><i class="fas fa-coins"></i></span>
             <div class="info-box-content">
-                <span class="info-box-text">{{ __('Total revenue collected') }} ({{ __('YTD') }})</span>
+                <span class="info-box-text">{{ __('Total revenue collected') }} ({{ __('BDT') }})</span>
                 <span class="info-box-number" id="summary-revenue-ytd">—</span>
             </div>
         </div>

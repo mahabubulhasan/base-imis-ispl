@@ -43,6 +43,12 @@ class BillCollectionPaymentRequest extends FormRequest
                         'integer',
                         Rule::exists('pgsql.auth.users', 'id'),
                     ],
+                    'receipt_copy' => [
+                        'nullable',
+                        'file',
+                        'max:10240',
+                        'mimes:jpg,jpeg,png,pdf',
+                    ],
                 ];
             default:
                 return [];

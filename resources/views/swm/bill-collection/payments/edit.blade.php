@@ -8,7 +8,7 @@
 <div class="alert alert-warning">{{ session('warning') }}</div>
 @endif
 <div class="card card-info">
-    {!! Form::model($payment, ['route' => ['swm.bill-collection-payments.update', $payment->id], 'method' => 'PATCH', 'class' => 'form-horizontal', 'id' => 'bill-collection-payment-form']) !!}
+    {!! Form::model($payment, ['route' => ['swm.bill-collection-payments.update', $payment->id], 'method' => 'PATCH', 'class' => 'form-horizontal', 'id' => 'bill-collection-payment-form', 'files' => true]) !!}
         @include('swm.bill-collection.payments.partial-form')
     {!! Form::close() !!}
 </div>

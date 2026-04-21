@@ -149,6 +149,17 @@
             @endif
         </div>
     </div>
+
+    <div class="form-group row">
+        {!! Form::label('receipt_copy', __('Payment receipt copy'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-9 bcp-payment-field-col">
+            <input type="file" name="receipt_copy" id="receipt_copy" class="form-control w-100" accept=".jpg,.jpeg,.png,.pdf" />
+            <small class="form-text text-muted">{{ __('Allowed file types: JPG, PNG, PDF. Max size 10 MB.') }}</small>
+            @if($isEdit && !empty($payment->receipt_copy_url))
+                <a href="{{ $payment->receipt_copy_url }}" target="_blank" rel="noopener">{{ __('View current receipt') }}</a>
+            @endif
+        </div>
+    </div>
 </div>
 <div class="card-footer">
     <a href="{{ route('swm.bill-collection-payments.index') }}" class="btn btn-info">{{ __('Back to List') }}</a>
