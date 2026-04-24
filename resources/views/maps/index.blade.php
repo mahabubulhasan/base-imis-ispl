@@ -1,5 +1,5 @@
 {{--
-// Last Modified: 2026-04-07
+// Last Modified: 2026-04-24
 // Developed By: Streams Tech Ltd.
 // Description: Map interface view with tools for road, sewer, drain, and water supply network addition.
 --}}
@@ -259,7 +259,7 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                                     <div class="add-road-form-group pt-2">
                                         {!! Form::label('road_code',__('Road Code') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
                                         {!! Form::text('road_code',null,['class' => 'form-control', 'placeholder' => __('Road Code'), 'id' => 'road_code_field']) !!}
-                                        <small style="color: #666; display: block; margin-top: 5px;">{{ __('Municipality Road: auto-generated as 20512510 + Ward(2 digits) + Serial(4 digits)') }}</small>
+                                        <small id="municipality_road_hint" style="color: #666; display: none; margin-top: 5px;">{{ __('Municipality Road: auto-generated as 20512510 + Ward(2 digits) + Serial(4 digits)') }}</small>
                                     </div>
 
                                     <div class="add-road-form-group pt-2">
@@ -1967,16 +1967,19 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
             const roadTypeSelect = $('#road_type');
             const municipalityFieldsContainer = $('#municipality_fields_container');
             const hierarchySelect = $('#hierarchy');
+            const municipalityRoadHint = $('#municipality_road_hint');
 
             // Toggle municipality-only fields and hierarchy default on road type change
             roadTypeSelect.change(function() {
                 const selectedValue = $(this).val();
                 if (selectedValue === 'MunicipalityRoad') {
                     municipalityFieldsContainer.slideDown();
+                    municipalityRoadHint.show();
                     $('#road_code_field').prop('readonly', true).data('auto-generated', true);
                     hierarchySelect.val('Primary');
                 } else {
                     municipalityFieldsContainer.slideUp();
+                    municipalityRoadHint.hide();
                     $('#road_code_field').prop('readonly', false).data('auto-generated', false);
                     // Clear fields when switching away from Municipality Road
                     $('#road_code_field').val('');
