@@ -1901,11 +1901,9 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
             useExtensionCheckbox.change(function() {
                 if (this.checked) {
                     extensionFieldsContainer.slideDown();
-                    // Load base road codes when extension is enabled and ward is selected
+                    // Load base road codes when extension is enabled and ward/road type is selected
                     const ward = $('#ward_select').val();
-                    if (ward) {
-                        loadBaseRoadCodes(ward);
-                    }
+                    loadBaseRoadCodes(ward);
                 } else {
                     extensionFieldsContainer.slideUp();
                     // Clear base road code select when extension is disabled
@@ -1914,10 +1912,12 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
             });
 
             /**
-             * Load base road codes (road_uid) from database filtered by ward
+             * Load base road codes (road_uid) from database filtered by ward and road type
              */
             function loadBaseRoadCodes(ward) {
-                if (!ward) {
+                const roadType = $('#road_type').val();
+
+                if (!ward && !roadType) {
                     $('#base_road_code').html('<option value="">{{ __("Select existing road code") }}</option>');
                     return;
                 }
@@ -1927,7 +1927,7 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                 $.ajax({
                     url: '{{ url("/utilityinfo/roadlines/get-by-ward") }}',
                     type: 'GET',
-                    data: { ward: ward },
+                    data: { ward: ward, road_type: roadType },
                     dataType: 'json',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1936,10 +1936,10 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                         let options = '<option value="">{{ __("Select existing road code") }}</option>';
                         if (data && data.length > 0) {
                             $.each(data, function(index, road) {
-                                options += '<option value="' + road.road_uid + '">' + road.road_uid + ' (' + road.code + ')</option>';
+                                options += '<option value="' + road.road_uid + '">' + road.name + ' (' + road.code + ')</option>';
                             });
                         } else {
-                            options = '<option value="">{{ __("No roads found for this ward") }}</option>';
+                            options = '<option value="">{{ __("No roads found for selected filters") }}</option>';
                         }
                         $('#base_road_code').html(options);
                     },
@@ -1986,6 +1986,11 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                     $('#ward_select').val('');
                     $('#serial_number').val('');
                     hierarchySelect.val('');
+                }
+
+                // Load base road codes for extension mode on road type change
+                if (useExtensionCheckbox.is(':checked')) {
+                    loadBaseRoadCodes(wardSelect.val());
                 }
             });
 
