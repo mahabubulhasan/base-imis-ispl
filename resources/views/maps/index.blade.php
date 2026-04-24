@@ -1977,20 +1977,26 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                     municipalityRoadHint.show();
                     $('#road_code_field').prop('readonly', true).data('auto-generated', true);
                     hierarchySelect.val('Primary');
+
+                    // Regenerate municipality road code when switching back to Municipality Road.
+                    const selectedWard = $('#ward_select').val();
+                    if (selectedWard) {
+                        $('#ward_select').trigger('change');
+                    } else {
+                        updateRoadCode();
+                    }
                 } else {
                     municipalityFieldsContainer.slideUp();
                     municipalityRoadHint.hide();
                     $('#road_code_field').prop('readonly', false).data('auto-generated', false);
                     // Clear fields when switching away from Municipality Road
                     $('#road_code_field').val('');
-                    $('#ward_select').val('');
-                    $('#serial_number').val('');
                     hierarchySelect.val('');
                 }
 
                 // Load base road codes for extension mode on road type change
                 if (useExtensionCheckbox.is(':checked')) {
-                    loadBaseRoadCodes(wardSelect.val());
+                    loadBaseRoadCodes($('#ward_select').val());
                 }
             });
 
