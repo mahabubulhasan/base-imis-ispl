@@ -1934,6 +1934,23 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                     },
                     success: function(data) {
                         let options = '<option value="">{{ __("Select existing road code") }}</option>';
+                        let nextExtension = '';
+
+                        // Compute next 2-digit extension from returned road codes (e.g. -01, -02 => 03).
+                        const extensionNumbers = (data || []).map(function(road) {
+                            const match = (road.code || '').match(/-(\d{2})$/);
+                            return match ? parseInt(match[1], 10) : null;
+                        }).filter(function(value) {
+                            return value !== null && !isNaN(value);
+                        });
+
+                        if (extensionNumbers.length > 0) {
+                            const maxExtension = Math.max.apply(null, extensionNumbers);
+                            nextExtension = String(Math.min(maxExtension + 1, 99)).padStart(2, '0');
+                        } else if (data && data.length > 0) {
+                            nextExtension = '01';
+                        }
+
                         if (data && data.length > 0) {
                             $.each(data, function(index, road) {
                                 options += '<option value="' + road.road_uid + '">' + road.name + ' (' + road.code + ')</option>';
@@ -1942,10 +1959,12 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                             options = '<option value="">{{ __("No roads found for selected filters") }}</option>';
                         }
                         $('#base_road_code').html(options);
+                        $('#extension').val(nextExtension).trigger('change');
                     },
                     error: function(xhr, status, error) {
                         console.error('Error loading roads:', status, error);
                         $('#base_road_code').html('<option value="">{{ __("Error loading roads") }}</option>');
+                        $('#extension').val('').trigger('change');
                     }
                 });
             }
