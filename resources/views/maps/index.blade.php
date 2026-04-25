@@ -1905,6 +1905,7 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                     const ward = $('#ward_select').val();
                     loadBaseRoadCodes(ward);
                 } else {
+                    updateRoadCode()
                     extensionFieldsContainer.slideUp();
                     // Clear base road code select when extension is disabled
                     $('#base_road_code').html('<option value="">{{ __("Select existing road code") }}</option>');
