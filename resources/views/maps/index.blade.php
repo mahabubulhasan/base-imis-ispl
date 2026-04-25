@@ -2011,7 +2011,7 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                     const nextExtension = computeNextExtension(relatedRoads);
                     $('#extension').val(nextExtension);
                     if (nextExtension) {
-                        $('#road_code_field').val(selectedRoadUid + nextExtension);
+                        $('#road_code_field').val(selectedRoadUid + '-' + nextExtension);
                     }
                 } else {
                     $('#extension').val('');
@@ -2024,7 +2024,7 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                 const baseRoadCode = $('#base_road_code').val();
                 const extension = $(this).val();
                 if (baseRoadCode && extension) {
-                    $('#road_code_field').val(baseRoadCode + extension);
+                    $('#road_code_field').val(baseRoadCode + '-' + extension);
                 }
             });
 
