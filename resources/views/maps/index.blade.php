@@ -1,5 +1,5 @@
 {{--
-// Last Modified: 2026-04-24
+// Last Modified: 2026-04-25
 // Developed By: Streams Tech Ltd.
 // Description: Map interface view with tools for road, sewer, drain, and water supply network addition.
 --}}
@@ -1912,12 +1912,40 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
             });
 
             /**
+             * Compute next 2-digit extension from an array of road objects.
+             * Scans each road.code for a trailing -XX suffix and returns max+1, capped at 99.
+             * Returns '01' when roads exist but none carry a -XX suffix.
+             * Returns '' when the roads array is empty or falsy.
+             */
+            function computeNextExtension(roads) {
+
+                const extensionNumbers = (roads || []).map(function(road) {
+                    const match = (road.code || '').match(/-(\d{2})$/);
+                    return match ? parseInt(match[1], 10) : null;
+                }).filter(function(value) {
+                    return value !== null && !isNaN(value);
+                });
+
+                if (extensionNumbers.length > 0) {
+                    const maxExtension = Math.max.apply(null, extensionNumbers);
+                    return String(Math.min(maxExtension + 1, 99)).padStart(2, '0');
+                } else if (roads && roads.length > 0) {
+                    return '01';
+                }
+                return '';
+            }
+
+            // Holds the last set of road objects returned by loadBaseRoadCodes.
+            let loadedRoadData = [];
+
+            /**
              * Load base road codes (road_uid) from database filtered by ward and road type
              */
             function loadBaseRoadCodes(ward) {
                 const roadType = $('#road_type').val();
 
                 if (!ward && !roadType) {
+                    loadedRoadData = [];
                     $('#base_road_code').html('<option value="">{{ __("Select existing road code") }}</option>');
                     return;
                 }
@@ -1933,38 +1961,25 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function(data) {
+                        loadedRoadData = data || [];
                         let options = '<option value="">{{ __("Select existing road code") }}</option>';
-                        let nextExtension = '';
 
-                        // Compute next 2-digit extension from returned road codes (e.g. -01, -02 => 03).
-                        const extensionNumbers = (data || []).map(function(road) {
-                            const match = (road.code || '').match(/-(\d{2})$/);
-                            return match ? parseInt(match[1], 10) : null;
-                        }).filter(function(value) {
-                            return value !== null && !isNaN(value);
-                        });
-
-                        if (extensionNumbers.length > 0) {
-                            const maxExtension = Math.max.apply(null, extensionNumbers);
-                            nextExtension = String(Math.min(maxExtension + 1, 99)).padStart(2, '0');
-                        } else if (data && data.length > 0) {
-                            nextExtension = '01';
-                        }
-
-                        if (data && data.length > 0) {
-                            $.each(data, function(index, road) {
+                        if (loadedRoadData.length > 0) {
+                            $.each(loadedRoadData, function(index, road) {
                                 options += '<option value="' + road.road_uid + '">' + road.name + ' (' + road.code + ')</option>';
                             });
                         } else {
                             options = '<option value="">{{ __("No roads found for selected filters") }}</option>';
                         }
                         $('#base_road_code').html(options);
-                        $('#extension').val(nextExtension).trigger('change');
+                        // Extension is populated only when the user selects a base road code.
+                        $('#extension').val('');
                     },
                     error: function(xhr, status, error) {
                         console.error('Error loading roads:', status, error);
+                        loadedRoadData = [];
                         $('#base_road_code').html('<option value="">{{ __("Error loading roads") }}</option>');
-                        $('#extension').val('').trigger('change');
+                        $('#extension').val('');
                     }
                 });
             }
@@ -1972,11 +1987,42 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
             // Load roads when ward changes and extension is enabled
             // Note: This is added to the existing wardSelect.change handler logic below
 
-            // Populate Road Code field when base road code and extension are selected
-            $('#base_road_code, #extension').change(function() {
-                const baseRoadCode = $('#base_road_code').val();
-                const extension = $('#extension').val();
+            // When the user selects a base road code, auto-fill the next available extension.
+            $('#base_road_code').change(function() {
+                const selectedRoadUid = $(this).val();
+                if (selectedRoadUid) {
+                    // Find the selected road object by road_uid.
+                    const selectedRoad = loadedRoadData.find(function(road) {
+                        return String(road.road_uid) === String(selectedRoadUid);
+                    });
 
+                    // Derive the base code pattern by stripping any trailing -XX extension.
+                    const baseCodePattern = selectedRoad
+                        ? (selectedRoad.code || '').replace(/-\d{2}$/, '')
+                        : '';
+
+                    // Filter to only roads that share the same base code pattern.
+                    const relatedRoads = baseCodePattern
+                        ? loadedRoadData.filter(function(road) {
+                            return (road.code || '').replace(/-\d{2}$/, '') === baseCodePattern;
+                        })
+                        : loadedRoadData;
+
+                    const nextExtension = computeNextExtension(relatedRoads);
+                    $('#extension').val(nextExtension);
+                    if (nextExtension) {
+                        $('#road_code_field').val(selectedRoadUid + nextExtension);
+                    }
+                } else {
+                    $('#extension').val('');
+                    $('#road_code_field').val('');
+                }
+            });
+
+            // Update road code field whenever the extension is manually changed.
+            $('#extension').change(function() {
+                const baseRoadCode = $('#base_road_code').val();
+                const extension = $(this).val();
                 if (baseRoadCode && extension) {
                     $('#road_code_field').val(baseRoadCode + extension);
                 }
