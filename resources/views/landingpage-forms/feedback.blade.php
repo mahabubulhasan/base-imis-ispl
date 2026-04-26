@@ -112,7 +112,7 @@
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="fsm_quality_level" value="1" v-model="fsmQualityLevel" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Unsatisfied</span>
+                                <span class="text-gray-700">Dissatisfied</span>
                             </label>
                         </div>
                         <span v-if="fieldErrors.fsm_quality_level" class="text-red-600 text-sm mt-1 block">@{{ fieldErrors.fsm_quality_level }}</span>
@@ -141,7 +141,7 @@
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="service_delivery_efficiency" value="1" v-model="serviceDeliveryEfficiency" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Unsatisfied</span>
+                                <span class="text-gray-700">Dissatisfied</span>
                             </label>
                         </div>
                         <span v-if="fieldErrors.service_delivery_efficiency" class="text-red-600 text-sm mt-1 block">@{{ fieldErrors.service_delivery_efficiency }}</span>
@@ -170,7 +170,7 @@
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="overall_satisfaction" value="1" v-model="overallSatisfaction" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Unsatisfied</span>
+                                <span class="text-gray-700">Dissatisfied</span>
                             </label>
                         </div>
                         <span v-if="fieldErrors.overall_satisfaction" class="text-red-600 text-sm mt-1 block">@{{ fieldErrors.overall_satisfaction }}</span>
@@ -199,7 +199,7 @@
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="service_quality_price" value="1" v-model="serviceQualityPrice" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Unsatisfied</span>
+                                <span class="text-gray-700">Dissatisfied</span>
                             </label>
                         </div>
                         <span v-if="fieldErrors.service_quality_price" class="text-red-600 text-sm mt-1 block">@{{ fieldErrors.service_quality_price }}</span>
