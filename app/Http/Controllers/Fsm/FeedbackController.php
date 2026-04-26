@@ -140,7 +140,7 @@ class FeedbackController extends Controller{
     */
     public function show($id)
     {
-        $feedback = Feedback::find($id);
+        $feedback = Feedback::with('application.service_provider')->find($id);
         if ($feedback) {
             $page_title = __("Feedback Details");
             return view('fsm.feedbacks.show', compact('page_title', 'feedback'));
