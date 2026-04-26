@@ -274,13 +274,11 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                                         <div class="add-road-form-group pt-2">
                                             {!! Form::label('base_road_code',__('Base Road Code') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
                                             {!! Form::select('base_road_code', isset($baseRoadCodes) ? $baseRoadCodes : [], null, ['class' => 'form-control', 'placeholder' => __('Select existing road code'), 'id' => 'base_road_code']) !!}
-                                            <small style="color: #666; display: block; margin-top: 5px;">{{ __('Loaded from existing dataset (API/db).') }}</small>
                                         </div>
 
                                         <div class="add-road-form-group pt-2">
                                             {!! Form::label('extension',__('Extension (2 digits)') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
                                             {!! Form::text('extension',null,['class' => 'form-control', 'placeholder' => __('01'), 'id' => 'extension', 'maxlength' => '2', 'pattern' => '[0-9]{2}']) !!}
-                                            <small style="color: #666; display: block; margin-top: 5px;">{{ __('Auto-generated: 01, 02, 03...') }}</small>
                                         </div>
                                     </div>
 
