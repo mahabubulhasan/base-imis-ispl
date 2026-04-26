@@ -1,5 +1,5 @@
 <?php
-// Last Modified: 2026-04-07
+// Last Modified: 2026-04-26
 // Developed By: Streams Tech Ltd.
 // Description: Public dashboard controller that returns unauthenticated dashboard metrics, including CWIS equity and safety indicators.
 
@@ -219,7 +219,6 @@ class PublicDashboardController extends Controller
                     'others' => $othersCount,
                 ],
                 'sanitation' => [
-                    'sewer' => intval($sumSewers),
                     'septic' => intval(DB::table('building_info.buildings as b')
                         ->join('building_info.sanitation_systems as s', 'b.sanitation_system_id', '=', 's.id')
                         ->where('s.sanitation_system', 'like', '%Septic%')
@@ -230,16 +229,7 @@ class PublicDashboardController extends Controller
                         ->where('s.sanitation_system', 'like', '%Pit%')
                         ->whereNull('b.deleted_at')
                         ->count()),
-                    'treatment' => intval(DB::table('building_info.buildings as b')
-                        ->join('building_info.sanitation_systems as s', 'b.sanitation_system_id', '=', 's.id')
-                        ->where('s.sanitation_system', 'like', '%Treatment%')
-                        ->whereNull('b.deleted_at')
-                        ->count()),
-                    'composting' => intval(DB::table('building_info.buildings as b')
-                        ->join('building_info.sanitation_systems as s', 'b.sanitation_system_id', '=', 's.id')
-                        ->where('s.sanitation_system', 'like', '%Composting%')
-                        ->whereNull('b.deleted_at')
-                        ->count()),
+                    'others' => intval($sanitationSystemOther),
                 ],
                 'utilities' => [
                     'road' => intval($sumRoads),
