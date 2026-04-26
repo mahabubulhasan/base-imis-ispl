@@ -101,6 +101,10 @@ class FeedbackController extends Controller{
                     $query->whereBetween('f.created_at', [Date::parse($request->date_from), Date::parse($request->date_to)]);
                 }
             })
+            ->editColumn('customer_number', function ($model) {
+                $customerNumber = trim((string) $model->customer_number);
+                return strlen($customerNumber) === 10 ? '0' . $customerNumber : $customerNumber;
+            })
             ->addColumn('action', function ($model) {
                 $application = Application::find($model->application_id);
 
