@@ -63,7 +63,7 @@ class FeedbackController extends Controller{
             $feedbacksData = DB::table('fsm.feedbacks AS f')
             ->join('auth.users AS u', 'f.user_id', '=', 'u.id')
             ->join('fsm.applications AS a', 'f.application_id', '=', 'a.id')
-            ->select('f.created_at','f.id','f.application_id', 'u.username', 'a.ward')
+            ->select('f.created_at','f.id','f.application_id', 'u.username', 'a.ward', 'f.customer_name', 'f.customer_number')
             ->whereNull('f.deleted_at')
            ->where('a.service_provider_id','=',Auth::user()->service_provider_id);
 
@@ -72,7 +72,7 @@ class FeedbackController extends Controller{
         {
             $feedbacksData = DB::table('fsm.feedbacks AS f')
             ->join('fsm.applications AS a', 'f.application_id', '=', 'a.id')
-            ->select('f.created_at','f.id','f.application_id', 'a.ward')
+            ->select('f.created_at','f.id','f.application_id', 'a.ward', 'f.customer_name', 'f.customer_number')
             ->whereNull('f.deleted_at');
         }
 
