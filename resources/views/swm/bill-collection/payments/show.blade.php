@@ -4,7 +4,7 @@
 <div class="card card-info">
     <div class="card-header bg-transparent">
         <a href="{{ route('swm.bill-collection-payments.index') }}" class="btn btn-info">{{ __('Back to List') }}</a>
-        @can('Edit SWM Bill Collection Payment')
+        @can('Edit SW Bill Collection Payment')
         <a href="{{ route('swm.bill-collection-payments.edit', $payment->id) }}" class="btn btn-info">{{ __('Edit') }}</a>
         @endcan
     </div>
@@ -12,10 +12,10 @@
         <dl class="row">
             <dt class="col-sm-3">{{ __('Holding Number') }}</dt>
             <dd class="col-sm-9">{{ $payment->holding_number }}</dd>
-            <dt class="col-sm-3">{{ __('Customer ID') }}</dt>
+            <dt class="col-sm-3">{{ __('Household ID') }}</dt>
             <dd class="col-sm-9">{{ $payment->customer_id }}</dd>
-            <dt class="col-sm-3">{{ __('Customer Name') }}</dt>
-            <dd class="col-sm-9">{{ optional($payment->primaryCollectionSite)->customer_name }}</dd>
+            <dt class="col-sm-3">{{ __('Household Owner Name') }}</dt>
+            <dd class="col-sm-9">{{ optional($payment->primaryCollectionSite)->household_owner_name }}</dd>
             <dt class="col-sm-3">{{ __('Amount') }}</dt>
             <dd class="col-sm-9">{{ number_format((float) $payment->amount, 2) }}</dd>
             <dt class="col-sm-3">{{ __('Payment For Month') }}</dt>

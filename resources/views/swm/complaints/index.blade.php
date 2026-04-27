@@ -12,10 +12,10 @@
 @include('layouts.components.error-alert')
 <div class="card">
     <div class="card-header">
-        @can('Add SWM Complaint')
-        <a href="{{ route('swm.complaints.create') }}" class="btn btn-info">{{ __('Add SWM Complaint') }}</a>
+        @can('Add SW Complaint')
+        <a href="{{ route('swm.complaints.create') }}" class="btn btn-info">{{ __('Add SW Complaint') }}</a>
         @endcan
-        @can('Export SWM Complaints to CSV')
+        @can('Export SW Complaints to CSV')
         <a href="#" id="export" class="btn btn-info">{{ __('Export to CSV') }}</a>
         @endcan
         <a href="#" class="btn btn-info float-right" id="headingOne" type="button" data-toggle="collapse"
@@ -37,7 +37,7 @@
                 <div class="form-group row">
                     <label for="filter_holding_number_select" class="col-md-2 col-form-label">{{ __('Holding Number') }}</label>
                     <div class="col-md-2"><select class="form-control" id="filter_holding_number_select" style="width:100%"></select></div>
-                    <label for="filter_customer_id_select" class="col-md-2 col-form-label">{{ __('Customer ID') }}</label>
+                    <label for="filter_customer_id_select" class="col-md-2 col-form-label">{{ __('Household ID') }}</label>
                     <div class="col-md-2"><select class="form-control" id="filter_customer_id_select" style="width:100%"></select></div>
                     <label for="complaint_status" class="col-md-2 col-form-label">{{ __('Complaint Status') }}</label>
                     <div class="col-md-2">
@@ -86,7 +86,7 @@
                         <th>{{ __('Complaint ID') }}</th>
                         <th>{{ __('Date and Time') }}</th>
                         <th>{{ __('Holding Number') }}</th>
-                        <th>{{ __('Customer ID') }}</th>
+                        <th>{{ __('Household ID') }}</th>
                         <th>{{ __('Name') }}</th>
                         <th>{{ __('Contact number') }}</th>
                         <th>{{ __('Complaint Type') }}</th>
@@ -136,7 +136,7 @@ $(function() {
             $('#filter_customer_id_select').select2('destroy');
         }
         $('#filter_customer_id_select').select2({
-            placeholder: '{{ __('Search customer') }}',
+            placeholder: '{{ __('Search household') }}',
             allowClear: true,
             minimumInputLength: selectedHoldingFilter().length > 0 ? 0 : 2,
             ajax: {
@@ -175,7 +175,7 @@ $(function() {
                 d.date_from = $('#date_from').val();
                 d.date_to = $('#date_to').val();
                 d.holding_number = $('#filter_holding_number_select').val();
-                d.customer_id = $('#filter_customer_id_select').val();
+                d.household_id = $('#filter_customer_id_select').val();
                 d.contact_number = $('#contact_number').val();
                 d.complaint_type = $('#complaint_type').val();
                 d.submitted_through = $('#submitted_through').val();
@@ -186,7 +186,7 @@ $(function() {
             { data: 'complaint_id', name: 'complaint_id' },
             { data: 'date_time', name: 'date_time' },
             { data: 'holding_number', name: 'holding_number' },
-            { data: 'customer_id', name: 'customer_id' },
+            { data: 'household_id', name: 'customer_id' },
             { data: 'name', name: 'name' },
             { data: 'contact_number', name: 'contact_number' },
             { data: 'complaint_type', name: 'complaint_type' },
@@ -230,7 +230,7 @@ $(function() {
         var date_from = $('#date_from').val() || '';
         var date_to = $('#date_to').val() || '';
         var holding_number = $('#filter_holding_number_select').val() || '';
-        var customer_id = $('#filter_customer_id_select').val() || '';
+        var household_id = $('#filter_customer_id_select').val() || '';
         var contact_number = $('#contact_number').val() || '';
         var complaint_type = $('#complaint_type').val() || '';
         var submitted_through = $('#submitted_through').val() || '';
@@ -240,7 +240,7 @@ $(function() {
             "&date_from=" + encodeURIComponent(date_from) +
             "&date_to=" + encodeURIComponent(date_to) +
             "&holding_number=" + encodeURIComponent(holding_number) +
-            "&customer_id=" + encodeURIComponent(customer_id) +
+            "&household_id=" + encodeURIComponent(household_id) +
             "&contact_number=" + encodeURIComponent(contact_number) +
             "&complaint_type=" + encodeURIComponent(complaint_type) +
             "&submitted_through=" + encodeURIComponent(submitted_through) +

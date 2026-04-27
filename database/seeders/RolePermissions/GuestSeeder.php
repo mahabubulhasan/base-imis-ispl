@@ -62,7 +62,7 @@ class GuestSeeder extends Seeder
                             ->whereIn('name', [
                                 'Performance of Municipal Treatment Plants by Last 5 Years Chart',
                                 'Yearly Distribution of Waterborne Disease Chart',
-                                'Distribution of SWM Services by Ward Chart',
+                                'Distribution of SW Services by Ward Chart',
                                 'Distribution of Water Supply Services by Ward Chart',
                                 'Ward-Wise Revenue Collected from Emptying Services Chart',
                                 'Building Connections to Sanitation System Types Chart',

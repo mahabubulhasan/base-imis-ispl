@@ -10,13 +10,13 @@
 @section('content')
 <div class="card">
     <div class="card-header">
-    @can('Import SWM Service Payment Collection From CSV')
+    @can('Import SW Service Payment Collection From CSV')
       <a href="{{ route('swm-payment.create') }}" class="btn btn-info">{{__('Import from CSV')}}</a>
     @endcan
-    @can('Export SWM Service Payment Collection From CSV')
+    @can('Export SW Service Payment Collection From CSV')
     <a href="/templates/swmservice-payment-collection-iss-template.csv" download="Solid Waste Information Support System-Template.csv" class="btn btn-info">{{__('Download CSV Template')}}</a>
     @endcan
-    @can('Export SWM Service Payment Collection From CSV')
+    @can('Export SW Service Payment Collection From CSV')
       <a href="{{ route('swm-payment.export') }}" id="export" class="btn btn-info">{{__('Export to CSV')}} </a>
       <a href="{{ route('tax-payment.exportunmatched') }}" id="exportunmatched" class="btn btn-info">{{__('Export Unmatched Records')}}</a>
       @endcan
@@ -55,10 +55,10 @@
                                     </select>
                                         </div>
 
-                                        <label for="swm_customer_id" class="control-label col-md-2" >{{__('SWM Customer ID')}}</label>
+                                        <label for="swm_customer_id" class="control-label col-md-2" >{{__('SW Customer ID')}}</label>
                                             <div class="col-md-2" >
                                                 <input type="text" class="form-control" id="swm_customer_id"
-                                                    placeholder="{{__('SWM Customer ID')}}" />
+                                                    placeholder="{{__('SW Customer ID')}}" />
                                             </div> 
                                        
                                     </div>
@@ -101,7 +101,7 @@
             <table id="data-table" class="table table-bordered table-striped dtr-inline" width="100%">
                 <thead>
                     <tr>
-                    <th>{{__('SWM Customer ID')}}</th>
+                    <th>{{__('SW Customer ID')}}</th>
                     <th>{{__('BIN')}}</th>
                     <th>{{__('Tax Code')}}</th>
                     <th>{{__('Customer Name')}}</th>

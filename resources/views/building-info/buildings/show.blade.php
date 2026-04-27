@@ -389,7 +389,7 @@
 
             <h3 class="mt-3">{{ __("Solid Waste Management Information") }}</h3>
             <div class="form-group row">
-                {!! Form::label('swm_customer_id', __('SWM Customer ID'), ['class' => 'col-sm-2 control-label']) !!}
+                {!! Form::label('swm_customer_id', __('Household/s'), ['class' => 'col-sm-2 control-label']) !!}
                 <div class="col-sm-3">
                     {!! Form::text('swm_customer_id', $building->swm_customer_id, [
                         'class' => 'form-control col-sm-10 font-weight-bold',

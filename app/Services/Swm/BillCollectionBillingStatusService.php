@@ -3,7 +3,7 @@
 namespace App\Services\Swm;
 
 use App\Models\Swm\BillCollectionPayment;
-use App\Models\Swm\PrimaryCollectionSite;
+use App\Models\BuildingInfo\Household;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -31,12 +31,12 @@ class BillCollectionBillingStatusService
         $dueThisMonthMarginal = '0.00';
         $totalDueCumulative = '0.00';
 
-        PrimaryCollectionSite::query()
+        Household::query()
             ->whereNull('deleted_at')
             ->orderBy('id')
             ->chunkById(500, function ($sites) use ($currentMonthStart, &$dueThisMonthMarginal, &$totalDueCumulative) {
                 foreach ($sites as $site) {
-                    if (! $site instanceof PrimaryCollectionSite) {
+                    if (! $site instanceof Household) {
                         continue;
                     }
                     $marginal = $this->billCollectionPaymentService->marginalDueForMonth($site, $currentMonthStart);
@@ -79,17 +79,17 @@ class BillCollectionBillingStatusService
         $toDate = $monthTo->toDateString();
 
         $revenueSub = BillCollectionPayment::query()
-            ->select('primary_collection_site_id')
+            ->select('household_id')
             ->selectRaw('SUM(amount) as revenue_collected')
             ->whereNull('deleted_at')
             ->whereDate('payment_for_month', '>=', $fromDate)
             ->whereDate('payment_for_month', '<=', $toDate)
-            ->groupBy('primary_collection_site_id');
+            ->groupBy('household_id');
 
-        $query = PrimaryCollectionSite::query()
-            ->select('swm.primary_collection_sites.*')
-            ->whereNull('swm.primary_collection_sites.deleted_at')
-            ->leftJoinSub($revenueSub->toBase(), 'rev', 'swm.primary_collection_sites.id', '=', 'rev.primary_collection_site_id')
+        $query = Household::query()
+            ->select('building_info.households.*')
+            ->whereNull('building_info.households.deleted_at')
+            ->leftJoinSub($revenueSub->toBase(), 'rev', 'building_info.households.id', '=', 'rev.household_id')
             ->addSelect(DB::raw('COALESCE(rev.revenue_collected, 0) as revenue_collected'));
 
         $currentMonthStart = Carbon::now()->startOfMonth();
@@ -98,19 +98,19 @@ class BillCollectionBillingStatusService
             ->filter(function (Builder $q) use ($data) {
                 $this->applyTableFilters($q, $data);
             }, false)
-            ->orderColumn('holding_number', 'swm.primary_collection_sites.holding_number $1')
-            ->orderColumn('customer_id', 'swm.primary_collection_sites.customer_id $1')
+            ->orderColumn('holding_number', 'building_info.households.holding_number $1')
+            ->orderColumn('household_id', 'building_info.households.household_id $1')
             ->orderColumn('revenue_collected', 'revenue_collected $1')
-            ->addColumn('due_current_month', function (PrimaryCollectionSite $site) use ($currentMonthStart) {
+            ->addColumn('due_current_month', function (Household $site) use ($currentMonthStart) {
                 return $this->formatMoney($this->billCollectionPaymentService->marginalDueForMonth($site, $currentMonthStart));
             })
-            ->addColumn('due_months_of', function (PrimaryCollectionSite $site) use ($monthFrom, $monthTo) {
+            ->addColumn('due_months_of', function (Household $site) use ($monthFrom, $monthTo) {
                 return $this->monthsWithMarginalDueLabelsInRange($site, $monthFrom, $monthTo);
             })
-            ->addColumn('total_due_amount', function (PrimaryCollectionSite $site) use ($monthTo) {
+            ->addColumn('total_due_amount', function (Household $site) use ($monthTo) {
                 return $this->formatMoney($this->dueThroughMonth($site, $monthTo));
             })
-            ->editColumn('revenue_collected', function (PrimaryCollectionSite $site) {
+            ->editColumn('revenue_collected', function (Household $site) {
                 return number_format((float) ($site->revenue_collected ?? 0), 2, '.', '');
             })
             ->rawColumns([])
@@ -120,7 +120,7 @@ class BillCollectionBillingStatusService
     /**
      * @param  array<string, mixed>  $data
      */
-    protected function dueThroughMonth(PrimaryCollectionSite $site, Carbon $asOfMonth): ?string
+    protected function dueThroughMonth(Household $site, Carbon $asOfMonth): ?string
     {
         $balance = $this->billCollectionPaymentService->balanceThroughMonth($site, $asOfMonth);
         if (! is_array($balance)) {
@@ -138,7 +138,7 @@ class BillCollectionBillingStatusService
     /**
      * Comma-separated Y-m for months in {@see $rangeStart}..{@see $rangeEnd} (inclusive) where marginal due is greater than zero.
      */
-    protected function monthsWithMarginalDueLabelsInRange(PrimaryCollectionSite $site, Carbon $rangeStart, Carbon $rangeEnd): string
+    protected function monthsWithMarginalDueLabelsInRange(Household $site, Carbon $rangeStart, Carbon $rangeEnd): string
     {
         $rangeStart = $rangeStart->copy()->startOfMonth();
         $rangeEnd = $rangeEnd->copy()->startOfMonth();
@@ -168,24 +168,24 @@ class BillCollectionBillingStatusService
 
         $holdingNumbers = $this->normalizeStringList($data['holding_numbers'] ?? null);
         if ($holdingNumbers !== []) {
-            $query->whereIn('swm.primary_collection_sites.holding_number', $holdingNumbers);
+            $query->whereIn('building_info.households.holding_number', $holdingNumbers);
         } elseif (! empty($data['holding_number'])) {
-            $query->where('swm.primary_collection_sites.holding_number', 'ILIKE', '%'.trim((string) $data['holding_number']).'%');
+            $query->where('building_info.households.holding_number', 'ILIKE', '%'.trim((string) $data['holding_number']).'%');
         }
 
         $siteIds = $this->normalizeIdList($data['customer_site_ids'] ?? null);
         if ($siteIds !== []) {
-            $query->whereIn('swm.primary_collection_sites.id', $siteIds);
-        } elseif (! empty($data['customer_id'])) {
-            $query->where('swm.primary_collection_sites.customer_id', 'ILIKE', '%'.trim((string) $data['customer_id']).'%');
+            $query->whereIn('building_info.households.id', $siteIds);
+        } elseif (! empty($data['household_id'])) {
+            $query->where('building_info.households.household_id', 'ILIKE', '%'.trim((string) $data['household_id']).'%');
         }
 
         $isOwner = $data['is_owner'] ?? null;
         if ($isOwner !== null && $isOwner !== '') {
-            $query->where('swm.primary_collection_sites.is_owner', (bool) (int) $isOwner);
+            $query->where('building_info.households.is_owner', (bool) (int) $isOwner);
         }
         if (! empty($data['van_puller_id'])) {
-            $query->where('swm.primary_collection_sites.van_puller_id', (int) $data['van_puller_id']);
+            $query->where('building_info.households.van_puller_id', (int) $data['van_puller_id']);
         }
     }
 

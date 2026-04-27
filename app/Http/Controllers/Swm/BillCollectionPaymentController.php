@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Swm\BillCollectionPaymentRequest;
 use App\Imports\BillCollectionPaymentImport;
 use App\Models\Swm\BillCollectionPayment;
-use App\Models\Swm\PrimaryCollectionSite;
+use App\Models\BuildingInfo\Household;
 use App\Models\User;
 use App\Services\Swm\BillCollectionPaymentService;
 use Carbon\Carbon;
@@ -22,17 +22,17 @@ class BillCollectionPaymentController extends Controller
     public function __construct(protected BillCollectionPaymentService $billCollectionPaymentService)
     {
         $this->middleware('auth');
-        $this->middleware('permission:List SWM Bill Collection Payments', ['only' => ['index', 'getData']]);
-        $this->middleware('permission:List SWM Bill Collection Payments|Add SWM Bill Collection Payment|Edit SWM Bill Collection Payment|List SWM Billing Status', ['only' => [
+        $this->middleware('permission:List SW Bill Collection Payments', ['only' => ['index', 'getData']]);
+        $this->middleware('permission:List SW Bill Collection Payments|Add SW Bill Collection Payment|Edit SW Bill Collection Payment|List SW Billing Status', ['only' => [
             'holdingsSearch', 'customersByHolding', 'balanceThroughMonth',
         ]]);
-        $this->middleware('permission:View SWM Bill Collection Payment', ['only' => ['show']]);
-        $this->middleware('permission:Add SWM Bill Collection Payment', ['only' => ['create', 'store']]);
-        $this->middleware('permission:Edit SWM Bill Collection Payment', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:Delete SWM Bill Collection Payment', ['only' => ['destroy']]);
-        $this->middleware('permission:Export SWM Bill Collection Payments to CSV', ['only' => ['export']]);
-        $this->middleware('permission:View SWM Bill Collection Payment History', ['only' => ['history']]);
-        $this->middleware('permission:Import SWM Bill Collection Payments From CSV', ['only' => ['importForm', 'importStore']]);
+        $this->middleware('permission:View SW Bill Collection Payment', ['only' => ['show']]);
+        $this->middleware('permission:Add SW Bill Collection Payment', ['only' => ['create', 'store']]);
+        $this->middleware('permission:Edit SW Bill Collection Payment', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:Delete SW Bill Collection Payment', ['only' => ['destroy']]);
+        $this->middleware('permission:Export SW Bill Collection Payments to CSV', ['only' => ['export']]);
+        $this->middleware('permission:View SW Bill Collection Payment History', ['only' => ['history']]);
+        $this->middleware('permission:Import SW Bill Collection Payments From CSV', ['only' => ['importForm', 'importStore']]);
     }
 
     public function index()
@@ -82,7 +82,7 @@ class BillCollectionPaymentController extends Controller
             $results[] = [
                 'id' => (string) $row['id'],
                 'text' => $row['text'],
-                'customer_id' => $row['customer_id'],
+                'household_id' => $row['household_id'],
                 'holding_number' => $row['holding_number'],
                 'waste_charge' => $row['waste_charge'],
                 'using_this_service_since' => $row['using_this_service_since'],
@@ -96,16 +96,16 @@ class BillCollectionPaymentController extends Controller
     public function balanceThroughMonth(Request $request)
     {
         $validated = $request->validate([
-            'primary_collection_site_id' => ['required', 'integer'],
+            'household_id' => ['required', 'integer'],
             'payment_for_month' => ['required', 'date'],
             'exclude_payment_id' => ['nullable', 'integer'],
         ]);
-        $site = PrimaryCollectionSite::query()
-            ->whereKey($validated['primary_collection_site_id'])
+        $site = Household::query()
+            ->whereKey($validated['household_id'])
             ->whereNull('deleted_at')
             ->first();
         if (! $site) {
-            return response()->json(['error' => __('Primary collection site not found.')], 404);
+            return response()->json(['error' => __('Household not found.')], 404);
         }
         $month = Carbon::parse($validated['payment_for_month'])->startOfMonth();
         $excludeId = isset($validated['exclude_payment_id']) ? (int) $validated['exclude_payment_id'] : null;
@@ -142,7 +142,7 @@ class BillCollectionPaymentController extends Controller
         $data['receipt_copy_path'] = $this->storeReceiptCopyIfPresent($request);
         $id = $this->billCollectionPaymentService->storeOrUpdate(null, $data);
         if (! $id) {
-            return redirect()->back()->withInput()->withErrors(['primary_collection_site_id' => __('Invalid primary collection site.')]);
+            return redirect()->back()->withInput()->withErrors(['household_id' => __('Invalid household.')]);
         }
         $this->warnIfAmountExceedsDue($request, null);
 
@@ -191,7 +191,7 @@ class BillCollectionPaymentController extends Controller
         }
         $id = $this->billCollectionPaymentService->storeOrUpdate($payment->id, $data);
         if (! $id) {
-            return redirect()->back()->withInput()->withErrors(['primary_collection_site_id' => __('Invalid primary collection site.')]);
+            return redirect()->back()->withInput()->withErrors(['household_id' => __('Invalid household.')]);
         }
         $this->warnIfAmountExceedsDue($request, $payment->id);
 
@@ -248,7 +248,7 @@ class BillCollectionPaymentController extends Controller
         $headings = (new HeadingRowImport)->toArray($fullPath);
         $headingRow = isset($headings[0][0]) ? array_map('strtolower', array_map('strval', $headings[0][0])) : [];
         $headingErrors = [];
-        $required = ['customer_id', 'amount', 'payment_for_month', 'payment_method'];
+        $required = ['household_id', 'amount', 'payment_for_month', 'payment_method'];
         foreach ($required as $col) {
             if (! in_array($col, $headingRow, true)) {
                 $headingErrors[$col] = __('Heading row is missing required column: :col', ['col' => $col]);
@@ -273,8 +273,8 @@ class BillCollectionPaymentController extends Controller
 
     protected function warnIfAmountExceedsDue(BillCollectionPaymentRequest $request, ?int $excludeId): void
     {
-        $site = PrimaryCollectionSite::query()
-            ->whereKey($request->input('primary_collection_site_id'))
+        $site = Household::query()
+            ->whereKey($request->input('household_id'))
             ->whereNull('deleted_at')
             ->first();
         if (! $site) {

@@ -15,19 +15,19 @@ class VehicleTypeController extends Controller
     public function __construct(VehicleTypeService $vehicleTypeService)
     {
         $this->middleware('auth');
-        $this->middleware('permission:List SWM Vehicle Types', ['only' => ['index', 'getData']]);
-        $this->middleware('permission:View SWM Vehicle Type', ['only' => ['show']]);
-        $this->middleware('permission:Add SWM Vehicle Type', ['only' => ['create', 'store']]);
-        $this->middleware('permission:Edit SWM Vehicle Type', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:Delete SWM Vehicle Type', ['only' => ['destroy']]);
-        $this->middleware('permission:Export SWM Vehicle Types to CSV', ['only' => ['export']]);
-        $this->middleware('permission:View SWM Vehicle Type History', ['only' => ['history']]);
+        $this->middleware('permission:List SW Vehicle Types', ['only' => ['index', 'getData']]);
+        $this->middleware('permission:View SW Vehicle Type', ['only' => ['show']]);
+        $this->middleware('permission:Add SW Vehicle Type', ['only' => ['create', 'store']]);
+        $this->middleware('permission:Edit SW Vehicle Type', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:Delete SW Vehicle Type', ['only' => ['destroy']]);
+        $this->middleware('permission:Export SW Vehicle Types to CSV', ['only' => ['export']]);
+        $this->middleware('permission:View SW Vehicle Type History', ['only' => ['history']]);
         $this->vehicleTypeService = $vehicleTypeService;
     }
 
     public function index()
     {
-        $page_title = __('SWM Vehicle Types');
+        $page_title = __('SW Vehicle Types');
 
         return view('swm.service-providers.vehicle-types.index', compact('page_title'));
     }
@@ -39,7 +39,7 @@ class VehicleTypeController extends Controller
 
     public function create()
     {
-        $page_title = __('Add SWM Vehicle Type');
+        $page_title = __('Add SW Vehicle Type');
         $vehicleType = null;
 
         return view('swm.service-providers.vehicle-types.create', compact('page_title', 'vehicleType'));
@@ -49,14 +49,14 @@ class VehicleTypeController extends Controller
     {
         $this->vehicleTypeService->storeOrUpdate(null, $request->all());
 
-        return redirect()->route('swm.vehicle-types.index')->with('success', __('SWM vehicle type created successfully.'));
+        return redirect()->route('swm.vehicle-types.index')->with('success', __('SW vehicle type created successfully.'));
     }
 
     public function show($id)
     {
         $vehicleType = VehicleType::find($id);
         if ($vehicleType) {
-            $page_title = __('SWM Vehicle Type Details');
+            $page_title = __('SW Vehicle Type Details');
 
             return view('swm.service-providers.vehicle-types.show', compact('page_title', 'vehicleType'));
         }
@@ -68,7 +68,7 @@ class VehicleTypeController extends Controller
     {
         $vehicleType = VehicleType::find($id);
         if ($vehicleType) {
-            $page_title = __('Edit SWM Vehicle Type');
+            $page_title = __('Edit SW Vehicle Type');
 
             return view('swm.service-providers.vehicle-types.edit', compact('page_title', 'vehicleType'));
         }
@@ -82,10 +82,10 @@ class VehicleTypeController extends Controller
         if ($vehicleType) {
             $this->vehicleTypeService->storeOrUpdate((int) $vehicleType->id, $request->all());
 
-            return redirect()->route('swm.vehicle-types.index')->with('success', __('SWM vehicle type updated successfully.'));
+            return redirect()->route('swm.vehicle-types.index')->with('success', __('SW vehicle type updated successfully.'));
         }
 
-        return redirect()->route('swm.vehicle-types.index')->with('error', __('Failed to update SWM vehicle type.'));
+        return redirect()->route('swm.vehicle-types.index')->with('error', __('Failed to update SW vehicle type.'));
     }
 
     public function destroy($id)
@@ -93,21 +93,21 @@ class VehicleTypeController extends Controller
         $vehicleType = VehicleType::find($id);
         if ($vehicleType) {
             if ($vehicleType->vehicles()->exists()) {
-                return redirect()->route('swm.vehicle-types.index')->with('error', __('Cannot delete SWM vehicle type that has associated vehicles.'));
+                return redirect()->route('swm.vehicle-types.index')->with('error', __('Cannot delete SW vehicle type that has associated vehicles.'));
             }
             $vehicleType->delete();
 
-            return redirect()->route('swm.vehicle-types.index')->with('success', __('SWM vehicle type deleted successfully.'));
+            return redirect()->route('swm.vehicle-types.index')->with('success', __('SW vehicle type deleted successfully.'));
         }
 
-        return redirect()->route('swm.vehicle-types.index')->with('error', __('Failed to delete SWM vehicle type.'));
+        return redirect()->route('swm.vehicle-types.index')->with('error', __('Failed to delete SW vehicle type.'));
     }
 
     public function history($id)
     {
         $vehicleType = VehicleType::find($id);
         if ($vehicleType) {
-            $page_title = __('SWM Vehicle Type History');
+            $page_title = __('SW Vehicle Type History');
 
             return view('swm.service-providers.vehicle-types.history', compact('page_title', 'vehicleType'));
         }

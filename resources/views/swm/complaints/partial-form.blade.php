@@ -1,13 +1,13 @@
 @php
     $isEdit = isset($complaint) && $complaint;
     $initHolding = old('holding_number', $isEdit ? ($complaint->holding_number ?? '') : '');
-    $initCustomerId = old('customer_id', $isEdit ? ($complaint->customer_id ?? '') : '');
+    $initCustomerId = old('household_id', $isEdit ? ($complaint->customer_id ?? '') : '');
     $initDateTime = old('date_time', ($isEdit && $complaint->date_time) ? $complaint->date_time->format('Y-m-d\TH:i') : now()->format('Y-m-d\TH:i'));
 @endphp
 
 <div class="card-body">
     {!! Form::hidden('holding_number', old('holding_number', $initHolding), ['id' => 'holding_number']) !!}
-    {!! Form::hidden('customer_id', old('customer_id', $initCustomerId), ['id' => 'customer_id']) !!}
+    {!! Form::hidden('household_id', old('household_id', $initCustomerId), ['id' => 'household_id']) !!}
 
     <div class="form-group row required">
         {!! Form::label('complaint_id', __('Complaint ID'), ['class' => 'col-sm-3 control-label']) !!}
@@ -25,7 +25,7 @@
         <div class="col-sm-3">
             <select class="form-control" id="holding_select" style="width:100%"></select>
         </div>
-        {!! Form::label('customer_id_select', __('Customer ID'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('customer_id_select', __('Household ID'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             <select class="form-control" id="customer_id_select" style="width:100%"></select>
         </div>
@@ -114,7 +114,7 @@ $(function() {
             $('#customer_id_select').select2('destroy');
         }
         $('#customer_id_select').select2({
-            placeholder: '{{ __('Search customer') }}',
+            placeholder: '{{ __('Search household') }}',
             allowClear: true,
             minimumInputLength: selectedHoldingNumbers().length > 0 ? 0 : 2,
             ajax: {
@@ -141,21 +141,21 @@ $(function() {
     $('#holding_select').on('select2:select', function(e) {
         var data = e.params.data;
         $('#holding_number').val(data.id);
-        $('#customer_id').val('');
+        $('#household_id').val('');
         $('#customer_id_select').val(null).trigger('change');
         initCustomerSelect();
     });
 
     $('#holding_select').on('select2:clear', function() {
         $('#holding_number').val('');
-        $('#customer_id').val('');
+        $('#household_id').val('');
         $('#customer_id_select').val(null).trigger('change');
         initCustomerSelect();
     });
 
     $('#customer_id_select').on('select2:select', function(e) {
         var data = e.params.data;
-        $('#customer_id').val(data.id || '');
+        $('#household_id').val(data.id || '');
         if (data.holding_number) {
             $('#holding_number').val(data.holding_number);
             if (!$('#holding_select').find("option[value='" + data.holding_number + "']").length) {
@@ -167,7 +167,7 @@ $(function() {
     });
 
     $('#customer_id_select').on('select2:clear', function() {
-        $('#customer_id').val('');
+        $('#household_id').val('');
     });
 
     @if($initHolding !== '')
@@ -182,7 +182,7 @@ $(function() {
             var customerLabel = cid + (hn ? (' (' + hn + ')') : '');
             var customerOpt = new Option(customerLabel, cid, true, true);
             $('#customer_id_select').append(customerOpt).trigger('change');
-            $('#customer_id').val(cid);
+            $('#household_id').val(cid);
         }
     })();
     @endif

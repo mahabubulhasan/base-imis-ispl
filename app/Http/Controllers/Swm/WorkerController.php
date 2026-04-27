@@ -18,13 +18,13 @@ class WorkerController extends Controller
     public function __construct(WorkerService $workerService)
     {
         $this->middleware('auth');
-        $this->middleware('permission:List SWM Workers', ['only' => ['index', 'getData']]);
-        $this->middleware('permission:View SWM Worker', ['only' => ['show']]);
-        $this->middleware('permission:Add SWM Worker', ['only' => ['create', 'store']]);
-        $this->middleware('permission:Edit SWM Worker', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:Delete SWM Worker', ['only' => ['destroy']]);
-        $this->middleware('permission:Export SWM Workers to CSV', ['only' => ['export']]);
-        $this->middleware('permission:View SWM Worker History', ['only' => ['history']]);
+        $this->middleware('permission:List SW Workers', ['only' => ['index', 'getData']]);
+        $this->middleware('permission:View SW Worker', ['only' => ['show']]);
+        $this->middleware('permission:Add SW Worker', ['only' => ['create', 'store']]);
+        $this->middleware('permission:Edit SW Worker', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:Delete SW Worker', ['only' => ['destroy']]);
+        $this->middleware('permission:Export SW Workers to CSV', ['only' => ['export']]);
+        $this->middleware('permission:View SW Worker History', ['only' => ['history']]);
         $this->workerService = $workerService;
     }
 
@@ -55,7 +55,7 @@ class WorkerController extends Controller
 
     public function index()
     {
-        $page_title = __('SWM Workers');
+        $page_title = __('SW Workers');
         $organizations = Organization::query()->whereNull('deleted_at')->operational()->orderBy('name')->pluck('name', 'id');
         if (Auth::user()->swm_organization_id) {
             $organizations = Organization::query()->whereNull('deleted_at')->where('id', Auth::user()->swm_organization_id)->orderBy('name')->pluck('name', 'id');
@@ -73,7 +73,7 @@ class WorkerController extends Controller
 
     public function create()
     {
-        $page_title = __('Add SWM Worker');
+        $page_title = __('Add SW Worker');
         $worker = null;
         $organizations = $this->organizationOptionsForForms();
         $workTypes = $this->workTypeOptionsForForms();
@@ -86,14 +86,14 @@ class WorkerController extends Controller
     {
         $this->workerService->storeOrUpdate(null, $request->all());
 
-        return redirect()->route('swm.workers.index')->with('success', __('SWM worker created successfully.'));
+        return redirect()->route('swm.workers.index')->with('success', __('SW worker created successfully.'));
     }
 
     public function show($id)
     {
         $worker = Worker::with(['organization', 'workType'])->find($id);
         if ($worker && $this->workerBelongsToScopedOrg($worker)) {
-            $page_title = __('SWM Worker Details');
+            $page_title = __('SW Worker Details');
 
             return view('swm.service-providers.workers.show', compact('page_title', 'worker'));
         }
@@ -105,7 +105,7 @@ class WorkerController extends Controller
     {
         $worker = Worker::find($id);
         if ($worker && $this->workerBelongsToScopedOrg($worker)) {
-            $page_title = __('Edit SWM Worker');
+            $page_title = __('Edit SW Worker');
             $organizations = $this->organizationOptionsForForms();
             $workTypes = $this->workTypeOptionsForForms();
             $scopedOrganizationId = Auth::user()->swm_organization_id;
@@ -122,10 +122,10 @@ class WorkerController extends Controller
         if ($worker && $this->workerBelongsToScopedOrg($worker)) {
             $this->workerService->storeOrUpdate((int) $worker->id, $request->all());
 
-            return redirect()->route('swm.workers.index')->with('success', __('SWM worker updated successfully.'));
+            return redirect()->route('swm.workers.index')->with('success', __('SW worker updated successfully.'));
         }
 
-        return redirect()->route('swm.workers.index')->with('error', __('Failed to update SWM worker.'));
+        return redirect()->route('swm.workers.index')->with('error', __('Failed to update SW worker.'));
     }
 
     public function destroy($id)
@@ -133,21 +133,21 @@ class WorkerController extends Controller
         $worker = Worker::find($id);
         if ($worker && $this->workerBelongsToScopedOrg($worker)) {
             if ($worker->vehiclesAsDriver()->exists()) {
-                return redirect()->route('swm.workers.index')->with('error', __('Cannot delete SWM worker that is assigned as driver on one or more vehicles.'));
+                return redirect()->route('swm.workers.index')->with('error', __('Cannot delete SW worker that is assigned as driver on one or more vehicles.'));
             }
             $worker->delete();
 
-            return redirect()->route('swm.workers.index')->with('success', __('SWM worker deleted successfully.'));
+            return redirect()->route('swm.workers.index')->with('success', __('SW worker deleted successfully.'));
         }
 
-        return redirect()->route('swm.workers.index')->with('error', __('Failed to delete SWM worker.'));
+        return redirect()->route('swm.workers.index')->with('error', __('Failed to delete SW worker.'));
     }
 
     public function history($id)
     {
         $worker = Worker::find($id);
         if ($worker && $this->workerBelongsToScopedOrg($worker)) {
-            $page_title = __('SWM Worker History');
+            $page_title = __('SW Worker History');
 
             return view('swm.service-providers.workers.history', compact('page_title', 'worker'));
         }

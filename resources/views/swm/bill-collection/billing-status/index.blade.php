@@ -76,10 +76,10 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="filter_customer_select" class="col-md-2 col-form-label">{{ __('Customer ID') }}</label>
+                    <label for="filter_customer_select" class="col-md-2 col-form-label">{{ __('Household ID') }}</label>
                     <div class="col-md-2 bs-filter-select2">
                         <select class="form-control" id="filter_customer_select" name="customer_site_ids[]" multiple="multiple" style="width:100%"></select>
-                        <small class="form-text text-muted">{{ __('Search customers globally, or narrow by selected holdings.') }}</small>
+                        <small class="form-text text-muted">{{ __('Search households globally, or narrow by selected holdings.') }}</small>
                     </div>
                     <label for="is_owner" class="col-md-2 col-form-label">{{ __('Owner') }}</label>
                     <div class="col-md-2">
@@ -113,7 +113,7 @@
                     <tr>
                         <th>{{ __('Current month due') }}</th>
                         <th>{{ __('Holding Number') }}</th>
-                        <th>{{ __('Customer ID') }}</th>
+                        <th>{{ __('Household ID') }}</th>
                         <th>{{ __('Months with due') }}</th>
                         <th>{{ __('Total due (cumulative)') }}</th>
                         <th>{{ __('Revenue collected') }}</th>
@@ -242,7 +242,7 @@ $(function() {
         columns: [
             { data: 'due_current_month', name: 'due_current_month', searchable: false, orderable: false },
             { data: 'holding_number', name: 'holding_number', searchable: false, orderable: true },
-            { data: 'customer_id', name: 'customer_id', searchable: false, orderable: true },
+            { data: 'household_id', name: 'household_id', searchable: false, orderable: true },
             { data: 'due_months_of', name: 'due_months_of', searchable: false, orderable: false },
             { data: 'total_due_amount', name: 'total_due_amount', searchable: false, orderable: false },
             { data: 'revenue_collected', name: 'revenue_collected', searchable: false, orderable: true }

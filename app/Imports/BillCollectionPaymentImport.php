@@ -2,7 +2,7 @@
 
 namespace App\Imports;
 
-use App\Models\Swm\PrimaryCollectionSite;
+use App\Models\BuildingInfo\Household;
 use App\Services\Swm\BillCollectionPaymentService;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -39,17 +39,17 @@ class BillCollectionPaymentImport implements ToCollection, WithHeadingRow
             try {
                 $site = $this->resolveSite($norm);
                 if (! $site) {
-                    $this->errors[] = __('Row :n: could not resolve primary collection site.', ['n' => $rowNum]);
+                    $this->errors[] = __('Row :n: could not resolve household.', ['n' => $rowNum]);
                     continue;
                 }
                 $holding = isset($norm['holding_number']) ? trim((string) $norm['holding_number']) : '';
-                $cid = trim((string) ($norm['customer_id'] ?? ''));
+                $cid = trim((string) ($norm['household_id'] ?? ''));
                 if ($holding !== '' && ($site->holding_number ?? '') !== $holding) {
                     $this->errors[] = __('Row :n: holding_number does not match site.', ['n' => $rowNum]);
                     continue;
                 }
-                if ($cid !== '' && (string) $site->customer_id !== $cid) {
-                    $this->errors[] = __('Row :n: customer_id does not match site.', ['n' => $rowNum]);
+                if ($cid !== '' && (string) $site->household_id !== $cid) {
+                    $this->errors[] = __('Row :n: household_id does not match site.', ['n' => $rowNum]);
                     continue;
                 }
 
@@ -76,7 +76,7 @@ class BillCollectionPaymentImport implements ToCollection, WithHeadingRow
                 $recvId = ($recv !== null && $recv !== '') ? (int) $recv : $this->defaultReceivedByUserId;
 
                 $data = [
-                    'primary_collection_site_id' => $site->id,
+                    'household_id' => $site->id,
                     'amount' => $amount,
                     'payment_for_month' => $month->format('Y-m-d'),
                     'payment_time' => $paymentTime,
@@ -106,22 +106,22 @@ class BillCollectionPaymentImport implements ToCollection, WithHeadingRow
         return true;
     }
 
-    protected function resolveSite(array $norm): ?PrimaryCollectionSite
+    protected function resolveSite(array $norm): ?Household
     {
-        $siteId = $norm['primary_collection_site_id'] ?? null;
+        $siteId = $norm['household_id'] ?? null;
         if ($siteId !== null && $siteId !== '') {
             $id = (int) $siteId;
             if ($id > 0) {
-                return PrimaryCollectionSite::query()
+                return Household::query()
                     ->whereKey($id)
                     ->whereNull('deleted_at')
                     ->first();
             }
         }
-        $customerId = trim((string) ($norm['customer_id'] ?? ''));
+        $customerId = trim((string) ($norm['household_id'] ?? ''));
 
-        return PrimaryCollectionSite::query()
-            ->where('customer_id', $customerId)
+        return Household::query()
+            ->where('household_id', $customerId)
             ->whereNull('deleted_at')
             ->first();
     }

@@ -447,12 +447,26 @@
     <h3 class="mt-3"> Solid Waste Management Information </h3>
 
     <div class="form-group row">
-        {!! Form::label('swm_customer_id', 'SWM Customer ID', ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('swm_customer_id', 'Household/s', ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-5">
-            {!! Form::text('swm_customer_id', null, [
+            @php
+                $oldHouseholds = old('swm_customer_id');
+                if (is_array($oldHouseholds)) {
+                    $selectedHouseholds = collect($oldHouseholds)->map(fn($v) => trim((string) $v))->filter()->values();
+                } else {
+                    $selectedHouseholds = collect(explode(',', (string) ($oldHouseholds ?? ($building->swm_customer_id ?? ''))))
+                        ->map(fn($v) => trim($v))
+                        ->filter()
+                        ->values();
+                }
+            @endphp
+            {{-- Ensure an explicit empty array is submitted when nothing is selected. --}}
+            <input type="hidden" name="swm_customer_id[]" value="">
+            {!! Form::select('swm_customer_id[]', $householdOptions ?? [], $selectedHouseholds->all(), [
                 'class' => 'form-control col-sm-10',
-                'placeholder' => 'SWM Customer ID',
-                'autocomplete' => 'off',
+                'id' => 'swm_customer_id',
+                'multiple' => true,
+                'data-placeholder' => 'Select Household/s',
             ]) !!}
         </div>
     </div>
@@ -706,6 +720,16 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
     }
 
     // NOTE: Do not auto-format the hidden tax_code input; the tag UI handles display and formatting.
+</script>
+<script>
+    $(function() {
+        $('#swm_customer_id').select2({
+            placeholder: '{{ __('Select Household/s') }}',
+            allowClear: true,
+            closeOnSelect: false,
+            width: '85%',
+        });
+    });
 </script>
 <script>
     // Tag input for Tax Code/Holding ID

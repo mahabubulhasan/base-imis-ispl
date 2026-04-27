@@ -26,26 +26,26 @@ class MunicipalitySolidWasteManagementDepartmentSeeder extends Seeder
             switch ($createdRole->name) {
                 case 'Municipality - Solid Waste Management Department':
 
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Swm Service Payment']));
+                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Sw Service Payment']));
 
                     // Solid Waste ISS → Service Providers: organizations, work types, and workers (same area in the app).
                     $swmServiceProviderGroups = [
-                        'SWM Service Provider Organizations',
-                        'SWM Service Provider Work Types',
-                        'SWM Service Provider Workers',
-                        'SWM Service Provider Vehicle Types',
-                        'SWM Service Provider Vehicles',
+                        'SW Service Provider Organizations',
+                        'SW Service Provider Work Types',
+                        'SW Service Provider Workers',
+                        'SW Service Provider Vehicle Types',
+                        'SW Service Provider Vehicles',
                     ];
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', $swmServiceProviderGroups));
 
                     $swmServiceFacilityGroups = [
-                        'SWM Service Facility Landfills',
-                        'SWM Service Facility STS',
+                        'SW Service Facility Landfills',
+                        'SW Service Facility STS',
                         'SW Service Coverage LIC',
-                        'SW Service Coverage Primary Collection Sites',
-                        'SWM Bill Collection Payments',
-                        'SWM Billing Status',
-                        'SWM Complaints',
+                        'Building Info Households',
+                        'SW Bill Collection Payments',
+                        'SW Billing Status',
+                        'SW Complaints',
                     ];
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', $swmServiceFacilityGroups));
 
@@ -87,8 +87,8 @@ class MunicipalitySolidWasteManagementDepartmentSeeder extends Seeder
                         ]));
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Dashboard'])
                         ->whereIn('name', [
-                            'Distribution of SWM Services by Ward Chart',
-                            'Outstanding Payments for SWM Services Chart'
+                            'Distribution of SW Services by Ward Chart',
+                            'Outstanding Payments for SW Services Chart'
                         ]));
 
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Building Dashboard'])

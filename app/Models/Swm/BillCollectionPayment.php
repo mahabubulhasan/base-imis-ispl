@@ -2,6 +2,7 @@
 
 namespace App\Models\Swm;
 
+use App\Models\BuildingInfo\Household;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -29,9 +30,14 @@ class BillCollectionPayment extends Model
         'receipt_copy_url',
     ];
 
+    public function household()
+    {
+        return $this->belongsTo(Household::class, 'household_id');
+    }
+
     public function primaryCollectionSite()
     {
-        return $this->belongsTo(PrimaryCollectionSite::class, 'primary_collection_site_id');
+        return $this->household();
     }
 
     public function receivedBy()

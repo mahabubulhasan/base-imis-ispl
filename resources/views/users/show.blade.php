@@ -79,7 +79,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
             @endisset
             @if(!empty($swmOrganization))
                 <div class="form-group row">
-                    {!! Form::label(__('SWM Organization'),null,['class' => 'col-sm-3 control-label']) !!}
+                    {!! Form::label(__('SW Organization'),null,['class' => 'col-sm-3 control-label']) !!}
                     <div class="col-sm-3">
                         {!! Form::label($swmOrganization->name,null,['class' => 'form-control']) !!}
                     </div>

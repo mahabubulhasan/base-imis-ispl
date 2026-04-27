@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Swm;
 
-use App\Models\Swm\PrimaryCollectionSite;
+use App\Models\BuildingInfo\Household;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -25,15 +25,15 @@ class BillCollectionPaymentRequest extends FormRequest
                 $methodKeys = array_keys(config('bill_collection.payment_methods', []));
 
                 return [
-                    'primary_collection_site_id' => [
+                    'household_id' => [
                         'required',
                         'integer',
-                        Rule::exists('pgsql.swm.primary_collection_sites', 'id')->where(function ($query) {
+                        Rule::exists('pgsql.building_info.households', 'id')->where(function ($query) {
                             return $query->whereNull('deleted_at');
                         }),
                     ],
                     'holding_number' => ['required', 'string', 'max:255'],
-                    'customer_id' => ['required', 'string', 'max:255'],
+                    'household_code' => ['required', 'string', 'max:255'],
                     'amount' => ['required', 'numeric', 'min:0.01'],
                     'payment_for_month' => ['required', 'date'],
                     'payment_time' => ['nullable', 'date'],
@@ -68,23 +68,23 @@ class BillCollectionPaymentRequest extends FormRequest
             if ($validator->errors()->isNotEmpty()) {
                 return;
             }
-            $siteId = $this->input('primary_collection_site_id');
+            $siteId = $this->input('household_id');
             if (! $siteId) {
                 return;
             }
-            $site = PrimaryCollectionSite::query()
+            $site = Household::query()
                 ->whereKey($siteId)
                 ->whereNull('deleted_at')
                 ->first();
             if (! $site) {
-                $validator->errors()->add('primary_collection_site_id', __('Invalid primary collection site.'));
+                $validator->errors()->add('household_id', __('Invalid household.'));
 
                 return;
             }
             $hn = (string) $this->input('holding_number', '');
-            $cid = (string) $this->input('customer_id', '');
-            if (($site->holding_number ?? '') !== $hn || (string) $site->customer_id !== $cid) {
-                $validator->errors()->add('primary_collection_site_id', __('Holding number and customer must match the selected primary collection site.'));
+            $cid = (string) $this->input('household_code', '');
+            if (($site->holding_number ?? '') !== $hn || (string) $site->household_id !== $cid) {
+                $validator->errors()->add('household_id', __('Holding number and household ID must match the selected household.'));
             }
         });
     }

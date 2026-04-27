@@ -15,19 +15,19 @@ class WorkTypeController extends Controller
     public function __construct(WorkTypeService $workTypeService)
     {
         $this->middleware('auth');
-        $this->middleware('permission:List SWM Work Types', ['only' => ['index', 'getData']]);
-        $this->middleware('permission:View SWM Work Type', ['only' => ['show']]);
-        $this->middleware('permission:Add SWM Work Type', ['only' => ['create', 'store']]);
-        $this->middleware('permission:Edit SWM Work Type', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:Delete SWM Work Type', ['only' => ['destroy']]);
-        $this->middleware('permission:Export SWM Work Types to CSV', ['only' => ['export']]);
-        $this->middleware('permission:View SWM Work Type History', ['only' => ['history']]);
+        $this->middleware('permission:List SW Work Types', ['only' => ['index', 'getData']]);
+        $this->middleware('permission:View SW Work Type', ['only' => ['show']]);
+        $this->middleware('permission:Add SW Work Type', ['only' => ['create', 'store']]);
+        $this->middleware('permission:Edit SW Work Type', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:Delete SW Work Type', ['only' => ['destroy']]);
+        $this->middleware('permission:Export SW Work Types to CSV', ['only' => ['export']]);
+        $this->middleware('permission:View SW Work Type History', ['only' => ['history']]);
         $this->workTypeService = $workTypeService;
     }
 
     public function index()
     {
-        $page_title = __('SWM Work Types');
+        $page_title = __('SW Work Types');
 
         return view('swm.service-providers.work-types.index', compact('page_title'));
     }
@@ -39,7 +39,7 @@ class WorkTypeController extends Controller
 
     public function create()
     {
-        $page_title = __('Add SWM Work Type');
+        $page_title = __('Add SW Work Type');
         $workType = null;
 
         return view('swm.service-providers.work-types.create', compact('page_title', 'workType'));
@@ -49,14 +49,14 @@ class WorkTypeController extends Controller
     {
         $this->workTypeService->storeOrUpdate(null, $request->all());
 
-        return redirect()->route('swm.work-types.index')->with('success', __('SWM work type created successfully.'));
+        return redirect()->route('swm.work-types.index')->with('success', __('SW work type created successfully.'));
     }
 
     public function show($id)
     {
         $workType = WorkType::find($id);
         if ($workType) {
-            $page_title = __('SWM Work Type Details');
+            $page_title = __('SW Work Type Details');
 
             return view('swm.service-providers.work-types.show', compact('page_title', 'workType'));
         }
@@ -68,7 +68,7 @@ class WorkTypeController extends Controller
     {
         $workType = WorkType::find($id);
         if ($workType) {
-            $page_title = __('Edit SWM Work Type');
+            $page_title = __('Edit SW Work Type');
 
             return view('swm.service-providers.work-types.edit', compact('page_title', 'workType'));
         }
@@ -82,10 +82,10 @@ class WorkTypeController extends Controller
         if ($workType) {
             $this->workTypeService->storeOrUpdate((int) $workType->id, $request->all());
 
-            return redirect()->route('swm.work-types.index')->with('success', __('SWM work type updated successfully.'));
+            return redirect()->route('swm.work-types.index')->with('success', __('SW work type updated successfully.'));
         }
 
-        return redirect()->route('swm.work-types.index')->with('error', __('Failed to update SWM work type.'));
+        return redirect()->route('swm.work-types.index')->with('error', __('Failed to update SW work type.'));
     }
 
     public function destroy($id)
@@ -93,21 +93,21 @@ class WorkTypeController extends Controller
         $workType = WorkType::find($id);
         if ($workType) {
             if ($workType->workers()->exists()) {
-                return redirect()->route('swm.work-types.index')->with('error', __('Cannot delete SWM work type that has associated workers.'));
+                return redirect()->route('swm.work-types.index')->with('error', __('Cannot delete SW work type that has associated workers.'));
             }
             $workType->delete();
 
-            return redirect()->route('swm.work-types.index')->with('success', __('SWM work type deleted successfully.'));
+            return redirect()->route('swm.work-types.index')->with('success', __('SW work type deleted successfully.'));
         }
 
-        return redirect()->route('swm.work-types.index')->with('error', __('Failed to delete SWM work type.'));
+        return redirect()->route('swm.work-types.index')->with('error', __('Failed to delete SW work type.'));
     }
 
     public function history($id)
     {
         $workType = WorkType::find($id);
         if ($workType) {
-            $page_title = __('SWM Work Type History');
+            $page_title = __('SW Work Type History');
 
             return view('swm.service-providers.work-types.history', compact('page_title', 'workType'));
         }

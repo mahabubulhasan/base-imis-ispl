@@ -69,7 +69,7 @@ class RolesSeeder extends Seeder
                 'name' => 'Treatment Plant - Admin',
             ],
             [
-                'name' => 'SWM Organization - Admin',
+                'name' => 'SW Organization - Admin',
             ],
             [
                 'name' => 'Guest',

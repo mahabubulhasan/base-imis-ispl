@@ -15,13 +15,13 @@ class LicController extends Controller
     public function __construct(LicService $licService)
     {
         $this->middleware('auth');
-        $this->middleware('permission:List SWM LIC', ['only' => ['index', 'getData']]);
-        $this->middleware('permission:View SWM LIC', ['only' => ['show']]);
-        $this->middleware('permission:Add SWM LIC', ['only' => ['create', 'store']]);
-        $this->middleware('permission:Edit SWM LIC', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:Delete SWM LIC', ['only' => ['destroy']]);
-        $this->middleware('permission:Export SWM LIC to CSV', ['only' => ['export']]);
-        $this->middleware('permission:View SWM LIC History', ['only' => ['history']]);
+        $this->middleware('permission:List SW LIC', ['only' => ['index', 'getData']]);
+        $this->middleware('permission:View SW LIC', ['only' => ['show']]);
+        $this->middleware('permission:Add SW LIC', ['only' => ['create', 'store']]);
+        $this->middleware('permission:Edit SW LIC', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:Delete SW LIC', ['only' => ['destroy']]);
+        $this->middleware('permission:Export SW LIC to CSV', ['only' => ['export']]);
+        $this->middleware('permission:View SW LIC History', ['only' => ['history']]);
         $this->licService = $licService;
     }
 

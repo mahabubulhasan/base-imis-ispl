@@ -333,7 +333,7 @@ class ContainmentService
             __('Water Supply Pipe Line Code'),
             __('Well in Premises'),
             __('Distance of Well from Closest Containment (m)'),
-            __('SWM Customer ID'),
+            __('SW Customer ID'),
             __('Presence of Toilet'),
             __('Number of Toilets'),
             __('Households with Private Toilet'),

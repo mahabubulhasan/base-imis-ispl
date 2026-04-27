@@ -52,7 +52,7 @@ class UserService
     {
         if (Auth::user()->hasRole('Service Provider - Admin')) {
             return (User::where('service_provider_id', '=', Auth::user()->service_provider_id)->where('id', '!=', Auth::id())->latest('created_at')->get());
-        } elseif (Auth::user()->hasRole('SWM Organization - Admin')) {
+        } elseif (Auth::user()->hasRole('SW Organization - Admin')) {
             return (User::where('swm_organization_id', '=', Auth::user()->swm_organization_id)->where('id', '!=', Auth::id())->latest('created_at')->get());
         } else if (Auth::user()->hasRole('Treatment Plant - Admin')) {
             return (User::where('treatment_plant_id', '=', Auth::user()->treatment_plant_id)->where('id', '!=', Auth::id())->latest('created_at')->get());
@@ -175,7 +175,7 @@ class UserService
                     $user->help_desk_id = isset($input['help_desk_id']) ? $input['help_desk_id'] : (isset($input['help_desk_id_1']) ? $input['help_desk_id_1'] : $input['help_desk_id_2']);
                     $user->swm_organization_id = null;
                     break;
-                case ('SWM Organization'):
+                case ('SW Organization'):
                     $user->swm_organization_id = $input['swm_organization_id'];
                     $user->service_provider_id = null;
                     $user->treatment_plant_id = null;
@@ -232,7 +232,7 @@ class UserService
                     $user->treatment_plant_id =  null;
                     $user->swm_organization_id = null;
                 break;
-                case ('SWM Organization'):
+                case ('SW Organization'):
                     $user->swm_organization_id = $input['swm_organization_id'] ?? null;
                     $user->service_provider_id = null;
                     $user->treatment_plant_id = null;

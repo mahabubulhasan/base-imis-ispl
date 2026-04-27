@@ -791,251 +791,251 @@ class PermissionsSeeder extends Seeder
                 ]
             ],
             [
-                "group" => "Swm Service Payment",
+                "group" => "Sw Service Payment",
                 "perms" => [
                     [
                         "type" => "List",
-                        "name" => "List SWM Service Payment Collection"
+                        "name" => "List SW Service Payment Collection"
                     ],
                     [
                         "type" => "Export",
-                        "name" => "Export SWM Service Payment Collection From CSV"
+                        "name" => "Export SW Service Payment Collection From CSV"
                     ],
                     [
                         "type" => "Import",
-                        "name" => "Import SWM Service Payment Collection From CSV"
+                        "name" => "Import SW Service Payment Collection From CSV"
                     ],
 
                 ]
             ],
             [
-                "group" => "SWM Service Provider Organizations",
+                "group" => "SW Service Provider Organizations",
                 "perms" => [
                     [
                         "type" => "List",
-                        "name" => "List SWM Organizations",
+                        "name" => "List SW Organizations",
                     ],
                     [
                         "type" => "View",
-                        "name" => "View SWM Organization",
+                        "name" => "View SW Organization",
                     ],
                     [
                         "type" => "Add",
-                        "name" => "Add SWM Organization",
+                        "name" => "Add SW Organization",
                     ],
                     [
                         "type" => "Edit",
-                        "name" => "Edit SWM Organization",
+                        "name" => "Edit SW Organization",
                     ],
                     [
                         "type" => "Delete",
-                        "name" => "Delete SWM Organization",
+                        "name" => "Delete SW Organization",
                     ],
                     [
                         "type" => "History",
-                        "name" => "View SWM Organization History",
+                        "name" => "View SW Organization History",
                     ],
                     [
                         "type" => "Export",
-                        "name" => "Export SWM Organizations to CSV",
+                        "name" => "Export SW Organizations to CSV",
                     ],
                 ],
             ],
             [
-                "group" => "SWM Service Provider Work Types",
+                "group" => "SW Service Provider Work Types",
                 "perms" => [
                     [
                         "type" => "List",
-                        "name" => "List SWM Work Types",
+                        "name" => "List SW Work Types",
                     ],
                     [
                         "type" => "View",
-                        "name" => "View SWM Work Type",
+                        "name" => "View SW Work Type",
                     ],
                     [
                         "type" => "Add",
-                        "name" => "Add SWM Work Type",
+                        "name" => "Add SW Work Type",
                     ],
                     [
                         "type" => "Edit",
-                        "name" => "Edit SWM Work Type",
+                        "name" => "Edit SW Work Type",
                     ],
                     [
                         "type" => "Delete",
-                        "name" => "Delete SWM Work Type",
+                        "name" => "Delete SW Work Type",
                     ],
                     [
                         "type" => "History",
-                        "name" => "View SWM Work Type History",
+                        "name" => "View SW Work Type History",
                     ],
                     [
                         "type" => "Export",
-                        "name" => "Export SWM Work Types to CSV",
+                        "name" => "Export SW Work Types to CSV",
                     ],
                 ],
             ],
             [
-                "group" => "SWM Service Provider Workers",
+                "group" => "SW Service Provider Workers",
                 "perms" => [
                     [
                         "type" => "List",
-                        "name" => "List SWM Workers",
+                        "name" => "List SW Workers",
                     ],
                     [
                         "type" => "View",
-                        "name" => "View SWM Worker",
+                        "name" => "View SW Worker",
                     ],
                     [
                         "type" => "Add",
-                        "name" => "Add SWM Worker",
+                        "name" => "Add SW Worker",
                     ],
                     [
                         "type" => "Edit",
-                        "name" => "Edit SWM Worker",
+                        "name" => "Edit SW Worker",
                     ],
                     [
                         "type" => "Delete",
-                        "name" => "Delete SWM Worker",
+                        "name" => "Delete SW Worker",
                     ],
                     [
                         "type" => "History",
-                        "name" => "View SWM Worker History",
+                        "name" => "View SW Worker History",
                     ],
                     [
                         "type" => "Export",
-                        "name" => "Export SWM Workers to CSV",
+                        "name" => "Export SW Workers to CSV",
                     ],
                 ],
             ],
             [
-                "group" => "SWM Service Provider Vehicle Types",
+                "group" => "SW Service Provider Vehicle Types",
                 "perms" => [
                     [
                         "type" => "List",
-                        "name" => "List SWM Vehicle Types",
+                        "name" => "List SW Vehicle Types",
                     ],
                     [
                         "type" => "View",
-                        "name" => "View SWM Vehicle Type",
+                        "name" => "View SW Vehicle Type",
                     ],
                     [
                         "type" => "Add",
-                        "name" => "Add SWM Vehicle Type",
+                        "name" => "Add SW Vehicle Type",
                     ],
                     [
                         "type" => "Edit",
-                        "name" => "Edit SWM Vehicle Type",
+                        "name" => "Edit SW Vehicle Type",
                     ],
                     [
                         "type" => "Delete",
-                        "name" => "Delete SWM Vehicle Type",
+                        "name" => "Delete SW Vehicle Type",
                     ],
                     [
                         "type" => "History",
-                        "name" => "View SWM Vehicle Type History",
+                        "name" => "View SW Vehicle Type History",
                     ],
                     [
                         "type" => "Export",
-                        "name" => "Export SWM Vehicle Types to CSV",
+                        "name" => "Export SW Vehicle Types to CSV",
                     ],
                 ],
             ],
             [
-                "group" => "SWM Service Provider Vehicles",
+                "group" => "SW Service Provider Vehicles",
                 "perms" => [
                     [
                         "type" => "List",
-                        "name" => "List SWM Vehicles",
+                        "name" => "List SW Vehicles",
                     ],
                     [
                         "type" => "View",
-                        "name" => "View SWM Vehicle",
+                        "name" => "View SW Vehicle",
                     ],
                     [
                         "type" => "Add",
-                        "name" => "Add SWM Vehicle",
+                        "name" => "Add SW Vehicle",
                     ],
                     [
                         "type" => "Edit",
-                        "name" => "Edit SWM Vehicle",
+                        "name" => "Edit SW Vehicle",
                     ],
                     [
                         "type" => "Delete",
-                        "name" => "Delete SWM Vehicle",
+                        "name" => "Delete SW Vehicle",
                     ],
                     [
                         "type" => "History",
-                        "name" => "View SWM Vehicle History",
+                        "name" => "View SW Vehicle History",
                     ],
                     [
                         "type" => "Export",
-                        "name" => "Export SWM Vehicles to CSV",
+                        "name" => "Export SW Vehicles to CSV",
                     ],
                 ],
             ],
             [
-                "group" => "SWM Service Facility Landfills",
+                "group" => "SW Service Facility Landfills",
                 "perms" => [
                     [
                         "type" => "List",
-                        "name" => "List SWM Landfills",
+                        "name" => "List SW Landfills",
                     ],
                     [
                         "type" => "View",
-                        "name" => "View SWM Landfill",
+                        "name" => "View SW Landfill",
                     ],
                     [
                         "type" => "Add",
-                        "name" => "Add SWM Landfill",
+                        "name" => "Add SW Landfill",
                     ],
                     [
                         "type" => "Edit",
-                        "name" => "Edit SWM Landfill",
+                        "name" => "Edit SW Landfill",
                     ],
                     [
                         "type" => "Delete",
-                        "name" => "Delete SWM Landfill",
+                        "name" => "Delete SW Landfill",
                     ],
                     [
                         "type" => "History",
-                        "name" => "View SWM Landfill History",
+                        "name" => "View SW Landfill History",
                     ],
                     [
                         "type" => "Export",
-                        "name" => "Export SWM Landfills to CSV",
+                        "name" => "Export SW Landfills to CSV",
                     ],
                 ],
             ],
             [
-                "group" => "SWM Service Facility STS",
+                "group" => "SW Service Facility STS",
                 "perms" => [
                     [
                         "type" => "List",
-                        "name" => "List SWM STS",
+                        "name" => "List SW STS",
                     ],
                     [
                         "type" => "View",
-                        "name" => "View SWM STS",
+                        "name" => "View SW STS",
                     ],
                     [
                         "type" => "Add",
-                        "name" => "Add SWM STS",
+                        "name" => "Add SW STS",
                     ],
                     [
                         "type" => "Edit",
-                        "name" => "Edit SWM STS",
+                        "name" => "Edit SW STS",
                     ],
                     [
                         "type" => "Delete",
-                        "name" => "Delete SWM STS",
+                        "name" => "Delete SW STS",
                     ],
                     [
                         "type" => "History",
-                        "name" => "View SWM STS History",
+                        "name" => "View SW STS History",
                     ],
                     [
                         "type" => "Export",
-                        "name" => "Export SWM STS to CSV",
+                        "name" => "Export SW STS to CSV",
                     ],
                 ],
             ],
@@ -1044,171 +1044,196 @@ class PermissionsSeeder extends Seeder
                 "perms" => [
                     [
                         "type" => "List",
-                        "name" => "List SWM LIC",
+                        "name" => "List SW LIC",
                     ],
                     [
                         "type" => "View",
-                        "name" => "View SWM LIC",
+                        "name" => "View SW LIC",
                     ],
                     [
                         "type" => "Add",
-                        "name" => "Add SWM LIC",
+                        "name" => "Add SW LIC",
                     ],
                     [
                         "type" => "Edit",
-                        "name" => "Edit SWM LIC",
+                        "name" => "Edit SW LIC",
                     ],
                     [
                         "type" => "Delete",
-                        "name" => "Delete SWM LIC",
+                        "name" => "Delete SW LIC",
                     ],
                     [
                         "type" => "History",
-                        "name" => "View SWM LIC History",
+                        "name" => "View SW LIC History",
                     ],
                     [
                         "type" => "Export",
-                        "name" => "Export SWM LIC to CSV",
+                        "name" => "Export SW LIC to CSV",
                     ],
                 ],
             ],
             [
-                "group" => "SW Service Coverage Primary Collection Sites",
+                "group" => "Building Info Households",
                 "perms" => [
                     [
                         "type" => "List",
-                        "name" => "List SWM Primary Collection Sites",
+                        "name" => "List Households",
                     ],
                     [
                         "type" => "View",
-                        "name" => "View SWM Primary Collection Site",
+                        "name" => "View Household",
                     ],
                     [
                         "type" => "Add",
-                        "name" => "Add SWM Primary Collection Site",
+                        "name" => "Add Household",
                     ],
                     [
                         "type" => "Edit",
-                        "name" => "Edit SWM Primary Collection Site",
+                        "name" => "Edit Household",
                     ],
                     [
                         "type" => "Delete",
-                        "name" => "Delete SWM Primary Collection Site",
+                        "name" => "Delete Household",
                     ],
                     [
                         "type" => "History",
-                        "name" => "View SWM Primary Collection Site History",
+                        "name" => "View Household History",
                     ],
                     [
                         "type" => "Export",
-                        "name" => "Export SWM Primary Collection Sites to CSV",
+                        "name" => "Export Households to CSV",
                     ],
                 ],
             ],
             [
-                "group" => "SWM Bill Collection Payments",
+                "group" => "SW Waste Bins",
                 "perms" => [
                     [
                         "type" => "List",
-                        "name" => "List SWM Bill Collection Payments",
+                        "name" => "List SW Waste Bins",
                     ],
                     [
                         "type" => "View",
-                        "name" => "View SWM Bill Collection Payment",
+                        "name" => "View SW Waste Bin",
                     ],
                     [
                         "type" => "Add",
-                        "name" => "Add SWM Bill Collection Payment",
+                        "name" => "Add SW Waste Bin",
                     ],
                     [
                         "type" => "Edit",
-                        "name" => "Edit SWM Bill Collection Payment",
+                        "name" => "Edit SW Waste Bin",
                     ],
                     [
                         "type" => "Delete",
-                        "name" => "Delete SWM Bill Collection Payment",
+                        "name" => "Delete SW Waste Bin",
+                    ],
+                ],
+            ],
+            [
+                "group" => "SW Bill Collection Payments",
+                "perms" => [
+                    [
+                        "type" => "List",
+                        "name" => "List SW Bill Collection Payments",
+                    ],
+                    [
+                        "type" => "View",
+                        "name" => "View SW Bill Collection Payment",
+                    ],
+                    [
+                        "type" => "Add",
+                        "name" => "Add SW Bill Collection Payment",
+                    ],
+                    [
+                        "type" => "Edit",
+                        "name" => "Edit SW Bill Collection Payment",
+                    ],
+                    [
+                        "type" => "Delete",
+                        "name" => "Delete SW Bill Collection Payment",
                     ],
                     [
                         "type" => "History",
-                        "name" => "View SWM Bill Collection Payment History",
+                        "name" => "View SW Bill Collection Payment History",
                     ],
                     [
                         "type" => "Export",
-                        "name" => "Export SWM Bill Collection Payments to CSV",
+                        "name" => "Export SW Bill Collection Payments to CSV",
                     ],
                     [
                         "type" => "Import",
-                        "name" => "Import SWM Bill Collection Payments From CSV",
+                        "name" => "Import SW Bill Collection Payments From CSV",
                     ],
                 ],
             ],
             [
-                "group" => "SWM Billing Status",
+                "group" => "SW Billing Status",
                 "perms" => [
                     [
                         "type" => "List",
-                        "name" => "List SWM Billing Status",
+                        "name" => "List SW Billing Status",
                     ],
                     [
                         "type" => "View",
-                        "name" => "View SWM Billing Status",
+                        "name" => "View SW Billing Status",
                     ],
                     [
                         "type" => "Add",
-                        "name" => "Add SWM Billing Status",
+                        "name" => "Add SW Billing Status",
                     ],
                     [
                         "type" => "Edit",
-                        "name" => "Edit SWM Billing Status",
+                        "name" => "Edit SW Billing Status",
                     ],
                     [
                         "type" => "Delete",
-                        "name" => "Delete SWM Billing Status",
+                        "name" => "Delete SW Billing Status",
                     ],
                     [
                         "type" => "History",
-                        "name" => "View SWM Billing Status History",
+                        "name" => "View SW Billing Status History",
                     ],
                     [
                         "type" => "Export",
-                        "name" => "Export SWM Billing Status to CSV",
+                        "name" => "Export SW Billing Status to CSV",
                     ],
                     [
                         "type" => "Import",
-                        "name" => "Import SWM Billing Status From CSV",
+                        "name" => "Import SW Billing Status From CSV",
                     ],
                 ],
             ],
             [
-                "group" => "SWM Complaints",
+                "group" => "SW Complaints",
                 "perms" => [
                     [
                         "type" => "List",
-                        "name" => "List SWM Complaints",
+                        "name" => "List SW Complaints",
                     ],
                     [
                         "type" => "View",
-                        "name" => "View SWM Complaint",
+                        "name" => "View SW Complaint",
                     ],
                     [
                         "type" => "Add",
-                        "name" => "Add SWM Complaint",
+                        "name" => "Add SW Complaint",
                     ],
                     [
                         "type" => "Edit",
-                        "name" => "Edit SWM Complaint",
+                        "name" => "Edit SW Complaint",
                     ],
                     [
                         "type" => "Delete",
-                        "name" => "Delete SWM Complaint",
+                        "name" => "Delete SW Complaint",
                     ],
                     [
                         "type" => "History",
-                        "name" => "View SWM Complaint History",
+                        "name" => "View SW Complaint History",
                     ],
                     [
                         "type" => "Export",
-                        "name" => "Export SWM Complaints to CSV",
+                        "name" => "Export SW Complaints to CSV",
                     ],
                 ],
             ],
@@ -1383,11 +1408,11 @@ class PermissionsSeeder extends Seeder
                     ],
                     [
                         "type" => "Chart",
-                        "name" => "Outstanding Payments for SWM Services Chart"
+                        "name" => "Outstanding Payments for SW Services Chart"
                     ],
                     [
                         "type" => "Chart",
-                        "name" => "Distribution of SWM Services by Ward Chart"
+                        "name" => "Distribution of SW Services by Ward Chart"
                     ],
 
                     [

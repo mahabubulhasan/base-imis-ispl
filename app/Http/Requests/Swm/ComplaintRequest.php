@@ -36,7 +36,7 @@ class ComplaintRequest extends FormRequest
             ],
             'date_time' => ['required', 'date'],
             'holding_number' => ['nullable', 'string', 'max:255'],
-            'customer_id' => ['nullable', 'string', 'max:255'],
+            'household_id' => ['nullable', 'string', 'max:255'],
             'name' => ['required', 'string', 'max:255'],
             'contact_number' => ['required', 'string', 'max:255'],
             'complaint_type' => [
@@ -64,7 +64,7 @@ class ComplaintRequest extends FormRequest
         $this->merge([
             'complaint_id' => trim((string) $this->input('complaint_id', '')),
             'holding_number' => $this->filled('holding_number') ? trim((string) $this->input('holding_number')) : null,
-            'customer_id' => $this->filled('customer_id') ? trim((string) $this->input('customer_id')) : null,
+            'household_id' => $this->filled('household_id') ? trim((string) $this->input('household_id')) : null,
             'name' => trim((string) $this->input('name', '')),
             'contact_number' => trim((string) $this->input('contact_number', '')),
             'notes' => $this->filled('notes') ? trim((string) $this->input('notes')) : null,

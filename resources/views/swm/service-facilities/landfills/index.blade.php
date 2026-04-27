@@ -8,10 +8,10 @@
 @include('layouts.components.error-alert')
 <div class="card">
     <div class="card-header">
-        @can('Add SWM Landfill')
-        <a href="{{ action('Swm\LandfillController@create') }}" class="btn btn-info">{{ __('Add SWM Landfill') }}</a>
+        @can('Add SW Landfill')
+        <a href="{{ action('Swm\LandfillController@create') }}" class="btn btn-info">{{ __('Add SW Landfill') }}</a>
         @endcan
-        @can('Export SWM Landfills to CSV')
+        @can('Export SW Landfills to CSV')
         <a href="#" id="export" class="btn btn-info">{{ __('Export to CSV') }}</a>
         @endcan
         <a href="#" class="btn btn-info float-right" data-toggle="collapse" data-target="#lf-collapse">{{ __('Show Filter') }}</a>

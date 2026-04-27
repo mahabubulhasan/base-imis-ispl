@@ -12,10 +12,10 @@
 @include('layouts.components.error-alert')
 <div class="card">
     <div class="card-header">
-        @can('Add SWM Primary Collection Site')
+        @can('Add SW Primary Collection Site')
         <a href="{{ action('Swm\PrimaryCollectionSiteController@create') }}" class="btn btn-info">{{ __('Add Primary Collection Site') }}</a>
         @endcan
-        @can('Export SWM Primary Collection Sites to CSV')
+        @can('Export SW Primary Collection Sites to CSV')
         <a href="#" id="export" class="btn btn-info">{{ __('Export to CSV') }}</a>
         @endcan
         <a href="#" class="btn btn-info float-right" id="headingOne" type="button" data-toggle="collapse"

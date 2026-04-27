@@ -34,7 +34,7 @@
         <th align="right" width="20"><h1><strong>{{__('Water Supply Pipe Line Code')}}</strong></h1></th>
         <th align="right" width="20"><h1><strong>{{__('Well in Premises')}}</strong></h1></th>
         <th align="right" width="20"><h1><strong>{{__('Distance of Well from Closest Containment (m)')}}</strong></h1></th>
-        <th align="right" width="20"><h1><strong>{{__('SWM Customer ID')}}</strong></h1></th>
+        <th align="right" width="20"><h1><strong>{{__('SW Customer ID')}}</strong></h1></th>
         <th align="right" width="20"><h1><strong>{{__('Presence of Toilet')}}</strong></h1></th>
         <th align="right" width="20"><h1><strong>{{__('Number of Toilets')}}</strong></h1></th>
         <th align="right" width="20"><h1><strong>{{__('Households with Private Toilet')}}</strong></h1></th>

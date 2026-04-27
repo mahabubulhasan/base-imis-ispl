@@ -100,22 +100,22 @@ class MunicipalityITAdminSeeder extends Seeder
                         ->whereIn('type', ['View', 'List', 'Export', 'View on map', 'History']));
 
                     //Payment ISS
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Swm Service Payment', 'Property Tax Collection ISS', 'Water Supply ISS'])
+                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Sw Service Payment', 'Property Tax Collection ISS', 'Water Supply ISS'])
                         ->whereIn('type', ['List', 'Export']));
 
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', [
-                        'SWM Service Provider Organizations',
-                        'SWM Service Provider Work Types',
-                        'SWM Service Provider Workers',
-                        'SWM Service Provider Vehicle Types',
-                        'SWM Service Provider Vehicles',
-                        'SWM Service Facility Landfills',
-                        'SWM Service Facility STS',
+                        'SW Service Provider Organizations',
+                        'SW Service Provider Work Types',
+                        'SW Service Provider Workers',
+                        'SW Service Provider Vehicle Types',
+                        'SW Service Provider Vehicles',
+                        'SW Service Facility Landfills',
+                        'SW Service Facility STS',
                         'SW Service Coverage LIC',
-                        'SW Service Coverage Primary Collection Sites',
-                        'SWM Bill Collection Payments',
-                        'SWM Billing Status',
-                        'SWM Complaints',
+                        'Building Info Households',
+                        'SW Bill Collection Payments',
+                        'SW Billing Status',
+                        'SW Complaints',
                     ])
                         ->whereIn('type', ['View', 'List', 'Export', 'History', 'Add', 'Edit', 'Delete', 'Import']));
 

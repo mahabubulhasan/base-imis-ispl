@@ -15,7 +15,7 @@
     );
     $recvUsers = ['' => __('Default (logged-in user)')] + $users->all();
     $initHolding = old('holding_number', $isEdit ? ($payment->holding_number ?? '') : '');
-    $initCustomerName = $isEdit ? optional($payment->primaryCollectionSite)->customer_name : null;
+    $initCustomerName = $isEdit ? optional($payment->primaryCollectionSite)->household_owner_name : null;
 @endphp
 @push('style')
 <style>
@@ -69,9 +69,9 @@
 </style>
 @endpush
 <div class="card-body">
-    {!! Form::hidden('primary_collection_site_id', old('primary_collection_site_id', $isEdit ? $payment->primary_collection_site_id : ''), ['id' => 'primary_collection_site_id']) !!}
+    {!! Form::hidden('household_id', old('household_id', $isEdit ? $payment->household_id : ''), ['id' => 'household_id']) !!}
     {!! Form::hidden('holding_number', old('holding_number', $isEdit ? ($payment->holding_number ?? '') : ''), ['id' => 'holding_number']) !!}
-    {!! Form::hidden('customer_id', old('customer_id', $isEdit ? $payment->customer_id : ''), ['id' => 'customer_id']) !!}
+    {!! Form::hidden('household_code', old('household_code', $isEdit ? $payment->customer_id : ''), ['id' => 'household_code']) !!}
 
     <div class="form-group row required">
         <label class="col-sm-3 control-label" for="holding_select">{{ __('Holding') }}</label>
@@ -194,7 +194,7 @@
     }
 
     function refreshBalance() {
-        var siteId = $('#primary_collection_site_id').val();
+        var siteId = $('#household_id').val();
         var ym = $('#payment_for_month').val();
         var pm = monthFirstDay(ym);
         if (!siteId || !pm) {
@@ -205,7 +205,7 @@
         }
         var seq = ++balanceRequestSeq;
         setBalanceLoading(true);
-        var url = balanceUrl + '?primary_collection_site_id=' + encodeURIComponent(siteId)
+        var url = balanceUrl + '?household_id=' + encodeURIComponent(siteId)
             + '&payment_for_month=' + encodeURIComponent(pm);
         if (excludePaymentId) {
             url += '&exclude_payment_id=' + encodeURIComponent(excludePaymentId);
@@ -278,24 +278,24 @@
     $('#holding_select').on('select2:select', function(e) {
         var data = e.params.data;
         $('#holding_number').val(data.id);
-        $('#primary_collection_site_id').val('');
-        $('#customer_id').val('');
+        $('#household_id').val('');
+        $('#household_code').val('');
         $('#customer_site_select').prop('disabled', false).val(null).trigger('change');
         refreshBalance();
     });
 
     $('#holding_select').on('select2:clear', function() {
         $('#holding_number').val('');
-        $('#primary_collection_site_id').val('');
-        $('#customer_id').val('');
+        $('#household_id').val('');
+        $('#household_code').val('');
         $('#customer_site_select').prop('disabled', true).val(null).trigger('change');
         refreshBalance();
     });
 
     $('#customer_site_select').on('select2:select', function(e) {
         var d = e.params.data;
-        $('#primary_collection_site_id').val(d.id);
-        $('#customer_id').val(d.customer_id || '');
+        $('#household_id').val(d.id);
+        $('#household_code').val(d.household_id || '');
         if (d.holding_number) {
             $('#holding_number').val(d.holding_number);
         }
@@ -303,8 +303,8 @@
     });
 
     $('#customer_site_select').on('select2:clear', function() {
-        $('#primary_collection_site_id').val('');
-        $('#customer_id').val('');
+        $('#household_id').val('');
+        $('#household_code').val('');
         refreshBalance();
     });
 
@@ -316,15 +316,15 @@
         var opt = new Option(hn, hn, true, true);
         $('#holding_select').append(opt).trigger('change');
         $('#customer_site_select').prop('disabled', false);
-        var sid = @json(old('primary_collection_site_id', $isEdit ? $payment->primary_collection_site_id : ''));
-        var cid = @json(old('customer_id', $isEdit ? $payment->customer_id : ''));
+        var sid = @json(old('household_id', $isEdit ? $payment->household_id : ''));
+        var cid = @json(old('household_code', $isEdit ? $payment->customer_id : ''));
         var cname = @json($initCustomerName ?? '');
         var label = cid + (cname ? (' — ' + cname) : '');
         var copt = new Option(label, sid, true, true);
-        $(copt).data('data', { id: sid, text: label, customer_id: cid });
+        $(copt).data('data', { id: sid, text: label, household_id: cid });
         $('#customer_site_select').append(copt).trigger('change');
-        $('#primary_collection_site_id').val(sid);
-        $('#customer_id').val(cid);
+        $('#household_id').val(sid);
+        $('#household_code').val(cid);
         $('#holding_number').val(hn);
         refreshBalance();
     })();

@@ -10,10 +10,10 @@
 @section('content')
 <div class="card">
     <div class="card-header">
-        @can('Add SWM Vehicle Type')
-        <a href="{{ action('Swm\VehicleTypeController@create') }}" class="btn btn-info">{{ __('Add SWM Vehicle Type') }}</a>
+        @can('Add SW Vehicle Type')
+        <a href="{{ action('Swm\VehicleTypeController@create') }}" class="btn btn-info">{{ __('Add SW Vehicle Type') }}</a>
         @endcan
-        @can('Export SWM Vehicle Types to CSV')
+        @can('Export SW Vehicle Types to CSV')
         <a href="#" id="export" class="btn btn-info">{{ __('Export to CSV') }}</a>
         @endcan
         <a href="#" class="btn btn-info float-right" id="headingOne" type="button" data-toggle="collapse"

@@ -23,7 +23,7 @@ class SwmPaymentDataImport extends Command
      *
      * @var string
      */
-    protected $description = 'Import of SWM Service Payment data from excel/csv file to database.';
+    protected $description = 'Import of SW Service Payment data from excel/csv file to database.';
 
     /**
      * Create a new command instance.
@@ -56,10 +56,10 @@ class SwmPaymentDataImport extends Command
         $end_time=time();
         
         //check larave.log file to confirm all the queries has run successfully
-        \Log::info("SWM Service Payment data imported from excel/csv file to database successfully on ". date("F j, Y, g:i a"));
+        \Log::info("SW Service Payment data imported from excel/csv file to database successfully on ". date("F j, Y, g:i a"));
         Log::info('Total execution time : '. ($end_time-$start_time).'seconds');
 
-        $this->info('SWM Service Payment data imported successfully in '. ($end_time-$start_time).'seconds');
+        $this->info('SW Service Payment data imported successfully in '. ($end_time-$start_time).'seconds');
         return Command::SUCCESS;
     }
 }

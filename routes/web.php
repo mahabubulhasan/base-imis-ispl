@@ -108,6 +108,21 @@ Route::group([
     Route::get('building-surveys/{id}/approve', 'BuildingSurveyController@approve');
     Route::get('building-surveys/download/{filename}', 'BuildingSurveyController@download')->name('building.download');
     Route::resource('building-surveys', 'BuildingSurveyController');
+
+    // households routes
+    Route::get('households/building-snapshot', 'HouseholdController@getBuildingSnapshot')->name('building-info.households.building-snapshot');
+    Route::get('households/data', 'HouseholdController@getData')->name('building-info.households.data');
+    Route::get('households/export', 'HouseholdController@export')->name('building-info.households.export');
+    Route::get('households/{household}/history', 'HouseholdController@history')->name('building-info.households.history');
+    Route::resource('households', 'HouseholdController')->names([
+        'index' => 'building-info.households.index',
+        'create' => 'building-info.households.create',
+        'store' => 'building-info.households.store',
+        'show' => 'building-info.households.show',
+        'edit' => 'building-info.households.edit',
+        'update' => 'building-info.households.update',
+        'destroy' => 'building-info.households.destroy',
+    ]);
 });
 
     /**
@@ -173,7 +188,7 @@ Route::group([
     Route::resource('watersupply-payment', 'WaterSupplyController');
 });
 
-// SWM service Payment routes
+// SW service Payment routes
 Route::group([
     'name' => 'swm-payment',
     // 'prefix' => 'swm-info-mgmt',
@@ -300,6 +315,17 @@ Route::group([
             'update' => 'swm.sts.update',
             'destroy' => 'swm.sts.destroy',
         ]);
+
+        Route::get('waste-bins/data', 'WasteBinController@getData')->name('swm.waste-bins.data');
+        Route::resource('waste-bins', 'WasteBinController')->names([
+            'index' => 'swm.waste-bins.index',
+            'create' => 'swm.waste-bins.create',
+            'store' => 'swm.waste-bins.store',
+            'show' => 'swm.waste-bins.show',
+            'edit' => 'swm.waste-bins.edit',
+            'update' => 'swm.waste-bins.update',
+            'destroy' => 'swm.waste-bins.destroy',
+        ]);
     });
 
     Route::prefix('service-coverage')->group(function () {
@@ -314,20 +340,6 @@ Route::group([
             'edit' => 'swm.lic.edit',
             'update' => 'swm.lic.update',
             'destroy' => 'swm.lic.destroy',
-        ]);
-
-        Route::get('primary-collection-sites/building-snapshot', 'PrimaryCollectionSiteController@getBuildingSnapshot')->name('swm.primary-collection-sites.building-snapshot');
-        Route::get('primary-collection-sites/data', 'PrimaryCollectionSiteController@getData')->name('swm.primary-collection-sites.data');
-        Route::get('primary-collection-sites/export', 'PrimaryCollectionSiteController@export')->name('swm.primary-collection-sites.export');
-        Route::get('primary-collection-sites/{primary_collection_site}/history', 'PrimaryCollectionSiteController@history')->name('swm.primary-collection-sites.history');
-        Route::resource('primary-collection-sites', 'PrimaryCollectionSiteController')->names([
-            'index' => 'swm.primary-collection-sites.index',
-            'create' => 'swm.primary-collection-sites.create',
-            'store' => 'swm.primary-collection-sites.store',
-            'show' => 'swm.primary-collection-sites.show',
-            'edit' => 'swm.primary-collection-sites.edit',
-            'update' => 'swm.primary-collection-sites.update',
-            'destroy' => 'swm.primary-collection-sites.destroy',
         ]);
 
         Route::prefix('bill-collection')->group(function () {

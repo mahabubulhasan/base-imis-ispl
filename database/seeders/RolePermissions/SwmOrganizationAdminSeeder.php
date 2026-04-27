@@ -13,18 +13,18 @@ class SwmOrganizationAdminSeeder extends Seeder
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
         $roles = [
             [
-                'name' => 'SWM Organization - Admin',
+                'name' => 'SW Organization - Admin',
             ],
         ];
         foreach ($roles as $role) {
             $createdRole = Role::updateOrCreate($role);
-            if ($createdRole->name === 'SWM Organization - Admin') {
+            if ($createdRole->name === 'SW Organization - Admin') {
                 $createdRole->givePermissionTo(Permission::all()->whereIn('group', [
-                    'SWM Service Provider Organizations',
+                    'SW Service Provider Organizations',
                 ]));
-                $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['SWM Service Provider Workers']));
-                $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['SWM Service Provider Vehicles']));
-                $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['SWM Service Provider Work Types', 'SWM Service Provider Vehicle Types'])
+                $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['SW Service Provider Workers']));
+                $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['SW Service Provider Vehicles']));
+                $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['SW Service Provider Work Types', 'SW Service Provider Vehicle Types'])
                     ->whereIn('type', ['List', 'View']));
                 $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Users'])
                     ->whereIn('type', [

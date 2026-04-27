@@ -16,7 +16,7 @@ class BillCollectionBillingStatusController extends Controller
         protected BillCollectionPaymentService $billCollectionPaymentService
     ) {
         $this->middleware('auth');
-        $this->middleware('permission:List SWM Billing Status', ['only' => ['index', 'getData', 'summary', 'customersSearch']]);
+        $this->middleware('permission:List SW Billing Status', ['only' => ['index', 'getData', 'summary', 'customersSearch']]);
     }
 
     public function index()
@@ -44,7 +44,7 @@ class BillCollectionBillingStatusController extends Controller
             'is_owner' => ['nullable', 'in:0,1'],
             'van_puller_id' => ['nullable', 'integer', 'min:1'],
             'holding_number' => ['nullable', 'string', 'max:255'],
-            'customer_id' => ['nullable', 'string', 'max:255'],
+            'household_id' => ['nullable', 'string', 'max:255'],
             'holding_numbers' => ['nullable', 'array'],
             'holding_numbers.*' => ['nullable', 'string', 'max:255'],
             'customer_site_ids' => ['nullable', 'array'],
@@ -83,7 +83,7 @@ class BillCollectionBillingStatusController extends Controller
             $results[] = [
                 'id' => (string) ($row['id'] ?? ''),
                 'text' => (string) ($row['text'] ?? ''),
-                'customer_id' => (string) ($row['customer_id'] ?? ''),
+                'household_id' => (string) ($row['household_id'] ?? ''),
                 'holding_number' => (string) ($row['holding_number'] ?? ''),
             ];
         }

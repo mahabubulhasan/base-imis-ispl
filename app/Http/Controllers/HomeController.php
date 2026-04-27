@@ -276,7 +276,7 @@ class HomeController extends Controller
         // Fetching data for tax revenue chart
         $taxRevenueChart = $this->dashboardService->getTaxRevenueChart();
 
-        // Fetching data for SWM service chart
+        // Fetching data for SW service chart
         $solidWasteChart = $this->dashboardService->getSolidWastePaymentChart();
 
         // Fetching data for water supply payment chart

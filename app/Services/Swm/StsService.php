@@ -52,19 +52,19 @@ class StsService
             ->addColumn('action', function ($model) {
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['swm.sts.destroy', $model->id]]);
 
-                if (Auth::user()->can('Edit SWM STS')) {
+                if (Auth::user()->can('Edit SW STS')) {
                     $content .= '<a title="'.__('Edit').'" href="'.action('Swm\StsController@edit', [$model->id]).'" class="btn btn-info btn-sm mb-1"><i class="fa fa-edit"></i></a> ';
                 }
 
-                if (Auth::user()->can('View SWM STS')) {
+                if (Auth::user()->can('View SW STS')) {
                     $content .= '<a title="'.__('Detail').'" href="'.action('Swm\StsController@show', [$model->id]).'" class="btn btn-info btn-sm mb-1"><i class="fa fa-list"></i></a> ';
                 }
 
-                if (Auth::user()->can('View SWM STS History')) {
+                if (Auth::user()->can('View SW STS History')) {
                     $content .= '<a title="'.__('History').'" href="'.action('Swm\StsController@history', [$model->id]).'" class="btn btn-info btn-sm mb-1"><i class="fa fa-history"></i></a> ';
                 }
 
-                if (Auth::user()->can('Delete SWM STS')) {
+                if (Auth::user()->can('Delete SW STS')) {
                     $content .= '<a href="#" title="'.__('Delete').'" class="delete btn btn-danger btn-sm mb-1"><i class="fa fa-trash"></i></a> ';
                 }
 
@@ -136,7 +136,7 @@ class StsService
             ->build();
 
         $writer = WriterFactory::create(Type::CSV);
-        $writer->openToBrowser('SWM STS.csv')
+        $writer->openToBrowser('SW STS.csv')
             ->addRowWithStyle($columns, $style);
 
         $query->orderBy('swm.sts.id')->chunk(5000, function ($rows) use ($writer) {

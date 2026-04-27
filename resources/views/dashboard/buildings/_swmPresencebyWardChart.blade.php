@@ -1,5 +1,5 @@
 @include('layouts.dashboard.chart-card', [
-    'card_title' => __("Distribution of SWM Service by Ward"),
+    'card_title' => __("Distribution of SW Service by Ward"),
     'export_chart_btn_id' => "exportSwmPresenceWard",
     'canvas_id' => "swmPresenceWardChart"
 ])
@@ -12,8 +12,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Extract ward names and counts
     var wardLabels = sqlResult.map(item => item.ward);
-    var buildingsWithSWM = sqlResult.map(item => item.buildings_with_swm_customer_id);
-    var buildingsWithoutSWM = sqlResult.map(item => item.buildings_without_swm_customer_id);
+    var buildingsWithSW = sqlResult.map(item => item.buildings_with_swm_customer_id);
+    var buildingsWithoutSW = sqlResult.map(item => item.buildings_without_swm_customer_id);
 
     // Chart data setup
     var chartData = {
@@ -22,12 +22,12 @@ document.addEventListener('DOMContentLoaded', function() {
             {
                 label: "Yes",
                 backgroundColor: "#89CFF0",
-                data: buildingsWithSWM
+                data: buildingsWithSW
             },
             {
                 label: "No",
                 backgroundColor: " #808080",
-                data: buildingsWithoutSWM
+                data: buildingsWithoutSW
             }
         ]
     };
@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var newCanvasImg = newCanvas.toDataURL("image/png", 1.0);
         var a = document.createElement('a');
         a.href = newCanvasImg;
-        a.download = 'Distribution of SWM Service by Ward.png';
+        a.download = 'Distribution of SW Service by Ward.png';
         a.click();
     });
 });

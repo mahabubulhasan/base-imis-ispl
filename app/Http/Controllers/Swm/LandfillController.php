@@ -17,19 +17,19 @@ class LandfillController extends Controller
     public function __construct(LandfillService $landfillService)
     {
         $this->middleware('auth');
-        $this->middleware('permission:List SWM Landfills', ['only' => ['index', 'getData']]);
-        $this->middleware('permission:View SWM Landfill', ['only' => ['show']]);
-        $this->middleware('permission:Add SWM Landfill', ['only' => ['create', 'store']]);
-        $this->middleware('permission:Edit SWM Landfill', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:Delete SWM Landfill', ['only' => ['destroy']]);
-        $this->middleware('permission:Export SWM Landfills to CSV', ['only' => ['export']]);
-        $this->middleware('permission:View SWM Landfill History', ['only' => ['history']]);
+        $this->middleware('permission:List SW Landfills', ['only' => ['index', 'getData']]);
+        $this->middleware('permission:View SW Landfill', ['only' => ['show']]);
+        $this->middleware('permission:Add SW Landfill', ['only' => ['create', 'store']]);
+        $this->middleware('permission:Edit SW Landfill', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:Delete SW Landfill', ['only' => ['destroy']]);
+        $this->middleware('permission:Export SW Landfills to CSV', ['only' => ['export']]);
+        $this->middleware('permission:View SW Landfill History', ['only' => ['history']]);
         $this->landfillService = $landfillService;
     }
 
     public function index()
     {
-        $page_title = __('SWM Landfills');
+        $page_title = __('SW Landfills');
 
         return view('swm.service-facilities.landfills.index', compact('page_title'));
     }
@@ -41,7 +41,7 @@ class LandfillController extends Controller
 
     public function create()
     {
-        $page_title = __('Add SWM Landfill');
+        $page_title = __('Add SW Landfill');
         $landfill = null;
 
         return view('swm.service-facilities.landfills.create', compact('page_title', 'landfill'));
@@ -51,19 +51,19 @@ class LandfillController extends Controller
     {
         $this->landfillService->storeOrUpdate(null, $request->all());
 
-        return redirect()->route('swm.landfills.index')->with('success', __('SWM landfill created successfully.'));
+        return redirect()->route('swm.landfills.index')->with('success', __('SW landfill created successfully.'));
     }
 
     public function show(Landfill $landfill)
     {
-        $page_title = __('SWM Landfill Details');
+        $page_title = __('SW Landfill Details');
 
         return view('swm.service-facilities.landfills.show', compact('page_title', 'landfill'));
     }
 
     public function edit(Landfill $landfill)
     {
-        $page_title = __('Edit SWM Landfill');
+        $page_title = __('Edit SW Landfill');
 
         return view('swm.service-facilities.landfills.edit', compact('page_title', 'landfill'));
     }
@@ -72,25 +72,25 @@ class LandfillController extends Controller
     {
         $this->landfillService->storeOrUpdate((int) $landfill->id, $request->all());
 
-        return redirect()->route('swm.landfills.index')->with('success', __('SWM landfill updated successfully.'));
+        return redirect()->route('swm.landfills.index')->with('success', __('SW landfill updated successfully.'));
     }
 
     public function destroy(Landfill $landfill)
     {
         if (Sts::withTrashed()->where('destination_landfill_id', $landfill->id)->exists()) {
-            return redirect()->route('swm.landfills.index')->with('error', __('Cannot delete SWM landfill that is set as destination for one or more STS records.'));
+            return redirect()->route('swm.landfills.index')->with('error', __('Cannot delete SW landfill that is set as destination for one or more STS records.'));
         }
         if (Vehicle::query()->where('dumping_landfill_id', $landfill->id)->exists()) {
-            return redirect()->route('swm.landfills.index')->with('error', __('Cannot delete SWM landfill that is set as dumping place for one or more vehicles.'));
+            return redirect()->route('swm.landfills.index')->with('error', __('Cannot delete SW landfill that is set as dumping place for one or more vehicles.'));
         }
         $landfill->delete();
 
-        return redirect()->route('swm.landfills.index')->with('success', __('SWM landfill deleted successfully.'));
+        return redirect()->route('swm.landfills.index')->with('success', __('SW landfill deleted successfully.'));
     }
 
     public function history(Landfill $landfill)
     {
-        $page_title = __('SWM Landfill History');
+        $page_title = __('SW Landfill History');
 
         return view('swm.service-facilities.landfills.history', compact('page_title', 'landfill'));
     }

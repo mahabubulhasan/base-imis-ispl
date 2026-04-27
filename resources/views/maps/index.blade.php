@@ -10117,13 +10117,13 @@ $.ajax({
                                          kk = 'Notes';
                                     }
                                     else if (k == 'swm_customer_id') {
-                                         kk = 'SWM Customer ID';
+                                         kk = 'SW Customer ID';
                                     }
                                     else if (k == 'disease_type') {
                                          kk = 'Disease';
                                     }
                                     else if (k == 'last_payment_date') {
-                                         kk = 'SWM Customer ID';
+                                         kk = 'SW Customer ID';
                                     }
                                     else if (k == 'treatmentplant_type') {
                                          kk = 'Treatment Plant';
@@ -11363,7 +11363,7 @@ $.ajax({
                     'water_samples_layer' : '{{ __("Water Samples") }}',
                     'toilets_layer': '{{ __("Toilets PTCT") }}',
                     'buildings_layer': '{{ __("Buildings") }}',
-                    'buildings_swm_payment_status_layer' : '{{ __("SWM ISS") }}',
+                    'buildings_swm_payment_status_layer' : '{{ __("SW ISS") }}',
                     'containments_layer' : '{{ __("Containment") }}',
                     'buildings_layer' : '{{ __("Buildings") }}',
                     'low_income_communities_layer': '{{ __("Low Income Community") }}',
@@ -11558,7 +11558,7 @@ $.ajax({
                     'watersupply_pipe_code':'Water Supply Pipe Line Code',
                     'well_presence_status':'Well in Premises',
                     'distance_from_well':'Distance of Well from Closest Containment (m)',
-                    'swm_customer_id':'SWM Customer ID',
+                    'swm_customer_id':'SW Customer ID',
                     'toilet_status':'Presence of Toilet',
                     'toilet_count':'Number of Toilets',
                     'household_with_private_toilet':'Households with Private Toilet',

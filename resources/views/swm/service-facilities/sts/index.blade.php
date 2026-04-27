@@ -12,10 +12,10 @@
 @include('layouts.components.error-alert')
 <div class="card">
     <div class="card-header">
-        @can('Add SWM STS')
-        <a href="{{ action('Swm\StsController@create') }}" class="btn btn-info">{{ __('Add SWM STS') }}</a>
+        @can('Add SW STS')
+        <a href="{{ action('Swm\StsController@create') }}" class="btn btn-info">{{ __('Add SW STS') }}</a>
         @endcan
-        @can('Export SWM STS to CSV')
+        @can('Export SW STS to CSV')
         <a href="#" id="export" class="btn btn-info">{{ __('Export to CSV') }}</a>
         @endcan
         <a href="#" class="btn btn-info float-right" id="headingOne" type="button" data-toggle="collapse"

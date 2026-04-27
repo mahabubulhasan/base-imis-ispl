@@ -48,7 +48,7 @@ class MunicipalityExecutiveSeeder extends Seeder
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Roads', 'Sewers', 'WaterSupply Network', 'Drain'])->whereNotIn('type', ['Add', 'Edit', 'Delete', 'Import', 'History']));
 
                     //For Payment ISS module
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Swm Service Payment', 'Property Tax Collection ISS', 'Water Supply ISS'])
+                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Sw Service Payment', 'Property Tax Collection ISS', 'Water Supply ISS'])
                     ->whereIn('type', ['List', 'Export']));
 
                     //For Public Health Module

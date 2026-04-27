@@ -13,6 +13,7 @@ use Venturecraft\Revisionable\RevisionableTrait;
 use App\Models\BuildingInfo\SanitationSystem;
 
 use App\Models\LayerInfo\Lic;
+use App\Models\BuildingInfo\Household;
 class Building extends Model
 {
     use SoftDeletes;
@@ -22,6 +23,7 @@ class Building extends Model
     protected $revisionCreationsEnabled = true;
     protected $table = 'building_info.buildings';
     protected $primaryKey = 'bin';
+    protected $keyType = 'string';
     public $incrementing = false;
     protected $fillable = ["ward","road_code", "sewer_code","drain_code"];
     protected $with =['StructureType', 'FunctionalUse','SanitationSystem','Owners','Lic'];
@@ -108,6 +110,11 @@ class Building extends Model
 
     public function Lic(){
         return $this->belongsTo(Lic::class,'lic_id','id');
+    }
+
+    public function households()
+    {
+        return $this->hasMany(Household::class, 'bin', 'bin');
     }
 
 

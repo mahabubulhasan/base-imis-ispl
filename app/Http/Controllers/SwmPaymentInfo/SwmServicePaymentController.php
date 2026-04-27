@@ -30,9 +30,9 @@ class SwmServicePaymentController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('permission:List SWM Service Payment Collection', ['only' => ['index']]);
-        $this->middleware('permission:Import SWM Service Payment Collection From CSV', ['only' => ['create', 'store']]);
-        $this->middleware('permission:Export SWM Service Payment Collection Info', ['only' => ['export', 'exportunmatched']]);
+        $this->middleware('permission:List SW Service Payment Collection', ['only' => ['index']]);
+        $this->middleware('permission:Import SW Service Payment Collection From CSV', ['only' => ['create', 'store']]);
+        $this->middleware('permission:Export SW Service Payment Collection Info', ['only' => ['export', 'exportunmatched']]);
 
     }
     /**
@@ -162,7 +162,7 @@ class SwmServicePaymentController extends Controller
                     $import = new SwmImport();
                     $import->import($location.$filename);
 
-                    $message = __('Successfully Imported SWM Service Payments From CSV.');
+                    $message = __('Successfully Imported SW Service Payments From CSV.');
                     \DB::statement("select swm_info.fnc_swmpaymentstatus()");
 
                     \DB::statement('select swm_info.fnc_updonimprt_gridnward_swm()');
@@ -193,7 +193,7 @@ class SwmServicePaymentController extends Controller
         $tax_code = $_GET['tax_code'] ?? null;
 
         $columns = [
-            __('SWM Customer ID'),
+            __('SW Customer ID'),
             __('BIN'),
             __('Tax Code'),
             __('Ward'),
@@ -257,7 +257,7 @@ class SwmServicePaymentController extends Controller
     public function exportunmatched()
     {
         $columns = [
-            __('SWM Customer ID'),
+            __('SW Customer ID'),
             __('Customer Name'),
             __('Customer Contact'),
             __('Last Payment date')

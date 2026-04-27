@@ -43,19 +43,19 @@ class LandfillService
             ->addColumn('action', function ($model) {
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['swm.landfills.destroy', $model->id]]);
 
-                if (Auth::user()->can('Edit SWM Landfill')) {
+                if (Auth::user()->can('Edit SW Landfill')) {
                     $content .= '<a title="'.__('Edit').'" href="'.action('Swm\LandfillController@edit', [$model->id]).'" class="btn btn-info btn-sm mb-1"><i class="fa fa-edit"></i></a> ';
                 }
 
-                if (Auth::user()->can('View SWM Landfill')) {
+                if (Auth::user()->can('View SW Landfill')) {
                     $content .= '<a title="'.__('Detail').'" href="'.action('Swm\LandfillController@show', [$model->id]).'" class="btn btn-info btn-sm mb-1"><i class="fa fa-list"></i></a> ';
                 }
 
-                if (Auth::user()->can('View SWM Landfill History')) {
+                if (Auth::user()->can('View SW Landfill History')) {
                     $content .= '<a title="'.__('History').'" href="'.action('Swm\LandfillController@history', [$model->id]).'" class="btn btn-info btn-sm mb-1"><i class="fa fa-history"></i></a> ';
                 }
 
-                if (Auth::user()->can('Delete SWM Landfill')) {
+                if (Auth::user()->can('Delete SW Landfill')) {
                     $content .= '<a href="#" title="'.__('Delete').'" class="delete btn btn-danger btn-sm mb-1"><i class="fa fa-trash"></i></a> ';
                 }
 
@@ -134,7 +134,7 @@ class LandfillService
             ->build();
 
         $writer = WriterFactory::create(Type::CSV);
-        $writer->openToBrowser('SWM Landfills.csv')
+        $writer->openToBrowser('SW Landfills.csv')
             ->addRowWithStyle($columns, $style);
 
         $query->orderBy('id')->chunk(5000, function ($rows) use ($writer) {

@@ -104,7 +104,13 @@ class BuildingStructureService
             if ($building->well_presence_status == true) {
                 $building->distance_from_well = $request->distance_from_well ? $request->distance_from_well : null;
             }
-            $building->swm_customer_id = $request->swm_customer_id ? $request->swm_customer_id : null;
+            $selectedHouseholds = collect((array) $request->input('swm_customer_id', []))
+                ->map(fn ($v) => trim((string) $v))
+                ->filter()
+                ->unique()
+                ->values()
+                ->all();
+            $building->swm_customer_id = !empty($selectedHouseholds) ? implode(',', $selectedHouseholds) : null;
             $building->toilet_status = $request->toilet_status;
             // storing house image in folder /public/emptyings/houses
             if ($request->hasFile('house_image')) {
@@ -171,6 +177,8 @@ class BuildingStructureService
                     $this->storeContainmentInfo($flag = 'communal', $type = 'create', $request);
                 }
             }
+            $building->refresh();
+            app(BuildingHouseholdLinkService::class)->syncFromBuilding($building, null, $building->swm_customer_id);
             DB::commit();
             return redirect('building-info/buildings')->with('success', __("Building created successfully"));
         } catch (\Exception $e) {
@@ -403,6 +411,7 @@ class BuildingStructureService
             // settting error flag as no error initially
             $err = "no_error";
             $building = Building::find($id);
+            $previousHouseholdCsv = $building->swm_customer_id;
             $request->bin = $id;
             // if main building is no (0) then store BIN; else nullify it
             if ($request->main_building == false) {
@@ -481,9 +490,14 @@ class BuildingStructureService
             {
                 $building->distance_from_well = null;
             }
-            $building->swm_customer_id = $request->swm_customer_id ? $request->swm_customer_id : null;
+            $selectedHouseholds = collect((array) $request->input('swm_customer_id', []))
+                ->map(fn ($v) => trim((string) $v))
+                ->filter()
+                ->unique()
+                ->values()
+                ->all();
+            $building->swm_customer_id = !empty($selectedHouseholds) ? implode(',', $selectedHouseholds) : null;
             $building->toilet_status = $request->toilet_status;
-
 
             if ($request->hasFile('geom')) {
                 $building->geom = $this->storeGeomInfo($request, 'building', 'update');
@@ -491,7 +505,6 @@ class BuildingStructureService
             }
             $building->user_id = Auth::id();
             $this->storeOwnerInfo($request, $id);
-
             // toilet_status
             if ($building->toilet_status == true) {
                 $building->toilet_count = $request->toilet_count ? $request->toilet_count : null;
@@ -589,8 +602,8 @@ class BuildingStructureService
                     //  set toilet count null, shared toilet count null, population that uses shared toilet null
                 }
             }
-
             if ($err == 'containment_mismatch') {
+                dd($err);
                 DB::rollback();
                 return Redirect::back()->with('error', __("Sanitation System does not match with existing containment data, please update containment information and try again"));
             } else if ($err == 'false') {
@@ -613,9 +626,12 @@ class BuildingStructureService
             $building->save();
             // store owner
             $this->storeOwnerInfo($request);
+            $building->refresh();
+            app(BuildingHouseholdLinkService::class)->syncFromBuilding($building, $previousHouseholdCsv, $building->swm_customer_id);
             DB::commit();
             return Redirect("building-info/buildings")->with('success', __("Building Information updated successfully"));
         } catch (\Exception $e) {
+            dd($e);
             DB::rollback();
             return Redirect("building-info/buildings")->with('error', __("Failed to update building structure") . $e);
         }
@@ -730,7 +746,7 @@ class BuildingStructureService
             __('Water Supply Pipe Line Code'),
             __('Well in Premises'),
             __('Distance of Well from Closest Containment (m)'),
-            __('SWM Customer ID'),
+            __('SW Customer ID'),
             __('Presence of Toilet'),
             __('Number of Toilets'),
             __('Households with Private Toilet'),

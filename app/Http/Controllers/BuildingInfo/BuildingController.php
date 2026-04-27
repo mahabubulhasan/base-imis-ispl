@@ -11,6 +11,7 @@ use App\Models\BuildingInfo\StructureType;
 use App\Models\BuildingInfo\FunctionalUse;
 use App\Models\BuildingInfo\UseCategory;
 use App\Models\BuildingInfo\Building;
+use App\Models\BuildingInfo\Household;
 use App\Models\BuildingInfo\Owner;
 use App\Models\BuildingInfo\SanitationSystem;
 use App\Models\Fsm\Containment;
@@ -145,6 +146,14 @@ class BuildingController extends Controller
 
         $usecatgsJson = json_encode($use_category_id);
         $waterSupply = WaterSupplys::pluck('code', 'code');
+        $householdOptions = Household::query()
+            ->whereNull('deleted_at')
+            ->orderBy('household_id')
+            ->get(['household_id', 'household_owner_name'])
+            ->mapWithKeys(function ($item) {
+                return [$item->household_id => trim($item->household_id . ' - ' . ($item->household_owner_name ?? ''))];
+            })
+            ->all();
         return view('building-info.buildings.create', compact(
             'page_title',
             'buildingBin',
@@ -168,7 +177,8 @@ class BuildingController extends Controller
             'toiletConnection',
             'defecationPlace',
             'containment_type',
-            'waterSupply'
+            'waterSupply',
+            'householdOptions'
         ));
     }
 
@@ -303,6 +313,21 @@ class BuildingController extends Controller
             }
         }
         $waterSupply = WaterSupplys::pluck('code', 'code');
+        $mappedHouseholdIds = collect(explode(',', (string) ($building->swm_customer_id ?? '')))
+            ->map(fn ($id) => trim((string) $id))
+            ->filter()
+            ->values();
+        $building->swm_customer_id = $mappedHouseholdIds
+            ->unique()
+            ->implode(',');
+        $householdOptions = Household::query()
+            ->whereNull('deleted_at')
+            ->orderBy('household_id')
+            ->get(['household_id', 'household_owner_name'])
+            ->mapWithKeys(function ($item) {
+                return [$item->household_id => trim($item->household_id . ' - ' . ($item->household_owner_name ?? ''))];
+            })
+            ->all();
         return view('building-info.buildings.edit', compact(
             'page_title',
             'building',
@@ -326,6 +351,7 @@ class BuildingController extends Controller
             'toiletConnection',
             'defecationPlace',
             'waterSupply',
+            'householdOptions',
             'drain_status',
             'sewer_status',
             'use_category_id'

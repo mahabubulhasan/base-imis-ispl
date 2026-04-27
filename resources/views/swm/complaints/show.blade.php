@@ -16,7 +16,7 @@
             <div class="form-group row">
                 {!! Form::label('holding_number', __('Holding number'), ['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-sm-3">{!! Form::label(null, $complaint->holding_number, ['class' => 'form-control']) !!}</div>
-                {!! Form::label('customer_id', __('Customer ID'), ['class' => 'col-sm-3 control-label']) !!}
+                {!! Form::label('customer_id', __('Household ID'), ['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-sm-3">{!! Form::label(null, $complaint->customer_id, ['class' => 'form-control']) !!}</div>
             </div>
             <div class="form-group row">

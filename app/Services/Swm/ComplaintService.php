@@ -25,8 +25,8 @@ class ComplaintService
                 if (! empty($data['holding_number'] ?? null)) {
                     $q->where('holding_number', 'ILIKE', '%'.trim((string) $data['holding_number']).'%');
                 }
-                if (! empty($data['customer_id'] ?? null)) {
-                    $q->where('customer_id', 'ILIKE', '%'.trim((string) $data['customer_id']).'%');
+                if (! empty($data['household_id'] ?? null)) {
+                    $q->where('customer_id', 'ILIKE', '%'.trim((string) $data['household_id']).'%');
                 }
                 if (! empty($data['name'] ?? null)) {
                     $q->where('name', 'ILIKE', '%'.trim((string) $data['name']).'%');
@@ -68,22 +68,25 @@ class ComplaintService
 
                 return $map[$model->complaint_status] ?? $model->complaint_status;
             })
+            ->addColumn('household_id', function ($model) {
+                return $model->customer_id;
+            })
             ->addColumn('action', function ($model) {
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['swm.complaints.destroy', $model->id]]);
 
-                if (Auth::user()->can('Edit SWM Complaint')) {
+                if (Auth::user()->can('Edit SW Complaint')) {
                     $content .= '<a title="'.__('Edit').'" href="'.action('Swm\ComplaintController@edit', [$model->id]).'" class="btn btn-info btn-sm mb-1"><i class="fa fa-edit"></i></a> ';
                 }
 
-                if (Auth::user()->can('View SWM Complaint')) {
+                if (Auth::user()->can('View SW Complaint')) {
                     $content .= '<a title="'.__('Detail').'" href="'.action('Swm\ComplaintController@show', [$model->id]).'" class="btn btn-info btn-sm mb-1"><i class="fa fa-list"></i></a> ';
                 }
 
-                if (Auth::user()->can('View SWM Complaint History')) {
+                if (Auth::user()->can('View SW Complaint History')) {
                     $content .= '<a title="'.__('History').'" href="'.action('Swm\ComplaintController@history', [$model->id]).'" class="btn btn-info btn-sm mb-1"><i class="fa fa-history"></i></a> ';
                 }
 
-                if (Auth::user()->can('Delete SWM Complaint')) {
+                if (Auth::user()->can('Delete SW Complaint')) {
                     $content .= '<a href="#" title="'.__('Delete').'" class="delete btn btn-danger btn-sm mb-1"><i class="fa fa-trash"></i></a> ';
                 }
 
@@ -109,7 +112,7 @@ class ComplaintService
         $complaint->complaint_id = $data['complaint_id'] ?? null;
         $complaint->date_time = isset($data['date_time']) ? Carbon::parse($data['date_time']) : now();
         $complaint->holding_number = $data['holding_number'] ?? null;
-        $complaint->customer_id = $data['customer_id'] ?? null;
+        $complaint->customer_id = $data['household_id'] ?? null;
         $complaint->name = $data['name'] ?? null;
         $complaint->contact_number = $data['contact_number'] ?? null;
         $complaint->complaint_type = $data['complaint_type'] ?? null;
@@ -132,8 +135,8 @@ class ComplaintService
         if (! empty($data['holding_number'] ?? null)) {
             $query->where('holding_number', 'ILIKE', '%'.trim((string) $data['holding_number']).'%');
         }
-        if (! empty($data['customer_id'] ?? null)) {
-            $query->where('customer_id', 'ILIKE', '%'.trim((string) $data['customer_id']).'%');
+        if (! empty($data['household_id'] ?? null)) {
+            $query->where('customer_id', 'ILIKE', '%'.trim((string) $data['household_id']).'%');
         }
         if (! empty($data['name'] ?? null)) {
             $query->where('name', 'ILIKE', '%'.trim((string) $data['name']).'%');
@@ -161,7 +164,7 @@ class ComplaintService
             __('Complaint ID'),
             __('Date and Time'),
             __('Holding Number'),
-            __('Customer ID'),
+            __('Household ID'),
             __('Name'),
             __('Contact Number'),
             __('Complaint Type'),
@@ -182,7 +185,7 @@ class ComplaintService
             ->build();
 
         $writer = WriterFactory::create(Type::CSV);
-        $writer->openToBrowser('SWM Complaints.csv')
+        $writer->openToBrowser('SW Complaints.csv')
             ->addRowWithStyle($columns, $style);
 
         $query->orderBy('id')->chunk(5000, function ($rows) use ($writer, $typeMap, $throughMap, $statusMap) {

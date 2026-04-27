@@ -25,19 +25,19 @@ class WorkTypeService
             ->addColumn('action', function ($model) {
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['swm.work-types.destroy', $model->id]]);
 
-                if (Auth::user()->can('Edit SWM Work Type')) {
+                if (Auth::user()->can('Edit SW Work Type')) {
                     $content .= '<a title="'.__('Edit').'" href="'.action('Swm\WorkTypeController@edit', [$model->id]).'" class="btn btn-info btn-sm mb-1"><i class="fa fa-edit"></i></a> ';
                 }
 
-                if (Auth::user()->can('View SWM Work Type')) {
+                if (Auth::user()->can('View SW Work Type')) {
                     $content .= '<a title="'.__('Detail').'" href="'.action('Swm\WorkTypeController@show', [$model->id]).'" class="btn btn-info btn-sm mb-1"><i class="fa fa-list"></i></a> ';
                 }
 
-                if (Auth::user()->can('View SWM Work Type History')) {
+                if (Auth::user()->can('View SW Work Type History')) {
                     $content .= '<a title="'.__('History').'" href="'.action('Swm\WorkTypeController@history', [$model->id]).'" class="btn btn-info btn-sm mb-1"><i class="fa fa-history"></i></a> ';
                 }
 
-                if (Auth::user()->can('Delete SWM Work Type')) {
+                if (Auth::user()->can('Delete SW Work Type')) {
                     $content .= '<a href="#" title="'.__('Delete').'" class="delete btn btn-danger btn-sm mb-1"><i class="fa fa-trash"></i></a> ';
                 }
 
@@ -88,7 +88,7 @@ class WorkTypeService
             ->build();
 
         $writer = WriterFactory::create(Type::CSV);
-        $writer->openToBrowser('SWM Work Types.csv')
+        $writer->openToBrowser('SW Work Types.csv')
             ->addRowWithStyle($columns, $style);
 
         $query->chunk(5000, function ($rows) use ($writer) {

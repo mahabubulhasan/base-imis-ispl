@@ -18,13 +18,13 @@ class ComplaintController extends Controller
         protected BillCollectionPaymentService $billCollectionPaymentService
     ) {
         $this->middleware('auth');
-        $this->middleware('permission:List SWM Complaints', ['only' => ['index', 'getData', 'holdingsSearch', 'customersSearch']]);
-        $this->middleware('permission:View SWM Complaint', ['only' => ['show']]);
-        $this->middleware('permission:Add SWM Complaint', ['only' => ['create', 'store']]);
-        $this->middleware('permission:Edit SWM Complaint', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:Delete SWM Complaint', ['only' => ['destroy']]);
-        $this->middleware('permission:Export SWM Complaints to CSV', ['only' => ['export']]);
-        $this->middleware('permission:View SWM Complaint History', ['only' => ['history']]);
+        $this->middleware('permission:List SW Complaints', ['only' => ['index', 'getData', 'holdingsSearch', 'customersSearch']]);
+        $this->middleware('permission:View SW Complaint', ['only' => ['show']]);
+        $this->middleware('permission:Add SW Complaint', ['only' => ['create', 'store']]);
+        $this->middleware('permission:Edit SW Complaint', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:Delete SW Complaint', ['only' => ['destroy']]);
+        $this->middleware('permission:Export SW Complaints to CSV', ['only' => ['export']]);
+        $this->middleware('permission:View SW Complaint History', ['only' => ['history']]);
         $this->complaintService = $complaintService;
     }
 
@@ -39,7 +39,7 @@ class ComplaintController extends Controller
 
     public function index()
     {
-        $page_title = __('SWM Complaints');
+        $page_title = __('SW Complaints');
         $opts = $this->selectOptions();
 
         return view('swm.complaints.index', array_merge(compact('page_title'), $opts));
@@ -52,7 +52,7 @@ class ComplaintController extends Controller
 
     public function create()
     {
-        $page_title = __('Add SWM Complaint');
+        $page_title = __('Add SW Complaint');
         $complaint = null;
         $opts = $this->selectOptions();
 
@@ -63,14 +63,14 @@ class ComplaintController extends Controller
     {
         $this->complaintService->storeOrUpdate(null, $request->validated());
 
-        return redirect()->route('swm.complaints.index')->with('success', __('SWM complaint created successfully.'));
+        return redirect()->route('swm.complaints.index')->with('success', __('SW complaint created successfully.'));
     }
 
     public function show($id)
     {
         $complaint = Complaint::find($id);
         if ($complaint) {
-            $page_title = __('SWM Complaint Details');
+            $page_title = __('SW Complaint Details');
 
             return view('swm.complaints.show', compact('page_title', 'complaint'));
         }
@@ -82,7 +82,7 @@ class ComplaintController extends Controller
     {
         $complaint = Complaint::find($id);
         if ($complaint) {
-            $page_title = __('Edit SWM Complaint');
+            $page_title = __('Edit SW Complaint');
             $opts = $this->selectOptions();
 
             return view('swm.complaints.edit', array_merge(compact('page_title', 'complaint'), $opts));
@@ -97,10 +97,10 @@ class ComplaintController extends Controller
         if ($complaint) {
             $this->complaintService->storeOrUpdate((int) $complaint->id, $request->validated());
 
-            return redirect()->route('swm.complaints.index')->with('success', __('SWM complaint updated successfully.'));
+            return redirect()->route('swm.complaints.index')->with('success', __('SW complaint updated successfully.'));
         }
 
-        return redirect()->route('swm.complaints.index')->with('error', __('Failed to update SWM complaint.'));
+        return redirect()->route('swm.complaints.index')->with('error', __('Failed to update SW complaint.'));
     }
 
     public function destroy($id)
@@ -109,17 +109,17 @@ class ComplaintController extends Controller
         if ($complaint) {
             $complaint->delete();
 
-            return redirect()->route('swm.complaints.index')->with('success', __('SWM complaint deleted successfully.'));
+            return redirect()->route('swm.complaints.index')->with('success', __('SW complaint deleted successfully.'));
         }
 
-        return redirect()->route('swm.complaints.index')->with('error', __('Failed to delete SWM complaint.'));
+        return redirect()->route('swm.complaints.index')->with('error', __('Failed to delete SW complaint.'));
     }
 
     public function history($id)
     {
         $complaint = Complaint::find($id);
         if ($complaint) {
-            $page_title = __('SWM Complaint History');
+            $page_title = __('SW Complaint History');
 
             return view('swm.complaints.history', compact('page_title', 'complaint'));
         }
@@ -174,9 +174,9 @@ class ComplaintController extends Controller
                 continue;
             }
             $results[] = [
-                'id' => (string) ($row['customer_id'] ?? ''),
+                'id' => (string) ($row['household_id'] ?? ''),
                 'text' => (string) ($row['text'] ?? ''),
-                'customer_id' => (string) ($row['customer_id'] ?? ''),
+                'household_id' => (string) ($row['household_id'] ?? ''),
                 'holding_number' => (string) ($row['holding_number'] ?? ''),
             ];
         }

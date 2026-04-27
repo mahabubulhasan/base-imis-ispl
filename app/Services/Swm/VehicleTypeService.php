@@ -25,19 +25,19 @@ class VehicleTypeService
             ->addColumn('action', function ($model) {
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['swm.vehicle-types.destroy', $model->id]]);
 
-                if (Auth::user()->can('Edit SWM Vehicle Type')) {
+                if (Auth::user()->can('Edit SW Vehicle Type')) {
                     $content .= '<a title="'.__('Edit').'" href="'.action('Swm\VehicleTypeController@edit', [$model->id]).'" class="btn btn-info btn-sm mb-1"><i class="fa fa-edit"></i></a> ';
                 }
 
-                if (Auth::user()->can('View SWM Vehicle Type')) {
+                if (Auth::user()->can('View SW Vehicle Type')) {
                     $content .= '<a title="'.__('Detail').'" href="'.action('Swm\VehicleTypeController@show', [$model->id]).'" class="btn btn-info btn-sm mb-1"><i class="fa fa-list"></i></a> ';
                 }
 
-                if (Auth::user()->can('View SWM Vehicle Type History')) {
+                if (Auth::user()->can('View SW Vehicle Type History')) {
                     $content .= '<a title="'.__('History').'" href="'.action('Swm\VehicleTypeController@history', [$model->id]).'" class="btn btn-info btn-sm mb-1"><i class="fa fa-history"></i></a> ';
                 }
 
-                if (Auth::user()->can('Delete SWM Vehicle Type')) {
+                if (Auth::user()->can('Delete SW Vehicle Type')) {
                     $content .= '<a href="#" title="'.__('Delete').'" class="delete btn btn-danger btn-sm mb-1"><i class="fa fa-trash"></i></a> ';
                 }
 
@@ -89,7 +89,7 @@ class VehicleTypeService
             ->build();
 
         $writer = WriterFactory::create(Type::CSV);
-        $writer->openToBrowser('SWM Vehicle Types.csv')
+        $writer->openToBrowser('SW Vehicle Types.csv')
             ->addRowWithStyle($columns, $style);
 
         $query->chunk(5000, function ($rows) use ($writer) {

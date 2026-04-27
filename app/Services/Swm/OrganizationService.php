@@ -38,19 +38,19 @@ class OrganizationService
             ->addColumn('action', function ($model) {
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['swm.organizations.destroy', $model->id]]);
 
-                if (Auth::user()->can('Edit SWM Organization')) {
+                if (Auth::user()->can('Edit SW Organization')) {
                     $content .= '<a title="'.__('Edit').'" href="'.action('Swm\OrganizationController@edit', [$model->id]).'" class="btn btn-info btn-sm mb-1"><i class="fa fa-edit"></i></a> ';
                 }
 
-                if (Auth::user()->can('View SWM Organization')) {
+                if (Auth::user()->can('View SW Organization')) {
                     $content .= '<a title="'.__('Detail').'" href="'.action('Swm\OrganizationController@show', [$model->id]).'" class="btn btn-info btn-sm mb-1"><i class="fa fa-list"></i></a> ';
                 }
 
-                if (Auth::user()->can('View SWM Organization History')) {
+                if (Auth::user()->can('View SW Organization History')) {
                     $content .= '<a title="'.__('History').'" href="'.action('Swm\OrganizationController@history', [$model->id]).'" class="btn btn-info btn-sm mb-1"><i class="fa fa-history"></i></a> ';
                 }
 
-                if (Auth::user()->can('Delete SWM Organization')) {
+                if (Auth::user()->can('Delete SW Organization')) {
                     $content .= '<a href="#" title="'.__('Delete').'" class="delete btn btn-danger btn-sm mb-1"><i class="fa fa-trash"></i></a> ';
                 }
 
@@ -130,7 +130,7 @@ class OrganizationService
             ->build();
 
         $writer = WriterFactory::create(Type::CSV);
-        $writer->openToBrowser('SWM Organizations.csv')
+        $writer->openToBrowser('SW Organizations.csv')
             ->addRowWithStyle($columns, $style);
 
         $query->chunk(5000, function ($rows) use ($writer) {

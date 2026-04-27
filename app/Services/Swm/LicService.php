@@ -37,19 +37,19 @@ class LicService
             ->addColumn('action', function ($model) {
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['swm.lic.destroy', $model->id]]);
 
-                if (Auth::user()->can('Edit SWM LIC')) {
+                if (Auth::user()->can('Edit SW LIC')) {
                     $content .= '<a title="'.__('Edit').'" href="'.action('Swm\LicController@edit', [$model->id]).'" class="btn btn-info btn-sm mb-1"><i class="fa fa-edit"></i></a> ';
                 }
 
-                if (Auth::user()->can('View SWM LIC')) {
+                if (Auth::user()->can('View SW LIC')) {
                     $content .= '<a title="'.__('Detail').'" href="'.action('Swm\LicController@show', [$model->id]).'" class="btn btn-info btn-sm mb-1"><i class="fa fa-list"></i></a> ';
                 }
 
-                if (Auth::user()->can('View SWM LIC History')) {
+                if (Auth::user()->can('View SW LIC History')) {
                     $content .= '<a title="'.__('History').'" href="'.action('Swm\LicController@history', [$model->id]).'" class="btn btn-info btn-sm mb-1"><i class="fa fa-history"></i></a> ';
                 }
 
-                if (Auth::user()->can('Delete SWM LIC')) {
+                if (Auth::user()->can('Delete SW LIC')) {
                     $content .= '<a href="#" title="'.__('Delete').'" class="delete btn btn-danger btn-sm mb-1"><i class="fa fa-trash"></i></a> ';
                 }
 
@@ -117,7 +117,7 @@ class LicService
             ->build();
 
         $writer = WriterFactory::create(Type::CSV);
-        $writer->openToBrowser('SWM LIC.csv')
+        $writer->openToBrowser('SW LIC.csv')
             ->addRowWithStyle($columns, $style);
 
         $query->orderBy('id')->chunk(5000, function ($rows) use ($writer) {
