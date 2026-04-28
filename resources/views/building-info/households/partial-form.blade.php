@@ -52,7 +52,7 @@
         </div>
     </div>
     <div class="form-group row">
-        {!! Form::label('waste_charge', __('Waste collection fee') . ' (' . __('BDT') . '/' . __('Month') . ')', ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('waste_charge', __('Waste Collection Fee') . ' (' . __('Taka') . '/' . __('Month') . ')', ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">{!! Form::number('waste_charge', null, ['class' => 'form-control', 'step' => '0.01', 'min' => '0']) !!}</div>
     </div>
     <div class="form-group row">
@@ -64,7 +64,7 @@
         <div class="col-sm-3">{!! Form::date('using_this_service_since', optional(old('using_this_service_since', optional($household)->using_this_service_since))->format('Y-m-d'), ['class' => 'form-control']) !!}</div>
     </div>
     <div class="form-group row">
-        {!! Form::label('daily_waste_volume', __('Total volume of the waste collected (daily average approx.)'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('daily_waste_volume', __('Avg Waste Collected') . ' (' . __('Kg') . '/' . __('Day') . ')', ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">{!! Form::number('daily_waste_volume', null, ['class' => 'form-control', 'step' => '0.01', 'min' => '0']) !!}</div>
     </div>
     
@@ -73,25 +73,25 @@
         <div class="col-sm-3">{!! Form::select('van_puller_id', $vanPullers, null, ['class' => 'form-control chosen-select', 'placeholder' => __('Select Van Puller')]) !!}</div>
     </div>
     <div class="form-group row">
-        {!! Form::label('is_owner', __('Building owner (Yes/No)'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('is_owner', __('Building Owner') . ' (' . __('Yes') . '/' . __('No') . ')', ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3 pt-2"><input type="hidden" name="is_owner" value="0">{!! Form::checkbox('is_owner', '1', (bool) old('is_owner', optional($household)->is_owner), ['id' => 'is_owner']) !!}</div>
     </div>
     <div class="form-group row" id="waste-bin-provided-row">
-        {!! Form::label('waste_bin_provided', __('Waste bin Provided (Y/N)'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('waste_bin_provided', __('Waste Bin Provided') . ' (' . __('Yes') . '/' . __('No') . ')', ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3 pt-2"><input type="hidden" name="waste_bin_provided" value="0">{!! Form::checkbox('waste_bin_provided', '1', (bool) old('waste_bin_provided', optional($household)->waste_bin_provided), ['id' => 'waste_bin_provided']) !!}</div>
     </div>
     <div id="waste-bin-fields">
         <div class="form-group row">
-            {!! Form::label('number_of_waste_bins', __('Number of waste bins'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('number_of_waste_bins', __('Number of Waste Bins'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">{!! Form::number('number_of_waste_bins', old('number_of_waste_bins', optional(optional($household)->wasteBin)->number_of_waste_bins), ['class' => 'form-control', 'min' => 1]) !!}</div>
         </div>
         <div class="form-group row">
-            {!! Form::label('total_capacity_kg', __('Total capacity of waste bins (kg)'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('total_capacity_kg', __('Total Capacity of Waste Bins') . ' (' . __('Kg') . ')', ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">{!! Form::number('total_capacity_kg', old('total_capacity_kg', optional(optional($household)->wasteBin)->total_capacity_kg), ['class' => 'form-control', 'step' => '0.01', 'min' => 0]) !!}</div>
         </div>
     </div>
     <div class="form-group row">
-        {!! Form::label('is_lic', __('LIC (Y/N)'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('is_lic', __('LIC') . ' (' . __('Yes') . '/' . __('No') . ')', ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3 pt-2"><input type="hidden" name="is_lic" value="0">{!! Form::checkbox('is_lic', '1', (bool) old('is_lic', optional($household)->is_lic), ['id' => 'is_lic']) !!}</div>
     </div>
     <div class="form-group row" id="lic-id-row">
@@ -99,7 +99,7 @@
         <div class="col-sm-3">{!! Form::select('lic_id', $licOptions, null, ['class' => 'form-control chosen-select', 'id' => 'lic_id', 'placeholder' => __('Select LIC')]) !!}</div>
     </div>
     <div class="form-group row">
-        {!! Form::label('segregation_practiced', __('Segregation Practiced (Y/N)'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('segregation_practiced', __('Segregation Practiced') . ' (' . __('Yes') . '/' . __('No') . ')', ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3 pt-2"><input type="hidden" name="segregation_practiced" value="0">{!! Form::checkbox('segregation_practiced', '1', (bool) old('segregation_practiced', optional($household)->segregation_practiced), ['id' => 'segregation_practiced']) !!}</div>
     </div>
     <div class="form-group row">

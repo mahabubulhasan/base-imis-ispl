@@ -67,7 +67,7 @@
                         <th>{{ __('Holding Number') }}</th>
                         <th>{{ __('Household ID') }}</th>
                         <th>{{ __('Household Owner Name') }}</th>
-                        <th>{{ __('Amount (BDT)') }}</th>
+                        <th>{{ __('Amount') }} ({{ __('Taka') }})</th>
                         <th>{{ __('Payment For Month') }}</th>
                         <th>{{ __('Payment Time') }}</th>
                         <th>{{ __('Payment Method') }}</th>

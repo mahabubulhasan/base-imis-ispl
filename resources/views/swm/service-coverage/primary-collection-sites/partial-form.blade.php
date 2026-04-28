@@ -107,14 +107,14 @@
     </div>
 
     <div class="form-group row">
-        {!! Form::label('is_owner', __('Owner (Y/N)'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('is_owner', __('Owner') . ' (' . __('Yes') . '/' . __('No') . ')', ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3 pt-2">
             <input type="hidden" name="is_owner" value="0">
             {!! Form::checkbox('is_owner', '1', (bool) old('is_owner', optional($primaryCollectionSite)->is_owner), ['id' => 'is_owner']) !!}
         </div>
     </div>
     <div class="form-group row">
-        {!! Form::label('is_lic', __('LIC (Y/N)'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('is_lic', __('LIC') . ' (' . __('Yes') . '/' . __('No') . ')', ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3 pt-2">
             <input type="hidden" name="is_lic" value="0">
             {!! Form::checkbox('is_lic', '1', (bool) old('is_lic', optional($primaryCollectionSite)->is_lic), ['id' => 'is_lic']) !!}
@@ -127,14 +127,14 @@
         </div>
     </div>
     <div class="form-group row">
-        {!! Form::label('segregation_practiced', __('Segregation Practiced (Y/N)'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('segregation_practiced', __('Segregation Practiced') . ' (' . __('Yes') . '/' . __('No') . ')', ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3 pt-2">
             <input type="hidden" name="segregation_practiced" value="0">
             {!! Form::checkbox('segregation_practiced', '1', (bool) old('segregation_practiced', optional($primaryCollectionSite)->segregation_practiced), ['id' => 'segregation_practiced']) !!}
         </div>
     </div>
     <div class="form-group row">
-        {!! Form::label('waste_bin_provided', __('Waste bin Provided (Y/N)'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('waste_bin_provided', __('Waste bin Provided') . ' (' . __('Yes') . '/' . __('No') . ')', ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3 pt-2">
             <input type="hidden" name="waste_bin_provided" value="0">
             {!! Form::checkbox('waste_bin_provided', '1', (bool) old('waste_bin_provided', optional($primaryCollectionSite)->waste_bin_provided), ['id' => 'waste_bin_provided']) !!}

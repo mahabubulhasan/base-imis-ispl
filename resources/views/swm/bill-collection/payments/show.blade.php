@@ -16,7 +16,7 @@
             <dd class="col-sm-9">{{ $payment->customer_id }}</dd>
             <dt class="col-sm-3">{{ __('Household Owner Name') }}</dt>
             <dd class="col-sm-9">{{ optional($payment->primaryCollectionSite)->household_owner_name }}</dd>
-            <dt class="col-sm-3">{{ __('Amount (BDT)') }}</dt>
+            <dt class="col-sm-3">{{ __('Amount') }} ({{ __('Taka') }})</dt>
             <dd class="col-sm-9">{{ number_format((float) $payment->amount, 2) }}</dd>
             <dt class="col-sm-3">{{ __('Payment For Month') }}</dt>
             <dd class="col-sm-9">{{ $payment->payment_for_month?->format('M, Y') }}</dd>

@@ -38,7 +38,7 @@
         <div class="info-box">
             <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice-dollar"></i></span>
             <div class="info-box-content">
-                <span class="info-box-text">{{ __('Total due') }} ({{ __('BDT') }})</span>
+                <span class="info-box-text">{{ __('Total due') }} ({{ __('Taka') }})</span>
                 <span class="info-box-number" id="summary-total-due">—</span>
             </div>
         </div>
@@ -47,7 +47,7 @@
         <div class="info-box">
             <span class="info-box-icon bg-success"><i class="fas fa-coins"></i></span>
             <div class="info-box-content">
-                <span class="info-box-text">{{ __('Total revenue collected') }} ({{ __('BDT') }})</span>
+                <span class="info-box-text">{{ __('Total revenue collected') }} ({{ __('Taka') }})</span>
                 <span class="info-box-number" id="summary-revenue-ytd">—</span>
             </div>
         </div>
@@ -115,8 +115,8 @@
                         <th>{{ __('Holding Number') }}</th>
                         <th>{{ __('Household ID') }}</th>
                         <th>{{ __('Months with due') }}</th>
-                        <th>{{ __('Total due') }} ({{ __('BDT') }})</th>
-                        <th>{{ __('Revenue collected') }} ({{ __('BDT') }})</th>
+                        <th>{{ __('Total due') }} ({{ __('Taka') }})</th>
+                        <th>{{ __('Revenue collected') }} ({{ __('Taka') }})</th>
                     </tr>
                 </thead>
             </table>
