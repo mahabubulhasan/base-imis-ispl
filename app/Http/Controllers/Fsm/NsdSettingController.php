@@ -158,8 +158,8 @@ class NsdSettingController extends Controller
 
         // Save the data if both checks pass
         $nsd->nsd_username = $data['nsd_username'];
-        if (!empty($data['nsd_password'])) {
-            $nsd->nsd_password = Crypt::encrypt($data['nsd_password']);
+        if ($request->filled('nsd_password')) {
+            $nsd->nsd_password = Crypt::encrypt($request->get('nsd_password'));
         }
         $nsd->city = $data['city'];
         $nsd->api_post_url = $data['api_post_url'];
