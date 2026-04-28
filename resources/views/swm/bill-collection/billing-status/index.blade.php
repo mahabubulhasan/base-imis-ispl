@@ -115,7 +115,8 @@
                         <th>{{ __('Holding Number') }}</th>
                         <th>{{ __('Household ID') }}</th>
                         <th>{{ __('Months with due') }}</th>
-                        <th>{{ __('Total due') }} ({{ __('Taka') }})</th>
+                        <th>{{ __('Due in selected months') }} ({{ __('Taka') }})</th>
+                        <th>{{ __('Cumilative total due') }} ({{ __('Taka') }})</th>
                         <th>{{ __('Revenue collected') }} ({{ __('Taka') }})</th>
                     </tr>
                 </thead>
@@ -244,6 +245,7 @@ $(function() {
             { data: 'holding_number', name: 'holding_number', searchable: false, orderable: true },
             { data: 'household_id', name: 'household_id', searchable: false, orderable: true },
             { data: 'due_months_of', name: 'due_months_of', searchable: false, orderable: false },
+            { data: 'due_in_selected_months', name: 'due_in_selected_months', searchable: false, orderable: false },
             { data: 'total_due_amount', name: 'total_due_amount', searchable: false, orderable: false },
             { data: 'revenue_collected', name: 'revenue_collected', searchable: false, orderable: true }
         ],

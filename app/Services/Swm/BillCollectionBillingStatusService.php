@@ -107,6 +107,9 @@ class BillCollectionBillingStatusService
             ->addColumn('due_months_of', function (Household $site) use ($monthFrom, $monthTo) {
                 return $this->monthsWithMarginalDueLabelsInRange($site, $monthFrom, $monthTo);
             })
+            ->addColumn('due_in_selected_months', function (Household $site) use ($monthFrom, $monthTo) {
+                return $this->formatMoney($this->sumMarginalDueInRange($site, $monthFrom, $monthTo));
+            })
             ->addColumn('total_due_amount', function (Household $site) use ($monthTo) {
                 return $this->formatMoney($this->dueThroughMonth($site, $monthTo));
             })
@@ -159,6 +162,26 @@ class BillCollectionBillingStatusService
         }
 
         return implode(', ', $labels);
+    }
+
+    protected function sumMarginalDueInRange(Household $site, Carbon $rangeStart, Carbon $rangeEnd): string
+    {
+        $rangeStart = $rangeStart->copy()->startOfMonth();
+        $rangeEnd = $rangeEnd->copy()->startOfMonth();
+        if ($rangeStart->gt($rangeEnd)) {
+            return '0.00';
+        }
+
+        $sum = '0.00';
+        $m = $rangeStart->copy();
+        $guard = 0;
+        while ($m->lte($rangeEnd) && $guard < 240) {
+            $guard++;
+            $sum = bcadd($sum, $this->billCollectionPaymentService->marginalDueForMonth($site, $m), 2);
+            $m->addMonth();
+        }
+
+        return $sum;
     }
 
     protected function applyTableFilters(Builder $query, array $data): void
