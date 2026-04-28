@@ -66,9 +66,26 @@
 .bcp-balance-loading-overlay .fa-spinner {
     margin-right: 0.5rem;
 }
+@media (max-width: 767.98px) {
+    .bcp-payment-form-mobile .form-group.row {
+        margin-bottom: 0.85rem;
+    }
+    .bcp-payment-form-mobile .control-label {
+        text-align: left !important;
+        margin-bottom: 0.35rem;
+    }
+    .bcp-payment-form-mobile .col-sm-3,
+    .bcp-payment-form-mobile .col-sm-9 {
+        max-width: 100%;
+        flex: 0 0 100%;
+    }
+    .bcp-payment-form-mobile #balance-panel {
+        min-height: 0;
+    }
+}
 </style>
 @endpush
-<div class="card-body">
+<div class="card-body bcp-payment-form-mobile">
     {!! Form::hidden('household_id', old('household_id', $isEdit ? $payment->household_id : ''), ['id' => 'household_id']) !!}
     {!! Form::hidden('holding_number', old('holding_number', $isEdit ? ($payment->holding_number ?? '') : ''), ['id' => 'holding_number']) !!}
     {!! Form::hidden('household_code', old('household_code', $isEdit ? $payment->customer_id : ''), ['id' => 'household_code']) !!}
@@ -82,7 +99,7 @@
     </div>
 
     <div class="form-group row required">
-        <label class="col-sm-3 control-label" for="customer_site_select">{{ __('Customer / Site') }}</label>
+        <label class="col-sm-3 control-label" for="customer_site_select">{{ __('Household') }}</label>
         <div class="col-sm-9 bcp-payment-field-col">
             <select class="form-control" id="customer_site_select" style="width:100%" @if($initHolding === '') disabled @endif></select>
         </div>
@@ -256,7 +273,7 @@
     });
 
     $('#customer_site_select').select2({
-        placeholder: '{{ __('Select customer') }}',
+        placeholder: '{{ __('Select household') }}',
         allowClear: true,
         ajax: {
             url: customersUrl,

@@ -39,7 +39,7 @@ class ComplaintController extends Controller
 
     public function index()
     {
-        $page_title = __('SW Complaints');
+        $page_title = __('Complaints');
         $opts = $this->selectOptions();
 
         return view('swm.complaints.index', array_merge(compact('page_title'), $opts));
@@ -52,7 +52,7 @@ class ComplaintController extends Controller
 
     public function create()
     {
-        $page_title = __('Add SW Complaint');
+        $page_title = __('Add Complaint');
         $complaint = null;
         $opts = $this->selectOptions();
 
@@ -70,7 +70,7 @@ class ComplaintController extends Controller
     {
         $complaint = Complaint::find($id);
         if ($complaint) {
-            $page_title = __('SW Complaint Details');
+            $page_title = __('Complaint Details');
 
             return view('swm.complaints.show', compact('page_title', 'complaint'));
         }
@@ -82,7 +82,7 @@ class ComplaintController extends Controller
     {
         $complaint = Complaint::find($id);
         if ($complaint) {
-            $page_title = __('Edit SW Complaint');
+            $page_title = __('Edit Complaint');
             $opts = $this->selectOptions();
 
             return view('swm.complaints.edit', array_merge(compact('page_title', 'complaint'), $opts));
@@ -119,7 +119,7 @@ class ComplaintController extends Controller
     {
         $complaint = Complaint::find($id);
         if ($complaint) {
-            $page_title = __('SW Complaint History');
+            $page_title = __('Complaint History');
 
             return view('swm.complaints.history', compact('page_title', 'complaint'));
         }

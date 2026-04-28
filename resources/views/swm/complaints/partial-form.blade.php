@@ -4,8 +4,29 @@
     $initCustomerId = old('household_id', $isEdit ? ($complaint->customer_id ?? '') : '');
     $initDateTime = old('date_time', ($isEdit && $complaint->date_time) ? $complaint->date_time->format('Y-m-d\TH:i') : now()->format('Y-m-d\TH:i'));
 @endphp
-
-<div class="card-body">
+@push('style')
+<style>
+.swm-complaint-form-mobile .select2-container {
+    width: 100% !important;
+    max-width: 100%;
+}
+@media (max-width: 767.98px) {
+    .swm-complaint-form-mobile .form-group.row {
+        margin-bottom: 0.85rem;
+    }
+    .swm-complaint-form-mobile .control-label {
+        text-align: left !important;
+        margin-bottom: 0.35rem;
+    }
+    .swm-complaint-form-mobile .col-sm-3,
+    .swm-complaint-form-mobile .col-sm-9 {
+        max-width: 100%;
+        flex: 0 0 100%;
+    }
+}
+</style>
+@endpush
+<div class="card-body swm-complaint-form-mobile">
     {!! Form::hidden('holding_number', old('holding_number', $initHolding), ['id' => 'holding_number']) !!}
     {!! Form::hidden('household_id', old('household_id', $initCustomerId), ['id' => 'household_id']) !!}
 

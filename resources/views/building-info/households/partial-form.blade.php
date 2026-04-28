@@ -1,4 +1,29 @@
-<div class="card-body">
+@push('style')
+<style>
+.household-form-mobile .chosen-container,
+.household-form-mobile .select2-container {
+    width: 100% !important;
+    max-width: 100%;
+}
+@media (max-width: 767.98px) {
+    .household-form-mobile .form-group.row {
+        margin-bottom: 0.85rem;
+    }
+    .household-form-mobile .control-label {
+        text-align: left !important;
+        margin-bottom: 0.35rem;
+    }
+    .household-form-mobile .col-sm-3 {
+        max-width: 100%;
+        flex: 0 0 100%;
+    }
+    .household-form-mobile .pt-2 {
+        padding-top: 0 !important;
+    }
+}
+</style>
+@endpush
+<div class="card-body household-form-mobile">
     <div class="form-group row required">
         {!! Form::label('household_id', __('Household ID'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">

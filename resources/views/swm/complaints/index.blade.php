@@ -13,7 +13,7 @@
 <div class="card">
     <div class="card-header">
         @can('Add SW Complaint')
-        <a href="{{ route('swm.complaints.create') }}" class="btn btn-info">{{ __('Add SW Complaint') }}</a>
+        <a href="{{ route('swm.complaints.create') }}" class="btn btn-info">{{ __('Add Complaint') }}</a>
         @endcan
         @can('Export SW Complaints to CSV')
         <a href="#" id="export" class="btn btn-info">{{ __('Export to CSV') }}</a>
