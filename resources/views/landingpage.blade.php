@@ -78,7 +78,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
         }
 
         .hero-overlay {
-            background: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.4));
+            background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9));
         }
 
         .login-card {
