@@ -3,16 +3,16 @@
 return [
     'complaint_types' => [
         'waste_not_collected' => 'Waste not collected',
-        'customer_satisfaction' => 'Customer satisfaction',
-        'emergency_collection_required' => 'Emergency collection required',
+        'about_service_provider' => 'About service provider',
+        'emergency_service_required' => 'Emergency service required',
         'waste_bin_condition' => 'Waste bin condition',
         'others' => 'Others',
     ],
     'submitted_through' => [
         'hotline' => 'Hotline',
-        'written_form' => 'Written form',
-        'supervisors_survey' => "Supervisor's survey",
-        'phone_call_to_ci' => 'Phone call to CI',
+        'complaint_form' => 'Complaint form',
+        'survey' => 'Survey',
+        'phone_call' => 'Phone call',
     ],
     'complaint_statuses' => [
         'resolved' => 'Resolved',

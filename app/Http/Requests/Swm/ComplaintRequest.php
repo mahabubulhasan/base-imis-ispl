@@ -29,7 +29,7 @@ class ComplaintRequest extends FormRequest
 
         return [
             'complaint_id' => [
-                'required',
+                'nullable',
                 'string',
                 'max:255',
                 Rule::unique('pgsql.swm.complaints', 'complaint_id')->whereNull('deleted_at')->ignore($id),
@@ -62,7 +62,7 @@ class ComplaintRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'complaint_id' => trim((string) $this->input('complaint_id', '')),
+            'complaint_id' => $this->filled('complaint_id') ? trim((string) $this->input('complaint_id')) : null,
             'holding_number' => $this->filled('holding_number') ? trim((string) $this->input('holding_number')) : null,
             'household_id' => $this->filled('household_id') ? trim((string) $this->input('household_id')) : null,
             'name' => trim((string) $this->input('name', '')),

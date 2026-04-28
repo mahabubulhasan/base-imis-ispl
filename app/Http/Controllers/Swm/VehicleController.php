@@ -96,7 +96,7 @@ class VehicleController extends Controller
 
     public function index()
     {
-        $page_title = __('SW Vehicles');
+        $page_title = __('Vehicles');
         $organizations = Organization::query()->whereNull('deleted_at')->operational()->orderBy('name')->pluck('name', 'id');
         if (Auth::user()->swm_organization_id) {
             $organizations = Organization::query()->whereNull('deleted_at')->where('id', Auth::user()->swm_organization_id)->orderBy('name')->pluck('name', 'id');
@@ -128,7 +128,7 @@ class VehicleController extends Controller
 
     public function create()
     {
-        $page_title = __('Add SW Vehicle');
+        $page_title = __('Add Vehicle');
         $vehicle = null;
         $organizations = $this->organizationOptionsForForms();
         $vehicleTypes = $this->vehicleTypeOptionsForForms();
@@ -156,14 +156,14 @@ class VehicleController extends Controller
     {
         $this->vehicleService->storeOrUpdate(null, $request->all());
 
-        return redirect()->route('swm.vehicles.index')->with('success', __('SW vehicle created successfully.'));
+        return redirect()->route('swm.vehicles.index')->with('success', __('Vehicle created successfully.'));
     }
 
     public function show(Vehicle $vehicle)
     {
         if ($this->vehicleBelongsToScopedOrg($vehicle)) {
             $vehicle->load(['organization', 'vehicleType', 'driver', 'dumpingSts', 'dumpingLandfill']);
-            $page_title = __('SW Vehicle Details');
+            $page_title = __('Vehicle Details');
 
             return view('swm.service-providers.vehicles.show', compact('page_title', 'vehicle'));
         }
@@ -174,7 +174,7 @@ class VehicleController extends Controller
     public function edit(Vehicle $vehicle)
     {
         if ($this->vehicleBelongsToScopedOrg($vehicle)) {
-            $page_title = __('Edit SW Vehicle');
+            $page_title = __('Edit Vehicle');
             $organizations = $this->organizationOptionsForForms();
             $vehicleTypes = $this->vehicleTypeOptionsForForms();
             $stsList = $this->stsOptionsForForms();
@@ -205,10 +205,10 @@ class VehicleController extends Controller
         if ($this->vehicleBelongsToScopedOrg($vehicle)) {
             $this->vehicleService->storeOrUpdate((int) $vehicle->id, $request->all());
 
-            return redirect()->route('swm.vehicles.index')->with('success', __('SW vehicle updated successfully.'));
+            return redirect()->route('swm.vehicles.index')->with('success', __('Vehicle updated successfully.'));
         }
 
-        return redirect()->route('swm.vehicles.index')->with('error', __('Failed to update SW vehicle.'));
+        return redirect()->route('swm.vehicles.index')->with('error', __('Failed to update vehicle.'));
     }
 
     public function destroy(Vehicle $vehicle)
@@ -216,16 +216,16 @@ class VehicleController extends Controller
         if ($this->vehicleBelongsToScopedOrg($vehicle)) {
             $vehicle->delete();
 
-            return redirect()->route('swm.vehicles.index')->with('success', __('SW vehicle deleted successfully.'));
+            return redirect()->route('swm.vehicles.index')->with('success', __('Vehicle deleted successfully.'));
         }
 
-        return redirect()->route('swm.vehicles.index')->with('error', __('Failed to delete SW vehicle.'));
+        return redirect()->route('swm.vehicles.index')->with('error', __('Failed to delete vehicle.'));
     }
 
     public function history(Vehicle $vehicle)
     {
         if ($this->vehicleBelongsToScopedOrg($vehicle)) {
-            $page_title = __('SW Vehicle History');
+            $page_title = __('Vehicle History');
 
             return view('swm.service-providers.vehicles.history', compact('page_title', 'vehicle'));
         }

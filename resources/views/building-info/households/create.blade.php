@@ -6,7 +6,7 @@
 @include('layouts.components.error-alert')
 <div class="card card-info">
     {!! Form::open(['route' => 'building-info.households.store', 'class' => 'form-horizontal']) !!}
-        @include('swm.service-coverage.households.partial-form')
+        @include('building-info.households.partial-form')
     {!! Form::close() !!}
 </div>
 @stop

@@ -9,6 +9,7 @@ use Box\Spout\Writer\Style\Color;
 use Box\Spout\Writer\Style\StyleBuilder;
 use Box\Spout\Writer\WriterFactory;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 
 class ComplaintService
@@ -109,20 +110,46 @@ class ComplaintService
             }
         }
 
-        $complaint->complaint_id = $data['complaint_id'] ?? null;
-        $complaint->date_time = isset($data['date_time']) ? Carbon::parse($data['date_time']) : now();
-        $complaint->holding_number = $data['holding_number'] ?? null;
-        $complaint->customer_id = $data['household_id'] ?? null;
-        $complaint->name = $data['name'] ?? null;
-        $complaint->contact_number = $data['contact_number'] ?? null;
-        $complaint->complaint_type = $data['complaint_type'] ?? null;
-        $complaint->complaint_details = $data['complaint_details'] ?? null;
-        $complaint->submitted_through = $data['submitted_through'] ?? null;
-        $complaint->complaint_status = $data['complaint_status'] ?? null;
-        $complaint->notes = $data['notes'] ?? null;
-        $complaint->save();
+        $dateTime = isset($data['date_time']) ? Carbon::parse($data['date_time']) : now();
+
+        DB::transaction(function () use ($complaint, $data, $id, $dateTime): void {
+            if (is_null($id)) {
+                $complaint->complaint_id = $this->nextComplaintIdForMonth($dateTime);
+            }
+
+            $complaint->date_time = $dateTime;
+            $complaint->holding_number = $data['holding_number'] ?? null;
+            $complaint->customer_id = $data['household_id'] ?? null;
+            $complaint->name = $data['name'] ?? null;
+            $complaint->contact_number = $data['contact_number'] ?? null;
+            $complaint->complaint_type = $data['complaint_type'] ?? null;
+            $complaint->complaint_details = $data['complaint_details'] ?? null;
+            $complaint->submitted_through = $data['submitted_through'] ?? null;
+            $complaint->complaint_status = $data['complaint_status'] ?? null;
+            $complaint->notes = $data['notes'] ?? null;
+            $complaint->save();
+        });
 
         return $complaint->id;
+    }
+
+    private function nextComplaintIdForMonth(Carbon $dateTime): string
+    {
+        $ym = $dateTime->format('Ym');
+        $prefix = "CMP-{$ym}-";
+
+        $lastId = Complaint::query()
+            ->where('complaint_id', 'LIKE', $prefix.'%')
+            ->lockForUpdate()
+            ->orderByDesc('complaint_id')
+            ->value('complaint_id');
+
+        $nextNumber = 1;
+        if (is_string($lastId) && preg_match('/^CMP-\d{6}-(\d{4})$/', $lastId, $matches)) {
+            $nextNumber = ((int) $matches[1]) + 1;
+        }
+
+        return $prefix.str_pad((string) $nextNumber, 4, '0', STR_PAD_LEFT);
     }
 
     public function download(array $data): void

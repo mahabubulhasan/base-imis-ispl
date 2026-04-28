@@ -6,7 +6,7 @@
 @include('layouts.components.error-alert')
 <div class="card card-info">
     {!! Form::model($household, ['method' => 'PATCH', 'route' => ['building-info.households.update', $household->id], 'class' => 'form-horizontal']) !!}
-        @include('swm.service-coverage.households.partial-form')
+        @include('building-info.households.partial-form')
     {!! Form::close() !!}
 </div>
 @stop

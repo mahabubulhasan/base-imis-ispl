@@ -12,7 +12,11 @@
     <div class="form-group row required">
         {!! Form::label('complaint_id', __('Complaint ID'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::text('complaint_id', old('complaint_id', $isEdit ? $complaint->complaint_id : null), ['class' => 'form-control', 'placeholder' => __('Complaint ID')]) !!}
+            @if($isEdit)
+                {!! Form::text('complaint_id', old('complaint_id', $complaint->complaint_id), ['class' => 'form-control', 'placeholder' => __('Complaint ID'), 'readonly' => true]) !!}
+            @else
+                <input type="text" class="form-control" value="{{ __('Auto generated on save') }}" readonly />
+            @endif
         </div>
         {!! Form::label('date_time', __('Date and Time'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">

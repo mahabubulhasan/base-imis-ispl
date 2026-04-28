@@ -14,6 +14,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <link rel="stylesheet" href="{{asset('css/app.css')}}">
     <link rel="stylesheet" href="{{asset('css/style.css')}}">
+    <link rel="icon" href="{{ asset(config('constants.FAVICON_URL')) }}" type="image/x-icon">
     @stack('style')
 </head>
 

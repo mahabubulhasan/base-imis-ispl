@@ -37,7 +37,7 @@ class BillCollectionPaymentController extends Controller
 
     public function index()
     {
-        $page_title = __('Bill Collection Payments');
+        $page_title = __('Payments');
 
         return view('swm.bill-collection.payments.index', compact('page_title'));
     }
@@ -117,7 +117,7 @@ class BillCollectionPaymentController extends Controller
 
     public function create()
     {
-        $page_title = __('Add Bill Collection Payment');
+        $page_title = __('Add Payment');
         $payment = null;
         $paymentMethods = config('bill_collection.payment_methods', []);
         $users = User::query()->orderBy('name')->pluck('name', 'id');
@@ -151,7 +151,7 @@ class BillCollectionPaymentController extends Controller
 
     public function show(BillCollectionPayment $payment)
     {
-        $page_title = __('Bill Collection Payment Details');
+        $page_title = __('Payment Details');
         $payment->load(['primaryCollectionSite', 'receivedBy']);
 
         return view('swm.bill-collection.payments.show', compact('page_title', 'payment'));
@@ -159,7 +159,7 @@ class BillCollectionPaymentController extends Controller
 
     public function edit(BillCollectionPayment $payment)
     {
-        $page_title = __('Edit Bill Collection Payment');
+        $page_title = __('Edit Payment');
         $paymentMethods = config('bill_collection.payment_methods', []);
         $users = User::query()->orderBy('name')->pluck('name', 'id');
         $payment->load(['primaryCollectionSite', 'receivedBy']);
@@ -208,7 +208,7 @@ class BillCollectionPaymentController extends Controller
 
     public function history(BillCollectionPayment $payment)
     {
-        $page_title = __('Bill Collection Payment History');
+        $page_title = __('Payment History');
 
         return view('swm.bill-collection.payments.history', compact('page_title', 'payment'));
     }
@@ -261,7 +261,7 @@ class BillCollectionPaymentController extends Controller
         $import = new BillCollectionPaymentImport((int) Auth::id());
         Excel::import($import, $fullPath);
 
-        $message = __('Imported :n bill collection payment(s).', ['n' => $import->successCount]);
+        $message = __('Imported :n bill payment(s).', ['n' => $import->successCount]);
         if (count($import->errors) > 0) {
             return redirect()->route('swm.bill-collection-payments.index')
                 ->with('success', $message)

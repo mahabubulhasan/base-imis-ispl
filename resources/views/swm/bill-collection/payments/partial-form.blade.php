@@ -88,6 +88,13 @@
         </div>
     </div>
 
+    <div class="form-group row required">
+        {!! Form::label('payment_for_month', __('Payment for the month of'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-9 bcp-payment-field-col">
+            <input type="month" name="payment_for_month" id="payment_for_month" class="form-control w-100" value="{{ $defaultMonth }}" />
+        </div>
+    </div>
+
     <div class="form-group row">
         <label class="col-sm-3 control-label">{{ __('Billing summary') }}</label>
         <div class="col-sm-9 bcp-payment-field-col">
@@ -96,18 +103,11 @@
                     <span><i class="fas fa-spinner fa-spin" aria-hidden="true"></i> {{ __('Loading…') }}</span>
                 </div>
                 <div id="balance-panel-body">
-                    <div><strong>{{ __('Charge (per month)') }}:</strong> <span id="bcp-waste-charge">—</span></div>
+                    <div><strong>{{ __('Charge') }} ({{ __('BDT') }} {{ __('per month') }}):</strong> <span id="bcp-waste-charge">—</span></div>
                     <div><strong>{{ __('Total due through selected month') }}:</strong> <span id="bcp-due">—</span></div>
                     <div class="small text-muted mt-2">{{ __('Due is based on billing from service start or survey date through the selected month, minus all payments recorded for months up to and including that month.') }}</div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <div class="form-group row required">
-        {!! Form::label('payment_for_month', __('Payment for the month of'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9 bcp-payment-field-col">
-            <input type="month" name="payment_for_month" id="payment_for_month" class="form-control w-100" value="{{ $defaultMonth }}" />
         </div>
     </div>
 
@@ -119,7 +119,7 @@
     </div>
 
     <div class="form-group row required">
-        {!! Form::label('amount', __('Amount'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('amount', __('Amount') . ' (' . __('BDT') . ')', ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-9 bcp-payment-field-col">
             {!! Form::number('amount', old('amount', $isEdit ? $payment->amount : null), ['class' => 'form-control w-100', 'step' => '0.01', 'min' => '0.01']) !!}
         </div>

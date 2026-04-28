@@ -24,16 +24,16 @@
 @endif
 <div class="card">
     <div class="card-header">
-        @can('Add SW Bill Collection Payment')
-        <a href="{{ route('swm.bill-collection-payments.create') }}" class="btn btn-info">{{ __('Add Bill Collection Payment') }}</a>
+        @can('Add Payment')
+        <a href="{{ route('swm.bill-collection-payments.create') }}" class="btn btn-info">{{ __('Add Payment') }}</a>
         @endcan
-        @can('Import SW Bill Collection Payments From CSV')
+        @can('Import Payments From CSV')
         <a href="{{ route('swm.bill-collection-payments.import') }}" class="btn btn-info">{{ __('Import from CSV') }}</a>
         @endcan
-        @can('Export SW Bill Collection Payments to CSV')
+        @can('Export Payments to CSV')
         <a href="/templates/bill-collection-payments-import-template.csv" download="bill-collection-payments-import-template.csv" class="btn btn-info">{{ __('Download CSV Template') }}</a>
         @endcan
-        @can('Export SW Bill Collection Payments to CSV')
+        @can('Export Payments to CSV')
         <a href="#" id="export" class="btn btn-info">{{ __('Export to CSV') }}</a>
         @endcan
         <a href="#" class="btn btn-info float-right" id="headingOne" type="button" data-toggle="collapse"
@@ -67,7 +67,7 @@
                         <th>{{ __('Holding Number') }}</th>
                         <th>{{ __('Household ID') }}</th>
                         <th>{{ __('Household Owner Name') }}</th>
-                        <th>{{ __('Amount') }}</th>
+                        <th>{{ __('Amount (BDT)') }}</th>
                         <th>{{ __('Payment For Month') }}</th>
                         <th>{{ __('Payment Time') }}</th>
                         <th>{{ __('Payment Method') }}</th>

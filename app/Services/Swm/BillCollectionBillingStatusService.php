@@ -136,7 +136,8 @@ class BillCollectionBillingStatusService
     }
 
     /**
-     * Comma-separated Y-m for months in {@see $rangeStart}..{@see $rangeEnd} (inclusive) where marginal due is greater than zero.
+     * Comma-separated Mon, yy labels for months in {@see $rangeStart}..{@see $rangeEnd} (inclusive)
+     * where marginal due is greater than zero.
      */
     protected function monthsWithMarginalDueLabelsInRange(Household $site, Carbon $rangeStart, Carbon $rangeEnd): string
     {
@@ -152,7 +153,7 @@ class BillCollectionBillingStatusService
         while ($m->lte($rangeEnd) && $guard < 240) {
             $guard++;
             if (bccomp($this->billCollectionPaymentService->marginalDueForMonth($site, $m), '0', 2) > 0) {
-                $labels[] = $m->format('Y-m');
+                $labels[] = $m->format('M, y');
             }
             $m->addMonth();
         }

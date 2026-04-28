@@ -13,7 +13,7 @@
 <div class="card">
     <div class="card-header">
         @can('Add SW STS')
-        <a href="{{ action('Swm\StsController@create') }}" class="btn btn-info">{{ __('Add SW STS') }}</a>
+        <a href="{{ action('Swm\StsController@create') }}" class="btn btn-info">{{ __('Add STS') }}</a>
         @endcan
         @can('Export SW STS to CSV')
         <a href="#" id="export" class="btn btn-info">{{ __('Export to CSV') }}</a>

@@ -43,7 +43,7 @@
             </div>
         </div>
         <div class="form-group row required">
-            {!! Form::label('dumping_place_kind', __('Dumping Place'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('dumping_place_kind', __('Dumping Place Type'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
                 {!! Form::select('dumping_place_kind', [
                     'sts' => __('STS'),
@@ -53,13 +53,13 @@
             </div>
         </div>
         <div class="form-group row" id="dumping-sts-wrap" style="display:none;">
-            {!! Form::label('dumping_sts_id', __('STS'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('dumping_sts_id', __('Dumping Place Name'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
                 {!! Form::select('dumping_sts_id', $stsList, null, ['class' => 'form-control chosen-select', 'placeholder' => __('STS')]) !!}
             </div>
         </div>
         <div class="form-group row" id="dumping-landfill-wrap" style="display:none;">
-            {!! Form::label('dumping_landfill_id', __('Landfill'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('dumping_landfill_id', __('Dumping Place Name'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
                 {!! Form::select('dumping_landfill_id', $landfills, null, ['class' => 'form-control chosen-select', 'placeholder' => __('Landfill')]) !!}
             </div>

@@ -63,20 +63,20 @@
                                 <p>{{__('Building Survey')}}</p>
                             </a>
                         </li>
+                        @can('List Households')
+                        <li class="nav-item">
+                            <a href="{{ action('BuildingInfo\HouseholdController@index') }}" class="nav-link {{ request()->is('building-info/households', 'building-info/households/*') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>{{__('Households')}}</p>
+                            </a>
+                        </li>
+                        @endcan
                         @endcan
                         @can('List Low Income Communities')
                         <li class="nav-item">
                             <a href="{{ action('LayerInfo\LowIncomeCommunityController@index') }}" class="nav-link {{ request()->is('layer-info/low-income-communities') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>{{__('Low Income Community')}}</p>
-                            </a>
-                        </li>
-                        @endcan
-                        @can('List Households')
-                        <li class="nav-item">
-                            <a href="{{ action('BuildingInfo\HouseholdController@index') }}" class="nav-link {{ request()->is('building-info/households', 'building-info/households/*') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>{{__('Households')}}</p>
                             </a>
                         </li>
                         @endcan
@@ -553,7 +553,7 @@
                             <li class="nav-item">
                                 <a href="{{ action('Swm\StsController@index') }}" class="nav-link {{ request()->is('swm/service-facilities/sts', 'swm/service-facilities/sts/*') ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>{{__('STS')}}</p>
+                                    <p>{{__('STSs')}}</p>
                                 </a>
                             </li>
                             @endcan
@@ -579,7 +579,7 @@
                             <li class="nav-item">
                                 <a href="{{ route('swm.bill-collection-payments.index') }}" class="nav-link {{ request()->is('swm/service-coverage/bill-collection/payments', 'swm/service-coverage/bill-collection/payments/*') ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>{{ __('Payment') }}</p>
+                                    <p>{{ __('Payments') }}</p>
                                 </a>
                             </li>
                             @endcan
@@ -598,7 +598,7 @@
                     <li class="nav-item">
                         <a href="{{ route('swm.complaints.index') }}" class="nav-link {{ request()->is('swm/complaints', 'swm/complaints/*') ? 'active' : '' }}">
                             <i class="far fa-circle nav-icon"></i>
-                            <p>{{ __('Complaints Management') }}</p>
+                            <p>{{ __('Complaints') }}</p>
                         </a>
                     </li>
                     @endcan
@@ -780,17 +780,52 @@
 
 </aside>
 <script>
-    function toggleElements() {
+    var SIDEBAR_STATE_KEY = 'imis_sidebar_collapsed';
 
+    function syncSidebarVisualState() {
         var logo = document.getElementById('sidebar-logo');
         var helloText = document.getElementById('hello-text');
+        var isCollapsed = document.body.classList.contains('sidebar-collapse');
 
-        if (logo.style.display === 'none') {
+        if (!logo || !helloText) {
+            return;
+        }
+
+        if (isCollapsed) {
+            // Collapsed sidebar: keep compact logo visible.
             logo.style.display = 'inline';
             helloText.style.display = 'none';
         } else {
+            // Expanded sidebar: show the larger branding mark.
             logo.style.display = 'none';
             helloText.style.display = 'inline';
         }
     }
+
+    function persistSidebarState() {
+        var isCollapsed = document.body.classList.contains('sidebar-collapse');
+        localStorage.setItem(SIDEBAR_STATE_KEY, isCollapsed ? '1' : '0');
+        syncSidebarVisualState();
+    }
+
+    function restoreSidebarState() {
+        var saved = localStorage.getItem(SIDEBAR_STATE_KEY);
+        if (saved === '1') {
+            document.body.classList.add('sidebar-collapse');
+        } else if (saved === '0') {
+            document.body.classList.remove('sidebar-collapse');
+        }
+        syncSidebarVisualState();
+    }
+
+    function toggleElements() {
+        // Wait until AdminLTE toggles the sidebar class.
+        setTimeout(persistSidebarState, 0);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        restoreSidebarState();
+        document.addEventListener('collapsed.lte.pushmenu', persistSidebarState);
+        document.addEventListener('shown.lte.pushmenu', persistSidebarState);
+    });
 </script>

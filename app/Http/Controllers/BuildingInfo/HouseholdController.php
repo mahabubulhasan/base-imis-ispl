@@ -60,7 +60,7 @@ class HouseholdController extends Controller
     public function index()
     {
         $page_title = __('Households');
-        return view('swm.service-coverage.households.index', compact('page_title'));
+        return view('building-info.households.index', compact('page_title'));
     }
 
     public function getData(Request $request)
@@ -100,7 +100,7 @@ class HouseholdController extends Controller
         $vanPullers = $this->vanPullers();
         $licOptions = $this->licOptions();
         $functionalUses = $this->functionalUseOptions();
-        return view('swm.service-coverage.households.create', compact('page_title', 'household', 'bins', 'vanPullers', 'licOptions', 'functionalUses'));
+        return view('building-info.households.create', compact('page_title', 'household', 'bins', 'vanPullers', 'licOptions', 'functionalUses'));
     }
 
     public function store(HouseholdRequest $request)
@@ -112,7 +112,7 @@ class HouseholdController extends Controller
     public function show(Household $household)
     {
         $page_title = __('Household Details');
-        return view('swm.service-coverage.households.show', compact('page_title', 'household'));
+        return view('building-info.households.show', compact('page_title', 'household'));
     }
 
     public function edit(Household $household)
@@ -122,7 +122,7 @@ class HouseholdController extends Controller
         $vanPullers = $this->vanPullers();
         $licOptions = $this->licOptions();
         $functionalUses = $this->functionalUseOptions();
-        return view('swm.service-coverage.households.edit', compact('page_title', 'household', 'bins', 'vanPullers', 'licOptions', 'functionalUses'));
+        return view('building-info.households.edit', compact('page_title', 'household', 'bins', 'vanPullers', 'licOptions', 'functionalUses'));
     }
 
     public function update(HouseholdRequest $request, Household $household)
@@ -140,7 +140,7 @@ class HouseholdController extends Controller
     public function history(Household $household)
     {
         $page_title = __('Household History');
-        return view('swm.service-coverage.households.history', compact('page_title', 'household'));
+        return view('building-info.households.history', compact('page_title', 'household'));
     }
 
     public function export(Request $request)

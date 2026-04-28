@@ -11,7 +11,7 @@
 <div class="card">
     <div class="card-header">
         @can('Add SW Organization')
-        <a href="{{ action('Swm\OrganizationController@create') }}" class="btn btn-info">{{ __('Add SW Organization') }}</a>
+        <a href="{{ action('Swm\OrganizationController@create') }}" class="btn btn-info">{{ __('Add Organization') }}</a>
         @endcan
         @can('Export SW Organizations to CSV')
         <a href="#" id="export" class="btn btn-info">{{ __('Export to CSV') }}</a>

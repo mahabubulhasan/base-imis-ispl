@@ -9,7 +9,7 @@
 <div class="card">
     <div class="card-header">
         @can('Add SW Landfill')
-        <a href="{{ action('Swm\LandfillController@create') }}" class="btn btn-info">{{ __('Add SW Landfill') }}</a>
+        <a href="{{ action('Swm\LandfillController@create') }}" class="btn btn-info">{{ __('Add Landfill') }}</a>
         @endcan
         @can('Export SW Landfills to CSV')
         <a href="#" id="export" class="btn btn-info">{{ __('Export to CSV') }}</a>

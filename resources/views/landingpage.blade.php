@@ -78,7 +78,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
         }
 
         .hero-overlay {
-            background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85));
+            background: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.4));
         }
 
         .login-card {
@@ -291,7 +291,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
     </style>
 </head>
 
-<body class="font-display bg-background-light text-slate-900 min-h-screen overflow-x-hidden">
+<body class="font-display bg-background-light text-slate-900 min-h-screen overflow-x-hidden flex flex-col">
 
     <!-- Fixed Navigation Bar -->
     <nav class="fixed top-0 w-full z-50 glass-nav border-b border-slate-200 shadow-md">
@@ -303,7 +303,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                     <span class="text-xl font-bold tracking-tight text-primary">{{ config('constants.SITE_NAME')
                         }}</span>
                 </a>
-                <div class="hidden md:flex items-center space-x-8">
+                {{-- <div class="hidden md:flex items-center space-x-8">
                     <a class="text-sm font-medium hover:text-primary transition-colors cursor-pointer"
                         href="/#/about">About</a>
                     <a class="text-sm font-medium hover:text-primary transition-colors cursor-pointer"
@@ -316,11 +316,11 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                         href="/#/contact">Contact</a>
                     <a class="text-sm font-medium hover:text-primary transition-colors cursor-pointer"
                         href="/#/">Sign In</a>
-                </div>
-                <button class="md:hidden p-2 rounded-full hover:bg-slate-100 transition-colors" onclick="toggleMenu()"
+                </div> --}}
+                {{-- <button class="md:hidden p-2 rounded-full hover:bg-slate-100 transition-colors" onclick="toggleMenu()"
                     aria-label="Toggle menu">
                     <span class="material-icons text-xl">menu</span>
-                </button>
+                </button> --}}
             </div>
             <!-- Mobile Menu -->
             <div id="mobileMenu" class="hidden md:hidden pb-4 border-t border-slate-200">
@@ -338,7 +338,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
     </nav>
 
     <!-- Hero Section with Login -->
-    <main class="relative min-h-screen flex items-center pt-20">
+    <main class="relative flex-1 flex items-center pt-20">
         <div class="absolute inset-0 z-0">
             <img alt="Municipal Building" class="w-full h-full object-cover"
                 src="{{ asset(config('constants.BACKGROUND_IMAGE_URL')) }}" />
@@ -353,7 +353,14 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
         <div class="grid lg:grid-cols-2 gap-12 items-center">
             <!-- Left Column: Hero Content -->
             <div class="max-w-xl">
-                <h1 class="text-4xl md:text-5xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-6">
+                <div class="mb-6">
+                    <img
+                        src="{{ asset('img/stl/IMIS City Login_Final_IMIS.png') }}"
+                        alt="IMIS"
+                        class="w-full max-w-md lg:max-w-lg h-auto"
+                    />
+                </div>
+                {{-- <h1 class="text-4xl md:text-5xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-6 sr-only">
                     Integrated Municipal Information System <span class="text-primary">(IMIS)</span>
                 </h1>
                 <p class="text-lg text-slate-600 mb-4 leading-relaxed">
@@ -380,7 +387,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                             <div class="flex items-start"><span class="mr-2">•</span><span>Streams Tech Ltd., Bangladesh</span></div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
 
             <!-- Right Column: Login Card -->
@@ -407,18 +414,18 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
 
     <!-- Footer -->
     <footer
-        class="text-center py-8 text-sm md:text-base text-gray-800 bg-white border-t border-slate-200 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] mt-10">
-        <div class="px-5">
+        class="text-center py-4 text-sm md:text-base text-gray-800 bg-white border-t border-slate-200 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+        {{-- <div class="px-5">
             @include('includes.branding')
-        </div>
-        <div class="pt-5 mt-4 border-t border-slate-200 mx-3">
+        </div> --}}
+        <div class="mt-4 mx-3">
             <div class="mx-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-left">
-                <div>
+                <div class="pb-4">
                     © {{ config('constants.SITE_NAME') }}. All rights reserved.
                 </div>
-                <div class="sm:text-right">
-                    Implemented by <a href="https://streamstech.com" target="_blank" rel="noopener noreferrer"
-                        class="text-primary font-semibold hover:underline">Streams Tech Ltd.</a>
+                <div class="sm:text-right text-sm">
+                    Conceptualised by <a href="https://snv.org" class="text-primary font-semibold hover:underline" target="_blank" rel="noopener noreferrer">SNV Netherlands Development Organization</a> under the project <span class="font-semibold">"Transitioning to Sustainable Urban Water Cycles in Bangladesh"</span> supported by the <span class="font-semibold">Embassy of the Kingdom of the Netherlands</span> <br> Developed by <a href="https://streamstech.com" class="text-primary font-semibold hover:underline" target="_blank" rel="noopener noreferrer"
+                    class="text-primary font-semibold hover:underline">Streams Tech Ltd.</a>
                 </div>
             </div>
         </div>

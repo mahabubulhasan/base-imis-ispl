@@ -306,7 +306,7 @@ class BillCollectionPaymentService
             ->orderColumn('payment_for_month', 'swm.bill_collection_payments.payment_for_month $1')
             ->orderColumn('payment_time', 'swm.bill_collection_payments.payment_time $1')
             ->editColumn('payment_for_month', function ($model) {
-                return $model->payment_for_month?->format('Y-m-d') ?? '';
+                return $model->payment_for_month?->format('M, Y') ?? '';
             })
             ->editColumn('payment_time', function ($model) {
                 return $model->payment_time?->format('Y-m-d H:i') ?? '';

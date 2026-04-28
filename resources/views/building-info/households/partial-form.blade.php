@@ -52,7 +52,7 @@
         </div>
     </div>
     <div class="form-group row">
-        {!! Form::label('waste_charge', __('Waste collection fee (BDT/Month)'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('waste_charge', __('Waste collection fee') . ' (' . __('BDT') . '/' . __('Month') . ')', ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">{!! Form::number('waste_charge', null, ['class' => 'form-control', 'step' => '0.01', 'min' => '0']) !!}</div>
     </div>
     <div class="form-group row">
@@ -67,14 +67,7 @@
         {!! Form::label('daily_waste_volume', __('Total volume of the waste collected (daily average approx.)'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">{!! Form::number('daily_waste_volume', null, ['class' => 'form-control', 'step' => '0.01', 'min' => '0']) !!}</div>
     </div>
-    <div class="form-group row">
-        {!! Form::label('survey_date', __('Survey Date'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-3">{!! Form::date('survey_date', optional(old('survey_date', optional($household)->survey_date))->format('Y-m-d'), ['class' => 'form-control']) !!}</div>
-    </div>
-    <div class="form-group row">
-        {!! Form::label('remarks', __('Remarks'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-3">{!! Form::textarea('remarks', null, ['class' => 'form-control', 'rows' => 2]) !!}</div>
-    </div>
+    
     <div class="form-group row">
         {!! Form::label('van_puller_id', __('Van Puller'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">{!! Form::select('van_puller_id', $vanPullers, null, ['class' => 'form-control chosen-select', 'placeholder' => __('Select Van Puller')]) !!}</div>
@@ -108,6 +101,14 @@
     <div class="form-group row">
         {!! Form::label('segregation_practiced', __('Segregation Practiced (Y/N)'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3 pt-2"><input type="hidden" name="segregation_practiced" value="0">{!! Form::checkbox('segregation_practiced', '1', (bool) old('segregation_practiced', optional($household)->segregation_practiced), ['id' => 'segregation_practiced']) !!}</div>
+    </div>
+    <div class="form-group row">
+        {!! Form::label('remarks', __('Remarks'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">{!! Form::textarea('remarks', null, ['class' => 'form-control', 'rows' => 2]) !!}</div>
+    </div>
+    <div class="form-group row">
+        {!! Form::label('survey_date', __('Survey Date'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">{!! Form::date('survey_date', optional(old('survey_date', optional($household)->survey_date))->format('Y-m-d'), ['class' => 'form-control']) !!}</div>
     </div>
 </div>
 <div class="card-footer">

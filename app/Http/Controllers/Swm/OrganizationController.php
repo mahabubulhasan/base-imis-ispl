@@ -33,7 +33,7 @@ class OrganizationController extends Controller
 
     public function index()
     {
-        $page_title = __('SW Organizations');
+        $page_title = __('Organizations');
         $organizationStatus = SwmOrganizationStatus::asSelectArray();
 
         return view('swm.service-providers.organizations.index', compact('page_title', 'organizationStatus'));
@@ -46,7 +46,7 @@ class OrganizationController extends Controller
 
     public function create()
     {
-        $page_title = __('Add SW Organization');
+        $page_title = __('Add Organization');
         $organization = null;
         $organizationStatus = SwmOrganizationStatus::asSelectArray();
 
@@ -66,9 +66,9 @@ class OrganizationController extends Controller
             $data['username'] = explode('@', (string) $request->email)[0];
             $data['status'] = UserStatus::Active;
             $this->userService->storeOrUpdate(null, $data);
-            $successMessage = __('SW organization and SW organization admin user created successfully.');
+            $successMessage = __('Organization and organization admin user created successfully.');
         } else {
-            $successMessage = __('SW organization created successfully.');
+            $successMessage = __('Organization created successfully.');
         }
 
         return redirect()->route('swm.organizations.index')->with('success', $successMessage);
@@ -78,7 +78,7 @@ class OrganizationController extends Controller
     {
         $organization = Organization::find($id);
         if ($organization) {
-            $page_title = __('SW Organization Details');
+            $page_title = __('Organization Details');
             $status = SwmOrganizationStatus::getDescription($organization->status);
 
             return view('swm.service-providers.organizations.show', compact('page_title', 'organization', 'status'));
@@ -92,7 +92,7 @@ class OrganizationController extends Controller
         $organization = Organization::find($id);
         $organizationStatus = SwmOrganizationStatus::asSelectArray();
         if ($organization) {
-            $page_title = __('Edit SW Organization');
+            $page_title = __('Edit Organization');
 
             return view('swm.service-providers.organizations.edit', compact('page_title', 'organization', 'organizationStatus'));
         }
@@ -106,10 +106,10 @@ class OrganizationController extends Controller
         if ($organization) {
             $this->organizationService->storeOrUpdate((int) $organization->id, $request->all());
 
-            return redirect()->route('swm.organizations.index')->with('success', __('SW organization updated successfully.'));
+            return redirect()->route('swm.organizations.index')->with('success', __('Organization updated successfully.'));
         }
 
-        return redirect()->route('swm.organizations.index')->with('error', __('Failed to update SW organization.'));
+        return redirect()->route('swm.organizations.index')->with('error', __('Failed to update organization.'));
     }
 
     public function destroy($id)
@@ -117,24 +117,24 @@ class OrganizationController extends Controller
         $organization = Organization::find($id);
         if ($organization) {
             if ($organization->users()->exists()) {
-                return redirect()->route('swm.organizations.index')->with('error', __('Cannot delete SW organization that has associated user information.'));
+                return redirect()->route('swm.organizations.index')->with('error', __('Cannot delete organization that has associated user information.'));
             }
             if ($organization->workers()->exists()) {
-                return redirect()->route('swm.organizations.index')->with('error', __('Cannot delete SW organization that has associated worker information.'));
+                return redirect()->route('swm.organizations.index')->with('error', __('Cannot delete organization that has associated worker information.'));
             }
             $organization->delete();
 
-            return redirect()->route('swm.organizations.index')->with('success', __('SW organization deleted successfully.'));
+            return redirect()->route('swm.organizations.index')->with('success', __('Organization deleted successfully.'));
         }
 
-        return redirect()->route('swm.organizations.index')->with('error', __('Failed to delete SW organization.'));
+        return redirect()->route('swm.organizations.index')->with('error', __('Failed to delete organization.'));
     }
 
     public function history($id)
     {
         $organization = Organization::find($id);
         if ($organization) {
-            $page_title = __('SW Organization History');
+            $page_title = __('Organization History');
 
             return view('swm.service-providers.organizations.history', compact('page_title', 'organization'));
         }
