@@ -500,8 +500,8 @@
                     </li>
                     @endcan --}}
                     @if(Auth::user()->can('List SW Organizations') || Auth::user()->can('List SW Workers'))
-                    <li class="nav-item {{ request()->is('swm/service-providers/*') ? 'menu-is-opening menu-open' : '' }}">
-                        <a href="#" class="nav-link {{ request()->is('swm/service-providers/*') ? 'active subnav' : '' }}">
+                    <li class="nav-item {{ request()->is('swm/service-providers/organizations*', 'swm/service-providers/workers*') ? 'menu-is-opening menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ request()->is('swm/service-providers/organizations*', 'swm/service-providers/workers*') ? 'active subnav' : '' }}">
                             <i class="far fa-circle nav-icon"></i>
                             <p>{{__('Service Providers')}} <i class="right fas fa-angle-left"></i></p>
                         </a>
