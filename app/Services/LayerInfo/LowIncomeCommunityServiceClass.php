@@ -14,6 +14,11 @@ use App\Models\LayerInfo\LowIncomeCommunity;
 
 class LowIncomeCommunityServiceClass
 {
+    private function isTrueValue($value): bool
+    {
+        return in_array($value, [true, 1, '1', 'true'], true);
+    }
+
     /**
      * Fetch and format data for DataTables.
      *
@@ -27,6 +32,13 @@ class LowIncomeCommunityServiceClass
 
 
         return Datatables::of($lic)
+            ->addColumn('lic_status_label', function ($model) {
+                if ($model->lic_status === null) {
+                    return '';
+                }
+
+                return $model->lic_status ? __('Active') : __('Inactive');
+            })
             ->filter(function ($query) use ($request) {
                 if ($request->community_name) {
                     $query->whereRaw('LOWER(community_name) LIKE ?', ['%' . strtolower($request->community_name) . '%']);
@@ -73,18 +85,26 @@ class LowIncomeCommunityServiceClass
     }
 
     $lic = new LowIncomeCommunity();
+    $lic->lic_status = $request->lic_status;
+    $lic->area_decima = $request->area_decima;
+    $lic->representative_name = $request->representative_name;
+    $lic->representative_contact_no = $request->representative_contact_no;
     $lic->population_total = $request->population_total;
     $lic->number_of_households = $request->number_of_households;
     $lic->population_male = $request->population_male;
     $lic->population_female = $request->population_female;
     $lic->population_others = $request->population_others;
+    $lic->water_connection_status = $request->water_connection_status;
+    $lic->no_of_wate_points = $this->isTrueValue($request->water_connection_status) ? $request->no_of_wate_points : null;
+    $lic->sanitation_status = $request->sanitation_status;
     $lic->no_of_septic_tank = $request->no_of_septic_tank;
     $lic->no_of_holding_tank = $request->no_of_holding_tank;
     $lic->no_of_pit = $request->no_of_pit;
     $lic->no_of_sewer_connection = $request->no_of_sewer_connection;
     $lic->no_of_buildings = $request->no_of_buildings;
     $lic->community_name = $request->community_name;
-    $lic->no_of_community_toilets = $request->no_of_community_toilets;
+    $lic->no_of_community_toilets = $this->isTrueValue($request->sanitation_status) ? $request->no_of_community_toilets : null;
+    $lic->remarks = $request->remarks;
 
     // Retrieve the municipality boundary geometry
     $citypolygeom = DB::table('layer_info.citypolys')->where('id', 1)->value('geom');
@@ -136,18 +156,26 @@ class LowIncomeCommunityServiceClass
 
         if ($lic) {
             // Update all fields as in the original method
+            $lic->lic_status = $request->lic_status;
+            $lic->area_decima = $request->area_decima;
+            $lic->representative_name = $request->representative_name;
+            $lic->representative_contact_no = $request->representative_contact_no;
             $lic->population_total = $request->population_total;
             $lic->number_of_households = $request->number_of_households;
             $lic->population_male = $request->population_male;
             $lic->population_female = $request->population_female;
             $lic->population_others = $request->population_others;
+            $lic->water_connection_status = $request->water_connection_status;
+            $lic->no_of_wate_points = $this->isTrueValue($request->water_connection_status) ? $request->no_of_wate_points : null;
+            $lic->sanitation_status = $request->sanitation_status;
             $lic->no_of_septic_tank = $request->no_of_septic_tank;
             $lic->no_of_holding_tank = $request->no_of_holding_tank;
             $lic->no_of_pit = $request->no_of_pit;
             $lic->no_of_sewer_connection = $request->no_of_sewer_connection;
             $lic->no_of_buildings = $request->no_of_buildings;
             $lic->community_name = $request->community_name;
-            $lic->no_of_community_toilets = $request->no_of_community_toilets;
+            $lic->no_of_community_toilets = $this->isTrueValue($request->sanitation_status) ? $request->no_of_community_toilets : null;
+            $lic->remarks = $request->remarks;
 
             // Check if 'geom' is provided in the request
             if (!empty($request->geom)) {
@@ -218,33 +246,49 @@ class LowIncomeCommunityServiceClass
         $columns = [
             __('ID'),
             __('Community Name'),
+            __('LIC Status'),
+            __('Area (Decima)'),
+            __("Representative's Name"),
+            __("Representative's Contact No."),
             __('No. of Buildings'),
             __('Population'),
             __('No. of Households'),
             __('Male Population'),
             __('Female Population'),
             __('Other Population'),
+            __('Water Connection Status (Yes/No)'),
+            __('No. of Wate Points'),
+            __('Sanitation Status (Yes/No)'),
             __('No. of Septic Tanks'),
             __('No. of Holding Tanks'),
             __('No. of Pits'),
             __('No. of Sewer Connections'),
             __('No. of Community Toilets'),
+            __('Remarks'),
 
         ];
         $query = LowIncomeCommunity::select(
             'id',
             'community_name',
+            'lic_status',
+            'area_decima',
+            'representative_name',
+            'representative_contact_no',
             'no_of_buildings',
             'population_total',
             'number_of_households',
             'population_male',
             'population_female',
             'population_others',
+            'water_connection_status',
+            'no_of_wate_points',
+            'sanitation_status',
             'no_of_septic_tank',
             'no_of_holding_tank',
             'no_of_pit',
             'no_of_sewer_connection',
-            'no_of_community_toilets'
+            'no_of_community_toilets',
+            'remarks'
         )->whereNull('deleted_at');
         if (!empty($community_name)) {
             $query->whereRaw('LOWER(community_name) LIKE ?', ['%' . strtolower($community_name) . '%']);
@@ -263,17 +307,25 @@ class LowIncomeCommunityServiceClass
                 $values = [];
                 $values[] = $lic->id;
                 $values[] = $lic->community_name;
+                $values[] = $lic->lic_status === null ? '' : ($lic->lic_status ? __('Active') : __('Inactive'));
+                $values[] = $lic->area_decima;
+                $values[] = $lic->representative_name;
+                $values[] = $lic->representative_contact_no;
                 $values[] = $lic->no_of_buildings;
                 $values[] = $lic->population_total;
                 $values[] = $lic->number_of_households;
                 $values[] = $lic->population_male;
                 $values[] = $lic->population_female;
                 $values[] = $lic->population_others;
+                $values[] = $lic->water_connection_status === null ? '' : ($lic->water_connection_status ? __('Yes') : __('No'));
+                $values[] = $lic->no_of_wate_points;
+                $values[] = $lic->sanitation_status === null ? '' : ($lic->sanitation_status ? __('Yes') : __('No'));
                 $values[] = $lic->no_of_septic_tank;
                 $values[] = $lic->no_of_holding_tank;
                 $values[] = $lic->no_of_pit;
                 $values[] = $lic->no_of_sewer_connection;
                 $values[] = $lic->no_of_community_toilets;
+                $values[] = $lic->remarks;
 
                 $writer->addRow($values);
             }

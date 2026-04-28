@@ -16,6 +16,30 @@
             {!! Form::label(null,$lic->community_name,['class' => 'form-control']) !!}
         </div>
     </div>
+    <div class="form-group row">
+        {!! Form::label('lic_status',__('LIC Status (Active/Inactive)'),['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::label(null,$lic->lic_status === null ? '' : ($lic->lic_status ? __('Active') : __('Inactive')),['class' => 'form-control']) !!}
+        </div>
+    </div>
+    <div class="form-group row">
+        {!! Form::label('area_decima',__('Area (Decima)'),['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::label(null,$lic->area_decima,['class' => 'form-control']) !!}
+        </div>
+    </div>
+    <div class="form-group row">
+        {!! Form::label('representative_name',__("Representative's Name"),['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::label(null,$lic->representative_name,['class' => 'form-control']) !!}
+        </div>
+    </div>
+    <div class="form-group row">
+        {!! Form::label('representative_contact_no',__("Representative's Contact No."),['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::label(null,$lic->representative_contact_no,['class' => 'form-control']) !!}
+        </div>
+    </div>
     <div class="form-group required row">
          {!! Form::label('no_of_buildings',__('No. of Buildings'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
@@ -53,6 +77,24 @@
         </div>
     </div>
     <div class="form-group row">
+        {!! Form::label('water_connection_status',__('Water Connection Status (Yes/No)'),['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::label(null,$lic->water_connection_status === null ? '' : ($lic->water_connection_status ? __('Yes') : __('No')),['class' => 'form-control']) !!}
+        </div>
+    </div>
+    <div class="form-group row">
+        {!! Form::label('no_of_wate_points',__('No. of Wate Points'),['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::label(null,$lic->no_of_wate_points,['class' => 'form-control']) !!}
+        </div>
+    </div>
+    <div class="form-group row">
+        {!! Form::label('sanitation_status',__('Sanitation Status (Yes/No)'),['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::label(null,$lic->sanitation_status === null ? '' : ($lic->sanitation_status ? __('Yes') : __('No')),['class' => 'form-control']) !!}
+        </div>
+    </div>
+    <div class="form-group row">
          {!! Form::label('no_of_septic_tank',__('No. of Septic Tanks'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             {!! Form::label(null,$lic->no_of_septic_tank,['class' => 'form-control']) !!}
@@ -80,6 +122,12 @@
         {!! Form::label('no_of_community_toilets',__('No. of Community Toilets'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             {!! Form::label(null,$lic->no_of_community_toilets,['class' => 'form-control']) !!}
+        </div>
+    </div>
+    <div class="form-group row">
+        {!! Form::label('remarks',__('Remarks'),['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::label(null,$lic->remarks,['class' => 'form-control']) !!}
         </div>
     </div>
 

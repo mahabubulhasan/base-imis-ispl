@@ -62,6 +62,7 @@
                         <tr>
                             <th>{{ __('ID') }}</th>
                             <th>{{ __('Community Name') }}</th>
+                            <th>{{ __('LIC Status') }}</th>
                             <th>{{ __('No. of Buildings') }}</th>
                             <th>{{ __('Population') }}</th>
                             <th>{{ __('Actions') }}</th>
@@ -93,6 +94,12 @@
                         {
                             data: 'community_name',
                             name: 'community_name'
+                        },
+                        {
+                            data: 'lic_status_label',
+                            name: 'lic_status',
+                            orderable: false,
+                            searchable: false
                         },
                         {
                             data: 'no_of_buildings',

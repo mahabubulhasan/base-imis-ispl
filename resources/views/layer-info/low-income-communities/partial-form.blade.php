@@ -47,12 +47,40 @@
         background-size: contain;
     }
 </style>
+@php
+    $yesNoOptions = ['' => __('Select'), '1' => __('Yes'), '0' => __('No')];
+    $statusOptions = ['' => __('Select'), '1' => __('Active'), '0' => __('Inactive')];
+@endphp
 
 <div class="card-body">
     <div class="form-group required row">
         {!! Form::label('community_name',__('Community Name') ,['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             {!! Form::text('community_name',null,['class' => 'form-control', 'placeholder' => __('Community Name')]) !!}
+        </div>
+    </div>
+    <div class="form-group required row">
+        {!! Form::label('lic_status', __('LIC Status (Active/Inactive)'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::select('lic_status', $statusOptions, old('lic_status', isset($lic) ? (($lic->lic_status === null) ? '' : (string) (int) $lic->lic_status) : ''), ['class' => 'form-control', 'id' => 'lic_status']) !!}
+        </div>
+    </div>
+    <div class="form-group row">
+        {!! Form::label('area_decima', __('Area (Decima)'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::number('area_decima', null, ['class' => 'form-control', 'placeholder' => __('Area (Decima)'), 'step' => '0.01', 'min' => '0']) !!}
+        </div>
+    </div>
+    <div class="form-group row">
+        {!! Form::label('representative_name', __("Representative's Name"), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::text('representative_name', null, ['class' => 'form-control', 'placeholder' => __("Representative's Name")]) !!}
+        </div>
+    </div>
+    <div class="form-group row">
+        {!! Form::label('representative_contact_no', __("Representative's Contact No."), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::text('representative_contact_no', null, ['class' => 'form-control', 'placeholder' => __("Representative's Contact No.")]) !!}
         </div>
     </div>
     <div class="form-group required row">
@@ -91,6 +119,24 @@
             {!! Form::text('population_others',null,['class' => 'form-control', 'placeholder' => __('Other Population'),'oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",]) !!}
         </div>
     </div>
+    <div class="form-group required row">
+        {!! Form::label('water_connection_status', __('Water Connection Status (Yes/No)'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::select('water_connection_status', $yesNoOptions, old('water_connection_status', isset($lic) ? (($lic->water_connection_status === null) ? '' : (string) (int) $lic->water_connection_status) : ''), ['class' => 'form-control', 'id' => 'water_connection_status']) !!}
+        </div>
+    </div>
+    <div class="form-group row" id="no_of_wate_points_group">
+         {!! Form::label('no_of_wate_points',__('No. of Wate Points'),['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::text('no_of_wate_points',null,['class' => 'form-control', 'placeholder' => __('No. of Wate Points'),'oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",'id' => 'no_of_wate_points']) !!}
+        </div>
+    </div>
+    <div class="form-group required row">
+        {!! Form::label('sanitation_status', __('Sanitation Status (Yes/No)'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::select('sanitation_status', $yesNoOptions, old('sanitation_status', isset($lic) ? (($lic->sanitation_status === null) ? '' : (string) (int) $lic->sanitation_status) : ''), ['class' => 'form-control', 'id' => 'sanitation_status']) !!}
+        </div>
+    </div>
     <div class="form-group row">
          {!! Form::label('no_of_septic_tank',__('No. of Septic Tanks'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
@@ -115,10 +161,16 @@
             {!! Form::text('no_of_sewer_connection',null,['class' => 'form-control', 'placeholder' => __('No. of Sewer Connections'),'oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",]) !!}
         </div>
     </div>
-    <div class="form-group row">
+    <div class="form-group row" id="no_of_community_toilets_group">
          {!! Form::label('no_of_community_toilets',__('No. of Community Toilets'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::text('no_of_community_toilets',null,['class' => 'form-control', 'placeholder' => __('No. of Community Toilets'),'oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",]) !!}
+            {!! Form::text('no_of_community_toilets',null,['class' => 'form-control', 'placeholder' => __('No. of Community Toilets'),'oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",'id' => 'no_of_community_toilets']) !!}
+        </div>
+    </div>
+    <div class="form-group row">
+        {!! Form::label('remarks', __('Remarks'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-6">
+            {!! Form::textarea('remarks', null, ['class' => 'form-control', 'rows' => 3, 'placeholder' => __('Remarks')]) !!}
         </div>
     </div>
     <div class="form-group required row">
@@ -153,6 +205,30 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js"></script>
 <script>
     $(document).ready(function() {
+        function toggleConditionalFields() {
+            var waterConnectionStatus = $('#water_connection_status').val();
+            var sanitationStatus = $('#sanitation_status').val();
+
+            if (waterConnectionStatus === '1') {
+                $('#no_of_wate_points_group').show();
+                $('#no_of_wate_points').prop('disabled', false);
+            } else {
+                $('#no_of_wate_points_group').hide();
+                $('#no_of_wate_points').val('').prop('disabled', true);
+            }
+
+            if (sanitationStatus === '1') {
+                $('#no_of_community_toilets_group').show();
+                $('#no_of_community_toilets').prop('disabled', false);
+            } else {
+                $('#no_of_community_toilets_group').hide();
+                $('#no_of_community_toilets').val('').prop('disabled', true);
+            }
+        }
+
+        $('#water_connection_status, #sanitation_status').on('change', toggleConditionalFields);
+        toggleConditionalFields();
+
         // Get the current date
         var currentDate = new Date();
 

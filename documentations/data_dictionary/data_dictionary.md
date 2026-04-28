@@ -539,18 +539,26 @@ This table stores information about low-income communities in the area.
 | ----------------------- | ------------------------ | --------------------------------------------------------------------------------------------- | --------------------------- |
 | id                      |                          | Unique identifier for the record (auto generated)                                             | integer pk                  |
 | community_name          | Community Name           | Name of Community                                                                             | Character varying           |
+| lic_status              | LIC Status               | Indicates whether the LIC record is active or inactive                                        | boolean                     |
 | geom                    | Area                     | Geospatial coordinates of the boundary of the low income community (represented as a polygon) | geometry(MultiPolygon,4326) |
+| area_decima             | Area (Decima)            | Area of the low income community in decima                                                    | decimal                     |
+| representative_name     | Representative's Name    | Name of community representative                                                              | character varying           |
+| representative_contact_no | Representative's Contact No. | Contact number of community representative                                               | character varying           |
 | no_of_buildings         | No. of Buildings         | Total buildings present in the low income community                                           | integer                     |
 | number_of_households    | No. of Households        | Number of Households present in the low income community                                      | integer                     |
 | population_total        | Population               | Total population in the low income community                                                  | integer                     |
 | population_male         | Male Population          | Total male population                                                                         | integer                     |
 | population_female       | Female Population        | Total female population                                                                       | integer                     |
 | population_others       | Other Population         | Total other population                                                                        | integer                     |
+| water_connection_status | Water Connection Status (Yes/No) | Indicates whether water connection is available                                         | boolean                     |
+| no_of_wate_points       | No. of Wate Points       | Total number of water points (if water connection status is Yes)                             | integer                     |
+| sanitation_status       | Sanitation Status (Yes/No) | Indicates whether sanitation status is available                                            | boolean                     |
 | no_of_septic_tank       | No. of Septic Tanks      | Total number of septic tanks                                                                  | integer                     |
 | no_of_holding_tank      | No. of Holding Tanks     | Total number of holding tanks                                                                 | integer                     |
 | no_of_pit               | No. of Pits              | Total number of pits                                                                          | integer                     |
 | no_of_sewer_connection  | No. of Sewer Connections | Total number of sewer connections                                                             | integer                     |
 | no_of_community_toilets | No. of Community Toilets | Total number of community toilets                                                             | integer                     |
+| remarks                 | Remarks                  | Additional notes for the LIC record                                                           | text                        |
 | user_id                 |                          | Identifier for the user who created the record (Hidden)                                       | integer fk:auth.users(id)   |
 | created_at              |                          | Timestamp when the record was created (Auto Fill, Hidden)                                     | timestamp without time zone |
 | updated_at              |                          | Timestamp when the record was last updated (Auto Fill, Hidden)                                | timestamp without time zone |
