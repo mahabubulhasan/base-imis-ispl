@@ -1238,6 +1238,15 @@ class PermissionsSeeder extends Seeder
                 ],
             ],
             [
+                "group" => "SW Dashboard and KPIs",
+                "perms" => [
+                    [
+                        "type" => "List",
+                        "name" => "List SW Dashboard and KPIs",
+                    ],
+                ],
+            ],
+            [
                 "group" => "Building Structures",
                 "perms" => [
                     [

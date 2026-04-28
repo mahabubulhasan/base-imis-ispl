@@ -482,7 +482,7 @@
             </li>
             @endif
 
-            @if(Auth::user()->hasanyPermissionInGroup(['Sw Service Payment', 'SW Service Provider Organizations', 'SW Service Provider Work Types', 'SW Service Provider Workers', 'SW Service Provider Vehicle Types', 'SW Service Provider Vehicles', 'SW Service Facility Landfills', 'SW Service Facility STS', 'SW Bill Collection Payments', 'SW Billing Status', 'SW Complaints']) || Auth::user()->hasRole('Super Admin'))
+            @if(Auth::user()->hasanyPermissionInGroup(['Sw Service Payment', 'SW Service Provider Organizations', 'SW Service Provider Work Types', 'SW Service Provider Workers', 'SW Service Provider Vehicle Types', 'SW Service Provider Vehicles', 'SW Service Facility Landfills', 'SW Service Facility STS', 'SW Bill Collection Payments', 'SW Billing Status', 'SW Complaints', 'SW Dashboard and KPIs']) || Auth::user()->hasRole('Super Admin'))
             <li class="nav-item {{ request()->is('swm-payment', 'swm-payment/*', 'swm/service-providers/*', 'swm/service-facilities/*', 'swm/service-coverage/*') ? 'menu-is-opening menu-open' : '' }}">
                 <a href="#" class="nav-link {{ request()->is('swm-payment', 'swm-payment/*', 'swm/service-providers/*', 'swm/service-facilities/*', 'swm/service-coverage/*') ? 'active' : '' }}">
                     <img src="{{ asset('img/svg/imis-icons/swmPaymentStatus.svg')}}" class="nav-icon">
@@ -499,6 +499,14 @@
                         </a>
                     </li>
                     @endcan --}}
+                    @can('List SW Dashboard and KPIs')
+                    <li class="nav-item">
+                        <a href="javascript:void(0)" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>{{ __('Dashboard and KPIs') }}</p>
+                        </a>
+                    </li>
+                    @endcan
                     @if(Auth::user()->can('List SW Organizations') || Auth::user()->can('List SW Workers'))
                     <li class="nav-item {{ request()->is('swm/service-providers/organizations*', 'swm/service-providers/workers*') ? 'menu-is-opening menu-open' : '' }}">
                         <a href="#" class="nav-link {{ request()->is('swm/service-providers/organizations*', 'swm/service-providers/workers*') ? 'active subnav' : '' }}">
