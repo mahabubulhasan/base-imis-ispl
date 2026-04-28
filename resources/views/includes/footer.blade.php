@@ -1,7 +1,7 @@
 <!-- Branding -->
-{{-- <div class="main-footer">
+<div class="main-footer">
     @include('includes.branding')
-</div> --}}
+</div>
 <!-- End Branding -->
 
 <footer class="main-footer py-2 d-flex flex-column flex-xl-row justify-content-between align-items-start align-items-xl-center gap-2">
@@ -9,7 +9,7 @@
         &copy; {{ config('constants.SITE_NAME') }}. All rights reserved.
     </strong>
     <div class="text-sm text-left text-sm-right w-100">
-        Conceptualised by <a href="https://snv.org" class="text-primary font-semibold hover:underline" target="_blank" rel="noopener noreferrer">SNV Netherlands Development Organization</a> under the project <span class="font-semibold">"Transitioning to Sustainable Urban Water Cycles in Bangladesh"</span> supported by the <span class="font-semibold">Embassy of the Kingdom of the Netherlands</span> Developed by <a href="https://streamstech.com" class="text-primary font-semibold hover:underline" target="_blank" rel="noopener noreferrer"
+        Developed by <a href="https://streamstech.com" class="text-primary font-semibold hover:underline" target="_blank" rel="noopener noreferrer"
         class="text-primary font-semibold hover:underline">Streams Tech Ltd.</a>
     </div>
 </footer>
