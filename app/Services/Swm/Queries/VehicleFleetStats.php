@@ -2,7 +2,7 @@
 
 namespace App\Services\Swm\Queries;
 
-final readonly class VehicleFleetStats
+final class VehicleFleetStats
 {
     public function __construct(
         public int $activeVehicleCount,

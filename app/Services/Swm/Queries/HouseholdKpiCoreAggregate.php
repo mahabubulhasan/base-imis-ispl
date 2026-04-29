@@ -6,7 +6,7 @@ namespace App\Services\Swm\Queries;
  * Single-row household KPI scalars for active (non-deleted) rows in building_info.households.
  * Populated by {@see SwmHouseholdKpiQueries::coreAggregate()} using one PostgreSQL query.
  */
-final readonly class HouseholdKpiCoreAggregate
+final class HouseholdKpiCoreAggregate
 {
     public function __construct(
         public int $householdCount,
