@@ -37,8 +37,8 @@
     <div class="card-body"><div style="overflow:auto;width:100%;">
         <table id="data-table" class="table table-bordered table-striped" width="100%">
             <thead><tr>
-                <th>{{ __('Name') }}</th><th>{{ __('Location') }}</th><th>{{ __('Operator Name') }}</th><th>{{ __('Contact Number') }}</th><th>{{ __('Capacity') }}</th>
-                <th>{{ __('Segregation Practiced') }}</th><th>{{ __('Reuse Practiced') }}</th><th>{{ __('Monthly Waste for Composting') }}</th><th>{{ __('Treatment') }}</th><th>{{ __('Actions') }}</th>
+                <th>{{ __('Name') }}</th><th>{{ __('Location') }}</th><th>{{ __('Operator Name') }}</th><th>{{ __('Contact Number') }}</th><th>{{ __('Capacity') }} ({{ __('Ton') }})</th>
+                <th>{{ __('Segregation Practiced') }}</th><th>{{ __('Reuse Practiced') }}</th><th>{{ __('Monthly Waste for Composting') }} ({{ __('Ton') }})</th><th>{{ __('Treatment') }}</th><th>{{ __('Actions') }}</th>
             </tr></thead>
         </table>
     </div></div>

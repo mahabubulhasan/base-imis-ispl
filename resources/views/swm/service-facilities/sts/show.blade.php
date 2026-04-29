@@ -24,7 +24,7 @@
 			<div class="col-sm-3">{!! Form::label(null, $sts->contact_number, ['class' => 'form-control']) !!}</div>
 		</div>
 		<div class="form-group row">
-			{!! Form::label('capacity', __('Capacity'), ['class' => 'col-sm-3 control-label']) !!}
+			{!! Form::label('capacity', __('Capacity') . ' (' . __('Ton') . ')', ['class' => 'col-sm-3 control-label']) !!}
 			<div class="col-sm-3">{!! Form::label(null, $sts->capacity, ['class' => 'form-control']) !!}</div>
 		</div>
 		<div class="form-group row">

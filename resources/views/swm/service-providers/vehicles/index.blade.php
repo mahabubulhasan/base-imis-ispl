@@ -87,7 +87,7 @@
                 <th>{{ __('Vehicle Number') }}</th>
                 <th>{{ __('Organization') }}</th>
                 <th>{{ __('Vehicle Type') }}</th>
-                <th>{{ __('Capacity') }}</th>
+                <th>{{ __('Capacity') }} ({{ __('Ton') }})</th>
                 <th>{{ __('Driver') }}</th>
                 <th>{{ __('Dumping Place') }}</th>
                 <th>{{ __('Actions') }}</th>

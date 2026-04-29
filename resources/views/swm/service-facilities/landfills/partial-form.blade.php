@@ -24,9 +24,9 @@
             </div>
         </div>
         <div class="form-group row">
-            {!! Form::label('capacity', __('Capacity'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('capacity', __('Capacity') . ' (' . __('Ton') . ')', ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
-                {!! Form::text('capacity', null, ['class' => 'form-control', 'placeholder' => __('Capacity')]) !!}
+                {!! Form::number('capacity', null, ['class' => 'form-control', 'placeholder' => __('Capacity'), 'min' => 0, 'step' => '0.01', 'inputmode' => 'decimal']) !!}
             </div>
         </div>
         <div class="form-group row">
@@ -44,9 +44,15 @@
             </div>
         </div>
         <div class="form-group row">
-            {!! Form::label('monthly_waste_for_composting', __('Monthly Waste for Composting'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('monthly_waste_for_composting', __('Monthly Waste for Composting') . ' (' . __('Ton') . ')', ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
-                {!! Form::text('monthly_waste_for_composting', null, ['class' => 'form-control', 'placeholder' => __('Monthly Waste for Composting')]) !!}
+                {!! Form::number('monthly_waste_for_composting', null, [
+                    'class' => 'form-control',
+                    'placeholder' => __('Monthly Waste for Composting') . ' (' . __('Ton') . ')',
+                    'min' => 0,
+                    'step' => '0.01',
+                    'inputmode' => 'decimal',
+                ]) !!}
             </div>
         </div>
         <div class="form-group row">
