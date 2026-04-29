@@ -206,6 +206,12 @@ Route::group([
     'namespace' => 'Swm',
     'middleware' => 'auth',
 ], function () {
+    Route::get('dashboard-kpis', 'DashboardKpiController@index')->name('swm.dashboard-kpis.index');
+    Route::get('dashboard-kpis/charts/complaints-by-type', 'DashboardKpiController@complaintsByTypeChart')->name('swm.dashboard-kpis.charts.complaints-by-type');
+    Route::get('dashboard-kpis/charts/complaints-by-ward', 'DashboardKpiController@complaintsByWardChart')->name('swm.dashboard-kpis.charts.complaints-by-ward');
+    Route::get('dashboard-kpis/charts/workers-by-type', 'DashboardKpiController@workersByTypeChart')->name('swm.dashboard-kpis.charts.workers-by-type');
+    Route::get('dashboard-kpis/charts/vehicles-by-type', 'DashboardKpiController@vehiclesByTypeChart')->name('swm.dashboard-kpis.charts.vehicles-by-type');
+
     Route::prefix('service-providers')->group(function () {
         Route::get('organizations/data', 'OrganizationController@getData')->name('swm.organizations.data');
         Route::get('organizations/export', 'OrganizationController@export')->name('swm.organizations.export');
