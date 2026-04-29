@@ -31,7 +31,7 @@ class PendingApplicationService
                 'title' => __('Tax Information'),
                 'fields' => [
                     new FormField(
-                        label: __('Do you have a Tax ID?'),
+                        label: __('Do you have a Tax Code?'),
                         labelFor: 'has_tax_id',
                         inputType: 'select',
                         inputId: 'has_tax_id',
@@ -41,7 +41,7 @@ class PendingApplicationService
                         required: true,
                     ),
                     new FormField(
-                        label: __('Tax ID'),
+                        label: __('Tax Code'),
                         labelFor: 'tax_id',
                         inputType: 'text',
                         inputId: 'tax_id',
@@ -164,13 +164,13 @@ class PendingApplicationService
             'latitude' => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
         ], [
-            'has_tax_id.required' => __('Please select if you have a Tax ID.'),
-            'has_tax_id.in' => __('The Tax ID selection is invalid.'),
+            'has_tax_id.required' => __('Please select if you have a Tax Code.'),
+            'has_tax_id.in' => __('The Tax Code selection is invalid.'),
             'customer_name.required' => __('Applicant Name is required.'),
             'customer_contact.required' => __('Contact No. is required.'),
             'ward.required' => __('Ward is required.'),
-            'tax_id.required_if' => __('Tax ID is required when you indicate you have one.'),
-            'tax_id.regex' => __('Tax ID format must be 00-000-0000-00.'),
+            'tax_id.required_if' => __('Tax Code is required when you indicate you have one.'),
+            'tax_id.regex' => __('Tax Code format must be 00-000-0000-00.'),
             'address.required' => __('Address is required.'),
             'proposed_emptying_date.required' => __('Proposed Emptying Date is required.'),
             'proposed_emptying_date.after_or_equal' => __('Proposed Emptying Date must be today or a future date.'),
@@ -285,7 +285,7 @@ class PendingApplicationService
     {
         return [
             __('ID') => $pendingApplication->id,
-            __('Tax ID') => $pendingApplication->tax_code ?: '-',
+            __('Tax Code') => $pendingApplication->tax_code ?: '-',
             __('Applicant Name') => $pendingApplication->applicant_name ?: '-',
             __('Applicant Contact') => $this->formatContact($pendingApplication->applicant_contact),
             __('Holding Owner Name') => $pendingApplication->customer_name ?: '-',

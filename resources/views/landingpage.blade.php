@@ -678,14 +678,14 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
 
                 // Validate required fields
                 if (!hasTaxId.value) {
-                    fieldErrors.value.has_tax_id = 'Please select if you have a Tax ID';
+                    fieldErrors.value.has_tax_id = 'Please select if you have a Tax Code';
                 }
                 if (hasTaxId.value === 'yes' && !taxId.value) {
-                    fieldErrors.value.tax_id = 'Tax ID is required';
+                    fieldErrors.value.tax_id = 'Tax Code is required';
                 } else if (hasTaxId.value === 'yes' && !hasMinimumLength(taxId.value)) {
-                    fieldErrors.value.tax_id = 'Tax ID is incomplete';
+                    fieldErrors.value.tax_id = 'Tax Code is incomplete';
                 } else if (hasTaxId.value === 'yes' && !isValidTaxId(taxId.value)) {
-                    fieldErrors.value.tax_id = 'Tax ID format must be 00-000-0000-00';
+                    fieldErrors.value.tax_id = 'Tax Code format must be 00-000-0000-00';
                 }
                 if (!customerName.value) {
                     fieldErrors.value.customer_name = 'Customer Name is required';
@@ -785,7 +785,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                     return;
                 }
 
-                // Tax ID changes should always allow fresh owner-name lookup data to populate.
+                // Tax Code changes should always allow fresh owner-name lookup data to populate.
                 hasManualHoldingOwnerNameOverride.value = false;
 
                 const parsedWard = extractWardFromTaxId(newVal);

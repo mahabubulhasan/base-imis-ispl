@@ -209,7 +209,7 @@ Developed By: Streamstech Ltd.   -->
 
                                 <div class="form-row">
                                     <div class="form-group row col-12">
-                                        {!! Form::label('has_tax_id', 'Do you have a Tax ID? ', ['class' => 'col-sm-3 control-label']) !!}
+                                        {!! Form::label('has_tax_id', 'Do you have a Tax Code? ', ['class' => 'col-sm-3 control-label']) !!}
                                         <div class="col-sm-5">
                                             <select name="has_tax_id" class="form-control @error('has_tax_id') is-invalid @enderror" id="has_tax_id" required>
                                                 <option value="">Please select</option>
@@ -223,10 +223,10 @@ Developed By: Streamstech Ltd.   -->
                                     </div>
                                 </div>
 
-                                <!-- Tax ID field: initially shown only when old('has_tax_id') == 'yes' -->
+                                <!-- Tax Code field: initially shown only when old('has_tax_id') == 'yes' -->
                                 <div class="form-row">
                                     <div class="form-group col-12 col-md-6" id="tax_id_group" style="{{ old('has_tax_id') == 'yes' ? '' : 'display:none;' }}">
-                                        <label for="tax_id">Tax ID <span class="text-danger tax-required-star" style="{{ old('has_tax_id') == 'yes' ? '' : 'display:none;' }}">*</span></label>
+                                        <label for="tax_id">Tax Code <span class="text-danger tax-required-star" style="{{ old('has_tax_id') == 'yes' ? '' : 'display:none;' }}">*</span></label>
                                         <input type="text" name="tax_id" class="form-control @error('tax_id') is-invalid @enderror" id="tax_id"
                                             placeholder="##-###-####-##" value="{{ old('tax_id') }}" {{ old('has_tax_id') == 'yes' ? 'required aria-required=true' : '' }}>
                                         @error('tax_id')
@@ -443,7 +443,7 @@ Developed By: Streamstech Ltd.   -->
                 }, 300);
             }
 
-            // Toggle Tax ID visibility based on selection
+            // Toggle Tax Code visibility based on selection
             function setTaxVisibility(show) {
                 var $group = $('#tax_id_group');
                 var $input = $('#tax_id');
@@ -492,7 +492,7 @@ Developed By: Streamstech Ltd.   -->
             }
             initSelect2();
 
-            // ensure Tax ID visibility matches current selection on load
+            // ensure Tax Code visibility matches current selection on load
             var initialHasTax = @json(old('has_tax_id', ''));
             setTaxVisibility(initialHasTax === 'yes');
 
@@ -545,7 +545,7 @@ Developed By: Streamstech Ltd.   -->
             });
 
             /**
-             * Auto-fill form fields based on Tax ID
+             * Auto-fill form fields based on Tax Code
              * Uses debounced input event for real-time auto-population
              */
             var taxIdInput = $('#tax_id');
@@ -569,7 +569,7 @@ Developed By: Streamstech Ltd.   -->
 
             // Function to check if tax_id is valid (format: ##-###-####-##)
             function isValidTaxId(taxId) {
-                // Tax ID format: ##-###-####-## (11 digits total with dashes)
+                // Tax Code format: ##-###-####-## (11 digits total with dashes)
                 var taxIdPattern = /^\d{2}-\d{3}-\d{4}-\d{2}$/;
                 return taxIdPattern.test(taxId.trim());
             }
