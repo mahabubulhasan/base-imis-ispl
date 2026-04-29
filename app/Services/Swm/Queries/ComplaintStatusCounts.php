@@ -5,7 +5,7 @@ namespace App\Services\Swm\Queries;
 /**
  * Complaint counts for one reporting window (soft-deleted excluded, date_time in range).
  */
-final readonly class ComplaintStatusCounts
+final class ComplaintStatusCounts
 {
     public function __construct(
         public int $total,
