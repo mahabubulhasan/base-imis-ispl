@@ -29,7 +29,7 @@ class SwmKpiAggregatesDtoTest extends TestCase
      *
      * If you change the service, update this number and {@see self::DASHBOARD_FIXED_QUERY_SECTIONS} together.
      */
-    public const DASHBOARD_FIXED_QUERY_BUDGET = 20;
+    public const DASHBOARD_FIXED_QUERY_BUDGET = 22;
 
     /**
      * @var array<string, int> Human-readable breakdown (messages for maintainers / assertion failures).
@@ -39,7 +39,7 @@ class SwmKpiAggregatesDtoTest extends TestCase
         'existingKpis: Sts count + Landfill count' => 2,
         'coverageMetrics: averageDailyWasteByWard + buildings count' => 2,
         'billingMetrics: payments sum + activeForBilling get (mock skips due-loop DB)' => 2,
-        'complaintMetrics: (reuses complaintStatus; 0 extra)' => 0,
+        'complaintMetrics: countsByTypeInRange + countsByWardInRange' => 2,
         'serviceProviderMetrics: org + worker + fleet merge + 3× grouped/get summaries' => 6,
         'serviceFacilityMetrics: STS list + Landfill list' => 2,
         'cityStatistics: wards count + city area selectOne' => 2,

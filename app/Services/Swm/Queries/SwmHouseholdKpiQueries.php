@@ -81,4 +81,19 @@ class SwmHouseholdKpiQueries
             ->orderBy('ward')
             ->get();
     }
+
+    /**
+     * Per ward: household count and distinct van pullers assigned to households in that ward.
+     */
+    public function householdsAndVanPullersByWardRows(): Collection
+    {
+        return $this->base()
+            ->select('ward')
+            ->selectRaw('COUNT(*) as total_households')
+            ->selectRaw('COUNT(DISTINCT CASE WHEN van_puller_id IS NOT NULL THEN van_puller_id END) as van_puller_count')
+            ->whereNotNull('ward')
+            ->groupBy('ward')
+            ->orderBy('ward')
+            ->get();
+    }
 }

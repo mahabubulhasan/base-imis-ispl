@@ -39,7 +39,7 @@ class SwmDashboardKpiService
             'existing_kpis' => $this->existingKpis($householdCore, $complaintStatus),
             'coverage' => $this->coverageMetrics($householdCore),
             'billing' => $this->billingMetrics($from, $to),
-            'complaints' => $this->complaintMetrics($complaintStatus),
+            'complaints' => $this->complaintMetrics($complaintStatus, $from, $to),
             'service_providers' => $this->serviceProviderMetrics(),
             'service_facilities' => $this->serviceFacilityMetrics(),
             'city_statistics' => $this->cityStatistics($householdCore),
@@ -55,7 +55,7 @@ class SwmDashboardKpiService
         $rows = $this->complaintKpiQueries->countsByTypeInRange($from, $to)->get();
 
         return [
-            'labels' => $rows->pluck('complaint_type')->map(fn ($v) => (string) $v)->values(),
+            'labels' => $rows->pluck('complaint_type')->map(fn ($v) => $this->complaintTypeLabel((string) $v))->values(),
             'values' => $rows->pluck('total')->map(fn ($v) => (int) $v)->values(),
         ];
     }
@@ -89,6 +89,111 @@ class SwmDashboardKpiService
         return [
             'labels' => $rows->pluck('vehicle_type')->values(),
             'values' => $rows->pluck('total')->map(fn ($v) => (int) $v)->values(),
+        ];
+    }
+
+    /**
+     * Per month in range: revenue collected (payments) vs marginal due (all active billing households).
+     *
+     * @return array{labels: list<string>, datasets: list<array{label: string, data: list<float|int>}>}
+     */
+    public function billingByMonthChart(?string $monthFrom, ?string $monthTo): array
+    {
+        [$from, $to] = $this->resolveRange($monthFrom, $monthTo);
+
+        $paymentRows = DB::select(
+            "SELECT to_char(date_trunc('month', payment_for_month), 'YYYY-MM') AS ym,
+                    COALESCE(SUM(amount::numeric), 0)::float AS total
+             FROM swm.bill_collection_payments
+             WHERE deleted_at IS NULL
+               AND payment_for_month >= ?
+               AND payment_for_month <= ?
+             GROUP BY 1
+             ORDER BY 1",
+            [
+                $from->copy()->startOfMonth()->toDateString(),
+                $to->copy()->endOfMonth()->toDateString(),
+            ]
+        );
+        $collectedByYm = collect($paymentRows)->pluck('total', 'ym');
+
+        $households = $this->householdKpiQueries->activeForBilling();
+        $labels = [];
+        $collected = [];
+        $dueData = [];
+        $m = $from->copy()->startOfMonth();
+        while ($m->lte($to)) {
+            $ym = $m->format('Y-m');
+            $labels[] = $ym;
+            $collected[] = round((float) $collectedByYm->get($ym, 0), 2);
+            $monthDue = '0.00';
+            foreach ($households as $household) {
+                $monthDue = bcadd(
+                    $monthDue,
+                    $this->billCollectionPaymentService->marginalDueForMonth($household, $m),
+                    2
+                );
+            }
+            $dueData[] = round((float) $monthDue, 2);
+            $m->addMonth();
+        }
+
+        return [
+            'labels' => $labels,
+            'datasets' => [
+                [
+                    'label' => __('Revenue collected'),
+                    'data' => $collected,
+                ],
+                [
+                    'label' => __('Marginal due'),
+                    'data' => $dueData,
+                ],
+            ],
+        ];
+    }
+
+    public function householdsByWardChart(): array
+    {
+        $rows = $this->householdKpiQueries->wardStatisticsRows();
+
+        return [
+            'labels' => $rows->pluck('ward')->map(fn ($w) => (string) $w)->values(),
+            'values' => $rows->pluck('total_households')->map(fn ($v) => (int) $v)->values(),
+        ];
+    }
+
+    public function householdCoverageByWardChart(): array
+    {
+        $rows = $this->householdKpiQueries->wardStatisticsRows();
+
+        return [
+            'labels' => $rows->pluck('ward')->map(fn ($w) => (string) $w)->values(),
+            'values' => $rows->map(function ($row) {
+                $total = (int) $row->total_households;
+                $covered = (int) $row->covered_households;
+
+                return $total > 0 ? round(($covered / $total) * 100, 2) : 0;
+            })->values(),
+        ];
+    }
+
+    public function householdsVsVanPullersByWardChart(): array
+    {
+        $rows = $this->householdKpiQueries->householdsAndVanPullersByWardRows();
+
+        return [
+            'labels' => $rows->pluck('ward')->map(fn ($w) => (string) $w)->values(),
+            'datasets' => [
+                [
+                    'label' => __('Households'),
+                    'data' => $rows->pluck('total_households')->map(fn ($v) => (int) $v)->values()->all(),
+                ],
+                [
+                    'label' => __('Van pullers'),
+                    'data' => $rows->pluck('van_puller_count')->map(fn ($v) => (int) $v)->values()->all(),
+                ],
+            ],
         ];
     }
 
@@ -172,16 +277,26 @@ class SwmDashboardKpiService
         ];
     }
 
-    private function complaintMetrics(ComplaintStatusCounts $cc): array
+    private function complaintMetrics(ComplaintStatusCounts $cc, Carbon $from, Carbon $to): array
     {
+        $byType = $this->complaintKpiQueries->countsByTypeInRange($from, $to)
+            ->get()
+            ->map(fn ($row) => $this->complaintTypeLabel((string) $row->complaint_type).': '.(int) $row->total)
+            ->implode(', ');
+
+        $byWard = $this->complaintKpiQueries->countsByWardInRange($from, $to)
+            ->get()
+            ->map(fn ($row) => (string) $row->ward_label.': '.(int) $row->total)
+            ->implode(', ');
+
         return [
             'Total complaints received' => $cc->total,
             'Total complaints resolved' => $cc->resolved,
             'Total complaints pending' => $cc->pending,
             'Total complaints in process' => $cc->inProcess,
             'Total complaints closed' => $cc->closed,
-            'Number of complaints by type' => 'See chart endpoint',
-            'Number of complaints by ward' => 'See chart endpoint',
+            'Number of complaints by type' => $byType !== '' ? $byType : 'N/A',
+            'Number of complaints by ward' => $byWard !== '' ? $byWard : 'N/A',
         ];
     }
 
@@ -312,6 +427,16 @@ class SwmDashboardKpiService
      */
     private function resolveRange(?string $monthFrom, ?string $monthTo): array
     {
+        $fromRaw = is_string($monthFrom) ? trim($monthFrom) : '';
+        $toRaw = is_string($monthTo) ? trim($monthTo) : '';
+
+        if ($fromRaw === '' && $toRaw === '') {
+            $to = now()->copy()->startOfMonth();
+            $from = now()->copy()->subMonths(5)->startOfMonth();
+
+            return [$from, $to];
+        }
+
         $from = $this->parseMonth($monthFrom) ?? now()->startOfMonth();
         $to = $this->parseMonth($monthTo) ?? now()->startOfMonth();
         if ($from->gt($to)) {
@@ -319,6 +444,13 @@ class SwmDashboardKpiService
         }
 
         return [$from->copy()->startOfMonth(), $to->copy()->startOfMonth()];
+    }
+
+    private function complaintTypeLabel(string $key): string
+    {
+        $map = config('swm_complaints.complaint_types', []);
+
+        return $map[$key] ?? $key;
     }
 
     private function parseMonth(?string $value): ?Carbon

@@ -1,7 +1,9 @@
 {
     "/js/app.js": "/js/app.js",
+    "/js/swm-dashboard.js": "/js/swm-dashboard.js",
     "/js/popper.js": "/js/popper.js",
     "/css/app.css": "/css/app.css",
+    "/js/vendor/chartjs-plugin-datalabels.min.js": "/js/vendor/chartjs-plugin-datalabels.min.js",
     "/webfonts/fa-brands-400.ttf": "/webfonts/fa-brands-400.ttf",
     "/webfonts/fa-brands-400.woff2": "/webfonts/fa-brands-400.woff2",
     "/webfonts/fa-regular-400.ttf": "/webfonts/fa-regular-400.ttf",

@@ -12,7 +12,17 @@ class DashboardKpiController extends Controller
     public function __construct(protected SwmDashboardKpiService $swmDashboardKpiService)
     {
         $this->middleware('auth');
-        $this->middleware('permission:List SW Dashboard and KPIs', ['only' => ['index', 'complaintsByTypeChart', 'complaintsByWardChart', 'workersByTypeChart', 'vehiclesByTypeChart']]);
+        $this->middleware('permission:List SW Dashboard and KPIs', ['only' => [
+            'index',
+            'complaintsByTypeChart',
+            'complaintsByWardChart',
+            'workersByTypeChart',
+            'vehiclesByTypeChart',
+            'billingByMonthChart',
+            'householdsByWardChart',
+            'householdCoverageByWardChart',
+            'householdsVsVanPullersByWardChart',
+        ]]);
     }
 
     public function index(Request $request)
@@ -63,5 +73,30 @@ class DashboardKpiController extends Controller
     public function vehiclesByTypeChart(): JsonResponse
     {
         return response()->json($this->swmDashboardKpiService->vehiclesByTypeChart());
+    }
+
+    public function billingByMonthChart(Request $request): JsonResponse
+    {
+        return response()->json(
+            $this->swmDashboardKpiService->billingByMonthChart(
+                $request->input('month_from'),
+                $request->input('month_to')
+            )
+        );
+    }
+
+    public function householdsByWardChart(): JsonResponse
+    {
+        return response()->json($this->swmDashboardKpiService->householdsByWardChart());
+    }
+
+    public function householdCoverageByWardChart(): JsonResponse
+    {
+        return response()->json($this->swmDashboardKpiService->householdCoverageByWardChart());
+    }
+
+    public function householdsVsVanPullersByWardChart(): JsonResponse
+    {
+        return response()->json($this->swmDashboardKpiService->householdsVsVanPullersByWardChart());
     }
 }

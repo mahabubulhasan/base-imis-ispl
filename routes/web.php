@@ -211,6 +211,10 @@ Route::group([
     Route::get('dashboard-kpis/charts/complaints-by-ward', 'DashboardKpiController@complaintsByWardChart')->name('swm.dashboard-kpis.charts.complaints-by-ward');
     Route::get('dashboard-kpis/charts/workers-by-type', 'DashboardKpiController@workersByTypeChart')->name('swm.dashboard-kpis.charts.workers-by-type');
     Route::get('dashboard-kpis/charts/vehicles-by-type', 'DashboardKpiController@vehiclesByTypeChart')->name('swm.dashboard-kpis.charts.vehicles-by-type');
+    Route::get('dashboard-kpis/charts/billing-by-month', 'DashboardKpiController@billingByMonthChart')->name('swm.dashboard-kpis.charts.billing-by-month');
+    Route::get('dashboard-kpis/charts/households-by-ward', 'DashboardKpiController@householdsByWardChart')->name('swm.dashboard-kpis.charts.households-by-ward');
+    Route::get('dashboard-kpis/charts/household-coverage-by-ward', 'DashboardKpiController@householdCoverageByWardChart')->name('swm.dashboard-kpis.charts.household-coverage-by-ward');
+    Route::get('dashboard-kpis/charts/households-vs-van-pullers-by-ward', 'DashboardKpiController@householdsVsVanPullersByWardChart')->name('swm.dashboard-kpis.charts.households-vs-van-pullers-by-ward');
 
     Route::prefix('service-providers')->group(function () {
         Route::get('organizations/data', 'OrganizationController@getData')->name('swm.organizations.data');
