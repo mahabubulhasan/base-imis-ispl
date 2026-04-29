@@ -2763,6 +2763,7 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                     filters: [],
                 },
                 @endcan
+                /*
                 @can('Places Map Layer')
                 places_layer: {
                     name: '{{ __("Places") }}',
@@ -2772,6 +2773,7 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                     filters: [],
                 },
                 @endcan
+                */
                 @can('Buildings Map Layer')
                 buildings_layer: {
                     name: '{{ __("Building") }}',
@@ -2926,6 +2928,7 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                 @endcan
 
 
+                /*
                 @can('Sanitation System Map Layer')
                 sanitation_system_layer: {
                     name: '{{ __("Sanitation System") }}',
@@ -2935,6 +2938,7 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                     filters: [],
                 },
                 @endcan
+                */
 
 
                 @can('PT/CT Toilets Map Layer')
@@ -3060,6 +3064,8 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                     filters: [],
                 },
                 @endcan
+
+                /*
                 @can('Wards Map Layer')
                 wards_layer: {
                     name: '{{ __("Ward Wise Info") }}',
@@ -3162,6 +3168,9 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                     filters: [],
                 },
                 @endcan
+                */
+
+               /*
                 @can('Summarized Grids Map Layer')
                 grids_layer: {
                     name: '{{ __("Summarized Grids (0.5 km)") }}',
@@ -3255,6 +3264,7 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                     filters: [],
                 },
                 @endcan
+                */
 
         @can('Water Body Map Layer')
         waterbodys_layer: {
@@ -3266,7 +3276,7 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
         },
         @endcan
 
-
+                /*
                 @can('Land Use Map Layer')
                 landuses_layer: {
                     name: '{{ __("Land Use") }}',
@@ -3276,6 +3286,7 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                     filters: [],
                 },
                 @endcan
+                */
 
             };
 
