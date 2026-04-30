@@ -1,5 +1,6 @@
-<!-- Last Modified Date: 11-04-2024
-Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
+<!-- Last Modified: 2026-04-30
+Developed By: Streams Tech Ltd.
+Description: Drain network listing view with filter, export, and datatable. -->
 @extends('layouts.dashboard')
 @section('title', $page_title)
 @push('style')
@@ -16,7 +17,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 
   @can('Add Drain On Map')
   <a href="{{ action('MapsController@index') }}#add_drain_control" class="btn btn-info">{{ __('Add Drain') }}</a>
-  @endcan  
+  @endcan
   @can('Export Drains to CSV')
     <a href="{{ action('UtilityInfo\DrainController@export') }}" id="export" class="btn btn-info">{{ __('Export to CSV')}}</a>
 
@@ -72,6 +73,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
         <thead>
           <tr>
             <th>{{ __('Code')}}</th>
+            <th>{{ __('Ward')}}</th>
             <th>{{ __('Road Code')}}</th>
             <th>{{ __('Surface Type')}}</th>
             <th>{{ __('Cover Type')}}</th>
@@ -108,6 +110,10 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
       columns: [{
           data: 'code',
           name: 'code'
+        },
+        {
+          data: 'ward',
+          name: 'ward'
         },
         {
           data: 'road_code',
@@ -172,7 +178,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
       cover_type = '';
 
     $('#filter-form').on('submit', function(e) {
-      
+
       e.preventDefault();
       dataTable.draw();
       code = $('#code_text').val();
@@ -193,16 +199,16 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
     $("#export-shp").on("click", function(e) {
       e.preventDefault();
       var cql_param = getCQLParams();
-     
+
       window.location.href = "{{ Config::get("constants.GEOSERVER_URL") }}wfs?service=WFS&version=1.0.0&request=GetFeature&authkey={{ Config::get("constants.AUTH_KEY") }}&typeName={{ Config::get("constants.GEOSERVER_WORKSPACE") }}:drains_layer+&CQL_FILTER=" + cql_param + " &outputFormat=SHAPE-ZIP&format_options=filename:Drain Network.zip";
     })
 
     $("#export-kml").on("click", function(e) {
       e.preventDefault();
       var cql_param = getCQLParams();
-     
+
       window.location.href = "{{ Config::get("constants.GEOSERVER_URL") }}wfs?service=WFS&version=1.0.0&request=GetFeature&authkey={{ Config::get("constants.AUTH_KEY") }}&typeName={{ Config::get("constants.GEOSERVER_WORKSPACE") }}:drains_layer+&CQL_FILTER=" + cql_param +" &outputFormat=KML&format_options=filename:Drain Network.kml";
-     
+
     });
 
     function getCQLParams() {

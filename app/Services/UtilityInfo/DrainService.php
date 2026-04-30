@@ -1,5 +1,5 @@
 <?php
-// Last Modified: 2026-02-26
+// Last Modified: 2026-04-30
 // Developed By: Streams Tech Ltd.
 // Description: Handles drain network data operations with road-based code generation.
 
@@ -47,7 +47,8 @@ class DrainService {
      */
     public function getAllData($data)
     {
-        $drainData = Drain::select('*');
+        $drainData = Drain::select('utility_info.drains.*', 'utility_info.roads.ward')
+            ->leftJoin('utility_info.roads', 'utility_info.drains.road_code', '=', 'utility_info.roads.code');
         return Datatables::of($drainData)
                 ->filter(function ($query) use ($data) {
                 if ($data['code']) {
