@@ -1,3 +1,6 @@
+{{-- Last Modified: 2026-04-30 --}}
+{{-- Developed By: Streams Tech Ltd. --}}
+{{-- Description: Road network listing view with filter, export, and datatable. --}}
 @extends('layouts.dashboard')
 @section('title', $page_title)
 @push('style')
@@ -10,10 +13,10 @@
 @section('content')
 <div class="card">
     <div class="card-header">
-    
+
     @can('Add Road On Map')
     <a href="{{ action('MapsController@index') }}#add_road_control" class="btn btn-info">{{ __('Add Road')}}</a>
-    @endcan    
+    @endcan
     @can('Export Roadlines to CSV')
         <a href="{{ action('UtilityInfo\RoadlineController@export') }}" id="export" class="btn btn-info">{{ __('Export to CSV')}}</a>
 
@@ -70,6 +73,15 @@
                                         <div class="col-md-2" >
                                             <input type="text" class="form-control" id="carrying_width" placeholder="{{ __('Carrying Width')}}" />
                                         </div>
+                                        <label for="ward_select" class="col-md-2 col-form-label ">{{ __('Ward')}}</label>
+                                        <div class="col-md-2">
+                                            <select class="form-control" id="ward_select">
+                                                <option value="">{{ __('Ward') }}</option>
+                                                @foreach($wards as $ward)
+                                                <option value="{{ $ward }}">{{ $ward }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
                                     <div class="card-footer text-right">
                                         <button type="submit" class="btn btn-info ">{{ __('Filter')}}</button>
@@ -95,6 +107,7 @@
                 <thead>
                     <tr>
                         <th>{{ __('Code')}}</th>
+                        <th>{{ __('Ward')}}</th>
                         <th>{{ __('Road Name')}}</th>
                         <th>{{ __('Hierarchy')}}</th>
                         <th>{{ __('Right of Way (m)')}}</th>
@@ -127,11 +140,16 @@
                     d.surface_type = $('#surface_type').val();
                     d.name = $('#name').val();
                     d.carrying_width = $('#carrying_width').val();
+                    d.ward = $('#ward_select').val();
                 }
             },
             columns: [{
                     data: 'code',
                     name: 'code'
+                },
+                {
+                    data: 'ward',
+                    name: 'ward'
                 },
                 {
                     data: 'name',
@@ -199,7 +217,8 @@
         });
         var code = '',
         hierarchy = '',
-        surface_type = '';
+        surface_type = '',
+        ward = '';
 
         $('#filter-form').on('submit', function(e) {
             e.preventDefault();
@@ -209,6 +228,7 @@
             surface_type = $('#surface_type').val();
             name = $('#name').val();
             carrying_width = $('#carrying_width').val();
+            ward = $('#ward_select').val();
         });
 
         filterDataTable(dataTable);

@@ -1,6 +1,6 @@
 <?php
 
-// Last Modified: 2026-04-24
+// Last Modified: 2026-04-30
 // Developed By: Streams Tech Ltd.
 // Description: Controller for road network CRUD and map-facing road lookup endpoints.
 
@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\UtilityInfo\Roadline;
 use App\Models\BuildingInfo\Building;
+use App\Models\LayerInfo\Ward;
 use App\Http\Requests\UtilityInfo\RoadLineRequest;
 use App\Services\UtilityInfo\RoadlineService;
 use DB;
@@ -39,7 +40,8 @@ class RoadlineController extends Controller
     public function index()
     {
         $page_title = __('Road Network');
-        return view('utility-info/road-lines.index', compact('page_title'));
+        $wards = Ward::orderBy('ward', 'asc')->pluck('ward', 'ward');
+        return view('utility-info/road-lines.index', compact('page_title', 'wards'));
     }
 
     public function getData(Request $request)
