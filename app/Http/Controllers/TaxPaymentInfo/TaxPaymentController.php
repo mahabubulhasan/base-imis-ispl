@@ -1,5 +1,5 @@
 <?php
-// Last Modified: 2026-04-19
+// Last Modified: 2026-05-01
 // Developed By: Streams Tech Ltd.
 // Description: Handles tax payment collection operations
 namespace App\Http\Controllers\TaxPaymentInfo;
@@ -428,8 +428,18 @@ class TaxPaymentController extends Controller
      */
     public function destroy($tax_code)
     {
-        $taxPayment = TaxPayment::where('tax_code', $tax_code)->firstOrFail();
-        $taxPayment->delete();
+        DB::transaction(function () use ($tax_code) {
+            $taxPayment = TaxPayment::where('tax_code', $tax_code)->firstOrFail();
+
+            $bins = Building::where('tax_code', $tax_code)->pluck('bin');
+
+            if ($bins->isNotEmpty()) {
+                Owner::whereIn('bin', $bins)->delete();
+                Building::whereIn('bin', $bins)->delete();
+            }
+
+            $taxPayment->delete();
+        });
 
         return redirect()->route('tax-payment.index')->with('success', __('Property tax collection record deleted successfully.'));
     }
