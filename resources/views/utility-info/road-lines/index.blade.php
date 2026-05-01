@@ -1,4 +1,4 @@
-{{-- Last Modified: 2026-04-30 --}}
+{{-- Last Modified: 2026-05-01 --}}
 {{-- Developed By: Streams Tech Ltd. --}}
 {{-- Description: Road network listing view with filter, export, and datatable. --}}
 @extends('layouts.dashboard')
@@ -48,19 +48,22 @@
                                         <div class="col-md-2" >
                                             <select class="form-control" id="road_hier_select">
                                                 <option value="">{{__('Hierarchy')}}</option>
-                                                <option value="Strategic Urban Road">Strategic Urban Road</option>
-                                                <option value="Feeder Road">Feeder Road</option>
-                                                <option value="Other Road">Other Road</option>
+                                                <option value="Primary">Primary</option>
+                                                <option value="Tertiary">Tertiary</option>
+                                                <option value="Secondary">Secondary</option>
                                             </select>
                                         </div>
                                          <label for="code" class="col-md-2 col-form-label ">{{ __('Surface Type')}}</label>
                                         <div class="col-md-2" >
                                             <select class="form-control" id="surface_type">
                                                 <option value="">{{__('Surface Type')}}</option>
+                                                <option value="HBB">HBB</option>
+                                                <option value="Uni-Block">Uni-Block</option>
                                                 <option value="Earthen">Earthen</option>
-                                                <option value="Gravelled">Gravelled</option>
-                                                <option value="Metalled">Metalled</option>
-                                                <option value="Brick Paved">Brick Paved</option>
+                                                <option value="BC">BC</option>
+                                                <option value="WBM">WBM</option>
+                                                <option value="CC">CC</option>
+                                                <option value="RCC">RCC</option>
                                             </select>
                                         </div>
                                     </div>
