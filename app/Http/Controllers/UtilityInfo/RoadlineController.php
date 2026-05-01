@@ -1,6 +1,6 @@
 <?php
 
-// Last Modified: 2026-04-30
+// Last Modified: 2026-05-01
 // Developed By: Streams Tech Ltd.
 // Description: Controller for road network CRUD and map-facing road lookup endpoints.
 
@@ -112,8 +112,24 @@ class RoadlineController extends Controller
         $roadline = Roadline::find($id);
         $roadHierarchy = Roadline::where('hierarchy','!=',null)->groupBy('hierarchy')->pluck('hierarchy','hierarchy');
         $roadSurfaceTypes = Roadline::where('surface_type','!=',null)->groupBy('surface_type')->pluck('surface_type','surface_type');
+        $wards = Ward::orderBy('ward', 'asc')->pluck('ward', 'ward');
+        $roadTypes = collect(config('constants.ROAD_TYPES', []))
+            ->mapWithKeys(function ($type, $key) {
+                return [$key => $type['name'] ?? $key];
+            })
+            ->all();
 
         if ($roadline) {
+            if (!array_key_exists($roadline->road_type, $roadTypes)) {
+                $matchedRoadTypeKey = collect(config('constants.ROAD_TYPES', []))->search(function ($type) use ($roadline) {
+                    return ($type['name'] ?? null) === $roadline->road_type;
+                });
+
+                if ($matchedRoadTypeKey !== false) {
+                    $roadline->road_type = $matchedRoadTypeKey;
+                }
+            }
+
             // Format the carrying_width attribute to display only two decimal places
             $roadline->carrying_width = number_format($roadline->carrying_width, 2);
             $roadline->right_of_way = number_format($roadline->right_of_way, 2);
@@ -121,7 +137,7 @@ class RoadlineController extends Controller
             $roadline->length = number_format($roadline->length, 2);
 
             $page_title = __("Edit Road Network");
-            return view('utility-info/road-lines.edit', compact('page_title', 'roadline','roadHierarchy','roadSurfaceTypes'));
+            return view('utility-info/road-lines.edit', compact('page_title', 'roadline','roadHierarchy','roadSurfaceTypes', 'wards', 'roadTypes'));
         } else {
             abort(404);
         }
