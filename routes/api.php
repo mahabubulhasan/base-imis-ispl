@@ -1,10 +1,14 @@
 <?php
+// Last Modified: 2026-05-01
+// Developed By: Streams Tech Ltd.
+// Description: API route definitions for mobile and integration clients.
 
 use App\Http\Controllers\Api\ApiServiceController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BuildingSurveyController;
 use App\Http\Controllers\Api\SewerConnectionController;
 use App\Http\Controllers\Api\EmptyingServiceController;
+use App\Http\Controllers\Api\SludgeCollectionController;
 use App\Http\Controllers\Api\LanguageController;
 use App\Http\Controllers\BuildingInfo\BuildingController;
 use App\Http\Controllers\BuildingSearchController;
@@ -91,6 +95,10 @@ Route::group([
         Route::get('/drivers',[EmptyingServiceController::class,'getDrivers']);
         Route::get('/emptiers',[EmptyingServiceController::class,'getEmptiers']);
         Route::post('/save-emptying',[EmptyingServiceController::class,'save']);
+    });
+
+    Route::group(['name' => 'sludgeCollection'],function (){
+        Route::post('/save-sludge-collection',[SludgeCollectionController::class,'save']);
     });
 
     /*
