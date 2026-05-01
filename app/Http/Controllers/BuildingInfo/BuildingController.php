@@ -1,4 +1,7 @@
 <?php
+// Last Modified: 2026-05-01
+// Developed By: Streams Tech Ltd.
+// Description: Controller for building CRUD operations and related data endpoints.
 
 namespace App\Http\Controllers\BuildingInfo;
 
@@ -27,6 +30,8 @@ use App\Models\LayerInfo\Ward;
 use App\Models\LayerInfo\Lic;
 use App\Models\UtilityInfo\WaterSupplys;
 use App\Models\Fsm\ContaimentType;
+use App\Models\TaxPaymentInfo\TaxPayment;
+use App\Models\TaxPaymentInfo\TaxPaymentStatus;
 use App\Enums\LicStatus;
 use App\Services\BuildingInfo\BuildingStructureService;
 use App\Http\Requests\BuildingInfo\BuildingRequest;
@@ -365,7 +370,15 @@ class BuildingController extends Controller
             if ($building->containments()->exists()) {
                 return redirect('building-info/buildings')->with('error', __("Failed to delete Building, it is associated with Containment Information"));
             } else {
-                $building->delete();
+                DB::transaction(function () use ($building) {
+                    if (!empty($building->tax_code)) {
+                        TaxPayment::where('tax_code', $building->tax_code)->delete();
+                        TaxPaymentStatus::where('tax_code', $building->tax_code)->delete();
+                    }
+
+                    $building->delete();
+                });
+
                 return redirect('building-info/buildings')->with('success', __("Building Deleted Successfully"));
             }
         } else {
