@@ -18,14 +18,43 @@
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Tax ID') }}</label><div class="col-sm-3">{!! Form::label(null, $household->tax_id, ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('BIN') }}</label><div class="col-sm-3">{!! Form::label(null, $household->bin, ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Waste Collection Fee') }} ({{ __('Taka') }}/{{ __('Month') }})</label><div class="col-sm-3">{!! Form::label(null, $household->waste_charge, ['class' => 'form-control']) !!}</div></div>
-            <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Building Owner') }} ({{ __('Yes') }}/{{ __('No') }})</label><div class="col-sm-3">{!! Form::label(null, $household->is_owner ? __('Yes') : __('No'), ['class' => 'form-control']) !!}</div></div>
+            <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Building Owner') }}</label><div class="col-sm-3">{!! Form::label(null, $household->is_owner ? __('Yes') : __('No'), ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Functional Use') }}</label><div class="col-sm-3">{!! Form::label(null, $household->functional_use, ['class' => 'form-control']) !!}</div></div>
-            <div class="form-group row"><label class="col-sm-3 control-label">{{ __('LIC') }} ({{ __('Yes') }}/{{ __('No') }})</label><div class="col-sm-3">{!! Form::label(null, $household->is_lic ? __('Yes') : __('No'), ['class' => 'form-control']) !!}</div></div>
+            <div class="form-group row"><label class="col-sm-3 control-label">{{ __('LIC') }}</label><div class="col-sm-3">{!! Form::label(null, $household->is_lic ? __('Yes') : __('No'), ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('LIC') }}</label><div class="col-sm-3">{!! Form::label(null, $household->lic_id ? ((optional($household->lic)->community_name ? optional($household->lic)->community_name.' - ' : '').$household->lic_id) : null, ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Number of Family Members') }}</label><div class="col-sm-3">{!! Form::label(null, $household->number_of_family_members, ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Using This Service Since') }}</label><div class="col-sm-3">{!! Form::label(null, $household->using_this_service_since, ['class' => 'form-control']) !!}</div></div>
-            <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Segregation Practiced') }} ({{ __('Yes') }}/{{ __('No') }})</label><div class="col-sm-3">{!! Form::label(null, $household->segregation_practiced ? __('Yes') : __('No'), ['class' => 'form-control']) !!}</div></div>
-            <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Waste Bin Provided') }} ({{ __('Yes') }}/{{ __('No') }})</label><div class="col-sm-3">{!! Form::label(null, $household->waste_bin_provided ? __('Yes') : __('No'), ['class' => 'form-control']) !!}</div></div>
+            <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Segregation Practiced') }}</label><div class="col-sm-3">{!! Form::label(null, $household->segregation_practiced ? __('Yes') : __('No'), ['class' => 'form-control']) !!}</div></div>
+            <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Waste Bin Provided') }}</label><div class="col-sm-3">{!! Form::label(null, $household->waste_bin_provided ? __('Yes') : __('No'), ['class' => 'form-control']) !!}</div></div>
+            @if($household->waste_bin_provided && $household->wasteBins->isNotEmpty())
+            <div class="form-group row">
+                <label class="col-sm-3 control-label">{{ __('Waste bins') }}</label>
+                <div class="col-sm-9">
+                    <table class="table table-bordered table-sm">
+                        <thead>
+                            <tr>
+                                <th>{{ __('Type of Waste Bin') }}</th>
+                                <th>{{ __('Others (specify)') }}</th>
+                                <th>{{ __('Capacity (kg)') }}</th>
+                                <th>{{ __('BIN') }}</th>
+                                <th>{{ __('Ward No.') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($household->wasteBins as $wb)
+                                <tr>
+                                    <td>{{ optional($wb->wasteBinType)->name }}</td>
+                                    <td>{{ $wb->type_other_detail }}</td>
+                                    <td>{{ $wb->total_capacity_kg }}</td>
+                                    <td>{{ $wb->bin }}</td>
+                                    <td>{{ $wb->ward_no }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            @endif
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Avg Waste Collected') }} ({{ __('Kg') }}/{{ __('Day') }})</label><div class="col-sm-3">{!! Form::label(null, $household->daily_waste_volume, ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Remarks') }}</label><div class="col-sm-3">{!! Form::label(null, $household->remarks, ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Survey Date') }}</label><div class="col-sm-3">{!! Form::label(null, $household->survey_date, ['class' => 'form-control']) !!}</div></div>

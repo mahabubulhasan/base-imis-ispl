@@ -24,6 +24,9 @@
 </style>
 @endpush
 <div class="card-body household-form-mobile">
+    @php
+        $yesNoOptions = [0 => __('No'), 1 => __('Yes')];
+    @endphp
     <div class="form-group row required">
         {!! Form::label('household_id', __('Household ID'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
@@ -55,7 +58,7 @@
         </div>
     </div>
     <div class="form-group row">
-        {!! Form::label('bin', __('BIN (Optional)'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('bin', __('BIN'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             {!! Form::select('bin', $bins, null, ['class' => 'form-control chosen-select', 'id' => 'bin', 'placeholder' => __('Select BIN')]) !!}
         </div>
@@ -104,34 +107,95 @@
         <div class="col-sm-3">{!! Form::select('van_puller_id', $vanPullers, null, ['class' => 'form-control chosen-select', 'placeholder' => __('Select Van Puller')]) !!}</div>
     </div>
     <div class="form-group row">
-        {!! Form::label('is_owner', __('Building Owner') . ' (' . __('Yes') . '/' . __('No') . ')', ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-3 pt-2"><input type="hidden" name="is_owner" value="0">{!! Form::checkbox('is_owner', '1', (bool) old('is_owner', optional($household)->is_owner), ['id' => 'is_owner']) !!}</div>
+        {!! Form::label('is_owner', __('Building Owner'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">{!! Form::select('is_owner', $yesNoOptions, old('is_owner', optional($household)->is_owner ? 1 : 0), ['class' => 'form-control', 'id' => 'is_owner']) !!}</div>
     </div>
     <div class="form-group row" id="waste-bin-provided-row">
-        {!! Form::label('waste_bin_provided', __('Waste Bin Provided') . ' (' . __('Yes') . '/' . __('No') . ')', ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-3 pt-2"><input type="hidden" name="waste_bin_provided" value="0">{!! Form::checkbox('waste_bin_provided', '1', (bool) old('waste_bin_provided', optional($household)->waste_bin_provided), ['id' => 'waste_bin_provided']) !!}</div>
+        {!! Form::label('waste_bin_provided', __('Waste Bin Provided'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">{!! Form::select('waste_bin_provided', $yesNoOptions, old('waste_bin_provided', optional($household)->waste_bin_provided ? 1 : 0), ['class' => 'form-control', 'id' => 'waste_bin_provided']) !!}</div>
     </div>
-    <div id="waste-bin-fields">
+    @php
+        $wasteBinTypes = $wasteBinTypes ?? [];
+        $othersWasteBinTypeId = $othersWasteBinTypeId ?? null;
+        $wasteBinRows = old('waste_bins');
+        if ($wasteBinRows === null && isset($household) && $household) {
+            $wasteBinRows = $household->wasteBins->map(function ($b) {
+                return [
+                    'id' => $b->id,
+                    'waste_bin_type_id' => $b->waste_bin_type_id,
+                    'type_other_detail' => $b->type_other_detail,
+                    'total_capacity_kg' => $b->total_capacity_kg,
+                ];
+            })->values()->all();
+        }
+        if (! is_array($wasteBinRows) || count($wasteBinRows) === 0) {
+            $wasteBinRows = [[
+                'id' => null,
+                'waste_bin_type_id' => null,
+                'type_other_detail' => null,
+                'total_capacity_kg' => null,
+            ]];
+        }
+    @endphp
+    <div id="waste-bin-fields" style="display: none;">
         <div class="form-group row">
-            {!! Form::label('number_of_waste_bins', __('Number of Waste Bins'), ['class' => 'col-sm-3 control-label']) !!}
-            <div class="col-sm-3">{!! Form::number('number_of_waste_bins', old('number_of_waste_bins', optional(optional($household)->wasteBin)->number_of_waste_bins), ['class' => 'form-control', 'min' => 1]) !!}</div>
-        </div>
-        <div class="form-group row">
-            {!! Form::label('total_capacity_kg', __('Total Capacity of Waste Bins') . ' (' . __('Kg') . ')', ['class' => 'col-sm-3 control-label']) !!}
-            <div class="col-sm-3">{!! Form::number('total_capacity_kg', old('total_capacity_kg', optional(optional($household)->wasteBin)->total_capacity_kg), ['class' => 'form-control', 'step' => '0.01', 'min' => 0]) !!}</div>
+            <label class="col-sm-3 control-label">{{ __('Waste bins') }}</label>
+            <div class="col-sm-9">
+                <div class="table-responsive">
+                <table class="table table-bordered table-sm mb-0" id="waste-bins-table">
+                    <thead>
+                        <tr>
+                            <th style="min-width: 12rem;">{{ __('Type of Waste Bin') }}</th>
+                            <th style="min-width: 10rem;">{{ __('Others (specify)') }}</th>
+                            <th style="min-width: 8rem;">{{ __('Capacity (kg)') }}</th>
+                            <th class="text-nowrap" style="width: 6rem;">{{ __('Actions') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody id="waste-bins-tbody">
+                    @foreach ($wasteBinRows as $i => $wbRow)
+                        <tr class="waste-bin-row">
+                            <td class="align-middle">
+                                @if (! empty($wbRow['id']))
+                                    <input type="hidden" name="waste_bins[{{ $i }}][id]" value="{{ $wbRow['id'] }}">
+                                @endif
+                                <select name="waste_bins[{{ $i }}][waste_bin_type_id]" class="form-control waste-bin-type-select">
+                                    <option value="">{{ __('Select type') }}</option>
+                                    @foreach ($wasteBinTypes as $tid => $tname)
+                                        <option value="{{ $tid }}" {{ (string) old('waste_bins.'.$i.'.waste_bin_type_id', $wbRow['waste_bin_type_id'] ?? '') === (string) $tid ? 'selected' : '' }}>{{ $tname }}</option>
+                                    @endforeach
+                                </select>
+                            </td>
+                            <td class="type-other-cell align-middle">
+                                <div class="type-other-inner">
+                                    <input type="text" name="waste_bins[{{ $i }}][type_other_detail]" class="form-control type-other-input" value="{{ old('waste_bins.'.$i.'.type_other_detail', $wbRow['type_other_detail'] ?? '') }}" autocomplete="off">
+                                </div>
+                            </td>
+                            <td class="align-middle">
+                                <input type="number" name="waste_bins[{{ $i }}][total_capacity_kg]" class="form-control waste-bin-capacity-input" step="0.01" min="0.01" value="{{ old('waste_bins.'.$i.'.total_capacity_kg', $wbRow['total_capacity_kg'] ?? '') }}">
+                            </td>
+                            <td class="align-middle text-center">
+                                <button type="button" class="btn btn-sm btn-outline-danger waste-bin-remove">{{ __('Remove') }}</button>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+                </div>
+                <button type="button" class="btn btn-sm btn-info mt-2" id="waste-bin-add-row">{{ __('Add waste bin') }}</button>
+            </div>
         </div>
     </div>
     <div class="form-group row">
-        {!! Form::label('is_lic', __('LIC') . ' (' . __('Yes') . '/' . __('No') . ')', ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-3 pt-2"><input type="hidden" name="is_lic" value="0">{!! Form::checkbox('is_lic', '1', (bool) old('is_lic', optional($household)->is_lic), ['id' => 'is_lic']) !!}</div>
+        {!! Form::label('is_lic', __('LIC'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">{!! Form::select('is_lic', $yesNoOptions, old('is_lic', optional($household)->is_lic ? 1 : 0), ['class' => 'form-control', 'id' => 'is_lic']) !!}</div>
     </div>
     <div class="form-group row" id="lic-id-row">
-        {!! Form::label('lic_id', __('LIC ID (if Y)'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('lic_id', __('LIC ID'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">{!! Form::select('lic_id', $licOptions, null, ['class' => 'form-control chosen-select', 'id' => 'lic_id', 'placeholder' => __('Select LIC')]) !!}</div>
     </div>
     <div class="form-group row">
-        {!! Form::label('segregation_practiced', __('Segregation Practiced') . ' (' . __('Yes') . '/' . __('No') . ')', ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-3 pt-2"><input type="hidden" name="segregation_practiced" value="0">{!! Form::checkbox('segregation_practiced', '1', (bool) old('segregation_practiced', optional($household)->segregation_practiced), ['id' => 'segregation_practiced']) !!}</div>
+        {!! Form::label('segregation_practiced', __('Segregation Practiced'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">{!! Form::select('segregation_practiced', $yesNoOptions, old('segregation_practiced', optional($household)->segregation_practiced ? 1 : 0), ['class' => 'form-control', 'id' => 'segregation_practiced']) !!}</div>
     </div>
     <div class="form-group row">
         {!! Form::label('remarks', __('Remarks'), ['class' => 'col-sm-3 control-label']) !!}
@@ -159,7 +223,7 @@ $(function() {
     }
 
     function toggleLicRow() {
-        $('#lic-id-row').toggle($('#is_lic').is(':checked'));
+        $('#lic-id-row').toggle($('#is_lic').val() === '1');
     }
 
     function applySnapshot(data) {
@@ -173,7 +237,7 @@ $(function() {
             $('#functional_use').val(data.functional_use).trigger('chosen:updated');
         }
         if (data.lic_id) {
-            $('#is_lic').prop('checked', true);
+            $('#is_lic').val('1');
             $('#lic_id').val(String(data.lic_id)).trigger('chosen:updated');
         }
         toggleLicRow();
@@ -189,20 +253,72 @@ $(function() {
             });
     }
 
+    var othersWasteBinTypeId = @json($othersWasteBinTypeId);
+
+    function reindexWasteBinRows() {
+        $('#waste-bins-tbody tr.waste-bin-row').each(function (idx) {
+            $(this).find('[name]').each(function () {
+                var el = $(this);
+                var n = el.attr('name');
+                if (!n) return;
+                el.attr('name', n.replace(/waste_bins\[\d+]/, 'waste_bins[' + idx + ']'));
+            });
+        });
+        refreshWasteBinTypeOther();
+    }
+
+    function refreshWasteBinTypeOther() {
+        $('#waste-bins-tbody tr.waste-bin-row').each(function () {
+            var v = $(this).find('.waste-bin-type-select').val();
+            var show = othersWasteBinTypeId && String(v) === String(othersWasteBinTypeId);
+            var $inner = $(this).find('.type-other-inner');
+            $inner.toggle(show);
+            if (!show) {
+                $(this).find('.type-other-input').val('');
+            }
+        });
+    }
+
     function toggleWasteBinControls() {
-        var isOwner = $('#is_owner').is(':checked');
+        var isOwner = $('#is_owner').val() === '1';
         $('#waste-bin-provided-row').toggle(isOwner);
         if (!isOwner) {
-            $('#waste_bin_provided').prop('checked', false);
+            $('#waste_bin_provided').val('0');
         }
-        $('#waste-bin-fields').toggle(isOwner && $('#waste_bin_provided').is(':checked'));
+        $('#waste-bin-fields').toggle(isOwner && $('#waste_bin_provided').val() === '1');
+        if (isOwner && $('#waste_bin_provided').val() === '1') {
+            refreshWasteBinTypeOther();
+        }
     }
+
+    $('#waste-bin-add-row').on('click', function () {
+        var $tbody = $('#waste-bins-tbody');
+        var $first = $tbody.find('tr.waste-bin-row').first();
+        var $clone = $first.clone();
+        $clone.find('input[type=hidden]').remove();
+        $clone.find('input.type-other-input, input.waste-bin-capacity-input').val('');
+        $clone.find('select.waste-bin-type-select').val('');
+        $tbody.append($clone);
+        reindexWasteBinRows();
+    });
+
+    $(document).on('click', '.waste-bin-remove', function () {
+        var $tbody = $('#waste-bins-tbody');
+        if ($tbody.find('tr.waste-bin-row').length <= 1) {
+            return;
+        }
+        $(this).closest('tr.waste-bin-row').remove();
+        reindexWasteBinRows();
+    });
+
+    $(document).on('change', '.waste-bin-type-select', refreshWasteBinTypeOther);
 
     $('#is_lic').on('change', toggleLicRow);
     $('#is_owner').on('change', toggleWasteBinControls);
     $('#waste_bin_provided').on('change', toggleWasteBinControls);
     toggleLicRow();
     toggleWasteBinControls();
+    refreshWasteBinTypeOther();
 
     $('#bin').on('change', function() {
         fetchSnapshot($(this).val());

@@ -124,19 +124,51 @@ class HouseholdService
             $household->bin
         );
 
-        if ($household->is_owner && $household->waste_bin_provided && isset($data['number_of_waste_bins'], $data['total_capacity_kg'])) {
-            WasteBin::updateOrCreate(
-                ['household_id' => $household->id],
-                [
-                    'bin' => $household->bin,
-                    'number_of_waste_bins' => (int) $data['number_of_waste_bins'],
-                    'total_capacity_kg' => $data['total_capacity_kg'],
-                ]
-            );
-        }
-
-        if (! $household->waste_bin_provided) {
+        if (! $household->is_owner || ! $household->waste_bin_provided) {
             WasteBin::where('household_id', $household->id)->delete();
+        } elseif (! empty($data['waste_bins']) && is_array($data['waste_bins'])) {
+            $household->loadMissing('building');
+            $roadNo = $household->building?->road_code;
+            $submittedIds = [];
+            foreach ($data['waste_bins'] as $row) {
+                if (! is_array($row)) {
+                    continue;
+                }
+                $payload = [
+                    'household_id' => $household->id,
+                    'waste_bin_type_id' => (int) ($row['waste_bin_type_id'] ?? 0),
+                    'type_other_detail' => $row['type_other_detail'] ?? null,
+                    'total_capacity_kg' => $row['total_capacity_kg'],
+                    'placed_at_buildings' => true,
+                    'bin' => $household->bin,
+                    'sub_location' => $household->sub_location,
+                    'ward_no' => $household->ward,
+                    'road_name' => $household->road_no_name,
+                    'road_no' => $roadNo,
+                ];
+                $rowId = isset($row['id']) ? (int) $row['id'] : null;
+                if ($rowId) {
+                    $wasteBin = WasteBin::query()
+                        ->where('household_id', $household->id)
+                        ->whereNull('deleted_at')
+                        ->find($rowId);
+                    if ($wasteBin) {
+                        $wasteBin->fill($payload);
+                        $wasteBin->save();
+                        $submittedIds[] = $wasteBin->id;
+                    }
+                } else {
+                    $wasteBin = new WasteBin;
+                    $wasteBin->fill($payload);
+                    $wasteBin->save();
+                    $submittedIds[] = $wasteBin->id;
+                }
+            }
+            WasteBin::query()
+                ->where('household_id', $household->id)
+                ->whereNull('deleted_at')
+                ->whereNotIn('id', $submittedIds)
+                ->delete();
         }
 
         return $household->id;

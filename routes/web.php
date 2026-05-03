@@ -345,6 +345,7 @@ Route::group([
         ]);
 
         Route::get('waste-bins/data', 'WasteBinController@getData')->name('swm.waste-bins.data');
+        Route::get('waste-bins/household-fields', 'WasteBinController@householdFields')->name('swm.waste-bins.household-fields');
         Route::resource('waste-bins', 'WasteBinController')->names([
             'index' => 'swm.waste-bins.index',
             'create' => 'swm.waste-bins.create',

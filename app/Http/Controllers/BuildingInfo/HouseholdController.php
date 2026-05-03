@@ -8,6 +8,7 @@ use App\Models\BuildingInfo\Building;
 use App\Models\BuildingInfo\FunctionalUse;
 use App\Models\BuildingInfo\Household;
 use App\Models\LayerInfo\Lic;
+use App\Models\Swm\WasteBinType;
 use App\Models\Swm\Worker;
 use App\Models\UtilityInfo\Roadline;
 use App\Services\BuildingInfo\HouseholdService;
@@ -57,6 +58,21 @@ class HouseholdController extends Controller
         return FunctionalUse::query()->orderBy('name')->pluck('name', 'name')->all();
     }
 
+    protected function wasteBinTypeOptions(): array
+    {
+        return WasteBinType::query()->whereNull('deleted_at')->orderBy('name')->pluck('name', 'id')->all();
+    }
+
+    protected function othersWasteBinTypeId(): ?int
+    {
+        $id = WasteBinType::query()
+            ->where('name', WasteBinType::OTHERS_SPECIFY_NAME)
+            ->whereNull('deleted_at')
+            ->value('id');
+
+        return $id !== null ? (int) $id : null;
+    }
+
     public function index()
     {
         $page_title = __('Households');
@@ -100,7 +116,19 @@ class HouseholdController extends Controller
         $vanPullers = $this->vanPullers();
         $licOptions = $this->licOptions();
         $functionalUses = $this->functionalUseOptions();
-        return view('building-info.households.create', compact('page_title', 'household', 'bins', 'vanPullers', 'licOptions', 'functionalUses'));
+        $wasteBinTypes = $this->wasteBinTypeOptions();
+        $othersWasteBinTypeId = $this->othersWasteBinTypeId();
+
+        return view('building-info.households.create', compact(
+            'page_title',
+            'household',
+            'bins',
+            'vanPullers',
+            'licOptions',
+            'functionalUses',
+            'wasteBinTypes',
+            'othersWasteBinTypeId'
+        ));
     }
 
     public function store(HouseholdRequest $request)
@@ -111,18 +139,33 @@ class HouseholdController extends Controller
 
     public function show(Household $household)
     {
+        $household->load(['wasteBins.wasteBinType']);
         $page_title = __('Household Details');
+
         return view('building-info.households.show', compact('page_title', 'household'));
     }
 
     public function edit(Household $household)
     {
+        $household->load(['wasteBins.wasteBinType']);
         $page_title = __('Edit Household');
         $bins = $this->bins();
         $vanPullers = $this->vanPullers();
         $licOptions = $this->licOptions();
         $functionalUses = $this->functionalUseOptions();
-        return view('building-info.households.edit', compact('page_title', 'household', 'bins', 'vanPullers', 'licOptions', 'functionalUses'));
+        $wasteBinTypes = $this->wasteBinTypeOptions();
+        $othersWasteBinTypeId = $this->othersWasteBinTypeId();
+
+        return view('building-info.households.edit', compact(
+            'page_title',
+            'household',
+            'bins',
+            'vanPullers',
+            'licOptions',
+            'functionalUses',
+            'wasteBinTypes',
+            'othersWasteBinTypeId'
+        ));
     }
 
     public function update(HouseholdRequest $request, Household $household)

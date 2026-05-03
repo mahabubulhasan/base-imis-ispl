@@ -120,7 +120,7 @@
         </div>
     </div>
     <div class="form-group required row">
-        {!! Form::label('water_connection_status', __('Water Connection Status (Yes/No)'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('water_connection_status', __('Water Connection Status'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             {!! Form::select('water_connection_status', $yesNoOptions, old('water_connection_status', isset($lic) ? (($lic->water_connection_status === null) ? '' : (string) (int) $lic->water_connection_status) : ''), ['class' => 'form-control', 'id' => 'water_connection_status']) !!}
         </div>
@@ -132,7 +132,7 @@
         </div>
     </div>
     <div class="form-group required row">
-        {!! Form::label('sanitation_status', __('Sanitation Status (Yes/No)'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('sanitation_status', __('Sanitation Status'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             {!! Form::select('sanitation_status', $yesNoOptions, old('sanitation_status', isset($lic) ? (($lic->sanitation_status === null) ? '' : (string) (int) $lic->sanitation_status) : ''), ['class' => 'form-control', 'id' => 'sanitation_status']) !!}
         </div>

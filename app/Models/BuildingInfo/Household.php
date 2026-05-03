@@ -49,9 +49,9 @@ class Household extends Model
         return $this->belongsTo(Lic::class, 'lic_id', 'id');
     }
 
-    public function wasteBin()
+    public function wasteBins()
     {
-        return $this->hasOne(WasteBin::class, 'household_id');
+        return $this->hasMany(WasteBin::class, 'household_id');
     }
 
     public function billCollectionPayments()

@@ -9,7 +9,7 @@ class WasteBinService
 {
     public function getAll(array $data)
     {
-        $query = WasteBin::query()->with('household')->whereNull('deleted_at');
+        $query = WasteBin::query()->with(['household', 'wasteBinType'])->whereNull('deleted_at');
 
         return DataTables::of($query)
             ->filter(function ($q) use ($data) {
@@ -20,6 +20,8 @@ class WasteBinService
                 }
             })
             ->addColumn('household_code', fn ($row) => optional($row->household)->household_id)
+            ->addColumn('waste_bin_type_name', fn ($row) => optional($row->wasteBinType)->name)
+            ->addColumn('placed_at_buildings_label', fn ($row) => $row->placed_at_buildings ? __('Yes') : __('No'))
             ->make(true);
     }
 

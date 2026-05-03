@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests\BuildingInfo;
 
+use App\Models\Swm\WasteBinType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 class HouseholdRequest extends FormRequest
 {
@@ -15,14 +17,21 @@ class HouseholdRequest extends FormRequest
     public function rules(): array
     {
         $household = $this->route('household');
-        $ignoreId = is_object($household) ? $household->id : null;
+        $householdPk = is_object($household) ? $household->id : null;
 
-        return [
+        $wasteBinIdRules = ['nullable', 'integer'];
+        if ($householdPk) {
+            $wasteBinIdRules[] = Rule::exists('pgsql.swm.waste_bins', 'id')->where(function ($query) use ($householdPk) {
+                $query->where('household_id', $householdPk)->whereNull('deleted_at');
+            });
+        }
+
+        $rules = [
             'household_id' => [
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('pgsql.building_info.households', 'household_id')->ignore($ignoreId),
+                Rule::unique('pgsql.building_info.households', 'household_id')->ignore($householdPk),
             ],
             'household_owner_name' => ['required', 'string', 'max:255'],
             'contact_number' => ['required', 'regex:/^[0-9]+$/'],
@@ -65,9 +74,55 @@ class HouseholdRequest extends FormRequest
                     return $query->whereNull('deleted_at');
                 }),
             ],
-            'number_of_waste_bins' => ['nullable', 'integer', 'min:1', Rule::requiredIf(fn () => $this->boolean('is_owner') && $this->boolean('waste_bin_provided'))],
-            'total_capacity_kg' => ['nullable', 'numeric', 'min:0.01', Rule::requiredIf(fn () => $this->boolean('is_owner') && $this->boolean('waste_bin_provided'))],
         ];
+
+        if ($this->boolean('is_owner') && $this->boolean('waste_bin_provided')) {
+            $rules['waste_bins'] = ['required', 'array', 'min:1'];
+            $rules['waste_bins.*.id'] = $wasteBinIdRules;
+            $rules['waste_bins.*.waste_bin_type_id'] = [
+                'required',
+                'integer',
+                Rule::exists('pgsql.swm.waste_bin_types', 'id')->where(fn ($q) => $q->whereNull('deleted_at')),
+            ];
+            $rules['waste_bins.*.type_other_detail'] = ['nullable', 'string', 'max:255'];
+            $rules['waste_bins.*.total_capacity_kg'] = ['required', 'numeric', 'min:0.01'];
+        } else {
+            $rules['waste_bins'] = ['nullable', 'array'];
+        }
+
+        return $rules;
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $validator) {
+            if (! $this->boolean('is_owner') || ! $this->boolean('waste_bin_provided')) {
+                return;
+            }
+            $bins = $this->input('waste_bins', []);
+            if (! is_array($bins)) {
+                return;
+            }
+            foreach ($bins as $i => $row) {
+                if (! is_array($row)) {
+                    continue;
+                }
+                $typeId = $row['waste_bin_type_id'] ?? null;
+                if (! $typeId) {
+                    continue;
+                }
+                if (WasteBinType::query()
+                    ->where('id', $typeId)
+                    ->where('name', WasteBinType::OTHERS_SPECIFY_NAME)
+                    ->whereNull('deleted_at')
+                    ->exists() && empty($row['type_other_detail'])) {
+                    $validator->errors()->add(
+                        "waste_bins.$i.type_other_detail",
+                        __('The others (specify) field is required when this type is selected.')
+                    );
+                }
+            }
+        });
     }
 
     protected function prepareForValidation(): void
@@ -80,5 +135,39 @@ class HouseholdRequest extends FormRequest
             'van_puller_id' => $this->filled('van_puller_id') ? (int) $this->input('van_puller_id') : null,
             'lic_id' => $this->boolean('is_lic') && $this->filled('lic_id') ? (int) $this->input('lic_id') : null,
         ]);
+
+        if (! $this->boolean('is_owner') || ! $this->boolean('waste_bin_provided')) {
+            return;
+        }
+
+        $bins = $this->input('waste_bins', []);
+        if (! is_array($bins)) {
+            $this->merge(['waste_bins' => []]);
+
+            return;
+        }
+
+        $bins = array_values(array_filter($bins, function ($row) {
+            if (! is_array($row)) {
+                return false;
+            }
+
+            return ! empty($row['waste_bin_type_id']) || ! empty($row['total_capacity_kg']);
+        }));
+
+        $household = $this->route('household');
+        foreach ($bins as &$row) {
+            if (! is_array($row)) {
+                continue;
+            }
+            if (isset($row['id']) && ($row['id'] === '' || $row['id'] === null)) {
+                unset($row['id']);
+            } elseif (! $household && array_key_exists('id', $row)) {
+                unset($row['id']);
+            }
+        }
+        unset($row);
+
+        $this->merge(['waste_bins' => $bins]);
     }
 }
