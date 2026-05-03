@@ -1,5 +1,5 @@
 <?php
-// Last Modified: 2026-04-30
+// Last Modified: 2026-05-03
 // Developed By: Streams Tech Ltd.
 // Description: Handles drain network data operations with road-based code generation.
 
@@ -192,10 +192,13 @@ class DrainService {
             throw new \Exception('Road code is required to generate drain code.');
         }
 
-        if (strlen($roadCode) >= 8 && substr($roadCode, 6, 2) === '10') {
-            $baseCode = substr($roadCode, 0, 6) . '20' . substr($roadCode, 8);
+        // Normalize road extension suffixes (e.g. 20512510110368-01 -> 20512510110368).
+        $normalizedRoadCode = preg_replace('/-\d{2}$/', '', trim($roadCode));
+
+        if (strlen($normalizedRoadCode) >= 8 && substr($normalizedRoadCode, 6, 2) === '10') {
+            $baseCode = substr($normalizedRoadCode, 0, 6) . '20' . substr($normalizedRoadCode, 8);
         } else {
-            $baseCode = 'D-' . $roadCode;
+            $baseCode = 'D-' . $normalizedRoadCode;
         }
 
         $maxDrainCode = Drain::withTrashed()
