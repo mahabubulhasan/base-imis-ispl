@@ -340,11 +340,14 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                                     {!! Form::label('road_code', __('Road Code') .' <span style="color: red">*</span>', ['class' => 'control-label d-block'], false) !!}
                                         {!! Form::select('road_code', $road_code, null, ['class' => 'form-control','id'=>'road_code_drain', 'placeholder' =>  __('Road Code'), 'style' => 'width: 350px;']) !!}
                                     </div>
+                                    <div class="add-drain-form-group">
+                                    {!! Form::label('drain_code', __('Drain Code') .' <span style="color: red">*</span>', ['class' => 'control-label d-block'], false) !!}
+                                        {!! Form::text('drain_code', null, ['class' => 'form-control','id'=>'drain_code_drain', 'placeholder' =>  __('Drain Code'), 'readonly' => true]) !!}
+                                    </div>
                                     <div class="add-drain-form-group pt-2">
                                         {!! Form::label('cover_type', __('Cover Type'),['class' => 'control-label'],false) !!}
                                         {!! Form::select('cover_type', $cover_type, null, ['class' => 'form-control', 'placeholder' => __('Cover Type')])!!}
                                     </div>
-
                                     <div class="add-drain-form-group pt-2">
                                         {!! Form::label('surface_type', __('Surface Type'),['class' => 'control-label'],false) !!}
                                         {!! Form::select('surface_type', $surface_type, null, ['class' => 'form-control', 'placeholder' => __('Surface Type'), 'id'=>'surface_type_drain',])!!}
@@ -4658,6 +4661,7 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
             }else if (controlType === 'drain') {
                 geom = getGeometryLayer();
                 fieldNameMapping = {
+                    "drain_code": "{{ __('Drain Code') }}",
                     "road_code": "{{ __('Road Code') }}",
                     "cover_type": "{{ __('Cover Type') }}",
                     "surface_type": "{{ __('Surface Type') }}",
@@ -4668,6 +4672,7 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
 
                 // Dynamically get the drain form data
                 formData = {
+                    'drain_code': $('#drain_code_drain').val(),
                     'road_code': $('#road_code_drain').val(),
                     "cover_type": $('#cover_type').val(),
                     "surface_type": $('#surface_type_drain').val(),
@@ -4676,6 +4681,12 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                     'treatment_plant_id': $('#tp_drain').val(),
                     "geom": geom
                 };
+
+                if (!formData.drain_code) {
+                    const html = '<ul class="alert alert-danger"><li>{{ __('Drain Code is required') }}</li></ul>';
+                    $('#add-drain-errors').empty().append(html).focus();
+                    return;
+                }
                 url = '{{url("/utilityinfo/drains/add-drain")}}';
                 return_url = '{{ route("drains.index") }}';
 
@@ -12889,6 +12900,37 @@ $.ajax({
             placeholder: 'Road Code - Road Name',
             allowClear: true,
             closeOnSelect: true,
+        });
+
+        $('#road_code_drain').on('change', function () {
+            const selectedRoadCode = $(this).val();
+            $('#drain_code_drain').val('');
+
+            if (!selectedRoadCode) {
+                return;
+            }
+
+            $.ajax({
+                url: "{{ route('drains.generate-code') }}",
+                type: 'POST',
+                data: {
+                    road_code: selectedRoadCode,
+                },
+                dataType: 'json',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    if (response.success && response.drain_code) {
+                        $('#drain_code_drain').val(response.drain_code);
+                    } else {
+                        $('#drain_code_drain').val('');
+                    }
+                },
+                error: function() {
+                    $('#drain_code_drain').val('');
+                }
+            });
         });
 
    </script>

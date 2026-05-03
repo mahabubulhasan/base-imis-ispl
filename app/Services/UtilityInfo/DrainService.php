@@ -115,37 +115,12 @@ class DrainService {
 
             DB::beginTransaction();
             try {
-                // Generate base drain code from road_code
-                $roadCode = $data['road_code'];
-
-                // Check if road_code has '10' at positions 6-7 (0-indexed)
-                // If yes, replace with '20' for drain type indicator
-                // Otherwise, use road_code as-is
-                if (strlen($roadCode) >= 8 && substr($roadCode, 6, 2) === '10') {
-                    $baseCode = substr($roadCode, 0, 6) . '20' . substr($roadCode, 8);
-                } else {
-                    $baseCode = 'D-'.$roadCode;
+                $generatedDrainCode = $this->generateDrainCode($data['road_code']);
+                if (!empty($data['drain_code']) && (string)$data['drain_code'] !== (string)$generatedDrainCode) {
+                    throw new \Exception('Submitted drain code is invalid. Please regenerate and try again.');
                 }
 
-                // Find the maximum suffix for this base code
-                $maxDrainCode = Drain::withTrashed()
-                    ->where('code', 'LIKE', $baseCode . '-%')
-                    ->max('code');
-
-                $suffix = 0;
-                if ($maxDrainCode) {
-                    // Extract suffix from the last drain code (e.g., "20512520130007-05" -> "05")
-                    $lastSuffix = substr($maxDrainCode, -2);
-                    $suffix = intval($lastSuffix) + 1;
-                }
-
-                // Validate suffix doesn't exceed 99 (two-digit limit)
-                if ($suffix > 99) {
-                    throw new \Exception('Maximum number of drains (100) reached for this road.');
-                }
-
-                // Format final code with two-digit suffix
-                $drainCode = $baseCode . '-' . sprintf('%02d', $suffix);
+                $drainCode = !empty($data['drain_code']) ? $data['drain_code'] : $generatedDrainCode;
 
                 $drain = new Drain();
                 $drain->code = $drainCode;
@@ -202,6 +177,42 @@ class DrainService {
 
             return true;
         }
+    }
+
+    /**
+     * Generate next drain code for a given road code.
+     *
+     * @param string $roadCode
+     * @return string
+     */
+    public function generateDrainCode(string $roadCode): string
+    {
+        if (empty($roadCode)) {
+            \Log::error('Road code is required for drain code generation');
+            throw new \Exception('Road code is required to generate drain code.');
+        }
+
+        if (strlen($roadCode) >= 8 && substr($roadCode, 6, 2) === '10') {
+            $baseCode = substr($roadCode, 0, 6) . '20' . substr($roadCode, 8);
+        } else {
+            $baseCode = 'D-' . $roadCode;
+        }
+
+        $maxDrainCode = Drain::withTrashed()
+            ->where('code', 'LIKE', $baseCode . '-%')
+            ->max('code');
+
+        $suffix = 0;
+        if ($maxDrainCode) {
+            $lastSuffix = substr($maxDrainCode, -2);
+            $suffix = intval($lastSuffix) + 1;
+        }
+
+        if ($suffix > 99) {
+            throw new \Exception('Maximum number of drains (100) reached for this road.');
+        }
+
+        return $baseCode . '-' . sprintf('%02d', $suffix);
     }
 
     /**

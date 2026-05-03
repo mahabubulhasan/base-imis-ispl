@@ -227,6 +227,7 @@ Route::group([
 
     // Route::get('sewerconnection/{id}/approve', 'SewerConnectionController@approve');
     Route::get('drains/get-drain-names','DrainController@getDrainNames')->name('drains.get-drain-names');
+    Route::post('drains/generate-code', 'DrainController@generateCode')->name('drains.generate-code');
     Route::get('drains/{code}/geometry', 'DrainController@getGeometry');
 
     Route::post('drains/update-drain-geom', 'DrainController@updateDrainGeom');
