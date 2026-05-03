@@ -8,6 +8,12 @@
 	<div class="form-horizontal">
 		<div class="card-body">
 		<div class="form-group row">
+    {!! Form::label('landfill_id', __('Landfill ID'), ['class' => 'col-sm-3 control-label']) !!}
+    <div class="col-sm-3">
+        {!! Form::label(null, $landfill->landfill_id, ['class' => 'form-control']) !!}
+    </div>
+		</div>
+		<div class="form-group row">
     {!! Form::label('name', __('Name'), ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-3">
         {!! Form::label(null, $landfill->name, ['class' => 'form-control']) !!}
@@ -38,6 +44,24 @@
 			</div>
 		</div>
 		<div class="form-group row">
+			{!! Form::label('area', __('Area') . ' (' . __('Decimal') . ')', ['class' => 'col-sm-3 control-label']) !!}
+			<div class="col-sm-3">
+				{!! Form::label(null, $landfill->area, ['class' => 'form-control']) !!}
+			</div>
+		</div>
+		<div class="form-group row">
+			{!! Form::label('source_sts_ids', __('Source STS'), ['class' => 'col-sm-3 control-label']) !!}
+			<div class="col-sm-3">
+				{!! Form::label(null, $sourceSts->pluck('name')->implode(', '), ['class' => 'form-control']) !!}
+			</div>
+		</div>
+		<div class="form-group row">
+			{!! Form::label('source_wards', __('Source Wards'), ['class' => 'col-sm-3 control-label']) !!}
+			<div class="col-sm-3">
+				{!! Form::label(null, implode(', ', $landfill->source_wards ?? []), ['class' => 'form-control']) !!}
+			</div>
+		</div>
+		<div class="form-group row">
 			{!! Form::label('segregation_practiced', __('Segregation Practiced'), ['class' => 'col-sm-3 control-label']) !!}
 			<div class="col-sm-3">
 				{!! Form::label(null, $landfill->segregation_practiced ? __('Yes') : __('No'), ['class' => 'form-control']) !!}
@@ -50,6 +74,12 @@
 			</div>
 		</div>
 		<div class="form-group row">
+			{!! Form::label('waste_type_ids', __('Waste Types'), ['class' => 'col-sm-3 control-label']) !!}
+			<div class="col-sm-3">
+				{!! Form::label(null, $wasteTypes->pluck('name')->implode(', '), ['class' => 'form-control']) !!}
+			</div>
+		</div>
+		<div class="form-group row">
 			{!! Form::label('monthly_waste_for_composting', __('Monthly Waste for Composting') . ' (' . __('Ton') . ')', ['class' => 'col-sm-3 control-label']) !!}
 			<div class="col-sm-3">
 				{!! Form::label(null, $landfill->monthly_waste_for_composting, ['class' => 'form-control']) !!}
@@ -59,6 +89,12 @@
 			{!! Form::label('treatment', __('Treatment'), ['class' => 'col-sm-3 control-label']) !!}
 			<div class="col-sm-3">
 				{!! Form::label(null, $landfill->treatment ? __('Yes') : __('No'), ['class' => 'form-control']) !!}
+			</div>
+		</div>
+		<div class="form-group row">
+			{!! Form::label('operational_status', __('Operational Status'), ['class' => 'col-sm-3 control-label']) !!}
+			<div class="col-sm-3">
+				{!! Form::label(null, ucfirst((string) $landfill->operational_status), ['class' => 'form-control']) !!}
 			</div>
 		</div>
 		</div>

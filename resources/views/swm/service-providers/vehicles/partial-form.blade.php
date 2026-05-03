@@ -31,6 +31,12 @@
             </div>
         </div>
         <div class="form-group row">
+            {!! Form::label('vehicle_id_no', __('Vehicle ID'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-3">
+                {!! Form::text('vehicle_id_no', null, ['class' => 'form-control', 'placeholder' => __('Vehicle ID')]) !!}
+            </div>
+        </div>
+        <div class="form-group row">
             {!! Form::label('capacity', __('Capacity') . ' (' . __('Ton') . ')', ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
                 {!! Form::number('capacity', null, [
@@ -46,6 +52,60 @@
             {!! Form::label('driver_worker_id', __('Driver'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
                 {!! Form::select('driver_worker_id', $driverWorkers ?? [], null, ['class' => 'form-control chosen-select', 'id' => 'driver_worker_id', 'placeholder' => __('Driver')]) !!}
+            </div>
+        </div>
+        <div class="form-group row">
+            {!! Form::label('service_area', __('Service Area'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-3">
+                {!! Form::text('service_area', null, ['class' => 'form-control', 'placeholder' => __('Service Area')]) !!}
+            </div>
+        </div>
+        <div class="form-group row">
+            {!! Form::label('fuel_type', __('Fuel Type'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-3">
+                {!! Form::text('fuel_type', null, ['class' => 'form-control', 'placeholder' => __('Fuel Type')]) !!}
+            </div>
+        </div>
+        <div class="form-group row">
+            {!! Form::label('operational_type', __('Operational Type'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-3">
+                {!! Form::text('operational_type', null, ['class' => 'form-control', 'placeholder' => __('Operational Type')]) !!}
+            </div>
+        </div>
+        <div class="form-group row">
+            {!! Form::label('vehicle_registration_no', __('Vehicle Registration No.'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-3">
+                {!! Form::text('vehicle_registration_no', null, ['class' => 'form-control', 'placeholder' => __('Vehicle Registration No.')]) !!}
+            </div>
+        </div>
+        <div class="form-group row">
+            {!! Form::label('engine_no', __('Engine No.'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-3">
+                {!! Form::text('engine_no', null, ['class' => 'form-control', 'placeholder' => __('Engine No.')]) !!}
+            </div>
+        </div>
+        <div class="form-group row">
+            {!! Form::label('chassis_no', __('Chassis No.'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-3">
+                {!! Form::text('chassis_no', null, ['class' => 'form-control', 'placeholder' => __('Chassis No.')]) !!}
+            </div>
+        </div>
+        <div class="form-group row">
+            {!! Form::label('status', __('Status'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-3">
+                {!! Form::select('status', ['active' => __('Active'), 'inactive' => __('Inactive')], old('status', isset($vehicle) && $vehicle ? $vehicle->status : 'active'), ['class' => 'form-control']) !!}
+            </div>
+        </div>
+        <div class="form-group row">
+            {!! Form::label('last_maintenance_year', __('Last Maintenance (Year)'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-3">
+                {!! Form::number('last_maintenance_year', null, ['class' => 'form-control', 'placeholder' => __('Last Maintenance (Year)'), 'min' => 1900, 'max' => 2100]) !!}
+            </div>
+        </div>
+        <div class="form-group row">
+            {!! Form::label('remarks', __('Remarks'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-3">
+                {!! Form::textarea('remarks', null, ['class' => 'form-control', 'rows' => 3, 'placeholder' => __('Remarks')]) !!}
             </div>
         </div>
         <div class="form-group row required">

@@ -9,7 +9,9 @@ use Box\Spout\Writer\Style\Color;
 use Box\Spout\Writer\Style\StyleBuilder;
 use Box\Spout\Writer\WriterFactory;
 use Carbon\Carbon;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\DataTables;
 
 class ComplaintService
@@ -35,6 +37,9 @@ class ComplaintService
                 if (! empty($data['contact_number'] ?? null)) {
                     $q->where('contact_number', 'ILIKE', '%'.trim((string) $data['contact_number']).'%');
                 }
+                if (! empty($data['ward_no'] ?? null)) {
+                    $q->where('ward_no', 'ILIKE', '%'.trim((string) $data['ward_no']).'%');
+                }
                 if (! empty($data['complaint_type'] ?? null)) {
                     $q->where('complaint_type', $data['complaint_type']);
                 }
@@ -44,15 +49,33 @@ class ComplaintService
                 if (! empty($data['complaint_status'] ?? null)) {
                     $q->where('complaint_status', $data['complaint_status']);
                 }
+                if (isset($data['duplicate_complaint']) && $data['duplicate_complaint'] !== '') {
+                    $q->where('duplicate_complaint', filter_var($data['duplicate_complaint'], FILTER_VALIDATE_BOOLEAN));
+                }
+                if (! empty($data['priority_level'] ?? null)) {
+                    $q->where('priority_level', (int) $data['priority_level']);
+                }
+                if (! empty($data['assigned_to'] ?? null)) {
+                    $q->where('assigned_to', 'ILIKE', '%'.trim((string) $data['assigned_to']).'%');
+                }
                 if (! empty($data['date_from'] ?? null)) {
                     $q->whereDate('date_time', '>=', Carbon::parse($data['date_from'])->toDateString());
                 }
                 if (! empty($data['date_to'] ?? null)) {
                     $q->whereDate('date_time', '<=', Carbon::parse($data['date_to'])->toDateString());
                 }
+                if (! empty($data['incident_date_from'] ?? null)) {
+                    $q->whereDate('incident_date', '>=', Carbon::parse($data['incident_date_from'])->toDateString());
+                }
+                if (! empty($data['incident_date_to'] ?? null)) {
+                    $q->whereDate('incident_date', '<=', Carbon::parse($data['incident_date_to'])->toDateString());
+                }
             })
             ->editColumn('date_time', function ($model) {
                 return $model->date_time?->format('Y-m-d H:i') ?? '';
+            })
+            ->editColumn('incident_date', function ($model) {
+                return $model->incident_date?->format('Y-m-d') ?? '';
             })
             ->editColumn('complaint_type', function ($model) {
                 $map = config('swm_complaints.complaint_types', []);
@@ -68,6 +91,9 @@ class ComplaintService
                 $map = config('swm_complaints.complaint_statuses', []);
 
                 return $map[$model->complaint_status] ?? $model->complaint_status;
+            })
+            ->addColumn('duplicate_complaint_text', function ($model) {
+                return $model->duplicate_complaint ? __('Yes') : __('No');
             })
             ->addColumn('household_id', function ($model) {
                 return $model->customer_id;
@@ -111,8 +137,13 @@ class ComplaintService
         }
 
         $dateTime = isset($data['date_time']) ? Carbon::parse($data['date_time']) : now();
+        $photo = $data['photo_attachment'] ?? null;
+        $newPhotoPath = null;
+        if ($photo instanceof UploadedFile) {
+            $newPhotoPath = $photo->store('swm/complaints', 'public');
+        }
 
-        DB::transaction(function () use ($complaint, $data, $id, $dateTime): void {
+        DB::transaction(function () use ($complaint, $data, $id, $dateTime, $newPhotoPath): void {
             if (is_null($id)) {
                 $complaint->complaint_id = $this->nextComplaintIdForMonth($dateTime);
             }
@@ -122,10 +153,23 @@ class ComplaintService
             $complaint->customer_id = $data['household_id'] ?? null;
             $complaint->name = $data['name'] ?? null;
             $complaint->contact_number = $data['contact_number'] ?? null;
+            $complaint->ward_no = $data['ward_no'] ?? null;
+            $complaint->incident_date = $data['incident_date'] ?? null;
             $complaint->complaint_type = $data['complaint_type'] ?? null;
             $complaint->complaint_details = $data['complaint_details'] ?? null;
+            $complaint->duplicate_complaint = (bool) ($data['duplicate_complaint'] ?? false);
+            $complaint->duplicate_reference = $data['duplicate_reference'] ?? null;
+            $complaint->priority_level = $data['priority_level'] ?? null;
+            $complaint->assigned_to = $data['assigned_to'] ?? null;
             $complaint->submitted_through = $data['submitted_through'] ?? null;
             $complaint->complaint_status = $data['complaint_status'] ?? null;
+            $complaint->resolution_time_days = $data['resolution_time_days'] ?? null;
+            if ($newPhotoPath !== null) {
+                if (! empty($complaint->photo_attachment_path)) {
+                    Storage::disk('public')->delete($complaint->photo_attachment_path);
+                }
+                $complaint->photo_attachment_path = $newPhotoPath;
+            }
             $complaint->notes = $data['notes'] ?? null;
             $complaint->save();
         });
@@ -171,6 +215,9 @@ class ComplaintService
         if (! empty($data['contact_number'] ?? null)) {
             $query->where('contact_number', 'ILIKE', '%'.trim((string) $data['contact_number']).'%');
         }
+        if (! empty($data['ward_no'] ?? null)) {
+            $query->where('ward_no', 'ILIKE', '%'.trim((string) $data['ward_no']).'%');
+        }
         if (! empty($data['complaint_type'] ?? null)) {
             $query->where('complaint_type', $data['complaint_type']);
         }
@@ -180,23 +227,46 @@ class ComplaintService
         if (! empty($data['complaint_status'] ?? null)) {
             $query->where('complaint_status', $data['complaint_status']);
         }
+        if (isset($data['duplicate_complaint']) && $data['duplicate_complaint'] !== '') {
+            $query->where('duplicate_complaint', filter_var($data['duplicate_complaint'], FILTER_VALIDATE_BOOLEAN));
+        }
+        if (! empty($data['priority_level'] ?? null)) {
+            $query->where('priority_level', (int) $data['priority_level']);
+        }
+        if (! empty($data['assigned_to'] ?? null)) {
+            $query->where('assigned_to', 'ILIKE', '%'.trim((string) $data['assigned_to']).'%');
+        }
         if (! empty($data['date_from'] ?? null)) {
             $query->whereDate('date_time', '>=', Carbon::parse($data['date_from'])->toDateString());
         }
         if (! empty($data['date_to'] ?? null)) {
             $query->whereDate('date_time', '<=', Carbon::parse($data['date_to'])->toDateString());
         }
+        if (! empty($data['incident_date_from'] ?? null)) {
+            $query->whereDate('incident_date', '>=', Carbon::parse($data['incident_date_from'])->toDateString());
+        }
+        if (! empty($data['incident_date_to'] ?? null)) {
+            $query->whereDate('incident_date', '<=', Carbon::parse($data['incident_date_to'])->toDateString());
+        }
 
         $columns = [
             __('Complaint ID'),
             __('Date and Time'),
+            __('Incident Date'),
             __('Holding Number'),
             __('Household ID'),
             __('Name'),
             __('Contact Number'),
+            __('Ward No'),
             __('Complaint Type'),
             __('Complaint Submitted through'),
+            __('Duplicate Complaint'),
+            __('Duplicate Reference'),
+            __('Priority Level'),
+            __('Assigned To'),
             __('Complaint Status'),
+            __('Resolution Time (days)'),
+            __('Photo Attachment Path'),
             __('Complaint Details'),
             __('Notes'),
         ];
@@ -220,13 +290,21 @@ class ComplaintService
                 $writer->addRow([
                     $row->complaint_id,
                     $row->date_time?->format('Y-m-d H:i:s'),
+                    $row->incident_date?->format('Y-m-d'),
                     $row->holding_number,
                     $row->customer_id,
                     $row->name,
                     $row->contact_number,
+                    $row->ward_no,
                     $typeMap[$row->complaint_type] ?? $row->complaint_type,
                     $throughMap[$row->submitted_through] ?? $row->submitted_through,
+                    $row->duplicate_complaint ? __('Yes') : __('No'),
+                    $row->duplicate_reference,
+                    $row->priority_level,
+                    $row->assigned_to,
                     $statusMap[$row->complaint_status] ?? $row->complaint_status,
+                    $row->resolution_time_days,
+                    $row->photo_attachment_path,
                     $row->complaint_details,
                     $row->notes,
                 ]);

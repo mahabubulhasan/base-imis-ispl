@@ -37,6 +37,76 @@
 				{!! Form::label(null, $worker->email, ['class' => 'form-control']) !!}
 			</div>
 		</div>
+		<div class="form-group row">
+			{!! Form::label('worker_id_no', __('Worker ID'), ['class' => 'col-sm-3 control-label']) !!}
+			<div class="col-sm-3">
+				{!! Form::label(null, $worker->worker_id_no, ['class' => 'form-control']) !!}
+			</div>
+			{!! Form::label('age', __('Age (Years)'), ['class' => 'col-sm-3 control-label']) !!}
+			<div class="col-sm-3">
+				{!! Form::label(null, $worker->age, ['class' => 'form-control']) !!}
+			</div>
+		</div>
+		<div class="form-group row">
+			{!! Form::label('gender', __('Gender'), ['class' => 'col-sm-3 control-label']) !!}
+			<div class="col-sm-3">
+				{!! Form::label(null, $worker->gender, ['class' => 'form-control']) !!}
+			</div>
+			{!! Form::label('national_id_no', __('National ID No'), ['class' => 'col-sm-3 control-label']) !!}
+			<div class="col-sm-3">
+				{!! Form::label(null, $worker->national_id_no, ['class' => 'form-control']) !!}
+			</div>
+		</div>
+		<div class="form-group row">
+			{!! Form::label('service_area', __('Service Area'), ['class' => 'col-sm-3 control-label']) !!}
+			<div class="col-sm-3">
+				{!! Form::label(null, $worker->service_area, ['class' => 'form-control']) !!}
+			</div>
+			{!! Form::label('employment_type', __('Employment Type'), ['class' => 'col-sm-3 control-label']) !!}
+			<div class="col-sm-3">
+				{!! Form::label(null, $worker->employment_type, ['class' => 'form-control']) !!}
+			</div>
+		</div>
+		<div class="form-group row">
+			{!! Form::label('status', __('Status'), ['class' => 'col-sm-3 control-label']) !!}
+			<div class="col-sm-3">
+				{!! Form::label(null, $worker->status, ['class' => 'form-control']) !!}
+			</div>
+			{!! Form::label('department', __('Department'), ['class' => 'col-sm-3 control-label']) !!}
+			<div class="col-sm-3">
+				{!! Form::label(null, $worker->department, ['class' => 'form-control']) !!}
+			</div>
+		</div>
+		<div class="form-group row">
+			{!! Form::label('supervisor_name', __('Supervisor Name'), ['class' => 'col-sm-3 control-label']) !!}
+			<div class="col-sm-3">
+				{!! Form::label(null, $worker->supervisor_name, ['class' => 'form-control']) !!}
+			</div>
+			{!! Form::label('total_work_experience_years', __('Total Work Experience (Years)'), ['class' => 'col-sm-3 control-label']) !!}
+			<div class="col-sm-3">
+				{!! Form::label(null, $worker->total_work_experience_years, ['class' => 'form-control']) !!}
+			</div>
+		</div>
+		<div class="form-group row">
+			{!! Form::label('organization_work_experience_years', __('Work Experience in This Organization (Years)'), ['class' => 'col-sm-3 control-label']) !!}
+			<div class="col-sm-3">
+				{!! Form::label(null, $worker->organization_work_experience_years, ['class' => 'form-control']) !!}
+			</div>
+			{!! Form::label('education_level', __('Education Level'), ['class' => 'col-sm-3 control-label']) !!}
+			<div class="col-sm-3">
+				{!! Form::label(null, $worker->education_level, ['class' => 'form-control']) !!}
+			</div>
+		</div>
+		<div class="form-group row">
+			{!! Form::label('education_level_other', __('Education (Others specify)'), ['class' => 'col-sm-3 control-label']) !!}
+			<div class="col-sm-3">
+				{!! Form::label(null, $worker->education_level_other, ['class' => 'form-control']) !!}
+			</div>
+			{!! Form::label('employee_id', __('Employee ID (Current Organization)'), ['class' => 'col-sm-3 control-label']) !!}
+			<div class="col-sm-3">
+				{!! Form::label(null, $worker->employee_id, ['class' => 'form-control']) !!}
+			</div>
+		</div>
 		</div>
 	</div>
 </div>

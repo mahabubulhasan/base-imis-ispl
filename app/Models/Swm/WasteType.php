@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 
-class Complaint extends Model
+class WasteType extends Model
 {
     use HasFactory;
     use RevisionableTrait;
@@ -15,13 +15,9 @@ class Complaint extends Model
 
     protected $revisionCreationsEnabled = true;
 
-    protected $table = 'swm.complaints';
+    protected $table = 'swm.waste_types';
 
-    protected $casts = [
-        'date_time' => 'datetime',
-        'incident_date' => 'date',
-        'duplicate_complaint' => 'boolean',
-        'priority_level' => 'integer',
-        'resolution_time_days' => 'integer',
+    protected $fillable = [
+        'name',
     ];
 }

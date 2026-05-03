@@ -17,6 +17,33 @@ class Vehicle extends Model
 
     protected $table = 'swm.vehicles';
 
+    protected $fillable = [
+        'organization_id',
+        'vehicle_type_id',
+        'vehicle_id_no',
+        'vehicle_number',
+        'capacity',
+        'driver_worker_id',
+        'service_area',
+        'fuel_type',
+        'operational_type',
+        'vehicle_registration_no',
+        'engine_no',
+        'chassis_no',
+        'status',
+        'last_maintenance_year',
+        'remarks',
+        'dumping_place_kind',
+        'dumping_sts_id',
+        'dumping_landfill_id',
+        'dumping_place_other',
+    ];
+
+    protected $casts = [
+        'capacity' => 'decimal:2',
+        'last_maintenance_year' => 'integer',
+    ];
+
     public function organization()
     {
         return $this->belongsTo(Organization::class, 'organization_id');

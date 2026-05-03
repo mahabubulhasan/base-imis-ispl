@@ -3,6 +3,7 @@
 namespace App\Services\Swm;
 
 use App\Models\Swm\Sts;
+use App\Models\Swm\WasteType;
 use Auth;
 use Box\Spout\Common\Type;
 use Box\Spout\Writer\Style\Color;
@@ -29,6 +30,8 @@ class StsService
     {
         $query = $this->baseQuery();
 
+        $wasteTypeMap = WasteType::query()->whereNull('deleted_at')->pluck('name', 'id')->all();
+
         return DataTables::of($query)
             ->filter(function ($q) use ($data) {
                 if (! empty($data['name'] ?? null)) {
@@ -40,15 +43,46 @@ class StsService
                 if (! empty($data['contact_number'] ?? null)) {
                     $q->where('swm.sts.contact_number', 'ILIKE', '%'.trim((string) $data['contact_number']).'%');
                 }
+                if (! empty($data['sts_id'] ?? null)) {
+                    $q->where('swm.sts.sts_id', 'ILIKE', '%'.trim((string) $data['sts_id']).'%');
+                }
+                if (! empty($data['ward_no'] ?? null)) {
+                    $q->where('swm.sts.ward_no', (int) $data['ward_no']);
+                }
                 if (! empty($data['destination_landfill_id'] ?? null)) {
                     $q->where('swm.sts.destination_landfill_id', $data['destination_landfill_id']);
                 }
                 if (array_key_exists('segregation_practiced', $data) && $data['segregation_practiced'] !== '' && $data['segregation_practiced'] !== null) {
                     $q->where('swm.sts.segregation_practiced', filter_var($data['segregation_practiced'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? $data['segregation_practiced']);
                 }
+                if (! empty($data['operational_status'] ?? null)) {
+                    $q->where('swm.sts.operational_status', $data['operational_status']);
+                }
+                if (! empty($data['waste_type_id'] ?? null)) {
+                    $q->whereJsonContains('swm.sts.waste_type_ids', (int) $data['waste_type_id']);
+                }
             })
             ->orderColumn('destination_landfill_name', 'swm_lf.name $1')
             ->editColumn('segregation_practiced', fn ($m) => $m->segregation_practiced ? __('Yes') : __('No'))
+            ->addColumn('waste_types', function ($m) use ($wasteTypeMap) {
+                $ids = $m->waste_type_ids ?? [];
+                if (empty($ids)) {
+                    return '';
+                }
+                $names = [];
+                foreach ($ids as $id) {
+                    if (isset($wasteTypeMap[$id])) {
+                        $names[] = $wasteTypeMap[$id];
+                    }
+                }
+
+                return implode(', ', $names);
+            })
+            ->addColumn('source_wards_text', function ($m) {
+                $wards = $m->source_wards ?? [];
+
+                return empty($wards) ? '' : implode(', ', $wards);
+            })
             ->addColumn('action', function ($model) {
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['swm.sts.destroy', $model->id]]);
 
@@ -89,11 +123,20 @@ class StsService
 
         $sts->name = $data['name'] ?? null;
         $sts->location = $data['location'] ?? null;
+        $sts->ward_no = $data['ward_no'] ?? null;
+        $sts->road_id = $data['road_id'] ?? null;
+        $sts->road_name = $data['road_name'] ?? null;
+        $sts->latitude = $data['latitude'] ?? null;
+        $sts->longitude = $data['longitude'] ?? null;
         $sts->operator_name = $data['operator_name'] ?? null;
         $sts->contact_number = $data['contact_number'] ?? null;
         $sts->capacity = $data['capacity'] ?? null;
+        $sts->area = $data['area'] ?? null;
+        $sts->source_wards = $data['source_wards'] ?? null;
         $sts->segregation_practiced = (bool) ($data['segregation_practiced'] ?? false);
+        $sts->waste_type_ids = $data['waste_type_ids'] ?? null;
         $sts->destination_landfill_id = $data['destination_landfill_id'] ?? null;
+        $sts->operational_status = $data['operational_status'] ?? 'active';
         $sts->save();
 
         return $sts->id;
@@ -102,13 +145,23 @@ class StsService
     public function download(array $data): void
     {
         $columns = [
+            __('STS ID'),
             __('Name'),
             __('Location'),
+            __('Ward No.'),
+            __('Road ID'),
+            __('Road Name'),
+            __('Latitude'),
+            __('Longitude'),
             __('Operator Name'),
             __('Contact Number'),
-            __('Capacity'),
+            __('Capacity').' ('.__('Ton').')',
+            __('Area'),
+            __('Source Wards'),
             __('Segregation Practiced'),
+            __('Waste Types'),
             __('Destination Landfill'),
+            __('Operational Status'),
         ];
 
         $query = $this->baseQuery();
@@ -122,12 +175,26 @@ class StsService
         if (! empty($data['contact_number'] ?? null)) {
             $query->where('swm.sts.contact_number', 'ILIKE', '%'.trim((string) $data['contact_number']).'%');
         }
+        if (! empty($data['sts_id'] ?? null)) {
+            $query->where('swm.sts.sts_id', 'ILIKE', '%'.trim((string) $data['sts_id']).'%');
+        }
+        if (! empty($data['ward_no'] ?? null)) {
+            $query->where('swm.sts.ward_no', (int) $data['ward_no']);
+        }
         if (! empty($data['destination_landfill_id'] ?? null)) {
             $query->where('swm.sts.destination_landfill_id', $data['destination_landfill_id']);
         }
         if (array_key_exists('segregation_practiced', $data) && $data['segregation_practiced'] !== '' && $data['segregation_practiced'] !== null) {
             $query->where('swm.sts.segregation_practiced', filter_var($data['segregation_practiced'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? $data['segregation_practiced']);
         }
+        if (! empty($data['operational_status'] ?? null)) {
+            $query->where('swm.sts.operational_status', $data['operational_status']);
+        }
+        if (! empty($data['waste_type_id'] ?? null)) {
+            $query->whereJsonContains('swm.sts.waste_type_ids', (int) $data['waste_type_id']);
+        }
+
+        $wasteTypeMap = WasteType::query()->whereNull('deleted_at')->pluck('name', 'id')->all();
 
         $style = (new StyleBuilder())
             ->setFontBold()
@@ -139,16 +206,36 @@ class StsService
         $writer->openToBrowser('SW STS.csv')
             ->addRowWithStyle($columns, $style);
 
-        $query->orderBy('swm.sts.id')->chunk(5000, function ($rows) use ($writer) {
+        $query->orderBy('swm.sts.id')->chunk(5000, function ($rows) use ($writer, $wasteTypeMap) {
             foreach ($rows as $row) {
+                $wasteIds = $row->waste_type_ids ?? [];
+                $wasteNames = [];
+                foreach ($wasteIds as $wid) {
+                    if (isset($wasteTypeMap[$wid])) {
+                        $wasteNames[] = $wasteTypeMap[$wid];
+                    }
+                }
+
+                $sourceWards = $row->source_wards ?? [];
+
                 $writer->addRow([
+                    $row->sts_id,
                     $row->name,
                     $row->location,
+                    $row->ward_no,
+                    $row->road_id,
+                    $row->road_name,
+                    $row->latitude,
+                    $row->longitude,
                     $row->operator_name,
                     $row->contact_number,
                     $row->capacity,
+                    $row->area,
+                    implode(', ', $sourceWards),
                     $row->segregation_practiced ? __('Yes') : __('No'),
+                    implode(', ', $wasteNames),
                     $row->destination_landfill_name,
+                    $row->operational_status,
                 ]);
             }
         });

@@ -35,6 +35,10 @@
                                     <div class="col-md-2">
                                         <input type="text" class="form-control" id="name" placeholder="{{ __('Worker Name') }}" />
                                     </div>
+                                    <label for="worker_id_no" class="col-md-2 col-form-label">{{ __('Worker ID') }}</label>
+                                    <div class="col-md-2">
+                                        <input type="text" class="form-control" id="worker_id_no" placeholder="{{ __('Worker ID') }}" />
+                                    </div>
                                     <label for="mobile" class="col-md-2 col-form-label">{{ __('Mobile') }}</label>
                                     <div class="col-md-2">
                                         <input type="text" class="form-control" id="mobile" placeholder="{{ __('Mobile') }}" />
@@ -42,6 +46,25 @@
                                     <label for="email" class="col-md-2 col-form-label">{{ __('Email') }}</label>
                                     <div class="col-md-2">
                                         <input type="text" class="form-control" id="email" placeholder="{{ __('Email') }}" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="employee_id" class="col-md-2 col-form-label">{{ __('Employee ID') }}</label>
+                                    <div class="col-md-2">
+                                        <input type="text" class="form-control" id="employee_id" placeholder="{{ __('Employee ID') }}" />
+                                    </div>
+                                    <label for="national_id_no" class="col-md-2 col-form-label">{{ __('National ID') }}</label>
+                                    <div class="col-md-2">
+                                        <input type="text" class="form-control" id="national_id_no" placeholder="{{ __('National ID') }}" />
+                                    </div>
+                                    <label for="employment_type" class="col-md-2 col-form-label">{{ __('Employment Type') }}</label>
+                                    <div class="col-md-2">
+                                        <select class="form-control chosen-select" id="employment_type" name="employment_type">
+                                            <option value="">{{ __('Employment Type') }}</option>
+                                            <option value="permanent">{{ __('Permanent') }}</option>
+                                            <option value="daily">{{ __('Daily') }}</option>
+                                            <option value="contract">{{ __('Contract') }}</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -65,6 +88,14 @@
                                             @endforeach
                                         </select>
                                     </div>
+                                    <label for="status" class="col-md-2 col-form-label">{{ __('Status') }}</label>
+                                    <div class="col-md-2">
+                                        <select class="form-control chosen-select" id="status" name="status">
+                                            <option value="">{{ __('Status') }}</option>
+                                            <option value="active">{{ __('Active') }}</option>
+                                            <option value="inactive">{{ __('Inactive') }}</option>
+                                        </select>
+                                    </div>
                                 </div>
                                 <div class="card-footer text-right">
                                     <button type="submit" class="btn btn-info">{{ __('Filter') }}</button>
@@ -84,10 +115,15 @@
             <thead>
                 <tr>
                 <th>{{ __('Worker Name') }}</th>
+                <th>{{ __('Worker ID') }}</th>
                 <th>{{ __('Organization') }}</th>
                 <th>{{ __('Work Type') }}</th>
                 <th>{{ __('Mobile') }}</th>
                 <th>{{ __('Email') }}</th>
+                <th>{{ __('Employee ID') }}</th>
+                <th>{{ __('National ID') }}</th>
+                <th>{{ __('Employment Type') }}</th>
+                <th>{{ __('Status') }}</th>
                 <th>{{ __('Actions') }}</th>
                 </tr>
             </thead>
@@ -109,17 +145,26 @@ $(function() {
             url: '{!! route("swm.workers.data") !!}',
             data: function(d) {
                 d.name = $('#name').val();
+                d.worker_id_no = $('#worker_id_no').val();
                 d.mobile = $('#mobile').val();
                 d.email = $('#email').val();
+                d.employee_id = $('#employee_id').val();
+                d.national_id_no = $('#national_id_no').val();
+                d.employment_type = $('#employment_type').val();
                 @if(empty($scopedOrganizationId))
                 d.organization_id = $('#organization_id').val();
                 @endif
                 d.work_type_id = $('#work_type_id').val();
+                d.status = $('#status').val();
             }
         },
         columns: [{
                 data: 'name',
                 name: 'swm.workers.name'
+            },
+            {
+                data: 'worker_id_no',
+                name: 'swm.workers.worker_id_no'
             },
             {
                 data: 'organization_name',
@@ -136,6 +181,22 @@ $(function() {
             {
                 data: 'email',
                 name: 'swm.workers.email'
+            },
+            {
+                data: 'employee_id',
+                name: 'swm.workers.employee_id'
+            },
+            {
+                data: 'national_id_no',
+                name: 'swm.workers.national_id_no'
+            },
+            {
+                data: 'employment_type',
+                name: 'swm.workers.employment_type'
+            },
+            {
+                data: 'status',
+                name: 'swm.workers.status'
             },
             {
                 data: 'action',
@@ -178,8 +239,13 @@ $(function() {
         e.preventDefault();
         var searchData = $('input[type=search]').val();
         var name = $('#name').val();
+        var worker_id_no = $('#worker_id_no').val();
         var mobile = $('#mobile').val();
         var email = $('#email').val();
+        var employee_id = $('#employee_id').val();
+        var national_id_no = $('#national_id_no').val();
+        var employment_type = $('#employment_type').val();
+        var status = $('#status').val();
         var organization_id = '';
         @if(empty($scopedOrganizationId))
         organization_id = $('#organization_id').val() || '';
@@ -187,8 +253,13 @@ $(function() {
         var work_type_id = $('#work_type_id').val();
         window.location.href = "{!! route('swm.workers.export') !!}?searchData=" + searchData +
             "&name=" + encodeURIComponent(name) +
+            "&worker_id_no=" + encodeURIComponent(worker_id_no || '') +
             "&mobile=" + encodeURIComponent(mobile) +
             "&email=" + encodeURIComponent(email) +
+            "&employee_id=" + encodeURIComponent(employee_id) +
+            "&national_id_no=" + encodeURIComponent(national_id_no) +
+            "&employment_type=" + encodeURIComponent(employment_type || '') +
+            "&status=" + encodeURIComponent(status || '') +
             "&organization_id=" + encodeURIComponent(organization_id || '') +
             "&work_type_id=" + encodeURIComponent(work_type_id || '');
     })

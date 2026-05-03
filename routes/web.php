@@ -245,6 +245,7 @@ Route::group([
 
         Route::get('workers/data', 'WorkerController@getData')->name('swm.workers.data');
         Route::get('workers/export', 'WorkerController@export')->name('swm.workers.export');
+        Route::get('workers/next-worker-id', 'WorkerController@nextWorkerId')->name('swm.workers.next_worker_id');
         Route::get('workers/{worker}/history', 'WorkerController@history')->name('swm.workers.history');
         Route::resource('workers', 'WorkerController')->names([
             'index' => 'swm.workers.index',
@@ -267,6 +268,19 @@ Route::group([
             'edit' => 'swm.vehicle-types.edit',
             'update' => 'swm.vehicle-types.update',
             'destroy' => 'swm.vehicle-types.destroy',
+        ]);
+
+        Route::get('waste-types/data', 'WasteTypeController@getData')->name('swm.waste-types.data');
+        Route::get('waste-types/export', 'WasteTypeController@export')->name('swm.waste-types.export');
+        Route::get('waste-types/{waste_type}/history', 'WasteTypeController@history')->name('swm.waste-types.history');
+        Route::resource('waste-types', 'WasteTypeController')->names([
+            'index' => 'swm.waste-types.index',
+            'create' => 'swm.waste-types.create',
+            'store' => 'swm.waste-types.store',
+            'show' => 'swm.waste-types.show',
+            'edit' => 'swm.waste-types.edit',
+            'update' => 'swm.waste-types.update',
+            'destroy' => 'swm.waste-types.destroy',
         ]);
 
         Route::get('vehicles/drivers-for-organization', 'VehicleController@driversForOrganization')->name('swm.vehicles.drivers-for-organization');
@@ -302,6 +316,7 @@ Route::group([
     Route::prefix('service-facilities')->group(function () {
         Route::get('landfills/data', 'LandfillController@getData')->name('swm.landfills.data');
         Route::get('landfills/export', 'LandfillController@export')->name('swm.landfills.export');
+        Route::get('landfills/wards-for-sts', 'LandfillController@wardsForSts')->name('swm.landfills.wards-for-sts');
         Route::get('landfills/{landfill}/history', 'LandfillController@history')->name('swm.landfills.history');
         Route::resource('landfills', 'LandfillController')->names([
             'index' => 'swm.landfills.index',
@@ -315,6 +330,7 @@ Route::group([
 
         Route::get('sts/data', 'StsController@getData')->name('swm.sts.data');
         Route::get('sts/export', 'StsController@export')->name('swm.sts.export');
+        Route::get('sts/roads-for-ward', 'StsController@roadsForWard')->name('swm.sts.roads-for-ward');
         Route::get('sts/{sts}/history', 'StsController@history')->name('swm.sts.history');
         Route::resource('sts', 'StsController')->parameters([
             'sts' => 'sts',

@@ -82,6 +82,12 @@ class VehicleService
                 if (! empty($data['vehicle_number'] ?? null)) {
                     $q->where('swm.vehicles.vehicle_number', 'ILIKE', '%'.trim((string) $data['vehicle_number']).'%');
                 }
+                if (! empty($data['vehicle_id_no'] ?? null)) {
+                    $q->where('swm.vehicles.vehicle_id_no', 'ILIKE', '%'.trim((string) $data['vehicle_id_no']).'%');
+                }
+                if (! empty($data['chassis_no'] ?? null)) {
+                    $q->where('swm.vehicles.chassis_no', 'ILIKE', '%'.trim((string) $data['chassis_no']).'%');
+                }
                 if (! empty($data['organization_id'] ?? null)) {
                     $q->where('swm.vehicles.organization_id', $data['organization_id']);
                 }
@@ -162,9 +168,19 @@ class VehicleService
 
         $vehicle->organization_id = $data['organization_id'] ?? null;
         $vehicle->vehicle_type_id = $data['vehicle_type_id'] ?? null;
+        $vehicle->vehicle_id_no = $data['vehicle_id_no'] ?? null;
         $vehicle->vehicle_number = $data['vehicle_number'] ?? null;
         $vehicle->capacity = $data['capacity'] ?? null;
         $vehicle->driver_worker_id = $data['driver_worker_id'] ?? null;
+        $vehicle->service_area = $data['service_area'] ?? null;
+        $vehicle->fuel_type = $data['fuel_type'] ?? null;
+        $vehicle->operational_type = $data['operational_type'] ?? null;
+        $vehicle->vehicle_registration_no = $data['vehicle_registration_no'] ?? null;
+        $vehicle->engine_no = $data['engine_no'] ?? null;
+        $vehicle->chassis_no = $data['chassis_no'] ?? null;
+        $vehicle->status = $data['status'] ?? 'active';
+        $vehicle->last_maintenance_year = $data['last_maintenance_year'] ?? null;
+        $vehicle->remarks = $data['remarks'] ?? null;
         $vehicle->dumping_place_kind = $data['dumping_place_kind'] ?? null;
         $vehicle->dumping_sts_id = $data['dumping_sts_id'] ?? null;
         $vehicle->dumping_landfill_id = $data['dumping_landfill_id'] ?? null;
@@ -177,16 +193,28 @@ class VehicleService
     public function download(array $data): void
     {
         $vehicleNumber = $data['vehicle_number'] ?? null;
+        $vehicleIdNo = $data['vehicle_id_no'] ?? null;
+        $chassisNo = $data['chassis_no'] ?? null;
         $organizationId = $data['organization_id'] ?? null;
         $vehicleTypeId = $data['vehicle_type_id'] ?? null;
         $driverWorkerId = $data['driver_worker_id'] ?? null;
 
         $columns = [
+            __('Vehicle ID'),
             __('Vehicle Number'),
+            __('Chassis No.'),
             __('Organization'),
             __('Vehicle Type'),
             __('Capacity'),
             __('Driver'),
+            __('Service Area'),
+            __('Fuel Type'),
+            __('Operational Type'),
+            __('Vehicle Registration No.'),
+            __('Engine No.'),
+            __('Status'),
+            __('Last Maintenance (Year)'),
+            __('Remarks'),
             __('Dumping Place'),
         ];
 
@@ -194,6 +222,12 @@ class VehicleService
 
         if (! empty($vehicleNumber)) {
             $query->where('swm.vehicles.vehicle_number', 'ILIKE', '%'.trim((string) $vehicleNumber).'%');
+        }
+        if (! empty($vehicleIdNo)) {
+            $query->where('swm.vehicles.vehicle_id_no', 'ILIKE', '%'.trim((string) $vehicleIdNo).'%');
+        }
+        if (! empty($chassisNo)) {
+            $query->where('swm.vehicles.chassis_no', 'ILIKE', '%'.trim((string) $chassisNo).'%');
         }
         if (! empty($organizationId)) {
             $query->where('swm.vehicles.organization_id', $organizationId);
@@ -224,11 +258,21 @@ class VehicleService
                     default => '',
                 };
                 $writer->addRow([
+                    $row->vehicle_id_no,
                     $row->vehicle_number,
+                    $row->chassis_no,
                     $row->organization_name,
                     $row->vehicle_type_name,
                     $row->capacity,
                     $row->driver_name,
+                    $row->service_area,
+                    $row->fuel_type,
+                    $row->operational_type,
+                    $row->vehicle_registration_no,
+                    $row->engine_no,
+                    $row->status,
+                    $row->last_maintenance_year,
+                    $row->remarks,
                     $dumping,
                 ]);
             }

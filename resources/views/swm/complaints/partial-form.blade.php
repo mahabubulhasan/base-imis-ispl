@@ -3,6 +3,7 @@
     $initHolding = old('holding_number', $isEdit ? ($complaint->holding_number ?? '') : '');
     $initCustomerId = old('household_id', $isEdit ? ($complaint->customer_id ?? '') : '');
     $initDateTime = old('date_time', ($isEdit && $complaint->date_time) ? $complaint->date_time->format('Y-m-d\TH:i') : now()->format('Y-m-d\TH:i'));
+    $initIncidentDate = old('incident_date', ($isEdit && $complaint->incident_date) ? $complaint->incident_date->format('Y-m-d') : '');
 @endphp
 @push('style')
 <style>
@@ -67,6 +68,17 @@
         </div>
     </div>
 
+    <div class="form-group row">
+        {!! Form::label('ward_no', __('Ward No.'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::text('ward_no', old('ward_no', $isEdit ? $complaint->ward_no : null), ['class' => 'form-control', 'placeholder' => __('Ward No.')]) !!}
+        </div>
+        {!! Form::label('incident_date', __('Incident Date'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            <input type="date" name="incident_date" id="incident_date" class="form-control" value="{{ $initIncidentDate }}" />
+        </div>
+    </div>
+
     <div class="form-group row required">
         {!! Form::label('complaint_type', __('Complaint Type'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
@@ -83,12 +95,52 @@
         <div class="col-sm-3">
             {!! Form::select('complaint_status', collect($complaintStatuses)->mapWithKeys(fn ($label, $key) => [$key => __($label)])->all(), old('complaint_status', $isEdit ? $complaint->complaint_status : 'pending'), ['class' => 'form-control', 'placeholder' => __('Select Complaint Status')]) !!}
         </div>
+        {!! Form::label('resolution_time_days', __('Resolution Time (days)'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::number('resolution_time_days', old('resolution_time_days', $isEdit ? $complaint->resolution_time_days : null), ['class' => 'form-control', 'placeholder' => __('Resolution Time (days)'), 'min' => 0]) !!}
+        </div>
+    </div>
+
+    <div class="form-group row">
+        {!! Form::label('duplicate_complaint', __('Duplicate Complaint'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::select('duplicate_complaint', $duplicateOptions, old('duplicate_complaint', $isEdit ? (int) ($complaint->duplicate_complaint ?? 0) : 0), ['class' => 'form-control']) !!}
+        </div>
+        {!! Form::label('duplicate_reference', __('Duplicate Reference'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::text('duplicate_reference', old('duplicate_reference', $isEdit ? $complaint->duplicate_reference : null), ['class' => 'form-control', 'placeholder' => __('Linked Complaint ID (optional)')]) !!}
+        </div>
+    </div>
+
+    <div class="form-group row">
+        {!! Form::label('priority_level', __('Priority Level (1-5)'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::select('priority_level', ['' => __('Select Priority')] + $priorityLevels, old('priority_level', $isEdit ? $complaint->priority_level : null), ['class' => 'form-control']) !!}
+        </div>
+        {!! Form::label('assigned_to', __('Assigned To (Worker/Driver)'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::text('assigned_to', old('assigned_to', $isEdit ? $complaint->assigned_to : null), ['class' => 'form-control', 'placeholder' => __('Assigned worker/driver')]) !!}
+        </div>
     </div>
 
     <div class="form-group row required">
         {!! Form::label('complaint_details', __('Complaint Details'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-9">
             {!! Form::textarea('complaint_details', old('complaint_details', $isEdit ? $complaint->complaint_details : null), ['class' => 'form-control', 'rows' => 4, 'placeholder' => __('Complaint Details')]) !!}
+        </div>
+    </div>
+
+    <div class="form-group row">
+        {!! Form::label('photo_attachment', __('Photo Attachment'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-9">
+            <input type="file" name="photo_attachment" id="photo_attachment" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
+            @if($isEdit && !empty($complaint->photo_attachment_path))
+                <small class="text-muted d-block mt-2">
+                    <a href="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($complaint->photo_attachment_path) }}" target="_blank">
+                        {{ __('View current attachment') }}
+                    </a>
+                </small>
+            @endif
         </div>
     </div>
 

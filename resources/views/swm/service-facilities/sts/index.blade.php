@@ -33,10 +33,25 @@
                             <div class="accordion-body">
                             <form class="form-horizontal" id="filter-form">
                                 <div class="form-group row">
+                                    <label for="sts_id" class="col-md-2 col-form-label">{{ __('STS ID') }}</label>
+                                    <div class="col-md-2">
+                                        <input type="text" class="form-control" id="sts_id" placeholder="{{ __('STS ID') }}" />
+                                    </div>
                                     <label for="name" class="col-md-2 col-form-label">{{ __('Name') }}</label>
                                     <div class="col-md-2">
                                         <input type="text" class="form-control" id="name" placeholder="{{ __('Name') }}" />
                                     </div>
+                                    <label for="ward_no" class="col-md-2 col-form-label">{{ __('Ward No.') }}</label>
+                                    <div class="col-md-2">
+                                        <select class="form-control chosen-select" id="ward_no" name="ward_no">
+                                            <option value="">{{ __('Ward No.') }}</option>
+                                            @foreach($wards as $w)
+                                            <option value="{{ $w }}">{{ $w }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
                                     <label for="operator_name" class="col-md-2 col-form-label">{{ __('Operator Name') }}</label>
                                     <div class="col-md-2">
                                         <input type="text" class="form-control" id="operator_name" placeholder="{{ __('Operator Name') }}" />
@@ -45,8 +60,6 @@
                                     <div class="col-md-2">
                                         <input type="text" class="form-control" id="contact_number" placeholder="{{ __('Contact Number') }}" />
                                     </div>
-                                </div>
-                                <div class="form-group row">
                                     <label for="destination_landfill_id" class="col-md-2 col-form-label">{{ __('Destination Landfill') }}</label>
                                     <div class="col-md-2">
                                         <select class="form-control chosen-select" id="destination_landfill_id" name="destination_landfill_id">
@@ -56,12 +69,31 @@
                                             @endforeach
                                         </select>
                                     </div>
+                                </div>
+                                <div class="form-group row">
                                     <label for="segregation_practiced" class="col-md-2 col-form-label">{{ __('Segregation Practiced') }}</label>
                                     <div class="col-md-2">
                                         <select class="form-control" id="segregation_practiced" name="segregation_practiced">
                                             <option value="">{{ __('All') }}</option>
                                             <option value="true">{{ __('Yes') }}</option>
                                             <option value="false">{{ __('No') }}</option>
+                                        </select>
+                                    </div>
+                                    <label for="waste_type_id" class="col-md-2 col-form-label">{{ __('Waste Type') }}</label>
+                                    <div class="col-md-2">
+                                        <select class="form-control chosen-select" id="waste_type_id" name="waste_type_id">
+                                            <option value="">{{ __('Waste Type') }}</option>
+                                            @foreach($wasteTypes as $wid => $wname)
+                                            <option value="{{ $wid }}">{{ $wname }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <label for="operational_status" class="col-md-2 col-form-label">{{ __('Operational Status') }}</label>
+                                    <div class="col-md-2">
+                                        <select class="form-control" id="operational_status" name="operational_status">
+                                            <option value="">{{ __('All') }}</option>
+                                            <option value="active">{{ __('Active') }}</option>
+                                            <option value="inactive">{{ __('Inactive') }}</option>
                                         </select>
                                     </div>
                                 </div>
@@ -82,13 +114,18 @@
         <table id="data-table" class="table table-bordered table-striped" width="100%">
             <thead>
                 <tr>
+                <th>{{ __('STS ID') }}</th>
                 <th>{{ __('Name') }}</th>
+                <th>{{ __('Ward No.') }}</th>
                 <th>{{ __('Location') }}</th>
                 <th>{{ __('Operator Name') }}</th>
                 <th>{{ __('Contact Number') }}</th>
                 <th>{{ __('Capacity') }} ({{ __('Ton') }})</th>
+                <th>{{ __('Source Wards') }}</th>
                 <th>{{ __('Segregation Practiced') }}</th>
+                <th>{{ __('Waste Types') }}</th>
                 <th>{{ __('Destination Landfill') }}</th>
+                <th>{{ __('Operational Status') }}</th>
                 <th>{{ __('Actions') }}</th>
                 </tr>
             </thead>
@@ -109,21 +146,30 @@ $(function() {
         ajax: {
             url: '{!! route("swm.sts.data") !!}',
             data: function(d) {
+                d.sts_id = $('#sts_id').val();
                 d.name = $('#name').val();
+                d.ward_no = $('#ward_no').val();
                 d.operator_name = $('#operator_name').val();
                 d.contact_number = $('#contact_number').val();
                 d.destination_landfill_id = $('#destination_landfill_id').val();
                 d.segregation_practiced = $('#segregation_practiced').val();
+                d.waste_type_id = $('#waste_type_id').val();
+                d.operational_status = $('#operational_status').val();
             }
         },
         columns: [
+            { data: 'sts_id', name: 'swm.sts.sts_id' },
             { data: 'name', name: 'swm.sts.name' },
+            { data: 'ward_no', name: 'swm.sts.ward_no' },
             { data: 'location', name: 'swm.sts.location' },
             { data: 'operator_name', name: 'swm.sts.operator_name' },
             { data: 'contact_number', name: 'swm.sts.contact_number' },
             { data: 'capacity', name: 'swm.sts.capacity' },
+            { data: 'source_wards_text', name: 'source_wards_text', orderable: false, searchable: false },
             { data: 'segregation_practiced', name: 'swm.sts.segregation_practiced' },
+            { data: 'waste_types', name: 'waste_types', orderable: false, searchable: false },
             { data: 'destination_landfill_name', name: 'destination_landfill_name' },
+            { data: 'operational_status', name: 'swm.sts.operational_status' },
             { data: 'action', name: 'action', orderable: false, searchable: false }
         ],
         order: [ [0, 'asc'] ]
@@ -160,11 +206,15 @@ $(function() {
         e.preventDefault();
         var searchData = $('input[type=search]').val();
         window.location.href = "{!! route('swm.sts.export') !!}?searchData=" + searchData +
-            "&name=" + encodeURIComponent($('#name').val()) +
-            "&operator_name=" + encodeURIComponent($('#operator_name').val()) +
-            "&contact_number=" + encodeURIComponent($('#contact_number').val()) +
+            "&sts_id=" + encodeURIComponent($('#sts_id').val() || '') +
+            "&name=" + encodeURIComponent($('#name').val() || '') +
+            "&ward_no=" + encodeURIComponent($('#ward_no').val() || '') +
+            "&operator_name=" + encodeURIComponent($('#operator_name').val() || '') +
+            "&contact_number=" + encodeURIComponent($('#contact_number').val() || '') +
             "&destination_landfill_id=" + encodeURIComponent($('#destination_landfill_id').val() || '') +
-            "&segregation_practiced=" + encodeURIComponent($('#segregation_practiced').val());
+            "&segregation_practiced=" + encodeURIComponent($('#segregation_practiced').val() || '') +
+            "&waste_type_id=" + encodeURIComponent($('#waste_type_id').val() || '') +
+            "&operational_status=" + encodeURIComponent($('#operational_status').val() || '');
     })
 });
 </script>

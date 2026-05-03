@@ -71,6 +71,36 @@
                     <label for="contact_number" class="col-md-2 col-form-label">{{ __('Contact number') }}</label>
                     <div class="col-md-2"><input type="text" class="form-control" id="contact_number" /></div>
                 </div>
+                <div class="form-group row">
+                    <label for="priority_level" class="col-md-2 col-form-label">{{ __('Priority Level') }}</label>
+                    <div class="col-md-2">
+                        <select class="form-control" id="priority_level">
+                            <option value="">{{ __('Select Priority') }}</option>
+                            @foreach($priorityLevels as $k => $label)
+                            <option value="{{ $k }}">{{ $label }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <label for="assigned_to" class="col-md-2 col-form-label">{{ __('Assigned To') }}</label>
+                    <div class="col-md-2"><input type="text" class="form-control" id="assigned_to" /></div>
+                    <label for="duplicate_complaint" class="col-md-2 col-form-label">{{ __('Duplicate Complaint') }}</label>
+                    <div class="col-md-2">
+                        <select class="form-control" id="duplicate_complaint">
+                            <option value="">{{ __('Select') }}</option>
+                            @foreach($duplicateOptions as $k => $label)
+                            <option value="{{ $k }}">{{ $label }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="ward_no" class="col-md-2 col-form-label">{{ __('Ward No.') }}</label>
+                    <div class="col-md-2"><input type="text" class="form-control" id="ward_no" /></div>
+                    <label for="incident_date_from" class="col-md-2 col-form-label">{{ __('Incident Date From') }}</label>
+                    <div class="col-md-2"><input type="date" class="form-control" id="incident_date_from" /></div>
+                    <label for="incident_date_to" class="col-md-2 col-form-label">{{ __('Incident Date To') }}</label>
+                    <div class="col-md-2"><input type="date" class="form-control" id="incident_date_to" /></div>
+                </div>
                 <div class="card-footer text-right">
                     <button type="submit" class="btn btn-info">{{ __('Filter') }}</button>
                     <button type="reset" id="reset-filter" class="btn btn-info">{{ __('Reset') }}</button>
@@ -85,12 +115,17 @@
                     <tr>
                         <th>{{ __('Complaint ID') }}</th>
                         <th>{{ __('Date and Time') }}</th>
+                        <th>{{ __('Incident Date') }}</th>
                         <th>{{ __('Holding Number') }}</th>
                         <th>{{ __('Household ID') }}</th>
                         <th>{{ __('Name') }}</th>
                         <th>{{ __('Contact number') }}</th>
+                        <th>{{ __('Ward No.') }}</th>
                         <th>{{ __('Complaint Type') }}</th>
                         <th>{{ __('Complaint Submitted through') }}</th>
+                        <th>{{ __('Priority') }}</th>
+                        <th>{{ __('Assigned To') }}</th>
+                        <th>{{ __('Duplicate') }}</th>
                         <th>{{ __('Complaint Status') }}</th>
                         <th>{{ __('Actions') }}</th>
                     </tr>
@@ -179,18 +214,29 @@ $(function() {
                 d.contact_number = $('#contact_number').val();
                 d.complaint_type = $('#complaint_type').val();
                 d.submitted_through = $('#submitted_through').val();
+                d.priority_level = $('#priority_level').val();
+                d.assigned_to = $('#assigned_to').val();
+                d.duplicate_complaint = $('#duplicate_complaint').val();
+                d.ward_no = $('#ward_no').val();
+                d.incident_date_from = $('#incident_date_from').val();
+                d.incident_date_to = $('#incident_date_to').val();
                 d.complaint_status = $('#complaint_status').val();
             }
         },
         columns: [
             { data: 'complaint_id', name: 'complaint_id' },
             { data: 'date_time', name: 'date_time' },
+            { data: 'incident_date', name: 'incident_date' },
             { data: 'holding_number', name: 'holding_number' },
             { data: 'household_id', name: 'customer_id' },
             { data: 'name', name: 'name' },
             { data: 'contact_number', name: 'contact_number' },
+            { data: 'ward_no', name: 'ward_no' },
             { data: 'complaint_type', name: 'complaint_type' },
             { data: 'submitted_through', name: 'submitted_through' },
+            { data: 'priority_level', name: 'priority_level' },
+            { data: 'assigned_to', name: 'assigned_to' },
+            { data: 'duplicate_complaint_text', name: 'duplicate_complaint' },
             { data: 'complaint_status', name: 'complaint_status' },
             { data: 'action', name: 'action', orderable: false, searchable: false }
         ],
@@ -234,6 +280,12 @@ $(function() {
         var contact_number = $('#contact_number').val() || '';
         var complaint_type = $('#complaint_type').val() || '';
         var submitted_through = $('#submitted_through').val() || '';
+        var priority_level = $('#priority_level').val() || '';
+        var assigned_to = $('#assigned_to').val() || '';
+        var duplicate_complaint = $('#duplicate_complaint').val() || '';
+        var ward_no = $('#ward_no').val() || '';
+        var incident_date_from = $('#incident_date_from').val() || '';
+        var incident_date_to = $('#incident_date_to').val() || '';
         var complaint_status = $('#complaint_status').val() || '';
         window.location.href = "{!! route('swm.complaints.export') !!}?searchData=" + encodeURIComponent(searchData) +
             "&complaint_id=" + encodeURIComponent(complaint_id) +
@@ -244,6 +296,12 @@ $(function() {
             "&contact_number=" + encodeURIComponent(contact_number) +
             "&complaint_type=" + encodeURIComponent(complaint_type) +
             "&submitted_through=" + encodeURIComponent(submitted_through) +
+            "&priority_level=" + encodeURIComponent(priority_level) +
+            "&assigned_to=" + encodeURIComponent(assigned_to) +
+            "&duplicate_complaint=" + encodeURIComponent(duplicate_complaint) +
+            "&ward_no=" + encodeURIComponent(ward_no) +
+            "&incident_date_from=" + encodeURIComponent(incident_date_from) +
+            "&incident_date_to=" + encodeURIComponent(incident_date_to) +
             "&complaint_status=" + encodeURIComponent(complaint_status);
     });
 });

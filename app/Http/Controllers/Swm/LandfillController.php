@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Swm;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Swm\LandfillRequest;
+use App\Models\LayerInfo\Ward;
 use App\Models\Swm\Landfill;
 use App\Models\Swm\Sts;
 use App\Models\Swm\Vehicle;
+use App\Models\Swm\WasteType;
 use App\Services\Swm\LandfillService;
 use Illuminate\Http\Request;
 
@@ -27,11 +29,47 @@ class LandfillController extends Controller
         $this->landfillService = $landfillService;
     }
 
+    protected function stsOptions(): array
+    {
+        return Sts::query()
+            ->whereNull('deleted_at')
+            ->orderBy('name')
+            ->get()
+            ->mapWithKeys(function (Sts $sts) {
+                $label = trim(($sts->sts_id ? $sts->sts_id.' - ' : '').$sts->name);
+
+                return [$sts->id => $label];
+            })
+            ->all();
+    }
+
+    protected function stsWardMap(): array
+    {
+        return Sts::query()
+            ->whereNull('deleted_at')
+            ->whereNotNull('ward_no')
+            ->pluck('ward_no', 'id')
+            ->map(fn ($ward) => (int) $ward)
+            ->all();
+    }
+
+    protected function wardOptions(): array
+    {
+        return Ward::getInAscOrder();
+    }
+
+    protected function wasteTypeOptions(): array
+    {
+        return WasteType::query()->whereNull('deleted_at')->orderBy('name')->pluck('name', 'id')->all();
+    }
+
     public function index()
     {
         $page_title = __('SW Landfills');
+        $stsOptions = $this->stsOptions();
+        $wasteTypes = $this->wasteTypeOptions();
 
-        return view('swm.service-facilities.landfills.index', compact('page_title'));
+        return view('swm.service-facilities.landfills.index', compact('page_title', 'wasteTypes', 'stsOptions'));
     }
 
     public function getData(Request $request)
@@ -43,8 +81,12 @@ class LandfillController extends Controller
     {
         $page_title = __('Add SW Landfill');
         $landfill = null;
+        $stsOptions = $this->stsOptions();
+        $stsWardMap = $this->stsWardMap();
+        $wards = $this->wardOptions();
+        $wasteTypes = $this->wasteTypeOptions();
 
-        return view('swm.service-facilities.landfills.create', compact('page_title', 'landfill'));
+        return view('swm.service-facilities.landfills.create', compact('page_title', 'landfill', 'stsOptions', 'stsWardMap', 'wards', 'wasteTypes'));
     }
 
     public function store(LandfillRequest $request)
@@ -57,15 +99,21 @@ class LandfillController extends Controller
     public function show(Landfill $landfill)
     {
         $page_title = __('SW Landfill Details');
+        $sourceSts = $landfill->sourceSts();
+        $wasteTypes = $landfill->wasteTypes();
 
-        return view('swm.service-facilities.landfills.show', compact('page_title', 'landfill'));
+        return view('swm.service-facilities.landfills.show', compact('page_title', 'landfill', 'sourceSts', 'wasteTypes'));
     }
 
     public function edit(Landfill $landfill)
     {
         $page_title = __('Edit SW Landfill');
+        $stsOptions = $this->stsOptions();
+        $stsWardMap = $this->stsWardMap();
+        $wards = $this->wardOptions();
+        $wasteTypes = $this->wasteTypeOptions();
 
-        return view('swm.service-facilities.landfills.edit', compact('page_title', 'landfill'));
+        return view('swm.service-facilities.landfills.edit', compact('page_title', 'landfill', 'stsOptions', 'stsWardMap', 'wards', 'wasteTypes'));
     }
 
     public function update(LandfillRequest $request, Landfill $landfill)
@@ -93,6 +141,35 @@ class LandfillController extends Controller
         $page_title = __('SW Landfill History');
 
         return view('swm.service-facilities.landfills.history', compact('page_title', 'landfill'));
+    }
+
+    /**
+     * Return ward numbers derived from selected STS ids.
+     * Response: [ward_no, ...]
+     */
+    public function wardsForSts(Request $request)
+    {
+        $ids = $request->input('source_sts_ids', []);
+        if (! is_array($ids)) {
+            $ids = [$ids];
+        }
+        $ids = array_values(array_filter(array_map('intval', $ids), fn ($id) => $id > 0));
+        if (empty($ids)) {
+            return response()->json([]);
+        }
+
+        $wards = Sts::query()
+            ->whereIn('id', $ids)
+            ->whereNull('deleted_at')
+            ->whereNotNull('ward_no')
+            ->pluck('ward_no')
+            ->map(fn ($w) => (int) $w)
+            ->unique()
+            ->sort()
+            ->values()
+            ->all();
+
+        return response()->json($wards);
     }
 
     public function export(Request $request)

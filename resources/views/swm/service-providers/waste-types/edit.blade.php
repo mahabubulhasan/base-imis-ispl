@@ -5,8 +5,8 @@
 @include('layouts.components.success-alert')
 @include('layouts.components.error-alert')
 <div class="card card-info">
-    {!! Form::open(['route' => 'swm.complaints.store', 'class' => 'form-horizontal', 'id' => 'swm-complaint-form', 'files' => true]) !!}
-        @include('swm.complaints.partial-form')
-    {!! Form::close() !!}
+	{!! Form::model($wasteType, ['method' => 'PATCH', 'route' => ['swm.waste-types.update', $wasteType->id], 'class' => 'form-horizontal']) !!}
+		@include('swm.service-providers.waste-types.partial-form')
+	{!! Form::close() !!}
 </div>
 @stop

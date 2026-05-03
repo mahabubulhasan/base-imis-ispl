@@ -10,6 +10,7 @@ use App\Models\Swm\Worker;
 use App\Services\Swm\WorkerService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class WorkerController extends Controller
 {
@@ -20,7 +21,7 @@ class WorkerController extends Controller
         $this->middleware('auth');
         $this->middleware('permission:List SW Workers', ['only' => ['index', 'getData']]);
         $this->middleware('permission:View SW Worker', ['only' => ['show']]);
-        $this->middleware('permission:Add SW Worker', ['only' => ['create', 'store']]);
+        $this->middleware('permission:Add SW Worker', ['only' => ['create', 'store', 'nextWorkerId']]);
         $this->middleware('permission:Edit SW Worker', ['only' => ['edit', 'update']]);
         $this->middleware('permission:Delete SW Worker', ['only' => ['destroy']]);
         $this->middleware('permission:Export SW Workers to CSV', ['only' => ['export']]);
@@ -78,8 +79,34 @@ class WorkerController extends Controller
         $organizations = $this->organizationOptionsForForms();
         $workTypes = $this->workTypeOptionsForForms();
         $scopedOrganizationId = Auth::user()->swm_organization_id;
+        $suggestedWorkerIdNo = $scopedOrganizationId
+            ? $this->workerService->peekNextWorkerIdNo((int) $scopedOrganizationId)
+            : '';
 
-        return view('swm.service-providers.workers.create', compact('page_title', 'worker', 'organizations', 'workTypes', 'scopedOrganizationId'));
+        return view('swm.service-providers.workers.create', compact('page_title', 'worker', 'organizations', 'workTypes', 'scopedOrganizationId', 'suggestedWorkerIdNo'));
+    }
+
+    public function nextWorkerId(Request $request)
+    {
+        $validated = $request->validate([
+            'organization_id' => [
+                'required',
+                'integer',
+                Rule::exists('pgsql.swm.organizations', 'id')->where(function ($query) {
+                    return $query->whereNull('deleted_at');
+                }),
+            ],
+        ]);
+
+        $orgId = (int) $validated['organization_id'];
+        $scoped = Auth::user()->swm_organization_id;
+        if ($scoped && (int) $scoped !== $orgId) {
+            abort(403);
+        }
+
+        return response()->json([
+            'worker_id_no' => $this->workerService->peekNextWorkerIdNo($orgId),
+        ]);
     }
 
     public function store(WorkerRequest $request)

@@ -39,12 +39,18 @@ class ComplaintRequest extends FormRequest
             'household_id' => ['nullable', 'string', 'max:255'],
             'name' => ['required', 'string', 'max:255'],
             'contact_number' => ['required', 'string', 'max:255'],
+            'ward_no' => ['nullable', 'string', 'max:255'],
+            'incident_date' => ['nullable', 'date'],
             'complaint_type' => [
                 'required',
                 'string',
                 Rule::in(array_keys(config('swm_complaints.complaint_types', []))),
             ],
             'complaint_details' => ['required', 'string'],
+            'duplicate_complaint' => ['nullable', 'boolean'],
+            'duplicate_reference' => ['nullable', 'string', 'max:255'],
+            'priority_level' => ['nullable', 'integer', 'between:1,5'],
+            'assigned_to' => ['nullable', 'string', 'max:255'],
             'submitted_through' => [
                 'required',
                 'string',
@@ -55,6 +61,8 @@ class ComplaintRequest extends FormRequest
                 'string',
                 Rule::in(array_keys(config('swm_complaints.complaint_statuses', []))),
             ],
+            'resolution_time_days' => ['nullable', 'integer', 'min:0'],
+            'photo_attachment' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
             'notes' => ['nullable', 'string'],
         ];
     }
@@ -67,6 +75,12 @@ class ComplaintRequest extends FormRequest
             'household_id' => $this->filled('household_id') ? trim((string) $this->input('household_id')) : null,
             'name' => trim((string) $this->input('name', '')),
             'contact_number' => trim((string) $this->input('contact_number', '')),
+            'ward_no' => $this->filled('ward_no') ? trim((string) $this->input('ward_no')) : null,
+            'duplicate_reference' => $this->filled('duplicate_reference') ? trim((string) $this->input('duplicate_reference')) : null,
+            'assigned_to' => $this->filled('assigned_to') ? trim((string) $this->input('assigned_to')) : null,
+            'resolution_time_days' => $this->filled('resolution_time_days') ? (int) $this->input('resolution_time_days') : null,
+            'priority_level' => $this->filled('priority_level') ? (int) $this->input('priority_level') : null,
+            'duplicate_complaint' => filter_var($this->input('duplicate_complaint', false), FILTER_VALIDATE_BOOLEAN),
             'notes' => $this->filled('notes') ? trim((string) $this->input('notes')) : null,
         ]);
     }

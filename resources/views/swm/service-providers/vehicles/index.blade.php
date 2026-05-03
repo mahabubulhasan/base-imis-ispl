@@ -35,6 +35,10 @@
                                     <div class="col-md-2">
                                         <input type="text" class="form-control" id="vehicle_number" placeholder="{{ __('Vehicle Number') }}" />
                                     </div>
+                                    <label for="vehicle_id_no" class="col-md-2 col-form-label">{{ __('Vehicle ID') }}</label>
+                                    <div class="col-md-2">
+                                        <input type="text" class="form-control" id="vehicle_id_no" placeholder="{{ __('Vehicle ID') }}" />
+                                    </div>
                                     @if(empty($scopedOrganizationId))
                                     <label for="organization_id" class="col-md-2 col-form-label">{{ __('Organization') }}</label>
                                     <div class="col-md-2">
@@ -66,6 +70,10 @@
                                             @endforeach
                                         </select>
                                     </div>
+                                    <label for="chassis_no" class="col-md-2 col-form-label">{{ __('Chassis No.') }}</label>
+                                    <div class="col-md-2">
+                                        <input type="text" class="form-control" id="chassis_no" placeholder="{{ __('Chassis No.') }}" />
+                                    </div>
                                 </div>
                                 <div class="card-footer text-right">
                                     <button type="submit" class="btn btn-info">{{ __('Filter') }}</button>
@@ -84,7 +92,9 @@
         <table id="data-table" class="table table-bordered table-striped" width="100%">
             <thead>
                 <tr>
+                <th>{{ __('Vehicle ID') }}</th>
                 <th>{{ __('Vehicle Number') }}</th>
+                <th>{{ __('Chassis No.') }}</th>
                 <th>{{ __('Organization') }}</th>
                 <th>{{ __('Vehicle Type') }}</th>
                 <th>{{ __('Capacity') }} ({{ __('Ton') }})</th>
@@ -111,6 +121,8 @@ $(function() {
             url: '{!! route("swm.vehicles.data") !!}',
             data: function(d) {
                 d.vehicle_number = $('#vehicle_number').val();
+                d.vehicle_id_no = $('#vehicle_id_no').val();
+                d.chassis_no = $('#chassis_no').val();
                 @if(empty($scopedOrganizationId))
                 d.organization_id = $('#organization_id').val();
                 @endif
@@ -119,8 +131,16 @@ $(function() {
             }
         },
         columns: [{
+                data: 'vehicle_id_no',
+                name: 'swm.vehicles.vehicle_id_no'
+            },
+            {
                 data: 'vehicle_number',
                 name: 'swm.vehicles.vehicle_number'
+            },
+            {
+                data: 'chassis_no',
+                name: 'swm.vehicles.chassis_no'
             },
             {
                 data: 'organization_name',
@@ -185,6 +205,8 @@ $(function() {
         e.preventDefault();
         var searchData = $('input[type=search]').val();
         var vehicle_number = $('#vehicle_number').val();
+        var vehicle_id_no = $('#vehicle_id_no').val();
+        var chassis_no = $('#chassis_no').val();
         var organization_id = '';
         @if(empty($scopedOrganizationId))
         organization_id = $('#organization_id').val() || '';
@@ -193,6 +215,8 @@ $(function() {
         var driver_worker_id = $('#driver_worker_id').val();
         window.location.href = "{!! route('swm.vehicles.export') !!}?searchData=" + searchData +
             "&vehicle_number=" + encodeURIComponent(vehicle_number || '') +
+            "&vehicle_id_no=" + encodeURIComponent(vehicle_id_no || '') +
+            "&chassis_no=" + encodeURIComponent(chassis_no || '') +
             "&organization_id=" + encodeURIComponent(organization_id || '') +
             "&vehicle_type_id=" + encodeURIComponent(vehicle_type_id || '') +
             "&driver_worker_id=" + encodeURIComponent(driver_worker_id || '');

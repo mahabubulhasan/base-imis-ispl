@@ -51,6 +51,26 @@ class VehicleRequest extends FormRequest
                     $vehicleNumberUnique->ignore($vehicleId);
                 }
 
+                $vehicleIdNoUnique = Rule::unique('pgsql.swm.vehicles', 'vehicle_id_no')
+                    ->where(function ($query) use ($orgId) {
+                        return $query
+                            ->where('organization_id', $orgId)
+                            ->whereNull('deleted_at');
+                    });
+                if ($vehicleId) {
+                    $vehicleIdNoUnique->ignore($vehicleId);
+                }
+
+                $chassisNoUnique = Rule::unique('pgsql.swm.vehicles', 'chassis_no')
+                    ->where(function ($query) use ($orgId) {
+                        return $query
+                            ->where('organization_id', $orgId)
+                            ->whereNull('deleted_at');
+                    });
+                if ($vehicleId) {
+                    $chassisNoUnique->ignore($vehicleId);
+                }
+
                 return [
                     'organization_id' => [
                         'required',
@@ -73,6 +93,12 @@ class VehicleRequest extends FormRequest
                         $vehicleNumberUnique,
                     ],
                     'capacity' => ['nullable', 'string', 'max:255'],
+                    'vehicle_id_no' => [
+                        'nullable',
+                        'string',
+                        'max:255',
+                        $vehicleIdNoUnique,
+                    ],
                     'driver_worker_id' => [
                         'required',
                         'integer',
@@ -96,6 +122,20 @@ class VehicleRequest extends FormRequest
                             }
                         },
                     ],
+                    'service_area' => ['nullable', 'string', 'max:255'],
+                    'fuel_type' => ['nullable', 'string', 'max:255'],
+                    'operational_type' => ['nullable', 'string', 'max:255'],
+                    'vehicle_registration_no' => ['nullable', 'string', 'max:255'],
+                    'engine_no' => ['nullable', 'string', 'max:255'],
+                    'chassis_no' => [
+                        'nullable',
+                        'string',
+                        'max:255',
+                        $chassisNoUnique,
+                    ],
+                    'status' => ['nullable', 'string', Rule::in(['active', 'inactive'])],
+                    'last_maintenance_year' => ['nullable', 'integer', 'digits:4', 'min:1900', 'max:2100'],
+                    'remarks' => ['nullable', 'string', 'max:2000'],
                     'dumping_place_kind' => ['required', 'string', Rule::in(['sts', 'landfill', 'other'])],
                     'dumping_sts_id' => [
                         Rule::requiredIf(fn () => $this->input('dumping_place_kind') === 'sts'),

@@ -34,6 +34,17 @@ class ComplaintController extends Controller
             'complaintTypes' => config('swm_complaints.complaint_types', []),
             'submittedThroughOptions' => config('swm_complaints.submitted_through', []),
             'complaintStatuses' => config('swm_complaints.complaint_statuses', []),
+            'priorityLevels' => [
+                1 => '1',
+                2 => '2',
+                3 => '3',
+                4 => '4',
+                5 => '5',
+            ],
+            'duplicateOptions' => [
+                0 => __('No'),
+                1 => __('Yes'),
+            ],
         ];
     }
 

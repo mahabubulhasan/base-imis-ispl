@@ -610,9 +610,9 @@
                         </a>
                     </li>
                     @endcan
-                    @if(Auth::user()->can('List SW Work Types') || Auth::user()->can('List SW Vehicle Types'))
-                    <li class="nav-item {{ request()->is('swm/service-providers/work-types*', 'swm/service-providers/vehicle-types*') ? 'menu-is-opening menu-open' : '' }}">
-                        <a href="#" class="nav-link {{ request()->is('swm/service-providers/work-types*', 'swm/service-providers/vehicle-types*') ? 'active subnav' : '' }}">
+                    @if(Auth::user()->can('List SW Work Types') || Auth::user()->can('List SW Vehicle Types') || Auth::user()->can('List SW Waste Types'))
+                    <li class="nav-item {{ request()->is('swm/service-providers/work-types*', 'swm/service-providers/vehicle-types*', 'swm/service-providers/waste-types*') ? 'menu-is-opening menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ request()->is('swm/service-providers/work-types*', 'swm/service-providers/vehicle-types*', 'swm/service-providers/waste-types*') ? 'active subnav' : '' }}">
                             <i class="far fa-circle nav-icon"></i>
                             <p>{{__('SW Module Settings')}} <i class="right fas fa-angle-left"></i></p>
                         </a>
@@ -630,6 +630,14 @@
                                 <a href="{{ action('Swm\VehicleTypeController@index') }}" class="nav-link {{ request()->is('swm/service-providers/vehicle-types', 'swm/service-providers/vehicle-types/*') ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>{{__('Vehicle Type')}}</p>
+                                </a>
+                            </li>
+                            @endcan
+                            @can('List SW Waste Types')
+                            <li class="nav-item">
+                                <a href="{{ action('Swm\WasteTypeController@index') }}" class="nav-link {{ request()->is('swm/service-providers/waste-types', 'swm/service-providers/waste-types/*') ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>{{__('Waste Type')}}</p>
                                 </a>
                             </li>
                             @endcan
