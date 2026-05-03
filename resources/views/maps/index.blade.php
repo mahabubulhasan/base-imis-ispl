@@ -328,7 +328,7 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                     </form>
 
                     <form class="form-horizontal" id="add-drain-form">
-                        <div class="add-drain-form" style="display: none">
+                        <div class="add-drain-form" style="display: none; overflow-y: scroll; max-height: 60vh;">
                                 <div>
                                     <hr>
                                      <h4>{{ __('Add Drain Network')}}</h4>
