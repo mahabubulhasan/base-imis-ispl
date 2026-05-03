@@ -32,11 +32,11 @@ class SwmImport implements ToModel, WithHeadingRow, WithChunkReading,WithValidat
     { 
         $chunkOffset = $this->getChunkOffset();
         return new SwmPayment([
-            "swm_customer_id" => $row['swm_customer_id'],
-            "customer_name" => $row['customer_name']?$row['customer_name']:null,
-            "customer_contact" => $row['customer_contact']?$row['customer_contact']:null,
-            #"last_payment_date" => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['last_payment_date']),
-            "last_payment_date" => ($row['last_payment_date']),
+            'swm_customer_id' => $row['swm_customer_id'],
+            'customer_name' => $row['customer_name'] ? $row['customer_name'] : null,
+            'customer_contact' => $row['customer_contact'] ? $row['customer_contact'] : null,
+            'last_payment_date' => ($row['last_payment_date']),
+            'receipt_no' => isset($row['receipt_no']) && $row['receipt_no'] !== '' ? (string) $row['receipt_no'] : null,
         ]);
     }
       
@@ -68,20 +68,24 @@ class SwmImport implements ToModel, WithHeadingRow, WithChunkReading,WithValidat
                 'integer',
             ],
             'last_payment_date' => [
-                 'required',
-                'date_format:Y-m-d', 
-               
-                ],
-            
+                'required',
+                'date_format:Y-m-d',
+            ],
+            'receipt_no' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
         ];
     }
     public function map($row): array
     {
         return [
-            "swm_customer_id" => $row['swm_customer_id'],
-            "customer_name" => $row['customer_name'],
-            "customer_contact" => $row['customer_contact'],
-            "last_payment_date" => date('Y-m-d', strtotime($row['last_payment_date'])),
+            'swm_customer_id' => $row['swm_customer_id'],
+            'customer_name' => $row['customer_name'],
+            'customer_contact' => $row['customer_contact'],
+            'last_payment_date' => date('Y-m-d', strtotime($row['last_payment_date'])),
+            'receipt_no' => isset($row['receipt_no']) && $row['receipt_no'] !== '' ? (string) $row['receipt_no'] : null,
         ];
     }
      /**

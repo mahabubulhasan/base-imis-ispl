@@ -137,6 +137,12 @@ class StsService
         $sts->waste_type_ids = $data['waste_type_ids'] ?? null;
         $sts->destination_landfill_id = $data['destination_landfill_id'] ?? null;
         $sts->operational_status = $data['operational_status'] ?? 'active';
+
+        if (! is_null($id) && empty($sts->sts_id) && ! empty($sts->ward_no)) {
+            $serial = Sts::getNextSerialForWard((int) $sts->ward_no);
+            $sts->sts_id = Sts::generateStsId((int) $sts->ward_no, $serial);
+        }
+
         $sts->save();
 
         return $sts->id;

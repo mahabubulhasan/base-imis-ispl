@@ -271,10 +271,13 @@ class BillCollectionPaymentService
         $query = BillCollectionPayment::query()
             ->select('swm.bill_collection_payments.*')
             ->leftJoin('building_info.households as swm_pcs', 'swm.bill_collection_payments.household_id', '=', 'swm_pcs.id')
+            ->leftJoin('building_info.buildings as swm_hh_building', 'swm_pcs.bin', '=', 'swm_hh_building.bin')
             ->leftJoin('auth.users as recv_user', 'swm.bill_collection_payments.received_by_user_id', '=', 'recv_user.id')
             ->addSelect([
                 'swm_pcs.household_owner_name as site_household_owner_name',
                 'swm.bill_collection_payments.customer_id as household_code',
+                'swm_pcs.sub_location as household_sub_location',
+                'swm_hh_building.ward as household_ward',
                 DB::raw("COALESCE(recv_user.name, '') as received_by_name"),
             ])
             ->whereNull('swm.bill_collection_payments.deleted_at');
@@ -302,6 +305,9 @@ class BillCollectionPaymentService
             ->orderColumn('received_by_name', 'recv_user.name $1')
             ->orderColumn('holding_number', 'swm.bill_collection_payments.holding_number $1')
             ->orderColumn('household_id', 'swm.bill_collection_payments.customer_id $1')
+            ->orderColumn('ward', 'swm_hh_building.ward $1')
+            ->orderColumn('sub_location', 'swm_pcs.sub_location $1')
+            ->orderColumn('receipt_no', 'swm.bill_collection_payments.receipt_no $1')
             ->orderColumn('amount', 'swm.bill_collection_payments.amount $1')
             ->orderColumn('payment_for_month', 'swm.bill_collection_payments.payment_for_month $1')
             ->orderColumn('payment_time', 'swm.bill_collection_payments.payment_time $1')
@@ -324,6 +330,12 @@ class BillCollectionPaymentService
             })
             ->addColumn('household_owner_name', function ($model) {
                 return $model->site_household_owner_name;
+            })
+            ->addColumn('ward', function ($model) {
+                return $model->household_ward ?? '';
+            })
+            ->addColumn('sub_location', function ($model) {
+                return $model->household_sub_location ?? '';
             })
             ->addColumn('action', function ($model) {
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['swm.bill-collection-payments.destroy', $model->id]]);
@@ -383,6 +395,11 @@ class BillCollectionPaymentService
         if (array_key_exists('receipt_copy_path', $data)) {
             $payment->receipt_copy_path = $data['receipt_copy_path'];
         }
+        if (array_key_exists('receipt_no', $data)) {
+            $payment->receipt_no = $data['receipt_no'] !== '' && $data['receipt_no'] !== null
+                ? (string) $data['receipt_no']
+                : null;
+        }
         $payment->save();
 
         return $payment->id;
@@ -398,6 +415,9 @@ class BillCollectionPaymentService
             __('Holding Number'),
             __('Customer ID'),
             __('Customer Name'),
+            __('Ward'),
+            __('Sub-location'),
+            __('Receipt No'),
             __('Amount'),
             __('Payment For Month'),
             __('Payment Time'),
@@ -433,8 +453,11 @@ class BillCollectionPaymentService
                 $methodLabel = $methods[$row->payment_method] ?? $row->payment_method;
                 $writer->addRow([
                     $row->holding_number,
-                    $row->household_id,
+                    $row->customer_id,
                     $row->site_household_owner_name,
+                    $row->household_ward ?? '',
+                    $row->household_sub_location ?? '',
+                    $row->receipt_no ?? '',
                     $row->amount,
                     $row->payment_for_month?->format('Y-m-d'),
                     $row->payment_time?->format('Y-m-d H:i:s'),

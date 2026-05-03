@@ -97,6 +97,7 @@ class HouseholdService
         $household->household_owner_name = $data['household_owner_name'] ?? null;
         $household->contact_number = $data['contact_number'] ?? null;
         $household->area_mohalla_name = $data['area_mohalla_name'] ?? null;
+        $household->sub_location = $data['sub_location'] ?? null;
         $household->bin = $data['bin'] ?? null;
         $household->ward = $building?->ward ?? ($data['ward'] ?? null);
         $household->road_no_name = $roadName;
@@ -145,7 +146,7 @@ class HouseholdService
     {
         $columns = [
             __('Household ID'), __('Household Owner Name'), __('Contact Number'), __('Ward'),
-            __('Area / Mohalla Name'), __('Road No./Name'), __('Holding Number'),
+            __('Area / Mohalla Name'), __('Sub Location'), __('Road No./Name'), __('Holding Number'),
             __('Tax ID'), __('BIN'), __('Waste collection fee (BDT/Month)'),
             __('Building owner (Yes/No)'), __('Functional Use'), __('LIC'),
             __('LIC ID'), __('Survey Date'),
@@ -163,6 +164,7 @@ class HouseholdService
                     $row->contact_number,
                     $row->ward,
                     $row->area_mohalla_name,
+                    $row->sub_location,
                     $row->road_no_name,
                     $row->holding_number,
                     $row->tax_id,

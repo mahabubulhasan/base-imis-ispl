@@ -49,6 +49,12 @@
         </div>
     </div>
     <div class="form-group row">
+        {!! Form::label('sub_location', __('Sub Location'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::text('sub_location', null, ['class' => 'form-control', 'placeholder' => __('Sub Location')]) !!}
+        </div>
+    </div>
+    <div class="form-group row">
         {!! Form::label('bin', __('BIN (Optional)'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             {!! Form::select('bin', $bins, null, ['class' => 'form-control chosen-select', 'id' => 'bin', 'placeholder' => __('Select BIN')]) !!}

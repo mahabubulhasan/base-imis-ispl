@@ -11,6 +11,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 
+/**
+ * @property string|null $sub_location
+ */
 class Household extends Model
 {
     use HasFactory;

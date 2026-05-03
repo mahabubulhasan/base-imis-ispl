@@ -83,6 +83,10 @@ class BillCollectionPaymentImport implements ToCollection, WithHeadingRow
                     'payment_method' => $methodKey,
                     'received_by_user_id' => $recvId,
                 ];
+                if (array_key_exists('receipt_no', $norm)) {
+                    $rn = trim((string) ($norm['receipt_no'] ?? ''));
+                    $data['receipt_no'] = $rn !== '' ? $rn : null;
+                }
                 $saved = $service->storeOrUpdate(null, $data);
                 if ($saved) {
                     $this->successCount++;

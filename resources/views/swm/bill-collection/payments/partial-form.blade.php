@@ -150,6 +150,13 @@
     </div>
 
     <div class="form-group row">
+        {!! Form::label('receipt_no', __('Receipt no'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-9 bcp-payment-field-col">
+            {!! Form::text('receipt_no', old('receipt_no', $isEdit ? $payment->receipt_no : null), ['class' => 'form-control w-100', 'maxlength' => 255]) !!}
+        </div>
+    </div>
+
+    <div class="form-group row">
         {!! Form::label('received_by_user_id', __('Payment received by'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-9 bcp-payment-field-col">
             @if(!empty($canChooseReceivedBy))

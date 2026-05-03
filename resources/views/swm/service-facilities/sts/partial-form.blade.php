@@ -1,7 +1,7 @@
 <div class="card-body">
-        @if(optional($sts)->sts_id)
+        @if(optional($sts)->id)
         <div class="form-group row">
-            {!! Form::label('sts_id', __('STS ID'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('sts_id_display', __('STS ID'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
                 {!! Form::text('sts_id_display', $sts->sts_id, ['class' => 'form-control', 'readonly' => true]) !!}
             </div>

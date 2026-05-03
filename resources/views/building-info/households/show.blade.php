@@ -12,6 +12,7 @@
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Contact Number') }}</label><div class="col-sm-3">{!! Form::label(null, $household->contact_number, ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Ward') }}</label><div class="col-sm-3">{!! Form::label(null, $household->ward, ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Area / Mohalla Name') }}</label><div class="col-sm-3">{!! Form::label(null, $household->area_mohalla_name, ['class' => 'form-control']) !!}</div></div>
+            <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Sub Location') }}</label><div class="col-sm-3">{!! Form::label(null, $household->sub_location, ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Road No./Name') }}</label><div class="col-sm-3">{!! Form::label(null, $household->road_no_name, ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Holding Number') }}</label><div class="col-sm-3">{!! Form::label(null, $household->holding_number, ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Tax ID') }}</label><div class="col-sm-3">{!! Form::label(null, $household->tax_id, ['class' => 'form-control']) !!}</div></div>

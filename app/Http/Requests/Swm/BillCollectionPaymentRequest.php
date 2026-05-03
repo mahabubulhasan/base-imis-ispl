@@ -49,6 +49,7 @@ class BillCollectionPaymentRequest extends FormRequest
                         'max:10240',
                         'mimes:jpg,jpeg,png,pdf',
                     ],
+                    'receipt_no' => ['nullable', 'string', 'max:255'],
                 ];
             default:
                 return [];

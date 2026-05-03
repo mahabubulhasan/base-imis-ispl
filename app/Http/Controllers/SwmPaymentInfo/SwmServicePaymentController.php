@@ -260,7 +260,8 @@ class SwmServicePaymentController extends Controller
             __('SW Customer ID'),
             __('Customer Name'),
             __('Customer Contact'),
-            __('Last Payment date')
+            __('Last Payment date'),
+            __('Receipt no'),
         ];
 
         $query = DB::table('swm_info.swmservice_payments AS pmt')
@@ -286,6 +287,7 @@ class SwmServicePaymentController extends Controller
                 $values[] = $swmpayment->customer_name;
                 $values[] = $swmpayment->customer_contact;
                 $values[] = $swmpayment->last_payment_date;
+                $values[] = $swmpayment->receipt_no ?? '';
                 $writer->addRow($values);
             }
         });

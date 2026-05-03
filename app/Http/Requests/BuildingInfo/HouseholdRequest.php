@@ -27,6 +27,7 @@ class HouseholdRequest extends FormRequest
             'household_owner_name' => ['required', 'string', 'max:255'],
             'contact_number' => ['required', 'regex:/^[0-9]+$/'],
             'area_mohalla_name' => ['nullable', 'string', 'max:255'],
+            'sub_location' => ['nullable', 'string', 'max:255'],
             'bin' => [
                 'nullable',
                 'string',

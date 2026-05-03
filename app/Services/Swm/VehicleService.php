@@ -2,6 +2,7 @@
 
 namespace App\Services\Swm;
 
+use App\Models\Swm\Organization;
 use App\Models\Swm\Vehicle;
 use App\Models\Swm\Worker;
 use App\Models\Swm\WorkType;
@@ -11,6 +12,7 @@ use Box\Spout\Writer\Style\Color;
 use Box\Spout\Writer\Style\StyleBuilder;
 use Box\Spout\Writer\WriterFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 
 class VehicleService
@@ -153,22 +155,60 @@ class VehicleService
         return $data;
     }
 
-    public function storeOrUpdate(?int $id, array $data): ?int
+    /**
+     * Next Vehicle ID for the organization (matches auto-generated pattern in swm.vehicle_id).
+     */
+    public function peekNextVehicleIdNo(int $organizationId): string
     {
-        $data = self::normalizeDumpingFields($data);
+        $width = max(1, (int) config('swm.vehicle_id.sequence_width', 5));
+        $nextSeq = $this->maxVehicleIdSequenceForOrganization($organizationId) + 1;
 
-        if (is_null($id)) {
-            $vehicle = new Vehicle();
-        } else {
-            $vehicle = Vehicle::find($id);
-            if (! $vehicle) {
-                return null;
-            }
+        return $this->vehicleIdPrefix($organizationId).str_pad((string) $nextSeq, $width, '0', STR_PAD_LEFT);
+    }
+
+    protected function vehicleIdPrefix(int $organizationId): string
+    {
+        $format = (string) config('swm.vehicle_id.prefix_format', 'VHC-%d-');
+
+        return sprintf($format, $organizationId);
+    }
+
+    protected function maxVehicleIdSequenceForOrganization(int $organizationId): int
+    {
+        $prefix = $this->vehicleIdPrefix($organizationId);
+        $regex = '^'.preg_quote($prefix, '/').'[0-9]+$';
+
+        $maxSeq = Vehicle::query()
+            ->where('organization_id', $organizationId)
+            ->whereNull('deleted_at')
+            ->whereRaw('vehicle_id_no ~ ?', [$regex])
+            ->selectRaw("COALESCE(MAX(CAST(SUBSTRING(vehicle_id_no FROM '[0-9]+$') AS INTEGER)), 0) AS max_seq")
+            ->value('max_seq');
+
+        return (int) $maxSeq;
+    }
+
+    protected function vehicleIdNoIsMissing(?string $vehicleIdNo): bool
+    {
+        return $vehicleIdNo === null || $vehicleIdNo === '';
+    }
+
+    protected function normalizedVehicleIdNoFromData(array $data): ?string
+    {
+        $raw = $data['vehicle_id_no'] ?? null;
+        if ($raw === null) {
+            return null;
         }
+        $trimmed = trim((string) $raw);
 
+        return $trimmed === '' ? null : $trimmed;
+    }
+
+    protected function fillVehicleFromData(Vehicle $vehicle, array $data): void
+    {
         $vehicle->organization_id = $data['organization_id'] ?? null;
         $vehicle->vehicle_type_id = $data['vehicle_type_id'] ?? null;
-        $vehicle->vehicle_id_no = $data['vehicle_id_no'] ?? null;
+        $vehicle->vehicle_id_no = $this->normalizedVehicleIdNoFromData($data);
         $vehicle->vehicle_number = $data['vehicle_number'] ?? null;
         $vehicle->capacity = $data['capacity'] ?? null;
         $vehicle->driver_worker_id = $data['driver_worker_id'] ?? null;
@@ -185,9 +225,38 @@ class VehicleService
         $vehicle->dumping_sts_id = $data['dumping_sts_id'] ?? null;
         $vehicle->dumping_landfill_id = $data['dumping_landfill_id'] ?? null;
         $vehicle->dumping_place_other = $data['dumping_place_other'] ?? null;
-        $vehicle->save();
+    }
 
-        return $vehicle->id;
+    public function storeOrUpdate(?int $id, array $data): ?int
+    {
+        $data = self::normalizeDumpingFields($data);
+
+        if (is_null($id)) {
+            $vehicle = new Vehicle();
+            $this->fillVehicleFromData($vehicle, $data);
+            $vehicle->save();
+
+            return $vehicle->id;
+        }
+
+        $vehicle = Vehicle::find($id);
+        if (! $vehicle) {
+            return null;
+        }
+
+        return DB::transaction(function () use ($vehicle, $data) {
+            $this->fillVehicleFromData($vehicle, $data);
+            $orgId = (int) ($vehicle->organization_id ?? 0);
+            if ($orgId > 0) {
+                Organization::query()->whereKey($orgId)->lockForUpdate()->first();
+            }
+            if ($orgId > 0 && $this->vehicleIdNoIsMissing($vehicle->vehicle_id_no)) {
+                $vehicle->vehicle_id_no = $this->peekNextVehicleIdNo($orgId);
+            }
+            $vehicle->save();
+
+            return $vehicle->id;
+        });
     }
 
     public function download(array $data): void
