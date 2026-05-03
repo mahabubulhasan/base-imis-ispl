@@ -34,4 +34,18 @@ return [
         'sequence_width' => 5,
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Auto-generated vehicle_id_no (system Vehicle ID)
+    |--------------------------------------------------------------------------
+    |
+    | Per-organization sequence, unique with organization_id when set.
+    |
+    */
+
+    'vehicle_id' => [
+        'prefix_format' => 'VHC-%d-',
+        'sequence_width' => 5,
+    ],
+
 ];
