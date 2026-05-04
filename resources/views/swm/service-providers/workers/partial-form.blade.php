@@ -35,9 +35,9 @@
             </div>
         </div>
         <div class="form-group row required">
-            {!! Form::label('work_type_id', __('Work Type'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('work_type_id', __('Worker Type'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-9">
-                {!! Form::select('work_type_id', $workTypes, null, ['class' => 'form-control chosen-select', 'placeholder' => __('Work Type')]) !!}
+                {!! Form::select('work_type_id', $workTypes, null, ['class' => 'form-control chosen-select', 'placeholder' => __('Worker Type')]) !!}
             </div>
         </div>
         <div class="form-group row">
