@@ -122,7 +122,6 @@ $(function() {
             { data: 'household_id', name: 'household_id' },
             { data: 'household_owner_name', name: 'household_owner_name' },
             { data: 'father_or_husband_name', name: 'father_or_husband_name' },
-            { data: 'status', name: 'status' },
             { data: 'contact_number', name: 'contact_number' },
             { data: 'bin', name: 'bin' },
             { data: 'ward', name: 'ward' },
@@ -132,6 +131,7 @@ $(function() {
             { data: 'is_lic', name: 'is_lic' },
             { data: 'lic_id', name: 'lic_id' },
             { data: 'survey_date', name: 'survey_date' },
+            { data: 'status', name: 'status' },
             { data: 'action', name: 'action', orderable: false, searchable: false }
         ],
         order: [[0, 'asc']]
