@@ -8,6 +8,7 @@
     <div class="card-header">
         <a href="{{ route('swm.bill-collection-payments.index') }}" class="btn btn-info">{{ __('Back to List') }}</a>
     </div>
+    <div class="app-mobile-form">
     <div class="card-body">
         {!! Form::open(['route' => 'swm.bill-collection-payments.import.store', 'files' => true, 'class' => 'form-horizontal']) !!}
         <div class="form-group row required">
@@ -16,12 +17,11 @@
                 {!! Form::file('import_file', ['class' => 'form-control', 'accept' => '.csv,.xlsx']) !!}
             </div>
         </div>
-        <div class="form-group row">
-            <div class="col-sm-offset-3 col-sm-6">
-                {!! Form::submit(__('Import'), ['class' => 'btn btn-info']) !!}
-            </div>
+        <div class="card-footer">
+            {!! Form::submit(__('Import'), ['class' => 'btn btn-info']) !!}
         </div>
         {!! Form::close() !!}
+    </div>
     </div>
 </div>
 @stop

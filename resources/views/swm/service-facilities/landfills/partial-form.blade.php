@@ -1,3 +1,4 @@
+<div class="app-mobile-form">
 <div class="card-body">
         @if(optional($landfill)->landfill_id)
         <div class="form-group row">
@@ -80,11 +81,11 @@
             </div>
         </div>
         <div class="form-group row">
-            {!! Form::label('monthly_waste_for_composting', __('Monthly Waste for Composting') . ' (' . __('Ton') . ')', ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('monthly_waste_for_composting', __('Monthly Amount of Waste Provided for Composting') . ' (' . __('Ton') . ')', ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
                 {!! Form::number('monthly_waste_for_composting', null, [
                     'class' => 'form-control',
-                    'placeholder' => __('Monthly Waste for Composting') . ' (' . __('Ton') . ')',
+                    'placeholder' => __('Monthly Amount of Waste Provided for Composting') . ' (' . __('Ton') . ')',
                     'min' => 0,
                     'step' => '0.01',
                     'inputmode' => 'decimal',
@@ -101,6 +102,7 @@
 <div class="card-footer">
 	<a href="{{ route('swm.landfills.index') }}" class="btn btn-info">{{ __('Back to List')}}</a>
 	{!! Form::submit( __('Save'), ['class' => 'btn btn-info']) !!}
+</div>
 </div>
 @push('scripts')
 <script>

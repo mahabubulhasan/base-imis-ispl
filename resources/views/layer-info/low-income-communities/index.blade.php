@@ -10,7 +10,7 @@
 @endpush
 @section('title', $page_title)
 @section('content')
-    <div class="card">
+    <div class="card app-mobile-index">
         <div class="card-header">
             @can('Add Low Income Community')
                 <a href="{{ action('LayerInfo\LowIncomeCommunityController@create') }}" class="btn btn-info">{{ __("Add Low Income Community") }}</a>
@@ -56,7 +56,7 @@
             </div>
         </div>
         <div class="card-body">
-            <div style="overflow: auto; width: 100%;">
+            <div class="table-responsive">
                 <table id="data-table" class="table table-bordered table-striped dtr-inline" width="100%">
                     <thead>
                         <tr>

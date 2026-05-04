@@ -9,6 +9,7 @@
     $placedAtBuildingsOptions = ['1' => __('Yes'), '0' => __('No')];
 @endphp
 
+<div class="app-mobile-form">
 <div class="card-body">
     <div class="form-group row required">
         {!! Form::label('waste_bin_type_id', __('Waste Bin Type'), ['class' => 'col-sm-3 control-label']) !!}
@@ -81,6 +82,7 @@
 <div class="card-footer">
     <a href="{{ route('swm.waste-bins.index') }}" class="btn btn-info">{{ __('Back to List') }}</a>
     {!! Form::submit(__('Save'), ['class' => 'btn btn-info']) !!}
+</div>
 </div>
 
 @push('scripts')

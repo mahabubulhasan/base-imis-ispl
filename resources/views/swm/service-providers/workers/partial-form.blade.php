@@ -1,3 +1,4 @@
+<div class="app-mobile-form">
 <div class="card-body">
         <div class="form-group row required">
             <label class="col-sm-3 control-label" for="worker_id_no_preview">{{ __('ID') }}</label>
@@ -142,6 +143,7 @@
 <div class="card-footer">
 	<a href="{{ route('swm.workers.index') }}" class="btn btn-info">{{ __('Back to List')}}</a>
 	{!! Form::submit( __('Save'), ['class' => 'btn btn-info']) !!}
+</div>
 </div>
 @push('scripts')
 <script>

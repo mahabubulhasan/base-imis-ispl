@@ -5,29 +5,8 @@
     $initDateTime = old('date_time', ($isEdit && $complaint->date_time) ? $complaint->date_time->format('Y-m-d\TH:i') : now()->format('Y-m-d\TH:i'));
     $initIncidentDate = old('incident_date', ($isEdit && $complaint->incident_date) ? $complaint->incident_date->format('Y-m-d') : '');
 @endphp
-@push('style')
-<style>
-.swm-complaint-form-mobile .select2-container {
-    width: 100% !important;
-    max-width: 100%;
-}
-@media (max-width: 767.98px) {
-    .swm-complaint-form-mobile .form-group.row {
-        margin-bottom: 0.85rem;
-    }
-    .swm-complaint-form-mobile .control-label {
-        text-align: left !important;
-        margin-bottom: 0.35rem;
-    }
-    .swm-complaint-form-mobile .col-sm-3,
-    .swm-complaint-form-mobile .col-sm-9 {
-        max-width: 100%;
-        flex: 0 0 100%;
-    }
-}
-</style>
-@endpush
-<div class="card-body swm-complaint-form-mobile">
+<div class="app-mobile-form swm-complaint-form-mobile">
+<div class="card-body">
     {!! Form::hidden('holding_number', old('holding_number', $initHolding), ['id' => 'holding_number']) !!}
     {!! Form::hidden('household_id', old('household_id', $initCustomerId), ['id' => 'household_id']) !!}
 
@@ -154,6 +133,7 @@
 <div class="card-footer">
     <a href="{{ route('swm.complaints.index') }}" class="btn btn-info">{{ __('Back to List') }}</a>
     {!! Form::submit(__('Save'), ['class' => 'btn btn-info']) !!}
+</div>
 </div>
 
 @push('scripts')

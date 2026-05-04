@@ -2,11 +2,13 @@
  Developed By: Innovative Solution Pvt. Ltd. (ISPL)   --}}
 <style>
       #map {
-        width: 800px;
-        height: 400px; /* 100% of the viewport height - navbar height */
+        width: 100%;
+        min-height: 320px;
       }
       #olmap {
           border: 1px solid #000000;
+          width: 100%;
+          min-height: 420px;
           margin-top: 20px;
       }
       a.skiplink {
@@ -32,6 +34,12 @@
       #map:focus {
         outline: #4A74A8 solid 0.15em;
       }
+      @media (max-width: 767.98px) {
+        #olmap {
+            min-height: 300px;
+            margin-top: 12px;
+        }
+      }
     </style>
 <link rel="stylesheet" href="https://openlayers.org/en/v4.6.5/css/ol.css" type="text/css">
 
@@ -52,6 +60,7 @@
     $statusOptions = ['' => __('Select'), '1' => __('Active'), '0' => __('Inactive')];
 @endphp
 
+<div class="app-mobile-form lic-form-mobile">
 <div class="card-body">
     <div class="form-group required row">
         {!! Form::label('community_name',__('LIC Name') ,['class' => 'col-sm-3 control-label']) !!}
@@ -197,6 +206,7 @@
     <a href="{{ action('LayerInfo\LowIncomeCommunityController@index') }}" class="btn btn-info">{{  __("Back to List")}}</a>
    {!! Form::submit(__('Save'), ['class' => 'btn btn-info']) !!}
 </div><!-- /.box-footer -->
+</div>
 <!--</div> /.content-wrapper -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css" rel="stylesheet">

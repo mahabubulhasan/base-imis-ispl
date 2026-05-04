@@ -67,26 +67,15 @@
 .bcp-balance-loading-overlay .fa-spinner {
     margin-right: 0.5rem;
 }
-@media (max-width: 767.98px) {
-    .bcp-payment-form-mobile .form-group.row {
-        margin-bottom: 0.85rem;
-    }
-    .bcp-payment-form-mobile .control-label {
-        text-align: left !important;
-        margin-bottom: 0.35rem;
-    }
-    .bcp-payment-form-mobile .col-sm-3,
-    .bcp-payment-form-mobile .col-sm-9 {
-        max-width: 100%;
-        flex: 0 0 100%;
-    }
+@media (max-width: 991.98px) {
     .bcp-payment-form-mobile #balance-panel {
         min-height: 0;
     }
 }
 </style>
 @endpush
-<div class="card-body bcp-payment-form-mobile">
+<div class="app-mobile-form bcp-payment-form-mobile">
+<div class="card-body">
     {!! Form::hidden('household_id', old('household_id', $isEdit ? $payment->household_id : ''), ['id' => 'household_id']) !!}
     {!! Form::hidden('holding_number', old('holding_number', $isEdit ? ($payment->holding_number ?? '') : ''), ['id' => 'holding_number']) !!}
     {!! Form::hidden('household_code', old('household_code', $isEdit ? $payment->customer_id : ''), ['id' => 'household_code']) !!}
@@ -189,6 +178,7 @@
 <div class="card-footer">
     <a href="{{ route('swm.bill-collection-payments.index') }}" class="btn btn-info">{{ __('Back to List') }}</a>
     {!! Form::submit(__('Save'), ['class' => 'btn btn-info']) !!}
+</div>
 </div>
 
 @push('scripts')

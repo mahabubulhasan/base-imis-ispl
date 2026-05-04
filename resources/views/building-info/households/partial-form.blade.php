@@ -1,29 +1,23 @@
 @push('style')
 <style>
-.household-form-mobile .chosen-container,
-.household-form-mobile .select2-container {
-    width: 100% !important;
-    max-width: 100%;
-}
-@media (max-width: 767.98px) {
-    .household-form-mobile .form-group.row {
-        margin-bottom: 0.85rem;
-    }
-    .household-form-mobile .control-label {
-        text-align: left !important;
-        margin-bottom: 0.35rem;
-    }
-    .household-form-mobile .col-sm-3 {
-        max-width: 100%;
-        flex: 0 0 100%;
-    }
-    .household-form-mobile .pt-2 {
+@media (max-width: 991.98px) {
+    .household-form-mobile.app-mobile-form .pt-2 {
         padding-top: 0 !important;
+    }
+
+    .household-form-mobile #waste-bins-table th,
+    .household-form-mobile #waste-bins-table td {
+        white-space: nowrap;
+    }
+
+    .household-form-mobile #waste-bins-table .waste-bin-remove {
+        min-height: 38px;
     }
 }
 </style>
 @endpush
-<div class="card-body household-form-mobile">
+<div class="household-form-mobile app-mobile-form">
+<div class="card-body">
     @php
         $yesNoOptions = [0 => __('No'), 1 => __('Yes')];
     @endphp
@@ -216,6 +210,7 @@
 <div class="card-footer">
     <a href="{{ route('building-info.households.index') }}" class="btn btn-info">{{ __('Back to List')}}</a>
     {!! Form::submit( __('Save'), ['class' => 'btn btn-info']) !!}
+</div>
 </div>
 
 @push('scripts')

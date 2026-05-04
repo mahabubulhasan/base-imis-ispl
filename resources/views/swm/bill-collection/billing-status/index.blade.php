@@ -54,7 +54,7 @@
     </div>
 </div>
 
-<div class="card">
+<div class="card app-mobile-index">
     <div class="card-header">
         <a href="#" class="btn btn-info float-right" id="headingFilters" type="button" data-toggle="collapse"
             data-target="#collapseFilters" aria-expanded="true" aria-controls="collapseFilters">
@@ -107,7 +107,7 @@
         </div>
     </div>
     <div class="card-body">
-        <div style="overflow: auto; width: 100%;">
+        <div class="table-responsive">
             <table id="data-table" class="table table-bordered table-striped" width="100%">
                 <thead>
                     <tr>

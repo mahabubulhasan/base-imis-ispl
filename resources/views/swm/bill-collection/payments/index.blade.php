@@ -22,7 +22,7 @@
 @if(session('warning'))
 <div class="alert alert-warning">{{ session('warning') }}</div>
 @endif
-<div class="card">
+<div class="card app-mobile-index">
     <div class="card-header">
         @can('Add Payment')
         <a href="{{ route('swm.bill-collection-payments.create') }}" class="btn btn-info">{{ __('Add Payment') }}</a>
@@ -60,7 +60,7 @@
         </div>
     </div>
     <div class="card-body">
-        <div style="overflow: auto; width: 100%;">
+        <div class="table-responsive">
             <table id="data-table" class="table table-bordered table-striped" width="100%">
                 <thead>
                     <tr>

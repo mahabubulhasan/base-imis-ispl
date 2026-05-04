@@ -1,3 +1,4 @@
+<div class="app-mobile-form">
 <div class="card-body">
         @if(optional($sts)->id)
         <div class="form-group row">
@@ -107,6 +108,7 @@
 <div class="card-footer">
 	<a href="{{ route('swm.sts.index') }}" class="btn btn-info">{{ __('Back to List')}}</a>
 	{!! Form::submit( __('Save'), ['class' => 'btn btn-info']) !!}
+</div>
 </div>
 @push('scripts')
 <script>

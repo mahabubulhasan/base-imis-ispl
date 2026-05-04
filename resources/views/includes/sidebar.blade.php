@@ -18,7 +18,7 @@
          margin-right: 0.5rem; margin-left:3%; max-height:60px; width:80%; display: none; ">
     </a>
     @endif
-    <div class="sidebar" style='overflow-y: scroll; font-family: Open Sans, sans-serif'>
+    <div class="sidebar" style='font-family: Open Sans, sans-serif'>
         <nav class="mt-4">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 @if(Auth::user()->hasanyPermissionInGroup(['Dashboard','Building Dashboard','Utility Dashboard','FSM Dashboard']) || Auth::user()->hasRole('Super Admin'))
@@ -806,6 +806,18 @@
 <script>
     var SIDEBAR_STATE_KEY = 'imis_sidebar_collapsed';
 
+    function isDesktopSidebarLayout() {
+        return window.matchMedia('(min-width: 1200px)').matches;
+    }
+
+    function normalizeMobileSidebar() {
+        if (isDesktopSidebarLayout()) {
+            return;
+        }
+        document.body.classList.add('sidebar-collapse');
+        document.body.classList.remove('sidebar-open');
+    }
+
     function syncSidebarVisualState() {
         var logo = document.getElementById('sidebar-logo');
         var helloText = document.getElementById('hello-text');
@@ -827,12 +839,17 @@
     }
 
     function persistSidebarState() {
-        var isCollapsed = document.body.classList.contains('sidebar-collapse');
-        localStorage.setItem(SIDEBAR_STATE_KEY, isCollapsed ? '1' : '0');
+        if (isDesktopSidebarLayout()) {
+            var isCollapsed = document.body.classList.contains('sidebar-collapse');
+            localStorage.setItem(SIDEBAR_STATE_KEY, isCollapsed ? '1' : '0');
+        }
         syncSidebarVisualState();
     }
 
     function restoreSidebarState() {
+        if (!isDesktopSidebarLayout()) {
+            return;
+        }
         var saved = localStorage.getItem(SIDEBAR_STATE_KEY);
         if (saved === '1') {
             document.body.classList.add('sidebar-collapse');
@@ -849,7 +866,18 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         restoreSidebarState();
+        normalizeMobileSidebar();
+        syncSidebarVisualState();
         document.addEventListener('collapsed.lte.pushmenu', persistSidebarState);
         document.addEventListener('shown.lte.pushmenu', persistSidebarState);
+    });
+
+    window.addEventListener('resize', function () {
+        if (!isDesktopSidebarLayout()) {
+            normalizeMobileSidebar();
+        } else {
+            restoreSidebarState();
+        }
+        syncSidebarVisualState();
     });
 </script>

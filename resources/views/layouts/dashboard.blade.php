@@ -56,9 +56,9 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 <!--container-fluid-->
             </section>
         </div>
+        <!-- Footer -->
+        @include('includes.footer')
     </div>
-    <!-- Footer -->
-    @include('includes.footer')
 
     <script src="{{asset('js/app.js')}}"></script>
     <script>

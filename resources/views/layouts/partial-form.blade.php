@@ -4,6 +4,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 A dynamic form layout
 --}}
 
+<div class="app-mobile-form">
 @if(!empty($cardForm))
     <div class="col-sm-12 col-md-8 col-lg-8">
     @foreach($formFields as $group)
@@ -326,5 +327,6 @@ A dynamic form layout
         @endif
     </div>
 @endif
+</div>
 
 

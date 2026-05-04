@@ -10,7 +10,7 @@
 @section('content')
 @include('layouts.components.success-alert')
 @include('layouts.components.error-alert')
-<div class="card">
+<div class="card app-mobile-index">
     <div class="card-header">
         @can('Add SW Complaint')
         <a href="{{ route('swm.complaints.create') }}" class="btn btn-info">{{ __('Add Complaint') }}</a>
@@ -109,7 +109,7 @@
         </div>
     </div>
     <div class="card-body">
-        <div style="overflow: auto; width: 100%;">
+        <div class="table-responsive">
             <table id="data-table" class="table table-bordered table-striped" width="100%">
                 <thead>
                     <tr>

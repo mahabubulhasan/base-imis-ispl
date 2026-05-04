@@ -6,7 +6,7 @@
 @section('content')
 @include('layouts.components.success-alert')
 @include('layouts.components.error-alert')
-<div class="card">
+<div class="card app-mobile-index">
     <div class="card-header">
         @can('Add SW Landfill')
         <a href="{{ action('Swm\LandfillController@create') }}" class="btn btn-info">{{ __('Add Landfill') }}</a>
@@ -45,7 +45,7 @@
             <div class="text-right"><button type="submit" class="btn btn-info">{{ __('Filter') }}</button> <button type="reset" id="reset-filter" class="btn btn-info">{{ __('Reset') }}</button></div>
         </form>
     </div></div>
-    <div class="card-body"><div style="overflow:auto;width:100%;">
+    <div class="card-body"><div class="table-responsive">
         <table id="data-table" class="table table-bordered table-striped" width="100%">
             <thead><tr>
                 <th>{{ __('Landfill ID') }}</th><th>{{ __('Name') }}</th><th>{{ __('Location') }}</th><th>{{ __('Operator Name') }}</th><th>{{ __('Contact Number') }}</th><th>{{ __('Capacity') }} ({{ __('Ton') }})</th><th>{{ __('Area') }}</th>
