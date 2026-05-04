@@ -21,6 +21,8 @@ class VehicleRequest extends FormRequest
             $this->merge([
                 'organization_id' => Auth::user()->swm_organization_id,
             ]);
+        } elseif ($this->has('organization_id') && $this->input('organization_id') === '') {
+            $this->merge(['organization_id' => null]);
         }
     }
 
@@ -40,11 +42,16 @@ class VehicleRequest extends FormRequest
             case 'POST':
             case 'PUT':
             case 'PATCH':
-                $orgId = $this->input('organization_id');
+                $rawOrg = $this->input('organization_id');
+                $orgId = $rawOrg === null || $rawOrg === '' ? null : (int) $rawOrg;
                 $vehicleId = $this->vehicleId();
 
                 $vehicleNumberUnique = Rule::unique('pgsql.swm.vehicles', 'vehicle_number')
                     ->where(function ($query) use ($orgId) {
+                        if ($orgId === null) {
+                            return $query->whereNull('organization_id')->whereNull('deleted_at');
+                        }
+
                         return $query->where('organization_id', $orgId)->whereNull('deleted_at');
                     });
                 if ($vehicleId) {
@@ -53,6 +60,10 @@ class VehicleRequest extends FormRequest
 
                 $vehicleIdNoUnique = Rule::unique('pgsql.swm.vehicles', 'vehicle_id_no')
                     ->where(function ($query) use ($orgId) {
+                        if ($orgId === null) {
+                            return $query->whereNull('organization_id')->whereNull('deleted_at');
+                        }
+
                         return $query
                             ->where('organization_id', $orgId)
                             ->whereNull('deleted_at');
@@ -63,6 +74,10 @@ class VehicleRequest extends FormRequest
 
                 $chassisNoUnique = Rule::unique('pgsql.swm.vehicles', 'chassis_no')
                     ->where(function ($query) use ($orgId) {
+                        if ($orgId === null) {
+                            return $query->whereNull('organization_id')->whereNull('deleted_at');
+                        }
+
                         return $query
                             ->where('organization_id', $orgId)
                             ->whereNull('deleted_at');
@@ -73,7 +88,7 @@ class VehicleRequest extends FormRequest
 
                 return [
                     'organization_id' => [
-                        'required',
+                        'nullable',
                         'integer',
                         Rule::exists('pgsql.swm.organizations', 'id')->where(function ($query) {
                             return $query->whereNull('deleted_at');
@@ -111,14 +126,17 @@ class VehicleRequest extends FormRequest
 
                                 return;
                             }
-                            $ok = Worker::query()
+                            $query = Worker::query()
                                 ->whereKey($value)
-                                ->where('organization_id', $orgId)
                                 ->where('work_type_id', $wtId)
-                                ->whereNull('deleted_at')
-                                ->exists();
-                            if (! $ok) {
-                                $fail(__('The selected driver is invalid for this organization.'));
+                                ->whereNull('deleted_at');
+                            if ($orgId !== null) {
+                                $query->where('organization_id', $orgId);
+                            }
+                            if (! $query->exists()) {
+                                $fail($orgId !== null
+                                    ? __('The selected driver is invalid for this organization.')
+                                    : __('The selected driver is invalid.'));
                             }
                         },
                     ],
@@ -168,7 +186,6 @@ class VehicleRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'organization_id.required' => __('The organization is required.'),
             'vehicle_type_id.required' => __('The vehicle type is required.'),
             'vehicle_number.required' => __('The vehicle number is required.'),
             'driver_worker_id.required' => __('The driver is required.'),

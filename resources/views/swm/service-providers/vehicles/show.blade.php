@@ -21,7 +21,7 @@
 		<div class="form-group row">
     {!! Form::label('organization', __('Organization'), ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-3">
-        {!! Form::label(null, optional($vehicle->organization)->name, ['class' => 'form-control']) !!}
+        {!! Form::label(null, optional($vehicle->organization)->name ?? '', ['class' => 'form-control']) !!}
     </div>
 		</div>
 		<div class="form-group row">

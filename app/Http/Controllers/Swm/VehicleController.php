@@ -76,7 +76,7 @@ class VehicleController extends Controller
 
         $validated = $request->validate([
             'organization_id' => [
-                'required',
+                'nullable',
                 'integer',
                 Rule::exists('pgsql.swm.organizations', 'id')->where(function ($query) {
                     return $query->whereNull('deleted_at');
@@ -84,13 +84,27 @@ class VehicleController extends Controller
             ],
         ]);
 
-        $orgId = (int) $validated['organization_id'];
-        if (Auth::user()->swm_organization_id && (int) Auth::user()->swm_organization_id !== $orgId) {
-            abort(403);
+        $scopedOrgId = Auth::user()->swm_organization_id ? (int) Auth::user()->swm_organization_id : null;
+        $requestedOrgId = isset($validated['organization_id']) ? (int) $validated['organization_id'] : null;
+
+        if ($scopedOrgId !== null) {
+            if ($requestedOrgId !== null && $requestedOrgId !== $scopedOrgId) {
+                abort(403);
+            }
+
+            return response()->json(
+                $this->vehicleService->driverWorkersForOrganization($scopedOrgId)
+            );
+        }
+
+        if ($requestedOrgId) {
+            return response()->json(
+                $this->vehicleService->driverWorkersForOrganization($requestedOrgId)
+            );
         }
 
         return response()->json(
-            $this->vehicleService->driverWorkersForOrganization($orgId)
+            $this->vehicleService->driverWorkersForOrganization(null)
         );
     }
 
@@ -135,7 +149,9 @@ class VehicleController extends Controller
         $stsList = $this->stsOptionsForForms();
         $landfills = $this->landfillOptionsForForms();
         $scopedOrganizationId = Auth::user()->swm_organization_id;
-        $driverWorkers = $this->vehicleService->driverWorkersForOrganization($scopedOrganizationId);
+        $driverWorkers = $this->vehicleService->driverWorkersForOrganization(
+            $scopedOrganizationId ? (int) $scopedOrganizationId : null
+        );
 
         $driversListUrl = route('swm.vehicles.drivers-for-organization');
 
@@ -180,7 +196,9 @@ class VehicleController extends Controller
             $stsList = $this->stsOptionsForForms();
             $landfills = $this->landfillOptionsForForms();
             $scopedOrganizationId = Auth::user()->swm_organization_id;
-            $driverWorkers = $this->vehicleService->driverWorkersForOrganization((int) $vehicle->organization_id);
+            $driverWorkers = $this->vehicleService->driverWorkersForOrganization(
+                $vehicle->organization_id !== null ? (int) $vehicle->organization_id : null
+            );
 
             $driversListUrl = route('swm.vehicles.drivers-for-organization');
 

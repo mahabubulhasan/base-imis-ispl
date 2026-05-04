@@ -238,9 +238,9 @@ class WorkerService
         if (! empty($mobile)) {
             $query->where('swm.workers.mobile', 'ILIKE', '%'.trim((string) $mobile).'%');
         }
-        if (! empty($email)) {
-            $query->where('swm.workers.email', 'ILIKE', '%'.trim((string) $email).'%');
-        }
+        // if (! empty($email)) {
+        //     $query->where('swm.workers.email', 'ILIKE', '%'.trim((string) $email).'%');
+        // }
         if (! empty($workerIdNo)) {
             $query->where('swm.workers.worker_id_no', 'ILIKE', '%'.trim((string) $workerIdNo).'%');
         }
@@ -281,7 +281,7 @@ class WorkerService
                     $row->organization_name,
                     $row->work_type_name,
                     $row->mobile,
-                    $row->email,
+                    // $row->email,
                     $row->employee_id,
                     $row->national_id_no,
                     $row->employment_type,

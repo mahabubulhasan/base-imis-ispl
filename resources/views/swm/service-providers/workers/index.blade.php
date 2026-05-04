@@ -119,7 +119,7 @@
                 <th>{{ __('Organization') }}</th>
                 <th>{{ __('Work Type') }}</th>
                 <th>{{ __('Mobile') }}</th>
-                <th>{{ __('Email') }}</th>
+                <!-- <th>{{ __('Email') }}</th> -->
                 <th>{{ __('Employee ID') }}</th>
                 <th>{{ __('National ID') }}</th>
                 <th>{{ __('Employment Type') }}</th>
@@ -147,7 +147,7 @@ $(function() {
                 d.name = $('#name').val();
                 d.worker_id_no = $('#worker_id_no').val();
                 d.mobile = $('#mobile').val();
-                d.email = $('#email').val();
+                // d.email = $('#email').val();
                 d.employee_id = $('#employee_id').val();
                 d.national_id_no = $('#national_id_no').val();
                 d.employment_type = $('#employment_type').val();
@@ -178,10 +178,10 @@ $(function() {
                 data: 'mobile',
                 name: 'swm.workers.mobile'
             },
-            {
-                data: 'email',
-                name: 'swm.workers.email'
-            },
+            // {
+            //     data: 'email',
+            //     name: 'swm.workers.email'
+            // },
             {
                 data: 'employee_id',
                 name: 'swm.workers.employee_id'

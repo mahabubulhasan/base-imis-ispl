@@ -32,21 +32,20 @@ class VehicleService
      */
     public function driverWorkersForOrganization(?int $organizationId): array
     {
-        if (! $organizationId) {
-            return [];
-        }
         $wtId = self::driverWorkTypeId();
         if (! $wtId) {
             return [];
         }
 
-        return Worker::query()
-            ->where('organization_id', $organizationId)
+        $query = Worker::query()
             ->where('work_type_id', $wtId)
-            ->whereNull('deleted_at')
-            ->orderBy('name')
-            ->pluck('name', 'id')
-            ->all();
+            ->whereNull('deleted_at');
+
+        if ($organizationId) {
+            $query->where('organization_id', $organizationId);
+        }
+
+        return $query->orderBy('name')->pluck('name', 'id')->all();
     }
 
     protected function baseQuery(): Builder
