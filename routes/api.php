@@ -90,6 +90,7 @@ Route::group([
         Route::get('/containments/{bin}',[EmptyingServiceController::class,'getContainmentsByBin']);
         Route::get('/assessed-applications',[EmptyingServiceController::class,'getAssessedApplications']);
         Route::get('/pending-applications',[EmptyingServiceController::class,'getPendingApplications']);
+        Route::get('/sludge-collection-applications',[EmptyingServiceController::class,'getSludgeCollectionApplications']);
         Route::get('/treatment-plants',[EmptyingServiceController::class,'getTreatmentPlants']);
         Route::get('/vacutugs',[EmptyingServiceController::class, 'getVacutugs']);
         Route::get('/drivers',[EmptyingServiceController::class,'getDrivers']);
