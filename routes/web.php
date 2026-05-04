@@ -243,6 +243,19 @@ Route::group([
             'destroy' => 'swm.work-types.destroy',
         ]);
 
+        Route::get('waste-bin-types/data', 'WasteBinTypeController@getData')->name('swm.waste-bin-types.data');
+        Route::get('waste-bin-types/export', 'WasteBinTypeController@export')->name('swm.waste-bin-types.export');
+        Route::get('waste-bin-types/{waste_bin_type}/history', 'WasteBinTypeController@history')->name('swm.waste-bin-types.history');
+        Route::resource('waste-bin-types', 'WasteBinTypeController')->names([
+            'index' => 'swm.waste-bin-types.index',
+            'create' => 'swm.waste-bin-types.create',
+            'store' => 'swm.waste-bin-types.store',
+            'show' => 'swm.waste-bin-types.show',
+            'edit' => 'swm.waste-bin-types.edit',
+            'update' => 'swm.waste-bin-types.update',
+            'destroy' => 'swm.waste-bin-types.destroy',
+        ]);
+
         Route::get('workers/data', 'WorkerController@getData')->name('swm.workers.data');
         Route::get('workers/export', 'WorkerController@export')->name('swm.workers.export');
         Route::get('workers/next-worker-id', 'WorkerController@nextWorkerId')->name('swm.workers.next_worker_id');

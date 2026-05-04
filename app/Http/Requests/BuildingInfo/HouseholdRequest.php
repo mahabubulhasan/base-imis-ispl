@@ -3,11 +3,8 @@
 namespace App\Http\Requests\BuildingInfo;
 
 use App\Models\BuildingInfo\Household;
-use App\Models\Swm\WasteBinType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Validator;
-
 class HouseholdRequest extends FormRequest
 {
     public function authorize(): bool
@@ -88,45 +85,12 @@ class HouseholdRequest extends FormRequest
                 'integer',
                 Rule::exists('pgsql.swm.waste_bin_types', 'id')->where(fn ($q) => $q->whereNull('deleted_at')),
             ];
-            $rules['waste_bins.*.type_other_detail'] = ['nullable', 'string', 'max:255'];
             $rules['waste_bins.*.total_capacity_kg'] = ['required', 'numeric', 'min:0.01'];
         } else {
             $rules['waste_bins'] = ['nullable', 'array'];
         }
 
         return $rules;
-    }
-
-    public function withValidator(Validator $validator): void
-    {
-        $validator->after(function (Validator $validator) {
-            if (! $this->boolean('is_owner') || ! $this->boolean('waste_bin_provided')) {
-                return;
-            }
-            $bins = $this->input('waste_bins', []);
-            if (! is_array($bins)) {
-                return;
-            }
-            foreach ($bins as $i => $row) {
-                if (! is_array($row)) {
-                    continue;
-                }
-                $typeId = $row['waste_bin_type_id'] ?? null;
-                if (! $typeId) {
-                    continue;
-                }
-                if (WasteBinType::query()
-                    ->where('id', $typeId)
-                    ->where('name', WasteBinType::OTHERS_SPECIFY_NAME)
-                    ->whereNull('deleted_at')
-                    ->exists() && empty($row['type_other_detail'])) {
-                    $validator->errors()->add(
-                        "waste_bins.$i.type_other_detail",
-                        __('The others (specify) field is required when this type is selected.')
-                    );
-                }
-            }
-        });
     }
 
     protected function prepareForValidation(): void

@@ -21,6 +21,7 @@ class WasteBinService
     {
         $wasteBin = $wasteBin ?? new WasteBin();
         $wasteBin->fill($data);
+        $wasteBin->type_other_detail = null;
         $wasteBin->save();
 
         return $wasteBin;

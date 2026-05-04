@@ -126,14 +126,12 @@
     </div>
     @php
         $wasteBinTypes = $wasteBinTypes ?? [];
-        $othersWasteBinTypeId = $othersWasteBinTypeId ?? null;
         $wasteBinRows = old('waste_bins');
         if ($wasteBinRows === null && isset($household) && $household) {
             $wasteBinRows = $household->wasteBins->map(function ($b) {
                 return [
                     'id' => $b->id,
                     'waste_bin_type_id' => $b->waste_bin_type_id,
-                    'type_other_detail' => $b->type_other_detail,
                     'total_capacity_kg' => $b->total_capacity_kg,
                 ];
             })->values()->all();
@@ -142,7 +140,6 @@
             $wasteBinRows = [[
                 'id' => null,
                 'waste_bin_type_id' => null,
-                'type_other_detail' => null,
                 'total_capacity_kg' => null,
             ]];
         }
@@ -156,7 +153,6 @@
                     <thead>
                         <tr>
                             <th style="min-width: 12rem;">{{ __('Waste Bin Type') }}</th>
-                            <th style="min-width: 10rem;">{{ __('Others (specify)') }}</th>
                             <th style="min-width: 8rem;">{{ __('Capacity (kg)') }}</th>
                             <th class="text-nowrap" style="width: 6rem;">{{ __('Actions') }}</th>
                         </tr>
@@ -174,11 +170,6 @@
                                         <option value="{{ $tid }}" {{ (string) old('waste_bins.'.$i.'.waste_bin_type_id', $wbRow['waste_bin_type_id'] ?? '') === (string) $tid ? 'selected' : '' }}>{{ $tname }}</option>
                                     @endforeach
                                 </select>
-                            </td>
-                            <td class="type-other-cell align-middle">
-                                <div class="type-other-inner">
-                                    <input type="text" name="waste_bins[{{ $i }}][type_other_detail]" class="form-control type-other-input" value="{{ old('waste_bins.'.$i.'.type_other_detail', $wbRow['type_other_detail'] ?? '') }}" autocomplete="off">
-                                </div>
                             </td>
                             <td class="align-middle">
                                 <input type="number" name="waste_bins[{{ $i }}][total_capacity_kg]" class="form-control waste-bin-capacity-input" step="0.01" min="0.01" value="{{ old('waste_bins.'.$i.'.total_capacity_kg', $wbRow['total_capacity_kg'] ?? '') }}">
@@ -270,8 +261,6 @@ $(function() {
             });
     }
 
-    var othersWasteBinTypeId = @json($othersWasteBinTypeId);
-
     function reindexWasteBinRows() {
         $('#waste-bins-tbody tr.waste-bin-row').each(function (idx) {
             $(this).find('[name]').each(function () {
@@ -280,19 +269,6 @@ $(function() {
                 if (!n) return;
                 el.attr('name', n.replace(/waste_bins\[\d+]/, 'waste_bins[' + idx + ']'));
             });
-        });
-        refreshWasteBinTypeOther();
-    }
-
-    function refreshWasteBinTypeOther() {
-        $('#waste-bins-tbody tr.waste-bin-row').each(function () {
-            var v = $(this).find('.waste-bin-type-select').val();
-            var show = othersWasteBinTypeId && String(v) === String(othersWasteBinTypeId);
-            var $inner = $(this).find('.type-other-inner');
-            $inner.toggle(show);
-            if (!show) {
-                $(this).find('.type-other-input').val('');
-            }
         });
     }
 
@@ -303,9 +279,6 @@ $(function() {
             $('#waste_bin_provided').val('0');
         }
         $('#waste-bin-fields').toggle(isOwner && $('#waste_bin_provided').val() === '1');
-        if (isOwner && $('#waste_bin_provided').val() === '1') {
-            refreshWasteBinTypeOther();
-        }
     }
 
     $('#waste-bin-add-row').on('click', function () {
@@ -313,7 +286,7 @@ $(function() {
         var $first = $tbody.find('tr.waste-bin-row').first();
         var $clone = $first.clone();
         $clone.find('input[type=hidden]').remove();
-        $clone.find('input.type-other-input, input.waste-bin-capacity-input').val('');
+        $clone.find('input.waste-bin-capacity-input').val('');
         $clone.find('select.waste-bin-type-select').val('');
         $tbody.append($clone);
         reindexWasteBinRows();
@@ -328,14 +301,11 @@ $(function() {
         reindexWasteBinRows();
     });
 
-    $(document).on('change', '.waste-bin-type-select', refreshWasteBinTypeOther);
-
     $('#is_lic').on('change', toggleLicRow);
     $('#is_owner').on('change', toggleWasteBinControls);
     $('#waste_bin_provided').on('change', toggleWasteBinControls);
     toggleLicRow();
     toggleWasteBinControls();
-    refreshWasteBinTypeOther();
 
     $('#bin').on('change', function() {
         fetchSnapshot($(this).val());

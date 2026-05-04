@@ -36,7 +36,6 @@
                         <thead>
                             <tr>
                                 <th>{{ __('Type of Waste Bin') }}</th>
-                                <th>{{ __('Others (specify)') }}</th>
                                 <th>{{ __('Capacity (kg)') }}</th>
                                 <th>{{ __('BIN') }}</th>
                                 <th>{{ __('Ward No.') }}</th>
@@ -46,7 +45,6 @@
                             @foreach($household->wasteBins as $wb)
                                 <tr>
                                     <td>{{ optional($wb->wasteBinType)->name }}</td>
-                                    <td>{{ $wb->type_other_detail }}</td>
                                     <td>{{ $wb->total_capacity_kg }}</td>
                                     <td>{{ $wb->bin }}</td>
                                     <td>{{ $wb->ward_no }}</td>

@@ -4,9 +4,6 @@
 <div class='card card-info'><div class='card-header bg-transparent'><a href='{{ route('swm.waste-bins.index') }}' class='btn btn-info'>{{__('Back to List')}}</a></div><div class='card-body'>
     <p><b>{{__('Household')}}:</b> {{ optional($wasteBin->household)->household_id }}</p>
     <p><b>{{__('Type of Waste Bin')}}:</b> {{ optional($wasteBin->wasteBinType)->name }}</p>
-    @if($wasteBin->type_other_detail)
-        <p><b>{{__('Others (specify)')}}:</b> {{ $wasteBin->type_other_detail }}</p>
-    @endif
     <p><b>{{__('Placed at Buildings')}}:</b> {{ $wasteBin->placed_at_buildings ? __('Yes') : __('No') }}</p>
     <p><b>{{__('BIN')}}:</b> {{ $wasteBin->bin }}</p>
     <p><b>{{__('Sub Location')}}:</b> {{ $wasteBin->sub_location }}</p>

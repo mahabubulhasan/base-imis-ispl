@@ -154,7 +154,7 @@ class HouseholdService
                 $payload = [
                     'household_id' => $household->id,
                     'waste_bin_type_id' => (int) ($row['waste_bin_type_id'] ?? 0),
-                    'type_other_detail' => $row['type_other_detail'] ?? null,
+                    'type_other_detail' => null,
                     'total_capacity_kg' => $row['total_capacity_kg'],
                     'placed_at_buildings' => true,
                     'bin' => $household->bin,

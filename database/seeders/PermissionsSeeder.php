@@ -875,6 +875,39 @@ class PermissionsSeeder extends Seeder
                 ],
             ],
             [
+                "group" => "SW Waste Bin Types",
+                "perms" => [
+                    [
+                        "type" => "List",
+                        "name" => "List SW Waste Bin Types",
+                    ],
+                    [
+                        "type" => "View",
+                        "name" => "View SW Waste Bin Type",
+                    ],
+                    [
+                        "type" => "Add",
+                        "name" => "Add SW Waste Bin Type",
+                    ],
+                    [
+                        "type" => "Edit",
+                        "name" => "Edit SW Waste Bin Type",
+                    ],
+                    [
+                        "type" => "Delete",
+                        "name" => "Delete SW Waste Bin Type",
+                    ],
+                    [
+                        "type" => "History",
+                        "name" => "View SW Waste Bin Type History",
+                    ],
+                    [
+                        "type" => "Export",
+                        "name" => "Export SW Waste Bin Types to CSV",
+                    ],
+                ],
+            ],
+            [
                 "group" => "SW Service Provider Workers",
                 "perms" => [
                     [

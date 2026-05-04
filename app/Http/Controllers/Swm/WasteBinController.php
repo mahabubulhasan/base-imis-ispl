@@ -62,18 +62,13 @@ class WasteBinController extends Controller
         $households = Household::query()->whereNull('deleted_at')->activeStatus()->orderBy('household_id')->pluck('household_id', 'id');
         $wards = Ward::getInAscOrder();
         $wasteBinTypes = WasteBinType::query()->whereNull('deleted_at')->orderBy('name')->pluck('name', 'id');
-        $othersWasteBinTypeId = WasteBinType::query()
-            ->where('name', WasteBinType::OTHERS_SPECIFY_NAME)
-            ->whereNull('deleted_at')
-            ->value('id');
 
         return view('swm.service-facilities.waste-bins.create', compact(
             'page_title',
             'wasteBin',
             'households',
             'wards',
-            'wasteBinTypes',
-            'othersWasteBinTypeId'
+            'wasteBinTypes'
         ));
     }
 
@@ -105,18 +100,13 @@ class WasteBinController extends Controller
             ->pluck('household_id', 'id');
         $wards = Ward::getInAscOrder();
         $wasteBinTypes = WasteBinType::query()->whereNull('deleted_at')->orderBy('name')->pluck('name', 'id');
-        $othersWasteBinTypeId = WasteBinType::query()
-            ->where('name', WasteBinType::OTHERS_SPECIFY_NAME)
-            ->whereNull('deleted_at')
-            ->value('id');
 
         return view('swm.service-facilities.waste-bins.edit', compact(
             'page_title',
             'wasteBin',
             'households',
             'wards',
-            'wasteBinTypes',
-            'othersWasteBinTypeId'
+            'wasteBinTypes'
         ));
     }
 

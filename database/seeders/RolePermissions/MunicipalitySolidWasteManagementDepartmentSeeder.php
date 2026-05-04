@@ -32,6 +32,7 @@ class MunicipalitySolidWasteManagementDepartmentSeeder extends Seeder
                     $swmServiceProviderGroups = [
                         'SW Service Provider Organizations',
                         'SW Service Provider Work Types',
+                        'SW Waste Bin Types',
                         'SW Service Provider Workers',
                         'SW Service Provider Vehicle Types',
                         'SW Service Provider Vehicles',

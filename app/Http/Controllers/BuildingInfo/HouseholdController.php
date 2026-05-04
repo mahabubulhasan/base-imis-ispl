@@ -63,16 +63,6 @@ class HouseholdController extends Controller
         return WasteBinType::query()->whereNull('deleted_at')->orderBy('name')->pluck('name', 'id')->all();
     }
 
-    protected function othersWasteBinTypeId(): ?int
-    {
-        $id = WasteBinType::query()
-            ->where('name', WasteBinType::OTHERS_SPECIFY_NAME)
-            ->whereNull('deleted_at')
-            ->value('id');
-
-        return $id !== null ? (int) $id : null;
-    }
-
     public function index()
     {
         $page_title = __('Households');
@@ -120,7 +110,6 @@ class HouseholdController extends Controller
         $licOptions = $this->licOptions();
         $functionalUses = $this->functionalUseOptions();
         $wasteBinTypes = $this->wasteBinTypeOptions();
-        $othersWasteBinTypeId = $this->othersWasteBinTypeId();
 
         return view('building-info.households.create', compact(
             'page_title',
@@ -129,8 +118,7 @@ class HouseholdController extends Controller
             'vanPullers',
             'licOptions',
             'functionalUses',
-            'wasteBinTypes',
-            'othersWasteBinTypeId'
+            'wasteBinTypes'
         ));
     }
 
@@ -157,7 +145,6 @@ class HouseholdController extends Controller
         $licOptions = $this->licOptions();
         $functionalUses = $this->functionalUseOptions();
         $wasteBinTypes = $this->wasteBinTypeOptions();
-        $othersWasteBinTypeId = $this->othersWasteBinTypeId();
 
         return view('building-info.households.edit', compact(
             'page_title',
@@ -166,8 +153,7 @@ class HouseholdController extends Controller
             'vanPullers',
             'licOptions',
             'functionalUses',
-            'wasteBinTypes',
-            'othersWasteBinTypeId'
+            'wasteBinTypes'
         ));
     }
 

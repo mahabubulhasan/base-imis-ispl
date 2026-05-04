@@ -13,11 +13,13 @@ class WasteBinType extends Model
     use RevisionableTrait;
     use SoftDeletes;
 
-    public const OTHERS_SPECIFY_NAME = 'Others (specify)';
-
     protected $revisionCreationsEnabled = true;
 
     protected $table = 'swm.waste_bin_types';
+
+    protected $fillable = [
+        'name',
+    ];
 
     public function wasteBins()
     {

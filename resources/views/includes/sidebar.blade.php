@@ -482,7 +482,7 @@
             </li>
             @endif
 
-            @if(Auth::user()->hasanyPermissionInGroup(['Sw Service Payment', 'SW Service Provider Organizations', 'SW Service Provider Work Types', 'SW Service Provider Workers', 'SW Service Provider Vehicle Types', 'SW Service Provider Vehicles', 'SW Service Facility Landfills', 'SW Service Facility STS', 'SW Bill Collection Payments', 'SW Billing Status', 'SW Complaints', 'SW Dashboard and KPIs']) || Auth::user()->hasRole('Super Admin'))
+            @if(Auth::user()->hasanyPermissionInGroup(['Sw Service Payment', 'SW Service Provider Organizations', 'SW Service Provider Work Types', 'SW Waste Bin Types', 'SW Service Provider Workers', 'SW Service Provider Vehicle Types', 'SW Service Provider Vehicles', 'SW Service Facility Landfills', 'SW Service Facility STS', 'SW Bill Collection Payments', 'SW Billing Status', 'SW Complaints', 'SW Dashboard and KPIs']) || Auth::user()->hasRole('Super Admin'))
             <li class="nav-item {{ request()->is('swm-payment', 'swm-payment/*', 'swm/dashboard-kpis', 'swm/dashboard-kpis/*', 'swm/service-providers/*', 'swm/service-facilities/*', 'swm/service-coverage/*') ? 'menu-is-opening menu-open' : '' }}">
                 <a href="#" class="nav-link {{ request()->is('swm-payment', 'swm-payment/*', 'swm/dashboard-kpis', 'swm/dashboard-kpis/*', 'swm/service-providers/*', 'swm/service-facilities/*', 'swm/service-coverage/*') ? 'active' : '' }}">
                     <img src="{{ asset('img/svg/imis-icons/swmPaymentStatus.svg')}}" class="nav-icon">
@@ -610,9 +610,9 @@
                         </a>
                     </li>
                     @endcan
-                    @if(Auth::user()->can('List SW Work Types') || Auth::user()->can('List SW Vehicle Types') || Auth::user()->can('List SW Waste Types'))
-                    <li class="nav-item {{ request()->is('swm/service-providers/work-types*', 'swm/service-providers/vehicle-types*', 'swm/service-providers/waste-types*') ? 'menu-is-opening menu-open' : '' }}">
-                        <a href="#" class="nav-link {{ request()->is('swm/service-providers/work-types*', 'swm/service-providers/vehicle-types*', 'swm/service-providers/waste-types*') ? 'active subnav' : '' }}">
+                    @if(Auth::user()->can('List SW Work Types') || Auth::user()->can('List SW Vehicle Types') || Auth::user()->can('List SW Waste Types') || Auth::user()->can('List SW Waste Bin Types'))
+                    <li class="nav-item {{ request()->is('swm/service-providers/work-types*', 'swm/service-providers/vehicle-types*', 'swm/service-providers/waste-types*', 'swm/service-providers/waste-bin-types*') ? 'menu-is-opening menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ request()->is('swm/service-providers/work-types*', 'swm/service-providers/vehicle-types*', 'swm/service-providers/waste-types*', 'swm/service-providers/waste-bin-types*') ? 'active subnav' : '' }}">
                             <i class="far fa-circle nav-icon"></i>
                             <p>{{__('SW Module Settings')}} <i class="right fas fa-angle-left"></i></p>
                         </a>
@@ -638,6 +638,14 @@
                                 <a href="{{ action('Swm\WasteTypeController@index') }}" class="nav-link {{ request()->is('swm/service-providers/waste-types', 'swm/service-providers/waste-types/*') ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>{{__('Waste Type')}}</p>
+                                </a>
+                            </li>
+                            @endcan
+                            @can('List SW Waste Bin Types')
+                            <li class="nav-item">
+                                <a href="{{ action('Swm\WasteBinTypeController@index') }}" class="nav-link {{ request()->is('swm/service-providers/waste-bin-types', 'swm/service-providers/waste-bin-types/*') ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>{{__('Waste Bin Type')}}</p>
                                 </a>
                             </li>
                             @endcan
