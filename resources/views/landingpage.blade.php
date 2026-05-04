@@ -360,6 +360,9 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                         class="w-full max-w-md lg:max-w-lg h-auto"
                     />
                 </div>
+                <p class="text-sm text-slate-600 leading-relaxed mb-6">
+                    Conceptualised by <a href="https://snv.org" class="text-primary font-semibold hover:underline" target="_blank" rel="noopener noreferrer">SNV Netherlands Development Organization</a> under the project <span class="font-semibold text-slate-800">"Transitioning to Sustainable Urban Water Cycles in Bangladesh"</span> supported by the <span class="font-semibold text-slate-800">Embassy of the Kingdom of the Netherlands</span>
+                </p>
                 {{-- <h1 class="text-4xl md:text-5xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-6 sr-only">
                     Integrated Municipal Information System <span class="text-primary">(IMIS)</span>
                 </h1>
@@ -419,13 +422,12 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
             @include('includes.branding')
         </div> --}}
         <div class="mt-4 mx-3">
-            <div class="mx-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-left">
-                <div class="pb-4">
+            <div class="mx-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-left pb-4">
+                <div>
                     © {{ config('constants.SITE_NAME') }}. All rights reserved.
                 </div>
                 <div class="sm:text-right text-sm">
-                    Conceptualised by <a href="https://snv.org" class="text-primary font-semibold hover:underline" target="_blank" rel="noopener noreferrer">SNV Netherlands Development Organization</a> under the project <span class="font-semibold">"Transitioning to Sustainable Urban Water Cycles in Bangladesh"</span> supported by the <span class="font-semibold">Embassy of the Kingdom of the Netherlands</span> <br> Developed by <a href="https://streamstech.com" class="text-primary font-semibold hover:underline" target="_blank" rel="noopener noreferrer"
-                    class="text-primary font-semibold hover:underline">Streams Tech Ltd.</a>
+                    Developed by <a href="https://streamstech.com" class="text-primary font-semibold hover:underline" target="_blank" rel="noopener noreferrer">Streams Tech Ltd.</a>
                 </div>
             </div>
         </div>
