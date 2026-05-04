@@ -17,13 +17,13 @@
             </div>
         </div>
         <div class="form-group row">
-            {!! Form::label('age', __('Age (Years)'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('age', __('Age'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-9">
                 {!! Form::number('age', null, ['class' => 'form-control', 'placeholder' => __('Age (Years)'), 'min' => 0, 'max' => 120]) !!}
             </div>
         </div>
         <div class="form-group row">
-            {!! Form::label('gender', __('Gender (Male/Female/Others)'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('gender', __('Gender'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-9">
                 {!! Form::select('gender', ['male' => __('Male'), 'female' => __('Female'), 'others' => __('Others')], null, ['class' => 'form-control chosen-select', 'placeholder' => __('Gender')]) !!}
             </div>
@@ -47,17 +47,12 @@
             </div>
         </div>
         <div class="form-group row">
-            {!! Form::label('employment_type', __('Employment Type (Permanent/Daily/Contract)'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('employment_type', __('Employment Type'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-9">
                 {!! Form::select('employment_type', ['permanent' => __('Permanent'), 'daily' => __('Daily'), 'contract' => __('Contract')], null, ['class' => 'form-control chosen-select', 'placeholder' => __('Employment Type')]) !!}
             </div>
         </div>
-        <div class="form-group row">
-            {!! Form::label('status', __('Status (Active/Inactive)'), ['class' => 'col-sm-3 control-label']) !!}
-            <div class="col-sm-9">
-                {!! Form::select('status', ['active' => __('Active'), 'inactive' => __('Inactive')], null, ['class' => 'form-control chosen-select', 'placeholder' => __('Status')]) !!}
-            </div>
-        </div>
+        
         @if(!empty($scopedOrganizationId))
         {!! Form::hidden('organization_id', $scopedOrganizationId) !!}
         <div class="form-group row">
@@ -87,13 +82,13 @@
             </div>
         </div>
         <div class="form-group row">
-            {!! Form::label('total_work_experience_years', __('Total Work Experience (Years)'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('total_work_experience_years', __('Total Work Experience'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-9">
                 {!! Form::number('total_work_experience_years', null, ['class' => 'form-control', 'placeholder' => __('Total Work Experience (Years)'), 'min' => 0, 'step' => '0.01']) !!}
             </div>
         </div>
         <div class="form-group row">
-            {!! Form::label('organization_work_experience_years', __('Work Experience in This Organization (Years)'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('organization_work_experience_years', __('Work Experience in This Organization'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-9">
                 {!! Form::number('organization_work_experience_years', null, ['class' => 'form-control', 'placeholder' => __('Work Experience in This Organization (Years)'), 'min' => 0, 'step' => '0.01']) !!}
             </div>
@@ -114,13 +109,13 @@
             </div>
         </div>
         <div class="form-group row" id="education_level_other_group" style="display: none;">
-            {!! Form::label('education_level_other', __('Education (Others specify)'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('education_level_other', __('Education'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-9">
                 {!! Form::text('education_level_other', null, ['class' => 'form-control', 'placeholder' => __('Education (Others specify)')]) !!}
             </div>
         </div>
         <div class="form-group row">
-            {!! Form::label('employee_id', __('Employee ID (Current Organization)'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('employee_id', __('Employee ID'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-9">
                 {!! Form::text('employee_id', null, ['class' => 'form-control', 'placeholder' => __('Employee ID (Current Organization)')]) !!}
             </div>
@@ -129,6 +124,12 @@
             {!! Form::label('national_id_no', __('National ID No.'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-9">
                 {!! Form::text('national_id_no', null, ['class' => 'form-control', 'placeholder' => __('National ID No.')]) !!}
+            </div>
+        </div>
+        <div class="form-group row">
+            {!! Form::label('status', __('Status'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-9">
+                {!! Form::select('status', ['active' => __('Active'), 'inactive' => __('Inactive')], null, ['class' => 'form-control chosen-select', 'placeholder' => __('Status')]) !!}
             </div>
         </div>
         <!-- <div class="form-group row">
