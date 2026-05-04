@@ -1,5 +1,5 @@
 <?php
-// Last Modified: 2026-05-01
+// Last Modified: 2026-05-04
 // Developed By: Streams Tech Ltd.
 // Description: API endpoints for sludge collection operations consumed by mobile clients.
 namespace App\Http\Controllers\Api;
@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Fsm\SludgeCollectionRequest;
 use App\Models\Fsm\Application;
 use App\Models\Fsm\SludgeCollection;
+use App\Models\Fsm\TreatmentPlant;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Throwable;
@@ -44,35 +45,54 @@ class SludgeCollectionController extends Controller
         try {
             $applicationId = $request->application_id ?: null;
 
+            $application = Application::with('emptying')->find($applicationId);
+
+            if (!$application) {
+                DB::rollBack();
+                return response()->json([
+                    'status' => false,
+                    'message' => __('Application not found for the given application id.')
+                ], 404);
+            }
+
+            $emptying = $application->emptying;
+
+            if (!$emptying) {
+                DB::rollBack();
+                return response()->json([
+                    'status' => false,
+                    'message' => __('Emptying details not found for the given application id.')
+                ], 404);
+            }
+
+            $treatmentPlantId = $emptying->treatment_plant_id;
+            $treatmentPlant = $treatmentPlantId
+                ? TreatmentPlant::operational()->find($treatmentPlantId)
+                : null;
+
+            if (!$treatmentPlant) {
+                DB::rollBack();
+                return response()->json([
+                    'status' => false,
+                    'message' => __('Operational treatment plant not found for the given application id.')
+                ], 422);
+            }
+
             $sludgeCollection = new SludgeCollection();
             $sludgeCollection->application_id = $applicationId;
-            $sludgeCollection->volume_of_sludge = $request->volume_of_sludge ?? null;
+            $sludgeCollection->volume_of_sludge = $emptying->volume_of_sludge ?? null;
             $sludgeCollection->date = $request->date ?: null;
             $sludgeCollection->no_of_trips = $request->no_of_trips ?: null;
             $sludgeCollection->entry_time = $request->entry_time ?: null;
             $sludgeCollection->exit_time = $request->exit_time ?: null;
-            $sludgeCollection->treatment_plant_id = $user->hasRole('Treatment Plant - Admin')
-                ? $user->treatment_plant_id
-                : ($request->treatment_plant_id ?: null);
-            $sludgeCollection->service_provider_id = $request->service_provider_id ?? null;
-            $sludgeCollection->desludging_vehicle_id = $request->desludging_vehicle_id ?? null;
+            $sludgeCollection->treatment_plant_id = $treatmentPlant->id;
+            $sludgeCollection->service_provider_id = $emptying->service_provider_id ?? $application->service_provider_id;
+            $sludgeCollection->desludging_vehicle_id = $emptying->desludging_vehicle_id ?? null;
             $sludgeCollection->user_id = $user->id;
             $sludgeCollection->save();
 
-            if ($applicationId) {
-                $application = Application::find($applicationId);
-
-                if (!$application) {
-                    DB::rollBack();
-                    return response()->json([
-                        'status' => false,
-                        'message' => __('Application not found for the given application id.')
-                    ], 404);
-                }
-
-                $application->sludge_collection_status = true;
-                $application->save();
-            }
+            $application->sludge_collection_status = true;
+            $application->save();
 
             DB::commit();
 
