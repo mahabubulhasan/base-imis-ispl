@@ -61,7 +61,7 @@
                     <thead>
                         <tr>
                             <th>{{ __('ID') }}</th>
-                            <th>{{ __('Community Name') }}</th>
+                            <th>{{ __('LIC Name') }}</th>
                             <th>{{ __('LIC Status') }}</th>
                             <th>{{ __('No. of Buildings') }}</th>
                             <th>{{ __('Population') }}</th>

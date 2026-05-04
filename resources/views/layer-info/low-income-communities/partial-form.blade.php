@@ -54,21 +54,9 @@
 
 <div class="card-body">
     <div class="form-group required row">
-        {!! Form::label('community_name',__('Community Name') ,['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('community_name',__('LIC Name') ,['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             {!! Form::text('community_name',null,['class' => 'form-control', 'placeholder' => __('Community Name')]) !!}
-        </div>
-    </div>
-    <div class="form-group required row">
-        {!! Form::label('lic_status', __('LIC Status (Active/Inactive)'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-3">
-            {!! Form::select('lic_status', $statusOptions, old('lic_status', isset($lic) ? (($lic->lic_status === null) ? '' : (string) (int) $lic->lic_status) : ''), ['class' => 'form-control', 'id' => 'lic_status']) !!}
-        </div>
-    </div>
-    <div class="form-group row">
-        {!! Form::label('area_decima', __('Area (Decima)'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-3">
-            {!! Form::number('area_decima', null, ['class' => 'form-control', 'placeholder' => __('Area (Decima)'), 'step' => '0.01', 'min' => '0']) !!}
         </div>
     </div>
     <div class="form-group row">
@@ -90,16 +78,16 @@
         </div>
     </div>
     <div class="form-group required row">
-         {!! Form::label('population_total',__('Population'),['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-3">
-            {!! Form::text('population_total',null,['class' => 'form-control', 'placeholder' => __('Population'),'oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",]) !!}
-        </div>
-    </div>
-    <div class="form-group required row">
          {!! Form::label('number_of_households',__('No. of Households'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             {!! Form::text('number_of_households',null,['class' => 'form-control', 'placeholder' => __('No. of Households'),'oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",]) !!}
         </div>
+    </div>
+    <div class="form-group required row">
+         {!! Form::label('population_total',__('Total Population'),['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::text('population_total',null,['class' => 'form-control', 'placeholder' => __('Total Population'),'oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",]) !!}
+        </div>  
     </div>
     <div class="form-group row">
          {!! Form::label('population_male',__('Male Population'),['class' => 'col-sm-3 control-label']) !!}
@@ -137,6 +125,12 @@
             {!! Form::select('sanitation_status', $yesNoOptions, old('sanitation_status', isset($lic) ? (($lic->sanitation_status === null) ? '' : (string) (int) $lic->sanitation_status) : ''), ['class' => 'form-control', 'id' => 'sanitation_status']) !!}
         </div>
     </div>
+    <div class="form-group row" id="no_of_community_toilets_group">
+         {!! Form::label('no_of_community_toilets',__('No. of Community Toilets'),['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::text('no_of_community_toilets',null,['class' => 'form-control', 'placeholder' => __('No. of Community Toilets'),'oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",'id' => 'no_of_community_toilets']) !!}
+        </div>
+    </div>
     <div class="form-group row">
          {!! Form::label('no_of_septic_tank',__('No. of Septic Tanks'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
@@ -161,18 +155,6 @@
             {!! Form::text('no_of_sewer_connection',null,['class' => 'form-control', 'placeholder' => __('No. of Sewer Connections'),'oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",]) !!}
         </div>
     </div>
-    <div class="form-group row" id="no_of_community_toilets_group">
-         {!! Form::label('no_of_community_toilets',__('No. of Community Toilets'),['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-3">
-            {!! Form::text('no_of_community_toilets',null,['class' => 'form-control', 'placeholder' => __('No. of Community Toilets'),'oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",'id' => 'no_of_community_toilets']) !!}
-        </div>
-    </div>
-    <div class="form-group row">
-        {!! Form::label('remarks', __('Remarks'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-6">
-            {!! Form::textarea('remarks', null, ['class' => 'form-control', 'rows' => 3, 'placeholder' => __('Remarks')]) !!}
-        </div>
-    </div>
     <div class="form-group required row">
             {!! Form::label('geom',__('Area'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-6">
@@ -186,6 +168,24 @@
 
             </div>
             <input type="hidden" name="geom" id="geom" value="{{ @$geom }}" />
+    </div>
+    <div class="form-group row">
+        {!! Form::label('area_decima', __('Area (Decimal)'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::number('area_decima', null, ['class' => 'form-control', 'placeholder' => __('Area (Decimal)'), 'step' => '0.01', 'min' => '0']) !!}
+        </div>
+    </div>
+    <div class="form-group required row">
+        {!! Form::label('lic_status', __('LIC Status'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::select('lic_status', $statusOptions, old('lic_status', isset($lic) ? (($lic->lic_status === null) ? '' : (string) (int) $lic->lic_status) : ''), ['class' => 'form-control', 'id' => 'lic_status']) !!}
+        </div>
+    </div>
+    <div class="form-group row">
+        {!! Form::label('remarks', __('Remarks'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-6">
+            {!! Form::textarea('remarks', null, ['class' => 'form-control', 'rows' => 3, 'placeholder' => __('Remarks')]) !!}
+        </div>
     </div>
 
     </div>
