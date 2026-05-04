@@ -541,22 +541,6 @@
                             <p>{{__('Service Facilities')}} <i class="right fas fa-angle-left"></i></p>
                         </a>
                         <ul class="nav nav-treeview">
-                            @can('List SW Landfills')
-                            <li class="nav-item">
-                                <a href="{{ action('Swm\LandfillController@index') }}" class="nav-link {{ request()->is('swm/service-facilities/landfills', 'swm/service-facilities/landfills/*') ? 'active' : '' }}">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>{{__('Landfills')}}</p>
-                                </a>
-                            </li>
-                            @endcan
-                            @can('List SW STS')
-                            <li class="nav-item">
-                                <a href="{{ action('Swm\StsController@index') }}" class="nav-link {{ request()->is('swm/service-facilities/sts', 'swm/service-facilities/sts/*') ? 'active' : '' }}">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>{{__('STSs')}}</p>
-                                </a>
-                            </li>
-                            @endcan
                             @can('List SW Waste Bins')
                             <li class="nav-item">
                                 <a href="{{ action('Swm\WasteBinController@index') }}" class="nav-link {{ request()->is('swm/service-facilities/waste-bins', 'swm/service-facilities/waste-bins/*') ? 'active' : '' }}">
@@ -570,6 +554,22 @@
                                 <a href="{{ action('Swm\VehicleController@index') }}" class="nav-link {{ request()->is('swm/service-providers/vehicles', 'swm/service-providers/vehicles/*') ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>{{__('Vehicles')}}</p>
+                                </a>
+                            </li>
+                            @endcan
+                            @can('List SW STS')
+                            <li class="nav-item">
+                                <a href="{{ action('Swm\StsController@index') }}" class="nav-link {{ request()->is('swm/service-facilities/sts', 'swm/service-facilities/sts/*') ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>{{__('STSs')}}</p>
+                                </a>
+                            </li>
+                            @endcan
+                            @can('List SW Landfills')
+                            <li class="nav-item">
+                                <a href="{{ action('Swm\LandfillController@index') }}" class="nav-link {{ request()->is('swm/service-facilities/landfills', 'swm/service-facilities/landfills/*') ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>{{__('Landfills')}}</p>
                                 </a>
                             </li>
                             @endcan

@@ -34,7 +34,7 @@ class LowIncomeCommunityController extends Controller
 
     public function index()
     {
-        $page_title = __("Low Income Community");
+        $page_title = __("Low Income Communities");
         return view('layer-info.low-income-communities.index', compact('page_title'));
     }
 
