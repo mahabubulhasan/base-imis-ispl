@@ -2,6 +2,7 @@
     $dumpKind = old('dumping_place_kind', isset($vehicle) && $vehicle ? $vehicle->dumping_place_kind : null);
     $organizationChoices = isset($organizations) && is_array($organizations) ? ['' => ''] + $organizations : ['' => ''];
 @endphp
+<div class="app-mobile-form">
 <div class="card-body">
         <div class="form-group row">
             {!! Form::label('vehicle_id_no', __('Vehicle ID'), ['class' => 'col-sm-3 control-label']) !!}
@@ -158,6 +159,7 @@
 <div class="card-footer">
 	<a href="{{ route('swm.vehicles.index') }}" class="btn btn-info">{{ __('Back to List')}}</a>
 	{!! Form::submit( __('Save'), ['class' => 'btn btn-info']) !!}
+</div>
 </div>
 
 @push('scripts')
