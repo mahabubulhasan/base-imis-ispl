@@ -4,8 +4,9 @@ namespace App\Http\Controllers\Swm;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Swm\WasteBinRequest;
-use App\Models\BuildingInfo\Household;
+use App\Models\BuildingInfo\Building;
 use App\Models\LayerInfo\Ward;
+use App\Models\UtilityInfo\Roadline;
 use App\Models\Swm\WasteBin;
 use App\Models\Swm\WasteBinType;
 use App\Services\Swm\WasteBinService;
@@ -31,44 +32,48 @@ class WasteBinController extends Controller
         return $this->wasteBinService->getAll($request->all());
     }
 
-    public function householdFields(Request $request): JsonResponse
+    public function buildingSnapshot(Request $request): JsonResponse
     {
-        $id = $request->query('household_id');
-        if (! $id) {
-            return response()->json([]);
+        $building = Building::query()->with(['functionalUse'])->whereNull('deleted_at')->find($request->input('bin'));
+        if (! $building) {
+            return response()->json([], 404);
         }
 
-        $household = Household::query()->whereNull('deleted_at')->with('building')->find($id);
-        if (! $household) {
-            return response()->json(null, 404);
+        $roadCode = trim((string) ($building->road_code ?? ''));
+        $roadName = null;
+        if ($roadCode !== '' && $roadCode !== '0') {
+            $roadName = Roadline::query()->where('code', $roadCode)->whereNull('deleted_at')->value('name');
         }
 
-        $fallbackRoadNo = trim((string) ($household->building?->road_code ?? ''));
-        $roadNo = $household->road_no ?? ($fallbackRoadNo !== '' && $fallbackRoadNo !== '0' ? $fallbackRoadNo : null);
+        $roadCodeOut = ($roadCode !== '' && $roadCode !== '0') ? $roadCode : null;
 
         return response()->json([
-            'sub_location' => $household->sub_location,
-            'ward_no' => $household->ward,
-            'road_name' => $household->road_name,
-            'road_no' => $roadNo,
-            'bin' => $household->bin,
+            'ward' => $building->ward,
+            'road_no' => $roadCodeOut,
+            'road_name' => $roadName,
+            'bin' => $building->bin,
         ]);
+    }
+
+    protected function bins(): array
+    {
+        return Building::query()->whereNull('deleted_at')->orderBy('bin')->pluck('bin', 'bin')->all();
     }
 
     public function create()
     {
         $page_title = __('Add Waste Bin');
         $wasteBin = null;
-        $households = Household::query()->whereNull('deleted_at')->activeStatus()->orderBy('household_id')->pluck('household_id', 'id');
         $wards = Ward::getInAscOrder();
         $wasteBinTypes = WasteBinType::query()->whereNull('deleted_at')->orderBy('name')->pluck('name', 'id');
+        $bins = $this->bins();
 
         return view('swm.service-facilities.waste-bins.create', compact(
             'page_title',
             'wasteBin',
-            'households',
             'wards',
-            'wasteBinTypes'
+            'wasteBinTypes',
+            'bins'
         ));
     }
 
@@ -90,23 +95,16 @@ class WasteBinController extends Controller
     public function edit(WasteBin $wasteBin)
     {
         $page_title = __('Edit Waste Bin');
-        $households = Household::query()
-            ->whereNull('deleted_at')
-            ->where(function ($q) use ($wasteBin) {
-                $q->activeStatus()
-                    ->orWhere('id', $wasteBin->household_id);
-            })
-            ->orderBy('household_id')
-            ->pluck('household_id', 'id');
         $wards = Ward::getInAscOrder();
         $wasteBinTypes = WasteBinType::query()->whereNull('deleted_at')->orderBy('name')->pluck('name', 'id');
+        $bins = $this->bins();
 
         return view('swm.service-facilities.waste-bins.edit', compact(
             'page_title',
             'wasteBin',
-            'households',
             'wards',
-            'wasteBinTypes'
+            'wasteBinTypes',
+            'bins'
         ));
     }
 
