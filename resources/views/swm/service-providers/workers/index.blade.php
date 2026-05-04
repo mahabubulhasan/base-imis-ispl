@@ -8,7 +8,7 @@
 @endpush
 @section('title', $page_title)
 @section('content')
-<div class="card">
+<div class="card app-mobile-index">
     <div class="card-header">
         @can('Add SW Worker')
         <a href="{{ action('Swm\WorkerController@create') }}" class="btn btn-info">{{ __('Add Worker') }}</a>
@@ -110,7 +110,7 @@
         </div>
     </div>
     <div class="card-body">
-    <div style="overflow: auto; width: 100%;">
+    <div class="table-responsive">
         <table id="data-table" class="table table-bordered table-striped" width="100%">
             <thead>
                 <tr>
