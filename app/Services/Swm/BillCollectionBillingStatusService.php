@@ -33,6 +33,7 @@ class BillCollectionBillingStatusService
 
         Household::query()
             ->whereNull('deleted_at')
+            ->activeStatus()
             ->orderBy('id')
             ->chunkById(500, function ($sites) use ($currentMonthStart, &$dueThisMonthMarginal, &$totalDueCumulative) {
                 foreach ($sites as $site) {
@@ -89,6 +90,7 @@ class BillCollectionBillingStatusService
         $query = Household::query()
             ->select('building_info.households.*')
             ->whereNull('building_info.households.deleted_at')
+            ->where('building_info.households.status', Household::STATUS_ACTIVE)
             ->leftJoinSub($revenueSub->toBase(), 'rev', 'building_info.households.id', '=', 'rev.household_id')
             ->addSelect(DB::raw('COALESCE(rev.revenue_collected, 0) as revenue_collected'));
 

@@ -9,11 +9,13 @@
         <div class="card-body">
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Household ID') }}</label><div class="col-sm-3">{!! Form::label(null, $household->household_id, ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Household Owner Name') }}</label><div class="col-sm-3">{!! Form::label(null, $household->household_owner_name, ['class' => 'form-control']) !!}</div></div>
+            <div class="form-group row"><label class="col-sm-3 control-label">{{ __("Father's/Husband's Name") }}</label><div class="col-sm-3">{!! Form::label(null, $household->father_or_husband_name, ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Contact Number') }}</label><div class="col-sm-3">{!! Form::label(null, $household->contact_number, ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Ward') }}</label><div class="col-sm-3">{!! Form::label(null, $household->ward, ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Area / Mohalla Name') }}</label><div class="col-sm-3">{!! Form::label(null, $household->area_mohalla_name, ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Sub Location') }}</label><div class="col-sm-3">{!! Form::label(null, $household->sub_location, ['class' => 'form-control']) !!}</div></div>
-            <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Road No./Name') }}</label><div class="col-sm-3">{!! Form::label(null, $household->road_no_name, ['class' => 'form-control']) !!}</div></div>
+            <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Road No.') }}</label><div class="col-sm-3">{!! Form::label(null, $household->road_no, ['class' => 'form-control']) !!}</div></div>
+            <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Road Name') }}</label><div class="col-sm-3">{!! Form::label(null, $household->road_name, ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Holding Number') }}</label><div class="col-sm-3">{!! Form::label(null, $household->holding_number, ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Tax ID') }}</label><div class="col-sm-3">{!! Form::label(null, $household->tax_id, ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('BIN') }}</label><div class="col-sm-3">{!! Form::label(null, $household->bin, ['class' => 'form-control']) !!}</div></div>
@@ -56,6 +58,7 @@
             </div>
             @endif
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Avg Waste Collected') }} ({{ __('Kg') }}/{{ __('Day') }})</label><div class="col-sm-3">{!! Form::label(null, $household->daily_waste_volume, ['class' => 'form-control']) !!}</div></div>
+            <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Household Status') }}</label><div class="col-sm-3">{!! Form::label(null, \App\Models\BuildingInfo\Household::statusOptions()[$household->status] ?? $household->status, ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Remarks') }}</label><div class="col-sm-3">{!! Form::label(null, $household->remarks, ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Survey Date') }}</label><div class="col-sm-3">{!! Form::label(null, $household->survey_date, ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Van Puller ID') }}</label><div class="col-sm-3">{!! Form::label(null, $household->van_puller_id, ['class' => 'form-control']) !!}</div></div>

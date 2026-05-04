@@ -22,9 +22,8 @@ class WasteBinController extends Controller
     public function index()
     {
         $page_title = __('Waste Bins');
-        $households = Household::query()->whereNull('deleted_at')->orderBy('household_id')->pluck('household_id', 'id');
 
-        return view('swm.service-facilities.waste-bins.index', compact('page_title', 'households'));
+        return view('swm.service-facilities.waste-bins.index', compact('page_title'));
     }
 
     public function getData(Request $request)
@@ -44,11 +43,14 @@ class WasteBinController extends Controller
             return response()->json(null, 404);
         }
 
+        $fallbackRoadNo = trim((string) ($household->building?->road_code ?? ''));
+        $roadNo = $household->road_no ?? ($fallbackRoadNo !== '' && $fallbackRoadNo !== '0' ? $fallbackRoadNo : null);
+
         return response()->json([
             'sub_location' => $household->sub_location,
             'ward_no' => $household->ward,
-            'road_name' => $household->road_no_name,
-            'road_no' => $household->building?->road_code,
+            'road_name' => $household->road_name,
+            'road_no' => $roadNo,
             'bin' => $household->bin,
         ]);
     }
@@ -57,7 +59,7 @@ class WasteBinController extends Controller
     {
         $page_title = __('Add Waste Bin');
         $wasteBin = null;
-        $households = Household::query()->whereNull('deleted_at')->orderBy('household_id')->pluck('household_id', 'id');
+        $households = Household::query()->whereNull('deleted_at')->activeStatus()->orderBy('household_id')->pluck('household_id', 'id');
         $wards = Ward::getInAscOrder();
         $wasteBinTypes = WasteBinType::query()->whereNull('deleted_at')->orderBy('name')->pluck('name', 'id');
         $othersWasteBinTypeId = WasteBinType::query()
@@ -93,7 +95,14 @@ class WasteBinController extends Controller
     public function edit(WasteBin $wasteBin)
     {
         $page_title = __('Edit Waste Bin');
-        $households = Household::query()->whereNull('deleted_at')->orderBy('household_id')->pluck('household_id', 'id');
+        $households = Household::query()
+            ->whereNull('deleted_at')
+            ->where(function ($q) use ($wasteBin) {
+                $q->activeStatus()
+                    ->orWhere('id', $wasteBin->household_id);
+            })
+            ->orderBy('household_id')
+            ->pluck('household_id', 'id');
         $wards = Ward::getInAscOrder();
         $wasteBinTypes = WasteBinType::query()->whereNull('deleted_at')->orderBy('name')->pluck('name', 'id');
         $othersWasteBinTypeId = WasteBinType::query()

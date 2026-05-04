@@ -97,9 +97,12 @@ class HouseholdController extends Controller
             $roadName = Roadline::query()->where('code', $roadCode)->whereNull('deleted_at')->value('name');
         }
 
+        $roadCodeOut = ($roadCode !== '' && $roadCode !== '0') ? $roadCode : null;
+
         return response()->json([
             'ward' => $building->ward,
-            'road_no_name' => $roadName,
+            'road_no' => $roadCodeOut,
+            'road_name' => $roadName,
             'holding_number' => $building->house_number,
             'tax_id' => $building->tax_code,
             'bin' => $building->bin,

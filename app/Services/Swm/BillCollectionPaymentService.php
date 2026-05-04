@@ -28,6 +28,7 @@ class BillCollectionPaymentService
 
         $rows = Household::query()
             ->whereNull('deleted_at')
+            ->activeStatus()
             ->whereNotNull('holding_number')
             ->where('holding_number', 'ILIKE', '%'.$q.'%')
             ->select('holding_number')
@@ -53,6 +54,7 @@ class BillCollectionPaymentService
     {
         $query = Household::query()
             ->whereNull('deleted_at')
+            ->activeStatus()
             ->where('holding_number', $holdingNumber)
             ->orderBy('household_id');
 
@@ -60,14 +62,15 @@ class BillCollectionPaymentService
             $term = '%'.trim($q).'%';
             $query->where(function ($sub) use ($term) {
                 $sub->where('household_id', 'ILIKE', $term)
-                    ->orWhere('household_owner_name', 'ILIKE', $term);
+                    ->orWhere('household_owner_name', 'ILIKE', $term)
+                    ->orWhere('father_or_husband_name', 'ILIKE', $term);
             });
         }
 
-        return $query->get(['id', 'household_id', 'household_owner_name', 'holding_number', 'waste_charge', 'using_this_service_since', 'survey_date'])
+        return $query->get(['id', 'household_id', 'household_owner_name', 'father_or_husband_name', 'holding_number', 'waste_charge', 'using_this_service_since', 'survey_date'])
             ->map(fn ($site) => [
                 'id' => $site->id,
-                'text' => $site->household_id.' — '.$site->household_owner_name,
+                'text' => $site->household_id.' — '.$site->household_owner_name.($site->father_or_husband_name ? ' ('.$site->father_or_husband_name.')' : ''),
                 'household_id' => $site->household_id,
                 'holding_number' => $site->holding_number,
                 'waste_charge' => $site->waste_charge,
@@ -93,7 +96,8 @@ class BillCollectionPaymentService
         }, $holdingNumbers), static fn (string $h) => $h !== '')));
 
         $query = Household::query()
-            ->whereNull('deleted_at');
+            ->whereNull('deleted_at')
+            ->activeStatus();
 
         if ($holdings !== []) {
             $query->whereIn('holding_number', $holdings);
@@ -105,7 +109,8 @@ class BillCollectionPaymentService
             $like = '%'.$term.'%';
             $query->where(function ($sub) use ($like) {
                 $sub->where('household_id', 'ILIKE', $like)
-                    ->orWhere('household_owner_name', 'ILIKE', $like);
+                    ->orWhere('household_owner_name', 'ILIKE', $like)
+                    ->orWhere('father_or_husband_name', 'ILIKE', $like);
             });
         }
 
@@ -113,17 +118,18 @@ class BillCollectionPaymentService
             $like = '%'.trim((string) $q).'%';
             $query->where(function ($sub) use ($like) {
                 $sub->where('household_id', 'ILIKE', $like)
-                    ->orWhere('household_owner_name', 'ILIKE', $like);
+                    ->orWhere('household_owner_name', 'ILIKE', $like)
+                    ->orWhere('father_or_husband_name', 'ILIKE', $like);
             });
         }
 
         return $query->orderBy('holding_number')
             ->orderBy('household_id')
             ->limit($limit)
-            ->get(['id', 'household_id', 'household_owner_name', 'holding_number', 'waste_charge', 'using_this_service_since', 'survey_date'])
+            ->get(['id', 'household_id', 'household_owner_name', 'father_or_husband_name', 'holding_number', 'waste_charge', 'using_this_service_since', 'survey_date'])
             ->map(fn ($site) => [
                 'id' => $site->id,
-                'text' => ($site->household_id ?? '').' — '.($site->household_owner_name ?? '').($site->holding_number ? ' ('.$site->holding_number.')' : ''),
+                'text' => ($site->household_id ?? '').' — '.($site->household_owner_name ?? '').($site->father_or_husband_name ? ' ('.$site->father_or_husband_name.')' : '').($site->holding_number ? ' ('.$site->holding_number.')' : ''),
                 'household_id' => $site->household_id,
                 'holding_number' => $site->holding_number,
                 'waste_charge' => $site->waste_charge,
@@ -275,6 +281,7 @@ class BillCollectionPaymentService
             ->leftJoin('auth.users as recv_user', 'swm.bill_collection_payments.received_by_user_id', '=', 'recv_user.id')
             ->addSelect([
                 'swm_pcs.household_owner_name as site_household_owner_name',
+                'swm_pcs.father_or_husband_name as site_father_or_husband_name',
                 'swm.bill_collection_payments.customer_id as household_code',
                 'swm_pcs.sub_location as household_sub_location',
                 'swm_hh_building.ward as household_ward',
@@ -366,10 +373,17 @@ class BillCollectionPaymentService
 
     public function storeOrUpdate(?int $id, array $data): ?int
     {
-        $site = Household::query()
-            ->whereKey($data['household_id'] ?? null)
-            ->whereNull('deleted_at')
-            ->first();
+        $householdPk = (int) ($data['household_id'] ?? 0);
+        if ($householdPk <= 0) {
+            return null;
+        }
+        $siteQuery = Household::query()
+            ->whereKey($householdPk)
+            ->whereNull('deleted_at');
+        if ($id === null) {
+            $siteQuery->activeStatus();
+        }
+        $site = $siteQuery->first();
 
         if (! $site) {
             return null;
@@ -415,6 +429,7 @@ class BillCollectionPaymentService
             __('Holding Number'),
             __('Customer ID'),
             __('Customer Name'),
+            __("Father's/Husband's Name"),
             __('Ward'),
             __('Sub-location'),
             __('Receipt No'),
@@ -455,6 +470,7 @@ class BillCollectionPaymentService
                     $row->holding_number,
                     $row->customer_id,
                     $row->site_household_owner_name,
+                    $row->site_father_or_husband_name ?? '',
                     $row->household_ward ?? '',
                     $row->household_sub_location ?? '',
                     $row->receipt_no ?? '',

@@ -16,6 +16,7 @@
     $recvUsers = ['' => __('Default (logged-in user)')] + $users->all();
     $initHolding = old('holding_number', $isEdit ? ($payment->holding_number ?? '') : '');
     $initCustomerName = $isEdit ? optional($payment->primaryCollectionSite)->household_owner_name : null;
+    $initFatherOrHusbandName = $isEdit ? optional($payment->primaryCollectionSite)->father_or_husband_name : null;
 @endphp
 @push('style')
 <style>
@@ -343,7 +344,8 @@
         var sid = @json(old('household_id', $isEdit ? $payment->household_id : ''));
         var cid = @json(old('household_code', $isEdit ? $payment->customer_id : ''));
         var cname = @json($initCustomerName ?? '');
-        var label = cid + (cname ? (' — ' + cname) : '');
+        var fname = @json($initFatherOrHusbandName ?? '');
+        var label = cid + (cname ? (' — ' + cname) : '') + (fname ? (' (' + fname + ')') : '');
         var copt = new Option(label, sid, true, true);
         $(copt).data('data', { id: sid, text: label, household_id: cid });
         $('#customer_site_select').append(copt).trigger('change');

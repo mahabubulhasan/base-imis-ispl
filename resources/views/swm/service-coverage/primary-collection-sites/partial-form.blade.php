@@ -38,9 +38,15 @@
         </div>
     </div>
     <div class="form-group row">
-        {!! Form::label('road_no_name', __('Road No./Name'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('road_no', __('Road No.'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::text('road_no_name', null, ['class' => 'form-control', 'id' => 'road_no_name', 'readonly']) !!}
+            {!! Form::text('road_no', null, ['class' => 'form-control', 'id' => 'road_no', 'readonly']) !!}
+        </div>
+    </div>
+    <div class="form-group row">
+        {!! Form::label('road_name', __('Road Name'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::text('road_name', null, ['class' => 'form-control', 'id' => 'road_name', 'readonly']) !!}
         </div>
     </div>
     <div class="form-group row">
@@ -168,7 +174,8 @@ $(function() {
 
     function applySnapshot(data) {
         setSnapshotFieldState('#ward', data.ward);
-        setSnapshotFieldState('#road_no_name', data.road_no_name);
+        setSnapshotFieldState('#road_no', data.road_no);
+        setSnapshotFieldState('#road_name', data.road_name);
         setSnapshotFieldState('#holding_number', data.holding_number);
         if (!$('#tax_id').val()) {
             $('#tax_id').val(data.tax_id || '');

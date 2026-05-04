@@ -9,6 +9,12 @@
         @endcan
     </div>
     <div class="card-body">
+        @php
+            $hhSite = $payment->primaryCollectionSite;
+            $hhStatusLabel = $hhSite && $hhSite->status
+                ? (\App\Models\BuildingInfo\Household::statusOptions()[$hhSite->status] ?? $hhSite->status)
+                : '—';
+        @endphp
         <dl class="row">
             <dt class="col-sm-3">{{ __('Holding Number') }}</dt>
             <dd class="col-sm-9">{{ $payment->holding_number }}</dd>
@@ -16,6 +22,10 @@
             <dd class="col-sm-9">{{ $payment->customer_id }}</dd>
             <dt class="col-sm-3">{{ __('Household Owner Name') }}</dt>
             <dd class="col-sm-9">{{ optional($payment->primaryCollectionSite)->household_owner_name }}</dd>
+            <dt class="col-sm-3">{{ __("Father's/Husband's Name") }}</dt>
+            <dd class="col-sm-9">{{ optional($payment->primaryCollectionSite)->father_or_husband_name ?: '—' }}</dd>
+            <dt class="col-sm-3">{{ __('Status') }}</dt>
+            <dd class="col-sm-9">{{ $hhStatusLabel }}</dd>
             <dt class="col-sm-3">{{ __('Amount') }} ({{ __('Taka') }})</dt>
             <dd class="col-sm-9">{{ number_format((float) $payment->amount, 2) }}</dd>
             <dt class="col-sm-3">{{ __('Payment For Month') }}</dt>

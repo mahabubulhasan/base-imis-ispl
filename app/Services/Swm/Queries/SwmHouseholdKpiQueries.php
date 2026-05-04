@@ -9,10 +9,10 @@ use Illuminate\Support\Facades\DB;
 
 class SwmHouseholdKpiQueries
 {
-    /** Active households for SWM KPIs (not soft-deleted). */
+    /** Active households for SWM KPIs (not soft-deleted, status active). */
     public function base(): Builder
     {
-        return Household::query()->whereNull('deleted_at');
+        return Household::query()->whereNull('deleted_at')->activeStatus();
     }
 
     /**
@@ -24,6 +24,7 @@ class SwmHouseholdKpiQueries
 
         $row = DB::table($table)
             ->whereNull('deleted_at')
+            ->where('status', Household::STATUS_ACTIVE)
             ->selectRaw('COUNT(*) AS household_count')
             ->selectRaw('COALESCE(SUM(daily_waste_volume), 0) AS total_daily_waste_volume_kg')
             ->selectRaw('COALESCE(SUM(daily_waste_volume) FILTER (WHERE van_puller_id IS NOT NULL), 0) AS formal_collected_kg')
@@ -64,6 +65,7 @@ class SwmHouseholdKpiQueries
                 DB::raw('COUNT(building_info.households.id) as hh_count')
             )
             ->whereNull('building_info.households.deleted_at')
+            ->where('building_info.households.status', Household::STATUS_ACTIVE)
             ->groupBy('ward_label', 'org_name')
             ->orderBy('ward_label')
             ->limit($limit)

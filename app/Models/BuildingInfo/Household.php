@@ -13,6 +13,10 @@ use Venturecraft\Revisionable\RevisionableTrait;
 
 /**
  * @property string|null $sub_location
+ * @property string|null $father_or_husband_name
+ * @property string|null $road_no
+ * @property string|null $road_name
+ * @property string $status
  */
 class Household extends Model
 {
@@ -20,9 +24,17 @@ class Household extends Model
     use RevisionableTrait;
     use SoftDeletes;
 
+    public const STATUS_ACTIVE = 'active';
+
+    public const STATUS_INACTIVE = 'inactive';
+
     protected $revisionCreationsEnabled = true;
 
     protected $table = 'building_info.households';
+
+    protected $attributes = [
+        'status' => self::STATUS_ACTIVE,
+    ];
 
     protected $casts = [
         'is_owner' => 'boolean',
@@ -57,5 +69,24 @@ class Household extends Model
     public function billCollectionPayments()
     {
         return $this->hasMany(BillCollectionPayment::class, 'household_id');
+    }
+
+    /** @return array<string, string> */
+    public static function statusOptions(): array
+    {
+        return [
+            self::STATUS_ACTIVE => __('Active'),
+            self::STATUS_INACTIVE => __('Inactive'),
+        ];
+    }
+
+    public function isActiveStatus(): bool
+    {
+        return $this->status === self::STATUS_ACTIVE;
+    }
+
+    public function scopeActiveStatus($query)
+    {
+        return $query->where('status', self::STATUS_ACTIVE);
     }
 }

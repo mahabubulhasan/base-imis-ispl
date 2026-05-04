@@ -148,10 +148,16 @@ class BuildingController extends Controller
         $waterSupply = WaterSupplys::pluck('code', 'code');
         $householdOptions = Household::query()
             ->whereNull('deleted_at')
+            ->activeStatus()
             ->orderBy('household_id')
-            ->get(['household_id', 'household_owner_name'])
+            ->get(['household_id', 'household_owner_name', 'father_or_husband_name'])
             ->mapWithKeys(function ($item) {
-                return [$item->household_id => trim($item->household_id . ' - ' . ($item->household_owner_name ?? ''))];
+                $label = trim($item->household_id.' - '.($item->household_owner_name ?? ''));
+                if (! empty($item->father_or_husband_name)) {
+                    $label .= ' ('.$item->father_or_husband_name.')';
+                }
+
+                return [$item->household_id => $label];
             })
             ->all();
         return view('building-info.buildings.create', compact(
@@ -322,10 +328,16 @@ class BuildingController extends Controller
             ->implode(',');
         $householdOptions = Household::query()
             ->whereNull('deleted_at')
+            ->activeStatus()
             ->orderBy('household_id')
-            ->get(['household_id', 'household_owner_name'])
+            ->get(['household_id', 'household_owner_name', 'father_or_husband_name'])
             ->mapWithKeys(function ($item) {
-                return [$item->household_id => trim($item->household_id . ' - ' . ($item->household_owner_name ?? ''))];
+                $label = trim($item->household_id.' - '.($item->household_owner_name ?? ''));
+                if (! empty($item->father_or_husband_name)) {
+                    $label .= ' ('.$item->father_or_husband_name.')';
+                }
+
+                return [$item->household_id => $label];
             })
             ->all();
         return view('building-info.buildings.edit', compact(

@@ -43,20 +43,17 @@ class WasteBinRequest extends FormRequest
             'road_name' => ['nullable', 'string', 'max:255'],
             'latitude' => ['nullable', 'numeric', 'between:-90,90'],
             'longitude' => ['nullable', 'numeric', 'between:-180,180'],
-            'bin' => [
-                'nullable',
-                'string',
-                'max:255',
-                Rule::requiredIf(fn () => $this->boolean('placed_at_buildings')),
-            ],
+            'bin' => ['nullable', 'string', 'max:255'],
             'total_capacity_kg' => ['required', 'numeric', 'min:0.01'],
         ];
     }
 
     protected function prepareForValidation(): void
     {
+        $placed = $this->boolean('placed_at_buildings');
         $this->merge([
-            'placed_at_buildings' => $this->boolean('placed_at_buildings'),
+            'placed_at_buildings' => $placed,
+            ...(! $placed ? ['bin' => null] : []),
         ]);
     }
 

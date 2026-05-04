@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Swm;
 
 use App\Models\BuildingInfo\Household;
+use App\Models\Swm\BillCollectionPayment;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -29,7 +30,13 @@ class BillCollectionPaymentRequest extends FormRequest
                         'required',
                         'integer',
                         Rule::exists('pgsql.building_info.households', 'id')->where(function ($query) {
-                            return $query->whereNull('deleted_at');
+                            $query->whereNull('deleted_at');
+                            $payment = $this->route('payment');
+                            $isSameHouseholdOnUpdate = $payment instanceof BillCollectionPayment
+                                && (int) $this->input('household_id') === (int) $payment->household_id;
+                            if (! $isSameHouseholdOnUpdate) {
+                                $query->where('status', Household::STATUS_ACTIVE);
+                            }
                         }),
                     ],
                     'holding_number' => ['required', 'string', 'max:255'],

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\BuildingInfo;
 
+use App\Models\BuildingInfo\Household;
 use App\Models\Swm\WasteBinType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -34,6 +35,8 @@ class HouseholdRequest extends FormRequest
                 Rule::unique('pgsql.building_info.households', 'household_id')->ignore($householdPk),
             ],
             'household_owner_name' => ['required', 'string', 'max:255'],
+            'father_or_husband_name' => ['nullable', 'string', 'max:255'],
+            'status' => ['required', 'string', Rule::in([Household::STATUS_ACTIVE, Household::STATUS_INACTIVE])],
             'contact_number' => ['required', 'regex:/^[0-9]+$/'],
             'area_mohalla_name' => ['nullable', 'string', 'max:255'],
             'sub_location' => ['nullable', 'string', 'max:255'],
@@ -45,7 +48,8 @@ class HouseholdRequest extends FormRequest
                 }),
             ],
             'ward' => ['required', 'integer', 'min:1'],
-            'road_no_name' => ['required', 'string', 'max:255'],
+            'road_no' => ['nullable', 'string', 'max:255'],
+            'road_name' => ['required', 'string', 'max:255'],
             'holding_number' => ['required', 'string', 'max:255'],
             'tax_id' => ['nullable', 'string', 'max:255'],
             'waste_charge' => ['nullable', 'numeric', 'min:0'],

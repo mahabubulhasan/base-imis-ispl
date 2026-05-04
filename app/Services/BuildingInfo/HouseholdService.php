@@ -28,6 +28,9 @@ class HouseholdService
                 if (! empty($data['household_owner_name'] ?? null)) {
                     $q->where('household_owner_name', 'ILIKE', '%'.trim((string) $data['household_owner_name']).'%');
                 }
+                if (! empty($data['father_or_husband_name'] ?? null)) {
+                    $q->where('father_or_husband_name', 'ILIKE', '%'.trim((string) $data['father_or_husband_name']).'%');
+                }
                 if (! empty($data['contact_number'] ?? null)) {
                     $q->where('contact_number', 'ILIKE', '%'.trim((string) $data['contact_number']).'%');
                 }
@@ -43,9 +46,13 @@ class HouseholdService
                 if (! empty($data['survey_date'] ?? null)) {
                     $q->whereDate('survey_date', $data['survey_date']);
                 }
+                if (! empty($data['status'] ?? null)) {
+                    $q->where('status', $data['status']);
+                }
             })
             ->editColumn('is_owner', fn ($m) => $m->is_owner ? __('Yes') : __('No'))
             ->editColumn('is_lic', fn ($m) => $m->is_lic ? __('Yes') : __('No'))
+            ->editColumn('status', fn ($m) => Household::statusOptions()[$m->status] ?? (string) $m->status)
             ->addColumn('action', function ($model) {
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['building-info.households.destroy', $model->id]]);
                 if (Auth::user()->can('Edit Household')) {
@@ -74,11 +81,18 @@ class HouseholdService
             $building = Building::query()->with(['functionalUse'])->find($data['bin']);
         }
 
-        $roadName = $data['road_no_name'] ?? null;
+        $roadNo = isset($data['road_no']) ? trim((string) $data['road_no']) : '';
+        $roadName = isset($data['road_name']) ? trim((string) $data['road_name']) : '';
         if ($building) {
             $roadCode = trim((string) ($building->road_code ?? ''));
             if ($roadCode !== '' && $roadCode !== '0') {
-                $roadName = Roadline::query()->where('code', $roadCode)->whereNull('deleted_at')->value('name');
+                if ($roadNo === '') {
+                    $roadNo = $roadCode;
+                }
+                if ($roadName === '') {
+                    $resolved = Roadline::query()->where('code', $roadCode)->whereNull('deleted_at')->value('name');
+                    $roadName = trim((string) ($resolved ?? ''));
+                }
             }
         }
 
@@ -95,12 +109,15 @@ class HouseholdService
 
         $household->household_id = $data['household_id'] ?? null;
         $household->household_owner_name = $data['household_owner_name'] ?? null;
+        $household->father_or_husband_name = $data['father_or_husband_name'] ?? null;
+        $household->status = $data['status'] ?? Household::STATUS_ACTIVE;
         $household->contact_number = $data['contact_number'] ?? null;
         $household->area_mohalla_name = $data['area_mohalla_name'] ?? null;
         $household->sub_location = $data['sub_location'] ?? null;
         $household->bin = $data['bin'] ?? null;
         $household->ward = $building?->ward ?? ($data['ward'] ?? null);
-        $household->road_no_name = $roadName;
+        $household->road_no = $roadNo !== '' ? $roadNo : null;
+        $household->road_name = $roadName !== '' ? $roadName : null;
         $household->holding_number = $building?->house_number ?? ($data['holding_number'] ?? null);
         $household->tax_id = $data['tax_id'] ?? ($building?->tax_code);
         $household->waste_charge = $data['waste_charge'] ?? null;
@@ -128,7 +145,7 @@ class HouseholdService
             WasteBin::where('household_id', $household->id)->delete();
         } elseif (! empty($data['waste_bins']) && is_array($data['waste_bins'])) {
             $household->loadMissing('building');
-            $roadNo = $household->building?->road_code;
+            $fallbackRoadNo = trim((string) ($household->building?->road_code ?? ''));
             $submittedIds = [];
             foreach ($data['waste_bins'] as $row) {
                 if (! is_array($row)) {
@@ -143,8 +160,8 @@ class HouseholdService
                     'bin' => $household->bin,
                     'sub_location' => $household->sub_location,
                     'ward_no' => $household->ward,
-                    'road_name' => $household->road_no_name,
-                    'road_no' => $roadNo,
+                    'road_name' => $household->road_name,
+                    'road_no' => $household->road_no ?? ($fallbackRoadNo !== '' && $fallbackRoadNo !== '0' ? $fallbackRoadNo : null),
                 ];
                 $rowId = isset($row['id']) ? (int) $row['id'] : null;
                 if ($rowId) {
@@ -177,8 +194,8 @@ class HouseholdService
     public function download(array $data): void
     {
         $columns = [
-            __('Household ID'), __('Household Owner Name'), __('Contact Number'), __('Ward'),
-            __('Area / Mohalla Name'), __('Sub Location'), __('Road No./Name'), __('Holding Number'),
+            __('Household ID'), __('Household Owner Name'), __("Father's/Husband's Name"), __('Status'), __('Contact Number'), __('Ward'),
+            __('Area / Mohalla Name'), __('Sub Location'), __('Road No.'), __('Road Name'), __('Holding Number'),
             __('Tax ID'), __('BIN'), __('Waste collection fee (BDT/Month)'),
             __('Building owner (Yes/No)'), __('Functional Use'), __('LIC'),
             __('LIC ID'), __('Survey Date'),
@@ -193,11 +210,14 @@ class HouseholdService
                 $writer->addRow([
                     $row->household_id,
                     $row->household_owner_name,
+                    $row->father_or_husband_name,
+                    Household::statusOptions()[$row->status] ?? (string) $row->status,
                     $row->contact_number,
                     $row->ward,
                     $row->area_mohalla_name,
                     $row->sub_location,
-                    $row->road_no_name,
+                    $row->road_no,
+                    $row->road_name,
                     $row->holding_number,
                     $row->tax_id,
                     $row->bin,

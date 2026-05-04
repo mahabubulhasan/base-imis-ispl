@@ -69,7 +69,8 @@
                         <th>{{ __('Contact Number') }}</th>
                         <th>{{ __('BIN') }}</th>
                         <th>{{ __('Ward') }}</th>
-                        <th>{{ __('Road No./Name') }}</th>
+                        <th>{{ __('Road No.') }}</th>
+                        <th>{{ __('Road Name') }}</th>
                         <th>{{ __('LIC') }}</th>
                         <th>{{ __('LIC ID') }}</th>
                         <th>{{ __('Survey Date') }}</th>
@@ -108,7 +109,8 @@ $(function() {
             { data: 'contact_number', name: 'contact_number' },
             { data: 'bin', name: 'bin' },
             { data: 'ward', name: 'ward' },
-            { data: 'road_no_name', name: 'road_no_name' },
+            { data: 'road_no', name: 'road_no' },
+            { data: 'road_name', name: 'road_name' },
             { data: 'is_lic', name: 'is_lic' },
             { data: 'lic_id', name: 'lic_id' },
             { data: 'survey_date', name: 'survey_date' },

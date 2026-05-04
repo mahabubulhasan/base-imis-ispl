@@ -39,18 +39,24 @@
             {!! Form::text('household_owner_name', null, ['class' => 'form-control', 'placeholder' => __('Household Owner Name')]) !!}
         </div>
     </div>
+    <div class="form-group row">
+        {!! Form::label('father_or_husband_name', __("Father's/Husband's Name"), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::text('father_or_husband_name', null, ['class' => 'form-control', 'placeholder' => __("Father's/Husband's Name")]) !!}
+        </div>
+    </div>
     <div class="form-group row required">
         {!! Form::label('contact_number', __('Contact Number'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             {!! Form::text('contact_number', null, ['class' => 'form-control', 'placeholder' => __('Contact Number')]) !!}
         </div>
     </div>
-    <div class="form-group row">
+    <!-- <div class="form-group row">
         {!! Form::label('area_mohalla_name', __('Area / Mohalla Name'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             {!! Form::text('area_mohalla_name', null, ['class' => 'form-control', 'placeholder' => __('Area / Mohalla Name')]) !!}
         </div>
-    </div>
+    </div> -->
     <div class="form-group row">
         {!! Form::label('sub_location', __('Sub Location'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
@@ -67,9 +73,13 @@
         {!! Form::label('ward', __('Ward'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">{!! Form::text('ward', null, ['class' => 'form-control', 'id' => 'ward']) !!}</div>
     </div>
+    <div class="form-group row">
+        {!! Form::label('road_no', __('Road No.'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">{!! Form::text('road_no', null, ['class' => 'form-control', 'id' => 'road_no']) !!}</div>
+    </div>
     <div class="form-group row required">
-        {!! Form::label('road_no_name', __('Road No./Name'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-3">{!! Form::text('road_no_name', null, ['class' => 'form-control', 'id' => 'road_no_name']) !!}</div>
+        {!! Form::label('road_name', __('Road Name'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">{!! Form::text('road_name', null, ['class' => 'form-control', 'id' => 'road_name']) !!}</div>
     </div>
     <div class="form-group row required">
         {!! Form::label('holding_number', __('Holding Number'), ['class' => 'col-sm-3 control-label']) !!}
@@ -107,11 +117,11 @@
         <div class="col-sm-3">{!! Form::select('van_puller_id', $vanPullers, null, ['class' => 'form-control chosen-select', 'placeholder' => __('Select Van Puller')]) !!}</div>
     </div>
     <div class="form-group row">
-        {!! Form::label('is_owner', __('Building Owner'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('is_owner', __('Building Owner?'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">{!! Form::select('is_owner', $yesNoOptions, old('is_owner', optional($household)->is_owner ? 1 : 0), ['class' => 'form-control', 'id' => 'is_owner']) !!}</div>
     </div>
     <div class="form-group row" id="waste-bin-provided-row">
-        {!! Form::label('waste_bin_provided', __('Waste Bin Provided'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('waste_bin_provided', __('Waste Bin Provided?'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">{!! Form::select('waste_bin_provided', $yesNoOptions, old('waste_bin_provided', optional($household)->waste_bin_provided ? 1 : 0), ['class' => 'form-control', 'id' => 'waste_bin_provided']) !!}</div>
     </div>
     @php
@@ -139,13 +149,13 @@
     @endphp
     <div id="waste-bin-fields" style="display: none;">
         <div class="form-group row">
-            <label class="col-sm-3 control-label">{{ __('Waste bins') }}</label>
+            <label class="col-sm-3 control-label">{{ __('Waste Bins') }}</label>
             <div class="col-sm-9">
                 <div class="table-responsive">
                 <table class="table table-bordered table-sm mb-0" id="waste-bins-table">
                     <thead>
                         <tr>
-                            <th style="min-width: 12rem;">{{ __('Type of Waste Bin') }}</th>
+                            <th style="min-width: 12rem;">{{ __('Waste Bin Type') }}</th>
                             <th style="min-width: 10rem;">{{ __('Others (specify)') }}</th>
                             <th style="min-width: 8rem;">{{ __('Capacity (kg)') }}</th>
                             <th class="text-nowrap" style="width: 6rem;">{{ __('Actions') }}</th>
@@ -186,7 +196,7 @@
         </div>
     </div>
     <div class="form-group row">
-        {!! Form::label('is_lic', __('LIC'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('is_lic', __('LIC?'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">{!! Form::select('is_lic', $yesNoOptions, old('is_lic', optional($household)->is_lic ? 1 : 0), ['class' => 'form-control', 'id' => 'is_lic']) !!}</div>
     </div>
     <div class="form-group row" id="lic-id-row">
@@ -194,8 +204,14 @@
         <div class="col-sm-3">{!! Form::select('lic_id', $licOptions, null, ['class' => 'form-control chosen-select', 'id' => 'lic_id', 'placeholder' => __('Select LIC')]) !!}</div>
     </div>
     <div class="form-group row">
-        {!! Form::label('segregation_practiced', __('Segregation Practiced'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('segregation_practiced', __('Segregation Practiced?'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">{!! Form::select('segregation_practiced', $yesNoOptions, old('segregation_practiced', optional($household)->segregation_practiced ? 1 : 0), ['class' => 'form-control', 'id' => 'segregation_practiced']) !!}</div>
+    </div>
+    <div class="form-group row required">
+        {!! Form::label('status', __('Household Status'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::select('status', \App\Models\BuildingInfo\Household::statusOptions(), old('status', optional($household)->status ?? \App\Models\BuildingInfo\Household::STATUS_ACTIVE), ['class' => 'form-control', 'id' => 'status']) !!}
+        </div>
     </div>
     <div class="form-group row">
         {!! Form::label('remarks', __('Remarks'), ['class' => 'col-sm-3 control-label']) !!}
@@ -228,7 +244,8 @@ $(function() {
 
     function applySnapshot(data) {
         $('#ward').val(data.ward || '');
-        $('#road_no_name').val(data.road_no_name || '');
+        $('#road_no').val(data.road_no || '');
+        $('#road_name').val(data.road_name || '');
         $('#holding_number').val(data.holding_number || '');
         if (!$('#tax_id').val()) {
             $('#tax_id').val(data.tax_id || '');

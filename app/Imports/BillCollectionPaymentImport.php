@@ -119,6 +119,7 @@ class BillCollectionPaymentImport implements ToCollection, WithHeadingRow
                 return Household::query()
                     ->whereKey($id)
                     ->whereNull('deleted_at')
+                    ->activeStatus()
                     ->first();
             }
         }
@@ -127,6 +128,7 @@ class BillCollectionPaymentImport implements ToCollection, WithHeadingRow
         return Household::query()
             ->where('household_id', $customerId)
             ->whereNull('deleted_at')
+            ->activeStatus()
             ->first();
     }
 

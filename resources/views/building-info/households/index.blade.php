@@ -31,10 +31,12 @@
                     <div class="col-md-2"><input type="text" class="form-control" id="household_id"></div>
                     <label for="household_owner_name" class="col-md-2 col-form-label">{{ __('Household Owner Name') }}</label>
                     <div class="col-md-2"><input type="text" class="form-control" id="household_owner_name"></div>
-                    <label for="contact_number" class="col-md-2 col-form-label">{{ __('Contact Number') }}</label>
-                    <div class="col-md-2"><input type="text" class="form-control" id="contact_number"></div>
+                    <label for="father_or_husband_name" class="col-md-2 col-form-label">{{ __("Father's/Husband's Name") }}</label>
+                    <div class="col-md-2"><input type="text" class="form-control" id="father_or_husband_name"></div>
                 </div>
                 <div class="form-group row">
+                    <label for="contact_number" class="col-md-2 col-form-label">{{ __('Contact Number') }}</label>
+                    <div class="col-md-2"><input type="text" class="form-control" id="contact_number"></div>
                     <label for="bin" class="col-md-2 col-form-label">{{ __('BIN') }}</label>
                     <div class="col-md-2"><input type="text" class="form-control" id="bin"></div>
                     <label for="is_lic" class="col-md-2 col-form-label">{{ __('LIC') }}</label>
@@ -49,6 +51,14 @@
                     <div class="col-md-2"><input type="text" class="form-control" id="lic_id"></div>
                 </div>
                 <div class="form-group row">
+                    <label for="status" class="col-md-2 col-form-label">{{ __('Status') }}</label>
+                    <div class="col-md-2">
+                        <select class="form-control" id="status">
+                            <option value="">{{ __('All') }}</option>
+                            <option value="{{ \App\Models\BuildingInfo\Household::STATUS_ACTIVE }}">{{ __('Active') }}</option>
+                            <option value="{{ \App\Models\BuildingInfo\Household::STATUS_INACTIVE }}">{{ __('Inactive') }}</option>
+                        </select>
+                    </div>
                     <label for="survey_date" class="col-md-2 col-form-label">{{ __('Survey Date') }}</label>
                     <div class="col-md-2"><input type="date" class="form-control" id="survey_date"></div>
                 </div>
@@ -66,14 +76,17 @@
                     <tr>
                         <th>{{ __('Household ID') }}</th>
                         <th>{{ __('Household Owner Name') }}</th>
+                        <th>{{ __("Father's/Husband's Name") }}</th>
                         <th>{{ __('Contact Number') }}</th>
                         <th>{{ __('BIN') }}</th>
                         <th>{{ __('Ward') }}</th>
                         <th>{{ __('Sub Location') }}</th>
-                        <th>{{ __('Road No./Name') }}</th>
+                        <th>{{ __('Road No.') }}</th>
+                        <th>{{ __('Road Name') }}</th>
                         <th>{{ __('LIC') }}</th>
                         <th>{{ __('LIC ID') }}</th>
                         <th>{{ __('Survey Date') }}</th>
+                        <th>{{ __('Household Status') }}</th>
                         <th>{{ __('Actions') }}</th>
                     </tr>
                 </thead>
@@ -96,21 +109,26 @@ $(function() {
             data: function(d) {
                 d.household_id = $('#household_id').val();
                 d.household_owner_name = $('#household_owner_name').val();
+                d.father_or_husband_name = $('#father_or_husband_name').val();
                 d.contact_number = $('#contact_number').val();
                 d.bin = $('#bin').val();
                 d.is_lic = $('#is_lic').val();
                 d.lic_id = $('#lic_id').val();
                 d.survey_date = $('#survey_date').val();
+                d.status = $('#status').val();
             }
         },
         columns: [
             { data: 'household_id', name: 'household_id' },
             { data: 'household_owner_name', name: 'household_owner_name' },
+            { data: 'father_or_husband_name', name: 'father_or_husband_name' },
+            { data: 'status', name: 'status' },
             { data: 'contact_number', name: 'contact_number' },
             { data: 'bin', name: 'bin' },
             { data: 'ward', name: 'ward' },
             { data: 'sub_location', name: 'sub_location' },
-            { data: 'road_no_name', name: 'road_no_name' },
+            { data: 'road_no', name: 'road_no' },
+            { data: 'road_name', name: 'road_name' },
             { data: 'is_lic', name: 'is_lic' },
             { data: 'lic_id', name: 'lic_id' },
             { data: 'survey_date', name: 'survey_date' },
@@ -151,11 +169,13 @@ $(function() {
         window.location.href = "{!! route('building-info.households.export') !!}?searchData=" + searchData +
             "&household_id=" + encodeURIComponent($('#household_id').val()) +
             "&household_owner_name=" + encodeURIComponent($('#household_owner_name').val()) +
+            "&father_or_husband_name=" + encodeURIComponent($('#father_or_husband_name').val()) +
             "&contact_number=" + encodeURIComponent($('#contact_number').val()) +
             "&bin=" + encodeURIComponent($('#bin').val()) +
             "&is_lic=" + encodeURIComponent($('#is_lic').val()) +
             "&lic_id=" + encodeURIComponent($('#lic_id').val()) +
-            "&survey_date=" + encodeURIComponent($('#survey_date').val());
+            "&survey_date=" + encodeURIComponent($('#survey_date').val()) +
+            "&status=" + encodeURIComponent($('#status').val());
     });
 });
 </script>
