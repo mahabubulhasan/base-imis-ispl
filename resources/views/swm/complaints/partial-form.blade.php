@@ -106,7 +106,7 @@
         <div class="col-sm-3">
             {!! Form::select('duplicate_complaint', $duplicateOptions, old('duplicate_complaint', $isEdit ? (int) ($complaint->duplicate_complaint ?? 0) : 0), ['class' => 'form-control']) !!}
         </div>
-        {!! Form::label('duplicate_reference', __('Duplicate Reference'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('duplicate_reference', __('Duplicate Complaint'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             {!! Form::text('duplicate_reference', old('duplicate_reference', $isEdit ? $complaint->duplicate_reference : null), ['class' => 'form-control', 'placeholder' => __('Linked Complaint ID (optional)')]) !!}
         </div>
@@ -117,7 +117,7 @@
         <div class="col-sm-3">
             {!! Form::select('priority_level', ['' => __('Select Priority')] + $priorityLevels, old('priority_level', $isEdit ? $complaint->priority_level : null), ['class' => 'form-control']) !!}
         </div>
-        {!! Form::label('assigned_to', __('Assigned To (Worker/Driver)'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('assigned_to', __('Assigned To'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             {!! Form::text('assigned_to', old('assigned_to', $isEdit ? $complaint->assigned_to : null), ['class' => 'form-control', 'placeholder' => __('Assigned worker/driver')]) !!}
         </div>
