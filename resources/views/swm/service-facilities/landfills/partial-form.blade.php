@@ -56,23 +56,27 @@
             </div>
         </div>
         <div class="form-group row">
-            {!! Form::label('segregation_practiced', __('Segregation Practiced'), ['class' => 'col-sm-3 control-label']) !!}
-            <div class="col-sm-3 pt-2">
-                <input type="hidden" name="segregation_practiced" value="0">
-                {!! Form::checkbox('segregation_practiced', '1', (bool) old('segregation_practiced', optional($landfill)->segregation_practiced), ['id' => 'segregation_practiced']) !!}
-            </div>
-        </div>
-        <div class="form-group row">
-            {!! Form::label('reuse_practiced', __('Reuse Practiced'), ['class' => 'col-sm-3 control-label']) !!}
-            <div class="col-sm-3 pt-2">
-                <input type="hidden" name="reuse_practiced" value="0">
-                {!! Form::checkbox('reuse_practiced', '1', (bool) old('reuse_practiced', optional($landfill)->reuse_practiced), ['id' => 'reuse_practiced']) !!}
-            </div>
-        </div>
-        <div class="form-group row">
             {!! Form::label('waste_type_ids', __('Waste Types'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
                 {!! Form::select('waste_type_ids[]', $wasteTypes, optional($landfill)->waste_type_ids, ['class' => 'form-control', 'id' => 'waste_type_ids', 'multiple' => true, 'data-placeholder' => __('Waste Types')]) !!}
+            </div>
+        </div>
+        <div class="form-group row">
+            {!! Form::label('segregation_practiced', __('Segregation Practiced?'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-3">
+                {!! Form::select('segregation_practiced', [1 => __('Yes'), 0 => __('No')], old('segregation_practiced', optional($landfill)->segregation_practiced ? 1 : 0), ['class' => 'form-control', 'id' => 'segregation_practiced']) !!}
+            </div>
+        </div>
+        <div class="form-group row">
+            {!! Form::label('reuse_practiced', __('Reuse Practiced?'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-3">
+                {!! Form::select('reuse_practiced', [1 => __('Yes'), 0 => __('No')], old('reuse_practiced', optional($landfill)->reuse_practiced ? 1 : 0), ['class' => 'form-control', 'id' => 'reuse_practiced']) !!}
+            </div>
+        </div>
+        <div class="form-group row">
+            {!! Form::label('treatment', __('Treatment Practiced?'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-3">
+                {!! Form::select('treatment', [1 => __('Yes'), 0 => __('No')], old('treatment', optional($landfill)->treatment ? 1 : 0), ['class' => 'form-control', 'id' => 'treatment']) !!}
             </div>
         </div>
         <div class="form-group row">
@@ -85,13 +89,6 @@
                     'step' => '0.01',
                     'inputmode' => 'decimal',
                 ]) !!}
-            </div>
-        </div>
-        <div class="form-group row">
-            {!! Form::label('treatment', __('Treatment'), ['class' => 'col-sm-3 control-label']) !!}
-            <div class="col-sm-3 pt-2">
-                <input type="hidden" name="treatment" value="0">
-                {!! Form::checkbox('treatment', '1', (bool) old('treatment', optional($landfill)->treatment), ['id' => 'treatment']) !!}
             </div>
         </div>
         <div class="form-group row required">

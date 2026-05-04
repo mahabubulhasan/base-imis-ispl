@@ -80,16 +80,15 @@
             </div>
         </div>
         <div class="form-group row">
-            {!! Form::label('segregation_practiced', __('Segregation Practiced'), ['class' => 'col-sm-3 control-label']) !!}
-            <div class="col-sm-3 pt-2">
-                <input type="hidden" name="segregation_practiced" value="0">
-                {!! Form::checkbox('segregation_practiced', '1', (bool) old('segregation_practiced', optional($sts)->segregation_practiced), ['id' => 'segregation_practiced']) !!}
-            </div>
-        </div>
-        <div class="form-group row">
             {!! Form::label('waste_type_ids', __('Waste Types'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
                 {!! Form::select('waste_type_ids[]', $wasteTypes, optional($sts)->waste_type_ids, ['class' => 'form-control', 'id' => 'waste_type_ids', 'multiple' => true, 'data-placeholder' => __('Waste Types')]) !!}
+            </div>
+        </div>
+        <div class="form-group row">
+            {!! Form::label('segregation_practiced', __('Segregation Practiced?'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-3">
+                {!! Form::select('segregation_practiced', [1 => __('Yes'), 0 => __('No')], old('segregation_practiced', optional($sts)->segregation_practiced ? 1 : 0), ['class' => 'form-control', 'id' => 'segregation_practiced']) !!}
             </div>
         </div>
         <div class="form-group row">

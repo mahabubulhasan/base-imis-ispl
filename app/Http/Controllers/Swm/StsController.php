@@ -56,7 +56,7 @@ class StsController extends Controller
 
     public function index()
     {
-        $page_title = __('SW STS');
+        $page_title = __('STSs');
         $landfills = $this->landfillOptions();
         $wards = $this->wardOptions();
         $wasteTypes = $this->wasteTypeOptions();
@@ -71,7 +71,7 @@ class StsController extends Controller
 
     public function create()
     {
-        $page_title = __('Add SW STS');
+        $page_title = __('Add STS');
         $sts = null;
         $landfills = $this->landfillOptions();
         $wards = $this->wardOptions();
@@ -98,7 +98,7 @@ class StsController extends Controller
 
     public function edit(Sts $sts)
     {
-        $page_title = __('Edit SW STS');
+        $page_title = __('Edit STS');
         $landfills = $this->landfillOptions();
         $wards = $this->wardOptions();
         $wasteTypes = $this->wasteTypeOptions();
@@ -125,7 +125,7 @@ class StsController extends Controller
 
     public function history(Sts $sts)
     {
-        $page_title = __('SW STS History');
+        $page_title = __('STSs History');
 
         return view('swm.service-facilities.sts.history', compact('page_title', 'sts'));
     }
