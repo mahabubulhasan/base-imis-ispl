@@ -50,7 +50,7 @@
 			</div>
 		</div>
 		<div class="form-group row">
-			{!! Form::label('source_sts_ids', __('Source STS'), ['class' => 'col-sm-3 control-label']) !!}
+			{!! Form::label('source_sts_ids', __('Source STSs'), ['class' => 'col-sm-3 control-label']) !!}
 			<div class="col-sm-3">
 				{!! Form::label(null, $sourceSts->pluck('name')->implode(', '), ['class' => 'form-control']) !!}
 			</div>
@@ -62,33 +62,33 @@
 			</div>
 		</div>
 		<div class="form-group row">
-			{!! Form::label('segregation_practiced', __('Segregation Practiced'), ['class' => 'col-sm-3 control-label']) !!}
-			<div class="col-sm-3">
-				{!! Form::label(null, $landfill->segregation_practiced ? __('Yes') : __('No'), ['class' => 'form-control']) !!}
-			</div>
-		</div>
-		<div class="form-group row">
-			{!! Form::label('reuse_practiced', __('Reuse Practiced'), ['class' => 'col-sm-3 control-label']) !!}
-			<div class="col-sm-3">
-				{!! Form::label(null, $landfill->reuse_practiced ? __('Yes') : __('No'), ['class' => 'form-control']) !!}
-			</div>
-		</div>
-		<div class="form-group row">
 			{!! Form::label('waste_type_ids', __('Waste Types'), ['class' => 'col-sm-3 control-label']) !!}
 			<div class="col-sm-3">
 				{!! Form::label(null, $wasteTypes->pluck('name')->implode(', '), ['class' => 'form-control']) !!}
 			</div>
 		</div>
 		<div class="form-group row">
-			{!! Form::label('monthly_waste_for_composting', __('Monthly Waste for Composting') . ' (' . __('Ton') . ')', ['class' => 'col-sm-3 control-label']) !!}
+			{!! Form::label('segregation_practiced', __('Segregation Practiced?'), ['class' => 'col-sm-3 control-label']) !!}
 			<div class="col-sm-3">
-				{!! Form::label(null, $landfill->monthly_waste_for_composting, ['class' => 'form-control']) !!}
+				{!! Form::label(null, $landfill->segregation_practiced ? __('Yes') : __('No'), ['class' => 'form-control']) !!}
 			</div>
 		</div>
 		<div class="form-group row">
-			{!! Form::label('treatment', __('Treatment'), ['class' => 'col-sm-3 control-label']) !!}
+			{!! Form::label('reuse_practiced', __('Reuse Practiced?'), ['class' => 'col-sm-3 control-label']) !!}
+			<div class="col-sm-3">
+				{!! Form::label(null, $landfill->reuse_practiced ? __('Yes') : __('No'), ['class' => 'form-control']) !!}
+			</div>
+		</div>
+		<div class="form-group row">
+			{!! Form::label('treatment', __('Treatment Practiced?'), ['class' => 'col-sm-3 control-label']) !!}
 			<div class="col-sm-3">
 				{!! Form::label(null, $landfill->treatment ? __('Yes') : __('No'), ['class' => 'form-control']) !!}
+			</div>
+		</div>
+		<div class="form-group row">
+			{!! Form::label('monthly_waste_for_composting', __('Monthly Amount of Waste Provided for Composting') . ' (' . __('Ton') . ')', ['class' => 'col-sm-3 control-label']) !!}
+			<div class="col-sm-3">
+				{!! Form::label(null, $landfill->monthly_waste_for_composting, ['class' => 'form-control']) !!}
 			</div>
 		</div>
 		<div class="form-group row">

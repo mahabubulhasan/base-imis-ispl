@@ -19,9 +19,9 @@
 	<div class="form-horizontal">
 		<div class="card-body">
 		<div class="form-group row">
-    {!! Form::label('organization', __('Organization'), ['class' => 'col-sm-3 control-label']) !!}
+    {!! Form::label('vehicle_id_no', __('Vehicle ID'), ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-3">
-        {!! Form::label(null, optional($vehicle->organization)->name ?? '', ['class' => 'form-control']) !!}
+        {!! Form::label(null, $vehicle->vehicle_id_no, ['class' => 'form-control']) !!}
     </div>
 		</div>
 		<div class="form-group row">
@@ -37,39 +37,39 @@
     </div>
 		</div>
 		<div class="form-group row">
-    {!! Form::label('vehicle_id_no', __('Vehicle ID'), ['class' => 'col-sm-3 control-label']) !!}
-    <div class="col-sm-3">
-        {!! Form::label(null, $vehicle->vehicle_id_no, ['class' => 'form-control']) !!}
-    </div>
-		</div>
-		<div class="form-group row">
-    {!! Form::label('chassis_no', __('Chassis No.'), ['class' => 'col-sm-3 control-label']) !!}
-    <div class="col-sm-3">
-        {!! Form::label(null, $vehicle->chassis_no, ['class' => 'form-control']) !!}
-    </div>
-		</div>
-		<div class="form-group row">
     {!! Form::label('capacity', __('Capacity') . ' (' . __('Ton') . ')', ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-3">
         {!! Form::label(null, $vehicle->capacity, ['class' => 'form-control']) !!}
     </div>
 		</div>
 		<div class="form-group row">
-    {!! Form::label('driver', __('Driver'), ['class' => 'col-sm-3 control-label']) !!}
+    {!! Form::label('organization', __('Organization'), ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-3">
-        {!! Form::label(null, optional($vehicle->driver)->name, ['class' => 'form-control']) !!}
+        {!! Form::label(null, optional($vehicle->organization)->name ?? '', ['class' => 'form-control']) !!}
     </div>
 		</div>
 		<div class="form-group row">
-    {!! Form::label('dumping', __('Dumping Place'), ['class' => 'col-sm-3 control-label']) !!}
+    {!! Form::label('driver_worker_id', __('Driver Name'), ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-3">
-        {!! Form::label(null, $dumping, ['class' => 'form-control']) !!}
+        {!! Form::label(null, optional($vehicle->driver)->name, ['class' => 'form-control']) !!}
     </div>
 		</div>
 		<div class="form-group row">
     {!! Form::label('service_area', __('Service Area'), ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-3">
         {!! Form::label(null, $vehicle->service_area, ['class' => 'form-control']) !!}
+    </div>
+		</div>
+		<div class="form-group row">
+    {!! Form::label('dumping_place_kind', __('Dumping Place Type'), ['class' => 'col-sm-3 control-label']) !!}
+    <div class="col-sm-3">
+        {!! Form::label(null, $vehicle->dumping_place_kind ? ucfirst($vehicle->dumping_place_kind) : '', ['class' => 'form-control']) !!}
+    </div>
+		</div>
+		<div class="form-group row">
+    {!! Form::label('dumping_place_name', __('Dumping Place Name'), ['class' => 'col-sm-3 control-label']) !!}
+    <div class="col-sm-3">
+        {!! Form::label(null, $dumping, ['class' => 'form-control']) !!}
     </div>
 		</div>
 		<div class="form-group row">
@@ -97,13 +97,19 @@
     </div>
 		</div>
 		<div class="form-group row">
+    {!! Form::label('chassis_no', __('Chassis No.'), ['class' => 'col-sm-3 control-label']) !!}
+    <div class="col-sm-3">
+        {!! Form::label(null, $vehicle->chassis_no, ['class' => 'form-control']) !!}
+    </div>
+		</div>
+		<div class="form-group row">
     {!! Form::label('status', __('Status'), ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-3">
         {!! Form::label(null, $vehicle->status, ['class' => 'form-control']) !!}
     </div>
 		</div>
 		<div class="form-group row">
-    {!! Form::label('last_maintenance_year', __('Last Maintenance (Year)'), ['class' => 'col-sm-3 control-label']) !!}
+    {!! Form::label('last_maintenance_year', __('Last Maintenance'), ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-3">
         {!! Form::label(null, $vehicle->last_maintenance_year, ['class' => 'form-control']) !!}
     </div>

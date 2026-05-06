@@ -16,27 +16,31 @@
                 : '—';
         @endphp
         <dl class="row">
-            <dt class="col-sm-3">{{ __('Holding Number') }}</dt>
+            <dt class="col-sm-3">{{ __('Holding') }}</dt>
             <dd class="col-sm-9">{{ $payment->holding_number }}</dd>
-            <dt class="col-sm-3">{{ __('Household ID') }}</dt>
-            <dd class="col-sm-9">{{ $payment->customer_id }}</dd>
-            <dt class="col-sm-3">{{ __('Household Owner Name') }}</dt>
-            <dd class="col-sm-9">{{ optional($payment->primaryCollectionSite)->household_owner_name }}</dd>
-            <dt class="col-sm-3">{{ __("Father's/Husband's Name") }}</dt>
-            <dd class="col-sm-9">{{ optional($payment->primaryCollectionSite)->father_or_husband_name ?: '—' }}</dd>
-            <dt class="col-sm-3">{{ __('Status') }}</dt>
-            <dd class="col-sm-9">{{ $hhStatusLabel }}</dd>
+            <dt class="col-sm-3">{{ __('Household') }}</dt>
+            <dd class="col-sm-9">
+                {{ $payment->customer_id }}
+                @if(optional($payment->primaryCollectionSite)->household_owner_name)
+                    — {{ optional($payment->primaryCollectionSite)->household_owner_name }}
+                @endif
+            </dd>
+            <dt class="col-sm-3">{{ __('Payment for the month of') }}</dt>
+            <dd class="col-sm-9">{{ $payment->payment_for_month?->format('M, Y') }}</dd>
+            <dt class="col-sm-3">{{ __('Billing summary') }}</dt>
+            <dd class="col-sm-9">
+                {{ __('Charge') }} ({{ __('Taka') .' / '.  __('Month') }}): {{ optional($payment->primaryCollectionSite)->waste_charge ?? '—' }}<br>
+                {{ __('Status') }}: {{ $hhStatusLabel }}
+            </dd>
+            <dt class="col-sm-3">{{ __('Payment time') }}</dt>
+            <dd class="col-sm-9">{{ $payment->payment_time?->format('Y-m-d H:i') }}</dd>
             <dt class="col-sm-3">{{ __('Amount') }} ({{ __('Taka') }})</dt>
             <dd class="col-sm-9">{{ number_format((float) $payment->amount, 2) }}</dd>
-            <dt class="col-sm-3">{{ __('Payment For Month') }}</dt>
-            <dd class="col-sm-9">{{ $payment->payment_for_month?->format('M, Y') }}</dd>
-            <dt class="col-sm-3">{{ __('Payment Time') }}</dt>
-            <dd class="col-sm-9">{{ $payment->payment_time?->format('Y-m-d H:i:s') }}</dd>
-            <dt class="col-sm-3">{{ __('Payment Method') }}</dt>
+            <dt class="col-sm-3">{{ __('Payment method') }}</dt>
             <dd class="col-sm-9">{{ config('bill_collection.payment_methods')[$payment->payment_method] ?? $payment->payment_method }}</dd>
             <dt class="col-sm-3">{{ __('Receipt no') }}</dt>
             <dd class="col-sm-9">{{ $payment->receipt_no ?: '—' }}</dd>
-            <dt class="col-sm-3">{{ __('Received By') }}</dt>
+            <dt class="col-sm-3">{{ __('Payment received by') }}</dt>
             <dd class="col-sm-9">{{ optional($payment->receivedBy)->name }}</dd>
             <dt class="col-sm-3">{{ __('Payment receipt copy') }}</dt>
             <dd class="col-sm-9">

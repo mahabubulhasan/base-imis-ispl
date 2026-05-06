@@ -46,13 +46,13 @@
             <div class="form-group row">
                 {!! Form::label('duplicate_complaint', __('Duplicate Complaint'), ['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-sm-3">{!! Form::label(null, $complaint->duplicate_complaint ? __('Yes') : __('No'), ['class' => 'form-control']) !!}</div>
-                {!! Form::label('duplicate_reference', __('Duplicate Reference'), ['class' => 'col-sm-3 control-label']) !!}
+                {!! Form::label('duplicate_reference', __('Duplicate Complaint'), ['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-sm-3">{!! Form::label(null, $complaint->duplicate_reference, ['class' => 'form-control']) !!}</div>
             </div>
             <div class="form-group row">
-                {!! Form::label('priority_level', __('Priority Level'), ['class' => 'col-sm-3 control-label']) !!}
+                {!! Form::label('priority_level', __('Priority Level (1-5)'), ['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-sm-3">{!! Form::label(null, $complaint->priority_level, ['class' => 'form-control']) !!}</div>
-                {!! Form::label('assigned_to', __('Assigned To (Worker/Driver)'), ['class' => 'col-sm-3 control-label']) !!}
+                {!! Form::label('assigned_to', __('Assigned To'), ['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-sm-3">{!! Form::label(null, $complaint->assigned_to, ['class' => 'form-control']) !!}</div>
             </div>
             <div class="form-group row">

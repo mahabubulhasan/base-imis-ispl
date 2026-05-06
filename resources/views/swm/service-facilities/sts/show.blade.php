@@ -60,12 +60,12 @@
 			<div class="col-sm-3">{!! Form::label(null, implode(', ', $sts->source_wards ?? []), ['class' => 'form-control']) !!}</div>
 		</div>
 		<div class="form-group row">
-			{!! Form::label('segregation_practiced', __('Segregation Practiced'), ['class' => 'col-sm-3 control-label']) !!}
-			<div class="col-sm-3">{!! Form::label(null, $sts->segregation_practiced ? __('Yes') : __('No'), ['class' => 'form-control']) !!}</div>
-		</div>
-		<div class="form-group row">
 			{!! Form::label('waste_type_ids', __('Waste Types'), ['class' => 'col-sm-3 control-label']) !!}
 			<div class="col-sm-3">{!! Form::label(null, $wasteTypes->pluck('name')->implode(', '), ['class' => 'form-control']) !!}</div>
+		</div>
+		<div class="form-group row">
+			{!! Form::label('segregation_practiced', __('Segregation Practiced?'), ['class' => 'col-sm-3 control-label']) !!}
+			<div class="col-sm-3">{!! Form::label(null, $sts->segregation_practiced ? __('Yes') : __('No'), ['class' => 'form-control']) !!}</div>
 		</div>
 		<div class="form-group row">
 			{!! Form::label('destination', __('Destination Landfill'), ['class' => 'col-sm-3 control-label']) !!}
