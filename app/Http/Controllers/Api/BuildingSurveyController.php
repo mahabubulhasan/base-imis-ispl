@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class BuildingSurveyController extends Controller
 {
@@ -112,7 +113,25 @@ class BuildingSurveyController extends Controller
         $buildingSurvey = null;
         try {
             if ($request->validated()){
-                $buildingSurvey = BuildingSurvey::create($request->all());
+                $knownFields = [
+                    'temp_building_code',
+                    'tax_code',
+                    'collected_date',
+                    'ward',
+                    'road_code',
+                    'house_number',
+                    'functional_use_id',
+                    'use_category_id',
+                    'water_source_id',
+                    'sanitation_system_id',
+                    'sewer_code',
+                    'drain_code',
+                ];
+
+                $data = $request->only($knownFields);
+                $payloadData = collect($request->except(array_merge($knownFields, ['kml', 'house_image'])))->toArray();
+                $data['payload_json'] = $payloadData;
+                $buildingSurvey = BuildingSurvey::create($data);
                 
                 $buildingSurvey->user_id= Auth::id();
                 $kml = $request->kml;
@@ -122,9 +141,11 @@ class BuildingSurveyController extends Controller
                         $buildingSurvey->forceDelete();
                     }
                     return response()->json([
-                        'status' => false,
+                        'status' => 422,
                         'message' => __('Kml file is required.'),
-                    ], 500);
+                        'errors' => ['kml' => [__('Kml file is required.')]],
+                        'data' => null,
+                    ], 422);
                 }
 
                 $kmlValidate = $this->validateKml($kml);
@@ -143,24 +164,36 @@ class BuildingSurveyController extends Controller
                                     $buildingSurvey->forceDelete();
                                 }
                                 return response()->json([
-                                    'status' => false,
-                                    'message' => __('Kml file couldn\'t be stored.')
+                                    'status' => 500,
+                                    'message' => __('Kml file couldn\'t be stored.'),
+                                    'data' => null,
                                 ], 500);
                             }
                             $buildingSurvey->kml = $filename;
+                            if ($request->hasFile('house_image')) {
+                                $payload = is_array($buildingSurvey->payload_json) ? $buildingSurvey->payload_json : [];
+                                $payload['house_image'] = $request->house_image->store('public/building-survey-houses');
+                                $buildingSurvey->payload_json = $payload;
+                            }
                             $buildingSurvey->save();
                             return response()->json([
-                                'status' => true,
-                                'message' => __('Building Survey is uploaded successfully.')
+                                'status' => 200,
+                                'message' => __('Building Survey is uploaded successfully.'),
+                                'data' => [
+                                    'id' => $buildingSurvey->id,
+                                    'temp_building_code' => $buildingSurvey->temp_building_code,
+                                ],
                             ], 200);
                         } else {
                             if ($buildingSurvey){
                                 $buildingSurvey->forceDelete();
                             }
                             return response()->json([
-                                'status' => false,
+                                'status' => 422,
                                 'message' => __('Kml file is invalid. Polygons shouldn\'t self-intersect.'),
-                            ], 500);
+                                'errors' => ['kml' => [__('Kml file is invalid. Polygons shouldn\'t self-intersect.')]],
+                                'data' => null,
+                            ], 422);
                         }
                     }
 
@@ -172,13 +205,24 @@ class BuildingSurveyController extends Controller
                 }
 
             }
+        } catch (ValidationException $e) {
+            if ($buildingSurvey){
+                $buildingSurvey->forceDelete();
+            }
+            return response()->json([
+                'status' => 422,
+                'message' => __('The given data was invalid.'),
+                'errors' => $e->errors(),
+                'data' => null,
+            ], 422);
         } catch (\Throwable $th){
             if ($buildingSurvey){
                 $buildingSurvey->forceDelete();
             }
             return response()->json([
-                'status' => false,
-                'message' => $th->getMessage()
+                'status' => 500,
+                'message' => $th->getMessage(),
+                'data' => null,
             ], 500);
         }
     }

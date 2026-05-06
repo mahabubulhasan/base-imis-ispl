@@ -5,14 +5,13 @@
 
 use App\Http\Controllers\Api\ApiServiceController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BuildingController as ApiBuildingController;
 use App\Http\Controllers\Api\BuildingSurveyController;
 use App\Http\Controllers\Api\SewerConnectionController;
 use App\Http\Controllers\Api\EmptyingServiceController;
 use App\Http\Controllers\Api\SludgeCollectionController;
 use App\Http\Controllers\Api\LanguageController;
-use App\Http\Controllers\BuildingInfo\BuildingController;
 use App\Http\Controllers\BuildingSearchController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
@@ -123,6 +122,12 @@ Route::group([
         });
         Route::post('/save-building',[BuildingSurveyController::class,'saveBuilding']);
         Route::post('/save-containment',[BuildingSurveyController::class,'saveContainment']);
+    });
+    Route::group(['name' => 'buildingInfo', 'prefix' => 'building-info'],function (){
+        Route::get('/buildings/create-data', [ApiBuildingController::class, 'createData']);
+        Route::post('/buildings', [ApiBuildingController::class, 'store']);
+        Route::get('/buildings/{bin}/edit-data', [ApiBuildingController::class, 'editData']);
+        Route::post('/update/{bin}', [ApiBuildingController::class, 'update']);
     });
     Route::group(['name' => 'sewerConnection'],function (){
         Route::get('/buildingcode',[BuildingSurveyController::class,'getBuildingCodes']);
