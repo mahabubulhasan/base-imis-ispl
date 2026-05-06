@@ -183,6 +183,7 @@ class RoleController extends Controller
         $building_dashboard = Permission::where('group','Building Dashboard')->orderBy('type')->get();
         $building_structures = Permission::where('group','Building Structures')->orderBy('type')->get();
         $building_surveys = Permission::where('group','Building Surveys')->orderBy('type')->get();
+        $building_info_households = Permission::where('group', 'Building Info Households')->orderBy('type')->get();
         $low_income_communities = Permission::where('group','Low Income Communities')->orderBy('type')->get();
         $fsm_dashboard = Permission::where('group','FSM Dashboard')->orderBy('type')->get();
         $containments = Permission::where('group','Containments')->orderBy('type')->get();
@@ -213,10 +214,14 @@ class RoleController extends Controller
         $swm_work_types = Permission::where('group', 'SW Service Provider Work Types')->orderBy('type')->get();
         $swm_workers = Permission::where('group', 'SW Service Provider Workers')->orderBy('type')->get();
         $swm_vehicle_types = Permission::where('group', 'SW Service Provider Vehicle Types')->orderBy('type')->get();
+        $swm_waste_bin_types = Permission::where('group', 'SW Waste Bin Types')->orderBy('type')->get();
+        $swm_waste_types = Permission::where('group', 'SW Service Provider Waste Types')->orderBy('type')->get();
         $swm_vehicles = Permission::where('group', 'SW Service Provider Vehicles')->orderBy('type')->get();
+        $swm_waste_bins = Permission::where('group', 'SW Waste Bins')->orderBy('type')->get();
         $swm_bill_collection_payments = Permission::where('group', 'SW Bill Collection Payments')->orderBy('type')->get();
         $swm_billing_status = Permission::where('group', 'SW Billing Status')->orderBy('type')->get();
         $swm_complaints = Permission::where('group', 'SW Complaints')->orderBy('type')->get();
+        $swm_dashboard_and_kpis = Permission::where('group', 'SW Dashboard and KPIs')->orderBy('type')->get();
         $swm_service_facility_landfills = Permission::where('group', 'SW Service Facility Landfills')->orderBy('type')->get();
         $swm_service_facility_sts = Permission::where('group', 'SW Service Facility STS')->orderBy('type')->get();
         $property_tax_collection_iss = Permission::where('group','Property Tax Collection ISS')->orderBy('type')->get();
@@ -236,6 +241,7 @@ class RoleController extends Controller
             'Building Dashboard' => $building_dashboard,
             'Building Structures' => $building_structures,
             'Building Surveys' => $building_surveys,
+            'Building Info Households' => $building_info_households,
             'Low Income Communities' => $low_income_communities,
             'FSM Dashboard' => $fsm_dashboard,
             'Containments' => $containments,
@@ -266,10 +272,14 @@ class RoleController extends Controller
             'SW Service Provider Work Types' => $swm_work_types,
             'SW Service Provider Workers' => $swm_workers,
             'SW Service Provider Vehicle Types' => $swm_vehicle_types,
+            'SW Waste Bin Types' => $swm_waste_bin_types,
+            'SW Service Provider Waste Types' => $swm_waste_types,
             'SW Service Provider Vehicles' => $swm_vehicles,
+            'SW Waste Bins' => $swm_waste_bins,
             'SW Bill Collection Payments' => $swm_bill_collection_payments,
             'SW Billing Status' => $swm_billing_status,
             'SW Complaints' => $swm_complaints,
+            'SW Dashboard and KPIs' => $swm_dashboard_and_kpis,
             'SW Service Facility Landfills' => $swm_service_facility_landfills,
             'SW Service Facility STS' => $swm_service_facility_sts,
             'Property Tax Collection ISS' => $property_tax_collection_iss,
