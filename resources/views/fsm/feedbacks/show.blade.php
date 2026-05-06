@@ -2,6 +2,10 @@
 @section('title', $page_title)
 @section('content')
 
+{{-- Last Modified: 2026-04-26
+// Developed By: Streams Tech Ltd.
+// Description: Admin feedback details view with readonly fields --}}
+
 <div class="card card-info">
     <div class="card-footer">
         <a href="{{ action('Fsm\FeedbackController@index') }}" class="btn btn-info" >{{ __('Back to List') }}</a>
@@ -9,112 +13,159 @@
     <div class="form-horizontal">
 
         <div class="card-body">
+            <!-- Application Information Section -->
+            <h4 class="mb-3 font-weight-bold">Application Information</h4>
+
             <div class="form-group row">
                 {!! Form::label('application_id',__('Application ID'),['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-sm-6">
-                    {!! Form::label(null,$feedback->application_id,['class' => 'form-control']) !!}
+                    {!! Form::label(null,$feedback->application_id ?? '-',['class' => 'form-control']) !!}
                 </div>
             </div>
+
             <div class="form-group row">
-                {!! Form::label('customer_name',__('Applicant Name'),['class' => 'col-sm-3 control-label']) !!}
+                {!! Form::label('customer_name',__('Service Receiver Name'),['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-sm-6">
-                    {!! Form::label(null,$feedback->customer_name,['class' => 'form-control']) !!}
+                    {!! Form::label(null,$feedback->customer_name ?? '-',['class' => 'form-control']) !!}
                 </div>
             </div>
+
             <div class="form-group row">
-                {!! Form::label('customer_gender',__('Applicant Gender'),['class' => 'col-sm-3 control-label']) !!}
+                {!! Form::label('customer_number',__('Service Receiver Contact'),['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-sm-6">
-                    {!! Form::label(null,$feedback->customer_gender=='Male'?'Male':($feedback->customer_gender=='Female'?'Female':''),['class' => 'form-control']) !!}
+                    @php
+                        $displayNumber = $feedback->customer_number ?? '-';
+                        if ($displayNumber !== '-' && strlen($displayNumber) === 10 && is_numeric($displayNumber)) {
+                            $displayNumber = '0' . $displayNumber;
+                        }
+                    @endphp
+                    {!! Form::label(null, $displayNumber, ['class' => 'form-control']) !!}
                 </div>
             </div>
+
             <div class="form-group row">
-                {!! Form::label('phone_number',__('Applicant Contact Number'),['class' => 'col-sm-3 control-label']) !!}
+                {!! Form::label('service_provider_name',__('Service Provider Name'),['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-sm-6">
-                    {!! Form::label(null,$feedback->customer_number,['class' => 'form-control']) !!}
+                    {!! Form::label(null,$feedback->application?->service_provider?->company_name ?? '-',['class' => 'form-control']) !!}
                 </div>
             </div>
+
             <div class="form-group row">
-                {!! Form::label('fsm_service_quality',__('Are you satisfied with the Service Quality?'),['class' => 'col-sm-3 control-label']) !!}
+                {!! Form::label('service_provider_contact',__('Service Provider Contact'),['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-sm-6">
-                    @if($feedback->fsm_service_quality)
-                <label class="radio-inline">
-                    {{ Form::radio('fsm_service_quality',true,true,['disabled']) }}  Yes
-                </label>
-                <label class="radio-inline">
-                    {{ Form::radio('fsm_service_quality',false,false,['disabled']) }}  No
-                </label>
-                    @else
-                     <label class="radio-inline">
-                    {{ Form::radio('fsm_service_quality',true,false,['disabled']) }}  Yes
-                </label>
-                <label class="radio-inline">
-                    {{ Form::radio('fsm_service_quality',false,true,['disabled']) }}  No
-                </label>
-                    @endif
+                    @php
+                        $displayProviderContact = $feedback->application?->service_provider?->contact_number ?? '-';
+                        if ($displayProviderContact !== '-' && strlen($displayProviderContact) === 10 && is_numeric($displayProviderContact)) {
+                            $displayProviderContact = '0' . $displayProviderContact;
+                        }
+                    @endphp
+                    {!! Form::label(null, $displayProviderContact, ['class' => 'form-control']) !!}
                 </div>
             </div>
+
+            <hr>
+
+            <!-- Service Feedback Section -->
+            <h4 class="mb-3 font-weight-bold">Service Feedback</h4>
+
             <div class="form-group row">
-                {!! Form::label('wear_ppe',__('Did the sanitation workers wear PPE during desludging?'),['class' => 'col-sm-3 control-label']) !!}
+                <label class="col-sm-3 control-label">1. Did the emptier wear safety equipment?</label>
                 <div class="col-sm-6">
-                    @if($feedback->wear_ppe)
-                        <label class="radio-inline">
-                            {{ Form::radio('wear_ppe',true,true,['disabled']) }}  Yes
-                        </label>
-                        <label class="radio-inline">
-                            {{ Form::radio('wear_ppe',false,false,['disabled']) }}  No
-                        </label>
-                    @else
-                        <label class="radio-inline">
-                            {{ Form::radio('wear_ppe',true,false,['disabled']) }}  Yes
-                        </label>
-                        <label class="radio-inline">
-                            {{ Form::radio('wear_ppe',false,true,['disabled']) }}  No
-                        </label>
+                    <label class="radio-inline">
+                        <input type="radio" disabled @if($feedback->safety_measures === 'Yes') checked @endif> Yes
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" disabled @if($feedback->safety_measures === 'No') checked @endif> No
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" disabled @if($feedback->safety_measures === 'Unknown') checked @endif> Unknown
+                    </label>
+                    @if(!$feedback->safety_measures)
+                        <div class="text-muted small mt-2">Not provided</div>
                     @endif
                 </div>
             </div>
 
             <div class="form-group row">
-                {!! Form::label('comments',__('Comments'),['class' => 'col-sm-3 control-label']) !!}
+                <label class="col-sm-3 control-label">2. How would you rate the attitude of the emptiers during service?</label>
                 <div class="col-sm-6">
-                    {!! Form::label(null,$feedback->comments,['class' => 'form-control']) !!}
+                    <label class="radio-inline">
+                        <input type="radio" disabled @if($feedback->fsm_quality_level === 3) checked @endif> Satisfied
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" disabled @if($feedback->fsm_quality_level === 2) checked @endif> Neutral
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" disabled @if($feedback->fsm_quality_level === 1) checked @endif> Dissatisfied
+                    </label>
+                    @if(!$feedback->fsm_quality_level)
+                        <div class="text-muted small mt-2">Not provided</div>
+                    @endif
                 </div>
             </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3 control-label">3. How do you assess the response time of the emptying service?</label>
+                <div class="col-sm-6">
+                    <label class="radio-inline">
+                        <input type="radio" disabled @if($feedback->service_delivery_efficiency === 3) checked @endif> Satisfied
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" disabled @if($feedback->service_delivery_efficiency === 2) checked @endif> Neutral
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" disabled @if($feedback->service_delivery_efficiency === 1) checked @endif> Dissatisfied
+                    </label>
+                    @if(!$feedback->service_delivery_efficiency)
+                        <div class="text-muted small mt-2">Not provided</div>
+                    @endif
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3 control-label">4. How satisfied are you with the overall emptying service?</label>
+                <div class="col-sm-6">
+                    <label class="radio-inline">
+                        <input type="radio" disabled @if($feedback->fsm_service_quality) checked @endif> Satisfied
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" disabled @if(!$feedback->fsm_service_quality && !is_null($feedback->fsm_service_quality)) checked @endif> Dissatisfied
+                    </label>
+                    @if(is_null($feedback->fsm_service_quality))
+                        <div class="text-muted small mt-2">Not provided</div>
+                    @endif
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3 control-label">5. How satisfied are you with the price of this service?</label>
+                <div class="col-sm-6">
+                    <label class="radio-inline">
+                        <input type="radio" disabled @if($feedback->service_quality_price === 3) checked @endif> Satisfied
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" disabled @if($feedback->service_quality_price === 2) checked @endif> Neutral
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" disabled @if($feedback->service_quality_price === 1) checked @endif> Dissatisfied
+                    </label>
+                    @if(!$feedback->service_quality_price)
+                        <div class="text-muted small mt-2">Not provided</div>
+                    @endif
+                </div>
+            </div>
+
+            @if($feedback->comments)
+                <div class="form-group row">
+                    {!! Form::label('comments',__('Additional Comments'),['class' => 'col-sm-3 control-label']) !!}
+                    <div class="col-sm-6">
+                        {!! Form::label(null,$feedback->comments,['class' => 'form-control']) !!}
+                    </div>
+                </div>
+            @endif
 
         </div><!-- /.card-body -->
-
 
     </div>
 </div><!-- /.card -->
 @stop
-@push('scripts')
-<script>
-$(function() {
-   /* $('#application_date, #payment_date').datepicker({
-        format: "yyyy-mm-dd"
-    });
-
-    $('#service_fees').on("keyup change", function(){
-        var fees = Number($(this).val());
-        var vat = Number((fees * 0.15).toFixed(2));
-        var total = fees + vat;
-        $('#vat').val(vat);
-        $('#total_amount').val(total);
-    });*/
-    //    $('.date').datepicker({
-
-    //    format: 'yyyy-mm-dd',
-    //    todayHighlight: true
-
-    //  });
-    //    $('.timepicker').datetimepicker({
-    //     format: 'hh:mm A'
-    // });
-
-    // $('.chosen-select').chosen();
-    // $('.date').focus(function(){
-    //     $(this).blur();
-    // });
-});
-</script>
-@endpush

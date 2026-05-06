@@ -1,6 +1,7 @@
 <?php
-// Last Modified Date: 09-04-2024
-// Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024)
+// Last Modified: 2026-05-03
+// Developed By: Streams Tech Ltd.
+// Description: Handles drain CRUD, geometry updates, and drain code generation API.
 namespace App\Http\Controllers\UtilityInfo;
 
 use Auth;
@@ -20,7 +21,7 @@ class DrainController extends Controller
         $this->middleware('auth');
         $this->middleware('permission:List Drains', ['only' => ['index']]);
         $this->middleware('permission:View Drain', ['only' => ['show']]);
-        $this->middleware('permission:Add Drain', ['only' => ['create', 'store']]);
+        $this->middleware('permission:Add Drain', ['only' => ['create', 'store', 'generateCode']]);
         $this->middleware('permission:Edit Drain', ['only' => ['edit', 'update']]);
         $this->middleware('permission:Delete Drain', ['only' => ['destroy']]);
         $this->middleware('permission:Export Drains to CSV', ['only' => ['export']]);
@@ -80,19 +81,19 @@ class DrainController extends Controller
     {
         // Find the drain by its ID
         $drain = Drain::find($id);
-    
+
         // Check if the drain was found
         if ($drain) {
             // Check if the treatmentPlant relationship is not null
             $treatmentplant = $drain->treatmentPlant ? $drain->treatmentPlant->name : '';
-    
+
             // Format the size and length attributes
             $drain->size = number_format($drain->size, 2);
             $drain->length = number_format($drain->length, 2);
-    
+
             // Set the page title
             $page_title = __("Drain Network Details");
-    
+
             // Return the view with the data
             return view('utility-info/drains.show', compact('page_title', 'drain', 'treatmentplant'));
         } else {
@@ -100,7 +101,7 @@ class DrainController extends Controller
             abort(404);
         }
     }
-    
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -194,6 +195,34 @@ class DrainController extends Controller
         $data = $request->all();
         return $this->drainService->download($data);
     }
+
+    /**
+     * Generate drain code from road code.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function generateCode(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'road_code' => 'required|string',
+            ]);
+
+            $drainCode = $this->drainService->generateDrainCode($validated['road_code']);
+
+            return response()->json([
+                'success' => true,
+                'drain_code' => $drainCode,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ], 422);
+        }
+    }
+
     public function getDrainNames(){
         $query = Drain::all()->toQuery();
         if (request()->search){
@@ -232,7 +261,7 @@ class DrainController extends Controller
         return response()->json(['results' =>$json, 'pagination' => ['more' => $more] ]);
     }
     public function updateDrainGeom(Request $request){
-      
+
         $code = $request->code?$request->code:null;
         if ($code){
             $drain = Drain::find($code);
@@ -261,8 +290,8 @@ class DrainController extends Controller
         $geometry = DB::table('utility_info.drains')
         ->where('code', $code)
         ->value(DB::raw('ST_AsText(geom) as geometry'));
-    
+
         return response()->json(['geometry' => $geometry]);
-    
+
     }
 }

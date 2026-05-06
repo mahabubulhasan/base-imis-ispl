@@ -1,10 +1,11 @@
 <?php
 // Last Modified Date: 18-04-2024
-// Developed By: Innovative Solution Pvt. Ltd. (ISPL)  
+// Developed By: Innovative Solution Pvt. Ltd. (ISPL)
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Fsm\EmptyingApiRequest;
+use App\Models\BuildingInfo\BuildContain;
 use App\Models\Fsm\Application;
 use App\Models\Fsm\Containment;
 use App\Models\Fsm\EmployeeInfo;
@@ -28,7 +29,7 @@ class EmptyingServiceController extends Controller
     {
         try {
             $user = Auth::user();
-    
+
             // Base query
             $query = Application::select(
                 'applications.*',
@@ -36,24 +37,24 @@ class EmptyingServiceController extends Controller
                 'roads.carrying_width',
                 'containments.size as containment_size' // Directly fetch containment size
             )
-            ->join('building_info.buildings', function ($join) {
-                $join->on(DB::raw('CAST(applications.bin AS VARCHAR)'), '=', 'buildings.bin');
-            })
-            ->leftJoin('utility_info.roads', 'applications.road_code', '=', 'roads.code') // Join with Road model
-            ->leftJoin('fsm.containments', 'applications.containment_id', '=', 'containments.id') // Link containment directly
-            ->where('applications.emptying_status', false);
-    
+                ->join('building_info.buildings', function ($join) {
+                    $join->on(DB::raw('CAST(applications.bin AS VARCHAR)'), '=', 'buildings.bin');
+                })
+                ->leftJoin('utility_info.roads', 'applications.road_code', '=', 'roads.code') // Join with Road model
+                ->leftJoin('fsm.containments', 'applications.containment_id', '=', 'containments.id') // Link containment directly
+                ->where('applications.emptying_status', false);
+
             // Apply role-specific filtering
             if ($user->hasRole('Service Provider - Emptying Operator')) {
                 $query->where('applications.service_provider_id', $user->service_provider_id);
             }
-    
+
             // Fetch the applications
             $applications = $query->get();
-    
+
             // Add geometry data and image status to each application
             $imageFolder = storage_path('app/public/emptyings/houses');
-    
+
             foreach ($applications as $application) {
                 // Fetch geometry data for each application
                 $application->geometry = json_decode(
@@ -62,12 +63,12 @@ class EmptyingServiceController extends Controller
                         ->pluck('coordinates')
                         ->first()
                 ) ?? null;
-    
+
                 // Check for the existence of an image for each application
                 $imageFile = $imageFolder . DIRECTORY_SEPARATOR . $application->bin . '.jpg';
                 $application->image_status = file_exists($imageFile) ? "true" : "false";
             }
-    
+
             // Return the response with the applications and their image status
             return response()->json([
                 'success' => true,
@@ -82,9 +83,84 @@ class EmptyingServiceController extends Controller
                 'message' => $th->getMessage()
             ], 500);
         }
-    }    
-    
-    
+    }
+
+    public function getContainmentsByBin($bin)
+    {
+        try {
+            $containments = BuildContain::where('bin', $bin)
+                ->pluck('containment_id')
+                ->toArray();
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'containments' => $containments
+            ],
+            'message' => __('Containments retrieved successfully.'),
+        ]);
+    }
+
+    public function getPendingApplications()
+    {
+        try {
+            $applications = Application::where('approved_status', false)->get();
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'applications' => $applications
+            ],
+            'message' => __('Pending applications retrieved successfully.'),
+        ]);
+    }
+
+    public function getSludgeCollectionApplications()
+    {
+        try {
+            $applications = Application
+                ::join('fsm.emptyings', 'applications.id', '=', 'emptyings.application_id')
+                ->join('fsm.treatment_plants', 'emptyings.treatment_plant_id', '=', 'treatment_plants.id')
+                ->where('approved_status', true)
+                ->where('emptying_status', true)
+                ->where('sludge_collection_status', false)
+                ->select(
+                    [
+                        'applications.*',
+                        'emptyings.volume_of_sludge',
+                        'treatment_plants.name as treatment_plant_name'
+                    ]
+                )
+                ->get();
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'applications' => $applications
+            ],
+            'message' => __('Sludge collection applications retrieved successfully.'),
+        ]);
+    }
+
 
     public function getTreatmentPlants()
     {
@@ -101,7 +177,7 @@ class EmptyingServiceController extends Controller
                 'message' => $th->getMessage()
             ], 500);
         }
-    
+
         return response()->json([
             'success' => true,
             'data' => [
@@ -110,16 +186,17 @@ class EmptyingServiceController extends Controller
             'message' => __('Treatment Plants'),
         ]);
     }
-    
-    
-    public function getVacutugs(){
+
+
+    public function getVacutugs()
+    {
         try {
-            $vacutugs = VacutugType::where(function($q){
-                $q->where("status","=",true)
-                    ->where("service_provider_id",'=',Auth::user()->service_provider_id);
+            $vacutugs = VacutugType::where(function ($q) {
+                $q->where("status", "=", true)
+                    ->where("service_provider_id", '=', Auth::user()->service_provider_id);
             })
-                ->orderBy('capacity')->select('id','license_plate_number', 'width', 'capacity')->get();
-        } catch (\Throwable $th){
+                ->orderBy('capacity')->select('id', 'license_plate_number', 'width', 'capacity')->get();
+        } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
                 'message' => $th->getMessage()
@@ -132,15 +209,16 @@ class EmptyingServiceController extends Controller
         ];
     }
 
-    public function getDrivers(){
+    public function getDrivers()
+    {
         try {
-            $drivers = EmployeeInfo::Active()->where(function($q) {
-                    $q->where('employee_type','=','Driver')
-                    ->where("service_provider_id",'=',Auth::user()->service_provider_id);
-                })
-                ->pluck('name','id')
+            $drivers = EmployeeInfo::Active()->where(function ($q) {
+                $q->where('employee_type', '=', 'Driver')
+                    ->where("service_provider_id", '=', Auth::user()->service_provider_id);
+            })
+                ->pluck('name', 'id')
                 ->toArray();
-        } catch (\Throwable $th){
+        } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
                 'message' => $th->getMessage()
@@ -153,15 +231,16 @@ class EmptyingServiceController extends Controller
         ];
     }
 
-    public function getEmptiers(){
+    public function getEmptiers()
+    {
         try {
-            $emptiers = EmployeeInfo::Active()->where(function($q){
-                $q->where('employee_type','=','Cleaner/Emptier')
-                ->where("service_provider_id",'=',Auth::user()->service_provider_id);
+            $emptiers = EmployeeInfo::Active()->where(function ($q) {
+                $q->where('employee_type', '=', 'Cleaner/Emptier')
+                    ->where("service_provider_id", '=', Auth::user()->service_provider_id);
             })
-                ->pluck('name','id')
+                ->pluck('name', 'id')
                 ->toArray();
-        } catch (\Throwable $th){
+        } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
                 'message' => $th->getMessage()
@@ -173,48 +252,57 @@ class EmptyingServiceController extends Controller
             'message' => __('Emptiers')
         ];
     }
-    
+
     /**
-    * Save an emptying service record along with related data.
-    *
-    * @param  EmptyingApiRequest  $request
-    * @return array
-    */
+     * Save an emptying service record along with related data.
+     *
+     * @param  EmptyingApiRequest  $request
+     * @return array
+     */
     public function save(EmptyingApiRequest $request)
     {
         ini_set('memory_limit', '256M');
         ini_set('max_execution_time', 300);
-    
+
         DB::beginTransaction();
         $emptying = null;
-    
+
         try {
             // Validate the request data
             if ($request->validated()) {
                 $emptying = Emptying::create($request->all());
                 $application = Application::findOrFail($request->application_id);
+                $application->bin = $request->building_id;
+                $application->service_provider_id = Auth::user()->service_provider_id;
+
+                $buildContainment = BuildContain::where('bin', $request->building_id)->first();
                 // updating containment information
-                $containment = Containment::find($application->containment_id);
-                $containment->last_emptied_date = $emptying->emptied_date = now();
-                $containment->next_emptying_date = now()->addYears(3);
-                $containment->emptied_status = true;
-                $containment->no_of_times_emptied = $containment->no_of_times_emptied ? 1 : $containment->no_of_times_emptied  + 1;
-                $containment->save();
+                if ($buildContainment) {
+                    $application->containment_id = $buildContainment->containment_id;
+
+                    $containment = Containment::find($buildContainment->containment_id);
+                    $containment->last_emptied_date = $emptying->emptied_date = now();
+                    $containment->next_emptying_date = now()->addYears(3);
+                    $containment->emptied_status = true;
+                    $containment->no_of_times_emptied = $containment->no_of_times_emptied ? 1 : $containment->no_of_times_emptied + 1;
+                    $containment->save();
+                }
+
                 if ($application->emptying_status && $emptying) {
                     if ($emptying) {
                         $emptying->forceDelete();
                     }
-    
+
                     return response()->json([
                         'status' => false,
                         'message' => __('Emptying service is already done for this application.')
                     ], 500);
                 }
-    
+
                 $emptying->service_provider_id = $application->service_provider_id;
                 $emptying->user_id = \Auth::user()->id;
                 $allowedFileExt = ['jpg', 'jpeg', 'png', 'PNG', 'JPG', 'JPEG'];
-    
+
                 // Handle receipt image (required)
                 if (!$request->hasFile('receipt_image') || !in_array($request->receipt_image->getClientOriginalExtension(), $allowedFileExt)) {
                     if ($emptying) {
@@ -227,12 +315,12 @@ class EmptyingServiceController extends Controller
                         'message' => __('Error! Receipt image is required and must be in a valid format.')
                     ], 500);
                 }
-    
+
                 try {
                     $dateTime = now()->setTimezone(new DateTimeZone('Asia/Kathmandu'))->format('Y_m_d_H_i_s');
                     $extension_receipt = $request->receipt_image->getClientOriginalExtension();
                     $filename_receipt = $emptying->id . '_' . $emptying->application_id . '_' . $dateTime . '.' . $extension_receipt;
-    
+
                     $storeReceiptImg = Image::make($request->receipt_image);
                     if ($storeReceiptImg->filesize() > 5 * 1024 * 1024) {
                         $storeReceiptImg->resize(null, 1080, function ($constraint) {
@@ -252,13 +340,13 @@ class EmptyingServiceController extends Controller
                         'message' => __('Error saving receipt image.')
                     ], 500);
                 }
-    
+
                 // Handle house image (optional)
                 if ($request->hasFile('house_image') && in_array($request->house_image->getClientOriginalExtension(), $allowedFileExt)) {
                     try {
                         $extension_house = $request->house_image->getClientOriginalExtension();
                         $filename_house = $application->bin . '.' . $extension_house;
-    
+
                         $storeHouseImg = Image::make($request->house_image);
                         if ($storeHouseImg->filesize() > 5 * 1024 * 1024) {
                             $storeHouseImg->resize(null, 1080, function ($constraint) {
@@ -266,7 +354,7 @@ class EmptyingServiceController extends Controller
                             })->encode($extension_house, 50);
                         }
                         $storeHouseImg->save(Storage::disk('local')->path('/public/emptyings/houses/' . $filename_house));
-    
+
                         $emptying->house_image = $filename_house;
                     } catch (\Throwable $th) {
                         \Log::error('House image saving failed: ' . $th->getMessage());
@@ -275,14 +363,15 @@ class EmptyingServiceController extends Controller
                     // No house image uploaded, set the bin value
                     $emptying->house_image = $application->bin;
                 }
-    
+
                 $emptying->save();
-               
+
+                $application->approved_status = true;
                 $application->emptying_status = true;
                 $application->save();
 
             }
-    
+
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -296,12 +385,12 @@ class EmptyingServiceController extends Controller
                 'message' => $th->getMessage()
             ], 500);
         }
-    
+
         return [
             'success' => true,
             'message' => __('Emptying service saved successfully.')
         ];
     }
-    
+
 
 }

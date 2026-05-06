@@ -4,8 +4,6 @@
 namespace App\Models\Fsm;
 
 use App\Models\BuildingInfo\Building;
-use App\Models\UtilityInfo\Roadline;
-use App\Models\Fsm\TreatmentPlant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -66,7 +64,11 @@ class Application extends Model
         'proposed_emptying_date',
         'service_provider_id',
         'emergency_desludging_status',
+        'application_date',
+        'address',
         'containment_id',
+        'tax_code',
+        'note'
     ];
 
     /**

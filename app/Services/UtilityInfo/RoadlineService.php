@@ -1,5 +1,5 @@
 <?php
-// Last Modified: 2026-02-23
+// Last Modified: 2026-04-30
 // Developed By: Streams Tech Ltd.
 // Description: Handles road network data operations.
 
@@ -66,6 +66,9 @@ class RoadlineService {
                 if ($data['carrying_width']) {
                     $query->where('carrying_width', $data['carrying_width']);
                 }
+                if (!empty($data['ward'])) {
+                    $query->where('ward', $data['ward']);
+                }
             })
             ->addColumn('action', function ($model) {
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['roadlines.destroy', $model->code]]);
@@ -108,12 +111,13 @@ class RoadlineService {
 
             try{
                 $roadline = new Roadline();
+                $hierarchy = ($data['road_type'] ?? null) === 'MunicipalityRoad' ? ($data['hierarchy'] ?? null) : null;
                 $roadline->code = $data['road_uid'];
                 $roadline->user_id = Auth::id();
                 $roadline->name = $data['name'] ? $data['name'] : null;
                 $roadline->road_type = $data['road_type'] ? $data['road_type'] : null;
                 $roadline->ward = $data['ward'] ? $data['ward'] : null;
-                $roadline->hierarchy = $data['hierarchy'] ? $data['hierarchy'] : null;
+                $roadline->hierarchy = $hierarchy ? $hierarchy : null;
                 $roadline->surface_type = $data['surface_type'] ? $data['surface_type'] : null;
                 $roadline->length = $data['length'] ? $data['length'] : null;
                 $roadline->right_of_way = $data['right_of_way'] ? $data['right_of_way'] : null;

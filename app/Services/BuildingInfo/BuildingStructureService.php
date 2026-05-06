@@ -34,6 +34,8 @@ use App\Models\BuildingInfo\BuildingSurvey;
 use App\Models\BuildingInfo\SanitationSystem;
 use App\Http\Requests\BuildingInfo\BuildingRequest;
 use App\Models\BuildingInfo\SanitationSystemTechnology;
+use App\Models\TaxPaymentInfo\TaxPayment;
+use App\Models\TaxPaymentInfo\TaxPaymentStatus;
 use Intervention\Image\Facades\Image;
 
 class BuildingStructureService
@@ -171,6 +173,7 @@ class BuildingStructureService
                     $this->storeContainmentInfo($flag = 'communal', $type = 'create', $request);
                 }
             }
+            $this->syncTaxPaymentRecords($building->bin, $building->tax_code, $building->ward, $request->owner_name, $request->owner_contact);
             DB::commit();
             return redirect('building-info/buildings')->with('success', __("Building created successfully"));
         } catch (\Exception $e) {
@@ -325,6 +328,27 @@ class BuildingStructureService
         $owner->nid = $request->nid ? $request->nid : null;
 
         $owner->save();
+    }
+
+    private function syncTaxPaymentRecords(string $bin, ?string $tax_code_raw, ?string $ward, ?string $owner_name, ?string $owner_contact): void
+    {
+        if (empty($tax_code_raw)) {
+            return;
+        }
+
+        $taxCodes = array_filter(array_map('trim', explode(',', $tax_code_raw)));
+
+        foreach ($taxCodes as $taxCode) {
+            TaxPayment::updateOrCreate(
+                ['tax_code' => $taxCode],
+                ['owner_name' => $owner_name, 'owner_contact' => $owner_contact]
+            );
+
+            TaxPaymentStatus::updateOrCreate(
+                ['tax_code' => $taxCode],
+                ['owner_name' => $owner_name, 'owner_contact' => $owner_contact, 'ward' => $ward, 'bin' => $bin]
+            );
+        }
     }
 
     public function storeBuildContainInfo($bin, $containment_id)
@@ -613,6 +637,7 @@ class BuildingStructureService
             $building->save();
             // store owner
             $this->storeOwnerInfo($request);
+            $this->syncTaxPaymentRecords($building->bin, $building->tax_code, $building->ward, $request->owner_name, $request->owner_contact);
             DB::commit();
             return Redirect("building-info/buildings")->with('success', __("Building Information updated successfully"));
         } catch (\Exception $e) {
@@ -998,6 +1023,7 @@ class BuildingStructureService
             ->select(
                 'building_info.buildings.bin AS bin',
                 'building_info.buildings.house_number AS house_number',
+                'building_info.buildings.tax_code AS tax_code',
                 'building_info.buildings.structure_type_id AS structure_type_id',
                 'building_info.structure_types.type AS type',
                 'building_info.buildings.ward AS ward',
@@ -1008,6 +1034,8 @@ class BuildingStructureService
                 'building_info.owners.owner_name AS owner_name',
                 'building_info.sanitation_systems.sanitation_system as sanitation_system_id'
             )
+            ->orderBy('building_info.buildings.ward')
+            ->orderBy('building_info.owners.owner_name')
             ->whereNull('building_info.buildings.deleted_at');
         return DataTables::of($buildingData)
             ->filter(function ($query) use ($request) {
@@ -1055,9 +1083,9 @@ class BuildingStructureService
 
                     $query->where('floor_count','ILIKE', $request->floor_count .'%');
                 }
-                if ($request->house_number) {
+                if ($request->tax_code) {
 
-                    $query->where('house_number','ILIKE', '%'.  $request->house_number.'%');
+                    $query->where('tax_code','ILIKE', '%'.  $request->tax_code.'%');
                 }
                 if ($request->date_from && $request->date_to) {
                     $query->whereDate('construction_year', '>=', $request->date_from);

@@ -1,5 +1,5 @@
 {{--
-// Last Modified: 2026-02-11
+// Last Modified: 2026-04-07
 // Developed By: Streams Tech Ltd.
 // Description: Public feedback landing page form
 --}}
@@ -73,29 +73,25 @@
                 </div>
             </fieldset>
 
-            <!-- Safety & Service Quality Section -->
+            <!-- Service Feedback Section -->
             <fieldset class="app_fieldset">
-                <legend>Safety & Service Quality</legend>
+                <legend>Service Feedback</legend>
 
                 <div class="row">
                     <div class="col-12 mb-3">
-                        <label class="block text-gray-800 font-semibold mb-2 text-base">1. Safety of emptiers and customer is very important. Please indicate which measures the emptiers followed during the service: <span class="text-red-500">*</span></label>
-                        <div class="space-y-2">
+                        <label class="block text-gray-800 font-semibold mb-2 text-base">1. Did the emptier wear safety equipment? <span class="text-red-500">*</span></label>
+                        <div class="flex flex-wrap gap-3">
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="checkbox" name="safety_measures[]" value="Used hand gloves" v-model="safetyMeasures" class="w-5 h-5 text-[#0056b3] border-gray-300 rounded focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Used hand gloves</span>
+                                <input type="radio" name="safety_measures" value="Yes" v-model="safetyMeasures" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
+                                <span class="text-gray-700">Yes</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="checkbox" name="safety_measures[]" value="Used mask" v-model="safetyMeasures" class="w-5 h-5 text-[#0056b3] border-gray-300 rounded focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Used mask</span>
+                                <input type="radio" name="safety_measures" value="No" v-model="safetyMeasures" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
+                                <span class="text-gray-700">No</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="checkbox" name="safety_measures[]" value="Used apron" v-model="safetyMeasures" class="w-5 h-5 text-[#0056b3] border-gray-300 rounded focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Used apron</span>
-                            </label>
-                            <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="checkbox" name="safety_measures[]" value="Did not wear the glovespic tank" v-model="safetyMeasures" class="w-5 h-5 text-[#0056b3] border-gray-300 rounded focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Did not wear the glovespic tank</span>
+                                <input type="radio" name="safety_measures" value="Unknown" v-model="safetyMeasures" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
+                                <span class="text-gray-700">Unknown</span>
                             </label>
                         </div>
                         <span v-if="fieldErrors.safety_measures" class="text-red-600 text-sm mt-1 block">@{{ fieldErrors.safety_measures }}</span>
@@ -107,20 +103,16 @@
                         <label class="block text-gray-800 font-semibold mb-2 text-base">2. How would you rate the attitude of the emptiers during service? <span class="text-red-500">*</span></label>
                         <div class="flex flex-wrap gap-3">
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="fsm_quality_level" value="4" v-model="fsmQualityLevel" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Very Satisfied</span>
-                            </label>
-                            <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="fsm_quality_level" value="3" v-model="fsmQualityLevel" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
+                                <input type="radio" name="fsm_quality_level" value="3" v-model="fsmQualityLevel" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Satisfied</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="fsm_quality_level" value="2" v-model="fsmQualityLevel" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Not Satisfied</span>
+                                <span class="text-gray-700">Neutral</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="fsm_quality_level" value="1" v-model="fsmQualityLevel" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Disappointed</span>
+                                <span class="text-gray-700">Dissatisfied</span>
                             </label>
                         </div>
                         <span v-if="fieldErrors.fsm_quality_level" class="text-red-600 text-sm mt-1 block">@{{ fieldErrors.fsm_quality_level }}</span>
@@ -140,20 +132,16 @@
                         <label class="block text-gray-800 font-semibold mb-2 text-base">3. How do you assess the response time of the emptying service? <span class="text-red-500">*</span></label>
                         <div class="flex flex-wrap gap-3">
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="service_delivery_efficiency" value="4" v-model="serviceDeliveryEfficiency" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Very Satisfied</span>
-                            </label>
-                            <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="service_delivery_efficiency" value="3" v-model="serviceDeliveryEfficiency" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
+                                <input type="radio" name="service_delivery_efficiency" value="3" v-model="serviceDeliveryEfficiency" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Satisfied</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="service_delivery_efficiency" value="2" v-model="serviceDeliveryEfficiency" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Not Satisfied</span>
+                                <span class="text-gray-700">Neutral</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="service_delivery_efficiency" value="1" v-model="serviceDeliveryEfficiency" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Disappointed</span>
+                                <span class="text-gray-700">Dissatisfied</span>
                             </label>
                         </div>
                         <span v-if="fieldErrors.service_delivery_efficiency" class="text-red-600 text-sm mt-1 block">@{{ fieldErrors.service_delivery_efficiency }}</span>
@@ -173,20 +161,16 @@
                         <label class="block text-gray-800 font-semibold mb-2 text-base">4. How satisfied are you with the overall emptying service? <span class="text-red-500">*</span></label>
                         <div class="flex flex-wrap gap-3">
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="overall_satisfaction" value="4" v-model="overallSatisfaction" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Very Satisfied</span>
-                            </label>
-                            <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="overall_satisfaction" value="3" v-model="overallSatisfaction" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
+                                <input type="radio" name="overall_satisfaction" value="3" v-model="overallSatisfaction" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Satisfied</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="overall_satisfaction" value="2" v-model="overallSatisfaction" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Not Satisfied</span>
+                                <span class="text-gray-700">Neutral</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="overall_satisfaction" value="1" v-model="overallSatisfaction" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Disappointed</span>
+                                <span class="text-gray-700">Dissatisfied</span>
                             </label>
                         </div>
                         <span v-if="fieldErrors.overall_satisfaction" class="text-red-600 text-sm mt-1 block">@{{ fieldErrors.overall_satisfaction }}</span>
@@ -206,20 +190,16 @@
                         <label class="block text-gray-800 font-semibold mb-2 text-base">5. How satisfied are you with the price of this service? <span class="text-red-500">*</span></label>
                         <div class="flex flex-wrap gap-3">
                             <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="service_quality_price" value="4" v-model="serviceQualityPrice" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Very Satisfied</span>
-                            </label>
-                            <label class="flex items-center space-x-3 cursor-pointer">
-                                <input type="radio" name="service_quality_price" value="3" v-model="serviceQualityPrice" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
+                                <input type="radio" name="service_quality_price" value="3" v-model="serviceQualityPrice" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
                                 <span class="text-gray-700">Satisfied</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="service_quality_price" value="2" v-model="serviceQualityPrice" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Not Satisfied</span>
+                                <span class="text-gray-700">Neutral</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="service_quality_price" value="1" v-model="serviceQualityPrice" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Disappointed</span>
+                                <span class="text-gray-700">Dissatisfied</span>
                             </label>
                         </div>
                         <span v-if="fieldErrors.service_quality_price" class="text-red-600 text-sm mt-1 block">@{{ fieldErrors.service_quality_price }}</span>

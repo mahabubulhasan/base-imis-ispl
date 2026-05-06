@@ -1,4 +1,4 @@
-<!-- Last Modified: March 8, 2026
+<!-- Last Modified: April 6, 2026
 Developed By: Streams Tech Ltd.
 Description: FSM Application Form - Vue 3 Implementation -->
 
@@ -17,7 +17,7 @@ Description: FSM Application Form - Vue 3 Implementation -->
                 <div class="row">
                     <div class="col-12 mb-3">
                         <label class="block text-gray-800 font-semibold mb-2 text-base">
-                            Do you have a Tax ID? <span class="text-red-500">*</span>
+                            Do you have a Tax Code? <span class="text-red-500">*</span>
                         </label>
                         <select
                             v-model="hasTaxId"
@@ -34,41 +34,34 @@ Description: FSM Application Form - Vue 3 Implementation -->
                 <div v-show="showTaxIdField" class="row">
                     <div class="col-12 col-md-6 mb-3">
                         <label class="block text-gray-800 font-semibold mb-2 text-base">
-                            Tax ID <span v-if="showTaxIdField" class="text-red-500">*</span>
+                            Tax Code <span v-if="showTaxIdField" class="text-red-500">*</span>
                         </label>
                         <input
                             type="text"
                             v-model="taxId"
                             @input="taxId = formatTaxId($event.target.value)"
                             :class="['form-control w-full px-4 py-3 rounded-lg border-2 text-base transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10', fieldErrors.tax_id ? 'border-red-500' : 'border-gray-300']"
-                            placeholder="##-###-####-##"
+                            placeholder="ww-rrr-hhhh-xx"
                         >
                         <span v-if="fieldErrors.tax_id" class="text-red-500 text-sm mt-1 block">@{{ fieldErrors.tax_id }}</span>
-                        <div v-if="isLoadingData" class="flex items-center gap-2 mt-2 text-blue-600">
-                            <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            <span class="text-sm">Loading building data...</span>
-                        </div>
                     </div>
                 </div>
             </fieldset>
 
-            <!-- Customer Information Section -->
+            <!-- Applicant Information Section -->
             <fieldset class="app_fieldset">
-                <legend>Customer Information</legend>
+                <legend>Applicant Information</legend>
 
                 <div class="row">
                     <div class="col-12 col-md-6 mb-3">
                         <label class="block text-gray-800 font-semibold mb-2 text-base">
-                            Customer Name <span class="text-red-500">*</span>
+                            Applicant Name <span class="text-red-500">*</span>
                         </label>
                         <input
                             type="text"
                             v-model="customerName"
                             :class="['form-control w-full px-4 py-3 rounded-lg border-2 text-base transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10', fieldErrors.customer_name ? 'border-red-500' : 'border-gray-300']"
-                            placeholder="Customer Name"
+                            placeholder="Applicant Name"
                         >
                         <span v-if="fieldErrors.customer_name" class="text-red-500 text-sm mt-1 block">@{{ fieldErrors.customer_name }}</span>
                     </div>
@@ -118,40 +111,6 @@ Description: FSM Application Form - Vue 3 Implementation -->
                 </div>
 
                 <div class="row">
-                    <div class="col-12 col-md-6 mb-3">
-                        <label class="block text-gray-800 font-semibold mb-2 text-base">
-                            Road Name <small class="text-gray-500">(Optional)</small>
-                        </label>
-                        <multiselect
-                            v-model="selectedRoad"
-                            :options="roadOptions"
-                            :searchable="true"
-                            :loading="isSearchingRoads"
-                            :internal-search="false"
-                            :clear-on-select="false"
-                            :close-on-select="true"
-                            :options-limit="300"
-                            :max-height="600"
-                            :show-no-results="true"
-                            :hide-selected="false"
-                            @search-change="onRoadSearch"
-                            placeholder="Search by road name or code"
-                            label="text"
-                            track-by="id"
-                            :class="fieldErrors.road_code ? 'multiselect-error' : ''"
-                        >
-                            <template #noResult>
-                                <span>No roads found. Try a different search term.</span>
-                            </template>
-                            <template #noOptions>
-                                <span>Start typing to search for roads...</span>
-                            </template>
-                        </multiselect>
-                        <span v-if="fieldErrors.road_code" class="text-red-500 text-sm mt-1 block">@{{ fieldErrors.road_code }}</span>
-                    </div>
-                </div>
-
-                <div class="row">
                     <div class="col-12 mb-3">
                         <label class="block text-gray-800 font-semibold mb-2 text-base">
                             Address <span class="text-red-500">*</span>
@@ -160,7 +119,7 @@ Description: FSM Application Form - Vue 3 Implementation -->
                             v-model="address"
                             :class="['form-control w-full px-4 py-3 rounded-lg border-2 text-base resize-y min-h-[100px] transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10', fieldErrors.address ? 'border-red-500' : 'border-gray-300']"
                             rows="3"
-                            placeholder="Address"
+                            placeholder="Holding Number, Road Name, Ward"
                         ></textarea>
                         <span v-if="fieldErrors.address" class="text-red-500 text-sm mt-1 block">@{{ fieldErrors.address }}</span>
                     </div>
@@ -174,7 +133,7 @@ Description: FSM Application Form - Vue 3 Implementation -->
                 <div class="row">
                     <div class="col-12 col-md-6 mb-3">
                         <label class="block text-gray-800 font-semibold mb-2 text-base">
-                            Proposed Emptying Date <span class="text-red-500">*</span>
+                            Proposed Emptying Date (mm/dd/yyyy)<span class="text-red-500">*</span>
                         </label>
                         <input
                             type="date"

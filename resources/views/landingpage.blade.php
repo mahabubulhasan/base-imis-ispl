@@ -1,4 +1,4 @@
-<!-- Last Modified: March 18, 2026
+<!-- Last Modified: April 7, 2026
 Developed By: Streams Tech Ltd.
 Description: Modern municipal portal with hero section, glassmorphic design, and tab-based content sections -->
 <!DOCTYPE html>
@@ -489,9 +489,6 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
     }
     const FsmApplication = {
         template: '#fsmPage',
-        components: {
-            Multiselect
-        },
         setup() {
             // Form fields
             const hasTaxId = ref('');
@@ -500,27 +497,25 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
             const customerContact = ref('');
             const holdingOwnerName = ref('');
             const ward = ref('');
-            const roadCode = ref('');
-            const selectedRoad = ref(null);
             const address = ref('');
             const proposedEmptyingDate = ref('');
             const notes = ref('');
 
             // State
             const wards = ref([]);
-            const roadOptions = ref([]);
             const fieldErrors = ref({});
             const isSubmitting = ref(false);
             const showModal = ref(false);
             const successMessage = ref('');
             const countdown = ref(5);
             const wardsLoaded = ref(false);
-            const isLoadingData = ref(false);
-            const roadSearchTerm = ref('');
-            const isSearchingRoads = ref(false);
+            const lastAutoSelectedWard = ref('');
+            const isHoldingOwnerNameAutoFillInProgress = ref(false);
+            const hasManualHoldingOwnerNameOverride = ref(false);
 
-            let debounceTimeout = null;
             let countdownTimer = null;
+            let taxIdLookupDebounceTimer = null;
+            let activeTaxLookupRequestId = 0;
 
             // Computed
             const showTaxIdField = computed(() => hasTaxId.value === 'yes');
@@ -555,10 +550,30 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 return taxIdPattern.test(taxIdValue.trim());
             }
 
-            // Check minimum length
+            // Check minimum length before full format validation
             function hasMinimumLength(taxIdValue) {
                 const digitsOnly = taxIdValue.replace(/[^0-9]/g, '');
                 return digitsOnly.length >= 8;
+            }
+
+            function extractWardFromTaxId(taxIdValue) {
+                if (!taxIdValue || !isValidTaxId(taxIdValue)) {
+                    return '';
+                }
+
+                return taxIdValue.substring(0, 2);
+            }
+
+            function findMatchingWardOption(wardCode) {
+                if (!wardCode) {
+                    return '';
+                }
+
+                if (wards.value.includes(parseInt(wardCode, 10))) {
+                    return wardCode;
+                }
+
+                return '';
             }
 
             // Load wards
@@ -583,89 +598,6 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 }
             }
 
-            // Search road names
-            async function searchRoadNames(search = '') {
-                if (isSearchingRoads.value) return;
-
-                isSearchingRoads.value = true;
-
-                try {
-                    const res = await fetch(`{{ route("client-fsm-application.get-road-names") }}?search=${encodeURIComponent(search)}&page=1`, {
-                        method: 'GET',
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    });
-                    const data = await res.json();
-
-                    if (data.results) {
-                        roadOptions.value = data.results;
-                    }
-                } catch (err) {
-                    console.error('Failed to search roads:', err);
-                } finally {
-                    isSearchingRoads.value = false;
-                }
-            }
-
-            // Handle road search from multiselect
-            function onRoadSearch(query) {
-                if (debounceTimeout) {
-                    clearTimeout(debounceTimeout);
-                }
-
-                debounceTimeout = setTimeout(() => {
-                    searchRoadNames(query);
-                }, 300);
-            }
-
-            // Clear auto-populated fields
-            function clearAutoPopulatedFields() {
-                customerName.value = '';
-                customerContact.value = '';
-                holdingOwnerName.value = '';
-                ward.value = '';
-                roadCode.value = '';
-                selectedRoad.value = null;
-                address.value = '';
-            }
-
-            // Fetch owner data by tax ID
-            async function fetchBuildingData(taxIdValue) {
-                if (!taxIdValue || !isValidTaxId(taxIdValue)) {
-                    clearAutoPopulatedFields();
-                    return;
-                }
-
-                if (isLoadingData.value) return;
-
-                isLoadingData.value = true;
-
-                try {
-                    const res = await fetch(`{{ route("client-fsm-application.get-building-data") }}?tax_id=${encodeURIComponent(taxIdValue)}`, {
-                        method: 'GET',
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    });
-                    const data = await res.json();
-
-                    if (data.success && data.data) {
-                        customerName.value = data.data.owner_name || '';
-                        customerContact.value = data.data.owner_contact || '';
-                        holdingOwnerName.value = data.data.owner_name || '';
-                        ward.value = data.data.ward || '';
-                    } else {
-                        clearAutoPopulatedFields();
-                    }
-                } catch (err) {
-                    console.error('Failed to fetch owner data:', err);
-                    clearAutoPopulatedFields();
-                } finally {
-                    isLoadingData.value = false;
-                }
-            }
-
             // Clear field error
             function clearFieldError(fieldName) {
                 if (fieldErrors.value[fieldName]) {
@@ -674,22 +606,69 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 }
             }
 
+            function setHoldingOwnerNameFromLookup(ownerName) {
+                if (hasManualHoldingOwnerNameOverride.value) {
+                    return;
+                }
+
+                isHoldingOwnerNameAutoFillInProgress.value = true;
+                holdingOwnerName.value = ownerName || '';
+                isHoldingOwnerNameAutoFillInProgress.value = false;
+            }
+
+            function clearTaxLookupDebounce() {
+                if (taxIdLookupDebounceTimer) {
+                    clearTimeout(taxIdLookupDebounceTimer);
+                    taxIdLookupDebounceTimer = null;
+                }
+            }
+
+            async function fetchHoldingOwnerByTaxId(taxIdValue, requestId) {
+                try {
+                    const endpoint = '{{ route("client-fsm-application.get-building-data") }}';
+                    const res = await fetch(`${endpoint}?tax_id=${encodeURIComponent(taxIdValue)}`, {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+                    const data = await res.json();
+
+                    if (requestId !== activeTaxLookupRequestId) {
+                        return;
+                    }
+
+                    if (res.ok && data.success && data.data && data.data.owner_name) {
+                        setHoldingOwnerNameFromLookup(data.data.owner_name);
+                    } else {
+                        setHoldingOwnerNameFromLookup('');
+                    }
+                } catch (err) {
+                    if (requestId !== activeTaxLookupRequestId) {
+                        return;
+                    }
+
+                    setHoldingOwnerNameFromLookup('');
+                    console.error('Failed to fetch holding owner name:', err);
+                }
+            }
+
             // Reset form
             function resetForm() {
+                clearTaxLookupDebounce();
+                activeTaxLookupRequestId++;
                 hasTaxId.value = '';
                 taxId.value = '';
                 customerName.value = '';
                 customerContact.value = '';
                 holdingOwnerName.value = '';
                 ward.value = '';
-                roadCode.value = '';
-                selectedRoad.value = null;
                 address.value = '';
                 proposedEmptyingDate.value = '';
                 notes.value = '';
                 fieldErrors.value = {};
-                roadOptions.value = [];
-                roadSearchTerm.value = '';
+                lastAutoSelectedWard.value = '';
+                hasManualHoldingOwnerNameOverride.value = false;
             }
 
             // Handle form submission
@@ -699,10 +678,14 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
 
                 // Validate required fields
                 if (!hasTaxId.value) {
-                    fieldErrors.value.has_tax_id = 'Please select if you have a Tax ID';
+                    fieldErrors.value.has_tax_id = 'Please select if you have a Tax Code';
                 }
                 if (hasTaxId.value === 'yes' && !taxId.value) {
-                    fieldErrors.value.tax_id = 'Tax ID is required';
+                    fieldErrors.value.tax_id = 'Tax Code is required';
+                } else if (hasTaxId.value === 'yes' && !hasMinimumLength(taxId.value)) {
+                    fieldErrors.value.tax_id = 'Tax Code is incomplete';
+                } else if (hasTaxId.value === 'yes' && !isValidTaxId(taxId.value)) {
+                    fieldErrors.value.tax_id = 'Tax Code format must be 00-000-0000-00';
                 }
                 if (!customerName.value) {
                     fieldErrors.value.customer_name = 'Customer Name is required';
@@ -734,7 +717,6 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 formData.append('customer_contact', customerContact.value);
                 formData.append('holding_owner_name', holdingOwnerName.value);
                 formData.append('ward', ward.value);
-                formData.append('road_code', selectedRoad.value ? selectedRoad.value.id : '');
                 formData.append('address', address.value);
                 formData.append('proposed_emptying_date', proposedEmptyingDate.value);
                 formData.append('notes', notes.value);
@@ -781,33 +763,59 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
             // Watch hasTaxId to clear tax ID when switching to "No"
             watch(hasTaxId, (newVal) => {
                 if (newVal !== 'yes') {
+                    clearTaxLookupDebounce();
+                    activeTaxLookupRequestId++;
                     taxId.value = '';
+                    holdingOwnerName.value = '';
+                    ward.value = '';
+                    lastAutoSelectedWard.value = '';
+                    hasManualHoldingOwnerNameOverride.value = false;
                     clearFieldError('tax_id');
                 }
                 clearFieldError('has_tax_id');
             });
 
-            // Watch taxId for auto-fill with debounce
             watch(taxId, (newVal) => {
                 clearFieldError('tax_id');
+                clearTaxLookupDebounce();
+                activeTaxLookupRequestId++;
+                const lookupRequestId = activeTaxLookupRequestId;
 
-                if (!newVal || newVal.length < 10 || !hasMinimumLength(newVal)) {
-                    if (debounceTimeout) {
-                        clearTimeout(debounceTimeout);
-                        debounceTimeout = null;
-                    }
-                    clearAutoPopulatedFields();
+                if (hasTaxId.value !== 'yes') {
                     return;
                 }
 
-                if (debounceTimeout) {
-                    clearTimeout(debounceTimeout);
+                // Tax Code changes should always allow fresh owner-name lookup data to populate.
+                hasManualHoldingOwnerNameOverride.value = false;
+
+                const parsedWard = extractWardFromTaxId(newVal);
+                if (parsedWard !== '') {
+                    const matchedWard = findMatchingWardOption(parsedWard);
+
+                    if (matchedWard) {
+                        ward.value = +matchedWard;
+                        lastAutoSelectedWard.value = +matchedWard;
+                    } else {
+                        if (lastAutoSelectedWard.value && ward.value === lastAutoSelectedWard.value) {
+                            ward.value = '';
+                        }
+                        lastAutoSelectedWard.value = '';
+                    }
+                } else {
+                    if (lastAutoSelectedWard.value && ward.value === lastAutoSelectedWard.value) {
+                        ward.value = '';
+                    }
+                    lastAutoSelectedWard.value = '';
                 }
 
-                debounceTimeout = setTimeout(() => {
-                    fetchBuildingData(newVal);
-                    debounceTimeout = null;
-                }, 400);
+                if (!isValidTaxId(newVal)) {
+                    setHoldingOwnerNameFromLookup('');
+                    return;
+                }
+
+                taxIdLookupDebounceTimer = setTimeout(() => {
+                    fetchHoldingOwnerByTaxId(newVal, lookupRequestId);
+                }, 500);
             });
 
             // Watch showModal for countdown
@@ -828,29 +836,24 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 }
             });
 
-            // Watch selectedRoad to sync with roadCode
-            watch(selectedRoad, (newVal) => {
-                if (newVal && newVal.id) {
-                    roadCode.value = newVal.id;
-                } else {
-                    roadCode.value = '';
-                }
-                clearFieldError('road_code');
-            });
-
             // Clear field errors when typing
             watch(customerName, () => clearFieldError('customer_name'));
             watch(customerContact, () => clearFieldError('customer_contact'));
-            watch(holdingOwnerName, () => clearFieldError('holding_owner_name'));
+            watch(holdingOwnerName, () => {
+                clearFieldError('holding_owner_name');
+
+                if (!isHoldingOwnerNameAutoFillInProgress.value) {
+                    hasManualHoldingOwnerNameOverride.value = true;
+                }
+            });
             watch(ward, () => clearFieldError('ward'));
             watch(address, () => clearFieldError('address'));
             watch(proposedEmptyingDate, () => clearFieldError('proposed_emptying_date'));
             watch(notes, () => clearFieldError('notes'));
 
-            // Load wards and initial roads on mount
+            // Load wards on mount
             onMounted(() => {
                 loadWards();
-                searchRoadNames(); // Preload initial roads
             });
 
             return {
@@ -860,27 +863,20 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 customerContact,
                 holdingOwnerName,
                 ward,
-                roadCode,
-                selectedRoad,
                 address,
                 proposedEmptyingDate,
                 notes,
                 wards,
-                roadOptions,
                 fieldErrors,
                 isSubmitting,
                 showModal,
                 successMessage,
                 countdown,
                 showTaxIdField,
-                isSearchingRoads,
-                isLoadingData,
                 formatTaxId,
                 formatPhone,
                 handleSubmit,
-                closeModal,
-                searchRoadNames,
-                onRoadSearch
+                closeModal
             };
         }
     }
@@ -894,7 +890,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
             const serviceProviderName = ref('');
             const serviceProviderContact = ref('');
 
-            const safetyMeasures = ref([]);
+            const safetyMeasures = ref('');
 
             const fsmQualityLevel = ref(null);
             const serviceDeliveryEfficiency = ref(null);
@@ -953,7 +949,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 serviceProviderName.value = '';
                 serviceProviderContact.value = '';
 
-                safetyMeasures.value = [];
+                safetyMeasures.value = '';
 
                 fsmQualityLevel.value = null;
                 serviceDeliveryEfficiency.value = null;
@@ -983,8 +979,8 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 if (!customerNumber.value) {
                     fieldErrors.value.customer_number = 'Service Receiver Contact is required';
                 }
-                if (safetyMeasures.value.length === 0) {
-                    fieldErrors.value.safety_measures = 'Please select at least one safety measure';
+                if (!safetyMeasures.value) {
+                    fieldErrors.value.safety_measures = 'Please select Yes, No, or Unknown';
                 }
                 if (!fsmQualityLevel.value) {
                     fieldErrors.value.fsm_quality_level = 'Please rate the attitude of emptiers';
@@ -1014,7 +1010,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 payload.append('service_provider_name', serviceProviderName.value);
                 payload.append('service_provider_contact', serviceProviderContact.value);
 
-                payload.append('safety_measures', safetyMeasures.value.join(', '));
+                payload.append('safety_measures', safetyMeasures.value || '');
 
                 payload.append('fsm_quality_level', fsmQualityLevel.value || '');
                 payload.append('service_delivery_efficiency', serviceDeliveryEfficiency.value || '');

@@ -1,6 +1,6 @@
 <?php
 // Last Modified Date: 11-04-2024
-// Developed By: Innovative Solution Pvt. Ltd. (ISPL)  
+// Developed By: Innovative Solution Pvt. Ltd. (ISPL)
 namespace App\Services\Fsm;
 
 use App\Classes\FormField;
@@ -75,11 +75,11 @@ class ApplicationService
                     new FormField(
                         label: __('Containment ID'),
                         labelFor: 'containment_id',
-                        inputType: 'text', 
+                        inputType: 'text',
                         inputId: 'containment_id',
                         selectValues: [],
                         placeholder: __('Containment ID')
-                    ),     
+                    ),
                     new FormField(
                         label: __('Ward Number'),
                         labelFor: 'ward',
@@ -110,12 +110,12 @@ class ApplicationService
                     new FormField(
                         label: __('Owner Contact (Phone)'),
                         labelFor: 'customer_contact',
-                        inputType: 'text', 
+                        inputType: 'text',
                         inputId: 'customer_contact',
                         selectValues: [],
                         placeholder: __('Owner Contact (Phone)'),
-                        oninput: "validateOwnerContactInput(this)", 
-                    )                    
+                        oninput: "validateOwnerContactInput(this)",
+                    )
                 ]],
             ["title" =>__('Applicant Details'),
                 "copyDetails"=>true,
@@ -146,7 +146,7 @@ class ApplicationService
                         selectValues: [],
                         required: true,
                         placeholder: __('Applicant Contact (Phone)'),
-                        oninput: "validateOwnerContactInput(this)", 
+                        oninput: "validateOwnerContactInput(this)",
                     ),
                 ]],
 
@@ -188,7 +188,7 @@ class ApplicationService
                         inputId: 'household_served',
                         required: false,
                         placeholder: __('Number of Households'),
-                        oninput: "this.value = this.value.replace(/[^0-9]/g, '')" , 
+                        oninput: "this.value = this.value.replace(/[^0-9]/g, '')" ,
 
                     ),
                     new FormField(
@@ -198,7 +198,7 @@ class ApplicationService
                         inputId: 'population_served',
                         required: false,
                         placeholder: __('Population of Building'),
-                        oninput: "this.value = this.value.replace(/[^0-9]/g, '')" , 
+                        oninput: "this.value = this.value.replace(/[^0-9]/g, '')" ,
                     ),
                     new FormField(
                         label: __('Number of Toilets'),
@@ -207,7 +207,7 @@ class ApplicationService
                         inputId: 'toilet_count',
                         required: false,
                         placeholder: __('Number of Toilets'),
-                        oninput: "this.value = this.value.replace(/[^0-9]/g, '')" , 
+                        oninput: "this.value = this.value.replace(/[^0-9]/g, '')" ,
                     ),
                 ]],
         ];
@@ -219,7 +219,7 @@ class ApplicationService
         $this->filterFormFields = [
             [
                 new FormField(
-                    label: __('BIN'), 
+                    label: __('BIN'),
                     labelFor: 'bin',
                     labelClass: 'col-md-2 col-form-label ',
                     inputType: 'text',
@@ -247,7 +247,7 @@ class ApplicationService
                 ),
 
             ],
-            [  
+            [
                 new FormField(
                 label: __('Application ID'),
                 labelFor: 'application_id',
@@ -306,7 +306,7 @@ class ApplicationService
                     inputId: 'proposed_emptying_date',
                     placeholder: __('Proposed Emptying Date'),
                 ),
-               
+
             ],
             [
                 new FormField(
@@ -361,7 +361,7 @@ class ApplicationService
     }
 
 
-    
+
     /**
      * Get form fields for showing application.
      *
@@ -373,7 +373,7 @@ class ApplicationService
         ->leftJoin('building_info.buildings', 'building_info.buildings.bin', '=', 'applications.bin')
         ->where('applications.bin', $application->bin)
         ->first();
-        
+
         $this->showFormFields = [
             ["title" => __('Address'),
                 "fields" => [
@@ -401,10 +401,10 @@ class ApplicationService
                     new FormField(
                         label:__('Containment ID') ,
                         labelFor: 'containment_id',
-                        inputType: 'label', 
+                        inputType: 'label',
                         inputId: 'containment_id',
                         labelValue: $application->containment_id,
-                    ),   
+                    ),
                     new FormField(
                         label:__('Ward Number') ,
                         labelFor: 'ward',
@@ -505,7 +505,7 @@ class ApplicationService
                  else {
                      $selectValueServiceProvider = ServiceProvider::Operational()->pluck("company_name","id")->toArray();
                  }
-               
+
         $this->editFormFields = [
             ["title" => __("Address"),
                 "fields" => [
@@ -528,11 +528,11 @@ class ApplicationService
                     new FormField(
                         label: __('Containment ID'),
                         labelFor: 'containment_id',
-                        inputType: 'label', 
+                        inputType: 'label',
                         inputId: 'containment_id',
                         labelValue: $application->containment_id,
-                    ),  
-            
+                    ),
+
                     new FormField(
                         label: __('Ward Number'),
                         labelFor: 'ward',
@@ -553,7 +553,7 @@ class ApplicationService
                             inputId: 'customer_name',
                             inputValue: $application->customer_name,
                             placeholder: __('Owner Name'),
-                            disabled: true 
+                            disabled: true
                         ),
                         new FormField(
                             label: __('Owner Gender'),
@@ -563,7 +563,7 @@ class ApplicationService
                             selectValues: ["Male" => "Male", "Female" => "Female", "Others" => "Others"],
                             selectedValue: $application->customer_gender,
                             placeholder: __('Owner Gender'),
-                            disabled: true 
+                            disabled: true
                         ),
                         new FormField(
                             label: __('Owner Contact (Phone)'),
@@ -573,11 +573,11 @@ class ApplicationService
                             inputValue: $application->customer_contact,
                             placeholder: __('Owner Contact (Phone)'),
                             disabled: true ,
-                            
+
                         ),
                     ]
                     ],
-                
+
             ["title" => __("Applicant Details"),
                 "copyDetails"=>true,
                 "fields" => [
@@ -610,12 +610,12 @@ class ApplicationService
                         selectValues: [],
                         required: true,
                         placeholder: __('Applicant Contact (Phone)'),
-                        oninput: "validateOwnerContactInput(this)", 
+                        oninput: "validateOwnerContactInput(this)",
 
                     ),
                 ]],
 
-    
+
             ["title" => __("Application Details"),
                 "fields" => [
                     new FormField(
@@ -628,7 +628,7 @@ class ApplicationService
                         disabled: $application->emptying_status ? true : false, // Correct logic for disabling the field
                         placeholder: __('Proposed Emptying Date'),
                     ),
-                    
+
                     new FormField(
                         label: __('Service Provider Name'),
                         labelFor: 'service_provider_id',
@@ -734,7 +734,7 @@ class ApplicationService
         {
           return  Application::select('applications.*', 'building_info.buildings.house_number AS house_address')
           ->leftJoin('building_info.buildings', 'building_info.buildings.bin', '=', 'applications.bin')
-          ->whereNull('applications.deleted_at') 
+          ->whereNull('applications.deleted_at')
           ->where('applications.service_provider_id', Auth::user()->service_provider_id);
         }
         else if(Auth::user()->hasRole('Treatment Plant - Admin'))
@@ -762,9 +762,11 @@ class ApplicationService
      */
     public function getDatatable(Request $request)
     {
-        
-        return DataTables::of($this->getAllApplications($request))
 
+        $rows = $this->getAllApplications($request);
+        $rows->where('approved_status', true);
+
+        return DataTables::of($rows)
             ->filter(function ($query) use ($request) {
                 if ($request->bin){
                     $query->whereHas('buildings', function ($query) use ($request) {
@@ -805,8 +807,8 @@ class ApplicationService
                 if ($request->date_from && $request->date_to && $request->date_from <= $request->date_to) {
                     $query->whereDate('application_date', '>=', $request->date_from);
                     $query->whereDate('application_date', '<=', $request->date_to);
-                } 
-                
+                }
+
             })
             ->addColumn('action', function ($model) {
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['application.destroy', $model->id]]);
@@ -868,7 +870,7 @@ class ApplicationService
                 if($model->feedback_status == FALSE)
                 {
                     if (Auth::user()->can('Add Feedback')){
-                        $content .= '<a title="' . __("Add Feedback Details" ) . '"href="' . route("feedback.create-Feedback", [$model->id]) . '" class="btn btn-info btn-sm mb-1'. ( $model->emptying_status ? '' : ' anchor-disabled') . '"><i class="fa fa-pencil"></i></a> ';
+                        // $content .= '<a title="' . __("Add Feedback Details" ) . '"href="' . route("feedback.create-Feedback", [$model->id]) . '" class="btn btn-info btn-sm mb-1'. ( $model->emptying_status ? '' : ' anchor-disabled') . '"><i class="fa fa-pencil"></i></a> ';
                     }
                 }
                 else
@@ -918,7 +920,7 @@ class ApplicationService
     //     try {
     //         // Fetch building by BIN
     //         $building = Building::where('bin', '=', $request->bin)->firstOrFail();
-           
+
     //         // Filter containments based on the condition
     //         // $containments = $building->containments()->whereHas('applications', function ($query) {
     //         //     $query->whereNull('emptying_status')->orWhere('emptying_status', true);
@@ -941,14 +943,14 @@ class ApplicationService
     //         $owner = $building->owners;
     //         $road = $building->roadlines;
     //         $application = Application::orderBy('id', 'DESC')->where('bin', $request->bin)->first();
-    
+
     //         // Check if containments are empty
     //         if ($containments->isEmpty()) {
     //             return JsonResponse::fromJsonString(json_encode([
     //                 "error" => "There is no containment for this building!"
     //             ]), 404);
     //         }
-    
+
     //         // Return the response
     //         return JsonResponse::fromJsonString(json_encode([
     //             'test' => $road,
@@ -963,19 +965,19 @@ class ApplicationService
     //             "toilet_count" => $building->toilet_count ?? null,
     //             "status" => !$application || $application->emptying_status === null || $application->emptying_status
     //         ]), 200);
-    
+
     //     } catch (\Throwable $e) {
     //         // Handle exceptions
-        
+
     //         return JsonResponse::fromJsonString(json_encode([
     //             "error" => "Error getting building details!",
     //             "details" => $e->getMessage()
     //         ]), 500);
     //     }
     // }
-    
 
-  
+
+
 
 
     /**
@@ -996,7 +998,7 @@ class ApplicationService
             try {
                 DB::transaction(function () use ($request) {
                     $application = Application::create($request->all());
-                   
+
                     $building = Building::where('bin','=',$application->bin)->firstOrFail();
                     $owner = $building->owners;
                     $application->containment_id = $request->containment_id;
@@ -1113,7 +1115,7 @@ class ApplicationService
 
     public function export(Request $request)
     {
-   
+
         // Retrieve request parameters
         $house_number = $request->bin;
         $house_address = $request->house_address;
@@ -1128,7 +1130,7 @@ class ApplicationService
         $service_provider_id = $request->service_provider_id;
         $date_from = $request->date_from;
         $date_to = $request->date_to;
-    
+
         // Define CSV column headers
         $columns = [
             __('Road Code'),
@@ -1152,8 +1154,8 @@ class ApplicationService
             __('Sludge Collection Status'),
             __('Feedback Status'),
         ];
-        
-    
+
+
         // Build the base query
         $query = DB::table('fsm.applications as a')
         ->leftJoin('building_info.buildings as b', 'b.bin', '=', 'a.bin')
@@ -1182,7 +1184,7 @@ class ApplicationService
             )
             ->whereNull('a.deleted_at')
             ->orderBy('a.bin');
-           
+
         // Apply additional conditions based on user roles and request parameters
         if (Auth::user()->hasRole('Service Provider - Admin') || Auth::user()->hasRole('Service Provider - Help Desk')) {
             $query->where('a.service_provider_id', Auth::user()->service_provider_id);
@@ -1202,7 +1204,7 @@ class ApplicationService
         if (!empty($house_address)) {
             $query->where('b.house_number', 'ILIKE', '%' . $house_address . '%');
         }
-        
+
         if (!empty($customer_name)) {
             $query->where('a.customer_name', 'ILIKE', '%' . $customer_name . '%');
         }
@@ -1246,7 +1248,7 @@ class ApplicationService
         $query->chunk(5000, function ($applications) use ($writer) {
         // Add data rows to CSV
         foreach ($applications as $application) {
-    
+
             // Prepare data for CSV row
             $values = [
                 $application->road_code,
@@ -1270,16 +1272,16 @@ class ApplicationService
                 $application->sludge_collection_status ? 'True' : 'False',
                 $application->feedback_status ? 'True' : 'False',
             ];
-    
+
             // Add row to CSV
             $writer->addRow($values);
         }
     });
-    
+
         // Close the CSV file
         $writer->close();
     }
-    
+
     /**
     * Fetches and generates a monthly report.
     *
@@ -1456,7 +1458,7 @@ class ApplicationService
             $application = Application::find($id);
             $containment = Containment::query()
             ->leftJoin('fsm.containment_types as ct', 'ct.id', '=', 'containments.type_id')
-            ->select('containments.*', 'ct.type') 
+            ->select('containments.*', 'ct.type')
             ->where('containments.id', $application->containment_id)
             ->whereNull('containments.deleted_at')
             ->get();
@@ -1468,21 +1470,21 @@ class ApplicationService
             try {
                 // Fetch building by BIN
                 $building = Building::where('bin', '=', $request->bin)->firstOrFail();
-              
-        
+
+
                 // Use the `getContainmentIds` function to fetch filtered containment IDs
                 $containmentIds = $building->containments->pluck('id');
                 // Fetch additional related data
                 $owner = $building->owners;
                 $road = $building->roadlines;
                 $application = Application::orderBy('id', 'DESC')->where('bin', $request->bin)->first();
-        
+
                 // Check if containments are empty
-                
+
 
                 // Debug the status value
-               
-      
+
+
                 // Return the response
                 return JsonResponse::fromJsonString(json_encode([
                     'test' => $road,
@@ -1496,9 +1498,9 @@ class ApplicationService
                     "population_served" => $building->population_served ?? null,
                     "toilet_count" => $building->toilet_count ?? null,
                     "status" => !empty($containmentIds)
-                    
+
                 ]), 200);
-        
+
             } catch (Throwable $e) {
                 // Handle exceptions
                 return JsonResponse::fromJsonString(json_encode([
@@ -1507,6 +1509,6 @@ class ApplicationService
                 ]), 500);
             }
         }
-       
-       
+
+
 }

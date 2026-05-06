@@ -1,16 +1,17 @@
 <?php
-// Last Modified: 12-03-2026
+// Last Modified: April 8, 2026
 // Developed By: Streams Tech Ltd.
-// Description: Handles index, view, and delete actions for pending applications in FSM.
+// Description: Handles create, store, index, view, and delete actions for pending applications in FSM.
 
 namespace App\Http\Controllers\Fsm;
 
 use App\Http\Controllers\Controller;
-use App\Models\Fsm\PendingApplication;
+use App\Models\Fsm\Application;
 use App\Services\Fsm\PendingApplicationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class PendingApplicationController extends Controller
@@ -24,8 +25,13 @@ class PendingApplicationController extends Controller
 
     public function index(): View
     {
+        $createBtnLink = Auth::user()->can('Add Application') ? route('pending-application.create') : null;
+        $createBtnTitle = __('Add Application');
+
         return view('fsm.pending-applications.index', [
             'pageTitle' => __('Pending Application'),
+            'createBtnLink' => $createBtnLink,
+            'createBtnTitle' => $createBtnTitle,
         ]);
     }
 
@@ -34,9 +40,28 @@ class PendingApplicationController extends Controller
         return $this->pendingApplicationService->getDatatable($request);
     }
 
+    public function create(): View
+    {
+        return view('fsm.pending-applications.create', [
+            'pageTitle' => __('Add Application'),
+            'formAction' => $this->pendingApplicationService->getCreateFormAction(),
+            'formFields' => $this->pendingApplicationService->getCreateFormFields(),
+            'indexAction' => $this->pendingApplicationService->getIndexRoute(),
+        ]);
+    }
+
+    public function store(Request $request): Redirector|RedirectResponse
+    {
+        return $this->pendingApplicationService->createPendingApplication(
+            $request,
+            'pending-application.index',
+            __('Pending Application created successfully.')
+        );
+    }
+
     public function show(int $id): View
     {
-        $pendingApplication = PendingApplication::findOrFail($id);
+        $pendingApplication = Application::findOrFail($id);
 
         return view('fsm.pending-applications.show', [
             'pageTitle' => __('Pending Application Details'),
@@ -49,7 +74,7 @@ class PendingApplicationController extends Controller
     public function destroy(int $id): Redirector|RedirectResponse
     {
         try {
-            $pendingApplication = PendingApplication::findOrFail($id);
+            $pendingApplication = Application::findOrFail($id);
             $pendingApplication->delete();
 
             return redirect(route('pending-application.index'))

@@ -157,11 +157,11 @@
                                                 <input type="text" class="form-control" id="floor_count"
                                                     placeholder="{{ __('Number of Floors') }}" />
                                             </div>
-                                            <label for="house_number"
-                                                class="control-label col-md-2">{{ __('House Number') }}</label>
+                                            <label for="tax_code"
+                                                class="control-label col-md-2">{{ __('Tax Code') }}</label>
                                             <div class="col-md-2">
-                                                <input type="text" class="form-control" id="house_number"
-                                                    placeholder="{{ __('House Number') }}
+                                                <input type="text" class="form-control" id="tax_code"
+                                                    placeholder="{{ __('Tax Code') }}"
                                                     oninput = "this.value=this.value.replace(/[^a-zA-Z0-9-]/g, ''
                                                     ); " />
                                                     <!-- Allow only alphabetic characters, numbers, and the hyphen (-) -->
@@ -218,7 +218,7 @@
                         <thead>
                             <tr>
                                 <th>{{ __('BIN') }}</th>
-                                <th>{{ __('House Number') }}</th>
+                                <th>{{ __('Tax Code') }}</th>
                                 <th>{{ __('Road Code') }}</th>
                                 <th>{{ __('Ward Number') }}</th>
                                 <th>{{ __('Structure Type') }}</th>
@@ -245,7 +245,7 @@
         $(function() {
 
             var bin = '';
-            var house_number = '';
+            var tax_code = '';
             var structype = '';
             var ward = '';
             var functional_use = '';
@@ -267,7 +267,7 @@
                     url: '{!! url('building-info/buildings/data') !!}',
                     data: function(d) {
                         d.bin = $('#bin_text').val();
-                        d.house_number = $('#house_number').val();
+                        d.tax_code = $('#tax_code').val();
                         d.structype = $('#structype_select').val();
                         d.ward = $('#ward_select').val();
                         d.functional_use = $('#functional_use_select').val();
@@ -283,9 +283,6 @@
                         d.date_from = $('#date_from').val();
                         d.date_to = $('#date_to').val();
                         d.use_category_select = $('#use_category_select').val();
-
-
-
                     }
                 },
                 columns: [{
@@ -293,8 +290,8 @@
                         name: 'bin'
                     },
                     {
-                        data: 'house_number',
-                        name: 'house_number'
+                        data: 'tax_code',
+                        name: 'tax_code'
                     },
                     {
                         data: 'road_code',
@@ -363,7 +360,7 @@
 
 
             var bin = '',
-                house_number = '',
+                tax_code = '',
                 structype = '',
                 ward = '',
                 roadcd = '',
@@ -427,7 +424,7 @@
                 e.preventDefault();
                 dataTable.draw();
                 bin = $('#bin_text').val();
-                house_number = $('#house_number').val();
+                tax_code = $('#tax_code').val();
                 structype = $('#structype_select').val();
                 ward = $('#ward_select').val();
                 functional_use = $('#functional_use_select').val();
@@ -472,7 +469,7 @@
 
                 var searchData = $('input[type=search]').val();
                 var bin = $('#bin_text').val();
-                var house_number = $('#house_number').val();
+                var tax_code = $('#tax_code').val();
                 var structype = $('#structype_select').val();
                 var ward = $('#ward_select').val();
                 var roadcd = $('#road_code').val();
@@ -489,7 +486,7 @@
                 window.location.href = "{!! url('building-info/buildings/export?searchData=') !!}" +
                     searchData +
                     "&bin=" + bin +
-                    "&house_number=" + house_number +
+                    "&tax_code=" + tax_code +
                     "&structype=" + structype +
                     "&ward=" + ward +
                     "&roadcd=" + roadcd +
@@ -536,7 +533,7 @@
                 well_prese = $('#well_prese').val();
                 sanitation_system_id = $('#sanitation_system_id').val();
                 floor_count = $('#floor_count').val();
-                house_number = $('#house_number').val();
+                tax_code = $('#tax_code').val();
                 date_from = $('#date_from').val();
                 date_to = $('#date_to').val();
 
@@ -579,8 +576,8 @@
                 if (floor_count) {
                     cql_param += " AND strConcat(floor_count,'')  ILIKE '" + floor_count + "%'";
                 }
-                if (house_number) {
-                    cql_param += " AND house_number ILIKE '%" + house_number + "%'";
+                if (tax_code) {
+                    cql_param += " AND tax_code ILIKE '%" + tax_code + "%'";
                 }
                 if (use_category_select) {
                     cql_param += " AND use_category_id = '" + use_category_select + "'";

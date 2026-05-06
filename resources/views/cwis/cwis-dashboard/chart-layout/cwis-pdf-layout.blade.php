@@ -1,6 +1,10 @@
 <!-- Last Modified Date: 24-04-2024
 Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 <style>
+    body {
+        font-family: 'Noto Sans Bengali', 'SolaimanLipi', 'Kalpurush', 'Arial Unicode MS', sans-serif;
+    }
+
     h1 {
         margin: 0;
         font-weight: normal;
@@ -402,13 +406,23 @@ span {
 
 
 </style>
-<div class="container">
-    <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('img/logo-imis.png'))) }}" class="logo" style=" width: 120px;">
-       <div class="header">
-           <h1 class="heading" style="text-transform:uppercase; margin: 0; text-align:center">{{__('Municipality')}}</h1>
-           <h2 style="text-transform:uppercase; margin: 10px; text-align:center ">{{__('CWIS Indicator')}}</h2>
-
-       </div>
+<div class="container"">
+    <table width="100%" cellpadding="0" cellspacing="0" style="border:none; padding: 15px 0;">
+        <tr>
+            <td style="width:80px; vertical-align:top; border:none;">
+                <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('img/stl/logo-Lakshmipur.png'))) }}"
+                    alt="" style="width:100px; display:block;">
+            </td>
+            <td style="vertical-align:middle; text-align:center; border:none;">
+                <h1 class="heading" style="text-transform:uppercase; margin: 0;">{{ __('লক্ষ্মীপুর পৌরসভা কার্যালয়')
+                    }}</h1>
+                <h2 style="text-transform:uppercase; margin: 10px 0;">{{ __('লক্ষ্মীপুর') }}</h2>
+                <h3 style="text-transform:uppercase; margin: 10px 0;">{{ __('INDICATORS') }}</h3>
+                <!-- <h3 style="text-transform:uppercase; margin: 0;">Integrated Municipal Information System</h3> -->
+            </td>
+            <td style="width:80px; border:none;"></td>
+        </tr>
+    </table>
    <hr>
 
 
@@ -418,12 +432,12 @@ span {
         <label class="label" for="tab-1"></label>
         <div class="" >
             <h1>{{__('Equity')}}</h1>
-            <div class="card card1" > 
+            <div class="card card1" >
 
 
                 <div style="margin-left:20%">
                     <h2 style="color: #6CB4EE; font-weight: bold; font-size: 70px; margin-top:25% ">{{$eq1}}</h2>
-                   
+
                 </div>
 
                 <p>{{__('Ratio of LIC access to total population access')}}</p>

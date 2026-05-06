@@ -63,7 +63,7 @@ class FeedbackController extends Controller{
             $feedbacksData = DB::table('fsm.feedbacks AS f')
             ->join('auth.users AS u', 'f.user_id', '=', 'u.id')
             ->join('fsm.applications AS a', 'f.application_id', '=', 'a.id')
-            ->select('f.created_at','f.id','f.application_id', 'u.username', 'a.ward')
+            ->select('f.created_at','f.id','f.application_id', 'u.username', 'a.ward', 'f.customer_name', 'f.customer_number')
             ->whereNull('f.deleted_at')
            ->where('a.service_provider_id','=',Auth::user()->service_provider_id);
 
@@ -72,7 +72,7 @@ class FeedbackController extends Controller{
         {
             $feedbacksData = DB::table('fsm.feedbacks AS f')
             ->join('fsm.applications AS a', 'f.application_id', '=', 'a.id')
-            ->select('f.created_at','f.id','f.application_id', 'a.ward')
+            ->select('f.created_at','f.id','f.application_id', 'a.ward', 'f.customer_name', 'f.customer_number')
             ->whereNull('f.deleted_at');
         }
 
@@ -100,6 +100,10 @@ class FeedbackController extends Controller{
                 if ($request->date_from && $request->date_to) {
                     $query->whereBetween('f.created_at', [Date::parse($request->date_from), Date::parse($request->date_to)]);
                 }
+            })
+            ->editColumn('customer_number', function ($model) {
+                $customerNumber = trim((string) $model->customer_number);
+                return strlen($customerNumber) === 10 ? '0' . $customerNumber : $customerNumber;
             })
             ->addColumn('action', function ($model) {
                 $application = Application::find($model->application_id);
@@ -140,7 +144,7 @@ class FeedbackController extends Controller{
     */
     public function show($id)
     {
-        $feedback = Feedback::find($id);
+        $feedback = Feedback::with('application.service_provider')->find($id);
         if ($feedback) {
             $page_title = __("Feedback Details");
             return view('fsm.feedbacks.show', compact('page_title', 'feedback'));

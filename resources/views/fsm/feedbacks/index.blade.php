@@ -41,7 +41,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                             </select>
                                         </div>
                                     </div>
-        
+
                                     <div class="form-group row">
                                         <label for="date_from" class="control-label col-md-2"> {{__("Date From")}}</label>
                                         <div class="col-md-2">
@@ -77,6 +77,8 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 <tr>
                     <th>{{__("Application ID")}}</th>
                     <th>{{__("Ward Number")}}</th>
+                    <th>{{__("Service Receiver Name")}}</th>
+                    <th>{{__("Service Receiver Contact")}}</th>
                     <th>{{__("Feedback Date")}}</th>
                     <th>{{__("Actions")}}</th>
 
@@ -113,6 +115,14 @@ $(function() {
             {
                 data: 'ward',
                 name: 'ward'
+            },
+            {
+                data: 'customer_name',
+                name: 'customer_name'
+            },
+            {
+                data: 'customer_number',
+                name: 'customer_number'
             },
             {
                 data: 'created_at',

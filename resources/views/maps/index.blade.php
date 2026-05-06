@@ -1,11 +1,11 @@
 {{--
-// Last Modified: 2026-02-23
+// Last Modified: 2026-04-25
 // Developed By: Streams Tech Ltd.
 // Description: Map interface view with tools for road, sewer, drain, and water supply network addition.
 --}}
-<!-- Last Modified Date: 22-02-2026
+<!-- Last Modified Date: 07-04-2026
 Developed By: Streams Tech Ltd. & Innovative Solution Pvt. Ltd. (ISPL)
-Description: Map interface view with tools for road, sewer, drain, and water supply network addition. Ward select field border removed. Road Code text field and Use Extension checkbox added to Add Road Network form. Base Road Code and Extension fields appear/hide based on Use Extension checkbox state. Road Code auto-populates with base road code + extension. Ward and Hierarchy fields visibility toggled based on Road Type selection (visible only for Municipality Road). -->
+Description: Map interface view with tools for road, sewer, drain, and water supply network addition. Ward select field border removed. Road Code text field and Use Extension checkbox added to Add Road Network form. Base Road Code and Extension fields appear/hide based on Use Extension checkbox state. Road Code auto-populates with base road code + extension. Ward field visibility toggled based on Road Type selection while Hierarchy remains visible and defaults to Primary for Municipality Road only. -->
 
 @extends('layouts.maps')
 @section('title', __('Map'))
@@ -227,12 +227,12 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                                             {!! Form::select('ward', $wards, null, ['class' => 'form-control', 'placeholder' => __('Ward'), 'id' => 'ward_select']);!!}
                                         </div>
 
-                                        <div class="add-road-form-group pt-2">
-                                            {!! Form::label('hierarchy',__('Hierarchy'),['class' => 'control-label'],false) !!}
-                                            {!! Form::select('hierarchy', $roadHierarchy, null, ['class' => 'form-control', 'placeholder' => __('Road Hierarchy')]);!!}
-                                        </div>
-
                                         {!! Form::hidden('serial_number', null, ['id' => 'serial_number']) !!}
+                                    </div>
+
+                                    <div class="add-road-form-group pt-2">
+                                        {!! Form::label('hierarchy',__('Hierarchy'),['class' => 'control-label'],false) !!}
+                                        {!! Form::select('hierarchy', $roadHierarchy, null, ['class' => 'form-control', 'placeholder' => __('Road Hierarchy'), 'id' => 'hierarchy']);!!}
                                     </div>
 
                                     <div class="add-road-form-group pt-2">
@@ -259,7 +259,7 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                                     <div class="add-road-form-group pt-2">
                                         {!! Form::label('road_code',__('Road Code') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
                                         {!! Form::text('road_code',null,['class' => 'form-control', 'placeholder' => __('Road Code'), 'id' => 'road_code_field']) !!}
-                                        <small style="color: #666; display: block; margin-top: 5px;">{{ __('Municipality Road: auto-generated as 20512510 + Ward(2 digits) + Serial(4 digits)') }}</small>
+                                        <small id="municipality_road_hint" style="color: #666; display: none; margin-top: 5px;">{{ __('Municipality Road: auto-generated as 20512510 + Ward(2 digits) + Serial(4 digits)') }}</small>
                                     </div>
 
                                     <div class="add-road-form-group pt-2">
@@ -274,13 +274,11 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                                         <div class="add-road-form-group pt-2">
                                             {!! Form::label('base_road_code',__('Base Road Code') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
                                             {!! Form::select('base_road_code', isset($baseRoadCodes) ? $baseRoadCodes : [], null, ['class' => 'form-control', 'placeholder' => __('Select existing road code'), 'id' => 'base_road_code']) !!}
-                                            <small style="color: #666; display: block; margin-top: 5px;">{{ __('Loaded from existing dataset (API/db).') }}</small>
                                         </div>
 
                                         <div class="add-road-form-group pt-2">
                                             {!! Form::label('extension',__('Extension (2 digits)') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
                                             {!! Form::text('extension',null,['class' => 'form-control', 'placeholder' => __('01'), 'id' => 'extension', 'maxlength' => '2', 'pattern' => '[0-9]{2}']) !!}
-                                            <small style="color: #666; display: block; margin-top: 5px;">{{ __('Auto-generated: 01, 02, 03...') }}</small>
                                         </div>
                                     </div>
 
@@ -330,7 +328,7 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                     </form>
 
                     <form class="form-horizontal" id="add-drain-form">
-                        <div class="add-drain-form" style="display: none">
+                        <div class="add-drain-form" style="display: none; overflow-y: scroll; max-height: 60vh;">
                                 <div>
                                     <hr>
                                      <h4>{{ __('Add Drain Network')}}</h4>
@@ -342,11 +340,14 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                                     {!! Form::label('road_code', __('Road Code') .' <span style="color: red">*</span>', ['class' => 'control-label d-block'], false) !!}
                                         {!! Form::select('road_code', $road_code, null, ['class' => 'form-control','id'=>'road_code_drain', 'placeholder' =>  __('Road Code'), 'style' => 'width: 350px;']) !!}
                                     </div>
+                                    <div class="add-drain-form-group">
+                                    {!! Form::label('drain_code', __('Drain Code') .' <span style="color: red">*</span>', ['class' => 'control-label d-block'], false) !!}
+                                        {!! Form::text('drain_code', null, ['class' => 'form-control','id'=>'drain_code_drain', 'placeholder' =>  __('Drain Code'), 'readonly' => true]) !!}
+                                    </div>
                                     <div class="add-drain-form-group pt-2">
                                         {!! Form::label('cover_type', __('Cover Type'),['class' => 'control-label'],false) !!}
                                         {!! Form::select('cover_type', $cover_type, null, ['class' => 'form-control', 'placeholder' => __('Cover Type')])!!}
                                     </div>
-
                                     <div class="add-drain-form-group pt-2">
                                         {!! Form::label('surface_type', __('Surface Type'),['class' => 'control-label'],false) !!}
                                         {!! Form::select('surface_type', $surface_type, null, ['class' => 'form-control', 'placeholder' => __('Surface Type'), 'id'=>'surface_type_drain',])!!}
@@ -1381,9 +1382,9 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
         <div class="float-right d-none d-sm-inline ">
         	<strong>Implemented by:</strong> <a href="https://streamstech.com">Streams Tech Ltd.</a>
     	</div>
-            <strong> Base IMIS <i class="fa-regular fa-copyright"> </i>  2022-{{ \Carbon\Carbon::now()->format('Y') }} by <a href="http://www.innovativesolution.com.np">
-	ISPL</a> & <a href="https://www.gwsc.ait.ac.th/">GWSC-AIT</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1">CC BY-NC-SA 4.0 </a>
-</strong>
+        <strong>
+            &copy; {{ config('constants.SITE_NAME') }}. All rights reserved.
+        </strong>
 
         <!-- Default to the left -->
         <div id="footer-content">
@@ -1901,12 +1902,11 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
             useExtensionCheckbox.change(function() {
                 if (this.checked) {
                     extensionFieldsContainer.slideDown();
-                    // Load base road codes when extension is enabled and ward is selected
+                    // Load base road codes when extension is enabled and ward/road type is selected
                     const ward = $('#ward_select').val();
-                    if (ward) {
-                        loadBaseRoadCodes(ward);
-                    }
+                    loadBaseRoadCodes(ward);
                 } else {
+                    updateRoadCode()
                     extensionFieldsContainer.slideUp();
                     // Clear base road code select when extension is disabled
                     $('#base_road_code').html('<option value="">{{ __("Select existing road code") }}</option>');
@@ -1914,10 +1914,40 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
             });
 
             /**
-             * Load base road codes (road_uid) from database filtered by ward
+             * Compute next 2-digit extension from an array of road objects.
+             * Scans each road.code for a trailing -XX suffix and returns max+1, capped at 99.
+             * Returns '01' when roads exist but none carry a -XX suffix.
+             * Returns '' when the roads array is empty or falsy.
+             */
+            function computeNextExtension(roads) {
+
+                const extensionNumbers = (roads || []).map(function(road) {
+                    const match = (road.code || '').match(/-(\d{2})$/);
+                    return match ? parseInt(match[1], 10) : null;
+                }).filter(function(value) {
+                    return value !== null && !isNaN(value);
+                });
+
+                if (extensionNumbers.length > 0) {
+                    const maxExtension = Math.max.apply(null, extensionNumbers);
+                    return String(Math.min(maxExtension + 1, 99)).padStart(2, '0');
+                } else if (roads && roads.length > 0) {
+                    return '01';
+                }
+                return '';
+            }
+
+            // Holds the last set of road objects returned by loadBaseRoadCodes.
+            let loadedRoadData = [];
+
+            /**
+             * Load base road codes (road_uid) from database filtered by ward and road type
              */
             function loadBaseRoadCodes(ward) {
-                if (!ward) {
+                const roadType = $('#road_type').val();
+
+                if (!ward && !roadType) {
+                    loadedRoadData = [];
                     $('#base_road_code').html('<option value="">{{ __("Select existing road code") }}</option>');
                     return;
                 }
@@ -1927,25 +1957,31 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                 $.ajax({
                     url: '{{ url("/utilityinfo/roadlines/get-by-ward") }}',
                     type: 'GET',
-                    data: { ward: ward },
+                    data: { ward: ward, road_type: roadType },
                     dataType: 'json',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function(data) {
+                        loadedRoadData = data || [];
                         let options = '<option value="">{{ __("Select existing road code") }}</option>';
-                        if (data && data.length > 0) {
-                            $.each(data, function(index, road) {
-                                options += '<option value="' + road.road_uid + '">' + road.road_uid + ' (' + road.code + ')</option>';
+
+                        if (loadedRoadData.length > 0) {
+                            $.each(loadedRoadData, function(index, road) {
+                                options += '<option value="' + road.road_uid + '">' + road.name + ' (' + road.code + ')</option>';
                             });
                         } else {
-                            options = '<option value="">{{ __("No roads found for this ward") }}</option>';
+                            options = '<option value="">{{ __("No roads found for selected filters") }}</option>';
                         }
                         $('#base_road_code').html(options);
+                        // Extension is populated only when the user selects a base road code.
+                        $('#extension').val('');
                     },
                     error: function(xhr, status, error) {
                         console.error('Error loading roads:', status, error);
+                        loadedRoadData = [];
                         $('#base_road_code').html('<option value="">{{ __("Error loading roads") }}</option>');
+                        $('#extension').val('');
                     }
                 });
             }
@@ -1953,35 +1989,85 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
             // Load roads when ward changes and extension is enabled
             // Note: This is added to the existing wardSelect.change handler logic below
 
-            // Populate Road Code field when base road code and extension are selected
-            $('#base_road_code, #extension').change(function() {
-                const baseRoadCode = $('#base_road_code').val();
-                const extension = $('#extension').val();
+            // When the user selects a base road code, auto-fill the next available extension.
+            $('#base_road_code').change(function() {
+                const selectedRoadUid = $(this).val();
+                if (selectedRoadUid) {
+                    // Find the selected road object by road_uid.
+                    const selectedRoad = loadedRoadData.find(function(road) {
+                        return String(road.road_uid) === String(selectedRoadUid);
+                    });
 
-                if (baseRoadCode && extension) {
-                    $('#road_code_field').val(baseRoadCode + extension);
+                    // Derive the base code pattern by stripping any trailing -XX extension.
+                    const baseCodePattern = selectedRoad
+                        ? (selectedRoad.code || '').replace(/-\d{2}$/, '')
+                        : '';
+
+                    // Filter to only roads that share the same base code pattern.
+                    const relatedRoads = baseCodePattern
+                        ? loadedRoadData.filter(function(road) {
+                            return (road.code || '').replace(/-\d{2}$/, '') === baseCodePattern;
+                        })
+                        : loadedRoadData;
+
+                    const nextExtension = computeNextExtension(relatedRoads);
+                    $('#extension').val(nextExtension);
+                    if (nextExtension) {
+                        $('#road_code_field').val(selectedRoadUid + '-' + nextExtension);
+                    }
+                } else {
+                    $('#extension').val('');
+                    $('#road_code_field').val('');
                 }
             });
 
-            // Municipality fields visibility toggle based on Road Type selection
+            // Update road code field whenever the extension is manually changed.
+            $('#extension').change(function() {
+                const baseRoadCode = $('#base_road_code').val();
+                const extension = $(this).val();
+                if (baseRoadCode && extension) {
+                    $('#road_code_field').val(baseRoadCode + '-' + extension);
+                }
+            });
+
+            // Municipality-only fields visibility toggle based on Road Type selection
             const roadTypeSelect = $('#road_type');
             const municipalityFieldsContainer = $('#municipality_fields_container');
+            const hierarchySelect = $('#hierarchy');
+            const municipalityRoadHint = $('#municipality_road_hint');
 
-            // Toggle fields visibility on road type change
+            // Toggle municipality-only fields and hierarchy default on road type change
             roadTypeSelect.change(function() {
                 const selectedValue = $(this).val();
                 if (selectedValue === 'MunicipalityRoad') {
                     municipalityFieldsContainer.slideDown();
+                    municipalityRoadHint.show();
                     $('#road_code_field').prop('readonly', true).data('auto-generated', true);
+                    hierarchySelect.val('Primary');
+
+                    // Regenerate municipality road code when switching back to Municipality Road.
+                    const selectedWard = $('#ward_select').val();
+                    if (selectedWard) {
+                        $('#ward_select').trigger('change');
+                    } else {
+                        updateRoadCode();
+                    }
                 } else {
                     municipalityFieldsContainer.slideUp();
+                    municipalityRoadHint.hide();
                     $('#road_code_field').prop('readonly', false).data('auto-generated', false);
                     // Clear fields when switching away from Municipality Road
                     $('#road_code_field').val('');
-                    $('#ward_select').val('');
-                    $('#serial_number').val('');
+                    hierarchySelect.val('');
+                }
+
+                // Load base road codes for extension mode on road type change
+                if (useExtensionCheckbox.is(':checked')) {
+                    loadBaseRoadCodes($('#ward_select').val());
                 }
             });
+
+            roadTypeSelect.trigger('change');
 
             // Road code auto-generation logic for Municipality Road
             const wardSelect = $('#ward_select');
@@ -2680,6 +2766,7 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                     filters: [],
                 },
                 @endcan
+                /*
                 @can('Places Map Layer')
                 places_layer: {
                     name: '{{ __("Places") }}',
@@ -2689,6 +2776,7 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                     filters: [],
                 },
                 @endcan
+                */
                 @can('Buildings Map Layer')
                 buildings_layer: {
                     name: '{{ __("Building") }}',
@@ -2843,6 +2931,7 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                 @endcan
 
 
+                /*
                 @can('Sanitation System Map Layer')
                 sanitation_system_layer: {
                     name: '{{ __("Sanitation System") }}',
@@ -2852,6 +2941,7 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                     filters: [],
                 },
                 @endcan
+                */
 
 
                 @can('PT/CT Toilets Map Layer')
@@ -2977,6 +3067,8 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                     filters: [],
                 },
                 @endcan
+
+                /*
                 @can('Wards Map Layer')
                 wards_layer: {
                     name: '{{ __("Ward Wise Info") }}',
@@ -3079,6 +3171,9 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                     filters: [],
                 },
                 @endcan
+                */
+
+               /*
                 @can('Summarized Grids Map Layer')
                 grids_layer: {
                     name: '{{ __("Summarized Grids (0.5 km)") }}',
@@ -3172,6 +3267,7 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                     filters: [],
                 },
                 @endcan
+                */
 
         @can('Water Body Map Layer')
         waterbodys_layer: {
@@ -3183,7 +3279,7 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
         },
         @endcan
 
-
+                /*
                 @can('Land Use Map Layer')
                 landuses_layer: {
                     name: '{{ __("Land Use") }}',
@@ -3193,6 +3289,7 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                     filters: [],
                 },
                 @endcan
+                */
 
             };
 
@@ -4515,14 +4612,16 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                 const extension = $('#extension').val();
                 const roadUid = useExtension ? baseRoadCode : $('#road_code_field').val();
                 const roadExt = useExtension ? extension : null;
+                const roadTypeValue = $('#road_type').val();
                 const wardValue = $('#ward_select').val() || $('[name="ward"]').val();
+                const hierarchyValue = roadTypeValue === 'MunicipalityRoad' ? $('#hierarchy').val() : null;
 
                 // Dynamically get the road form data
                 formData = {
                     'name': $('#name').val(),
-                    'road_type': $('#road_type').val(),
+                    'road_type': roadTypeValue,
                     'ward': wardValue,
-                    'hierarchy': $('#hierarchy').val(),
+                    'hierarchy': hierarchyValue,
                     'surface_type': $('#surface_type').val(),
                     'length': $('#length').val(),
                     'carrying_width': $('#carrying_width').val(),
@@ -4562,6 +4661,7 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
             }else if (controlType === 'drain') {
                 geom = getGeometryLayer();
                 fieldNameMapping = {
+                    "drain_code": "{{ __('Drain Code') }}",
                     "road_code": "{{ __('Road Code') }}",
                     "cover_type": "{{ __('Cover Type') }}",
                     "surface_type": "{{ __('Surface Type') }}",
@@ -4572,6 +4672,7 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
 
                 // Dynamically get the drain form data
                 formData = {
+                    'drain_code': $('#drain_code_drain').val(),
                     'road_code': $('#road_code_drain').val(),
                     "cover_type": $('#cover_type').val(),
                     "surface_type": $('#surface_type_drain').val(),
@@ -4580,6 +4681,12 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                     'treatment_plant_id': $('#tp_drain').val(),
                     "geom": geom
                 };
+
+                if (!formData.drain_code) {
+                    const html = '<ul class="alert alert-danger"><li>{{ __('Drain Code is required') }}</li></ul>';
+                    $('#add-drain-errors').empty().append(html).focus();
+                    return;
+                }
                 url = '{{url("/utilityinfo/drains/add-drain")}}';
                 return_url = '{{ route("drains.index") }}';
 
@@ -12793,6 +12900,37 @@ $.ajax({
             placeholder: 'Road Code - Road Name',
             allowClear: true,
             closeOnSelect: true,
+        });
+
+        $('#road_code_drain').on('change', function () {
+            const selectedRoadCode = $(this).val();
+            $('#drain_code_drain').val('');
+
+            if (!selectedRoadCode) {
+                return;
+            }
+
+            $.ajax({
+                url: "{{ route('drains.generate-code') }}",
+                type: 'POST',
+                data: {
+                    road_code: selectedRoadCode,
+                },
+                dataType: 'json',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    if (response.success && response.drain_code) {
+                        $('#drain_code_drain').val(response.drain_code);
+                    } else {
+                        $('#drain_code_drain').val('');
+                    }
+                },
+                error: function() {
+                    $('#drain_code_drain').val('');
+                }
+            });
         });
 
    </script>
