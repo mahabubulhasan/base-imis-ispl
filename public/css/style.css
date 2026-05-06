@@ -1329,3 +1329,57 @@ body.layout-fixed .main-sidebar .sidebar {
     margin-top: 0 !important;
   }
 }
+
+/* Desktop sidebar/content alignment guard:
+   prevent content layer from bleeding over sidebar edge. */
+@media (min-width: 1200px) {
+  body.layout-fixed .main-sidebar,
+  body.layout-fixed .main-sidebar::before {
+    z-index: 1040;
+  }
+
+  body.layout-fixed .content-wrapper,
+  body.layout-fixed .main-header,
+  body.layout-fixed .main-footer {
+    position: relative;
+    z-index: 1030;
+  }
+
+  body.layout-fixed:not(.sidebar-collapse) .content-wrapper,
+  body.layout-fixed:not(.sidebar-collapse) .main-header,
+  body.layout-fixed:not(.sidebar-collapse) .main-footer {
+    margin-left: 250px !important;
+  }
+
+  body.layout-fixed.sidebar-collapse .content-wrapper,
+  body.layout-fixed.sidebar-collapse .main-header,
+  body.layout-fixed.sidebar-collapse .main-footer {
+    margin-left: 4.6rem !important;
+  }
+}
+
+/* Sidebar brand/logo overlap fix:
+   keep a stable brand row height so first menu item starts below logo. */
+#sidebar-brand-link {
+  display: flex !important;
+  align-items: center;
+  min-height: 57px;
+  padding: 0.5rem 0.75rem;
+  overflow: hidden;
+}
+
+#sidebar-brand-link::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+#sidebar-brand-link #sidebar-logo,
+#sidebar-brand-link #hello-text {
+  float: none !important;
+  margin-top: 0 !important;
+}
+
+body.layout-fixed .main-sidebar .sidebar {
+  padding-top: 0.5rem;
+}

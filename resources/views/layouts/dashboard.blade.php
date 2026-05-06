@@ -18,7 +18,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
     @stack('style')
 </head>
 
-<body class="sidebar-mini sidebar-collapse layout-fixed layout-navbar-fixed layout-footer-fixed" style="height: auto;">
+<body class="sidebar-mini sidebar-collapse layout-fixed layout-navbar-fixed" style="height: auto;">
     <div class="wrapper">
         <!-- Header -->
         @include('includes.header')

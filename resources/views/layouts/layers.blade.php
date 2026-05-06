@@ -14,7 +14,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
         <link rel="stylesheet" href="https://openlayers.org/en/v4.6.5/css/ol.css" type="text/css">
     </head>
 
-<body class="sidebar-mini sidebar-collapse layout-fixed layout-navbar-fixed layout-footer-fixed" style="height: auto;">
+<body class="sidebar-mini sidebar-collapse layout-fixed layout-navbar-fixed" style="height: auto;">
 
         <div class="wrapper">       
             <!-- Header -->
