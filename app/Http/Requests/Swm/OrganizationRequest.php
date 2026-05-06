@@ -57,6 +57,12 @@ class OrganizationRequest extends FormRequest
                     'contact_number' => ['required', 'regex:/^[0-9]+$/'],
                     'organization_category' => ['required', Rule::in(array_keys(Organization::CATEGORY_OPTIONS))],
                     'organization_category_other' => ['required_if:organization_category,other', 'nullable', 'string', 'max:255'],
+                    'service_wards' => ['nullable', 'array'],
+                    'service_wards.*' => [
+                        'integer',
+                        Rule::exists('pgsql.layer_info.wards', 'ward'),
+                    ],
+                    'remarks' => ['nullable', 'string', 'max:2000'],
                     'status' => 'required|boolean',
                     'password' => [
                         'required_if:create_user,on',
@@ -99,6 +105,12 @@ class OrganizationRequest extends FormRequest
                     'contact_number' => ['required', 'regex:/^[0-9]+$/'],
                     'organization_category' => ['required', Rule::in(array_keys(Organization::CATEGORY_OPTIONS))],
                     'organization_category_other' => ['required_if:organization_category,other', 'nullable', 'string', 'max:255'],
+                    'service_wards' => ['nullable', 'array'],
+                    'service_wards.*' => [
+                        'integer',
+                        Rule::exists('pgsql.layer_info.wards', 'ward'),
+                    ],
+                    'remarks' => ['nullable', 'string', 'max:2000'],
                     'status' => 'required|boolean',
                 ];
             default:
@@ -119,10 +131,34 @@ class OrganizationRequest extends FormRequest
             'organization_category.required' => __('The organization category is required.'),
             'organization_category.in' => __('Please select a valid organization category.'),
             'organization_category_other.required_if' => __('Please specify organization category when selecting others.'),
+            'service_wards.array' => __('Service wards must be a list.'),
+            'service_wards.*.integer' => __('Each service ward must be a valid ward number.'),
+            'service_wards.*.exists' => __('One or more selected service wards are invalid.'),
             'status.required' => __('The Status is required.'),
             'password.required_if' => __('The Password is required when create user is on.'),
             'password.confirmed' => __('The Confirm Password does not match the Password.'),
             'password.uncompromised' => __('The given password has appeared in a data leak. Please choose a different password.'),
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $serviceWards = $this->input('service_wards');
+        if (is_string($serviceWards)) {
+            $serviceWards = $serviceWards === '' ? null : array_filter(array_map('trim', explode(',', $serviceWards)));
+        }
+        if (is_array($serviceWards)) {
+            $serviceWards = array_values(array_filter($serviceWards, function ($value) {
+                return $value !== '' && $value !== null;
+            }));
+            $serviceWards = array_map('intval', $serviceWards);
+            if (empty($serviceWards)) {
+                $serviceWards = null;
+            }
+        }
+
+        $this->merge([
+            'service_wards' => $serviceWards,
+        ]);
     }
 }

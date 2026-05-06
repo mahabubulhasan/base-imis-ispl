@@ -50,6 +50,20 @@
 		</div>
 
 		<div class="form-group row">
+			{!! Form::label('service_wards', __('Service Wards'), ['class' => 'col-sm-3 control-label']) !!}
+			<div class="col-sm-3">
+				{!! Form::label(null, implode(', ', $organization->service_wards ?? []), ['class' => 'form-control']) !!}
+			</div>
+		</div>
+
+		<div class="form-group row">
+			{!! Form::label('remarks', __('Remarks'), ['class' => 'col-sm-3 control-label']) !!}
+			<div class="col-sm-3">
+				{!! Form::label(null, $organization->remarks, ['class' => 'form-control']) !!}
+			</div>
+		</div>
+
+		<div class="form-group row">
 			{!! Form::label('status', __('Status'), ['class' => 'col-sm-3 control-label']) !!}
 			<div class="col-sm-3">
 				{!! Form::label(null, $status, ['class' => 'form-control']) !!}

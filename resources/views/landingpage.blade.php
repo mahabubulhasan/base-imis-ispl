@@ -295,12 +295,12 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
 
     <!-- Fixed Navigation Bar -->
     <nav class="fixed top-0 w-full z-50 glass-nav border-b border-slate-200 shadow-md">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <a href="/" class="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-                    <img alt="{{ config('constants.SITE_NAME') }} Logo" class="h-12 w-auto rounded-full shadow-sm"
+        <div class="w-full pl-3 sm:pl-4 lg:pl-5 pr-4 sm:pr-6 lg:pr-8">
+            <div class="flex justify-between items-center h-16 sm:h-20">
+                <a href="/" class="flex items-center justify-start text-left space-x-2 sm:space-x-3 hover:opacity-80 transition-opacity mr-auto">
+                    <img alt="{{ config('constants.SITE_NAME') }} Logo" class="h-9 sm:h-12 w-auto rounded-full shadow-sm"
                         src="{{ asset(config('constants.LOGO_URL')) }}" />
-                    <span class="text-xl font-bold tracking-tight text-primary">{{ config('constants.SITE_NAME')
+                    <span class="text-base sm:text-xl font-bold tracking-tight text-primary leading-tight">{{ config('constants.SITE_NAME')
                         }}</span>
                 </a>
                 {{-- <div class="hidden md:flex items-center space-x-8">
@@ -338,29 +338,29 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
     </nav>
 
     <!-- Hero Section with Login -->
-    <main class="relative flex-1 flex items-center pt-20">
+    <main class="relative flex-1 flex items-center pt-16 sm:pt-20 pb-6 sm:pb-8">
         <div class="absolute inset-0 z-0">
             <img alt="Municipal Building" class="w-full h-full object-cover"
                 src="{{ asset(config('constants.BACKGROUND_IMAGE_URL')) }}" />
             <div class="absolute inset-0 hero-overlay"></div>
         </div>
-        <div id="vue_app" class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div id="vue_app" class="relative z-10 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 w-full">
             <router-view></router-view>
         </div>
     </main>
 
     <script type="text/x-template" id="loginPage">
-        <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div class="grid lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12 items-center">
             <!-- Left Column: Hero Content -->
-            <div class="max-w-xl">
-                <div class="mb-6">
+            <div class="hidden md:block max-w-xl mx-auto lg:mx-0 text-center lg:text-left">
+                <div class="mb-4 sm:mb-6 flex justify-center lg:justify-start">
                     <img
                         src="{{ asset('img/stl/IMIS City Login_Final_IMIS.png') }}"
                         alt="IMIS"
-                        class="w-full max-w-md lg:max-w-lg h-auto"
+                        class="w-full max-w-[260px] sm:max-w-md lg:max-w-lg h-auto"
                     />
                 </div>
-                <p class="text-sm text-slate-600 leading-relaxed mb-6">
+                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-4 sm:mb-6 px-1 sm:px-0">
                     Conceptualised by <a href="https://snv.org" class="text-primary font-semibold hover:underline" target="_blank" rel="noopener noreferrer">SNV Netherlands Development Organization</a> under the project <span class="font-semibold text-slate-800">"Transitioning to Sustainable Urban Water Cycles in Bangladesh"</span> supported by the <span class="font-semibold text-slate-800">Embassy of the Kingdom of the Netherlands</span>
                 </p>
                 {{-- <h1 class="text-4xl md:text-5xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-6 sr-only">

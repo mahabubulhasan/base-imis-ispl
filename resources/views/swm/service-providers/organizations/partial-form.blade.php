@@ -42,6 +42,20 @@
             </div>
         </div>
 
+        <div class="form-group row">
+            {!! Form::label('service_wards', __('Service Wards'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-3">
+                {!! Form::select('service_wards[]', $wards, optional($organization)->service_wards, ['class' => 'form-control', 'id' => 'service_wards', 'multiple' => true, 'data-placeholder' => __('Service Wards')]) !!}
+            </div>
+        </div>
+
+        <div class="form-group row">
+            {!! Form::label('remarks', __('Remarks'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-3">
+                {!! Form::textarea('remarks', null, ['class' => 'form-control', 'rows' => 3, 'placeholder' => __('Remarks')]) !!}
+            </div>
+        </div>
+
         <div class="form-group row required">
             {!! Form::label('status', __('Status'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
@@ -110,3 +124,18 @@
 	{!! Form::submit( __('Save'), ['class' => 'btn btn-info']) !!}
 </div>
 </div>
+@push('scripts')
+<script>
+$(function() {
+    var $serviceWardsSelect = $('#service_wards');
+
+    if ($.fn.select2 && $serviceWardsSelect.length) {
+        $serviceWardsSelect.select2({
+            placeholder: $serviceWardsSelect.data('placeholder') || '{{ __("Service Wards") }}',
+            width: '100%',
+            closeOnSelect: false
+        });
+    }
+});
+</script>
+@endpush

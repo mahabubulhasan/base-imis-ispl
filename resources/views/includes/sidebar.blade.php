@@ -483,8 +483,8 @@
             @endif
 
             @if(Auth::user()->hasanyPermissionInGroup(['Sw Service Payment', 'SW Service Provider Organizations', 'SW Service Provider Work Types', 'SW Waste Bin Types', 'SW Service Provider Workers', 'SW Service Provider Vehicle Types', 'SW Service Provider Vehicles', 'SW Service Facility Landfills', 'SW Service Facility STS', 'SW Bill Collection Payments', 'SW Billing Status', 'SW Complaints', 'SW Dashboard and KPIs']) || Auth::user()->hasRole('Super Admin'))
-            <li class="nav-item {{ request()->is('swm-payment', 'swm-payment/*', 'swm/dashboard-kpis', 'swm/dashboard-kpis/*', 'swm/service-providers/*', 'swm/service-facilities/*', 'swm/service-coverage/*') ? 'menu-is-opening menu-open' : '' }}">
-                <a href="#" class="nav-link {{ request()->is('swm-payment', 'swm-payment/*', 'swm/dashboard-kpis', 'swm/dashboard-kpis/*', 'swm/service-providers/*', 'swm/service-facilities/*', 'swm/service-coverage/*') ? 'active' : '' }}">
+            <li class="nav-item {{ request()->is('swm-payment', 'swm-payment/*', 'swm/dashboard-kpis', 'swm/dashboard-kpis/*', 'swm/service-providers/*', 'swm/service-facilities/*', 'swm/service-coverage/*', 'swm/complaints', 'swm/complaints/*') ? 'menu-is-opening menu-open' : '' }}">
+                <a href="#" class="nav-link {{ request()->is('swm-payment', 'swm-payment/*', 'swm/dashboard-kpis', 'swm/dashboard-kpis/*', 'swm/service-providers/*', 'swm/service-facilities/*', 'swm/service-coverage/*', 'swm/complaints', 'swm/complaints/*') ? 'active' : '' }}">
                     <img src="{{ asset('img/svg/imis-icons/swmPaymentStatus.svg')}}" class="nav-icon">
                     <p>
                         {{__('Solid Waste IMS')}} <i class="right fas fa-angle-left"></i>

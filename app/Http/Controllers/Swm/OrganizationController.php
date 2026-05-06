@@ -6,6 +6,7 @@ use App\Enums\SwmOrganizationStatus;
 use App\Enums\UserStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Swm\OrganizationRequest;
+use App\Models\LayerInfo\Ward;
 use App\Models\Swm\Organization;
 use App\Services\Auth\UserService;
 use App\Services\Swm\OrganizationService;
@@ -31,6 +32,11 @@ class OrganizationController extends Controller
         $this->userService = $userService;
     }
 
+    protected function wardOptions(): array
+    {
+        return Ward::getInAscOrder();
+    }
+
     public function index()
     {
         $page_title = __('Organizations');
@@ -50,8 +56,9 @@ class OrganizationController extends Controller
         $organization = null;
         $organizationStatus = SwmOrganizationStatus::asSelectArray();
         $organizationCategories = Organization::categoryOptions();
+        $wards = $this->wardOptions();
 
-        return view('swm.service-providers.organizations.create', compact('page_title', 'organization', 'organizationStatus', 'organizationCategories'));
+        return view('swm.service-providers.organizations.create', compact('page_title', 'organization', 'organizationStatus', 'organizationCategories', 'wards'));
     }
 
     public function store(OrganizationRequest $request)
@@ -93,10 +100,11 @@ class OrganizationController extends Controller
         $organization = Organization::find($id);
         $organizationStatus = SwmOrganizationStatus::asSelectArray();
         $organizationCategories = Organization::categoryOptions();
+        $wards = $this->wardOptions();
         if ($organization) {
             $page_title = __('Edit Organization');
 
-            return view('swm.service-providers.organizations.edit', compact('page_title', 'organization', 'organizationStatus', 'organizationCategories'));
+            return view('swm.service-providers.organizations.edit', compact('page_title', 'organization', 'organizationStatus', 'organizationCategories', 'wards'));
         }
 
         abort(404);

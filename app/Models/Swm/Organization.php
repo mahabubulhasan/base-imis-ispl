@@ -32,6 +32,7 @@ class Organization extends Model
 
     protected $casts = [
         'status' => 'boolean',
+        'service_wards' => 'array',
     ];
 
     public static function categoryOptions(): array

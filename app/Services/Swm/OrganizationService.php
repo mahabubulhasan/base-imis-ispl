@@ -93,6 +93,8 @@ class OrganizationService
         $organization->organization_category_other = ($data['organization_category'] ?? null) === Organization::CATEGORY_OTHER
             ? ($data['organization_category_other'] ?? null)
             : null;
+        $organization->service_wards = $data['service_wards'] ?? null;
+        $organization->remarks = $data['remarks'] ?? null;
         $organization->status = isset($data['status']) ? (bool) $data['status'] : false;
         $organization->save();
 
@@ -117,6 +119,8 @@ class OrganizationService
             __('Contact Number'),
             __('Organization Category'),
             __('Organization Category (Others specify)'),
+            __('Service Wards'),
+            __('Remarks'),
             __('Status'),
         ];
 
@@ -129,6 +133,8 @@ class OrganizationService
                 'contact_number',
                 'organization_category',
                 'organization_category_other',
+                'service_wards',
+                'remarks',
                 'status'
             )
             ->whereNull('deleted_at');
@@ -175,6 +181,8 @@ class OrganizationService
                     $row->contact_number,
                     $row->organization_category_label,
                     $row->organization_category_other,
+                    is_array($row->service_wards) ? implode(', ', $row->service_wards) : '',
+                    $row->remarks,
                     SwmOrganizationStatus::getDescription($row->status),
                 ]);
             }
