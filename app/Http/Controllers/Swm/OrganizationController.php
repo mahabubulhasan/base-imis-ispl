@@ -49,8 +49,9 @@ class OrganizationController extends Controller
         $page_title = __('Add Organization');
         $organization = null;
         $organizationStatus = SwmOrganizationStatus::asSelectArray();
+        $organizationCategories = Organization::categoryOptions();
 
-        return view('swm.service-providers.organizations.create', compact('page_title', 'organization', 'organizationStatus'));
+        return view('swm.service-providers.organizations.create', compact('page_title', 'organization', 'organizationStatus', 'organizationCategories'));
     }
 
     public function store(OrganizationRequest $request)
@@ -91,10 +92,11 @@ class OrganizationController extends Controller
     {
         $organization = Organization::find($id);
         $organizationStatus = SwmOrganizationStatus::asSelectArray();
+        $organizationCategories = Organization::categoryOptions();
         if ($organization) {
             $page_title = __('Edit Organization');
 
-            return view('swm.service-providers.organizations.edit', compact('page_title', 'organization', 'organizationStatus'));
+            return view('swm.service-providers.organizations.edit', compact('page_title', 'organization', 'organizationStatus', 'organizationCategories'));
         }
 
         abort(404);

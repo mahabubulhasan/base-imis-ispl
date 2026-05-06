@@ -22,6 +22,10 @@
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Waste Collection Fee') }} ({{ __('Taka') }}/{{ __('Month') }})</label><div class="col-sm-3">{!! Form::label(null, $household->waste_charge, ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Number of Family Members') }}</label><div class="col-sm-3">{!! Form::label(null, $household->number_of_family_members, ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Using This Service Since') }}</label><div class="col-sm-3">{!! Form::label(null, $household->using_this_service_since, ['class' => 'form-control']) !!}</div></div>
+            <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Avg Waste Collected') }} ({{ __('Kg') }}/{{ __('Day') }})</label><div class="col-sm-3">{!! Form::label(null, $household->daily_waste_volume, ['class' => 'form-control']) !!}</div></div>
+            <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Van Puller') }}</label><div class="col-sm-3">{!! Form::label(null, $household->van_puller_name ?? $household->van_puller_id, ['class' => 'form-control']) !!}</div></div>
+            <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Building Owner?') }}</label><div class="col-sm-3">{!! Form::label(null, $household->is_owner ? __('Yes') : __('No'), ['class' => 'form-control']) !!}</div></div>
+            <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Waste Bin Provided?') }}</label><div class="col-sm-3">{!! Form::label(null, $household->waste_bin_provided ? __('Yes') : __('No'), ['class' => 'form-control']) !!}</div></div>
             @if($household->waste_bin_provided && $household->wasteBins->isNotEmpty())
             <div class="form-group row">
                 <label class="col-sm-3 control-label">{{ __('Waste Bins') }}</label>
@@ -45,10 +49,6 @@
                 </div>
             </div>
             @endif
-            <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Avg Waste Collected') }} ({{ __('Kg') }}/{{ __('Day') }})</label><div class="col-sm-3">{!! Form::label(null, $household->daily_waste_volume, ['class' => 'form-control']) !!}</div></div>
-            <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Van Puller') }}</label><div class="col-sm-3">{!! Form::label(null, $household->van_puller_name ?? $household->van_puller_id, ['class' => 'form-control']) !!}</div></div>
-            <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Building Owner?') }}</label><div class="col-sm-3">{!! Form::label(null, $household->is_owner ? __('Yes') : __('No'), ['class' => 'form-control']) !!}</div></div>
-            <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Waste Bin Provided?') }}</label><div class="col-sm-3">{!! Form::label(null, $household->waste_bin_provided ? __('Yes') : __('No'), ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('LIC?') }}</label><div class="col-sm-3">{!! Form::label(null, $household->is_lic ? __('Yes') : __('No'), ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('LIC ID') }}</label><div class="col-sm-3">{!! Form::label(null, $household->lic_id ? ((optional($household->lic)->community_name ? optional($household->lic)->community_name.' - ' : '').$household->lic_id) : null, ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Segregation Practiced?') }}</label><div class="col-sm-3">{!! Form::label(null, $household->segregation_practiced ? __('Yes') : __('No'), ['class' => 'form-control']) !!}</div></div>

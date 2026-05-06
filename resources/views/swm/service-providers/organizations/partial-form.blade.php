@@ -36,6 +36,13 @@
         </div>
 
         <div class="form-group row required">
+            {!! Form::label('organization_category', __('Organization Category'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-3">
+                {!! Form::select('organization_category', $organizationCategories, null, ['class' => 'form-control chosen-select', 'placeholder' => __('Organization Category'), 'id' => 'organization_category']) !!}
+            </div>
+        </div>
+
+        <div class="form-group row required">
             {!! Form::label('status', __('Status'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
                 {!! Form::select('status', $organizationStatus, null, ['class' => 'form-control chosen-select', 'placeholder' => __('Status')]) !!}
@@ -95,6 +102,7 @@
     </div>
 </div>
 </div>
+
 	@endif
 </div>
 <div class="card-footer">

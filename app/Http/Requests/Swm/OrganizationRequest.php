@@ -5,6 +5,7 @@ namespace App\Http\Requests\Swm;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
+use App\Models\Swm\Organization;
 
 class OrganizationRequest extends FormRequest
 {
@@ -54,6 +55,8 @@ class OrganizationRequest extends FormRequest
                     'address' => ['required', 'string', 'max:2000'],
                     'contact_person_name' => ['required', 'string', 'max:255'],
                     'contact_number' => ['required', 'regex:/^[0-9]+$/'],
+                    'organization_category' => ['required', Rule::in(array_keys(Organization::CATEGORY_OPTIONS))],
+                    'organization_category_other' => ['required_if:organization_category,other', 'nullable', 'string', 'max:255'],
                     'status' => 'required|boolean',
                     'password' => [
                         'required_if:create_user,on',
@@ -94,6 +97,8 @@ class OrganizationRequest extends FormRequest
                     'address' => ['required', 'string', 'max:2000'],
                     'contact_person_name' => ['required', 'string', 'max:255'],
                     'contact_number' => ['required', 'regex:/^[0-9]+$/'],
+                    'organization_category' => ['required', Rule::in(array_keys(Organization::CATEGORY_OPTIONS))],
+                    'organization_category_other' => ['required_if:organization_category,other', 'nullable', 'string', 'max:255'],
                     'status' => 'required|boolean',
                 ];
             default:
@@ -111,6 +116,9 @@ class OrganizationRequest extends FormRequest
             'address.required' => __('The Address is required.'),
             'contact_person_name.required' => __('The contact person name is required.'),
             'contact_number.required' => __('The contact number is required.'),
+            'organization_category.required' => __('The organization category is required.'),
+            'organization_category.in' => __('Please select a valid organization category.'),
+            'organization_category_other.required_if' => __('Please specify organization category when selecting others.'),
             'status.required' => __('The Status is required.'),
             'password.required_if' => __('The Password is required when create user is on.'),
             'password.confirmed' => __('The Confirm Password does not match the Password.'),

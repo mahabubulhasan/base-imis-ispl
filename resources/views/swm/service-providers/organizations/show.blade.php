@@ -43,6 +43,13 @@
 		</div>
 
 		<div class="form-group row">
+			{!! Form::label('organization_category', __('Organization Category'), ['class' => 'col-sm-3 control-label']) !!}
+			<div class="col-sm-3">
+				{!! Form::label(null, $organization->organization_category_label, ['class' => 'form-control']) !!}
+			</div>
+		</div>
+
+		<div class="form-group row">
 			{!! Form::label('status', __('Status'), ['class' => 'col-sm-3 control-label']) !!}
 			<div class="col-sm-3">
 				{!! Form::label(null, $status, ['class' => 'form-control']) !!}

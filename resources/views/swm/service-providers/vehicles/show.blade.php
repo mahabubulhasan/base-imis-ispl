@@ -2,15 +2,9 @@
 @section('title', $page_title)
 @section('content')
 @php
-    if ($vehicle->dumping_place_kind === 'sts') {
-        $dumping = optional($vehicle->dumpingSts)->name;
-    } elseif ($vehicle->dumping_place_kind === 'landfill') {
-        $dumping = optional($vehicle->dumpingLandfill)->name;
-    } elseif ($vehicle->dumping_place_kind === 'other') {
-        $dumping = $vehicle->dumping_place_other;
-    } else {
-        $dumping = '';
-    }
+    $dumpingStsName = $vehicle->dumping_place_kind === 'sts' ? optional($vehicle->dumpingSts)->name : '';
+    $dumpingLandfillName = $vehicle->dumping_place_kind === 'landfill' ? optional($vehicle->dumpingLandfill)->name : '';
+    $dumpingOtherName = $vehicle->dumping_place_kind === 'other' ? $vehicle->dumping_place_other : '';
 @endphp
 <div class="card card-info">
 	<div class="card-header bg-transparent">
@@ -67,9 +61,21 @@
     </div>
 		</div>
 		<div class="form-group row">
-    {!! Form::label('dumping_place_name', __('Dumping Place Name'), ['class' => 'col-sm-3 control-label']) !!}
+    {!! Form::label('dumping_sts_id', __('Dumping Place Name'), ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-3">
-        {!! Form::label(null, $dumping, ['class' => 'form-control']) !!}
+        {!! Form::label(null, $dumpingStsName, ['class' => 'form-control']) !!}
+    </div>
+		</div>
+		<div class="form-group row">
+    {!! Form::label('dumping_landfill_id', __('Dumping Place Name'), ['class' => 'col-sm-3 control-label']) !!}
+    <div class="col-sm-3">
+        {!! Form::label(null, $dumpingLandfillName, ['class' => 'form-control']) !!}
+    </div>
+		</div>
+		<div class="form-group row">
+    {!! Form::label('dumping_place_other', __('Specify Dumping Place'), ['class' => 'col-sm-3 control-label']) !!}
+    <div class="col-sm-3">
+        {!! Form::label(null, $dumpingOtherName, ['class' => 'form-control']) !!}
     </div>
 		</div>
 		<div class="form-group row">

@@ -31,9 +31,18 @@ class OrganizationService
                 if (! empty($data['contact_person_name'] ?? null)) {
                     $q->where('contact_person_name', 'ILIKE', '%'.trim((string) $data['contact_person_name']).'%');
                 }
+                if (! empty($data['organization_category'] ?? null)) {
+                    $q->where('organization_category', trim((string) $data['organization_category']));
+                }
+                if (! empty($data['organization_category_other'] ?? null)) {
+                    $q->where('organization_category_other', 'ILIKE', '%'.trim((string) $data['organization_category_other']).'%');
+                }
                 if (array_key_exists('status', $data) && $data['status'] !== '' && $data['status'] !== null) {
                     $q->where('status', filter_var($data['status'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? $data['status']);
                 }
+            })
+            ->editColumn('organization_category', function ($model) {
+                return $model->organization_category_label;
             })
             ->addColumn('action', function ($model) {
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['swm.organizations.destroy', $model->id]]);
@@ -80,6 +89,10 @@ class OrganizationService
         $organization->address = $data['address'] ?? null;
         $organization->contact_person_name = $data['contact_person_name'] ?? null;
         $organization->contact_number = $data['contact_number'] ?? null;
+        $organization->organization_category = $data['organization_category'] ?? null;
+        $organization->organization_category_other = ($data['organization_category'] ?? null) === Organization::CATEGORY_OTHER
+            ? ($data['organization_category_other'] ?? null)
+            : null;
         $organization->status = isset($data['status']) ? (bool) $data['status'] : false;
         $organization->save();
 
@@ -92,6 +105,8 @@ class OrganizationService
         $email = $data['email'] ?? null;
         $address = $data['address'] ?? null;
         $contactPersonName = $data['contact_person_name'] ?? null;
+        $organizationCategory = $data['organization_category'] ?? null;
+        $organizationCategoryOther = $data['organization_category_other'] ?? null;
         $status = $data['status'] ?? null;
 
         $columns = [
@@ -100,11 +115,22 @@ class OrganizationService
             __('Address'),
             __('Contact Person Name'),
             __('Contact Number'),
+            __('Organization Category'),
+            __('Organization Category (Others specify)'),
             __('Status'),
         ];
 
         $query = Organization::query()
-            ->select('name', 'email', 'address', 'contact_person_name', 'contact_number', 'status')
+            ->select(
+                'name',
+                'email',
+                'address',
+                'contact_person_name',
+                'contact_number',
+                'organization_category',
+                'organization_category_other',
+                'status'
+            )
             ->whereNull('deleted_at');
 
         if (! empty($name)) {
@@ -118,6 +144,12 @@ class OrganizationService
         }
         if (! empty($contactPersonName)) {
             $query->where('contact_person_name', 'ILIKE', '%'.trim((string) $contactPersonName).'%');
+        }
+        if (! empty($organizationCategory)) {
+            $query->where('organization_category', trim((string) $organizationCategory));
+        }
+        if (! empty($organizationCategoryOther)) {
+            $query->where('organization_category_other', 'ILIKE', '%'.trim((string) $organizationCategoryOther).'%');
         }
         if ($status !== '' && $status !== null) {
             $query->where('status', filter_var($status, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? $status);
@@ -141,6 +173,8 @@ class OrganizationService
                     $row->address,
                     $row->contact_person_name,
                     $row->contact_number,
+                    $row->organization_category_label,
+                    $row->organization_category_other,
                     SwmOrganizationStatus::getDescription($row->status),
                 ]);
             }
