@@ -25,6 +25,7 @@ class Vehicle extends Model
         'capacity',
         'driver_worker_id',
         'service_area',
+        'service_wards',
         'fuel_type',
         'operational_type',
         'vehicle_registration_no',
@@ -41,6 +42,7 @@ class Vehicle extends Model
 
     protected $casts = [
         'capacity' => 'decimal:2',
+        'service_wards' => 'array',
         'last_maintenance_year' => 'integer',
     ];
 

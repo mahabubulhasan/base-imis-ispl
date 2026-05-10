@@ -84,7 +84,7 @@ class BillCollectionPaymentService
         ])
             ->map(fn ($site) => [
                 'id' => $site->id,
-                'text' => $site->household_id.' — '.$site->household_owner_name.($site->father_or_husband_name ? ' ('.$site->father_or_husband_name.')' : ''),
+                'text' => $site->household_owner_name.' -- '.$site->household_id,
                 'household_id' => $site->household_id,
                 'household_owner_name' => $site->household_owner_name,
                 'father_or_husband_name' => $site->father_or_husband_name,
@@ -479,7 +479,7 @@ class BillCollectionPaymentService
             ->orderColumn('payment_for_month', 'swm.bill_collection_payments.payment_for_month $1')
             ->orderColumn('payment_time', 'swm.bill_collection_payments.payment_time $1')
             ->editColumn('payment_for_month', function ($model) {
-                return $model->payment_for_month?->format('M, Y') ?? '';
+                return $model->payment_for_month?->format('M Y') ?? '';
             })
             ->editColumn('payment_time', function ($model) {
                 return $model->payment_time?->format('Y-m-d H:i') ?? '';

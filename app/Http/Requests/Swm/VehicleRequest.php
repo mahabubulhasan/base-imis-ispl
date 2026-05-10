@@ -24,6 +24,24 @@ class VehicleRequest extends FormRequest
         } elseif ($this->has('organization_id') && $this->input('organization_id') === '') {
             $this->merge(['organization_id' => null]);
         }
+
+        $serviceWards = $this->input('service_wards');
+        if (is_string($serviceWards)) {
+            $serviceWards = $serviceWards === '' ? null : array_filter(array_map('trim', explode(',', $serviceWards)));
+        }
+        if (is_array($serviceWards)) {
+            $serviceWards = array_values(array_filter($serviceWards, function ($value) {
+                return $value !== '' && $value !== null;
+            }));
+            $serviceWards = array_map('intval', $serviceWards);
+            if (empty($serviceWards)) {
+                $serviceWards = null;
+            }
+        }
+
+        $this->merge([
+            'service_wards' => $serviceWards,
+        ]);
     }
 
     protected function vehicleId(): ?int
@@ -140,7 +158,11 @@ class VehicleRequest extends FormRequest
                             }
                         },
                     ],
-                    'service_area' => ['nullable', 'string', 'max:255'],
+                    'service_wards' => ['nullable', 'array'],
+                    'service_wards.*' => [
+                        'integer',
+                        Rule::exists('pgsql.layer_info.wards', 'ward'),
+                    ],
                     'fuel_type' => ['nullable', 'string', 'max:255'],
                     'operational_type' => ['nullable', 'string', 'max:255'],
                     'vehicle_registration_no' => ['nullable', 'string', 'max:255'],
@@ -189,6 +211,9 @@ class VehicleRequest extends FormRequest
             'vehicle_type_id.required' => __('The vehicle type is required.'),
             'vehicle_number.required' => __('The vehicle number is required.'),
             'driver_worker_id.required' => __('The driver is required.'),
+            'service_wards.array' => __('Service wards must be a list.'),
+            'service_wards.*.integer' => __('Each service ward must be a valid ward number.'),
+            'service_wards.*.exists' => __('One or more selected service wards are invalid.'),
             'dumping_place_kind.required' => __('The dumping place type is required.'),
         ];
     }

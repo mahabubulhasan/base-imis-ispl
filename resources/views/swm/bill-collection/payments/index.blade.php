@@ -67,10 +67,10 @@
                         <th>{{ __('Holding Number') }}</th>
                         <th>{{ __('Household ID') }}</th>
                         <th>{{ __('Household Owner Name') }}</th>
-                        <th>{{ __('Ward') }}</th>
-                        <th>{{ __('Sub-location') }}</th>
+                        <th>{{ __('Ward No.') }}</th>
+                        <th>{{ __('Sub Location') }}</th>
                         <th>{{ __('Contact Number') }}</th>
-                        <th>{{ __('Receipt no') }}</th>
+                        <th>{{ __('Receipt No.') }}</th>
                         <th>{{ __('Current Month Paid') }} ({{ __('Taka') }})</th>
                         <th>{{ __('Previous Due Paid') }} ({{ __('Taka') }})</th>
                         <th>{{ __('Total Collected') }} ({{ __('Taka') }})</th>

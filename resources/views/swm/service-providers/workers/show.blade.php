@@ -1,6 +1,11 @@
 @extends('layouts.dashboard')
 @section('title', $page_title)
 @section('content')
+@php
+    $serviceWards = collect($worker->service_wards ?? [])
+        ->map(fn ($wardId) => $wards[$wardId] ?? $wardId)
+        ->implode(', ');
+@endphp
 <div class="card card-info">
 	<div class="card-header bg-transparent">
 		<a href="{{ route('swm.workers.index') }}" class="btn btn-info">{{__('Back to List')}}</a>
@@ -44,9 +49,9 @@
 			</div>
 		</div>
 		<div class="form-group row">
-			{!! Form::label('service_area', __('Service Area'), ['class' => 'col-sm-3 control-label']) !!}
+			{!! Form::label('service_wards', __('Service Wards'), ['class' => 'col-sm-3 control-label']) !!}
 			<div class="col-sm-3">
-				{!! Form::label(null, $worker->service_area, ['class' => 'form-control']) !!}
+				{!! Form::label(null, $serviceWards, ['class' => 'form-control']) !!}
 			</div>
 		</div>
 		<div class="form-group row">

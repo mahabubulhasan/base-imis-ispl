@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>{{ __('Billing Status Report') }}</title>
+    <title>{{ __('Solid Waste Management Billing Report') }}</title>
     <style>
         body {
             font-family: DejaVu Sans, sans-serif;
@@ -70,16 +70,31 @@
         };
     @endphp
 
-    <div class="title">{{ __('SWM Billing Status Report') }}</div>
+    <div class="title">{{ __('Solid Waste Management Billing Report') }}</div>
     <div class="subtitle">
-        {{ __('Month Range') }}:
-        {{ $monthFrom ? $monthFrom->format('M Y') : '-' }}
-        -
-        {{ $monthTo ? $monthTo->format('M Y') : '-' }}
+        @php
+            $monthFromYm = $monthFrom ? $monthFrom->format('Y-m') : null;
+            $monthToYm = $monthTo ? $monthTo->format('Y-m') : null;
+            $monthLabelSame = $monthFrom && $monthTo && $monthFromYm === $monthToYm;
+        @endphp
+        {{ __('Reporting Month') }}:
+        @if($monthFrom && $monthTo)
+            @if($monthLabelSame)
+                {{ $monthFrom->format('F Y') }}
+            @else
+                {{ $monthFrom->format('F Y') }} - {{ $monthTo->format('F Y') }}
+            @endif
+        @elseif($monthFrom)
+            {{ $monthFrom->format('F Y') }}
+        @elseif($monthTo)
+            {{ $monthTo->format('F Y') }}
+        @else
+            -
+        @endif
     </div>
-    <div class="subtitle">
+    {{-- <div class="subtitle">
         {{ __('Closing Due is the canonical outstanding balance through the selected end month.') }}
-    </div>
+    </div> --}}
 
     <table>
         <thead>
@@ -87,22 +102,22 @@
                 <th rowspan="2">{{ __('SL') }}</th>
                 <th rowspan="2">{{ __('Holding Number') }}</th>
                 <th rowspan="2">{{ __('Household ID') }}</th>
-                <th rowspan="2">{{ __('Owner') }}</th>
-                <th rowspan="2">{{ __("Father/Husband") }}</th>
+                <th rowspan="2">{{ __('Household Owner Name') }}</th>
+                <th rowspan="2">{{ __("Father's/Husband's Name") }}</th>
                 <th rowspan="2">{{ __('Sub Location') }}</th>
-                <th rowspan="2">{{ __('Ward') }}</th>
-                <th rowspan="2">{{ __('Contact') }}</th>
-                <th colspan="9">{{ __('Amount Section (Taka)') }}</th>
+                <th rowspan="2">{{ __('Ward No.') }}</th>
+                <th rowspan="2">{{ __('Contact Number') }}</th>
+                <th colspan="9">{{ __('Billing Summary (in Taka)') }}</th>
             </tr>
             <tr>
-                <th>{{ __('Fixed Fee') }}</th>
+                <th>{{ __('Fixed Service Fee') }}</th>
                 <th>{{ __('Previous Due') }}</th>
-                <th>{{ __('Current Due') }}</th>
-                <th>{{ __('Payable') }}</th>
                 <th>{{ __('Due Months') }}</th>
+                <th>{{ __('Current Due') }}</th>
+                <th>{{ __('Payable Amount') }}</th>
                 <th>{{ __('Current Paid') }}</th>
-                <th>{{ __('Prev Due Paid') }}</th>
-                <th>{{ __('Collected') }}</th>
+                <th>{{ __('Previous Due Paid') }}</th>
+                <th>{{ __('Total Paid') }}</th>
                 <th>{{ __('Closing Due') }}</th>
             </tr>
         </thead>
@@ -119,9 +134,9 @@
                     <td class="nowrap">{{ $row['contact_number'] }}</td>
                     <td class="amount">{{ $formatAmount($row['current_service_fee'] ?? null) }}</td>
                     <td class="amount">{{ $formatAmount($row['previous_due_amount'] ?? null) }}</td>
+                    <td>{{ $row['due_months_of'] }}</td>
                     <td class="amount">{{ $formatAmount($row['due_current_month'] ?? null) }}</td>
                     <td class="amount">{{ $formatAmount($row['total_due_amount'] ?? null) }}</td>
-                    <td>{{ $row['due_months_of'] }}</td>
                     <td class="amount">{{ $formatAmount($row['current_month_paid'] ?? null) }}</td>
                     <td class="amount">{{ $formatAmount($row['previous_due_paid'] ?? null) }}</td>
                     <td class="amount">{{ $formatAmount($row['revenue_collected'] ?? null) }}</td>

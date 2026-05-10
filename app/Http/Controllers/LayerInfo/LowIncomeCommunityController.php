@@ -5,6 +5,7 @@ namespace App\Http\Controllers\LayerInfo;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\LayerInfo\LowIncomeCommunity;
+use App\Models\LayerInfo\Ward;
 use App\Models\BuildingInfo\Building;
 use App\Http\Requests\LayerInfo\LowIncomeCommunityRequest;
 use App\Services\LayerInfo\LowIncomeCommunityServiceClass;
@@ -52,7 +53,8 @@ class LowIncomeCommunityController extends Controller
     public function create()
     {
         $page_title = __("Add Low Income Community");
-        return view('layer-info.low-income-communities.create', compact('page_title'));
+        $wards = Ward::orderBy('ward', 'asc')->pluck('ward', 'ward')->all();
+        return view('layer-info.low-income-communities.create', compact('page_title', 'wards'));
     }
 
     /**
@@ -93,7 +95,8 @@ class LowIncomeCommunityController extends Controller
         $long = $geomArr[0]->long;
         if ($lic) {
             $page_title = __("Edit Low Income Community");
-            return view('layer-info.low-income-communities.edit', compact('page_title', 'lic', 'geom', 'lat', 'long'));
+            $wards = Ward::orderBy('ward', 'asc')->pluck('ward', 'ward')->all();
+            return view('layer-info.low-income-communities.edit', compact('page_title', 'lic', 'geom', 'lat', 'long', 'wards'));
         } else {
             abort(404);
         }

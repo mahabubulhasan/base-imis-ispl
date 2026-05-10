@@ -82,7 +82,10 @@ class WorkerService
         $worker->email = $data['email'] ?? null;
         $worker->age = $data['age'] ?? null;
         $worker->gender = $data['gender'] ?? null;
-        $worker->service_area = $data['service_area'] ?? null;
+        if (array_key_exists('service_area', $data)) {
+            $worker->service_area = $data['service_area'];
+        }
+        $worker->service_wards = $data['service_wards'] ?? null;
         $worker->employment_type = $data['employment_type'] ?? null;
         $worker->status = $data['status'] ?? 'active';
         $worker->department = $data['department'] ?? null;

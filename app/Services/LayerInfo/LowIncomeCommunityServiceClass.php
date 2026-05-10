@@ -86,6 +86,11 @@ class LowIncomeCommunityServiceClass
 
     $lic = new LowIncomeCommunity();
     $lic->lic_status = $request->lic_status;
+    $lic->sub_location = $request->sub_location;
+    $lic->ward = $request->ward;
+    $lic->road_no = $request->road_no;
+    $lic->road_name = $request->road_name;
+    $lic->holding_number = $request->holding_number;
     $lic->area_decima = $request->area_decima;
     $lic->representative_name = $request->representative_name;
     $lic->representative_contact_no = $request->representative_contact_no;
@@ -157,6 +162,10 @@ class LowIncomeCommunityServiceClass
         if ($lic) {
             // Update all fields as in the original method
             $lic->lic_status = $request->lic_status;
+            $lic->sub_location = $request->sub_location;
+            $lic->ward = $request->ward;
+            $lic->road_no = $request->road_no;
+            $lic->road_name = $request->road_name;
             $lic->area_decima = $request->area_decima;
             $lic->representative_name = $request->representative_name;
             $lic->representative_contact_no = $request->representative_contact_no;
@@ -246,6 +255,10 @@ class LowIncomeCommunityServiceClass
         $columns = [
             __('ID'),
             __('Community Name'),
+            __('Sub Location'),
+            __('Ward No.'),
+            __('Road No.'),
+            __('Road Name'),
             __('LIC Status'),
             __('Area (Decima)'),
             __("Representative's Name"),
@@ -270,6 +283,10 @@ class LowIncomeCommunityServiceClass
         $query = LowIncomeCommunity::select(
             'id',
             'community_name',
+            'sub_location',
+            'ward',
+            'road_no',
+            'road_name',
             'lic_status',
             'area_decima',
             'representative_name',
@@ -307,6 +324,10 @@ class LowIncomeCommunityServiceClass
                 $values = [];
                 $values[] = $lic->id;
                 $values[] = $lic->community_name;
+                $values[] = $lic->sub_location;
+                $values[] = $lic->ward;
+                $values[] = $lic->road_no;
+                $values[] = $lic->road_name;
                 $values[] = $lic->lic_status === null ? '' : ($lic->lic_status ? __('Active') : __('Inactive'));
                 $values[] = $lic->area_decima;
                 $values[] = $lic->representative_name;

@@ -74,7 +74,7 @@
 <div class="card app-mobile-index">
     <div class="card-header">
         <a href="#" class="btn btn-danger float-right ml-2" id="download-pdf">
-            {{ __('Download PDF') }}
+            {{ __('Download Billing Report') }}
         </a>
         <a href="#" class="btn btn-info float-right" id="headingFilters" type="button" data-toggle="collapse"
             data-target="#collapseFilters" aria-expanded="true" aria-controls="collapseFilters">
@@ -139,17 +139,17 @@
                         <th rowspan="2">{{ __('Sub Location') }}</th>
                         <th rowspan="2">{{ __('Ward') }}</th>
                         <th rowspan="2">{{ __('Contact Number') }}</th>
-                        <th colspan="9">{{ __('Amount Section') }} ({{ __('Taka') }})</th>
+                        <th colspan="9">{{ __('Billing Summary') }} ({{ __('in Taka') }})</th>
                     </tr>
                     <tr class="header-columns">
                         <th>{{ __('Fixed Service Fee') }}</th>
                         <th>{{ __('Previous Due') }}</th>
+                        <th>{{ __('Due Months') }}</th>
                         <th>{{ __('Current Due') }}</th>
                         <th>{{ __('Payable Amount') }}</th>
-                        <th>{{ __('Due Months') }}</th>
                         <th>{{ __('Current Paid') }}</th>
                         <th>{{ __('Previous Due Paid') }}</th>
-                        <th>{{ __('Total Collected') }}</th>
+                        <th>{{ __('Total Paid') }}</th>
                         <th>{{ __('Closing Due') }}</th>
                     </tr>
                 </thead>
@@ -293,9 +293,9 @@ $(function() {
             { data: 'contact_number', name: 'contact_number', searchable: false, orderable: true },
             { data: 'current_service_fee', name: 'current_service_fee', searchable: false, orderable: false, className: 'text-right' },
             { data: 'previous_due_amount', name: 'previous_due_amount', searchable: false, orderable: false, className: 'text-right' },
+            { data: 'due_months_of', name: 'due_months_of', searchable: false, orderable: false },
             { data: 'due_current_month', name: 'due_current_month', searchable: false, orderable: false, className: 'text-right' },
             { data: 'total_due_amount', name: 'total_due_amount', searchable: false, orderable: false, className: 'text-right' },
-            { data: 'due_months_of', name: 'due_months_of', searchable: false, orderable: false },
             { data: 'current_month_paid', name: 'current_month_paid', searchable: false, orderable: true, className: 'text-right' },
             { data: 'previous_due_paid', name: 'previous_due_paid', searchable: false, orderable: true, className: 'text-right' },
             { data: 'revenue_collected', name: 'revenue_collected', searchable: false, orderable: true, className: 'text-right' },

@@ -42,9 +42,14 @@
             </div>
         </div>
         <div class="form-group row">
-            {!! Form::label('service_area', __('Service Area'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('service_wards', __('Service Wards'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-9">
-                {!! Form::text('service_area', null, ['class' => 'form-control', 'placeholder' => __('Service Area')]) !!}
+                {!! Form::select(
+                    'service_wards[]',
+                    $wards,
+                    old('service_wards', isset($worker) && $worker ? $worker->service_wards : []),
+                    ['class' => 'form-control', 'id' => 'service_wards', 'multiple' => true, 'data-placeholder' => __('Service Wards')]
+                ) !!}
             </div>
         </div>
         <div class="form-group row">
@@ -150,9 +155,20 @@
 $(function () {
     var $edu = $('#education_level');
     var $otherGroup = $('#education_level_other_group');
+    var $serviceWardsSelect = $('#service_wards');
+
+    if ($.fn.select2 && $serviceWardsSelect.length) {
+        $serviceWardsSelect.select2({
+            placeholder: $serviceWardsSelect.data('placeholder') || '{{ __("Service Wards") }}',
+            width: '100%',
+            closeOnSelect: false
+        });
+    }
+
     if (!$edu.length || !$otherGroup.length) {
         return;
     }
+
     function syncEducationOther() {
         var v = $edu.val();
         var show = v === 'others';

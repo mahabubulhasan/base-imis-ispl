@@ -5,6 +5,9 @@
     $dumpingStsName = $vehicle->dumping_place_kind === 'sts' ? optional($vehicle->dumpingSts)->name : '';
     $dumpingLandfillName = $vehicle->dumping_place_kind === 'landfill' ? optional($vehicle->dumpingLandfill)->name : '';
     $dumpingOtherName = $vehicle->dumping_place_kind === 'other' ? $vehicle->dumping_place_other : '';
+    $serviceWards = collect($vehicle->service_wards ?? [])
+        ->map(fn ($wardId) => $wards[$wardId] ?? $wardId)
+        ->implode(', ');
 @endphp
 <div class="card card-info">
 	<div class="card-header bg-transparent">
@@ -49,9 +52,9 @@
     </div>
 		</div>
 		<div class="form-group row">
-    {!! Form::label('service_area', __('Service Area'), ['class' => 'col-sm-3 control-label']) !!}
+    {!! Form::label('service_wards', __('Service Wards'), ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-3">
-        {!! Form::label(null, $vehicle->service_area, ['class' => 'form-control']) !!}
+        {!! Form::label(null, $serviceWards, ['class' => 'form-control']) !!}
     </div>
 		</div>
 		<div class="form-group row">

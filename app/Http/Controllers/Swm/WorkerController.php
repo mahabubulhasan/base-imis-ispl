@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Swm;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Swm\WorkerRequest;
+use App\Models\LayerInfo\Ward;
 use App\Models\Swm\Organization;
 use App\Models\Swm\WorkType;
 use App\Models\Swm\Worker;
@@ -44,6 +45,11 @@ class WorkerController extends Controller
         return WorkType::query()->whereNull('deleted_at')->orderBy('name')->pluck('name', 'id')->all();
     }
 
+    protected function wardOptionsForForms(): array
+    {
+        return Ward::getInAscOrder();
+    }
+
     protected function workerBelongsToScopedOrg(?Worker $worker): bool
     {
         if (! $worker) {
@@ -78,12 +84,13 @@ class WorkerController extends Controller
         $worker = null;
         $organizations = $this->organizationOptionsForForms();
         $workTypes = $this->workTypeOptionsForForms();
+        $wards = $this->wardOptionsForForms();
         $scopedOrganizationId = Auth::user()->swm_organization_id;
         $suggestedWorkerIdNo = $scopedOrganizationId
             ? $this->workerService->peekNextWorkerIdNo((int) $scopedOrganizationId)
             : '';
 
-        return view('swm.service-providers.workers.create', compact('page_title', 'worker', 'organizations', 'workTypes', 'scopedOrganizationId', 'suggestedWorkerIdNo'));
+        return view('swm.service-providers.workers.create', compact('page_title', 'worker', 'organizations', 'workTypes', 'wards', 'scopedOrganizationId', 'suggestedWorkerIdNo'));
     }
 
     public function nextWorkerId(Request $request)
@@ -121,8 +128,9 @@ class WorkerController extends Controller
         $worker = Worker::with(['organization', 'workType'])->find($id);
         if ($worker && $this->workerBelongsToScopedOrg($worker)) {
             $page_title = __('Worker Details');
+            $wards = $this->wardOptionsForForms();
 
-            return view('swm.service-providers.workers.show', compact('page_title', 'worker'));
+            return view('swm.service-providers.workers.show', compact('page_title', 'worker', 'wards'));
         }
 
         abort(404);
@@ -135,9 +143,10 @@ class WorkerController extends Controller
             $page_title = __('Edit Worker');
             $organizations = $this->organizationOptionsForForms();
             $workTypes = $this->workTypeOptionsForForms();
+            $wards = $this->wardOptionsForForms();
             $scopedOrganizationId = Auth::user()->swm_organization_id;
 
-            return view('swm.service-providers.workers.edit', compact('page_title', 'worker', 'organizations', 'workTypes', 'scopedOrganizationId'));
+            return view('swm.service-providers.workers.edit', compact('page_title', 'worker', 'organizations', 'workTypes', 'wards', 'scopedOrganizationId'));
         }
 
         abort(404);

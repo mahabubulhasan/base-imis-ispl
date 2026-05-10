@@ -20,6 +20,24 @@ class WorkerRequest extends FormRequest
                 'organization_id' => Auth::user()->swm_organization_id,
             ]);
         }
+
+        $serviceWards = $this->input('service_wards');
+        if (is_string($serviceWards)) {
+            $serviceWards = $serviceWards === '' ? null : array_filter(array_map('trim', explode(',', $serviceWards)));
+        }
+        if (is_array($serviceWards)) {
+            $serviceWards = array_values(array_filter($serviceWards, function ($value) {
+                return $value !== '' && $value !== null;
+            }));
+            $serviceWards = array_map('intval', $serviceWards);
+            if (empty($serviceWards)) {
+                $serviceWards = null;
+            }
+        }
+
+        $this->merge([
+            'service_wards' => $serviceWards,
+        ]);
     }
 
     public function rules(): array
@@ -53,7 +71,11 @@ class WorkerRequest extends FormRequest
                     'email' => ['nullable', 'email', 'max:255'],
                     'age' => ['nullable', 'integer', 'between:0,120'],
                     'gender' => ['nullable', Rule::in(['male', 'female', 'others'])],
-                    'service_area' => ['nullable', 'string', 'max:255'],
+                    'service_wards' => ['nullable', 'array'],
+                    'service_wards.*' => [
+                        'integer',
+                        Rule::exists('pgsql.layer_info.wards', 'ward'),
+                    ],
                     'employment_type' => ['nullable', Rule::in(['permanent', 'daily', 'contract'])],
                     'status' => ['nullable', Rule::in(['active', 'inactive'])],
                     'department' => ['nullable', 'string', 'max:255'],
@@ -88,6 +110,9 @@ class WorkerRequest extends FormRequest
             'mobile.required' => __('The mobile number is required.'),
             'mobile.regex' => __('The mobile number may only contain digits.'),
             'employee_id.unique' => __('The employee ID must be unique.'),
+            'service_wards.array' => __('Service wards must be a list.'),
+            'service_wards.*.integer' => __('Each service ward must be a valid ward number.'),
+            'service_wards.*.exists' => __('One or more selected service wards are invalid.'),
             'employment_type.in' => __('The employment type must be permanent, daily, or contract.'),
             'education_level_other.required_if' => __('Please specify education details when selecting others.'),
         ];

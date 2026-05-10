@@ -6,7 +6,15 @@ use BenSampo\Enum\Enum;
 
 final class SwmOrganizationStatus extends Enum
 {
-    const NotOperational = false;
+    const NonOperational = false;
 
     const Operational = true;
+
+    public static function getDescription($value): string
+    {
+        return match ((bool) $value) {
+            self::NonOperational => 'Non-operational',
+            self::Operational => 'Operational',
+        };
+    }
 }

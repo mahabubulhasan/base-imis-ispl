@@ -24,6 +24,11 @@ class LowIncomeCommunityRequest extends FormRequest
 {
     return [
         'community_name.required' => __('The Community Name is required.'),
+        'sub_location.max' => __('The Sub Location may not be greater than 255 characters.'),
+        'ward.integer' => __('The Ward No. must be an integer.'),
+        'ward.min' => __('The Ward No. must be at least 1.'),
+        'road_no.max' => __('The Road No. may not be greater than 100 characters.'),
+        'road_name.max' => __('The Road Name may not be greater than 255 characters.'),
         'lic_status.required' => __('The LIC Status is required.'),
         'lic_status.boolean' => __('The LIC Status must be Yes or No.'),
         'area_decima.numeric' => __('The Area (Decima) must be a number.'),
@@ -89,6 +94,11 @@ class LowIncomeCommunityRequest extends FormRequest
 {
     return [
             'community_name' => 'required',
+            'sub_location' => 'nullable|string|max:255',
+            'ward' => 'nullable|integer|min:1',
+            'road_no' => 'nullable|string|max:100',
+            'road_name' => 'nullable|string|max:255',
+            'holding_number' => 'nullable|string|max:100',
             'lic_status' => 'required|boolean',
             'area_decima' => 'nullable|numeric|min:0',
             'representative_name' => 'nullable|string|max:255',
@@ -118,6 +128,11 @@ class LowIncomeCommunityRequest extends FormRequest
     {
         return [
             'community_name' => 'required',
+            'sub_location' => 'nullable|string|max:255',
+            'ward' => 'nullable|integer|min:1',
+            'road_no' => 'nullable|string|max:100',
+            'road_name' => 'nullable|string|max:255',
+            'holding_number' => 'nullable|string|max:100',
             'lic_status' => 'required|boolean',
             'area_decima' => 'nullable|numeric|min:0',
             'representative_name' => 'nullable|string|max:255',

@@ -123,14 +123,14 @@
     </div>
 
     <div id="bcp-household-info-wrap" class="form-group row @if(!$initialHouseholdDetail) d-none @endif">
-        <label class="col-sm-3 control-label">{{ __('Household details') }}</label>
+        <label class="col-sm-3 control-label">{{ __('Household Details') }}</label>
         <div class="col-sm-9 bcp-payment-field-col">
             <div class="border rounded p-3 bg-light w-100" id="bcp-household-info-panel">
                 <div><strong>{{ __('Contact Number') }}:</strong> <span id="bcp-hi-contact">{{ $initialHouseholdDetail ? ($initialHouseholdDetail['contact_number'] ?? '—') : '—' }}</span></div>
                 <div><strong>{{ __('Sub Location') }}:</strong> <span id="bcp-hi-sub-location">{{ $initialHouseholdDetail ? ($initialHouseholdDetail['sub_location'] ?? '—') : '—' }}</span></div>
                 <div><strong>{{ __('Ward') }}:</strong> <span id="bcp-hi-ward">{{ $initialHouseholdDetail ? ($initialHouseholdDetail['ward'] ?? '—') : '—' }}</span></div>
-                <div><strong>{{ __('Road no.') }}:</strong> <span id="bcp-hi-road-no">{{ $initialHouseholdDetail ? ($initialHouseholdDetail['road_no'] ?? '—') : '—' }}</span></div>
-                <div><strong>{{ __('Road name') }}:</strong> <span id="bcp-hi-road-name">{{ $initialHouseholdDetail ? ($initialHouseholdDetail['road_name'] ?? '—') : '—' }}</span></div>
+                <div><strong>{{ __('Road No.') }}:</strong> <span id="bcp-hi-road-no">{{ $initialHouseholdDetail ? ($initialHouseholdDetail['road_no'] ?? '—') : '—' }}</span></div>
+                <div><strong>{{ __('Road Name') }}:</strong> <span id="bcp-hi-road-name">{{ $initialHouseholdDetail ? ($initialHouseholdDetail['road_name'] ?? '—') : '—' }}</span></div>
             </div>
         </div>
     </div>
@@ -167,9 +167,9 @@
             <ul class="bcp-no-due-meta">
                 <li><strong>{{ __('Holding') }}:</strong> <span id="bcp-no-due-holding">—</span></li>
                 <li><strong>{{ __('Household') }}:</strong> <span id="bcp-no-due-household">—</span></li>
-                <li><strong>{{ __('Payment month') }}:</strong> <span id="bcp-no-due-month">—</span></li>
+                <li><strong>{{ __('Payment Month') }}:</strong> <span id="bcp-no-due-month">—</span></li>
                 <li><strong>{{ __('Waste Collection Fee') }}:</strong> <span id="bcp-no-due-waste-charge">—</span></li>
-                <li><strong>{{ __('Total due through month') }}:</strong> <span id="bcp-no-due-total-due">0.00</span></li>
+                <li><strong>{{ __('Total Due Through Month') }}:</strong> <span id="bcp-no-due-total-due">0.00</span></li>
             </ul>
         </div>
     </div>
@@ -550,8 +550,7 @@
         var sid = @json(old('household_id', $isEdit ? $payment->household_id : ''));
         var cid = @json(old('household_code', $isEdit ? $payment->customer_id : ''));
         var cname = @json($initCustomerName ?? '');
-        var fname = @json($initFatherOrHusbandName ?? '');
-        var label = cid + (cname ? (' — ' + cname) : '') + (fname ? (' (' + fname + ')') : '');
+        var label = (cname && cid) ? (cname + ' -- ' + cid) : (cname || cid || '');
         var copt = new Option(label, sid, true, true);
         $(copt).data('data', { id: sid, text: label, household_id: cid });
         $('#customer_site_select').append(copt).trigger('change');

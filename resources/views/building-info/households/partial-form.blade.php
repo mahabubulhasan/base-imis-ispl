@@ -64,7 +64,7 @@
         </div>
     </div>
     <div class="form-group row required">
-        {!! Form::label('ward', __('Ward'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('ward', __('Ward No.'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">{!! Form::text('ward', null, ['class' => 'form-control', 'id' => 'ward']) !!}</div>
     </div>
     <div class="form-group row">

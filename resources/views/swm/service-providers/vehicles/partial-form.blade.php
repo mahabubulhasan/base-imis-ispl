@@ -73,9 +73,14 @@
         @endif
 
         <div class="form-group row">
-            {!! Form::label('service_area', __('Service Area'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('service_wards', __('Service Wards'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-9">
-                {!! Form::text('service_area', null, ['class' => 'form-control', 'placeholder' => __('Service Area')]) !!}
+                {!! Form::select(
+                    'service_wards[]',
+                    $wards,
+                    old('service_wards', isset($vehicle) && $vehicle ? $vehicle->service_wards : []),
+                    ['class' => 'form-control', 'id' => 'service_wards', 'multiple' => true, 'data-placeholder' => __('Service Wards')]
+                ) !!}
             </div>
         </div>
         <div class="form-group row required">
@@ -166,6 +171,15 @@
 <script>
 $(function() {
     var driversUrl = @json($driversListUrl ?? '');
+    var $serviceWardsSelect = $('#service_wards');
+
+    if ($.fn.select2 && $serviceWardsSelect.length) {
+        $serviceWardsSelect.select2({
+            placeholder: $serviceWardsSelect.data('placeholder') || '{{ __("Service Wards") }}',
+            width: '100%',
+            closeOnSelect: false
+        });
+    }
 
     function refreshDumpingVisibility() {
         var k = $('#dumping_place_kind').val();

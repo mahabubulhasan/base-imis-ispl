@@ -27,6 +27,7 @@ class Worker extends Model
         'age',
         'gender',
         'service_area',
+        'service_wards',
         'employment_type',
         'status',
         'department',
@@ -41,6 +42,7 @@ class Worker extends Model
 
     protected $casts = [
         'age' => 'integer',
+        'service_wards' => 'array',
         'total_work_experience_years' => 'decimal:2',
         'organization_work_experience_years' => 'decimal:2',
     ];

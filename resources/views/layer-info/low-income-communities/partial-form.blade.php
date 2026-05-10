@@ -80,6 +80,30 @@
             {!! Form::text('representative_contact_no', null, ['class' => 'form-control', 'placeholder' => __("Representative's Contact No.")]) !!}
         </div>
     </div>
+    <div class="form-group row">
+        {!! Form::label('sub_location', __('Sub Location'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::text('sub_location', null, ['class' => 'form-control', 'placeholder' => __('Sub Location')]) !!}
+        </div>
+    </div>
+    <div class="form-group row">
+        {!! Form::label('ward', __('Ward No.'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::select('ward', $wards ?? [], null, ['class' => 'form-control', 'id' => 'ward', 'placeholder' => __('Ward No.')]) !!}
+        </div>
+    </div>
+    <div class="form-group row">
+        {!! Form::label('road_no', __('Road No.'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::text('road_no', null, ['class' => 'form-control', 'placeholder' => __('Road No.')]) !!}
+        </div>
+    </div>
+    <div class="form-group row">
+        {!! Form::label('road_name', __('Road Name'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::text('road_name', null, ['class' => 'form-control', 'placeholder' => __('Road Name')]) !!}
+        </div>
+    </div>
     <div class="form-group required row">
          {!! Form::label('no_of_buildings',__('No. of Buildings'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
@@ -165,7 +189,7 @@
         </div>
     </div>
     <div class="form-group required row">
-            {!! Form::label('geom',__('Area'),['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('geom',__('Draw LIC Area on Map'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-6">
             <a class="skiplink" href="#map">Go to map</a>
             <!--<div id="map" class="map" tabindex="0">-->
@@ -215,6 +239,12 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js"></script>
 <script>
     $(document).ready(function() {
+        $('#ward').select2({
+            width: '100%',
+            placeholder: @json(__('Ward No.')),
+            allowClear: true
+        });
+
         function toggleConditionalFields() {
             var waterConnectionStatus = $('#water_connection_status').val();
             var sanitationStatus = $('#sanitation_status').val();

@@ -2,6 +2,7 @@
 
 namespace App\Services\Swm;
 
+use App\Models\LayerInfo\Ward;
 use App\Models\Swm\Organization;
 use App\Models\Swm\Vehicle;
 use App\Models\Swm\Worker;
@@ -211,7 +212,10 @@ class VehicleService
         $vehicle->vehicle_number = $data['vehicle_number'] ?? null;
         $vehicle->capacity = $data['capacity'] ?? null;
         $vehicle->driver_worker_id = $data['driver_worker_id'] ?? null;
-        $vehicle->service_area = $data['service_area'] ?? null;
+        if (array_key_exists('service_area', $data)) {
+            $vehicle->service_area = $data['service_area'];
+        }
+        $vehicle->service_wards = $data['service_wards'] ?? null;
         $vehicle->fuel_type = $data['fuel_type'] ?? null;
         $vehicle->operational_type = $data['operational_type'] ?? null;
         $vehicle->vehicle_registration_no = $data['vehicle_registration_no'] ?? null;
@@ -275,7 +279,7 @@ class VehicleService
             __('Vehicle Type'),
             __('Capacity'),
             __('Driver'),
-            __('Service Area'),
+            __('Service Wards'),
             __('Fuel Type'),
             __('Operational Type'),
             __('Vehicle Registration No.'),
@@ -316,8 +320,9 @@ class VehicleService
         $writer = WriterFactory::create(Type::CSV);
         $writer->openToBrowser('SW Vehicles.csv')
             ->addRowWithStyle($columns, $style);
+        $wardLabels = Ward::getInAscOrder();
 
-        $query->orderBy('swm.vehicles.id')->chunk(5000, function ($rows) use ($writer) {
+        $query->orderBy('swm.vehicles.id')->chunk(5000, function ($rows) use ($writer, $wardLabels) {
             foreach ($rows as $row) {
                 $dumping = match ($row->dumping_place_kind) {
                     'sts' => (string) ($row->dumping_sts_name ?? ''),
@@ -325,6 +330,9 @@ class VehicleService
                     'other' => (string) ($row->dumping_place_other ?? ''),
                     default => '',
                 };
+                $serviceWards = collect($row->service_wards ?? [])
+                    ->map(fn ($wardId) => $wardLabels[$wardId] ?? $wardId)
+                    ->implode(', ');
                 $writer->addRow([
                     $row->vehicle_id_no,
                     $row->vehicle_number,
@@ -333,7 +341,7 @@ class VehicleService
                     $row->vehicle_type_name,
                     $row->capacity,
                     $row->driver_name,
-                    $row->service_area,
+                    $serviceWards,
                     $row->fuel_type,
                     $row->operational_type,
                     $row->vehicle_registration_no,

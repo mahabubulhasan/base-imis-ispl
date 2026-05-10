@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Swm;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Swm\VehicleRequest;
+use App\Models\LayerInfo\Ward;
 use App\Models\Swm\Landfill;
 use App\Models\Swm\Organization;
 use App\Models\Swm\Sts;
@@ -55,6 +56,11 @@ class VehicleController extends Controller
     protected function landfillOptionsForForms(): array
     {
         return Landfill::query()->whereNull('deleted_at')->orderBy('name')->pluck('name', 'id')->all();
+    }
+
+    protected function wardOptionsForForms(): array
+    {
+        return Ward::getInAscOrder();
     }
 
     protected function vehicleBelongsToScopedOrg(?Vehicle $vehicle): bool
@@ -148,6 +154,7 @@ class VehicleController extends Controller
         $vehicleTypes = $this->vehicleTypeOptionsForForms();
         $stsList = $this->stsOptionsForForms();
         $landfills = $this->landfillOptionsForForms();
+        $wards = $this->wardOptionsForForms();
         $scopedOrganizationId = Auth::user()->swm_organization_id;
         $driverWorkers = $this->vehicleService->driverWorkersForOrganization(
             $scopedOrganizationId ? (int) $scopedOrganizationId : null
@@ -162,6 +169,7 @@ class VehicleController extends Controller
             'vehicleTypes',
             'stsList',
             'landfills',
+            'wards',
             'scopedOrganizationId',
             'driverWorkers',
             'driversListUrl'
@@ -180,8 +188,9 @@ class VehicleController extends Controller
         if ($this->vehicleBelongsToScopedOrg($vehicle)) {
             $vehicle->load(['organization', 'vehicleType', 'driver', 'dumpingSts', 'dumpingLandfill']);
             $page_title = __('Vehicle Details');
+            $wards = $this->wardOptionsForForms();
 
-            return view('swm.service-providers.vehicles.show', compact('page_title', 'vehicle'));
+            return view('swm.service-providers.vehicles.show', compact('page_title', 'vehicle', 'wards'));
         }
 
         abort(404);
@@ -195,6 +204,7 @@ class VehicleController extends Controller
             $vehicleTypes = $this->vehicleTypeOptionsForForms();
             $stsList = $this->stsOptionsForForms();
             $landfills = $this->landfillOptionsForForms();
+            $wards = $this->wardOptionsForForms();
             $scopedOrganizationId = Auth::user()->swm_organization_id;
             $driverWorkers = $this->vehicleService->driverWorkersForOrganization(
                 $vehicle->organization_id !== null ? (int) $vehicle->organization_id : null
@@ -209,6 +219,7 @@ class VehicleController extends Controller
                 'vehicleTypes',
                 'stsList',
                 'landfills',
+                'wards',
                 'scopedOrganizationId',
                 'driverWorkers',
                 'driversListUrl'
