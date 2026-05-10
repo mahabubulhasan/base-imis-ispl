@@ -45,22 +45,22 @@
             {!! Form::text('contact_number', null, ['class' => 'form-control', 'placeholder' => __('Contact Number')]) !!}
         </div>
     </div>
-    <!-- <div class="form-group row">
-        {!! Form::label('area_mohalla_name', __('Area / Mohalla Name'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-3">
-            {!! Form::text('area_mohalla_name', null, ['class' => 'form-control', 'placeholder' => __('Area / Mohalla Name')]) !!}
-        </div>
-    </div> -->
-    <div class="form-group row">
-        {!! Form::label('sub_location', __('Sub Location'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-3">
-            {!! Form::text('sub_location', null, ['class' => 'form-control', 'placeholder' => __('Sub Location')]) !!}
-        </div>
-    </div>
+    <!-- <div class="form-group row"> -->
+        <!-- {!! Form::label('sub_location', __('Sub Location'), ['class' => 'col-sm-3 control-label']) !!} -->
+        <!-- <div class="col-sm-3"> -->
+            <!-- {!! Form::text('sub_location', null, ['class' => 'form-control', 'placeholder' => __('Sub Location')]) !!} -->
+        <!-- </div> -->
+    <!-- </div> -->
     <div class="form-group row">
         {!! Form::label('bin', __('BIN'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             {!! Form::select('bin', $bins, null, ['class' => 'form-control chosen-select', 'id' => 'bin', 'placeholder' => __('Select BIN')]) !!}
+        </div>
+    </div>
+    <div class="form-group row">
+        {!! Form::label('area_mohalla_name', __('Sub Location'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::text('area_mohalla_name', null, ['class' => 'form-control', 'placeholder' => __('Area / Mohalla Name')]) !!}
         </div>
     </div>
     <div class="form-group row required">
@@ -233,6 +233,7 @@ $(function() {
         $('#road_no').val(data.road_no || '');
         $('#road_name').val(data.road_name || '');
         $('#holding_number').val(data.holding_number || '');
+        $('#area_mohalla_name').val(data.area_mohalla_name || '');
         if (!$('#tax_id').val()) {
             $('#tax_id').val(data.tax_id || '');
         }

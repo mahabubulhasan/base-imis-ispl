@@ -1,12 +1,7 @@
 @php
     $isEdit = isset($payment) && $payment;
     $excludePaymentId = $isEdit ? $payment->id : null;
-    $defaultMonth = old(
-        'payment_for_month',
-        ($isEdit && $payment->payment_for_month)
-            ? $payment->payment_for_month->format('Y-m')
-            : now()->format('Y-m')
-    );
+    $defaultMonth = now()->format('Y-m');
     $defaultPaymentTime = old(
         'payment_time',
         ($isEdit && $payment->payment_time)
@@ -17,6 +12,18 @@
     $initHolding = old('holding_number', $isEdit ? ($payment->holding_number ?? '') : '');
     $initCustomerName = $isEdit ? optional($payment->primaryCollectionSite)->household_owner_name : null;
     $initFatherOrHusbandName = $isEdit ? optional($payment->primaryCollectionSite)->father_or_husband_name : null;
+    $initSite = $isEdit ? optional($payment->primaryCollectionSite) : null;
+    $initialHouseholdDetail = null;
+    if ($initSite) {
+        $initialHouseholdDetail = [
+            'contact_number' => $initSite->contact_number,
+            'sub_location' => $initSite->sub_location,
+            'ward' => $initSite->ward !== null && $initSite->ward !== '' ? (string) $initSite->ward : null,
+            'road_no' => $initSite->road_no,
+            'road_name' => $initSite->road_name,
+            'area_mohalla_name' => $initSite->area_mohalla_name,
+        ];
+    }
 @endphp
 @push('style')
 <style>
@@ -72,6 +79,26 @@
         min-height: 0;
     }
 }
+.bcp-no-due-box {
+    border: 1px solid #b8daff;
+    background: #f0f7ff;
+    border-radius: 0.375rem;
+    padding: 0.9rem 1rem;
+}
+.bcp-no-due-box .bcp-no-due-title {
+    font-weight: 600;
+    color: #0b4f94;
+    margin-bottom: 0.35rem;
+}
+.bcp-no-due-box .bcp-no-due-message {
+    margin-bottom: 0.5rem;
+    color: #0b4f94;
+}
+.bcp-no-due-box .bcp-no-due-meta {
+    margin: 0;
+    padding-left: 1rem;
+    color: #2f4f6f;
+}
 </style>
 @endpush
 <div class="app-mobile-form bcp-payment-form-mobile">
@@ -95,14 +122,29 @@
         </div>
     </div>
 
-    <div class="form-group row required">
-        {!! Form::label('payment_for_month', __('Payment for the month of'), ['class' => 'col-sm-3 control-label']) !!}
+    <div id="bcp-household-info-wrap" class="form-group row @if(!$initialHouseholdDetail) d-none @endif">
+        <label class="col-sm-3 control-label">{{ __('Household details') }}</label>
         <div class="col-sm-9 bcp-payment-field-col">
-            <input type="month" name="payment_for_month" id="payment_for_month" class="form-control w-100" value="{{ $defaultMonth }}" />
+            <div class="border rounded p-3 bg-light w-100" id="bcp-household-info-panel">
+                <div><strong>{{ __('Contact Number') }}:</strong> <span id="bcp-hi-contact">{{ $initialHouseholdDetail ? ($initialHouseholdDetail['contact_number'] ?? '—') : '—' }}</span></div>
+                <div><strong>{{ __('Sub Location') }}:</strong> <span id="bcp-hi-sub-location">{{ $initialHouseholdDetail ? ($initialHouseholdDetail['sub_location'] ?? '—') : '—' }}</span></div>
+                <div><strong>{{ __('Ward') }}:</strong> <span id="bcp-hi-ward">{{ $initialHouseholdDetail ? ($initialHouseholdDetail['ward'] ?? '—') : '—' }}</span></div>
+                <div><strong>{{ __('Road no.') }}:</strong> <span id="bcp-hi-road-no">{{ $initialHouseholdDetail ? ($initialHouseholdDetail['road_no'] ?? '—') : '—' }}</span></div>
+                <div><strong>{{ __('Road name') }}:</strong> <span id="bcp-hi-road-name">{{ $initialHouseholdDetail ? ($initialHouseholdDetail['road_name'] ?? '—') : '—' }}</span></div>
+            </div>
         </div>
     </div>
 
-    <div class="form-group row">
+    <div class="form-group row required bcp-due-dependent-row">
+        {!! Form::label('payment_for_month', __('Transaction Month'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-9 bcp-payment-field-col">
+            <input type="hidden" name="payment_for_month" id="payment_for_month" value="{{ $defaultMonth }}" />
+            <input type="text" class="form-control w-100" value="{{ \Carbon\Carbon::createFromFormat('Y-m', $defaultMonth)->format('F Y') }}" readonly />
+            <small class="form-text text-muted">{{ __('Payment month is auto-selected as current month.') }}</small>
+        </div>
+    </div>
+
+    <div class="form-group row bcp-due-dependent-row">
         <label class="col-sm-3 control-label">{{ __('Billing summary') }}</label>
         <div class="col-sm-9 bcp-payment-field-col">
             <div class="border rounded p-3 bg-light w-100" id="balance-panel">
@@ -110,43 +152,69 @@
                     <span><i class="fas fa-spinner fa-spin" aria-hidden="true"></i> {{ __('Loading…') }}</span>
                 </div>
                 <div id="balance-panel-body">
-                    <div><strong>{{ __('Charge') }} ({{ __('Taka') .' / '.  __('Month') }}):</strong> <span id="bcp-waste-charge">—</span></div>
-                    <div><strong>{{ __('Total due through selected month') }}:</strong> <span id="bcp-due">—</span></div>
+                    <div><strong>{{ __('Waste Collection Fee') }} ({{ __('Taka') .' / '.  __('Month') }}):</strong> <span id="bcp-waste-charge">—</span></div>
+                    <div><strong><span id="bcp-due-label-prefix">{{ __('Total due through') }}</span> <span id="bcp-due-month-label">{{ __('selected month') }}</span>:</strong> <span id="bcp-due">—</span></div>
                     <div class="small text-muted mt-2">{{ __('Due is based on billing from service start or survey date through the selected month, minus all payments recorded for months up to and including that month.') }}</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="form-group row">
+    <div id="bcp-no-due-info" class="d-none">
+        <div class="bcp-no-due-box">
+            <div class="bcp-no-due-title">{{ __('Payment not required') }}</div>
+            <div class="bcp-no-due-message">{{ __('All previous dues have been cleared for this household.') }}</div>
+            <ul class="bcp-no-due-meta">
+                <li><strong>{{ __('Holding') }}:</strong> <span id="bcp-no-due-holding">—</span></li>
+                <li><strong>{{ __('Household') }}:</strong> <span id="bcp-no-due-household">—</span></li>
+                <li><strong>{{ __('Payment month') }}:</strong> <span id="bcp-no-due-month">—</span></li>
+                <li><strong>{{ __('Waste Collection Fee') }}:</strong> <span id="bcp-no-due-waste-charge">—</span></li>
+                <li><strong>{{ __('Total due through month') }}:</strong> <span id="bcp-no-due-total-due">0.00</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="form-group row bcp-due-dependent-row">
         {!! Form::label('payment_time', __('Payment time'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-9 bcp-payment-field-col">
             <input type="datetime-local" name="payment_time" id="payment_time" class="form-control w-100" value="{{ $defaultPaymentTime }}" />
         </div>
     </div>
 
-    <div class="form-group row required">
-        {!! Form::label('amount', __('Amount') . ' (' . __('Taka') . ')', ['class' => 'col-sm-3 control-label']) !!}
+    <div class="form-group row required bcp-due-dependent-row" id="bcp-current-amount-row">
+        {!! Form::label('amount', __('Current Month Payment') . ' (' . __('Taka') . ')', ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-9 bcp-payment-field-col">
-            {!! Form::number('amount', old('amount', $isEdit ? $payment->amount : null), ['class' => 'form-control w-100', 'step' => '0.01', 'min' => '0.01']) !!}
+            <div id="bcp-current-amount-input-wrap">
+                {!! Form::number('amount', old('amount', $isEdit ? $payment->amount : null), ['class' => 'form-control w-100', 'step' => '0.01', 'min' => '0']) !!}
+            </div>
+            <small id="bcp-current-month-paid-note" class="form-text text-info d-none">
+                {{ __("The current month's waste collection fee has been paid. You may only pay previous dues.") }}
+            </small>
         </div>
     </div>
 
-    <div class="form-group row required">
+    <div class="form-group row bcp-due-dependent-row" id="bcp-due-paid-row">
+        {!! Form::label('due_paid', __('Previous Due Payment') . ' (' . __('Taka') . ')', ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-9 bcp-payment-field-col">
+            {!! Form::number('due_paid', old('due_paid', $isEdit ? ($payment->due_paid ?? 0) : 0), ['class' => 'form-control w-100', 'step' => '0.01', 'min' => '0']) !!}
+        </div>
+    </div>
+
+    <div class="form-group row required bcp-due-dependent-row">
         {!! Form::label('payment_method', __('Payment method'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-9 bcp-payment-field-col">
             {!! Form::select('payment_method', $paymentMethods, old('payment_method', $isEdit ? $payment->payment_method : null), ['class' => 'form-control w-100', 'placeholder' => __('Select')]) !!}
         </div>
     </div>
 
-    <div class="form-group row">
+    <div class="form-group row bcp-due-dependent-row">
         {!! Form::label('receipt_no', __('Receipt no'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-9 bcp-payment-field-col">
             {!! Form::text('receipt_no', old('receipt_no', $isEdit ? $payment->receipt_no : null), ['class' => 'form-control w-100', 'maxlength' => 255]) !!}
         </div>
     </div>
 
-    <div class="form-group row">
+    <div class="form-group row bcp-due-dependent-row">
         {!! Form::label('received_by_user_id', __('Payment received by'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-9 bcp-payment-field-col">
             @if(!empty($canChooseReceivedBy))
@@ -164,7 +232,7 @@
         </div>
     </div>
 
-    <div class="form-group row">
+    <div class="form-group row bcp-due-dependent-row">
         {!! Form::label('receipt_copy', __('Payment receipt copy'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-9 bcp-payment-field-col">
             <input type="file" name="receipt_copy" id="receipt_copy" class="form-control w-100" accept=".jpg,.jpeg,.png,.pdf" />
@@ -177,7 +245,7 @@
 </div>
 <div class="card-footer">
     <a href="{{ route('swm.bill-collection-payments.index') }}" class="btn btn-info">{{ __('Back to List') }}</a>
-    {!! Form::submit(__('Save'), ['class' => 'btn btn-info']) !!}
+    {!! Form::submit(__('Save'), ['class' => 'btn btn-info', 'id' => 'bcp-save-btn']) !!}
 </div>
 </div>
 
@@ -190,6 +258,46 @@
     var excludePaymentId = @json($excludePaymentId);
     var csrf = @json(csrf_token());
     var balanceRequestSeq = 0;
+    var selectedHouseholdText = '';
+    var initialHouseholdDetail = @json($initialHouseholdDetail);
+
+    function householdInfoPlaceholder() {
+        return '—';
+    }
+
+    function formatHouseholdInfoText(v) {
+        if (v === null || v === undefined || v === '') {
+            return householdInfoPlaceholder();
+        }
+        return String(v);
+    }
+
+    function setHouseholdInfoVisible(visible) {
+        if (visible) {
+            $('#bcp-household-info-wrap').removeClass('d-none');
+        } else {
+            $('#bcp-household-info-wrap').addClass('d-none');
+        }
+    }
+
+    function updateHouseholdInfoPanel(data) {
+        if (!data) {
+            clearHouseholdInfoPanel();
+            return;
+        }
+        $('#bcp-hi-contact').text(formatHouseholdInfoText(data.contact_number));
+        $('#bcp-hi-sub-location').text(formatHouseholdInfoText(data.sub_location));
+        $('#bcp-hi-ward').text(formatHouseholdInfoText(data.ward));
+        $('#bcp-hi-road-no').text(formatHouseholdInfoText(data.road_no));
+        $('#bcp-hi-road-name').text(formatHouseholdInfoText(data.road_name));
+        setHouseholdInfoVisible(true);
+    }
+
+    function clearHouseholdInfoPanel() {
+        $('#bcp-hi-contact, #bcp-hi-sub-location, #bcp-hi-ward, #bcp-hi-road-no, #bcp-hi-road-name, #bcp-hi-area-mohalla')
+            .text(householdInfoPlaceholder());
+        setHouseholdInfoVisible(false);
+    }
 
     function setBalanceLoading(isLoading) {
         var $panel = $('#balance-panel');
@@ -208,14 +316,88 @@
         return ym + '-01';
     }
 
+    function formatCurrencyDisplay(value) {
+        var n = Number(value);
+        if (!isFinite(n)) return '—';
+        return n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function setNoDueState(isNoDue) {
+        if (isNoDue) {
+            $('.bcp-due-dependent-row').hide();
+            $('#bcp-no-due-info').removeClass('d-none');
+            $('#bcp-save-btn').prop('disabled', true);
+            $('#due_paid').prop('required', false).attr('min', '0');
+        } else {
+            $('.bcp-due-dependent-row').show();
+            $('#bcp-no-due-info').addClass('d-none');
+            $('#bcp-save-btn').prop('disabled', false);
+        }
+    }
+
+    function getSelectedPaymentMonthLabel() {
+        var ym = $('#payment_for_month').val();
+        if (!ym || ym.length < 7) return '—';
+        var parts = ym.split('-');
+        if (parts.length < 2) return '—';
+        var year = parseInt(parts[0], 10);
+        var month = parseInt(parts[1], 10);
+        if (!year || !month || month < 1 || month > 12) return '—';
+        var dt = new Date(year, month - 1, 1);
+        return dt.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+    }
+
+    function updateNoDueInfo(data) {
+        $('#bcp-no-due-holding').text($('#holding_number').val() || '—');
+        $('#bcp-no-due-household').text(selectedHouseholdText || $('#household_code').val() || '—');
+        $('#bcp-no-due-month').text(getSelectedPaymentMonthLabel());
+        $('#bcp-no-due-waste-charge').text(
+            (data.waste_charge === null || data.waste_charge === undefined)
+                ? '—'
+                : formatCurrencyDisplay(data.waste_charge)
+        );
+        $('#bcp-no-due-total-due').text(
+            (data.due === null || data.due === undefined)
+                ? '0.00'
+                : formatCurrencyDisplay(data.due)
+        );
+    }
+
+    function updateDueMonthLabel() {
+        var ym = $('#payment_for_month').val();
+        if (!ym || ym.length < 7) {
+            $('#bcp-due-month-label').text('{{ __('selected month') }}');
+            return;
+        }
+        var parts = ym.split('-');
+        if (parts.length < 2) {
+            $('#bcp-due-month-label').text('{{ __('selected month') }}');
+            return;
+        }
+        var year = parseInt(parts[0], 10);
+        var month = parseInt(parts[1], 10);
+        if (!year || !month || month < 1 || month > 12) {
+            $('#bcp-due-month-label').text('{{ __('selected month') }}');
+            return;
+        }
+        var dt = new Date(year, month - 1, 1);
+        var monthLabel = dt.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+        $('#bcp-due-month-label').text(monthLabel);
+    }
+
     function refreshBalance() {
         var siteId = $('#household_id').val();
         var ym = $('#payment_for_month').val();
         var pm = monthFirstDay(ym);
+        updateDueMonthLabel();
         if (!siteId || !pm) {
             setBalanceLoading(false);
             $('#bcp-waste-charge').text('—');
             $('#bcp-due').text('—');
+            setNoDueState(false);
+            if (!siteId) {
+                clearHouseholdInfoPanel();
+            }
             return;
         }
         var seq = ++balanceRequestSeq;
@@ -232,12 +414,33 @@
             if (data.waste_charge === null || data.waste_charge === undefined) {
                 $('#bcp-waste-charge').text('{{ __('Not set') }}');
             } else {
-                $('#bcp-waste-charge').text(data.waste_charge);
+                $('#bcp-waste-charge').text(formatCurrencyDisplay(data.waste_charge));
             }
             if (data.due === null || data.due === undefined) {
                 $('#bcp-due').text('—');
             } else {
-                $('#bcp-due').text(data.due);
+                $('#bcp-due').text(formatCurrencyDisplay(data.due));
+            }
+            var dueNumeric = Number(data.due);
+            var hasNoDue = isFinite(dueNumeric) && dueNumeric <= 0;
+            updateNoDueInfo(data);
+            setNoDueState(hasNoDue);
+            if (hasNoDue) {
+                return;
+            }
+            if (data.current_month_fully_paid) {
+                $('#bcp-current-amount-input-wrap').hide();
+                $('input[name="amount"]').val('0');
+                $('#bcp-current-month-paid-note').removeClass('d-none');
+                $('#due_paid').prop('required', true).attr('min', '0.01');
+                $('#bcp-current-amount-row').removeClass('required');
+                $('#bcp-due-paid-row').addClass('required');
+            } else {
+                $('#bcp-current-amount-input-wrap').show();
+                $('#bcp-current-month-paid-note').addClass('d-none');
+                $('#due_paid').prop('required', false).attr('min', '0');
+                $('#bcp-current-amount-row').addClass('required');
+                $('#bcp-due-paid-row').removeClass('required');
             }
         }).fail(function() {
             if (seq !== balanceRequestSeq) {
@@ -245,6 +448,12 @@
             }
             $('#bcp-waste-charge').text('—');
             $('#bcp-due').text('—');
+            setNoDueState(false);
+            $('#bcp-current-amount-input-wrap').show();
+            $('#bcp-current-month-paid-note').addClass('d-none');
+            $('#due_paid').prop('required', false).attr('min', '0');
+            $('#bcp-current-amount-row').addClass('required');
+            $('#bcp-due-paid-row').removeClass('required');
         }).always(function() {
             if (seq === balanceRequestSeq) {
                 setBalanceLoading(false);
@@ -296,6 +505,7 @@
         $('#household_id').val('');
         $('#household_code').val('');
         $('#customer_site_select').prop('disabled', false).val(null).trigger('change');
+        clearHouseholdInfoPanel();
         refreshBalance();
     });
 
@@ -304,6 +514,7 @@
         $('#household_id').val('');
         $('#household_code').val('');
         $('#customer_site_select').prop('disabled', true).val(null).trigger('change');
+        clearHouseholdInfoPanel();
         refreshBalance();
     });
 
@@ -311,19 +522,24 @@
         var d = e.params.data;
         $('#household_id').val(d.id);
         $('#household_code').val(d.household_id || '');
+        selectedHouseholdText = d.text || '';
         if (d.holding_number) {
             $('#holding_number').val(d.holding_number);
         }
+        updateHouseholdInfoPanel(d);
         refreshBalance();
     });
 
     $('#customer_site_select').on('select2:clear', function() {
         $('#household_id').val('');
         $('#household_code').val('');
+        selectedHouseholdText = '';
+        clearHouseholdInfoPanel();
         refreshBalance();
     });
 
     $('#payment_for_month').on('change', refreshBalance);
+    updateDueMonthLabel();
 
     @if($initHolding !== '')
     (function initFromExisting() {
@@ -339,9 +555,13 @@
         var copt = new Option(label, sid, true, true);
         $(copt).data('data', { id: sid, text: label, household_id: cid });
         $('#customer_site_select').append(copt).trigger('change');
+        selectedHouseholdText = label;
         $('#household_id').val(sid);
         $('#household_code').val(cid);
         $('#holding_number').val(hn);
+        if (initialHouseholdDetail) {
+            updateHouseholdInfoPanel(initialHouseholdDetail);
+        }
         refreshBalance();
     })();
     @endif

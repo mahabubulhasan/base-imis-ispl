@@ -13,6 +13,22 @@
     border: 1px solid #ced4da;
     border-radius: 0.25rem;
 }
+#data-table thead th {
+    vertical-align: middle;
+    white-space: nowrap;
+}
+#data-table thead tr.header-group th {
+    background: #f4f6f9;
+    font-weight: 700;
+    text-align: center;
+}
+#data-table thead tr.header-columns th {
+    background: #ffffff;
+    font-weight: 600;
+    font-size: 0.86rem;
+    line-height: 1.2;
+    text-align: center;
+}
 </style>
 @endpush
 @section('title', $page_title)
@@ -21,7 +37,8 @@
 @include('layouts.components.error-alert')
 
 @php
-    $defaultMonth = now()->format('Y-m');
+    $defaultMonthFrom = now()->copy()->subMonths(5)->format('Y-m');
+    $defaultMonthTo = now()->format('Y-m');
 @endphp
 
 <div class="row">
@@ -56,6 +73,9 @@
 
 <div class="card app-mobile-index">
     <div class="card-header">
+        <a href="#" class="btn btn-danger float-right ml-2" id="download-pdf">
+            {{ __('Download PDF') }}
+        </a>
         <a href="#" class="btn btn-info float-right" id="headingFilters" type="button" data-toggle="collapse"
             data-target="#collapseFilters" aria-expanded="true" aria-controls="collapseFilters">
             {{ __('Show Filter') }}
@@ -66,9 +86,9 @@
             <form class="form-horizontal" id="filter-form">
                 <div class="form-group row">
                     <label for="month_from" class="col-md-2 col-form-label">{{ __('Month from') }}</label>
-                    <div class="col-md-2"><input type="month" class="form-control" id="month_from" value="{{ $defaultMonth }}" /></div>
+                    <div class="col-md-2"><input type="month" class="form-control" id="month_from" value="{{ $defaultMonthFrom }}" /></div>
                     <label for="month_to" class="col-md-2 col-form-label">{{ __('Month to') }}</label>
-                    <div class="col-md-2"><input type="month" class="form-control" id="month_to" value="{{ $defaultMonth }}" /></div>
+                    <div class="col-md-2"><input type="month" class="form-control" id="month_to" value="{{ $defaultMonthTo }}" /></div>
                     <label for="filter_holding_select" class="col-md-2 col-form-label">{{ __('Holding Number') }}</label>
                     <div class="col-md-2 bs-filter-select2">
                         <select class="form-control" id="filter_holding_select" name="holding_numbers[]" multiple="multiple" style="width:100%"></select>
@@ -110,14 +130,27 @@
         <div class="table-responsive">
             <table id="data-table" class="table table-bordered table-striped" width="100%">
                 <thead>
-                    <tr>
-                        <th>{{ __('Current month due') }}</th>
-                        <th>{{ __('Holding Number') }}</th>
-                        <th>{{ __('Household ID') }}</th>
-                        <th>{{ __('Months with due') }}</th>
-                        <th>{{ __('Due in selected months') }} ({{ __('Taka') }})</th>
-                        <th>{{ __('Cumilative total due') }} ({{ __('Taka') }})</th>
-                        <th>{{ __('Revenue collected') }} ({{ __('Taka') }})</th>
+                    <tr class="header-group">
+                        <th rowspan="2">{{ __('SL') }}</th>
+                        <th rowspan="2">{{ __('Holding Number') }}</th>
+                        <th rowspan="2">{{ __('Household ID') }}</th>
+                        <th rowspan="2">{{ __('Household Owner Name') }}</th>
+                        <th rowspan="2">{{ __("Father's/Husband's Name") }}</th>
+                        <th rowspan="2">{{ __('Sub Location') }}</th>
+                        <th rowspan="2">{{ __('Ward') }}</th>
+                        <th rowspan="2">{{ __('Contact Number') }}</th>
+                        <th colspan="9">{{ __('Amount Section') }} ({{ __('Taka') }})</th>
+                    </tr>
+                    <tr class="header-columns">
+                        <th>{{ __('Fixed Service Fee') }}</th>
+                        <th>{{ __('Previous Due') }}</th>
+                        <th>{{ __('Current Due') }}</th>
+                        <th>{{ __('Payable Amount') }}</th>
+                        <th>{{ __('Due Months') }}</th>
+                        <th>{{ __('Current Paid') }}</th>
+                        <th>{{ __('Previous Due Paid') }}</th>
+                        <th>{{ __('Total Collected') }}</th>
+                        <th>{{ __('Closing Due') }}</th>
                     </tr>
                 </thead>
             </table>
@@ -131,6 +164,7 @@
 $(function() {
     var holdingsUrl = @json(route('swm.bill-collection.holdings-search'));
     var customersSearchUrl = @json(route('swm.billing-status.customers-search'));
+    var pdfUrl = @json(route('swm.billing-status.pdf'));
     var csrf = @json(csrf_token());
 
     function loadSummary() {
@@ -241,13 +275,31 @@ $(function() {
             }
         },
         columns: [
-            { data: 'due_current_month', name: 'due_current_month', searchable: false, orderable: false },
+            {
+                data: null,
+                name: 'sl',
+                searchable: false,
+                orderable: false,
+                render: function(data, type, row, meta) {
+                    return meta.row + meta.settings._iDisplayStart + 1;
+                }
+            },
             { data: 'holding_number', name: 'holding_number', searchable: false, orderable: true },
             { data: 'household_id', name: 'household_id', searchable: false, orderable: true },
+            { data: 'household_owner_name', name: 'household_owner_name', searchable: false, orderable: true },
+            { data: 'father_or_husband_name', name: 'father_or_husband_name', searchable: false, orderable: true },
+            { data: 'sub_location', name: 'sub_location', searchable: false, orderable: true },
+            { data: 'ward', name: 'ward', searchable: false, orderable: true },
+            { data: 'contact_number', name: 'contact_number', searchable: false, orderable: true },
+            { data: 'current_service_fee', name: 'current_service_fee', searchable: false, orderable: false, className: 'text-right' },
+            { data: 'previous_due_amount', name: 'previous_due_amount', searchable: false, orderable: false, className: 'text-right' },
+            { data: 'due_current_month', name: 'due_current_month', searchable: false, orderable: false, className: 'text-right' },
+            { data: 'total_due_amount', name: 'total_due_amount', searchable: false, orderable: false, className: 'text-right' },
             { data: 'due_months_of', name: 'due_months_of', searchable: false, orderable: false },
-            { data: 'due_in_selected_months', name: 'due_in_selected_months', searchable: false, orderable: false },
-            { data: 'total_due_amount', name: 'total_due_amount', searchable: false, orderable: false },
-            { data: 'revenue_collected', name: 'revenue_collected', searchable: false, orderable: true }
+            { data: 'current_month_paid', name: 'current_month_paid', searchable: false, orderable: true, className: 'text-right' },
+            { data: 'previous_due_paid', name: 'previous_due_paid', searchable: false, orderable: true, className: 'text-right' },
+            { data: 'revenue_collected', name: 'revenue_collected', searchable: false, orderable: true, className: 'text-right' },
+            { data: 'remaining_due', name: 'remaining_due', searchable: false, orderable: false, className: 'text-right' }
         ],
         order: [[1, 'asc']]
     });
@@ -262,13 +314,34 @@ $(function() {
     });
 
     $('#reset-filter').on('click', function() {
-        $('#month_from').val('{{ $defaultMonth }}');
-        $('#month_to').val('{{ $defaultMonth }}');
+        $('#month_from').val('{{ $defaultMonthFrom }}');
+        $('#month_to').val('{{ $defaultMonthTo }}');
         $('#filter_holding_select').val(null).trigger('change');
         $('#filter_customer_select').val(null).trigger('change');
         $('#is_owner').val('');
         $('#van_puller_id').val('').trigger('chosen:updated');
         dataTable.draw();
+    });
+
+    $('#download-pdf').on('click', function(e) {
+        e.preventDefault();
+        var params = new URLSearchParams();
+        params.set('month_from', $('#month_from').val() || '');
+        params.set('month_to', $('#month_to').val() || '');
+        params.set('is_owner', $('#is_owner').val() || '');
+        params.set('van_puller_id', $('#van_puller_id').val() || '');
+
+        var holdings = selectedHoldingNumbers();
+        for (var i = 0; i < holdings.length; i++) {
+            params.append('holding_numbers[]', holdings[i]);
+        }
+
+        var siteIds = $('#filter_customer_select').val() || [];
+        for (var j = 0; j < siteIds.length; j++) {
+            params.append('customer_site_ids[]', siteIds[j]);
+        }
+
+        window.open(pdfUrl + '?' + params.toString(), '_blank');
     });
 });
 </script>

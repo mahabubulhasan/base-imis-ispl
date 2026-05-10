@@ -69,9 +69,12 @@
                         <th>{{ __('Household Owner Name') }}</th>
                         <th>{{ __('Ward') }}</th>
                         <th>{{ __('Sub-location') }}</th>
+                        <th>{{ __('Contact Number') }}</th>
                         <th>{{ __('Receipt no') }}</th>
-                        <th>{{ __('Amount') }} ({{ __('Taka') }})</th>
-                        <th>{{ __('Payment For Month') }}</th>
+                        <th>{{ __('Current Month Paid') }} ({{ __('Taka') }})</th>
+                        <th>{{ __('Previous Due Paid') }} ({{ __('Taka') }})</th>
+                        <th>{{ __('Total Collected') }} ({{ __('Taka') }})</th>
+                        <th>{{ __('Transaction Month') }}</th>
                         <th>{{ __('Payment Time') }}</th>
                         <th>{{ __('Payment Method') }}</th>
                         <th>{{ __('Received By') }}</th>
@@ -106,8 +109,11 @@ $(function() {
             { data: 'household_owner_name', name: 'household_owner_name' },
             { data: 'ward', name: 'ward' },
             { data: 'sub_location', name: 'sub_location' },
+            { data: 'contact_number', name: 'contact_number' },
             { data: 'receipt_no', name: 'swm.bill_collection_payments.receipt_no' },
             { data: 'amount', name: 'swm.bill_collection_payments.amount' },
+            { data: 'due_paid', name: 'swm.bill_collection_payments.due_paid' },
+            { data: 'total_collected', name: 'total_collected', searchable: false, orderable: false },
             { data: 'payment_for_month', name: 'swm.bill_collection_payments.payment_for_month' },
             { data: 'payment_time', name: 'swm.bill_collection_payments.payment_time' },
             { data: 'payment_method', name: 'swm.bill_collection_payments.payment_method' },

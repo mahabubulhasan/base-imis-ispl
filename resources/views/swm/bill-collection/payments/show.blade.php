@@ -34,8 +34,12 @@
             </dd>
             <dt class="col-sm-3">{{ __('Payment time') }}</dt>
             <dd class="col-sm-9">{{ $payment->payment_time?->format('Y-m-d H:i') }}</dd>
-            <dt class="col-sm-3">{{ __('Amount') }} ({{ __('Taka') }})</dt>
+            <dt class="col-sm-3">{{ __('Current month paid') }} ({{ __('Taka') }})</dt>
             <dd class="col-sm-9">{{ number_format((float) $payment->amount, 2) }}</dd>
+            <dt class="col-sm-3">{{ __('Previous due paid') }} ({{ __('Taka') }})</dt>
+            <dd class="col-sm-9">{{ number_format((float) ($payment->due_paid ?? 0), 2) }}</dd>
+            <dt class="col-sm-3">{{ __('Total collected') }} ({{ __('Taka') }})</dt>
+            <dd class="col-sm-9">{{ number_format((float) $payment->amount + (float) ($payment->due_paid ?? 0), 2) }}</dd>
             <dt class="col-sm-3">{{ __('Payment method') }}</dt>
             <dd class="col-sm-9">{{ config('bill_collection.payment_methods')[$payment->payment_method] ?? $payment->payment_method }}</dd>
             <dt class="col-sm-3">{{ __('Receipt no') }}</dt>

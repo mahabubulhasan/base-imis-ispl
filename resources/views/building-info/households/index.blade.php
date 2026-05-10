@@ -125,7 +125,7 @@ $(function() {
             { data: 'contact_number', name: 'contact_number' },
             { data: 'bin', name: 'bin' },
             { data: 'ward', name: 'ward' },
-            { data: 'sub_location', name: 'sub_location' },
+            { data: 'area_mohalla_name', name: 'area_mohalla_name' },
             { data: 'road_no', name: 'road_no' },
             { data: 'road_name', name: 'road_name' },
             { data: 'is_lic', name: 'is_lic' },

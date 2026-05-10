@@ -391,6 +391,7 @@ Route::group([
             Route::get('billing-status/summary', 'BillCollectionBillingStatusController@summary')->name('swm.billing-status.summary');
             Route::get('billing-status/customers-search', 'BillCollectionBillingStatusController@customersSearch')->name('swm.billing-status.customers-search');
             Route::get('billing-status/data', 'BillCollectionBillingStatusController@getData')->name('swm.billing-status.data');
+            Route::get('billing-status/pdf', 'BillCollectionBillingStatusController@downloadPdf')->name('swm.billing-status.pdf');
             Route::get('billing-status', 'BillCollectionBillingStatusController@index')->name('swm.billing-status.index');
 
             Route::get('payments/data', 'BillCollectionPaymentController@getData')->name('swm.bill-collection-payments.data');

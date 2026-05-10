@@ -88,7 +88,7 @@
 @push('scripts')
 <script>
 (function () {
-    var buildingSnapshotUrl = '{!! route('swm.waste-bins.building-snapshot') !!}';
+    var buildingSnapshotUrl = '{!! route('building-info.households.building-snapshot') !!}';
 
     function setSelectVal($el, val) {
         if (!$el.length) {
@@ -120,6 +120,7 @@
         }
         $('#road_no').val(data.road_no || '');
         $('#road_name').val(data.road_name || '');
+        $('#sub_location').val(data.area_mohalla_name || '');
     }
 
     function togglePlacedAtBuildings() {

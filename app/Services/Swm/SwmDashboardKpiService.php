@@ -103,7 +103,7 @@ class SwmDashboardKpiService
 
         $paymentRows = DB::select(
             "SELECT to_char(date_trunc('month', payment_for_month), 'YYYY-MM') AS ym,
-                    COALESCE(SUM(amount::numeric), 0)::float AS total
+                    COALESCE(SUM((amount + COALESCE(due_paid, 0))::numeric), 0)::float AS total
              FROM swm.bill_collection_payments
              WHERE deleted_at IS NULL
                AND payment_for_month >= ?
@@ -251,11 +251,17 @@ class SwmDashboardKpiService
 
     private function billingMetrics(Carbon $from, Carbon $to): array
     {
-        $paymentsInRange = (float) BillCollectionPayment::query()
+        $currentMonthPaidInRange = (float) BillCollectionPayment::query()
             ->whereNull('deleted_at')
             ->whereDate('payment_for_month', '>=', $from->copy()->startOfMonth()->toDateString())
             ->whereDate('payment_for_month', '<=', $to->copy()->endOfMonth()->toDateString())
             ->sum('amount');
+        $previousDuePaidInRange = (float) BillCollectionPayment::query()
+            ->whereNull('deleted_at')
+            ->whereDate('payment_for_month', '>=', $from->copy()->startOfMonth()->toDateString())
+            ->whereDate('payment_for_month', '<=', $to->copy()->endOfMonth()->toDateString())
+            ->sum('due_paid');
+        $paymentsInRange = $currentMonthPaidInRange + $previousDuePaidInRange;
 
         $totalDue = '0.00';
         $totalBilled = '0.00';
@@ -271,9 +277,11 @@ class SwmDashboardKpiService
         $totalBilled = bcadd($totalDue, number_format($paymentsInRange, 2, '.', ''), 2);
 
         return [
-            'Total billed amount in the selected period' => $totalBilled,
-            'Total revenue collected' => number_format($paymentsInRange, 2, '.', ''),
-            'Total due amount' => $totalDue,
+            'Total billed amount in the selected period' => $this->formatCurrency($totalBilled),
+            'Current month paid amount' => $this->formatCurrency($currentMonthPaidInRange),
+            'Previous due paid amount' => $this->formatCurrency($previousDuePaidInRange),
+            'Total revenue collected' => $this->formatCurrency($paymentsInRange),
+            'Total due amount' => $this->formatCurrency($totalDue),
         ];
     }
 
@@ -463,5 +471,17 @@ class SwmDashboardKpiService
         } catch (\Throwable) {
             return null;
         }
+    }
+
+    /**
+     * @param int|float|string|null $value
+     */
+    private function formatCurrency($value): string
+    {
+        if ($value === null || $value === '') {
+            return '0.00';
+        }
+
+        return number_format((float) $value, 2, '.', ',');
     }
 }

@@ -8,6 +8,7 @@ use App\Services\Swm\BillCollectionBillingStatusService;
 use App\Services\Swm\BillCollectionPaymentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use PDF;
 
 class BillCollectionBillingStatusController extends Controller
 {
@@ -16,7 +17,7 @@ class BillCollectionBillingStatusController extends Controller
         protected BillCollectionPaymentService $billCollectionPaymentService
     ) {
         $this->middleware('auth');
-        $this->middleware('permission:List SW Billing Status', ['only' => ['index', 'getData', 'summary', 'customersSearch']]);
+        $this->middleware('permission:List SW Billing Status', ['only' => ['index', 'getData', 'summary', 'customersSearch', 'downloadPdf']]);
     }
 
     public function index()
@@ -94,5 +95,40 @@ class BillCollectionBillingStatusController extends Controller
     public function summary(): JsonResponse
     {
         return response()->json($this->billingStatusService->summary());
+    }
+
+    public function downloadPdf(Request $request)
+    {
+        $request->merge([
+            'van_puller_id' => $request->filled('van_puller_id') ? $request->input('van_puller_id') : null,
+            'is_owner' => $request->input('is_owner') === '' ? null : $request->input('is_owner'),
+        ]);
+
+        $request->validate([
+            'month_from' => ['nullable', 'date_format:Y-m'],
+            'month_to' => ['nullable', 'date_format:Y-m'],
+            'is_owner' => ['nullable', 'in:0,1'],
+            'van_puller_id' => ['nullable', 'integer', 'min:1'],
+            'holding_numbers' => ['nullable', 'array'],
+            'holding_numbers.*' => ['nullable', 'string', 'max:255'],
+            'customer_site_ids' => ['nullable', 'array'],
+            'customer_site_ids.*' => ['nullable', 'integer', 'min:1'],
+        ]);
+
+        $result = $this->billingStatusService->getStatusRowsForExport($request->all() ?? []);
+
+        $pdf = PDF::loadView('swm.bill-collection.billing-status.pdf', [
+            'rows' => $result['rows'] ?? [],
+            'monthFrom' => $result['month_from'] ?? null,
+            'monthTo' => $result['month_to'] ?? null,
+        ])->setPaper('a4', 'landscape');
+
+        $monthFrom = $result['month_from'] ?? null;
+        $monthTo = $result['month_to'] ?? null;
+        $fromLabel = $monthFrom instanceof \Carbon\Carbon ? $monthFrom->format('Y-m') : 'na';
+        $toLabel = $monthTo instanceof \Carbon\Carbon ? $monthTo->format('Y-m') : 'na';
+        $filename = "billing-status-{$fromLabel}_to_{$toLabel}.pdf";
+
+        return $pdf->download($filename);
     }
 }

@@ -115,11 +115,11 @@
         </div>
     </div>
     <div class="form-group row ">
-        {!! Form::label('house_locality', 'House Locality/Address', ['class' => 'col-sm-3 control-label ']) !!}
+        {!! Form::label('house_locality', 'Sub Location', ['class' => 'col-sm-3 control-label ']) !!}
         <div class="col-sm-5">
             {!! Form::text('house_locality', null, [
                 'class' => 'form-control col-sm-10',
-                'placeholder' => 'House Locality/Address',
+                'placeholder' => 'Sub Location',
                 'autocomplete' => 'off',
             ]) !!}
         </div>

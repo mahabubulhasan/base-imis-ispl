@@ -83,7 +83,14 @@ class BillCollectionPaymentController extends Controller
                 'id' => (string) $row['id'],
                 'text' => $row['text'],
                 'household_id' => $row['household_id'],
+                'household_owner_name' => $row['household_owner_name'],
+                'father_or_husband_name' => $row['father_or_husband_name'],
                 'holding_number' => $row['holding_number'],
+                'contact_number' => $row['contact_number'],
+                'sub_location' => $row['sub_location'],
+                'ward' => $row['ward'],
+                'road_no' => $row['road_no'],
+                'road_name' => $row['road_name'],
                 'waste_charge' => $row['waste_charge'],
                 'using_this_service_since' => $row['using_this_service_since'],
                 'survey_date' => $row['survey_date'],
@@ -135,6 +142,10 @@ class BillCollectionPaymentController extends Controller
     public function store(BillCollectionPaymentRequest $request)
     {
         $data = $request->validated();
+        $exceedError = $this->validateCollectedAmountWithinDue($request, null);
+        if ($exceedError !== null) {
+            return redirect()->back()->withInput()->withErrors(['amount' => $exceedError]);
+        }
         $data = $this->finalizeBillCollectionReceivedByUserId($data, null);
         if (empty($data['received_by_user_id'])) {
             $data['received_by_user_id'] = Auth::id();
@@ -144,7 +155,6 @@ class BillCollectionPaymentController extends Controller
         if (! $id) {
             return redirect()->back()->withInput()->withErrors(['household_id' => __('Invalid household.')]);
         }
-        $this->warnIfAmountExceedsDue($request, null);
 
         return redirect()->route('swm.bill-collection-payments.index')->with('success', __('Bill collection payment created successfully.'));
     }
@@ -177,6 +187,10 @@ class BillCollectionPaymentController extends Controller
     public function update(BillCollectionPaymentRequest $request, BillCollectionPayment $payment)
     {
         $data = $request->validated();
+        $exceedError = $this->validateCollectedAmountWithinDue($request, $payment->id);
+        if ($exceedError !== null) {
+            return redirect()->back()->withInput()->withErrors(['amount' => $exceedError]);
+        }
         $data = $this->finalizeBillCollectionReceivedByUserId($data, $payment);
         if (empty($data['received_by_user_id'])) {
             $data['received_by_user_id'] = Auth::id();
@@ -193,7 +207,6 @@ class BillCollectionPaymentController extends Controller
         if (! $id) {
             return redirect()->back()->withInput()->withErrors(['household_id' => __('Invalid household.')]);
         }
-        $this->warnIfAmountExceedsDue($request, $payment->id);
 
         return redirect()->route('swm.bill-collection-payments.index')->with('success', __('Bill collection payment updated successfully.'));
     }
@@ -271,25 +284,29 @@ class BillCollectionPaymentController extends Controller
         return redirect()->route('swm.bill-collection-payments.index')->with('success', $message);
     }
 
-    protected function warnIfAmountExceedsDue(BillCollectionPaymentRequest $request, ?int $excludeId): void
+    protected function validateCollectedAmountWithinDue(BillCollectionPaymentRequest $request, ?int $excludeId): ?string
     {
         $site = Household::query()
             ->whereKey($request->input('household_id'))
             ->whereNull('deleted_at')
             ->first();
         if (! $site) {
-            return;
+            return null;
         }
         $month = Carbon::parse($request->input('payment_for_month'))->startOfMonth();
         $balance = $this->billCollectionPaymentService->balanceThroughMonth($site, $month, $excludeId);
         $due = $balance['due'] ?? null;
         if ($due === null) {
-            return;
+            return null;
         }
         $amount = (string) $request->input('amount', '0');
-        if (bccomp($amount, (string) $due, 2) > 0) {
-            session()->flash('warning', __('The payment amount is greater than the calculated outstanding balance through the selected month. You may continue; verify the amount if needed.'));
+        $duePaid = (string) $request->input('due_paid', '0');
+        $totalCollected = bcadd($amount, $duePaid, 2);
+        if (bccomp($totalCollected, (string) $due, 2) > 0) {
+            return __('Total collected amount (current month + previous due) cannot be greater than the calculated outstanding balance through the selected month.');
         }
+
+        return null;
     }
 
     protected function userCanChooseBillCollectionReceivedBy(): bool

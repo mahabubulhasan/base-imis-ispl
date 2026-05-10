@@ -67,12 +67,33 @@ class BillCollectionPaymentService
             });
         }
 
-        return $query->get(['id', 'household_id', 'household_owner_name', 'father_or_husband_name', 'holding_number', 'waste_charge', 'using_this_service_since', 'survey_date'])
+        return $query->get([
+            'id',
+            'household_id',
+            'household_owner_name',
+            'father_or_husband_name',
+            'holding_number',
+            'contact_number',
+            'area_mohalla_name',
+            'ward',
+            'road_no',
+            'road_name',
+            'waste_charge',
+            'using_this_service_since',
+            'survey_date',
+        ])
             ->map(fn ($site) => [
                 'id' => $site->id,
                 'text' => $site->household_id.' — '.$site->household_owner_name.($site->father_or_husband_name ? ' ('.$site->father_or_husband_name.')' : ''),
                 'household_id' => $site->household_id,
+                'household_owner_name' => $site->household_owner_name,
+                'father_or_husband_name' => $site->father_or_husband_name,
                 'holding_number' => $site->holding_number,
+                'contact_number' => $site->contact_number,
+                'sub_location' => $site->area_mohalla_name,
+                'ward' => $site->ward !== null && $site->ward !== '' ? (string) $site->ward : null,
+                'road_no' => $site->road_no,
+                'road_name' => $site->road_name,
                 'waste_charge' => $site->waste_charge,
                 'using_this_service_since' => $site->using_this_service_since?->format('Y-m-d'),
                 'survey_date' => $site->survey_date?->format('Y-m-d'),
@@ -174,7 +195,16 @@ class BillCollectionPaymentService
     }
 
     /**
-     * @return array{waste_charge: ?string, billing_anchor: ?string, billable_month_count: int, cumulative_obligation: ?string, cumulative_paid_through: string, due: ?string}
+     * @return array{
+     *     waste_charge: ?string,
+     *     billing_anchor: ?string,
+     *     billable_month_count: int,
+     *     cumulative_obligation: ?string,
+     *     cumulative_paid_through: string,
+     *     due: ?string,
+     *     current_month_amount_paid: string,
+     *     current_month_fully_paid: bool
+     * }
      */
     public function balanceThroughMonth(Household $site, Carbon $paymentForMonth, ?int $excludePaymentId = null): array
     {
@@ -192,16 +222,8 @@ class BillCollectionPaymentService
             }
         }
 
-        $paidQuery = BillCollectionPayment::query()
-            ->where('household_id', $site->id)
-            ->whereNull('deleted_at')
-            ->where('payment_for_month', '<=', $monthStart->toDateString());
-
-        if ($excludePaymentId) {
-            $paidQuery->where('id', '!=', $excludePaymentId);
-        }
-
-        $cumulativePaid = (string) $paidQuery->sum('amount');
+        $cumulativePaid = $this->cumulativePaidThroughMonth($site, $monthStart, $excludePaymentId);
+        $currentMonthAmountPaid = $this->currentMonthAmountPaid($site, $monthStart, $excludePaymentId);
 
         $due = null;
         if ($cumulativeObligation !== null) {
@@ -218,6 +240,8 @@ class BillCollectionPaymentService
             'cumulative_obligation' => $cumulativeObligation,
             'cumulative_paid_through' => $cumulativePaid,
             'due' => $due,
+            'current_month_amount_paid' => $currentMonthAmountPaid,
+            'current_month_fully_paid' => $wasteCharge !== null && bccomp($currentMonthAmountPaid, (string) $wasteCharge, 2) >= 0,
         ];
     }
 
@@ -244,7 +268,7 @@ class BillCollectionPaymentService
             ->where('household_id', $site->id)
             ->whereNull('deleted_at')
             ->whereDate('payment_for_month', $d)
-            ->sum('amount');
+            ->sum(DB::raw('amount + COALESCE(due_paid, 0)'));
 
         return number_format((float) $sum, 2, '.', '');
     }
@@ -254,22 +278,155 @@ class BillCollectionPaymentService
      */
     public function marginalDueForMonth(Household $site, Carbon $monthStart): string
     {
-        $w = $site->waste_charge;
-        if ($w === null) {
-            return '0.00';
-        }
-        $units = $this->marginalBillableUnitCount($site, $monthStart);
-        if ($units <= 0) {
-            return '0.00';
-        }
-        $obligation = bcmul((string) $w, (string) $units, 2);
-        $paid = $this->paidForPaymentMonth($site, $monthStart);
-        $due = bcsub($obligation, $paid, 2);
-        if (bccomp($due, '0', 2) < 0) {
+        if ($site->waste_charge === null) {
             return '0.00';
         }
 
-        return $due;
+        $monthStart = $monthStart->copy()->startOfMonth();
+        $prevMonthStart = $monthStart->copy()->subMonthNoOverflow()->startOfMonth();
+
+        $dueThroughThisMonth = $this->balanceThroughMonth($site, $monthStart)['due'] ?? '0.00';
+        $dueThroughPrevMonth = $this->balanceThroughMonth($site, $prevMonthStart)['due'] ?? '0.00';
+
+        $marginalDue = bcsub((string) $dueThroughThisMonth, (string) $dueThroughPrevMonth, 2);
+        if (bccomp($marginalDue, '0', 2) < 0) {
+            return '0.00';
+        }
+
+        return $marginalDue;
+    }
+
+    /**
+     * Remaining due per month in the given range using FIFO settlement:
+     * each payment (amount + due_paid) is applied to the oldest unpaid month
+     * up to and including that payment_for_month.
+     *
+     * @return array<string, string> keyed by Y-m (e.g. 2026-05 => "200.00")
+     */
+    public function outstandingByMonthInRange(Household $site, Carbon $rangeStart, Carbon $rangeEnd): array
+    {
+        $rangeStart = $rangeStart->copy()->startOfMonth();
+        $rangeEnd = $rangeEnd->copy()->startOfMonth();
+        if ($rangeStart->gt($rangeEnd) || $site->waste_charge === null) {
+            return [];
+        }
+
+        $anchor = $this->billingAnchor($site);
+        $calcStart = $anchor && $anchor->lt($rangeStart) ? $anchor->copy() : $rangeStart->copy();
+
+        $months = [];
+        $monthCursor = $calcStart->copy();
+        $guard = 0;
+        while ($monthCursor->lte($rangeEnd) && $guard < 240) {
+            $guard++;
+            $key = $monthCursor->format('Y-m');
+            $units = $this->marginalBillableUnitCount($site, $monthCursor);
+            $obligation = $units > 0
+                ? bcmul((string) $site->waste_charge, (string) $units, 2)
+                : '0.00';
+            $months[$key] = [
+                'month' => $monthCursor->copy(),
+                'remaining' => $obligation,
+            ];
+            $monthCursor->addMonth();
+        }
+
+        $payments = BillCollectionPayment::query()
+            ->where('household_id', $site->id)
+            ->whereNull('deleted_at')
+            ->whereDate('payment_for_month', '<=', $rangeEnd->toDateString())
+            ->orderBy('payment_for_month')
+            ->orderBy('id')
+            ->get(['payment_for_month', 'amount', 'due_paid']);
+
+        foreach ($payments as $payment) {
+            $paymentMonth = Carbon::parse($payment->payment_for_month)->startOfMonth();
+            $amount = (string) ($payment->amount ?? 0);
+            $duePaid = (string) ($payment->due_paid ?? 0);
+
+            // Current-month installment: apply only to the selected payment month bucket.
+            if (bccomp($amount, '0', 2) > 0) {
+                $paymentMonthKey = $paymentMonth->format('Y-m');
+                if (isset($months[$paymentMonthKey])) {
+                    $remainingForPaymentMonth = $months[$paymentMonthKey]['remaining'];
+                    if (bccomp($remainingForPaymentMonth, '0', 2) > 0) {
+                        if (bccomp($amount, $remainingForPaymentMonth, 2) >= 0) {
+                            $months[$paymentMonthKey]['remaining'] = '0.00';
+                        } else {
+                            $months[$paymentMonthKey]['remaining'] = bcsub($remainingForPaymentMonth, $amount, 2);
+                        }
+                    }
+                }
+            }
+
+            // Arrears component: apply FIFO to oldest unpaid months up to payment month.
+            $available = $duePaid;
+            if (bccomp($available, '0', 2) <= 0) {
+                continue;
+            }
+            foreach ($months as $entryKey => $entry) {
+                /** @var Carbon $entryMonth */
+                $entryMonth = $entry['month'];
+                if ($entryMonth->gt($paymentMonth)) {
+                    break;
+                }
+                if (bccomp($available, '0', 2) <= 0) {
+                    break;
+                }
+                $remaining = $months[$entryKey]['remaining'];
+                if (bccomp($remaining, '0', 2) <= 0) {
+                    continue;
+                }
+
+                if (bccomp($available, $remaining, 2) >= 0) {
+                    $available = bcsub($available, $remaining, 2);
+                    $months[$entryKey]['remaining'] = '0.00';
+                } else {
+                    $months[$entryKey]['remaining'] = bcsub($remaining, $available, 2);
+                    $available = '0.00';
+                }
+            }
+        }
+
+        $out = [];
+        $sliceCursor = $rangeStart->copy();
+        $sliceGuard = 0;
+        while ($sliceCursor->lte($rangeEnd) && $sliceGuard < 240) {
+            $sliceGuard++;
+            $key = $sliceCursor->format('Y-m');
+            $out[$key] = isset($months[$key]) ? $months[$key]['remaining'] : '0.00';
+            $sliceCursor->addMonth();
+        }
+
+        return $out;
+    }
+
+    protected function cumulativePaidThroughMonth(Household $site, Carbon $monthStart, ?int $excludePaymentId = null): string
+    {
+        $paidQuery = BillCollectionPayment::query()
+            ->where('household_id', $site->id)
+            ->whereNull('deleted_at')
+            ->whereDate('payment_for_month', '<=', $monthStart->toDateString());
+
+        if ($excludePaymentId) {
+            $paidQuery->where('id', '!=', $excludePaymentId);
+        }
+
+        return (string) $paidQuery->sum(DB::raw('amount + COALESCE(due_paid, 0)'));
+    }
+
+    protected function currentMonthAmountPaid(Household $site, Carbon $monthStart, ?int $excludePaymentId = null): string
+    {
+        $query = BillCollectionPayment::query()
+            ->where('household_id', $site->id)
+            ->whereNull('deleted_at')
+            ->whereDate('payment_for_month', $monthStart->toDateString());
+
+        if ($excludePaymentId) {
+            $query->where('id', '!=', $excludePaymentId);
+        }
+
+        return number_format((float) $query->sum('amount'), 2, '.', '');
     }
 
     protected function baseQuery(): Builder
@@ -283,7 +440,8 @@ class BillCollectionPaymentService
                 'swm_pcs.household_owner_name as site_household_owner_name',
                 'swm_pcs.father_or_husband_name as site_father_or_husband_name',
                 'swm.bill_collection_payments.customer_id as household_code',
-                'swm_pcs.sub_location as household_sub_location',
+                'swm_pcs.contact_number as household_contact_number',
+                'swm_pcs.area_mohalla_name as household_sub_location',
                 'swm_hh_building.ward as household_ward',
                 DB::raw("COALESCE(recv_user.name, '') as received_by_name"),
             ])
@@ -314,8 +472,10 @@ class BillCollectionPaymentService
             ->orderColumn('household_id', 'swm.bill_collection_payments.customer_id $1')
             ->orderColumn('ward', 'swm_hh_building.ward $1')
             ->orderColumn('sub_location', 'swm_pcs.sub_location $1')
+            ->orderColumn('contact_number', 'swm_pcs.contact_number $1')
             ->orderColumn('receipt_no', 'swm.bill_collection_payments.receipt_no $1')
             ->orderColumn('amount', 'swm.bill_collection_payments.amount $1')
+            ->orderColumn('due_paid', 'swm.bill_collection_payments.due_paid $1')
             ->orderColumn('payment_for_month', 'swm.bill_collection_payments.payment_for_month $1')
             ->orderColumn('payment_time', 'swm.bill_collection_payments.payment_time $1')
             ->editColumn('payment_for_month', function ($model) {
@@ -325,7 +485,15 @@ class BillCollectionPaymentService
                 return $model->payment_time?->format('Y-m-d H:i') ?? '';
             })
             ->editColumn('amount', function ($model) {
-                return number_format((float) $model->amount, 2, '.', '');
+                return number_format((float) $model->amount, 2, '.', ',');
+            })
+            ->addColumn('due_paid', function ($model) {
+                return number_format((float) ($model->due_paid ?? 0), 2, '.', ',');
+            })
+            ->addColumn('total_collected', function ($model) {
+                $total = (float) ($model->amount ?? 0) + (float) ($model->due_paid ?? 0);
+
+                return number_format($total, 2, '.', ',');
             })
             ->editColumn('payment_method', function ($model) {
                 $methods = config('bill_collection.payment_methods', []);
@@ -343,6 +511,9 @@ class BillCollectionPaymentService
             })
             ->addColumn('sub_location', function ($model) {
                 return $model->household_sub_location ?? '';
+            })
+            ->addColumn('contact_number', function ($model) {
+                return $model->household_contact_number ?? '';
             })
             ->addColumn('action', function ($model) {
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['swm.bill-collection-payments.destroy', $model->id]]);
@@ -402,6 +573,7 @@ class BillCollectionPaymentService
         $payment->holding_number = $site->holding_number ?? '';
         $payment->customer_id = $site->household_id;
         $payment->amount = $data['amount'] ?? 0;
+        $payment->due_paid = $data['due_paid'] ?? 0;
         $payment->payment_for_month = Carbon::parse($data['payment_for_month'] ?? null)->startOfMonth();
         $payment->payment_time = isset($data['payment_time']) ? Carbon::parse($data['payment_time']) : now();
         $payment->payment_method = $data['payment_method'] ?? '';
@@ -432,8 +604,11 @@ class BillCollectionPaymentService
             __("Father's/Husband's Name"),
             __('Ward'),
             __('Sub-location'),
+            __('Contact Number'),
             __('Receipt No'),
-            __('Amount'),
+            __('Current Month Paid'),
+            __('Previous Due Paid'),
+            __('Total Collected'),
             __('Payment For Month'),
             __('Payment Time'),
             __('Payment Method'),
@@ -473,8 +648,11 @@ class BillCollectionPaymentService
                     $row->site_father_or_husband_name ?? '',
                     $row->household_ward ?? '',
                     $row->household_sub_location ?? '',
+                    $row->household_contact_number ?? '',
                     $row->receipt_no ?? '',
                     $row->amount,
+                    $row->due_paid ?? 0,
+                    (float) ($row->amount ?? 0) + (float) ($row->due_paid ?? 0),
                     $row->payment_for_month?->format('Y-m-d'),
                     $row->payment_time?->format('Y-m-d H:i:s'),
                     $methodLabel,

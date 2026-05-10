@@ -98,6 +98,7 @@ class HouseholdController extends Controller
             'bin' => $building->bin,
             'functional_use' => optional($building->functionalUse)->name,
             'lic_id' => $building->lic_id,
+            'area_mohalla_name' => $building->house_locality
         ]);
     }
 

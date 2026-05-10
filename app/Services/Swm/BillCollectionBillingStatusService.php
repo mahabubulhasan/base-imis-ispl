@@ -53,12 +53,12 @@ class BillCollectionBillingStatusService
         $sum = BillCollectionPayment::query()
             ->whereNull('deleted_at')
             ->whereYear('payment_for_month', (int) Carbon::now()->year)
-            ->sum('amount');
-        $revenue = number_format((float) $sum, 2, '.', '');
+            ->sum(DB::raw('amount + COALESCE(due_paid, 0)'));
+        $revenue = $this->formatMoney((string) $sum);
 
         return [
-            'due_for_this_month' => $dueThisMonthMarginal,
-            'total_due' => $totalDueCumulative,
+            'due_for_this_month' => $this->formatMoney($dueThisMonthMarginal),
+            'total_due' => $this->formatMoney($totalDueCumulative),
             'total_revenue_collected' => $revenue,
         ];
     }
@@ -70,29 +70,8 @@ class BillCollectionBillingStatusService
     {
         $data = is_array($data) ? $data : [];
 
-        $monthFrom = $this->parseMonthStart($data['month_from'] ?? null) ?? Carbon::now()->startOfMonth();
-        $monthTo = $this->parseMonthStart($data['month_to'] ?? null) ?? Carbon::now()->startOfMonth();
-        if ($monthFrom->gt($monthTo)) {
-            [$monthFrom, $monthTo] = [$monthTo->copy(), $monthFrom->copy()];
-        }
-
-        $fromDate = $monthFrom->toDateString();
-        $toDate = $monthTo->toDateString();
-
-        $revenueSub = BillCollectionPayment::query()
-            ->select('household_id')
-            ->selectRaw('SUM(amount) as revenue_collected')
-            ->whereNull('deleted_at')
-            ->whereDate('payment_for_month', '>=', $fromDate)
-            ->whereDate('payment_for_month', '<=', $toDate)
-            ->groupBy('household_id');
-
-        $query = Household::query()
-            ->select('building_info.households.*')
-            ->whereNull('building_info.households.deleted_at')
-            ->where('building_info.households.status', Household::STATUS_ACTIVE)
-            ->leftJoinSub($revenueSub->toBase(), 'rev', 'building_info.households.id', '=', 'rev.household_id')
-            ->addSelect(DB::raw('COALESCE(rev.revenue_collected, 0) as revenue_collected'));
+        [$monthFrom, $monthTo] = $this->resolveMonthRange($data);
+        $query = $this->baseStatusQuery($monthFrom, $monthTo);
 
         $currentMonthStart = Carbon::now()->startOfMonth();
 
@@ -102,9 +81,40 @@ class BillCollectionBillingStatusService
             }, false)
             ->orderColumn('holding_number', 'building_info.households.holding_number $1')
             ->orderColumn('household_id', 'building_info.households.household_id $1')
+            ->orderColumn('household_owner_name', 'building_info.households.household_owner_name $1')
+            ->orderColumn('father_or_husband_name', 'building_info.households.father_or_husband_name $1')
+            ->orderColumn('area_mohalla_name', 'building_info.households.area_mohalla_name $1')
+            ->orderColumn('sub_location', 'building_info.households.area_mohalla_name $1')
+            ->orderColumn('ward', 'building_info.households.ward $1')
+            ->orderColumn('contact_number', 'building_info.households.contact_number $1')
+            ->orderColumn('current_month_paid', 'current_month_paid $1')
+            ->orderColumn('previous_due_paid', 'previous_due_paid $1')
             ->orderColumn('revenue_collected', 'revenue_collected $1')
+            ->addColumn('household_owner_name', function (Household $site) {
+                return (string) ($site->household_owner_name ?? '');
+            })
+            ->addColumn('father_or_husband_name', function (Household $site) {
+                return (string) ($site->father_or_husband_name ?? '');
+            })
+            ->addColumn('area_mohalla_name', function (Household $site) {
+                return (string) ($site->area_mohalla_name ?? '');
+            })
+            ->addColumn('sub_location', function (Household $site) {
+                return (string) ($site->area_mohalla_name ?? '');
+            })
+            ->addColumn('ward', function (Household $site) {
+                $w = $site->ward;
+
+                return ($w !== null && $w !== '') ? (string) $w : '';
+            })
+            ->addColumn('contact_number', function (Household $site) {
+                return (string) ($site->contact_number ?? '');
+            })
+            ->addColumn('current_service_fee', function (Household $site) {
+                return $this->formatMoney((string) ($site->waste_charge ?? 0));
+            })
             ->addColumn('due_current_month', function (Household $site) use ($currentMonthStart) {
-                return $this->formatMoney($this->billCollectionPaymentService->marginalDueForMonth($site, $currentMonthStart));
+                return $this->formatMoney($this->currentMonthDueFromOutstandingMap($site, $currentMonthStart));
             })
             ->addColumn('due_months_of', function (Household $site) use ($monthFrom, $monthTo) {
                 return $this->monthsWithMarginalDueLabelsInRange($site, $monthFrom, $monthTo);
@@ -115,11 +125,118 @@ class BillCollectionBillingStatusService
             ->addColumn('total_due_amount', function (Household $site) use ($monthTo) {
                 return $this->formatMoney($this->dueThroughMonth($site, $monthTo));
             })
+            ->addColumn('previous_due_amount', function (Household $site) use ($currentMonthStart, $monthTo) {
+                $totalDueAmount = (float) ($this->dueThroughMonth($site, $monthTo) ?? '0');
+                $currentMonthDue = (float) $this->currentMonthDueFromOutstandingMap($site, $currentMonthStart);
+
+                return $this->formatMoney((string) max(0, $totalDueAmount - $currentMonthDue));
+            })
+            ->addColumn('current_month_paid', function (Household $site) {
+                return $this->formatMoney((string) ($site->current_month_paid ?? 0));
+            })
+            ->addColumn('previous_due_paid', function (Household $site) {
+                return $this->formatMoney((string) ($site->previous_due_paid ?? 0));
+            })
             ->editColumn('revenue_collected', function (Household $site) {
-                return number_format((float) ($site->revenue_collected ?? 0), 2, '.', '');
+                return $this->formatMoney((string) ($site->revenue_collected ?? 0));
+            })
+            ->addColumn('remaining_due', function (Household $site) use ($monthTo) {
+                $totalDueAmount = (float) ($this->dueThroughMonth($site, $monthTo) ?? '0');
+                return $this->formatMoney((string) $totalDueAmount);
             })
             ->rawColumns([])
             ->make(true);
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array{rows: list<array<string, string>>, month_from: Carbon, month_to: Carbon}
+     */
+    public function getStatusRowsForExport(array $data): array
+    {
+        $data = is_array($data) ? $data : [];
+        [$monthFrom, $monthTo] = $this->resolveMonthRange($data);
+        $query = $this->baseStatusQuery($monthFrom, $monthTo);
+        $this->applyTableFilters($query, $data);
+
+        $rows = [];
+        $serial = 1;
+        $currentMonthStart = Carbon::now()->startOfMonth();
+        foreach ($query->orderBy('building_info.households.holding_number')->orderBy('building_info.households.household_id')->get() as $site) {
+            if (! $site instanceof Household) {
+                continue;
+            }
+            $totalDueAmount = (float) ($this->dueThroughMonth($site, $monthTo) ?? '0');
+            $currentMonthDue = (float) $this->currentMonthDueFromOutstandingMap($site, $currentMonthStart);
+            $revenueCollected = (float) ($site->revenue_collected ?? 0);
+
+            $rows[] = [
+                'sl' => (string) $serial++,
+                'holding_number' => (string) ($site->holding_number ?? ''),
+                'household_id' => (string) ($site->household_id ?? ''),
+                'household_owner_name' => (string) ($site->household_owner_name ?? ''),
+                'father_or_husband_name' => (string) ($site->father_or_husband_name ?? ''),
+                'area_mohalla_name' => (string) ($site->area_mohalla_name ?? ''),
+                'sub_location' => (string) ($site->area_mohalla_name ?? ''),
+                'ward' => ($site->ward !== null && $site->ward !== '') ? (string) $site->ward : '',
+                'contact_number' => (string) ($site->contact_number ?? ''),
+                'current_service_fee' => $this->formatMoney((string) ($site->waste_charge ?? 0)),
+                'previous_due_amount' => $this->formatMoney((string) max(0, $totalDueAmount - $currentMonthDue)),
+                'due_current_month' => $this->formatMoney((string) $currentMonthDue),
+                'total_due_amount' => $this->formatMoney((string) $totalDueAmount),
+                'due_months_of' => $this->monthsWithMarginalDueLabelsInRange($site, $monthFrom, $monthTo),
+                'current_month_paid' => $this->formatMoney((string) ($site->current_month_paid ?? 0)),
+                'previous_due_paid' => $this->formatMoney((string) ($site->previous_due_paid ?? 0)),
+                'revenue_collected' => $this->formatMoney((string) $revenueCollected),
+                'remaining_due' => $this->formatMoney((string) $totalDueAmount),
+            ];
+        }
+
+        return [
+            'rows' => $rows,
+            'month_from' => $monthFrom,
+            'month_to' => $monthTo,
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     * @return array{0: Carbon, 1: Carbon}
+     */
+    protected function resolveMonthRange(array $data): array
+    {
+        $monthFrom = $this->parseMonthStart($data['month_from'] ?? null) ?? Carbon::now()->startOfMonth()->subMonths(5);
+        $monthTo = $this->parseMonthStart($data['month_to'] ?? null) ?? Carbon::now()->startOfMonth();
+        if ($monthFrom->gt($monthTo)) {
+            [$monthFrom, $monthTo] = [$monthTo->copy(), $monthFrom->copy()];
+        }
+
+        return [$monthFrom, $monthTo];
+    }
+
+    protected function baseStatusQuery(Carbon $monthFrom, Carbon $monthTo): Builder
+    {
+        $fromDate = $monthFrom->toDateString();
+        $toDate = $monthTo->toDateString();
+
+        $revenueSub = BillCollectionPayment::query()
+            ->select('household_id')
+            ->selectRaw('SUM(amount) as current_month_paid')
+            ->selectRaw('SUM(COALESCE(due_paid, 0)) as previous_due_paid')
+            ->selectRaw('SUM(amount + COALESCE(due_paid, 0)) as revenue_collected')
+            ->whereNull('deleted_at')
+            ->whereDate('payment_for_month', '>=', $fromDate)
+            ->whereDate('payment_for_month', '<=', $toDate)
+            ->groupBy('household_id');
+
+        return Household::query()
+            ->select('building_info.households.*')
+            ->whereNull('building_info.households.deleted_at')
+            ->where('building_info.households.status', Household::STATUS_ACTIVE)
+            ->leftJoinSub($revenueSub->toBase(), 'rev', 'building_info.households.id', '=', 'rev.household_id')
+            ->addSelect(DB::raw('COALESCE(rev.current_month_paid, 0) as current_month_paid'))
+            ->addSelect(DB::raw('COALESCE(rev.previous_due_paid, 0) as previous_due_paid'))
+            ->addSelect(DB::raw('COALESCE(rev.revenue_collected, 0) as revenue_collected'));
     }
 
     /**
@@ -152,15 +269,13 @@ class BillCollectionBillingStatusService
             return '';
         }
 
+        $remainingByMonth = $this->billCollectionPaymentService->outstandingByMonthInRange($site, $rangeStart, $rangeEnd);
         $labels = [];
-        $m = $rangeStart->copy();
-        $guard = 0;
-        while ($m->lte($rangeEnd) && $guard < 240) {
-            $guard++;
-            if (bccomp($this->billCollectionPaymentService->marginalDueForMonth($site, $m), '0', 2) > 0) {
-                $labels[] = $m->format('M, y');
+        foreach ($remainingByMonth as $ym => $remaining) {
+            if (bccomp((string) $remaining, '0', 2) > 0) {
+                $m = Carbon::createFromFormat('Y-m', $ym)->startOfMonth();
+                $labels[] = $m->format('M y');
             }
-            $m->addMonth();
         }
 
         return implode(', ', $labels);
@@ -175,15 +290,21 @@ class BillCollectionBillingStatusService
         }
 
         $sum = '0.00';
-        $m = $rangeStart->copy();
-        $guard = 0;
-        while ($m->lte($rangeEnd) && $guard < 240) {
-            $guard++;
-            $sum = bcadd($sum, $this->billCollectionPaymentService->marginalDueForMonth($site, $m), 2);
-            $m->addMonth();
+        $remainingByMonth = $this->billCollectionPaymentService->outstandingByMonthInRange($site, $rangeStart, $rangeEnd);
+        foreach ($remainingByMonth as $remaining) {
+            $sum = bcadd($sum, (string) $remaining, 2);
         }
 
         return $sum;
+    }
+
+    protected function currentMonthDueFromOutstandingMap(Household $site, Carbon $monthStart): string
+    {
+        $monthStart = $monthStart->copy()->startOfMonth();
+        $ym = $monthStart->format('Y-m');
+        $remainingByMonth = $this->billCollectionPaymentService->outstandingByMonthInRange($site, $monthStart, $monthStart);
+
+        return (string) ($remainingByMonth[$ym] ?? '0.00');
     }
 
     protected function applyTableFilters(Builder $query, array $data): void
@@ -279,6 +400,6 @@ class BillCollectionBillingStatusService
             return '';
         }
 
-        return number_format((float) $value, 2, '.', '');
+        return number_format((float) $value, 2, '.', ',');
     }
 }

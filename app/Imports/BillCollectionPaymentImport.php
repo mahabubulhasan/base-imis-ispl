@@ -58,6 +58,10 @@ class BillCollectionPaymentImport implements ToCollection, WithHeadingRow
                     $this->errors[] = __('Row :n: amount is required.', ['n' => $rowNum]);
                     continue;
                 }
+                $duePaid = $norm['due_paid'] ?? 0;
+                if ($duePaid === null || $duePaid === '') {
+                    $duePaid = 0;
+                }
 
                 $month = $this->parseMonth($norm['payment_for_month'] ?? null);
                 if (! $month) {
@@ -78,6 +82,7 @@ class BillCollectionPaymentImport implements ToCollection, WithHeadingRow
                 $data = [
                     'household_id' => $site->id,
                     'amount' => $amount,
+                    'due_paid' => $duePaid,
                     'payment_for_month' => $month->format('Y-m-d'),
                     'payment_time' => $paymentTime,
                     'payment_method' => $methodKey,

@@ -24,6 +24,7 @@ class BillCollectionPayment extends Model
         'payment_for_month' => 'date',
         'payment_time' => 'datetime',
         'amount' => 'decimal:2',
+        'due_paid' => 'decimal:2',
     ];
 
     protected $appends = [
