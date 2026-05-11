@@ -1,5 +1,5 @@
 <?php
-// Last Modified Date: 28-02-2026
+// Last Modified: 2026-05-01
 // Developed By: Streams Tech Ltd.
 // Description: Handles tax payment collection operations
 namespace App\Http\Controllers\TaxPaymentInfo;
@@ -24,6 +24,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\TaxImport;
 use Maatwebsite\Excel\HeadingRowImport;
 use App\Models\TaxPaymentInfo\TaxPayment;
+use App\Models\BuildingInfo\Building;
+use App\Models\BuildingInfo\Owner;
 
 class TaxPaymentController extends Controller
 {
@@ -35,6 +37,8 @@ class TaxPaymentController extends Controller
         $this->middleware('permission:List Property Tax Collection', ['only' => ['index']]);
         $this->middleware('permission:Import Property Tax Collection From CSV', ['only' => ['create', 'store']]);
         $this->middleware('permission:Export Property Tax Collection Info', ['only' => ['export', 'exportunmatched']]);
+        $this->middleware('permission:Add Property Tax Collection', ['only' => ['newTaxPaymentForm', 'storeNewTaxPayment']]);
+        $this->middleware('permission:Edit Property Tax Collection', ['only' => ['edit', 'update']]);
         $this->taxPaymentService = $taxPaymentService;
     }
     /**
@@ -258,6 +262,52 @@ class TaxPaymentController extends Controller
     }
 
     /**
+     * Show the form for adding a new tax payment record.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function newTaxPaymentForm()
+    {
+        $page_title = __('Add New Tax Payment');
+        $taxPayment = null;
+        return view('taxpayment-info.new', compact('page_title', 'taxPayment'));
+    }
+
+    /**
+     * Store a newly created tax payment record in storage.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function storeNewTaxPayment(Request $request)
+    {
+        $this->validate($request, [
+            'tax_code'          => 'required|string',
+            'owner_name'        => 'required|string',
+            'owner_contact'     => 'required|string',
+            'last_payment_date' => 'nullable|date',
+            'bin'               => 'required|string',
+        ]);
+
+        if (TaxPayment::where('tax_code', $request->tax_code)->exists()) {
+            return back()->withErrors(['tax_code' => __('The tax code has already been taken.')])->withInput();
+        }
+
+        $data = $request->only('tax_code', 'owner_name', 'owner_contact', 'last_payment_date', 'bin');
+
+        DB::transaction(function () use ($data) {
+            TaxPayment::create($data);
+            TaxPaymentStatus::create(array_merge($data, [
+                'ward' => substr($data['tax_code'], 0, 2),
+            ]));
+
+            $this->syncBuildingAndOwner($data['bin'], $data['tax_code'], $data['owner_name'], $data['owner_contact']);
+        });
+
+        return redirect()->route('tax-payment.index')->with('success', __('Property tax collection record added successfully.'));
+    }
+
+    /**
      * Display the specified tax payment record.
      *
      * @param string $tax_code
@@ -284,7 +334,10 @@ class TaxPaymentController extends Controller
     public function edit($tax_code)
     {
         $page_title = __('Edit Property Tax Collection');
-        $taxPayment = TaxPayment::where('tax_code', $tax_code)->firstOrFail();
+        $taxPayment = $this->taxPaymentService->getDetails($tax_code);
+        if ($taxPayment === null) {
+            abort(404);
+        }
         return view('taxpayment-info.edit', compact('page_title', 'taxPayment'));
     }
 
@@ -298,15 +351,73 @@ class TaxPaymentController extends Controller
     public function update(Request $request, $tax_code)
     {
         $this->validate($request, [
-            'owner_name' => 'required|string',
-            'owner_contact' => 'required|string',
+            'owner_name'        => 'required|string',
+            'owner_contact'     => 'required|string',
             'last_payment_date' => 'nullable|date',
+            'bin'               => 'required|string',
         ]);
 
-        $taxPayment = TaxPayment::where('tax_code', $tax_code)->firstOrFail();
-        $taxPayment->update($request->only('owner_name', 'owner_contact', 'last_payment_date'));
+        DB::transaction(function () use ($request, $tax_code) {
+            $taxPayment = TaxPayment::where('tax_code', $tax_code)->firstOrFail();
+            $taxPayment->update($request->only('owner_name', 'owner_contact', 'last_payment_date'));
+
+            TaxPaymentStatus::where('tax_code', $tax_code)
+                ->update(['bin' => $request->bin]);
+
+            $this->syncBuildingAndOwner($request->bin, $tax_code, $request->owner_name, $request->owner_contact);
+        });
 
         return redirect()->route('tax-payment.index', $tax_code)->with('success', __('Property tax collection record updated successfully.'));
+    }
+
+    /**
+     * Search buildings by BIN for select2 dropdown.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getBins(Request $request)
+    {
+        $search = $request->input('search', '');
+        $limit  = 10;
+        $page   = max(1, (int) $request->input('page', 1));
+
+        $query = Building::select('bin')
+            ->when($search, function ($q) use ($search) {
+                $q->where('bin', 'ilike', '%' . $search . '%');
+            })
+            ->orderBy('bin');
+
+        $total     = $query->count();
+        $buildings = $query->offset(($page - 1) * $limit)->limit($limit)->get();
+
+        $results = $buildings->map(fn ($b) => ['id' => $b->bin, 'text' => $b->bin]);
+
+        return response()->json([
+            'results'    => $results,
+            'pagination' => ['more' => ($page * $limit) < $total],
+        ]);
+    }
+
+    /**
+     * Upsert Building and Owner records from tax payment data.
+     *
+     * @param string $bin
+     * @param string $tax_code
+     * @param string $owner_name
+     * @param string $owner_contact
+     */
+    private function syncBuildingAndOwner(string $bin, string $tax_code, string $owner_name, string $owner_contact): void
+    {
+        Building::updateOrCreate(
+            ['bin' => $bin],
+            ['ward' => substr($tax_code, 0, 2), 'tax_code' => $tax_code]
+        );
+
+        Owner::updateOrCreate(
+            ['bin' => $bin],
+            ['owner_name' => $owner_name, 'owner_contact' => $owner_contact]
+        );
     }
 
     /**
@@ -317,8 +428,18 @@ class TaxPaymentController extends Controller
      */
     public function destroy($tax_code)
     {
-        $taxPayment = TaxPayment::where('tax_code', $tax_code)->firstOrFail();
-        $taxPayment->delete();
+        DB::transaction(function () use ($tax_code) {
+            $taxPayment = TaxPayment::where('tax_code', $tax_code)->firstOrFail();
+
+            $bins = Building::where('tax_code', $tax_code)->pluck('bin');
+
+            if ($bins->isNotEmpty()) {
+                Owner::whereIn('bin', $bins)->delete();
+                Building::whereIn('bin', $bins)->delete();
+            }
+
+            $taxPayment->delete();
+        });
 
         return redirect()->route('tax-payment.index')->with('success', __('Property tax collection record deleted successfully.'));
     }

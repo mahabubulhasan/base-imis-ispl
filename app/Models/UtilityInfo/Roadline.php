@@ -1,4 +1,7 @@
 <?php
+// Last Modified: 2026-04-24
+// Developed By: Streams Tech Ltd.
+// Description: Roadline model for utility road records and related helper methods.
 
 namespace App\Models\UtilityInfo;
 
@@ -13,6 +16,7 @@ use App\Models\UtilityInfo\SewerLine;
 use App\Models\UtilityInfo\Drains;
 use App\Models\UtilityInfo\WaterSupplys;
 use App\Jobs\RunTopologyUpdate;
+use Illuminate\Support\Facades\DB;
 
 class Roadline extends Model
 {
@@ -77,24 +81,19 @@ class Roadline extends Model
      */
     public static function getNextSerialForWard($ward)
     {
-        // Pad ward to 2 digits with leading zero
-        $paddedWard = str_pad($ward, 2, '0', STR_PAD_LEFT);
-
-        // Query the latest road_uid for this ward and road type
-        $latestRoad = self::where('road_type', 'MunicipalityRoad')
-            ->where('ward', $ward)
-            ->orderByDesc('road_uid')
+        // Query latest serial using RIGHT(road_uid, 4) ordering.
+        $latestRoad = DB::table('utility_info.roads')
+            ->selectRaw('right(road_uid, 4) as max')
+            ->whereRaw('length(road_uid) = 14')
+            ->orderByDesc('max')
             ->first();
 
         // If no roads exist for this ward, start with serial 0001
-        if (!$latestRoad || !$latestRoad->road_uid) {
+        if (!$latestRoad || !$latestRoad->max) {
             return '0001';
         }
 
-        // Extract serial from road_uid (last 4 characters)
-        // road_uid format: 20512510[WARD(2)][SERIAL(4)]
-        $currentSerial = substr($latestRoad->road_uid, -4);
-        $nextSerial = intval($currentSerial) + 1;
+        $nextSerial = intval($latestRoad->max) + 1;
 
         // Pad the next serial to 4 digits
         return str_pad($nextSerial, 4, '0', STR_PAD_LEFT);

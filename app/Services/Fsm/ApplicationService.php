@@ -870,7 +870,7 @@ class ApplicationService
                 if($model->feedback_status == FALSE)
                 {
                     if (Auth::user()->can('Add Feedback')){
-                        $content .= '<a title="' . __("Add Feedback Details" ) . '"href="' . route("feedback.create-Feedback", [$model->id]) . '" class="btn btn-info btn-sm mb-1'. ( $model->emptying_status ? '' : ' anchor-disabled') . '"><i class="fa fa-pencil"></i></a> ';
+                        // $content .= '<a title="' . __("Add Feedback Details" ) . '"href="' . route("feedback.create-Feedback", [$model->id]) . '" class="btn btn-info btn-sm mb-1'. ( $model->emptying_status ? '' : ' anchor-disabled') . '"><i class="fa fa-pencil"></i></a> ';
                     }
                 }
                 else

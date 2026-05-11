@@ -1,5 +1,6 @@
-<!-- Last Modified Date: 18-04-2024
-Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
+<!-- Last Modified: April 8, 2026
+Developed By: Streams Tech Ltd.
+Description: Renders shared dynamic form layouts for standard and card-based forms. -->
 {{--
 A dynamic form layout
 --}}
@@ -17,7 +18,7 @@ A dynamic form layout
                                 <div class="icheck-primary d-inline">
                                     <input type="checkbox" name="autofill" id="autofill" onclick="autoFillDetails()">
                                     <label for="autofill">
-                                    {{ __('Same as Owner') }} 
+                                    {{ __('Same as Owner') }}
                                     </label>
                                 </div>
                             </div>
@@ -34,6 +35,9 @@ A dynamic form layout
                                 @if($field->disabled)
                                 {!! Form::hidden($field->inputId,$field->inputValue) !!}
                                 @endif
+                            @endif
+                            @if($field->inputType === 'textarea')
+                                {!! Form::textarea($field->inputId, $field->inputValue, ['class' => $field->inputClass, 'placeholder' => $field->placeholder, 'rows' => 4, 'style' => 'resize:none', 'disabled' => $field->disabled]) !!}
                             @endif
                             @if($field->inputType === 'number')
                                 {!! Form::number($field->inputId,$field->inputValue,['class' => $field->inputClass, 'placeholder' => $field->placeholder,'disabled' => $field->disabled, 'oninput'=>$field->oninput]) !!}
@@ -55,8 +59,8 @@ A dynamic form layout
                             @endif
                             @if($field->inputType === 'date')
                             {!! Form::date($field->inputId, $field->inputValue, [
-                                'onclick' => 'this.showPicker()', 
-                                'class' => $field->inputClass, 
+                                'onclick' => 'this.showPicker()',
+                                'class' => $field->inputClass,
                                 'disabled' => $field->disabled,
                                 'autocomplete' => 'off'
                             ]) !!}
@@ -93,7 +97,7 @@ A dynamic form layout
                                     @endpush
                                 </div>
                                 @endif
-                                
+
                             @if($field->inputType === 'geom_viewer')
                                     <div class="input-group mb-3">
                                         <div id="map" style="width: 100%;height: 500px">
@@ -211,7 +215,7 @@ A dynamic form layout
                     </div>
                 @endif
                 @if($formField->inputType === 'file_upload')
-                        
+
                         @if( $formField->inputId === 'house_image')
                         <div class="custom-file">
                             <input type="file" class="custom-file-input" name="{{ $formField->inputId }}" id="{{ $formField->inputId }}">

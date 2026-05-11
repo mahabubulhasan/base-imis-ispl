@@ -126,7 +126,7 @@
     </div>
 
     <!-- Tax  ID -->
-    <div class="form-group row required">
+    <div class="form-group row">
     {!! Form::label('tax_code', 'Tax Code/Holding ID', ['class' => 'col-sm-3 control-label ']) !!}
     <div class="col-sm-5">
         {{-- Hidden input that will contain the final comma-separated values for submission --}}
@@ -135,7 +135,7 @@
         {{-- Visible tag input UI --}}
         <div id="tax-code-tag-input" class="form-control col-sm-10" style="min-height:42px;padding:6px;display:flex;align-items:center;flex-wrap:wrap;cursor:text;">
             <ul id="tax-code-tags" style="list-style:none;display:flex;flex-wrap:wrap;padding:0;margin:0"></ul>
-            <input id="tax_code_input" type="text" placeholder="" autocomplete="off" 
+            <input id="tax_code_input" type="text" placeholder="" autocomplete="off"
                 style="border:0;outline:0;flex:1;min-width:150px;padding:5px;" />
         </div>
         <!-- <small id="tax-code-hint" class="form-text text-muted">Format: 00-000-0000-00 </small> -->
@@ -198,9 +198,9 @@
             'placeholder' => 'Number of Floors',
             'autocomplete' => 'off',
             'oninput' => "this.value = this.value.replace(/[^0-9.]/g, ''); ",
-           
+
         ]) !!}
-       
+
     </div>
 </div>
     <!--  Building Function Use Classification -->
@@ -247,7 +247,7 @@
         </div>
     </div>
 
-  
+
 
     <!-- Additional Population Fields (Optional) -->
     <div class="form-group row" id="male-population">
@@ -628,7 +628,7 @@
 
             {!! Form::file('geom', null, ['class' => 'form-control col-sm-10', 'placeholder' => 'KML File']) !!}
             <small class="form-text" id="fileSizeHintKML">(KML File size should not be more than 1MB)</small>
-                
+
         @endif
 
     </div>

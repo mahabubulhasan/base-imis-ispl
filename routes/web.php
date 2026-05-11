@@ -1,7 +1,7 @@
 <?php
-// Last Modified: 12-03-2026
+// Last Modified: April 8, 2026
 // Developed By: Streams Tech Ltd.
-// Description: Registers web routes including FSM pending application index, view, and delete endpoints.
+// Description: Registers web routes including FSM pending application create, store, index, view, and delete endpoints.
 
 use App\Http\Controllers\BuildingInfo\BuildingController;
 use App\Http\Controllers\ChartController;
@@ -39,7 +39,7 @@ Route::get('/public-dashboard', 'PublicDashboardController@index')->name('public
 Route::get('/fsm-application', 'Fsm\PublicApplicationController@getForm')->name('client-fsm-application.form');
 Route::post('/fsm-application', 'Fsm\PublicApplicationController@submitForm')->name('client-fsm-application.submit');
 Route::get('/fsm-road-names', 'Fsm\PublicApplicationController@getRoadNames')->name('client-fsm-application.get-road-names');
-Route::get('/fsm-application/get-building-data', 'Fsm\PublicApplicationController@getBuildingDataByTaxId')->name('client-fsm-application.get-building-data');
+Route::get('/fsm-application/get-building-data', 'Fsm\PublicApplicationController@getBuildingDataByTaxId')->middleware('throttle:20,1')->name('client-fsm-application.get-building-data');
 Route::get('/fsm-wards', 'Fsm\PublicApplicationController@getWardsData')->name('client-fsm-application.get-wards');
 Route::middleware('fixed_token_auth')->get('redirect-to-map/{ebps_id}', [ApiServiceController::class, 'getMapUrl'])->name('maps.view');
 
@@ -172,6 +172,9 @@ Route::group([
     Route::get('tax-payment/data', 'TaxPaymentController@getData')->name('tax-payment.getData');
     Route::get('tax-payment/export', 'TaxPaymentController@export')->name('tax-payment.export');
     Route::get('tax-payment/exportunmatched', 'TaxPaymentController@exportunmatched')->name('tax-payment.exportunmatched');
+    Route::get('tax-payment/get-bins', 'TaxPaymentController@getBins')->name('tax-payment.getBins');
+    Route::get('new-tax-payment', 'TaxPaymentController@newTaxPaymentForm')->name('tax-payment.new');
+    Route::post('new-tax-payment', 'TaxPaymentController@storeNewTaxPayment')->name('tax-payment.storeNew');
     Route::resource('tax-payment', 'TaxPaymentController');
 });
 
@@ -451,6 +454,7 @@ Route::group([
 
     // Route::get('sewerconnection/{id}/approve', 'SewerConnectionController@approve');
     Route::get('drains/get-drain-names','DrainController@getDrainNames')->name('drains.get-drain-names');
+    Route::post('drains/generate-code', 'DrainController@generateCode')->name('drains.generate-code');
     Route::get('drains/{code}/geometry', 'DrainController@getGeometry');
 
     Route::post('drains/update-drain-geom', 'DrainController@updateDrainGeom');
@@ -647,7 +651,7 @@ Route::group([
     Route::resource('application', 'ApplicationController');
 
     Route::get('pending-application/getData', 'PendingApplicationController@getData')->name('pending-application.get-data');
-    Route::resource('pending-application', 'PendingApplicationController')->only(['index', 'show', 'destroy']);
+    Route::resource('pending-application', 'PendingApplicationController')->only(['index', 'show', 'create', 'store', 'destroy']);
 
     /**
      * Emptying Routes

@@ -1,14 +1,17 @@
 <?php
+// Last Modified: 2026-05-01
+// Developed By: Streams Tech Ltd.
+// Description: API route definitions for mobile and integration clients.
 
 use App\Http\Controllers\Api\ApiServiceController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BuildingController as ApiBuildingController;
 use App\Http\Controllers\Api\BuildingSurveyController;
 use App\Http\Controllers\Api\SewerConnectionController;
 use App\Http\Controllers\Api\EmptyingServiceController;
+use App\Http\Controllers\Api\SludgeCollectionController;
 use App\Http\Controllers\Api\LanguageController;
-use App\Http\Controllers\BuildingInfo\BuildingController;
 use App\Http\Controllers\BuildingSearchController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
@@ -83,13 +86,19 @@ Route::group([
     |
     */
     Route::group(['name' => 'emptyingService'],function (){
+        Route::get('/containments/{bin}',[EmptyingServiceController::class,'getContainmentsByBin']);
         Route::get('/assessed-applications',[EmptyingServiceController::class,'getAssessedApplications']);
         Route::get('/pending-applications',[EmptyingServiceController::class,'getPendingApplications']);
+        Route::get('/sludge-collection-applications',[EmptyingServiceController::class,'getSludgeCollectionApplications']);
         Route::get('/treatment-plants',[EmptyingServiceController::class,'getTreatmentPlants']);
         Route::get('/vacutugs',[EmptyingServiceController::class, 'getVacutugs']);
         Route::get('/drivers',[EmptyingServiceController::class,'getDrivers']);
         Route::get('/emptiers',[EmptyingServiceController::class,'getEmptiers']);
         Route::post('/save-emptying',[EmptyingServiceController::class,'save']);
+    });
+
+    Route::group(['name' => 'sludgeCollection'],function (){
+        Route::post('/save-sludge-collection',[SludgeCollectionController::class,'save']);
     });
 
     /*
@@ -113,6 +122,12 @@ Route::group([
         });
         Route::post('/save-building',[BuildingSurveyController::class,'saveBuilding']);
         Route::post('/save-containment',[BuildingSurveyController::class,'saveContainment']);
+    });
+    Route::group(['name' => 'buildingInfo', 'prefix' => 'building-info'],function (){
+        Route::get('/buildings/create-data', [ApiBuildingController::class, 'createData']);
+        Route::post('/buildings', [ApiBuildingController::class, 'store']);
+        Route::get('/buildings/{bin}/edit-data', [ApiBuildingController::class, 'editData']);
+        Route::post('/update/{bin}', [ApiBuildingController::class, 'update']);
     });
     Route::group(['name' => 'sewerConnection'],function (){
         Route::get('/buildingcode',[BuildingSurveyController::class,'getBuildingCodes']);

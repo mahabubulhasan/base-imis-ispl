@@ -17,7 +17,7 @@ Description: FSM Application Form - Vue 3 Implementation -->
                 <div class="row">
                     <div class="col-12 mb-3">
                         <label class="block text-gray-800 font-semibold mb-2 text-base">
-                            Do you have a Tax ID? <span class="text-red-500">*</span>
+                            Do you have a Tax Code? <span class="text-red-500">*</span>
                         </label>
                         <select
                             v-model="hasTaxId"
@@ -34,7 +34,7 @@ Description: FSM Application Form - Vue 3 Implementation -->
                 <div v-show="showTaxIdField" class="row">
                     <div class="col-12 col-md-6 mb-3">
                         <label class="block text-gray-800 font-semibold mb-2 text-base">
-                            Tax ID <span v-if="showTaxIdField" class="text-red-500">*</span>
+                            Tax Code <span v-if="showTaxIdField" class="text-red-500">*</span>
                         </label>
                         <input
                             type="text"

@@ -1,5 +1,5 @@
 {{--
-// Last Modified: 2026-03-04
+// Last Modified: 2026-04-16
 // Developed By: Streams Tech Ltd.
 // Description: Renders landing page About tab sections and feature/module content.
 --}}
@@ -39,6 +39,20 @@
                     accountability, and service delivery in municipal governance.
                 </p>
             </div>
+            <div class="flex items-center justify-between bg-slate-100 rounded-lg px-5 py-3 mt-6">
+                <div class="copyright text-sm text-slate-700">
+                    <strong> Base IMIS &copy; 2022-{{ \Carbon\Carbon::now()->format('Y') }} by <a
+                            href="http://www.innovativesolution.com.np">
+                            ISPL</a> & <a href="https://www.gwsc.ait.ac.th/">GWSC-AIT</a> is licensed under <a
+                            href="https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1">CC BY-NC-SA 4.0
+                        </a>
+                    </strong>
+                </div>
+                <div class="credits text-xs text-slate-500">
+                    Developed by
+                    <a href="https://innovativesolution.com.np/">Innovative Solution Pvt. Ltd.</a>
+                </div>
+            </div>
         </div>
 
         <!-- CWIS SECTION -->
@@ -54,9 +68,11 @@
                     of the environment and human health.
                 </p>
                 <div class="flex justify-center my-6">
-                    <img src="{{ asset('img/svg/landing-page/cwis.jpg') }}" alt="CWIS" class="max-w-full h-auto rounded-lg shadow-lg">
+                    <img src="{{ asset('img/svg/landing-page/cwis.jpg') }}" alt="CWIS"
+                        class="max-w-full h-auto rounded-lg shadow-lg">
                 </div>
-                <p class="text-slate-700">CWIS approach focuses on service provision and its enabling environment rather than on building
+                <p class="text-slate-700">CWIS approach focuses on service provision and its enabling environment rather
+                    than on building
                     infrastructure, therefore, reliable data is the key success factor for CWIS. UN Water SDG 6
                     global acceleration framework has also identified data and information as one of the five
                     accelerators of SDG 6 outcomes.</p>
@@ -98,48 +114,61 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
                 <!-- Building Information Management System -->
-                <div class="border border-slate-200 rounded-lg p-5 hover:shadow-lg hover:shadow-primary/10 transition-shadow duration-300 bg-slate-50">
+                <div
+                    class="border border-slate-200 rounded-lg p-5 hover:shadow-lg hover:shadow-primary/10 transition-shadow duration-300 bg-slate-50">
                     <div class="text-center mb-4">
-                        <img src="{{ asset('img/svg/landing-page/buildingIMS.svg') }}" alt="Building Icon" class="h-16 w-16 mx-auto mb-3">
+                        <img src="{{ asset('img/svg/landing-page/buildingIMS.svg') }}" alt="Building Icon"
+                            class="h-16 w-16 mx-auto mb-3">
                         <h5 class="text-lg font-semibold text-slate-900">Building Information Management System</h5>
                     </div>
                     <ul class="list-disc list-inside space-y-2 text-slate-700 text-sm text-left">
-                        <li>Maintains information about all existing and new buildings with their building footprints, sanitation system, socio-economic condition, etc</li>
-                        <li>Maintains information about low-income communities with their geographic coverage and sanitation system</li>
+                        <li>Maintains information about all existing and new buildings with their building footprints,
+                            sanitation system, socio-economic condition, etc</li>
+                        <li>Maintains information about low-income communities with their geographic coverage and
+                            sanitation system</li>
                     </ul>
                 </div>
 
                 <!-- Property Tax Collection Support System -->
-                <div class="border border-slate-200 rounded-lg p-5 hover:shadow-lg hover:shadow-primary/10 transition-shadow duration-300 bg-slate-50">
+                <div
+                    class="border border-slate-200 rounded-lg p-5 hover:shadow-lg hover:shadow-primary/10 transition-shadow duration-300 bg-slate-50">
                     <div class="text-center mb-4">
-                        <img src="{{ asset('img/svg/landing-page/propertyTaxCollectionIMS.svg') }}" alt="Property Tax Icon" class="h-16 w-16 mx-auto mb-3">
+                        <img src="{{ asset('img/svg/landing-page/propertyTaxCollectionIMS.svg') }}"
+                            alt="Property Tax Icon" class="h-16 w-16 mx-auto mb-3">
                         <h5 class="text-lg font-semibold text-slate-900">Property Tax Collection Support System</h5>
                     </div>
                     <ul class="list-disc list-inside space-y-2 text-slate-700 text-sm text-left">
-                        <li>Enables import of property tax or other revenue data into IMIS for spatial visualization of buildings or containments with their tax or revenue collection status</li>
+                        <li>Enables import of property tax or other revenue data into IMIS for spatial visualization of
+                            buildings or containments with their tax or revenue collection status</li>
                     </ul>
                 </div>
 
                 <!-- Urban Management Decision Support System -->
-                <div class="border border-slate-200 rounded-lg p-5 hover:shadow-lg hover:shadow-primary/10 transition-shadow duration-300 bg-slate-50">
+                <div
+                    class="border border-slate-200 rounded-lg p-5 hover:shadow-lg hover:shadow-primary/10 transition-shadow duration-300 bg-slate-50">
                     <div class="text-center mb-4">
-                        <img src="{{ asset('img/svg/landing-page/urbanManagementDSS.svg') }}" alt="Urban Management Icon" class="h-16 w-16 mx-auto mb-3">
+                        <img src="{{ asset('img/svg/landing-page/urbanManagementDSS.svg') }}"
+                            alt="Urban Management Icon" class="h-16 w-16 mx-auto mb-3">
                         <h5 class="text-lg font-semibold text-slate-900">Urban Management Decision Support System</h5>
                     </div>
                     <ul class="list-disc list-inside space-y-2 text-slate-700 text-sm text-left">
-                        <li>Dashboard for monitoring the situation of sanitation and other elements required for planning, management and monitoring and evaluation of CWIS</li>
+                        <li>Dashboard for monitoring the situation of sanitation and other elements required for
+                            planning, management and monitoring and evaluation of CWIS</li>
                         <li>Dashboards for monitoring KPIs and CWIS indicators</li>
                         <li>Tools for real-time monitoring of the sanitation service chain</li>
                         <li>Spatial analysis tools</li>
                         <li>Query and attribute analysis tools</li>
-                        <li>Basic navigation tools for exploration, analysis, and visualization of spatial data within a GIS environment and tools for printing maps</li>
+                        <li>Basic navigation tools for exploration, analysis, and visualization of spatial data within a
+                            GIS environment and tools for printing maps</li>
                     </ul>
                 </div>
 
                 <!-- Utility Information Management System -->
-                <div class="border border-slate-200 rounded-lg p-5 hover:shadow-lg hover:shadow-primary/10 transition-shadow duration-300 bg-slate-50">
+                <div
+                    class="border border-slate-200 rounded-lg p-5 hover:shadow-lg hover:shadow-primary/10 transition-shadow duration-300 bg-slate-50">
                     <div class="text-center mb-4">
-                        <img src="{{ asset('img/svg/landing-page/utilityIMS.svg') }}" alt="Utility Icon" class="h-16 w-16 mx-auto mb-3">
+                        <img src="{{ asset('img/svg/landing-page/utilityIMS.svg') }}" alt="Utility Icon"
+                            class="h-16 w-16 mx-auto mb-3">
                         <h5 class="text-lg font-semibold text-slate-900">Utility Information Management System</h5>
                     </div>
                     <ul class="list-disc list-inside space-y-2 text-slate-700 text-sm text-left">
@@ -151,39 +180,50 @@
                 </div>
 
                 <!-- Solid Waste Information Support System -->
-                <div class="border border-slate-200 rounded-lg p-5 hover:shadow-lg hover:shadow-primary/10 transition-shadow duration-300 bg-slate-50">
+                <div
+                    class="border border-slate-200 rounded-lg p-5 hover:shadow-lg hover:shadow-primary/10 transition-shadow duration-300 bg-slate-50">
                     <div class="text-center mb-4">
-                        <img src="{{ asset('img/svg/landing-page/swmPaymentStatus.svg') }}" alt="Solid Waste Icon" class="h-16 w-16 mx-auto mb-3">
+                        <img src="{{ asset('img/svg/landing-page/swmPaymentStatus.svg') }}" alt="Solid Waste Icon"
+                            class="h-16 w-16 mx-auto mb-3">
                         <h5 class="text-lg font-semibold text-slate-900">Solid Waste Information Support System</h5>
                     </div>
                     <ul class="list-disc list-inside space-y-2 text-slate-700 text-sm text-left">
-                        <li>Enables import of solid waste management data into the system for spatial visualization of buildings with their solid waste management status</li>
+                        <li>Enables import of solid waste management data into the system for spatial visualization of
+                            buildings with their solid waste management status</li>
                     </ul>
                 </div>
 
                 <!-- Water Supply Information Support System -->
-                <div class="border border-slate-200 rounded-lg p-5 hover:shadow-lg hover:shadow-primary/10 transition-shadow duration-300 bg-slate-50">
+                <div
+                    class="border border-slate-200 rounded-lg p-5 hover:shadow-lg hover:shadow-primary/10 transition-shadow duration-300 bg-slate-50">
                     <div class="text-center mb-4">
-                        <img src="{{ asset('img/svg/landing-page/watersupplyISS.svg') }}" alt="Water Supply Icon" class="h-16 w-16 mx-auto mb-3">
+                        <img src="{{ asset('img/svg/landing-page/watersupplyISS.svg') }}" alt="Water Supply Icon"
+                            class="h-16 w-16 mx-auto mb-3">
                         <h5 class="text-lg font-semibold text-slate-900">Water Supply Information Support System</h5>
                     </div>
                     <ul class="list-disc list-inside space-y-2 text-slate-700 text-sm text-left">
-                        <li>Enables import of water supply bill payment data into the system for spatial visualization of buildings with their bill payment status</li>
+                        <li>Enables import of water supply bill payment data into the system for spatial visualization
+                            of buildings with their bill payment status</li>
                     </ul>
                 </div>
 
                 <!-- Fecal Sludge Information Management System -->
-                <div class="border border-slate-200 rounded-lg p-5 hover:shadow-lg hover:shadow-primary/10 transition-shadow duration-300 bg-slate-50 lg:col-span-1">
+                <div
+                    class="border border-slate-200 rounded-lg p-5 hover:shadow-lg hover:shadow-primary/10 transition-shadow duration-300 bg-slate-50 lg:col-span-1">
                     <div class="text-center mb-4">
-                        <img src="{{ asset('img/svg/landing-page/fecalSludgeIMS.svg') }}" alt="Fecal Sludge Icon" class="h-16 w-16 mx-auto mb-3">
+                        <img src="{{ asset('img/svg/landing-page/fecalSludgeIMS.svg') }}" alt="Fecal Sludge Icon"
+                            class="h-16 w-16 mx-auto mb-3">
                         <h5 class="text-lg font-semibold text-slate-900">Fecal Sludge Information Management System</h5>
                     </div>
                     <ul class="list-disc list-inside space-y-2 text-slate-700 text-sm text-left">
                         <li>Maintains information about all containments with their geographic location</li>
                         <li>Maintains information about FSM service providers and their resources</li>
-                        <li>Maintains information about the Fecal Sludge Treatment Plant and the FS disposed records</li>
-                        <li>Maintains the quality test record of treated wastewater and compost generated from the treatment plant</li>
-                        <li>Maintains records of services from containment emptying to transport, and desludging of FS in the treatment plant</li>
+                        <li>Maintains information about the Fecal Sludge Treatment Plant and the FS disposed records
+                        </li>
+                        <li>Maintains the quality test record of treated wastewater and compost generated from the
+                            treatment plant</li>
+                        <li>Maintains records of services from containment emptying to transport, and desludging of FS
+                            in the treatment plant</li>
                         <li>Maintains the customer feedback data</li>
                     </ul>
                 </div>

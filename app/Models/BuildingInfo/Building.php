@@ -25,7 +25,7 @@ class Building extends Model
     protected $primaryKey = 'bin';
     protected $keyType = 'string';
     public $incrementing = false;
-    protected $fillable = ["ward","road_code", "sewer_code","drain_code"];
+    protected $fillable = ["ward", "road_code", "sewer_code", "drain_code", "tax_code"];
     protected $with =['StructureType', 'FunctionalUse','SanitationSystem','Owners','Lic'];
     // public function sanitation_system_types(){
     //     return $this->belongsTo(SanitationSystem::class, 'sanitation_system_type_id','id');

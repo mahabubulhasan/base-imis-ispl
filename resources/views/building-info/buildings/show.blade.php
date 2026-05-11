@@ -116,7 +116,7 @@
                     ]) !!}
                 </div>
             </div>
-            <!-- Tax ID -->
+            <!-- Tax Code -->
             <div class="form-group row">
                 {!! Form::label('tax_id', __('Tax Code/Holding ID'), ['class' => 'col-sm-2 col-form-label ']) !!}
 
@@ -153,7 +153,7 @@
             </div>
             <div class="form-group row">
                 {!! Form::label('estimated_area',  __('Estimated Area of the Building (m²)'), [
-                                                      
+
                     'class' => 'col-sm-2 control-label',
                 ]) !!}
                 <div class="col-sm-3">

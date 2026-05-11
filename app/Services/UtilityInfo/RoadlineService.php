@@ -1,5 +1,5 @@
 <?php
-// Last Modified: 2026-04-07
+// Last Modified: 2026-04-30
 // Developed By: Streams Tech Ltd.
 // Description: Handles road network data operations.
 
@@ -65,6 +65,9 @@ class RoadlineService {
                 }
                 if ($data['carrying_width']) {
                     $query->where('carrying_width', $data['carrying_width']);
+                }
+                if (!empty($data['ward'])) {
+                    $query->where('ward', $data['ward']);
                 }
             })
             ->addColumn('action', function ($model) {

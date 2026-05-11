@@ -37,12 +37,12 @@ class EmptyingServiceController extends Controller
                 'roads.carrying_width',
                 'containments.size as containment_size' // Directly fetch containment size
             )
-            ->join('building_info.buildings', function ($join) {
-                $join->on(DB::raw('CAST(applications.bin AS VARCHAR)'), '=', 'buildings.bin');
-            })
-            ->leftJoin('utility_info.roads', 'applications.road_code', '=', 'roads.code') // Join with Road model
-            ->leftJoin('fsm.containments', 'applications.containment_id', '=', 'containments.id') // Link containment directly
-            ->where('applications.emptying_status', false);
+                ->join('building_info.buildings', function ($join) {
+                    $join->on(DB::raw('CAST(applications.bin AS VARCHAR)'), '=', 'buildings.bin');
+                })
+                ->leftJoin('utility_info.roads', 'applications.road_code', '=', 'roads.code') // Join with Road model
+                ->leftJoin('fsm.containments', 'applications.containment_id', '=', 'containments.id') // Link containment directly
+                ->where('applications.emptying_status', false);
 
             // Apply role-specific filtering
             if ($user->hasRole('Service Provider - Emptying Operator')) {
@@ -85,6 +85,28 @@ class EmptyingServiceController extends Controller
         }
     }
 
+    public function getContainmentsByBin($bin)
+    {
+        try {
+            $containments = BuildContain::where('bin', $bin)
+                ->pluck('containment_id')
+                ->toArray();
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'containments' => $containments
+            ],
+            'message' => __('Containments retrieved successfully.'),
+        ]);
+    }
+
     public function getPendingApplications()
     {
         try {
@@ -105,6 +127,39 @@ class EmptyingServiceController extends Controller
         ]);
     }
 
+    public function getSludgeCollectionApplications()
+    {
+        try {
+            $applications = Application
+                ::join('fsm.emptyings', 'applications.id', '=', 'emptyings.application_id')
+                ->join('fsm.treatment_plants', 'emptyings.treatment_plant_id', '=', 'treatment_plants.id')
+                ->where('approved_status', true)
+                ->where('emptying_status', true)
+                ->where('sludge_collection_status', false)
+                ->select(
+                    [
+                        'applications.*',
+                        'emptyings.volume_of_sludge',
+                        'treatment_plants.name as treatment_plant_name'
+                    ]
+                )
+                ->get();
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'applications' => $applications
+            ],
+            'message' => __('Sludge collection applications retrieved successfully.'),
+        ]);
+    }
 
 
     public function getTreatmentPlants()
@@ -133,14 +188,15 @@ class EmptyingServiceController extends Controller
     }
 
 
-    public function getVacutugs(){
+    public function getVacutugs()
+    {
         try {
-            $vacutugs = VacutugType::where(function($q){
-                $q->where("status","=",true)
-                    ->where("service_provider_id",'=',Auth::user()->service_provider_id);
+            $vacutugs = VacutugType::where(function ($q) {
+                $q->where("status", "=", true)
+                    ->where("service_provider_id", '=', Auth::user()->service_provider_id);
             })
-                ->orderBy('capacity')->select('id','license_plate_number', 'width', 'capacity')->get();
-        } catch (\Throwable $th){
+                ->orderBy('capacity')->select('id', 'license_plate_number', 'width', 'capacity')->get();
+        } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
                 'message' => $th->getMessage()
@@ -153,15 +209,16 @@ class EmptyingServiceController extends Controller
         ];
     }
 
-    public function getDrivers(){
+    public function getDrivers()
+    {
         try {
-            $drivers = EmployeeInfo::Active()->where(function($q) {
-                    $q->where('employee_type','=','Driver')
-                    ->where("service_provider_id",'=',Auth::user()->service_provider_id);
-                })
-                ->pluck('name','id')
+            $drivers = EmployeeInfo::Active()->where(function ($q) {
+                $q->where('employee_type', '=', 'Driver')
+                    ->where("service_provider_id", '=', Auth::user()->service_provider_id);
+            })
+                ->pluck('name', 'id')
                 ->toArray();
-        } catch (\Throwable $th){
+        } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
                 'message' => $th->getMessage()
@@ -174,15 +231,16 @@ class EmptyingServiceController extends Controller
         ];
     }
 
-    public function getEmptiers(){
+    public function getEmptiers()
+    {
         try {
-            $emptiers = EmployeeInfo::Active()->where(function($q){
-                $q->where('employee_type','=','Cleaner/Emptier')
-                ->where("service_provider_id",'=',Auth::user()->service_provider_id);
+            $emptiers = EmployeeInfo::Active()->where(function ($q) {
+                $q->where('employee_type', '=', 'Cleaner/Emptier')
+                    ->where("service_provider_id", '=', Auth::user()->service_provider_id);
             })
-                ->pluck('name','id')
+                ->pluck('name', 'id')
                 ->toArray();
-        } catch (\Throwable $th){
+        } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
                 'message' => $th->getMessage()
@@ -196,11 +254,11 @@ class EmptyingServiceController extends Controller
     }
 
     /**
-    * Save an emptying service record along with related data.
-    *
-    * @param  EmptyingApiRequest  $request
-    * @return array
-    */
+     * Save an emptying service record along with related data.
+     *
+     * @param  EmptyingApiRequest  $request
+     * @return array
+     */
     public function save(EmptyingApiRequest $request)
     {
         ini_set('memory_limit', '256M');
@@ -219,14 +277,14 @@ class EmptyingServiceController extends Controller
 
                 $buildContainment = BuildContain::where('bin', $request->building_id)->first();
                 // updating containment information
-                if($buildContainment){
+                if ($buildContainment) {
                     $application->containment_id = $buildContainment->containment_id;
 
                     $containment = Containment::find($buildContainment->containment_id);
                     $containment->last_emptied_date = $emptying->emptied_date = now();
                     $containment->next_emptying_date = now()->addYears(3);
                     $containment->emptied_status = true;
-                    $containment->no_of_times_emptied = $containment->no_of_times_emptied ? 1 : $containment->no_of_times_emptied  + 1;
+                    $containment->no_of_times_emptied = $containment->no_of_times_emptied ? 1 : $containment->no_of_times_emptied + 1;
                     $containment->save();
                 }
 

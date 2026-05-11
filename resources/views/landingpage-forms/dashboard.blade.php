@@ -1,4 +1,4 @@
-<!-- Last Modified: 2026-04-07
+<!-- Last Modified: 2026-04-26
 // Developed By: Streams Tech Ltd.
 // Description: Public dashboard with infographic card layout for municipal data visualization, including CWIS equity and safety metrics. -->
 
@@ -110,12 +110,7 @@
                 <span class="w-8 h-1 bg-cyan-600 rounded-full"></span>
                 Building Sanitation Facilities
             </h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                <div class="infographic-card relative overflow-hidden bg-white p-6 rounded-xl border border-slate-300 shadow-sm">
-                    <span class="material-icons-round stat-icon text-cyan-600">water</span>
-                    <p class="text-slate-700 font-bold text-sm mb-1">Sewer Network</p>
-                    <h4 class="text-4xl font-black text-slate-900 sewer-count">-</h4>
-                </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="infographic-card relative overflow-hidden bg-white p-6 rounded-xl border border-slate-300 shadow-sm">
                     <span class="material-icons-round stat-icon text-cyan-600">storage</span>
                     <p class="text-slate-700 font-bold text-sm mb-1">Septic Tanks</p>
@@ -127,14 +122,9 @@
                     <h4 class="text-4xl font-black text-slate-900 pit-count">-</h4>
                 </div>
                 <div class="infographic-card relative overflow-hidden bg-white p-6 rounded-xl border border-slate-300 shadow-sm">
-                    <span class="material-icons-round stat-icon text-cyan-600">science</span>
-                    <p class="text-slate-700 font-bold text-sm mb-1">Onsite Treatment</p>
-                    <h4 class="text-4xl font-black text-slate-900 treatment-count">-</h4>
-                </div>
-                <div class="infographic-card relative overflow-hidden bg-white p-6 rounded-xl border border-slate-300 shadow-sm">
-                    <span class="material-icons-round stat-icon text-cyan-600">wc</span>
-                    <p class="text-slate-700 font-bold text-sm mb-1">Composting Toilets</p>
-                    <h4 class="text-4xl font-black text-slate-900 composting-count">-</h4>
+                    <span class="material-icons-round stat-icon text-cyan-600">more_horiz</span>
+                    <p class="text-slate-700 font-bold text-sm mb-1">Others</p>
+                    <h4 class="text-4xl font-black text-slate-900 sanitation-others-count">-</h4>
                 </div>
             </div>
         </section>
@@ -259,11 +249,9 @@
                 setMetric('.building-others', data.buildings?.others);
 
         // Update Sanitation Facilities
-                setMetric('.sewer-count', data.sanitation?.sewer);
                 setMetric('.septic-count', data.sanitation?.septic);
                 setMetric('.pit-count', data.sanitation?.pit);
-                setMetric('.treatment-count', data.sanitation?.treatment);
-                setMetric('.composting-count', data.sanitation?.composting);
+                setMetric('.sanitation-others-count', data.sanitation?.others);
 
         // Update Public Utilities
                 setMetric('.road-length', data.utilities?.road);

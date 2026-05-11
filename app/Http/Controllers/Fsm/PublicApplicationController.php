@@ -146,7 +146,7 @@ class PublicApplicationController extends Controller
             if (!$taxId) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Tax ID is required'
+                    'message' => 'Tax Code is required'
                 ], 400);
             }
 
@@ -165,7 +165,7 @@ class PublicApplicationController extends Controller
             if (!$taxPayment) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'No tax payment record found with this Tax ID'
+                    'message' => 'No tax payment record found with this Tax Code'
                 ], 404);
             }
 

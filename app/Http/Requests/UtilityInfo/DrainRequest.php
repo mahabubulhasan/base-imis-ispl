@@ -1,4 +1,7 @@
 <?php
+// Last Modified: 2026-05-03
+// Developed By: Streams Tech Ltd.
+// Description: Validation rules for creating and updating drain network records.
 
 namespace App\Http\Requests\UtilityInfo;
 
@@ -50,6 +53,7 @@ class DrainRequest extends Request
             case 'POST':
                 {
                     return [
+                        'drain_code' => 'nullable|string|unique:utility_info.drains,code',
                         'road_code' => 'required|string',
                         'cover_type' => 'nullable',
                         'surface_type' => 'nullable',
@@ -71,6 +75,8 @@ class DrainRequest extends Request
                 }
             default:break;
         }
+
+        return [];
     }
 
      public function messages()

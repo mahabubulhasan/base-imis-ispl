@@ -1,5 +1,9 @@
 <?php
 
+// Last Modified: 2026-05-01
+// Developed By: Streams Tech Ltd.
+// Description: Controller for road network CRUD and map-facing road lookup endpoints.
+
 namespace App\Http\Controllers\UtilityInfo;
 
 use Auth;
@@ -7,6 +11,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\UtilityInfo\Roadline;
 use App\Models\BuildingInfo\Building;
+use App\Models\LayerInfo\Ward;
 use App\Http\Requests\UtilityInfo\RoadLineRequest;
 use App\Services\UtilityInfo\RoadlineService;
 use DB;
@@ -35,7 +40,8 @@ class RoadlineController extends Controller
     public function index()
     {
         $page_title = __('Road Network');
-        return view('utility-info/road-lines.index', compact('page_title'));
+        $wards = Ward::orderBy('ward', 'asc')->pluck('ward', 'ward');
+        return view('utility-info/road-lines.index', compact('page_title', 'wards'));
     }
 
     public function getData(Request $request)
@@ -106,8 +112,24 @@ class RoadlineController extends Controller
         $roadline = Roadline::find($id);
         $roadHierarchy = Roadline::where('hierarchy','!=',null)->groupBy('hierarchy')->pluck('hierarchy','hierarchy');
         $roadSurfaceTypes = Roadline::where('surface_type','!=',null)->groupBy('surface_type')->pluck('surface_type','surface_type');
+        $wards = Ward::orderBy('ward', 'asc')->pluck('ward', 'ward');
+        $roadTypes = collect(config('constants.ROAD_TYPES', []))
+            ->mapWithKeys(function ($type, $key) {
+                return [$key => $type['name'] ?? $key];
+            })
+            ->all();
 
         if ($roadline) {
+            if (!array_key_exists($roadline->road_type, $roadTypes)) {
+                $matchedRoadTypeKey = collect(config('constants.ROAD_TYPES', []))->search(function ($type) use ($roadline) {
+                    return ($type['name'] ?? null) === $roadline->road_type;
+                });
+
+                if ($matchedRoadTypeKey !== false) {
+                    $roadline->road_type = $matchedRoadTypeKey;
+                }
+            }
+
             // Format the carrying_width attribute to display only two decimal places
             $roadline->carrying_width = number_format($roadline->carrying_width, 2);
             $roadline->right_of_way = number_format($roadline->right_of_way, 2);
@@ -115,7 +137,7 @@ class RoadlineController extends Controller
             $roadline->length = number_format($roadline->length, 2);
 
             $page_title = __("Edit Road Network");
-            return view('utility-info/road-lines.edit', compact('page_title', 'roadline','roadHierarchy','roadSurfaceTypes'));
+            return view('utility-info/road-lines.edit', compact('page_title', 'roadline','roadHierarchy','roadSurfaceTypes', 'wards', 'roadTypes'));
         } else {
             abort(404);
         }
@@ -291,7 +313,7 @@ class RoadlineController extends Controller
      /**
       * Get roads by ward for extension mode select population
       *
-      * Returns roads that have a road_uid (non-null) filtered by ward
+     * Returns roads that have a road_uid (non-null) filtered by ward and road type
       *
       * @param Request $request
       * @return \Illuminate\Http\JsonResponse
@@ -299,18 +321,31 @@ class RoadlineController extends Controller
      public function getByWard(Request $request)
      {
          $ward = $request->input('ward');
+         $roadType = $request->input('road_type');
+         $roadTypesConfig = $roadType ? (config('constants.ROAD_TYPES')[$roadType] ?? null) : null;
 
-         if (!$ward) {
+         if (!$ward && !$roadType) {
              return response()->json([]);
          }
 
-         $roads = Roadline::where('ward', $ward)
+         if ($roadType && !$roadTypesConfig) {
+             return response()->json([]);
+         }
+
+         $roads = Roadline::query()
+             ->when($ward, function ($query) use ($ward) {
+                 return $query->where('ward', $ward);
+             })
+             ->when($roadType, function ($query) use ($roadTypesConfig) {
+                 return $query->where('road_type', $roadTypesConfig['name']);
+             })
              ->whereNotNull('road_uid')
              ->select('road_uid', 'code', 'name')
              ->distinct()
-             ->orderBy('road_uid')
-             ->get();
+             ->orderBy('road_uid');
 
+        $sql = $roads->toSql();
+        $roads = $roads->get();
          return response()->json($roads);
      }
 
