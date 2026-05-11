@@ -1,4 +1,7 @@
 <?php
+// Last Modified: 2026-05-11
+// Developed By: Streams Tech Ltd.
+// Description: Language administration controller for managing languages and translations.
 
 namespace App\Http\Controllers\Language;
 
@@ -17,10 +20,6 @@ use Box\Spout\Writer\Style\Color;
 use Box\Spout\Writer\Style\StyleBuilder;
 use Box\Spout\Writer\WriterFactory;
 use Box\Spout\Common\Type;
-use Maatwebsite\Excel\Facades\Excel;
-use Maatwebsite\Excel\HeadingRowImport;
-use Illuminate\Support\Facades\Validator;
-use App\Imports\TranslateImport;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Exception;
 class LanguageController extends Controller
@@ -614,67 +613,100 @@ class LanguageController extends Controller
           ini_set('max_execution_time', 600);
           ini_set('memory_limit', '512M');
 
-          // CSV format and required validation
-          Validator::extend('file_extension', function ($attribute, $value, $parameters, $validator) {
-              // Check if the file's extension matches the allowed extensions
-              return in_array($value->getClientOriginalExtension(), $parameters);
-          }, __('File must be CSV format'));
-          // Validate the request with custom messages
           $this->validate($request, [
-              'csvfile' => 'required|file_extension:csv', // The custom file extension validation rule
+              'csvfile' => 'required|file|mimes:csv,txt',
           ], [
               'required' => __('The CSV file is required.'),
-              'file_extension' => __('File must be CSV format'),  // Error message for the custom validation rule
+              'file' => __('The uploaded value must be a file.'),
+              'mimes' => __('File must be CSV format'),
           ]);
 
-          if ($request->hasFile('csvfile')) {
-              $data = Excel::toArray(new TranslateImport, $request->file('csvfile'));
-              //checking csv file has all heading row keys
-              $headings = (new HeadingRowImport)->toArray($request->file('csvfile'));
-              $heading_row_errors = array();
-              if (!in_array("key", $headings[0][0])) {
-                  $heading_row_errors['key'] = __("Heading row : key is required");
-              }
-              if (!in_array("text", $headings[0][0])) {
-                  $heading_row_errors['text'] = __("Heading row : text is required");
-              }
-              if (!in_array("translated_text", $headings[0][0])) {
-                  $heading_row_errors['translated_text'] = __("Heading row : translated_text is required");
-              }
-              if (count($heading_row_errors) > 0) {
-                  return back()->withErrors($heading_row_errors);
-              }
-              $updates = [];
-              // Extract the headers from the first row
-              $headers = $headings[0][0];
+          DB::beginTransaction();
 
-              // Map the columns dynamically based on the header names
-              if ($data[0]) {
-                  foreach ($data[0] as $row) {
-                      // Extract values based on column names
-                      $key = $row[array_search("key", $headers)];
-                      $text = $row[array_search("text", $headers)];
-                      $translatedText = $row[array_search("translated_text", $headers)];
+          try {
+              if (!$request->hasFile('csvfile')) {
+                  throw new Exception(__('The CSV file is required.'));
+              }
 
-                      // Find the translate record for the given name and key
-                      $translate = Translate::where('name', $id)
-                          ->where('key', $key)
-                          ->first();
+              $file = $request->file('csvfile');
+              $handle = fopen($file->getRealPath(), 'r');
 
-                      // Prepare the update data if the translate record exists and the text has changed
-                      // check if translated text exists, and the imported value is not null and does not match existing stored value
-                      if ($translate && !empty($translatedText) && $translatedText != $translate->text) {
-                          $translate->text = $translatedText;
-                          $updates[] = [
-                              'id' => $translate->id,
-                              'text' => $translate->text
-                          ];
-                      }
+              if ($handle === false) {
+                  throw new Exception(__('Unable to read the CSV file.'));
+              }
+
+              $rawHeaders = fgetcsv($handle);
+
+              if ($rawHeaders === false) {
+                  fclose($handle);
+                  throw new Exception(__('The CSV file must contain a heading row.'));
+              }
+
+              $headers = array_map(function ($header) {
+                  $header = preg_replace('/^\xEF\xBB\xBF/', '', (string) $header);
+                  return strtolower(trim($header));
+              }, $rawHeaders);
+
+              $requiredHeaders = ['key', 'text', 'translated_text'];
+              $headingRowErrors = [];
+
+              foreach ($requiredHeaders as $requiredHeader) {
+                  if (!in_array($requiredHeader, $headers, true)) {
+                      $headingRowErrors[$requiredHeader] = __('Heading row : :heading is required', ['heading' => $requiredHeader]);
                   }
               }
-              if (!empty($updates))
-              {
-                  // update values in chunks
+
+              if (!empty($headingRowErrors)) {
+                  fclose($handle);
+                  DB::rollBack();
+                  return back()->withErrors($headingRowErrors);
+              }
+
+              $keyIndex = array_search('key', $headers, true);
+              $textIndex = array_search('text', $headers, true);
+              $translatedTextIndex = array_search('translated_text', $headers, true);
+
+              $updates = [];
+              $insertions = [];
+
+              while (($row = fgetcsv($handle)) !== false) {
+                  if ($row === [null]) {
+                      continue;
+                  }
+
+                  $key = isset($row[$keyIndex]) ? trim((string) $row[$keyIndex]) : '';
+                  $text = array_key_exists($textIndex, $row) ? trim((string) $row[$textIndex]) : null;
+                  $translatedText = array_key_exists($translatedTextIndex, $row) ? trim((string) $row[$translatedTextIndex]) : null;
+
+                  if ($key === '') {
+                      continue;
+                  }
+
+                  $translate = Translate::where('name', $id)
+                      ->where('key', $key)
+                      ->first();
+
+                  if ($translate) {
+                      if ($translatedText !== null && $translatedText !== $translate->text) {
+                          $updates[] = [
+                              'id' => $translate->id,
+                              'text' => $translatedText,
+                          ];
+                      }
+                  } else {
+                      $insertions[] = [
+                          'key' => $key,
+                          'name' => $id,
+                          'text' => $translatedText !== null ? $translatedText : $text,
+                          'created_at' => now(),
+                          'updated_at' => now(),
+                      ];
+                  }
+              }
+
+              fclose($handle);
+
+              if (!empty($updates)) {
                   foreach (array_chunk($updates, 500) as $chunk) {
                       foreach ($chunk as $update) {
                           Translate::where('id', $update['id'])->update(['text' => $update['text']]);
@@ -682,9 +714,18 @@ class LanguageController extends Controller
                   }
               }
 
+              if (!empty($insertions)) {
+                  foreach (array_chunk($insertions, 500) as $chunk) {
+                      Translate::insert($chunk);
+                  }
+              }
+
+              DB::commit();
+              return redirect('language/setup')->with('success', __("Translations have been imported successfully. Generate the translation file to reflect changes."));
+          } catch (Exception $e) {
+              DB::rollBack();
+              return back()->with('error', $e->getMessage());
           }
-          DB::commit();
-          return redirect('language/setup')->with('success', __("Translations have been imported successfully. Generate the translation file to reflect changes."));
       }
 
     // export csv template for import with the key values pre-filled
