@@ -47,7 +47,6 @@ class BuildingRequest extends FormRequest
             'house_number.unique' => __('The House Number is Taken.'),
             'main_building.required' => __('The Main Building status required.'),
             'building_associated_to.required_if' => __('BIN of Main Building required.'),
-            'house_number.unique' => __('The House Number is Taken.'),
             //population Validation
             'diff_abled_male_pop.lte' => __('The Differently Abled Male Population must not exceed the Male Population.'),
             'diff_abled_female_pop.lte' => __('The Differently Abled Female Population must not exceed the Female Population.'),
@@ -113,7 +112,13 @@ class BuildingRequest extends FormRequest
 
     public function rules()
     {
-        $rules = ($this->isMethod('POST') ? $this->store() : $this->update());
+        // API update route uses POST /building-info/update/{bin},
+        // while create uses POST /building-info/buildings.
+        if ($this->route('bin') || $this->route('building')) {
+            $rules = $this->update();
+        } else {
+            $rules = $this->isMethod('POST') ? $this->store() : $this->update();
+        }
         return $rules;
     }
 
@@ -151,8 +156,6 @@ class BuildingRequest extends FormRequest
                 'regex:/^\s*\d{2}-\d{3}-\d{4}-\d{2}(\s*,\s*\d{2}-\d{3}-\d{4}-\d{2})*\s*$/'
             ],
             'structure_type_id' => 'required',
-             //year of building Construction
-            'construction_year' => 'required|date|before_or_equal:today',
              //year of building Construction
             'construction_year' => 'required|date|before_or_equal:today',
             'floor_count' => 'required|numeric|min:0.1',
@@ -227,7 +230,8 @@ class BuildingRequest extends FormRequest
 
     public function update()
     {
-        $bin = $this->input('building');
+        // Resolve current building BIN for both web resource routes and API routes.
+        $bin = $this->route('bin') ?? $this->route('building') ?? $this->input('building');
         $use_cat = $this->input('use_category_id');
         Validator::extend('file_extension', function ($attribute, $value, $parameters, $validator) {
             if (!in_array($value->getClientOriginalExtension(), $parameters)) {
@@ -248,7 +252,7 @@ class BuildingRequest extends FormRequest
             'building_associated_to' => 'required_if:main_building,0',
             'ward' => 'required',
             'road_code' => 'required',
-            'house_number' => 'nullable|unique:pgsql.building_info.buildings,bin,' . $bin . ',bin',
+            'house_number' => 'nullable|unique:pgsql.building_info.buildings,house_number,' . $bin . ',bin',
             // Allow comma-separated tax codes; max length ~250 chars
             'tax_code' => [
                 'nullable',
@@ -279,12 +283,6 @@ class BuildingRequest extends FormRequest
             'diff_abled_male_pop' => 'nullable|integer|min:0|exclude_if:diff_abled_male_pop,0|lte:male_population',
             'diff_abled_female_pop' => 'nullable|integer|min:0|exclude_if:diff_abled_female_pop,0|lte:female_population',
             'diff_abled_others_pop' => 'nullable|integer|min:0|exclude_if:diff_abled_others_pop,0|lte:other_population',
-            //Lic Information
-            'low_income_hh' => 'required',
-            'lic_id' => 'required_if:lic_status,1',
-            //water source Information
-            'water_source_id' => 'required',
-            //Lic Information
             'low_income_hh' => 'required',
             'lic_id' => 'required_if:lic_status,1',
             //water source Information
