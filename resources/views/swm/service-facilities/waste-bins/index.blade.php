@@ -21,6 +21,7 @@
             <table id="data-table" class="table table-bordered table-striped" width="100%">
                 <thead>
                     <tr>
+                        <th>{{ __('Waste Bin ID') }}</th>
                         <th>{{ __('Type of Waste Bin') }}</th>
                         <th>{{ __('Placed at Buildings') }}</th>
                         <th>{{ __('BIN') }}</th>
@@ -44,6 +45,7 @@ $(function () {
         scrollCollapse: true,
         ajax: '{!! route("swm.waste-bins.data") !!}',
         columns: [
+            { data: 'waste_bin_id', name: 'waste_bin_id' },
             { data: 'waste_bin_type_name', name: 'waste_bin_type_name', orderable: false, searchable: false },
             { data: 'placed_at_buildings_label', name: 'placed_at_buildings_label', orderable: false, searchable: false },
             { data: 'bin', name: 'bin' },

@@ -2,6 +2,7 @@
 @section('title', $page_title)
 @section('content')
 <div class='card card-info'><div class='card-header bg-transparent'><a href='{{ route('swm.waste-bins.index') }}' class='btn btn-info'>{{__('Back to List')}}</a></div><div class='card-body'>
+    <p><b>{{ __('Waste Bin ID') }}:</b> {{ $wasteBin->waste_bin_id }}</p>
     <p><b>{{ __('Waste Bin Type') }}:</b> {{ optional($wasteBin->wasteBinType)->name }}</p>
     <p><b>{{ __('Capacity (kg)') }}:</b> {{ $wasteBin->total_capacity_kg }}</p>
     <p><b>{{ __('Placed at Buildings?') }}:</b> {{ $wasteBin->placed_at_buildings ? __('Yes') : __('No') }}</p>

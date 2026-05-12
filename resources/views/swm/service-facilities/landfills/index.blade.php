@@ -20,7 +20,7 @@
         <form id="filter-form" class="form-horizontal">
             <div class="form-group row">
                 <label class="col-md-2" for="landfill_id">{{ __('Landfill ID') }}</label><div class="col-md-2"><input type="text" class="form-control" id="landfill_id"></div>
-                <label class="col-md-2" for="name">{{ __('Name') }}</label><div class="col-md-2"><input type="text" class="form-control" id="name"></div>
+                <label class="col-md-2" for="name">{{ __('Landfill Name') }}</label><div class="col-md-2"><input type="text" class="form-control" id="name"></div>
                 <label class="col-md-2" for="operator_name">{{ __('Operator Name') }}</label><div class="col-md-2"><input type="text" class="form-control" id="operator_name"></div>
             </div>
             <div class="form-group row">
@@ -41,6 +41,8 @@
             <div class="form-group row">
                 <label class="col-md-2" for="operational_status">{{ __('Operational Status') }}</label>
                 <div class="col-md-2"><select class="form-control" id="operational_status"><option value="">{{ __('All') }}</option><option value="active">{{ __('Active') }}</option><option value="inactive">{{ __('Inactive') }}</option></select></div>
+                <label class="col-md-2" for="landfill_type_id">{{ __('Landfill Type') }}</label>
+                <div class="col-md-2"><select class="form-control chosen-select" id="landfill_type_id"><option value="">{{ __('All') }}</option>@foreach($landfillTypes as $id => $name)<option value="{{ $id }}">{{ $name }}</option>@endforeach</select></div>
             </div>
             <div class="text-right"><button type="submit" class="btn btn-info">{{ __('Filter') }}</button> <button type="reset" id="reset-filter" class="btn btn-info">{{ __('Reset') }}</button></div>
         </form>
@@ -48,8 +50,8 @@
     <div class="card-body"><div class="table-responsive">
         <table id="data-table" class="table table-bordered table-striped" width="100%">
             <thead><tr>
-                <th>{{ __('Landfill ID') }}</th><th>{{ __('Name') }}</th><th>{{ __('Location') }}</th><th>{{ __('Operator Name') }}</th><th>{{ __('Contact Number') }}</th><th>{{ __('Capacity') }} ({{ __('Ton') }})</th><th>{{ __('Area') }}</th>
-                <th>{{ __('Source STS') }}</th><th>{{ __('Source Wards') }}</th><th>{{ __('Segregation Practiced') }}</th><th>{{ __('Reuse Practiced') }}</th><th>{{ __('Waste Types') }}</th><th>{{ __('Monthly Waste for Composting') }} ({{ __('Ton') }})</th><th>{{ __('Treatment') }}</th><th>{{ __('Operational Status') }}</th><th>{{ __('Actions') }}</th>
+                <th>{{ __('Landfill ID') }}</th><th>{{ __('Landfill Name') }}</th><th>{{ __('Location') }}</th><th>{{ __('Operator Name') }}</th><th>{{ __('Contact Number') }}</th><th>{{ __('Capacity') }} ({{ __('Ton') }})</th><th>{{ __('Area') }}</th>
+                <th>{{ __('Landfill Type') }}</th><th>{{ __('Source STS') }}</th><th>{{ __('Source Wards') }}</th><th>{{ __('Segregation Practiced') }}</th><th>{{ __('Reuse Practiced') }}</th><th>{{ __('Waste Types') }}</th><th>{{ __('Weighbridge Facility Available') }}</th><th>{{ __('Boundary Wall Available') }}</th><th>{{ __('Lighting Arrangement Available') }}</th><th>{{ __('Manpower Deployed') }}</th><th>{{ __('Adequate Covering Arrangement Available') }}</th><th>{{ __('Gas Control System Available') }}</th><th>{{ __('Leachate Collection System Available') }}</th><th>{{ __('Treatment') }}</th><th>{{ __('Operational Status') }}</th><th>{{ __('Actions') }}</th>
             </tr></thead>
         </table>
     </div></div>
@@ -62,12 +64,12 @@ var dt=$('#data-table').DataTable({bFilter:false,processing:true,serverSide:true
 ajax:{url:'{!! route("swm.landfills.data") !!}',data:function(d){
 d.landfill_id=$('#landfill_id').val();d.name=$('#name').val();d.operator_name=$('#operator_name').val();d.contact_number=$('#contact_number').val();
 d.source_sts_id=$('#source_sts_id').val();d.waste_type_id=$('#waste_type_id').val();d.operational_status=$('#operational_status').val();
-d.segregation_practiced=$('#segregation_practiced').val();d.reuse_practiced=$('#reuse_practiced').val();d.treatment=$('#treatment').val();
+d.segregation_practiced=$('#segregation_practiced').val();d.reuse_practiced=$('#reuse_practiced').val();d.treatment=$('#treatment').val();d.landfill_type_id=$('#landfill_type_id').val();
 }},
 columns:[
 {data:'landfill_id',name:'landfill_id'},{data:'name',name:'name'},{data:'location',name:'location'},{data:'operator_name',name:'operator_name'},{data:'contact_number',name:'contact_number'},{data:'capacity',name:'capacity'},{data:'area',name:'area'},
-{data:'source_sts_text',name:'source_sts_text',orderable:false,searchable:false},{data:'source_wards_text',name:'source_wards_text',orderable:false,searchable:false},
-{data:'segregation_practiced',name:'segregation_practiced'},{data:'reuse_practiced',name:'reuse_practiced'},{data:'waste_types',name:'waste_types',orderable:false,searchable:false},{data:'monthly_waste_for_composting',name:'monthly_waste_for_composting'},{data:'treatment',name:'treatment'},{data:'operational_status',name:'operational_status'},
+{data:'landfill_type_name',name:'landfill_type_id',orderable:false,searchable:false},{data:'source_sts_text',name:'source_sts_text',orderable:false,searchable:false},{data:'source_wards_text',name:'source_wards_text',orderable:false,searchable:false},
+{data:'segregation_practiced',name:'segregation_practiced'},{data:'reuse_practiced',name:'reuse_practiced'},{data:'waste_types',name:'waste_types',orderable:false,searchable:false},{data:'weighbridge_facility_available_text',name:'weighbridge_facility_available'},{data:'boundary_wall_available_text',name:'boundary_wall_available'},{data:'lighting_arrangement_available_text',name:'lighting_arrangement_available'},{data:'manpower_deployed',name:'manpower_deployed'},{data:'adequate_covering_arrangement_available_text',name:'adequate_covering_arrangement_available'},{data:'gas_control_system_available_text',name:'gas_control_system_available'},{data:'leachate_collection_system_available_text',name:'leachate_collection_system_available'},{data:'treatment',name:'treatment'},{data:'operational_status',name:'operational_status'},
 {data:'action',name:'action',orderable:false,searchable:false}
 ],
 order:[[0,'asc']]
@@ -81,7 +83,8 @@ window.location.href="{!! route('swm.landfills.export') !!}?searchData="+encodeU
 "&operator_name="+encodeURIComponent($('#operator_name').val())+"&contact_number="+encodeURIComponent($('#contact_number').val())+
 "&source_sts_id="+encodeURIComponent($('#source_sts_id').val())+"&waste_type_id="+encodeURIComponent($('#waste_type_id').val())+
 "&operational_status="+encodeURIComponent($('#operational_status').val())+"&segregation_practiced="+encodeURIComponent($('#segregation_practiced').val())+
-"&reuse_practiced="+encodeURIComponent($('#reuse_practiced').val())+"&treatment="+encodeURIComponent($('#treatment').val());
+"&reuse_practiced="+encodeURIComponent($('#reuse_practiced').val())+"&treatment="+encodeURIComponent($('#treatment').val())+
+"&landfill_type_id="+encodeURIComponent($('#landfill_type_id').val());
 });
 });
 </script>

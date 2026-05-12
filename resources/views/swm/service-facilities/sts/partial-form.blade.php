@@ -9,9 +9,9 @@
         </div>
         @endif
         <div class="form-group row required">
-            {!! Form::label('name', __('Name'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('name', __('STS Name'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
-                {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => __('Name')]) !!}
+                {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => __('STS Name')]) !!}
             </div>
         </div>
         <div class="form-group row">
@@ -57,9 +57,9 @@
             </div>
         </div>
         <div class="form-group row required">
-            {!! Form::label('contact_number', __('Contact Number'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('contact_number', __('Operator\'s Contact Number'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
-                {!! Form::text('contact_number', null, ['class' => 'form-control', 'placeholder' => __('Contact Number')]) !!}
+                {!! Form::text('contact_number', null, ['class' => 'form-control', 'placeholder' => __('Operator\'s Contact Number')]) !!}
             </div>
         </div>
         <div class="form-group row">

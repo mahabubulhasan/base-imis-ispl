@@ -34,7 +34,7 @@ class ComplaintRequest extends FormRequest
                 'max:255',
                 Rule::unique('pgsql.swm.complaints', 'complaint_id')->whereNull('deleted_at')->ignore($id),
             ],
-            'date_time' => ['required', 'date'],
+            'date_time' => ['nullable', 'date'],
             'holding_number' => ['nullable', 'string', 'max:255'],
             'household_id' => ['nullable', 'string', 'max:255'],
             'name' => ['required', 'string', 'max:255'],

@@ -1007,6 +1007,39 @@ class PermissionsSeeder extends Seeder
                 ],
             ],
             [
+                "group" => "SW Service Provider Landfill Types",
+                "perms" => [
+                    [
+                        "type" => "List",
+                        "name" => "List SW Landfill Types",
+                    ],
+                    [
+                        "type" => "View",
+                        "name" => "View SW Landfill Type",
+                    ],
+                    [
+                        "type" => "Add",
+                        "name" => "Add SW Landfill Type",
+                    ],
+                    [
+                        "type" => "Edit",
+                        "name" => "Edit SW Landfill Type",
+                    ],
+                    [
+                        "type" => "Delete",
+                        "name" => "Delete SW Landfill Type",
+                    ],
+                    [
+                        "type" => "History",
+                        "name" => "View SW Landfill Type History",
+                    ],
+                    [
+                        "type" => "Export",
+                        "name" => "Export SW Landfill Types to CSV",
+                    ],
+                ],
+            ],
+            [
                 "group" => "SW Service Provider Vehicles",
                 "perms" => [
                     [

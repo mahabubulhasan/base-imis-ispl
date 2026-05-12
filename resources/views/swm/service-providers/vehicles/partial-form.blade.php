@@ -4,19 +4,14 @@
 @endphp
 <div class="app-mobile-form">
 <div class="card-body">
+        @if(isset($vehicle) && $vehicle)
         <div class="form-group row">
             {!! Form::label('vehicle_id_no', __('Vehicle ID'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-9">
-                @if(isset($vehicle) && $vehicle->vehicle_id_no)
-                    {!! Form::text('vehicle_id_no', null, ['class' => 'form-control', 'readonly' => true, 'id' => 'vehicle_id_no']) !!}
-                @else
-                    {!! Form::text('vehicle_id_no', null, ['class' => 'form-control', 'placeholder' => __('Vehicle ID'), 'id' => 'vehicle_id_no']) !!}
-                    @if(isset($vehicle) && ! $vehicle->vehicle_id_no)
-                        <small class="form-text text-muted">{{ __('Assigned automatically when you save if left blank.') }}</small>
-                    @endif
-                @endif
+                {!! Form::text('vehicle_id_no', null, ['class' => 'form-control', 'readonly' => true, 'id' => 'vehicle_id_no']) !!}
             </div>
         </div>
+        @endif
         <div class="form-group row required">
             {!! Form::label('vehicle_type_id', __('Vehicle Type'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-9">

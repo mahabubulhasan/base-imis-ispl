@@ -28,6 +28,11 @@ class LandfillRequest extends FormRequest
                     'contact_number' => ['required', 'regex:/^[0-9]+$/'],
                     'capacity' => ['nullable', 'numeric', 'min:0'],
                     'area' => ['nullable', 'numeric', 'min:0'],
+                    'landfill_type_id' => [
+                        'nullable',
+                        'integer',
+                        Rule::exists('pgsql.swm.landfill_types', 'id')->whereNull('deleted_at'),
+                    ],
                     'source_sts_ids' => ['nullable', 'array'],
                     'source_sts_ids.*' => [
                         'integer',
@@ -38,15 +43,21 @@ class LandfillRequest extends FormRequest
                         'integer',
                         Rule::exists('pgsql.layer_info.wards', 'ward'),
                     ],
-                    'segregation_practiced' => ['sometimes', 'boolean'],
-                    'reuse_practiced' => ['sometimes', 'boolean'],
+                    'segregation_practiced' => ['nullable', 'boolean'],
+                    'reuse_practiced' => ['nullable', 'boolean'],
                     'waste_type_ids' => ['nullable', 'array'],
                     'waste_type_ids.*' => [
                         'integer',
                         Rule::exists('pgsql.swm.waste_types', 'id')->whereNull('deleted_at'),
                     ],
-                    'monthly_waste_for_composting' => ['nullable', 'numeric', 'min:0'],
-                    'treatment' => ['sometimes', 'boolean'],
+                    'weighbridge_facility_available' => ['nullable', 'boolean'],
+                    'boundary_wall_available' => ['nullable', 'boolean'],
+                    'lighting_arrangement_available' => ['nullable', 'boolean'],
+                    'manpower_deployed' => ['nullable', 'integer', 'min:0'],
+                    'adequate_covering_arrangement_available' => ['nullable', 'boolean'],
+                    'gas_control_system_available' => ['nullable', 'boolean'],
+                    'leachate_collection_system_available' => ['nullable', 'boolean'],
+                    'treatment' => ['nullable', 'boolean'],
                     'operational_status' => ['required', 'in:active,inactive'],
                 ];
             default:
@@ -100,18 +111,40 @@ class LandfillRequest extends FormRequest
 
         $capacity = $this->input('capacity');
         $area = $this->input('area');
-        $composting = $this->input('monthly_waste_for_composting');
+        $landfillTypeId = $this->input('landfill_type_id');
+        $manpowerDeployed = $this->input('manpower_deployed');
 
         $this->merge([
-            'segregation_practiced' => $this->boolean('segregation_practiced'),
-            'reuse_practiced' => $this->boolean('reuse_practiced'),
-            'treatment' => $this->boolean('treatment'),
+            'segregation_practiced' => $this->nullableBoolean('segregation_practiced'),
+            'reuse_practiced' => $this->nullableBoolean('reuse_practiced'),
+            'treatment' => $this->nullableBoolean('treatment'),
+            'weighbridge_facility_available' => $this->nullableBoolean('weighbridge_facility_available'),
+            'boundary_wall_available' => $this->nullableBoolean('boundary_wall_available'),
+            'lighting_arrangement_available' => $this->nullableBoolean('lighting_arrangement_available'),
+            'adequate_covering_arrangement_available' => $this->nullableBoolean('adequate_covering_arrangement_available'),
+            'gas_control_system_available' => $this->nullableBoolean('gas_control_system_available'),
+            'leachate_collection_system_available' => $this->nullableBoolean('leachate_collection_system_available'),
             'source_sts_ids' => $sourceStsIds,
             'source_wards' => $sourceWards,
             'waste_type_ids' => $wasteTypeIds,
             'capacity' => ($capacity === '' || $capacity === null) ? null : $capacity,
             'area' => ($area === '' || $area === null) ? null : $area,
-            'monthly_waste_for_composting' => ($composting === '' || $composting === null) ? null : $composting,
+            'landfill_type_id' => ($landfillTypeId === '' || $landfillTypeId === null) ? null : (int) $landfillTypeId,
+            'manpower_deployed' => ($manpowerDeployed === '' || $manpowerDeployed === null) ? null : (int) $manpowerDeployed,
         ]);
+    }
+
+    protected function nullableBoolean(string $key): ?bool
+    {
+        if (! $this->has($key)) {
+            return null;
+        }
+
+        $value = $this->input($key);
+        if ($value === '' || $value === null) {
+            return null;
+        }
+
+        return filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
     }
 }

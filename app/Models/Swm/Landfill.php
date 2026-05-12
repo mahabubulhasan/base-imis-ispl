@@ -26,12 +26,19 @@ class Landfill extends Model
         'contact_number',
         'capacity',
         'area',
+        'landfill_type_id',
         'source_sts_ids',
         'source_wards',
         'segregation_practiced',
         'reuse_practiced',
         'waste_type_ids',
-        'monthly_waste_for_composting',
+        'weighbridge_facility_available',
+        'boundary_wall_available',
+        'lighting_arrangement_available',
+        'manpower_deployed',
+        'adequate_covering_arrangement_available',
+        'gas_control_system_available',
+        'leachate_collection_system_available',
         'treatment',
         'operational_status',
     ];
@@ -39,12 +46,25 @@ class Landfill extends Model
     protected $casts = [
         'source_sts_ids' => 'array',
         'source_wards' => 'array',
+        'landfill_type_id' => 'integer',
         'segregation_practiced' => 'boolean',
         'reuse_practiced' => 'boolean',
         'waste_type_ids' => 'array',
+        'weighbridge_facility_available' => 'boolean',
+        'boundary_wall_available' => 'boolean',
+        'lighting_arrangement_available' => 'boolean',
+        'manpower_deployed' => 'integer',
+        'adequate_covering_arrangement_available' => 'boolean',
+        'gas_control_system_available' => 'boolean',
+        'leachate_collection_system_available' => 'boolean',
         'treatment' => 'boolean',
         'area' => 'decimal:2',
     ];
+
+    public function landfillType()
+    {
+        return $this->belongsTo(LandfillType::class, 'landfill_type_id');
+    }
 
     public function sts()
     {

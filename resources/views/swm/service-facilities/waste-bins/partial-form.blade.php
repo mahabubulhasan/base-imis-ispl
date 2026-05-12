@@ -11,6 +11,14 @@
 
 <div class="app-mobile-form">
 <div class="card-body">
+    @if ($wasteBin !== null)
+    <div class="form-group row">
+        {!! Form::label('waste_bin_id_display', __('Waste Bin ID'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            <input type="text" class="form-control" id="waste_bin_id_display" value="{{ $wasteBin->waste_bin_id }}" readonly autocomplete="off">
+        </div>
+    </div>
+    @endif
     <div class="form-group row required">
         {!! Form::label('waste_bin_type_id', __('Waste Bin Type'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">{!! Form::select('waste_bin_type_id', $wasteBinTypes, null, ['class' => 'form-control' . ($errors->has('waste_bin_type_id') ? ' is-invalid' : ''), 'id' => 'waste_bin_type_id', 'placeholder' => __('Select type')]) !!}</div>

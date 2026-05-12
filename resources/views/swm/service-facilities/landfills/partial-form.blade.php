@@ -9,9 +9,9 @@
         </div>
         @endif
         <div class="form-group row required">
-            {!! Form::label('name', __('Name'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('name', __('Landfill Name'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
-                {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => __('Name')]) !!}
+                {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => __('Landfill Name')]) !!}
             </div>
         </div>
         <div class="form-group row">
@@ -27,9 +27,9 @@
             </div>
         </div>
         <div class="form-group row required">
-            {!! Form::label('contact_number', __('Contact Number'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('contact_number', __('Operator\'s Contact Number'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
-                {!! Form::text('contact_number', null, ['class' => 'form-control', 'placeholder' => __('Contact Number')]) !!}
+                {!! Form::text('contact_number', null, ['class' => 'form-control', 'placeholder' => __('Operator\'s Contact Number')]) !!}
             </div>
         </div>
         <div class="form-group row">
@@ -39,9 +39,15 @@
             </div>
         </div>
         <div class="form-group row">
-            {!! Form::label('area', __('Area') . ' (' . __('Decimal') . ')', ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('area', __('Area') . ' (' . __('Acres') . ')', ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
                 {!! Form::number('area', null, ['class' => 'form-control', 'placeholder' => __('Area'), 'min' => 0, 'step' => '0.01', 'inputmode' => 'decimal']) !!}
+            </div>
+        </div>
+        <div class="form-group row">
+            {!! Form::label('landfill_type_id', __('Landfill Type'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-3">
+                {!! Form::select('landfill_type_id', ['' => __('Select Landfill Type')] + ($landfillTypes ?? []), old('landfill_type_id', optional($landfill)->landfill_type_id), ['class' => 'form-control', 'id' => 'landfill_type_id']) !!}
             </div>
         </div>
         <div class="form-group row">
@@ -65,31 +71,61 @@
         <div class="form-group row">
             {!! Form::label('segregation_practiced', __('Segregation Practiced?'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
-                {!! Form::select('segregation_practiced', [1 => __('Yes'), 0 => __('No')], old('segregation_practiced', optional($landfill)->segregation_practiced ? 1 : 0), ['class' => 'form-control', 'id' => 'segregation_practiced']) !!}
+                {!! Form::select('segregation_practiced', ['' => __('Select')] + [1 => __('Yes'), 0 => __('No')], old('segregation_practiced', optional($landfill)->segregation_practiced), ['class' => 'form-control', 'id' => 'segregation_practiced']) !!}
             </div>
         </div>
         <div class="form-group row">
             {!! Form::label('reuse_practiced', __('Reuse Practiced?'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
-                {!! Form::select('reuse_practiced', [1 => __('Yes'), 0 => __('No')], old('reuse_practiced', optional($landfill)->reuse_practiced ? 1 : 0), ['class' => 'form-control', 'id' => 'reuse_practiced']) !!}
+                {!! Form::select('reuse_practiced', ['' => __('Select')] + [1 => __('Yes'), 0 => __('No')], old('reuse_practiced', optional($landfill)->reuse_practiced), ['class' => 'form-control', 'id' => 'reuse_practiced']) !!}
             </div>
         </div>
         <div class="form-group row">
             {!! Form::label('treatment', __('Treatment Practiced?'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
-                {!! Form::select('treatment', [1 => __('Yes'), 0 => __('No')], old('treatment', optional($landfill)->treatment ? 1 : 0), ['class' => 'form-control', 'id' => 'treatment']) !!}
+                {!! Form::select('treatment', ['' => __('Select')] + [1 => __('Yes'), 0 => __('No')], old('treatment', optional($landfill)->treatment), ['class' => 'form-control', 'id' => 'treatment']) !!}
             </div>
         </div>
         <div class="form-group row">
-            {!! Form::label('monthly_waste_for_composting', __('Monthly Amount of Waste Provided for Composting') . ' (' . __('Ton') . ')', ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('weighbridge_facility_available', __('Weighbridge Facility Available?'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
-                {!! Form::number('monthly_waste_for_composting', null, [
-                    'class' => 'form-control',
-                    'placeholder' => __('Monthly Amount of Waste Provided for Composting') . ' (' . __('Ton') . ')',
-                    'min' => 0,
-                    'step' => '0.01',
-                    'inputmode' => 'decimal',
-                ]) !!}
+                {!! Form::select('weighbridge_facility_available', ['' => __('Select')] + [1 => __('Yes'), 0 => __('No')], old('weighbridge_facility_available', optional($landfill)->weighbridge_facility_available), ['class' => 'form-control', 'id' => 'weighbridge_facility_available']) !!}
+            </div>
+        </div>
+        <div class="form-group row">
+            {!! Form::label('boundary_wall_available', __('Boundary Wall Around the Landfill Area Available?'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-3">
+                {!! Form::select('boundary_wall_available', ['' => __('Select')] + [1 => __('Yes'), 0 => __('No')], old('boundary_wall_available', optional($landfill)->boundary_wall_available), ['class' => 'form-control', 'id' => 'boundary_wall_available']) !!}
+            </div>
+        </div>
+        <div class="form-group row">
+            {!! Form::label('lighting_arrangement_available', __('Lighting Arrangement at the Landfill Site Available?'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-3">
+                {!! Form::select('lighting_arrangement_available', ['' => __('Select')] + [1 => __('Yes'), 0 => __('No')], old('lighting_arrangement_available', optional($landfill)->lighting_arrangement_available), ['class' => 'form-control', 'id' => 'lighting_arrangement_available']) !!}
+            </div>
+        </div>
+        <div class="form-group row">
+            {!! Form::label('manpower_deployed', __('Number of Manpower Deployed at the Landfill Site'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-3">
+                {!! Form::number('manpower_deployed', old('manpower_deployed', optional($landfill)->manpower_deployed), ['class' => 'form-control', 'placeholder' => __('Number of Manpower Deployed at the Landfill Site'), 'min' => 0, 'step' => '1', 'inputmode' => 'numeric']) !!}
+            </div>
+        </div>
+        <div class="form-group row">
+            {!! Form::label('adequate_covering_arrangement_available', __('Adequate Covering Arrangement at the Landfill Site Available?'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-3">
+                {!! Form::select('adequate_covering_arrangement_available', ['' => __('Select')] + [1 => __('Yes'), 0 => __('No')], old('adequate_covering_arrangement_available', optional($landfill)->adequate_covering_arrangement_available), ['class' => 'form-control', 'id' => 'adequate_covering_arrangement_available']) !!}
+            </div>
+        </div>
+        <div class="form-group row">
+            {!! Form::label('gas_control_system_available', __('System for Gas Control from the Filled Landfill Available?'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-3">
+                {!! Form::select('gas_control_system_available', ['' => __('Select')] + [1 => __('Yes'), 0 => __('No')], old('gas_control_system_available', optional($landfill)->gas_control_system_available), ['class' => 'form-control', 'id' => 'gas_control_system_available']) !!}
+            </div>
+        </div>
+        <div class="form-group row">
+            {!! Form::label('leachate_collection_system_available', __('Leachate Collection System Available?'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-3">
+                {!! Form::select('leachate_collection_system_available', ['' => __('Select')] + [1 => __('Yes'), 0 => __('No')], old('leachate_collection_system_available', optional($landfill)->leachate_collection_system_available), ['class' => 'form-control', 'id' => 'leachate_collection_system_available']) !!}
             </div>
         </div>
         <div class="form-group row required">

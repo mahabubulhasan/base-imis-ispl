@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Swm\LandfillRequest;
 use App\Models\LayerInfo\Ward;
 use App\Models\Swm\Landfill;
+use App\Models\Swm\LandfillType;
 use App\Models\Swm\Sts;
 use App\Models\Swm\Vehicle;
 use App\Models\Swm\WasteType;
@@ -63,13 +64,19 @@ class LandfillController extends Controller
         return WasteType::query()->whereNull('deleted_at')->orderBy('name')->pluck('name', 'id')->all();
     }
 
+    protected function landfillTypeOptions(): array
+    {
+        return LandfillType::query()->whereNull('deleted_at')->orderBy('name')->pluck('name', 'id')->all();
+    }
+
     public function index()
     {
         $page_title = __('Landfills');
         $stsOptions = $this->stsOptions();
         $wasteTypes = $this->wasteTypeOptions();
+        $landfillTypes = $this->landfillTypeOptions();
 
-        return view('swm.service-facilities.landfills.index', compact('page_title', 'wasteTypes', 'stsOptions'));
+        return view('swm.service-facilities.landfills.index', compact('page_title', 'wasteTypes', 'stsOptions', 'landfillTypes'));
     }
 
     public function getData(Request $request)
@@ -85,8 +92,9 @@ class LandfillController extends Controller
         $stsWardMap = $this->stsWardMap();
         $wards = $this->wardOptions();
         $wasteTypes = $this->wasteTypeOptions();
+        $landfillTypes = $this->landfillTypeOptions();
 
-        return view('swm.service-facilities.landfills.create', compact('page_title', 'landfill', 'stsOptions', 'stsWardMap', 'wards', 'wasteTypes'));
+        return view('swm.service-facilities.landfills.create', compact('page_title', 'landfill', 'stsOptions', 'stsWardMap', 'wards', 'wasteTypes', 'landfillTypes'));
     }
 
     public function store(LandfillRequest $request)
@@ -101,6 +109,7 @@ class LandfillController extends Controller
         $page_title = __('Landfill Details');
         $sourceSts = $landfill->sourceSts();
         $wasteTypes = $landfill->wasteTypes();
+        $landfill->load('landfillType');
 
         return view('swm.service-facilities.landfills.show', compact('page_title', 'landfill', 'sourceSts', 'wasteTypes'));
     }
@@ -112,8 +121,9 @@ class LandfillController extends Controller
         $stsWardMap = $this->stsWardMap();
         $wards = $this->wardOptions();
         $wasteTypes = $this->wasteTypeOptions();
+        $landfillTypes = $this->landfillTypeOptions();
 
-        return view('swm.service-facilities.landfills.edit', compact('page_title', 'landfill', 'stsOptions', 'stsWardMap', 'wards', 'wasteTypes'));
+        return view('swm.service-facilities.landfills.edit', compact('page_title', 'landfill', 'stsOptions', 'stsWardMap', 'wards', 'wasteTypes', 'landfillTypes'));
     }
 
     public function update(LandfillRequest $request, Landfill $landfill)

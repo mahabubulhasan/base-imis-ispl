@@ -86,11 +86,8 @@ class WorkerController extends Controller
         $workTypes = $this->workTypeOptionsForForms();
         $wards = $this->wardOptionsForForms();
         $scopedOrganizationId = Auth::user()->swm_organization_id;
-        $suggestedWorkerIdNo = $scopedOrganizationId
-            ? $this->workerService->peekNextWorkerIdNo((int) $scopedOrganizationId)
-            : '';
 
-        return view('swm.service-providers.workers.create', compact('page_title', 'worker', 'organizations', 'workTypes', 'wards', 'scopedOrganizationId', 'suggestedWorkerIdNo'));
+        return view('swm.service-providers.workers.create', compact('page_title', 'worker', 'organizations', 'workTypes', 'wards', 'scopedOrganizationId'));
     }
 
     public function nextWorkerId(Request $request)

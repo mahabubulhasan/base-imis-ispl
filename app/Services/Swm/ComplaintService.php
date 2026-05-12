@@ -136,7 +136,15 @@ class ComplaintService
             }
         }
 
-        $dateTime = isset($data['date_time']) ? Carbon::parse($data['date_time']) : now();
+        if (! empty($data['date_time'] ?? null)) {
+            $dateTime = Carbon::parse($data['date_time']);
+        } elseif ($complaint->exists) {
+            $dateTime = $complaint->date_time
+                ? Carbon::parse($complaint->date_time)
+                : now();
+        } else {
+            $dateTime = now();
+        }
         $photo = $data['photo_attachment'] ?? null;
         $newPhotoPath = null;
         if ($photo instanceof UploadedFile) {

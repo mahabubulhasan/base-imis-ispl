@@ -299,6 +299,19 @@ Route::group([
             'destroy' => 'swm.waste-types.destroy',
         ]);
 
+        Route::get('landfill-types/data', 'LandfillTypeController@getData')->name('swm.landfill-types.data');
+        Route::get('landfill-types/export', 'LandfillTypeController@export')->name('swm.landfill-types.export');
+        Route::get('landfill-types/{landfill_type}/history', 'LandfillTypeController@history')->name('swm.landfill-types.history');
+        Route::resource('landfill-types', 'LandfillTypeController')->names([
+            'index' => 'swm.landfill-types.index',
+            'create' => 'swm.landfill-types.create',
+            'store' => 'swm.landfill-types.store',
+            'show' => 'swm.landfill-types.show',
+            'edit' => 'swm.landfill-types.edit',
+            'update' => 'swm.landfill-types.update',
+            'destroy' => 'swm.landfill-types.destroy',
+        ]);
+
         Route::get('vehicles/drivers-for-organization', 'VehicleController@driversForOrganization')->name('swm.vehicles.drivers-for-organization');
         Route::get('vehicles/data', 'VehicleController@getData')->name('swm.vehicles.data');
         Route::get('vehicles/export', 'VehicleController@export')->name('swm.vehicles.export');

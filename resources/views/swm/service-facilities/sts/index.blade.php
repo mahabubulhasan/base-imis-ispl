@@ -37,9 +37,9 @@
                                     <div class="col-md-2">
                                         <input type="text" class="form-control" id="sts_id" placeholder="{{ __('STS ID') }}" />
                                     </div>
-                                    <label for="name" class="col-md-2 col-form-label">{{ __('Name') }}</label>
+                                    <label for="name" class="col-md-2 col-form-label">{{ __('STS Name') }}</label>
                                     <div class="col-md-2">
-                                        <input type="text" class="form-control" id="name" placeholder="{{ __('Name') }}" />
+                                        <input type="text" class="form-control" id="name" placeholder="{{ __('STS Name') }}" />
                                     </div>
                                     <label for="ward_no" class="col-md-2 col-form-label">{{ __('Ward No.') }}</label>
                                     <div class="col-md-2">
@@ -56,9 +56,9 @@
                                     <div class="col-md-2">
                                         <input type="text" class="form-control" id="operator_name" placeholder="{{ __('Operator Name') }}" />
                                     </div>
-                                    <label for="contact_number" class="col-md-2 col-form-label">{{ __('Contact Number') }}</label>
+                                    <label for="contact_number" class="col-md-2 col-form-label">{{ __('Operator\'s Contact Number') }}</label>
                                     <div class="col-md-2">
-                                        <input type="text" class="form-control" id="contact_number" placeholder="{{ __('Contact Number') }}" />
+                                        <input type="text" class="form-control" id="contact_number" placeholder="{{ __('Operator\'s Contact Number') }}" />
                                     </div>
                                     <label for="destination_landfill_id" class="col-md-2 col-form-label">{{ __('Destination Landfill') }}</label>
                                     <div class="col-md-2">
@@ -115,11 +115,11 @@
             <thead>
                 <tr>
                 <th>{{ __('STS ID') }}</th>
-                <th>{{ __('Name') }}</th>
+                <th>{{ __('STS Name') }}</th>
                 <th>{{ __('Ward No.') }}</th>
                 <th>{{ __('Location') }}</th>
                 <th>{{ __('Operator Name') }}</th>
-                <th>{{ __('Contact Number') }}</th>
+                <th>{{ __('Operator\'s Contact Number') }}</th>
                 <th>{{ __('Capacity') }} ({{ __('Ton') }})</th>
                 <th>{{ __('Source Wards') }}</th>
                 <th>{{ __('Segregation Practiced') }}</th>

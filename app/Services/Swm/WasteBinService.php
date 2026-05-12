@@ -13,6 +13,7 @@ class WasteBinService
         $query = WasteBin::query()->with(['wasteBinType'])->whereNull('deleted_at');
 
         return DataTables::of($query)
+            ->editColumn('waste_bin_id', fn ($row) => $row->waste_bin_id ?? '')
             ->addColumn('waste_bin_type_name', fn ($row) => optional($row->wasteBinType)->name)
             ->addColumn('placed_at_buildings_label', fn ($row) => $row->placed_at_buildings ? __('Yes') : __('No'))
             ->addColumn('action', function ($model) {
@@ -41,6 +42,7 @@ class WasteBinService
     public function storeOrUpdate(?WasteBin $wasteBin, array $data): WasteBin
     {
         $wasteBin = $wasteBin ?? new WasteBin();
+        unset($data['waste_bin_id']);
         if ($wasteBin->exists && ! array_key_exists('household_id', $data)) {
             unset($data['household_id']);
         }

@@ -2,7 +2,6 @@
     $isEdit = isset($complaint) && $complaint;
     $initHolding = old('holding_number', $isEdit ? ($complaint->holding_number ?? '') : '');
     $initCustomerId = old('household_id', $isEdit ? ($complaint->customer_id ?? '') : '');
-    $initDateTime = old('date_time', ($isEdit && $complaint->date_time) ? $complaint->date_time->format('Y-m-d\TH:i') : now()->format('Y-m-d\TH:i'));
     $initIncidentDate = old('incident_date', ($isEdit && $complaint->incident_date) ? $complaint->incident_date->format('Y-m-d') : '');
 @endphp
 <div class="app-mobile-form swm-complaint-form-mobile">
@@ -10,20 +9,14 @@
     {!! Form::hidden('holding_number', old('holding_number', $initHolding), ['id' => 'holding_number']) !!}
     {!! Form::hidden('household_id', old('household_id', $initCustomerId), ['id' => 'household_id']) !!}
 
-    <div class="form-group row required">
+    @if($isEdit)
+    <div class="form-group row">
         {!! Form::label('complaint_id', __('Complaint ID'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            @if($isEdit)
-                {!! Form::text('complaint_id', old('complaint_id', $complaint->complaint_id), ['class' => 'form-control', 'placeholder' => __('Complaint ID'), 'readonly' => true]) !!}
-            @else
-                <input type="text" class="form-control" value="{{ __('Auto generated on save') }}" readonly />
-            @endif
-        </div>
-        {!! Form::label('date_time', __('Date and Time'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-3">
-            <input type="datetime-local" name="date_time" id="date_time" class="form-control" value="{{ $initDateTime }}" />
+            {!! Form::text('complaint_id', old('complaint_id', $complaint->complaint_id), ['class' => 'form-control', 'placeholder' => __('Complaint ID'), 'readonly' => true]) !!}
         </div>
     </div>
+    @endif
 
     <div class="form-group row">
         {!! Form::label('holding_select', __('Holding number'), ['class' => 'col-sm-3 control-label']) !!}

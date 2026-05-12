@@ -5,8 +5,8 @@
 @include('layouts.components.success-alert')
 @include('layouts.components.error-alert')
 <div class="card card-info">
-	{!! Form::open(['route' => 'swm.workers.store', 'class' => 'form-horizontal']) !!}
-		@include('swm.service-providers.workers.partial-form')
+	{!! Form::model($landfillType, ['method' => 'PATCH', 'route' => ['swm.landfill-types.update', $landfillType->id], 'class' => 'form-horizontal']) !!}
+		@include('swm.service-providers.landfill-types.partial-form')
 	{!! Form::close() !!}
 </div>
 @stop

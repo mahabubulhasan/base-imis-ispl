@@ -1,16 +1,13 @@
 <div class="app-mobile-form">
 <div class="card-body">
+        @isset($worker)
         <div class="form-group row required">
-            <label class="col-sm-3 control-label" for="worker_id_no_preview">{{ __('ID') }}</label>
+            <label class="col-sm-3 control-label" for="worker_id_no">{{ __('ID') }}</label>
             <div class="col-sm-9">
-                @isset($worker)
-                    {!! Form::text('worker_id_no', null, ['class' => 'form-control', 'readonly' => true, 'id' => 'worker_id_no']) !!}
-                @else
-                    <input type="text" class="form-control" id="worker_id_no_preview" value="{{ $suggestedWorkerIdNo ?? '' }}" readonly autocomplete="off">
-                    <small class="form-text text-muted">{{ __('Assigned automatically when you save.') }}</small>
-                @endisset
+                {!! Form::text('worker_id_no', null, ['class' => 'form-control', 'readonly' => true, 'id' => 'worker_id_no']) !!}
             </div>
         </div>
+        @endisset
         <div class="form-group row required">
             {!! Form::label('name', __('Name'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-9">
