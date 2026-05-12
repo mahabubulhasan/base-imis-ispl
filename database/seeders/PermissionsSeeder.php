@@ -1337,6 +1337,39 @@ class PermissionsSeeder extends Seeder
                 ],
             ],
             [
+                "group" => "SW Attendance Logs",
+                "perms" => [
+                    [
+                        "type" => "List",
+                        "name" => "List SW Attendance Logs",
+                    ],
+                    [
+                        "type" => "View",
+                        "name" => "View SW Attendance Log",
+                    ],
+                    [
+                        "type" => "Add",
+                        "name" => "Add SW Attendance Log",
+                    ],
+                    [
+                        "type" => "Edit",
+                        "name" => "Edit SW Attendance Log",
+                    ],
+                    [
+                        "type" => "Delete",
+                        "name" => "Delete SW Attendance Log",
+                    ],
+                    [
+                        "type" => "History",
+                        "name" => "View SW Attendance Log History",
+                    ],
+                    [
+                        "type" => "Export",
+                        "name" => "Export SW Attendance Logs to CSV",
+                    ],
+                ],
+            ],
+            [
                 "group" => "SW Dashboard and KPIs",
                 "perms" => [
                     [

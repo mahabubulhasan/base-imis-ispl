@@ -342,6 +342,25 @@ Route::group([
         Route::get('{complaint}/history', 'ComplaintController@history')->name('swm.complaints.history');
     });
 
+    Route::prefix('service-management')->group(function () {
+        Route::get('attendance-logs/data', 'AttendanceLogController@getData')->name('swm.attendance-logs.data');
+        Route::get('attendance-logs/export', 'AttendanceLogController@export')->name('swm.attendance-logs.export');
+        Route::get('attendance-logs/suggestions/workers', 'AttendanceLogController@suggestionsWorkers')->name('swm.attendance-logs.suggestions.workers');
+        Route::get('attendance-logs/worker-context', 'AttendanceLogController@workerContext')->name('swm.attendance-logs.worker-context');
+        Route::get('attendance-logs/{attendance_log}/history', 'AttendanceLogController@history')->name('swm.attendance-logs.history');
+        Route::resource('attendance-logs', 'AttendanceLogController')->parameters([
+            'attendance-logs' => 'attendance_log',
+        ])->names([
+            'index' => 'swm.attendance-logs.index',
+            'create' => 'swm.attendance-logs.create',
+            'store' => 'swm.attendance-logs.store',
+            'show' => 'swm.attendance-logs.show',
+            'edit' => 'swm.attendance-logs.edit',
+            'update' => 'swm.attendance-logs.update',
+            'destroy' => 'swm.attendance-logs.destroy',
+        ]);
+    });
+
     Route::prefix('service-facilities')->group(function () {
         Route::get('landfills/data', 'LandfillController@getData')->name('swm.landfills.data');
         Route::get('landfills/export', 'LandfillController@export')->name('swm.landfills.export');
