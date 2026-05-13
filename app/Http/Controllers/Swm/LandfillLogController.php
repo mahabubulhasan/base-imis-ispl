@@ -7,7 +7,6 @@ use App\Http\Requests\Swm\LandfillLogRequest;
 use App\Models\LayerInfo\Ward;
 use App\Models\Swm\Landfill;
 use App\Models\Swm\LandfillLog;
-use App\Models\Swm\Organization;
 use App\Models\Swm\Sts;
 use App\Models\Swm\Vehicle;
 use App\Models\Swm\WasteType;
@@ -36,16 +35,6 @@ class LandfillLogController extends Controller
         $this->middleware('permission:Delete SW Landfill Log', ['only' => ['destroy']]);
         $this->middleware('permission:Export SW Landfill Logs to CSV', ['only' => ['export']]);
         $this->middleware('permission:View SW Landfill Log History', ['only' => ['history']]);
-    }
-
-    protected function organizationOptionsForForms(): array
-    {
-        $query = Organization::query()->whereNull('deleted_at')->operational()->orderBy('name');
-        if (Auth::user()->swm_organization_id) {
-            $query->where('id', Auth::user()->swm_organization_id);
-        }
-
-        return $query->pluck('name', 'id')->all();
     }
 
     protected function landfillOptionsForForms(): array
@@ -80,31 +69,14 @@ class LandfillLogController extends Controller
         return Ward::getInAscOrder();
     }
 
-    protected function logBelongsToScopedOrg(?LandfillLog $log): bool
-    {
-        if (! $log) {
-            return false;
-        }
-        $oid = Auth::user()->swm_organization_id;
-
-        return ! $oid || (int) $log->organization_id === (int) $oid;
-    }
-
     public function index()
     {
         $page_title = __('Landfill Daily Tracking');
-        $organizations = Organization::query()->whereNull('deleted_at')->operational()->orderBy('name')->pluck('name', 'id');
-        if (Auth::user()->swm_organization_id) {
-            $organizations = Organization::query()->whereNull('deleted_at')->where('id', Auth::user()->swm_organization_id)->orderBy('name')->pluck('name', 'id');
-        }
-        $scopedOrganizationId = Auth::user()->swm_organization_id;
         $statusOptions = LandfillLog::statusOptions();
         $landfillList = $this->landfillOptionsForForms();
 
         return view('swm.service-management.landfill-logs.index', compact(
             'page_title',
-            'organizations',
-            'scopedOrganizationId',
             'statusOptions',
             'landfillList'
         ));
@@ -119,8 +91,6 @@ class LandfillLogController extends Controller
     {
         $page_title = __('Add Landfill Log');
         $landfillLog = null;
-        $organizations = $this->organizationOptionsForForms();
-        $scopedOrganizationId = Auth::user()->swm_organization_id;
         $statusOptions = LandfillLog::statusOptions();
         $landfillList = $this->landfillOptionsForForms();
         $wasteTypeList = $this->wasteTypeOptionsForForms();
@@ -130,8 +100,6 @@ class LandfillLogController extends Controller
         return view('swm.service-management.landfill-logs.create', compact(
             'page_title',
             'landfillLog',
-            'organizations',
-            'scopedOrganizationId',
             'statusOptions',
             'landfillList',
             'wasteTypeList',
@@ -144,7 +112,7 @@ class LandfillLogController extends Controller
     {
         $id = $this->landfillLogService->storeOrUpdate(null, $request->validated());
         if ($id === null) {
-            return redirect()->back()->withInput()->with('error', __('Invalid vehicle or organization.'));
+            return redirect()->back()->withInput()->with('error', __('Invalid vehicle.'));
         }
 
         return redirect()->route('swm.landfill-logs.index')->with('success', __('Landfill log created successfully.'));
@@ -152,24 +120,16 @@ class LandfillLogController extends Controller
 
     public function show(LandfillLog $landfill_log)
     {
-        if (! $this->logBelongsToScopedOrg($landfill_log)) {
-            abort(403);
-        }
         $page_title = __('Landfill Log Details');
-        $landfillLog = $landfill_log->load(['organization', 'vehicle', 'vehicleType', 'driver', 'landfill', 'wasteType']);
+        $landfillLog = $landfill_log->load(['vehicle', 'vehicleType', 'driver', 'landfill', 'wasteType']);
 
         return view('swm.service-management.landfill-logs.show', compact('page_title', 'landfillLog'));
     }
 
     public function edit(LandfillLog $landfill_log)
     {
-        if (! $this->logBelongsToScopedOrg($landfill_log)) {
-            abort(403);
-        }
         $page_title = __('Edit Landfill Log');
-        $landfillLog = $landfill_log->load(['organization', 'vehicle', 'vehicleType', 'driver', 'landfill', 'wasteType']);
-        $organizations = $this->organizationOptionsForForms();
-        $scopedOrganizationId = Auth::user()->swm_organization_id;
+        $landfillLog = $landfill_log->load(['vehicle', 'vehicleType', 'driver', 'landfill', 'wasteType']);
         $statusOptions = LandfillLog::statusOptions();
         $landfillList = $this->landfillOptionsForForms();
         $wasteTypeList = $this->wasteTypeOptionsForForms();
@@ -179,8 +139,6 @@ class LandfillLogController extends Controller
         return view('swm.service-management.landfill-logs.edit', compact(
             'page_title',
             'landfillLog',
-            'organizations',
-            'scopedOrganizationId',
             'statusOptions',
             'landfillList',
             'wasteTypeList',
@@ -191,13 +149,9 @@ class LandfillLogController extends Controller
 
     public function update(LandfillLogRequest $request, LandfillLog $landfill_log)
     {
-        if (! $this->logBelongsToScopedOrg($landfill_log)) {
-            abort(403);
-        }
-
         $id = $this->landfillLogService->storeOrUpdate((int) $landfill_log->id, $request->validated());
         if ($id === null) {
-            return redirect()->back()->withInput()->with('error', __('Invalid vehicle or organization.'));
+            return redirect()->back()->withInput()->with('error', __('Invalid vehicle.'));
         }
 
         return redirect()->route('swm.landfill-logs.index')->with('success', __('Landfill log updated successfully.'));
@@ -205,9 +159,6 @@ class LandfillLogController extends Controller
 
     public function destroy(LandfillLog $landfill_log)
     {
-        if (! $this->logBelongsToScopedOrg($landfill_log)) {
-            abort(403);
-        }
         $landfill_log->delete();
 
         return redirect()->route('swm.landfill-logs.index')->with('success', __('Landfill log deleted successfully.'));
@@ -215,9 +166,6 @@ class LandfillLogController extends Controller
 
     public function history(LandfillLog $landfill_log)
     {
-        if (! $this->logBelongsToScopedOrg($landfill_log)) {
-            abort(403);
-        }
         $page_title = __('Landfill Log History');
         $landfillLog = $landfill_log;
 
@@ -232,18 +180,13 @@ class LandfillLogController extends Controller
     public function suggestionsVehicles(Request $request)
     {
         $validated = $request->validate([
-            'organization_id' => ['required', 'integer'],
             'q' => ['nullable', 'string', 'max:255'],
         ]);
-
-        $orgId = (int) $validated['organization_id'];
-        $this->authorizeOrganizationAccess($orgId);
 
         $term = trim((string) ($validated['q'] ?? ''));
 
         $query = Vehicle::query()
-            ->whereNull('deleted_at')
-            ->where('organization_id', $orgId);
+            ->whereNull('deleted_at');
 
         if ($term !== '') {
             $query->where(function ($q) use ($term) {
@@ -269,16 +212,11 @@ class LandfillLogController extends Controller
     public function vehicleContext(Request $request)
     {
         $validated = $request->validate([
-            'organization_id' => ['required', 'integer'],
             'vehicle_id' => ['required', 'integer'],
         ]);
 
-        $orgId = (int) $validated['organization_id'];
-        $this->authorizeOrganizationAccess($orgId);
-
         $vehicle = Vehicle::query()
             ->whereNull('deleted_at')
-            ->where('organization_id', $orgId)
             ->whereKey((int) $validated['vehicle_id'])
             ->with(['vehicleType', 'driver', 'dumpingLandfill'])
             ->first();
@@ -332,13 +270,5 @@ class LandfillLogController extends Controller
             'source_wards' => is_array($landfill->source_wards) ? $landfill->source_wards : [],
             'weighbridge_facility_available' => (bool) $landfill->weighbridge_facility_available,
         ]);
-    }
-
-    protected function authorizeOrganizationAccess(int $organizationId): void
-    {
-        $scoped = Auth::user()->swm_organization_id;
-        if ($scoped && (int) $scoped !== $organizationId) {
-            abort(403);
-        }
     }
 }

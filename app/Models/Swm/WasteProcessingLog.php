@@ -18,7 +18,6 @@ class WasteProcessingLog extends Model
     protected $table = 'swm.waste_processing_logs';
 
     protected $fillable = [
-        'organization_id',
         'entry_at',
         'report_date',
         'reporting_month',
@@ -42,9 +41,4 @@ class WasteProcessingLog extends Model
         'waste_burned_open_air_ton' => 'decimal:2',
         'residual_waste_landfilled_ton' => 'decimal:2',
     ];
-
-    public function organization()
-    {
-        return $this->belongsTo(Organization::class, 'organization_id');
-    }
 }

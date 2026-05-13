@@ -29,10 +29,6 @@
                 <div class="col-sm-9"><p class="form-control-plaintext mb-0">{{ $wasteProcessingLog->reporting_month?->format('M Y') }}</p></div>
             </div>
             <div class="form-group row">
-                <span class="col-sm-3 control-label">{{ __('Organization') }}</span>
-                <div class="col-sm-9"><p class="form-control-plaintext mb-0">{{ $wasteProcessingLog->organization?->name }}</p></div>
-            </div>
-            <div class="form-group row">
                 <span class="col-sm-3 control-label">{{ __('Quantity of Waste Received (Ton)') }}</span>
                 <div class="col-sm-9"><p class="form-control-plaintext mb-0">{{ $wasteProcessingLog->waste_received_ton ?? '—' }}</p></div>
             </div>

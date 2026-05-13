@@ -22,7 +22,6 @@ class StsLog extends Model
     protected $table = 'swm.sts_logs';
 
     protected $fillable = [
-        'organization_id',
         'vehicle_id',
         'vehicle_type_id',
         'vehicle_type_name',
@@ -46,11 +45,6 @@ class StsLog extends Model
         'quantity_ton' => 'decimal:3',
         'source_wards' => 'array',
     ];
-
-    public function organization()
-    {
-        return $this->belongsTo(Organization::class, 'organization_id');
-    }
 
     public function vehicle()
     {

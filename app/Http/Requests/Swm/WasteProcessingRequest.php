@@ -3,8 +3,6 @@
 namespace App\Http\Requests\Swm;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
 
 class WasteProcessingRequest extends FormRequest
 {
@@ -15,12 +13,6 @@ class WasteProcessingRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
-        if (Auth::user()?->swm_organization_id) {
-            $this->merge([
-                'organization_id' => Auth::user()->swm_organization_id,
-            ]);
-        }
-
         $month = $this->input('reporting_month');
         if (is_string($month) && trim($month) !== '') {
             $parsed = \DateTime::createFromFormat('Y-m', trim($month));
@@ -35,11 +27,6 @@ class WasteProcessingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'organization_id' => [
-                'required',
-                'integer',
-                Rule::exists('pgsql.swm.organizations', 'id')->where(fn ($q) => $q->whereNull('deleted_at')),
-            ],
             'entry_at' => ['required', 'date'],
             'report_date' => ['required', 'date'],
             'reporting_month' => ['required', 'date_format:Y-m-d'],

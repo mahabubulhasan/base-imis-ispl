@@ -20,16 +20,9 @@ class StsLogService
 {
     public function stsLogQuery(): Builder
     {
-        $query = StsLog::query()
+        return StsLog::query()
             ->whereNull('deleted_at')
-            ->with(['organization', 'vehicle', 'sts', 'wasteType']);
-
-        $orgId = Auth::user()?->swm_organization_id;
-        if ($orgId) {
-            $query->where('organization_id', (int) $orgId);
-        }
-
-        return $query;
+            ->with(['vehicle', 'sts', 'wasteType']);
     }
 
     public function getAllStsLogs(array $data)
@@ -39,9 +32,6 @@ class StsLogService
         return DataTables::of($query)
             ->filter(function ($q) use ($data) {
                 $this->applyFilters($q, $data);
-            })
-            ->addColumn('organization_name', function (StsLog $model) {
-                return $model->organization?->name ?? '';
             })
             ->addColumn('vehicle_number', function (StsLog $model) {
                 return $model->vehicle?->vehicle_number ?? '';
@@ -67,8 +57,14 @@ class StsLogService
             ->editColumn('operation_status', function (StsLog $model) {
                 return StsLog::statusOptions()[$model->operation_status] ?? $model->operation_status;
             })
-            ->orderColumn('organization_name', function ($query, $order) {
-                $query->orderBy('organization_id', $order);
+            ->orderColumn('vehicle_number', function ($query, $order) {
+                $query->orderBy(
+                    Vehicle::query()
+                        ->select('vehicle_number')
+                        ->whereColumn('swm.vehicles.id', 'swm.sts_logs.vehicle_id')
+                        ->limit(1),
+                    $order
+                );
             })
             ->addColumn('action', function (StsLog $model) {
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['swm.sts-logs.destroy', $model->id]]);
@@ -102,7 +98,6 @@ class StsLogService
         $vehicle = Vehicle::query()
             ->whereNull('deleted_at')
             ->whereKey($data['vehicle_id'])
-            ->where('organization_id', $data['organization_id'])
             ->with(['vehicleType', 'driver', 'dumpingSts'])
             ->first();
 
@@ -120,7 +115,6 @@ class StsLogService
         }
 
         DB::transaction(function () use ($log, $data, $vehicle): void {
-            $log->organization_id = (int) $data['organization_id'];
             $log->vehicle_id = (int) $data['vehicle_id'];
             $log->entry_at = Carbon::parse($data['entry_at']);
             $log->operation_date = Carbon::parse($data['operation_date'])->toDateString();
@@ -172,7 +166,6 @@ class StsLogService
             __('STS Log ID'),
             __('Entry Date and Time'),
             __('Operation Date'),
-            __('Organization'),
             __('Vehicle Number'),
             __('Vehicle Type'),
             __('Driver Name'),
@@ -204,7 +197,6 @@ class StsLogService
                     $row->id,
                     $row->entry_at?->format('Y-m-d H:i:s'),
                     $row->operation_date?->format('Y-m-d'),
-                    $row->organization?->name,
                     $row->vehicle?->vehicle_number,
                     $row->vehicle_type_name,
                     $row->driver_name,
@@ -223,9 +215,6 @@ class StsLogService
 
     protected function applyFilters($query, array $data): void
     {
-        if (! empty($data['organization_id'] ?? null)) {
-            $query->where('organization_id', (int) $data['organization_id']);
-        }
         if (! empty($data['vehicle_search'] ?? null)) {
             $term = '%'.trim((string) $data['vehicle_search']).'%';
             $query->whereHas('vehicle', function ($vq) use ($term) {

@@ -9,7 +9,6 @@
 @endpush
 @php
     $isEdit = isset($landfillLog) && $landfillLog;
-    $orgFieldVal = old('organization_id', $isEdit ? $landfillLog->organization_id : ($scopedOrganizationId ?? null));
     $vehicleFieldVal = old('vehicle_id', $isEdit ? $landfillLog->vehicle_id : null);
     $landfillFieldVal = old('landfill_id', $isEdit ? $landfillLog->landfill_id : null);
     $entryVal = old('entry_at');
@@ -36,23 +35,6 @@
         </div>
     @endif
 
-    @if($scopedOrganizationId)
-        {!! Form::hidden('organization_id', $scopedOrganizationId) !!}
-        <div class="form-group row">
-            {!! Form::label('organization_display', __('Organization'), ['class' => 'col-sm-3 control-label']) !!}
-            <div class="col-sm-9">
-                <p class="form-control-plaintext">{{ $organizations[$scopedOrganizationId] ?? '' }}</p>
-            </div>
-        </div>
-    @else
-        <div class="form-group row required">
-            {!! Form::label('organization_id', __('Organization'), ['class' => 'col-sm-3 control-label']) !!}
-            <div class="col-sm-9">
-                {!! Form::select('organization_id', $organizations, $orgFieldVal, ['class' => 'form-control chosen-select', 'id' => 'organization_id', 'placeholder' => __('Select Organization')]) !!}
-            </div>
-        </div>
-    @endif
-
     <div class="form-group row required">
         {!! Form::label('entry_at', __('Entry Date and Time'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-9">
@@ -70,7 +52,7 @@
     <div class="form-group row required">
         {!! Form::label('vehicle_id', __('Vehicle Number'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-9">
-            <select name="vehicle_id" id="vehicle_id" class="form-control" style="width:100%" data-placeholder="{{ __('Search vehicle by number') }}" @if(!$orgFieldVal) disabled @endif></select>
+            <select name="vehicle_id" id="vehicle_id" class="form-control" style="width:100%" data-placeholder="{{ __('Search vehicle by number') }}"></select>
         </div>
     </div>
 
@@ -95,12 +77,7 @@
         </div>
     </div>
 
-    <div class="form-group row">
-        {!! Form::label('landfill_name', __('Landfill Name (Text)'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
-            {!! Form::text('landfill_name', old('landfill_name', $isEdit ? $landfillLog->landfill_name : null), ['class' => 'form-control', 'id' => 'landfill_name', 'placeholder' => __('Landfill Name'), 'autocomplete' => 'off']) !!}
-        </div>
-    </div>
+    {!! Form::hidden('landfill_name', old('landfill_name', $isEdit ? $landfillLog->landfill_name : null), ['id' => 'landfill_name']) !!}
 
     <div class="form-group row">
         {!! Form::label('waste_type_id', __('Waste Type'), ['class' => 'col-sm-3 control-label']) !!}
@@ -109,21 +86,12 @@
         </div>
     </div>
 
-    <div class="form-group row">
+    <div class="form-group row" id="effective_quantity_group">
         {!! Form::label('quantity_ton', __('Quantity (Ton)'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-9">
             <input type="number" name="quantity_ton" id="quantity_ton" class="form-control" step="0.001" min="0"
                 value="{{ old('quantity_ton', $isEdit && $landfillLog->quantity_ton !== null ? $landfillLog->quantity_ton : null) }}"
                 placeholder="{{ __('Quantity in tons') }}" />
-        </div>
-    </div>
-
-    <div class="form-group row" id="effective_quantity_group">
-        {!! Form::label('effective_quantity_ton_display', __('Effective Quantity (Ton)'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
-            <input type="text" id="effective_quantity_ton_display" class="form-control"
-                value="{{ old('quantity_ton', $isEdit && $landfillLog->quantity_ton !== null ? $landfillLog->quantity_ton : null) }}"
-                readonly />
         </div>
     </div>
 
@@ -179,15 +147,6 @@ $(function () {
     var csrf = @json(csrf_token());
     var initialVehicleId = @json($vehicleFieldVal ? (string) $vehicleFieldVal : null);
     var initialVehicleText = @json($isEdit && isset($landfillLog) && $landfillLog->vehicle ? ($landfillLog->vehicle->vehicle_number ?: '') : null);
-
-    function orgId() {
-        @if($scopedOrganizationId)
-        return String(@json((string) $scopedOrganizationId));
-        @else
-        var v = $('#organization_id').val();
-        return v ? String(v) : '';
-        @endif
-    }
 
     function setWardsFromArray(arr) {
         var clean = Array.isArray(arr) ? arr.map(function (v) { return String(v).trim(); }).filter(function (v) { return v.length > 0; }) : [];
@@ -305,27 +264,21 @@ $(function () {
     }
 
     function fetchVehicleContext() {
-        var oid = orgId();
         var vid = $('#vehicle_id').val();
-        if (!oid || !vid) {
+        if (!vid) {
             return;
         }
         $.ajax({
             url: vehicleContextUrl,
             dataType: 'json',
-            data: { organization_id: oid, vehicle_id: vid },
+            data: { vehicle_id: vid },
             headers: { 'X-CSRF-TOKEN': csrf }
         }).done(applyVehicleContext);
     }
 
     function initVehicleSelect2() {
         destroyVehicleSelect2();
-        var oid = orgId();
         var $v = $('#vehicle_id');
-        $v.prop('disabled', !oid);
-        if (!oid) {
-            return;
-        }
         $v.select2({
             placeholder: $v.data('placeholder'),
             allowClear: true,
@@ -337,7 +290,6 @@ $(function () {
                 delay: 250,
                 data: function (params) {
                     return {
-                        organization_id: oid,
                         q: params.term || ''
                     };
                 },
@@ -380,23 +332,6 @@ $(function () {
     $('#landfill_id').on('change', function () {
         fetchLandfillContext();
     });
-
-    @if(!$scopedOrganizationId)
-    $('#organization_id').on('change', function () {
-        $('#vehicle_id').val(null).trigger('change');
-        $('#vehicle_type_name').val('');
-        $('#driver_name').val('');
-        $('#landfill_id').val('').trigger('chosen:updated');
-        $('#landfill_name').val('');
-        $('#waste_type_id').val('').trigger('chosen:updated');
-        $('#quantity_ton').val('');
-        $('#weighbridge_weight_ton').val('');
-        setSourceSts([]);
-        setWardsFromArray([]);
-        toggleWeighbridge(false);
-        initVehicleSelect2();
-    });
-    @endif
 });
 </script>
 @endpush

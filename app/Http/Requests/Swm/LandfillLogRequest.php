@@ -4,7 +4,6 @@ namespace App\Http\Requests\Swm;
 
 use App\Models\Swm\LandfillLog;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class LandfillLogRequest extends FormRequest
@@ -16,12 +15,6 @@ class LandfillLogRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
-        if (Auth::user()?->swm_organization_id) {
-            $this->merge([
-                'organization_id' => Auth::user()->swm_organization_id,
-            ]);
-        }
-
         foreach (['source_wards', 'source_sts_ids'] as $field) {
             $val = $this->input($field);
             if (is_string($val)) {
@@ -60,21 +53,11 @@ class LandfillLogRequest extends FormRequest
 
     public function rules(): array
     {
-        $orgId = $this->input('organization_id');
-
         return [
-            'organization_id' => [
-                'required',
-                'integer',
-                Rule::exists('pgsql.swm.organizations', 'id')->where(fn ($q) => $q->whereNull('deleted_at')),
-            ],
             'vehicle_id' => [
                 'required',
                 'integer',
-                Rule::exists('pgsql.swm.vehicles', 'id')->where(function ($q) use ($orgId) {
-                    return $q->whereNull('deleted_at')
-                        ->when($orgId, fn ($qq) => $qq->where('organization_id', (int) $orgId));
-                }),
+                Rule::exists('pgsql.swm.vehicles', 'id')->where(fn ($q) => $q->whereNull('deleted_at')),
             ],
             'vehicle_type_id' => [
                 'nullable',

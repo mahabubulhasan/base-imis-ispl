@@ -27,17 +27,6 @@
         <div id="collapseOne" class="collapse">
             <form class="form-horizontal" id="filter-form">
                 <div class="form-group row">
-                    @if(!$scopedOrganizationId)
-                    <label for="filter_organization_id" class="col-md-2 col-form-label">{{ __('Organization') }}</label>
-                    <div class="col-md-2">
-                        <select class="form-control" id="filter_organization_id">
-                            <option value="">{{ __('All') }}</option>
-                            @foreach($organizations as $oid => $oname)
-                            <option value="{{ $oid }}">{{ $oname }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    @endif
                     <label for="vehicle_search" class="col-md-2 col-form-label">{{ __('Vehicle Number') }}</label>
                     <div class="col-md-2"><input type="text" class="form-control" id="vehicle_search" /></div>
                     <label for="sts_id" class="col-md-2 col-form-label">{{ __('STS Name') }}</label>
@@ -80,7 +69,6 @@
                         <th>{{ __('STS Log ID') }}</th>
                         <th>{{ __('Entry Date and Time') }}</th>
                         <th>{{ __('Operation Date') }}</th>
-                        <th>{{ __('Organization') }}</th>
                         <th>{{ __('Vehicle Number') }}</th>
                         <th>{{ __('STS Name') }}</th>
                         <th>{{ __('Waste Type') }}</th>
@@ -107,7 +95,6 @@ $(function() {
         ajax: {
             url: '{!! route("swm.sts-logs.data") !!}',
             data: function(d) {
-                d.organization_id = $('#filter_organization_id').length ? $('#filter_organization_id').val() : '';
                 d.vehicle_search = $('#vehicle_search').val();
                 d.sts_id = $('#sts_id').val();
                 d.operation_status = $('#operation_status').val();
@@ -119,8 +106,7 @@ $(function() {
             { data: 'id', name: 'id' },
             { data: 'entry_at', name: 'entry_at' },
             { data: 'operation_date', name: 'operation_date' },
-            { data: 'organization_name', name: 'organization_id', orderable: true },
-            { data: 'vehicle_number', name: 'vehicle_id', orderable: false, searchable: false },
+            { data: 'vehicle_number', name: 'vehicle_number', orderable: true, searchable: false },
             { data: 'sts_label', name: 'sts_name' },
             { data: 'waste_type_label', name: 'waste_type_name' },
             { data: 'quantity_ton', name: 'quantity_ton' },
@@ -161,14 +147,12 @@ $(function() {
 
     $('#export').on('click', function(e) {
         e.preventDefault();
-        var organization_id = $('#filter_organization_id').length ? ($('#filter_organization_id').val() || '') : '';
         var vehicle_search = $('#vehicle_search').val() || '';
         var sts_id = $('#sts_id').val() || '';
         var operation_status = $('#operation_status').val() || '';
         var date_from = $('#date_from').val() || '';
         var date_to = $('#date_to').val() || '';
-        window.location.href = "{!! route('swm.sts-logs.export') !!}?organization_id=" + encodeURIComponent(organization_id) +
-            "&vehicle_search=" + encodeURIComponent(vehicle_search) +
+        window.location.href = "{!! route('swm.sts-logs.export') !!}?vehicle_search=" + encodeURIComponent(vehicle_search) +
             "&sts_id=" + encodeURIComponent(sts_id) +
             "&operation_status=" + encodeURIComponent(operation_status) +
             "&date_from=" + encodeURIComponent(date_from) +

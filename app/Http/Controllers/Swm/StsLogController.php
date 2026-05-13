@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Swm;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Swm\StsLogRequest;
 use App\Models\LayerInfo\Ward;
-use App\Models\Swm\Organization;
 use App\Models\Swm\Sts;
 use App\Models\Swm\StsLog;
 use App\Models\Swm\Vehicle;
@@ -37,16 +36,6 @@ class StsLogController extends Controller
         $this->middleware('permission:View SW STS Log History', ['only' => ['history']]);
     }
 
-    protected function organizationOptionsForForms(): array
-    {
-        $query = Organization::query()->whereNull('deleted_at')->operational()->orderBy('name');
-        if (Auth::user()->swm_organization_id) {
-            $query->where('id', Auth::user()->swm_organization_id);
-        }
-
-        return $query->pluck('name', 'id')->all();
-    }
-
     protected function stsOptionsForForms(): array
     {
         return Sts::query()
@@ -70,31 +59,14 @@ class StsLogController extends Controller
         return Ward::getInAscOrder();
     }
 
-    protected function logBelongsToScopedOrg(?StsLog $log): bool
-    {
-        if (! $log) {
-            return false;
-        }
-        $oid = Auth::user()->swm_organization_id;
-
-        return ! $oid || (int) $log->organization_id === (int) $oid;
-    }
-
     public function index()
     {
         $page_title = __('STS Daily Tracking');
-        $organizations = Organization::query()->whereNull('deleted_at')->operational()->orderBy('name')->pluck('name', 'id');
-        if (Auth::user()->swm_organization_id) {
-            $organizations = Organization::query()->whereNull('deleted_at')->where('id', Auth::user()->swm_organization_id)->orderBy('name')->pluck('name', 'id');
-        }
-        $scopedOrganizationId = Auth::user()->swm_organization_id;
         $statusOptions = StsLog::statusOptions();
         $stsList = $this->stsOptionsForForms();
 
         return view('swm.service-management.sts-logs.index', compact(
             'page_title',
-            'organizations',
-            'scopedOrganizationId',
             'statusOptions',
             'stsList'
         ));
@@ -109,8 +81,6 @@ class StsLogController extends Controller
     {
         $page_title = __('Add STS Log');
         $stsLog = null;
-        $organizations = $this->organizationOptionsForForms();
-        $scopedOrganizationId = Auth::user()->swm_organization_id;
         $statusOptions = StsLog::statusOptions();
         $stsList = $this->stsOptionsForForms();
         $wasteTypeList = $this->wasteTypeOptionsForForms();
@@ -119,8 +89,6 @@ class StsLogController extends Controller
         return view('swm.service-management.sts-logs.create', compact(
             'page_title',
             'stsLog',
-            'organizations',
-            'scopedOrganizationId',
             'statusOptions',
             'stsList',
             'wasteTypeList',
@@ -132,7 +100,7 @@ class StsLogController extends Controller
     {
         $id = $this->stsLogService->storeOrUpdate(null, $request->validated());
         if ($id === null) {
-            return redirect()->back()->withInput()->with('error', __('Invalid vehicle or organization.'));
+            return redirect()->back()->withInput()->with('error', __('Invalid vehicle.'));
         }
 
         return redirect()->route('swm.sts-logs.index')->with('success', __('STS log created successfully.'));
@@ -140,24 +108,16 @@ class StsLogController extends Controller
 
     public function show(StsLog $sts_log)
     {
-        if (! $this->logBelongsToScopedOrg($sts_log)) {
-            abort(403);
-        }
         $page_title = __('STS Log Details');
-        $stsLog = $sts_log->load(['organization', 'vehicle', 'vehicleType', 'driver', 'sts', 'wasteType']);
+        $stsLog = $sts_log->load(['vehicle', 'vehicleType', 'driver', 'sts', 'wasteType']);
 
         return view('swm.service-management.sts-logs.show', compact('page_title', 'stsLog'));
     }
 
     public function edit(StsLog $sts_log)
     {
-        if (! $this->logBelongsToScopedOrg($sts_log)) {
-            abort(403);
-        }
         $page_title = __('Edit STS Log');
-        $stsLog = $sts_log->load(['organization', 'vehicle', 'vehicleType', 'driver', 'sts', 'wasteType']);
-        $organizations = $this->organizationOptionsForForms();
-        $scopedOrganizationId = Auth::user()->swm_organization_id;
+        $stsLog = $sts_log->load(['vehicle', 'vehicleType', 'driver', 'sts', 'wasteType']);
         $statusOptions = StsLog::statusOptions();
         $stsList = $this->stsOptionsForForms();
         $wasteTypeList = $this->wasteTypeOptionsForForms();
@@ -166,8 +126,6 @@ class StsLogController extends Controller
         return view('swm.service-management.sts-logs.edit', compact(
             'page_title',
             'stsLog',
-            'organizations',
-            'scopedOrganizationId',
             'statusOptions',
             'stsList',
             'wasteTypeList',
@@ -177,13 +135,9 @@ class StsLogController extends Controller
 
     public function update(StsLogRequest $request, StsLog $sts_log)
     {
-        if (! $this->logBelongsToScopedOrg($sts_log)) {
-            abort(403);
-        }
-
         $id = $this->stsLogService->storeOrUpdate((int) $sts_log->id, $request->validated());
         if ($id === null) {
-            return redirect()->back()->withInput()->with('error', __('Invalid vehicle or organization.'));
+            return redirect()->back()->withInput()->with('error', __('Invalid vehicle.'));
         }
 
         return redirect()->route('swm.sts-logs.index')->with('success', __('STS log updated successfully.'));
@@ -191,9 +145,6 @@ class StsLogController extends Controller
 
     public function destroy(StsLog $sts_log)
     {
-        if (! $this->logBelongsToScopedOrg($sts_log)) {
-            abort(403);
-        }
         $sts_log->delete();
 
         return redirect()->route('swm.sts-logs.index')->with('success', __('STS log deleted successfully.'));
@@ -201,9 +152,6 @@ class StsLogController extends Controller
 
     public function history(StsLog $sts_log)
     {
-        if (! $this->logBelongsToScopedOrg($sts_log)) {
-            abort(403);
-        }
         $page_title = __('STS Log History');
         $stsLog = $sts_log;
 
@@ -218,18 +166,13 @@ class StsLogController extends Controller
     public function suggestionsVehicles(Request $request)
     {
         $validated = $request->validate([
-            'organization_id' => ['required', 'integer'],
             'q' => ['nullable', 'string', 'max:255'],
         ]);
-
-        $orgId = (int) $validated['organization_id'];
-        $this->authorizeOrganizationAccess($orgId);
 
         $term = trim((string) ($validated['q'] ?? ''));
 
         $query = Vehicle::query()
-            ->whereNull('deleted_at')
-            ->where('organization_id', $orgId);
+            ->whereNull('deleted_at');
 
         if ($term !== '') {
             $query->where(function ($q) use ($term) {
@@ -255,16 +198,11 @@ class StsLogController extends Controller
     public function vehicleContext(Request $request)
     {
         $validated = $request->validate([
-            'organization_id' => ['required', 'integer'],
             'vehicle_id' => ['required', 'integer'],
         ]);
 
-        $orgId = (int) $validated['organization_id'];
-        $this->authorizeOrganizationAccess($orgId);
-
         $vehicle = Vehicle::query()
             ->whereNull('deleted_at')
-            ->where('organization_id', $orgId)
             ->whereKey((int) $validated['vehicle_id'])
             ->with(['vehicleType', 'driver', 'dumpingSts'])
             ->first();
@@ -330,13 +268,5 @@ class StsLogController extends Controller
             'waste_type_name' => $wasteType ?? '',
             'source_wards' => is_array($sts->source_wards) ? $sts->source_wards : [],
         ]);
-    }
-
-    protected function authorizeOrganizationAccess(int $organizationId): void
-    {
-        $scoped = Auth::user()->swm_organization_id;
-        if ($scoped && (int) $scoped !== $organizationId) {
-            abort(403);
-        }
     }
 }

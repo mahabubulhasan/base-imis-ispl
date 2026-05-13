@@ -27,6 +27,12 @@
 @endphp
 <div class="swm-attendance-form-mobile app-mobile-form">
 <div class="card-body">
+    <div class="form-group row required">
+        {!! Form::label('entry_at', __('Entry Date and Time'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-9">
+            <input type="datetime-local" name="entry_at" id="entry_at" class="form-control" value="{{ $entryVal }}" />
+        </div>
+    </div>
     @if($scopedOrganizationId)
         {!! Form::hidden('organization_id', $scopedOrganizationId) !!}
         <div class="form-group row">
@@ -44,17 +50,17 @@
         </div>
     @endif
 
-    <div class="form-group row required">
-        {!! Form::label('worker_id', __('Worker Name-ID'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
-            <select name="worker_id" id="worker_id" class="form-control" style="width:100%" data-placeholder="{{ __('Search worker') }}" @if(!$orgFieldVal) disabled @endif></select>
-        </div>
-    </div>
-
     <div class="form-group row">
         {!! Form::label('department', __('Department'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-9">
             {!! Form::text('department', old('department', $isEdit ? $attendanceLog->department : null), ['class' => 'form-control', 'id' => 'department', 'placeholder' => __('Department'), 'autocomplete' => 'off']) !!}
+        </div>
+    </div>
+
+    <div class="form-group row required">
+        {!! Form::label('worker_id', __('Worker Name-ID'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-9">
+            <select name="worker_id" id="worker_id" class="form-control" style="width:100%" data-placeholder="{{ __('Search worker') }}" @if(!$orgFieldVal) disabled @endif></select>
         </div>
     </div>
 
@@ -84,12 +90,7 @@
         </div>
     </div>
 
-    <div class="form-group row required">
-        {!! Form::label('entry_at', __('Entry Date and Time'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
-            <input type="datetime-local" name="entry_at" id="entry_at" class="form-control" value="{{ $entryVal }}" />
-        </div>
-    </div>
+    
 
     <div class="form-group row required">
         {!! Form::label('attendance_status', __('Attendance Status'), ['class' => 'col-sm-3 control-label']) !!}

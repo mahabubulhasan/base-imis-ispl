@@ -25,10 +25,6 @@
                 <div class="col-sm-9"><p class="form-control-plaintext mb-0">{{ $stsLog->operation_date?->format('Y-m-d') }}</p></div>
             </div>
             <div class="form-group row">
-                <span class="col-sm-3 control-label">{{ __('Organization') }}</span>
-                <div class="col-sm-9"><p class="form-control-plaintext mb-0">{{ $stsLog->organization?->name }}</p></div>
-            </div>
-            <div class="form-group row">
                 <span class="col-sm-3 control-label">{{ __('Vehicle Number') }}</span>
                 <div class="col-sm-9"><p class="form-control-plaintext mb-0">{{ $stsLog->vehicle?->vehicle_number ?: '—' }}</p></div>
             </div>

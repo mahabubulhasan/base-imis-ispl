@@ -4,11 +4,9 @@ namespace App\Http\Controllers\Swm;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Swm\WasteProcessingRequest;
-use App\Models\Swm\Organization;
 use App\Models\Swm\WasteProcessingLog;
 use App\Services\Swm\WasteProcessingService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class WasteProcessingController extends Controller
 {
@@ -25,40 +23,11 @@ class WasteProcessingController extends Controller
         $this->middleware('permission:View SW Waste Processing History', ['only' => ['history']]);
     }
 
-    protected function organizationOptionsForForms(): array
-    {
-        $query = Organization::query()->whereNull('deleted_at')->operational()->orderBy('name');
-        if (Auth::user()->swm_organization_id) {
-            $query->where('id', Auth::user()->swm_organization_id);
-        }
-
-        return $query->pluck('name', 'id')->all();
-    }
-
-    protected function logBelongsToScopedOrg(?WasteProcessingLog $log): bool
-    {
-        if (! $log) {
-            return false;
-        }
-        $oid = Auth::user()->swm_organization_id;
-
-        return ! $oid || (int) $log->organization_id === (int) $oid;
-    }
-
     public function index()
     {
         $page_title = __('Waste Processing');
-        $organizations = Organization::query()->whereNull('deleted_at')->operational()->orderBy('name')->pluck('name', 'id');
-        if (Auth::user()->swm_organization_id) {
-            $organizations = Organization::query()->whereNull('deleted_at')->where('id', Auth::user()->swm_organization_id)->orderBy('name')->pluck('name', 'id');
-        }
-        $scopedOrganizationId = Auth::user()->swm_organization_id;
 
-        return view('swm.service-management.waste-processing.index', compact(
-            'page_title',
-            'organizations',
-            'scopedOrganizationId'
-        ));
+        return view('swm.service-management.waste-processing.index', compact('page_title'));
     }
 
     public function getData(Request $request)
@@ -70,14 +39,10 @@ class WasteProcessingController extends Controller
     {
         $page_title = __('Add Waste Processing');
         $wasteProcessingLog = null;
-        $organizations = $this->organizationOptionsForForms();
-        $scopedOrganizationId = Auth::user()->swm_organization_id;
 
         return view('swm.service-management.waste-processing.create', compact(
             'page_title',
-            'wasteProcessingLog',
-            'organizations',
-            'scopedOrganizationId'
+            'wasteProcessingLog'
         ));
     }
 
@@ -93,39 +58,25 @@ class WasteProcessingController extends Controller
 
     public function show(WasteProcessingLog $waste_processing)
     {
-        if (! $this->logBelongsToScopedOrg($waste_processing)) {
-            abort(403);
-        }
         $page_title = __('Waste Processing Details');
-        $wasteProcessingLog = $waste_processing->load('organization');
+        $wasteProcessingLog = $waste_processing;
 
         return view('swm.service-management.waste-processing.show', compact('page_title', 'wasteProcessingLog'));
     }
 
     public function edit(WasteProcessingLog $waste_processing)
     {
-        if (! $this->logBelongsToScopedOrg($waste_processing)) {
-            abort(403);
-        }
         $page_title = __('Edit Waste Processing');
-        $wasteProcessingLog = $waste_processing->load('organization');
-        $organizations = $this->organizationOptionsForForms();
-        $scopedOrganizationId = Auth::user()->swm_organization_id;
+        $wasteProcessingLog = $waste_processing;
 
         return view('swm.service-management.waste-processing.edit', compact(
             'page_title',
-            'wasteProcessingLog',
-            'organizations',
-            'scopedOrganizationId'
+            'wasteProcessingLog'
         ));
     }
 
     public function update(WasteProcessingRequest $request, WasteProcessingLog $waste_processing)
     {
-        if (! $this->logBelongsToScopedOrg($waste_processing)) {
-            abort(403);
-        }
-
         $id = $this->wasteProcessingService->storeOrUpdate((int) $waste_processing->id, $request->validated());
         if ($id === null) {
             return redirect()->back()->withInput()->with('error', __('Failed to update waste processing log.'));
@@ -136,9 +87,6 @@ class WasteProcessingController extends Controller
 
     public function destroy(WasteProcessingLog $waste_processing)
     {
-        if (! $this->logBelongsToScopedOrg($waste_processing)) {
-            abort(403);
-        }
         $waste_processing->delete();
 
         return redirect()->route('swm.waste-processing.index')->with('success', __('Waste processing log deleted successfully.'));
@@ -146,9 +94,6 @@ class WasteProcessingController extends Controller
 
     public function history(WasteProcessingLog $waste_processing)
     {
-        if (! $this->logBelongsToScopedOrg($waste_processing)) {
-            abort(403);
-        }
         $page_title = __('Waste Processing History');
         $wasteProcessingLog = $waste_processing;
 

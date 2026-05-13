@@ -9,7 +9,6 @@
 @endpush
 @php
     $isEdit = isset($stsLog) && $stsLog;
-    $orgFieldVal = old('organization_id', $isEdit ? $stsLog->organization_id : ($scopedOrganizationId ?? null));
     $vehicleFieldVal = old('vehicle_id', $isEdit ? $stsLog->vehicle_id : null);
     $entryVal = old('entry_at');
     if ($entryVal === null && $isEdit && $stsLog->entry_at) {
@@ -38,23 +37,6 @@
         </div>
     @endif
 
-    @if($scopedOrganizationId)
-        {!! Form::hidden('organization_id', $scopedOrganizationId) !!}
-        <div class="form-group row">
-            {!! Form::label('organization_display', __('Organization'), ['class' => 'col-sm-3 control-label']) !!}
-            <div class="col-sm-9">
-                <p class="form-control-plaintext">{{ $organizations[$scopedOrganizationId] ?? '' }}</p>
-            </div>
-        </div>
-    @else
-        <div class="form-group row required">
-            {!! Form::label('organization_id', __('Organization'), ['class' => 'col-sm-3 control-label']) !!}
-            <div class="col-sm-9">
-                {!! Form::select('organization_id', $organizations, $orgFieldVal, ['class' => 'form-control chosen-select', 'id' => 'organization_id', 'placeholder' => __('Select Organization')]) !!}
-            </div>
-        </div>
-    @endif
-
     <div class="form-group row required">
         {!! Form::label('entry_at', __('Entry Date and Time'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-9">
@@ -72,7 +54,7 @@
     <div class="form-group row required">
         {!! Form::label('vehicle_id', __('Vehicle Number'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-9">
-            <select name="vehicle_id" id="vehicle_id" class="form-control" style="width:100%" data-placeholder="{{ __('Search vehicle by number') }}" @if(!$orgFieldVal) disabled @endif></select>
+            <select name="vehicle_id" id="vehicle_id" class="form-control" style="width:100%" data-placeholder="{{ __('Search vehicle by number') }}"></select>
         </div>
     </div>
 
@@ -150,15 +132,6 @@ $(function () {
     var initialVehicleId = @json($vehicleFieldVal ? (string) $vehicleFieldVal : null);
     var initialVehicleText = @json($isEdit && isset($stsLog) && $stsLog->vehicle ? ($stsLog->vehicle->vehicle_number ?: '') : null);
 
-    function orgId() {
-        @if($scopedOrganizationId)
-        return String(@json((string) $scopedOrganizationId));
-        @else
-        var v = $('#organization_id').val();
-        return v ? String(v) : '';
-        @endif
-    }
-
     function setWardsFromArray(arr) {
         var clean = Array.isArray(arr) ? arr.map(function (v) { return String(v).trim(); }).filter(function (v) { return v.length > 0; }) : [];
         var $sw = $('#source_wards');
@@ -224,15 +197,14 @@ $(function () {
     }
 
     function fetchVehicleContext() {
-        var oid = orgId();
         var vid = $('#vehicle_id').val();
-        if (!oid || !vid) {
+        if (!vid) {
             return;
         }
         $.ajax({
             url: vehicleContextUrl,
             dataType: 'json',
-            data: { organization_id: oid, vehicle_id: vid },
+            data: { vehicle_id: vid },
             headers: { 'X-CSRF-TOKEN': csrf }
         }).done(applyVehicleContext).fail(function (xhr) {
             if (window.console && console.warn) {
@@ -268,12 +240,7 @@ $(function () {
 
     function initVehicleSelect2() {
         destroyVehicleSelect2();
-        var oid = orgId();
         var $v = $('#vehicle_id');
-        $v.prop('disabled', !oid);
-        if (!oid) {
-            return;
-        }
         $v.select2({
             placeholder: $v.data('placeholder'),
             allowClear: true,
@@ -285,7 +252,6 @@ $(function () {
                 delay: 250,
                 data: function (params) {
                     return {
-                        organization_id: oid,
                         q: params.term || ''
                     };
                 },
@@ -319,18 +285,6 @@ $(function () {
         }
         fetchStsContext();
     });
-
-    @if(!$scopedOrganizationId)
-    $('#organization_id').on('change', function () {
-        $('#vehicle_id').val(null).trigger('change.skip-context');
-        $('#vehicle_type_name').val('');
-        $('#driver_name').val('');
-        $('#waste_type_id').val('').trigger('chosen:updated');
-        $('#quantity_ton').val('');
-        setWardsFromArray([]);
-        initVehicleSelect2();
-    });
-    @endif
 });
 </script>
 @endpush

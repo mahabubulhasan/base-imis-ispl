@@ -17,16 +17,8 @@ class WasteProcessingService
 {
     public function query(): Builder
     {
-        $query = WasteProcessingLog::query()
-            ->whereNull('deleted_at')
-            ->with('organization');
-
-        $orgId = Auth::user()?->swm_organization_id;
-        if ($orgId) {
-            $query->where('organization_id', (int) $orgId);
-        }
-
-        return $query;
+        return WasteProcessingLog::query()
+            ->whereNull('deleted_at');
     }
 
     public function getAll(array $data)
@@ -37,7 +29,6 @@ class WasteProcessingService
             ->filter(function ($q) use ($data) {
                 $this->applyFilters($q, $data);
             })
-            ->addColumn('organization_name', fn (WasteProcessingLog $model) => $model->organization?->name ?? '')
             ->editColumn('entry_at', fn (WasteProcessingLog $model) => $model->entry_at?->format('Y-m-d H:i') ?? '')
             ->editColumn('report_date', fn (WasteProcessingLog $model) => $model->report_date?->format('Y-m-d') ?? '')
             ->addColumn('reporting_month_label', function (WasteProcessingLog $model) {
@@ -78,7 +69,6 @@ class WasteProcessingService
         }
 
         DB::transaction(function () use ($log, $data): void {
-            $log->organization_id = (int) $data['organization_id'];
             $log->entry_at = Carbon::parse($data['entry_at']);
             $log->report_date = Carbon::parse($data['report_date'])->toDateString();
             $log->reporting_month = Carbon::parse($data['reporting_month'])->startOfMonth()->toDateString();
@@ -105,7 +95,6 @@ class WasteProcessingService
             __('Entry Date and Time'),
             __('Report Date'),
             __('Reporting Month'),
-            __('Organization'),
             __('Quantity of Waste Received (Ton)'),
             __('Organic Waste Composted (Ton)'),
             __('Inorganic Non-biodegradable Waste Recycled (Ton)'),
@@ -132,7 +121,6 @@ class WasteProcessingService
                     $row->entry_at?->format('Y-m-d H:i:s'),
                     $row->report_date?->format('Y-m-d'),
                     $row->reporting_month?->format('M Y'),
-                    $row->organization?->name,
                     $row->waste_received_ton,
                     $row->organic_waste_composted_ton,
                     $row->inorganic_waste_recycled_ton,
@@ -149,9 +137,6 @@ class WasteProcessingService
 
     protected function applyFilters($query, array $data): void
     {
-        if (! empty($data['organization_id'] ?? null)) {
-            $query->where('organization_id', (int) $data['organization_id']);
-        }
         if (! empty($data['date_from'] ?? null)) {
             $query->whereDate('report_date', '>=', Carbon::parse($data['date_from'])->toDateString());
         }

@@ -1,6 +1,5 @@
 @php
     $isEdit = isset($wasteProcessingLog) && $wasteProcessingLog;
-    $orgFieldVal = old('organization_id', $isEdit ? $wasteProcessingLog->organization_id : ($scopedOrganizationId ?? null));
     $entryVal = old('entry_at');
     if ($entryVal === null && $isEdit && $wasteProcessingLog->entry_at) {
         $entryVal = $wasteProcessingLog->entry_at->format('Y-m-d\TH:i');
@@ -18,23 +17,6 @@
             <label class="col-sm-3 control-label">{{ __('Waste Processing Log ID') }}</label>
             <div class="col-sm-9">
                 <p class="form-control-plaintext">{{ $wasteProcessingLog->id }}</p>
-            </div>
-        </div>
-    @endif
-
-    @if($scopedOrganizationId)
-        {!! Form::hidden('organization_id', $scopedOrganizationId) !!}
-        <div class="form-group row">
-            {!! Form::label('organization_display', __('Organization'), ['class' => 'col-sm-3 control-label']) !!}
-            <div class="col-sm-9">
-                <p class="form-control-plaintext">{{ $organizations[$scopedOrganizationId] ?? '' }}</p>
-            </div>
-        </div>
-    @else
-        <div class="form-group row required">
-            {!! Form::label('organization_id', __('Organization'), ['class' => 'col-sm-3 control-label']) !!}
-            <div class="col-sm-9">
-                {!! Form::select('organization_id', $organizations, $orgFieldVal, ['class' => 'form-control chosen-select', 'id' => 'organization_id', 'placeholder' => __('Select Organization')]) !!}
             </div>
         </div>
     @endif

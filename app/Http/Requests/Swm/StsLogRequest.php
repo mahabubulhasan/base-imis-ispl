@@ -4,7 +4,6 @@ namespace App\Http\Requests\Swm;
 
 use App\Models\Swm\StsLog;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class StsLogRequest extends FormRequest
@@ -16,12 +15,6 @@ class StsLogRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
-        if (Auth::user()?->swm_organization_id) {
-            $this->merge([
-                'organization_id' => Auth::user()->swm_organization_id,
-            ]);
-        }
-
         $wards = $this->input('source_wards');
         if (is_string($wards)) {
             $decoded = json_decode($wards, true);
@@ -50,21 +43,11 @@ class StsLogRequest extends FormRequest
 
     public function rules(): array
     {
-        $orgId = $this->input('organization_id');
-
         return [
-            'organization_id' => [
-                'required',
-                'integer',
-                Rule::exists('pgsql.swm.organizations', 'id')->where(fn ($q) => $q->whereNull('deleted_at')),
-            ],
             'vehicle_id' => [
                 'required',
                 'integer',
-                Rule::exists('pgsql.swm.vehicles', 'id')->where(function ($q) use ($orgId) {
-                    return $q->whereNull('deleted_at')
-                        ->when($orgId, fn ($qq) => $qq->where('organization_id', (int) $orgId));
-                }),
+                Rule::exists('pgsql.swm.vehicles', 'id')->where(fn ($q) => $q->whereNull('deleted_at')),
             ],
             'vehicle_type_id' => [
                 'nullable',

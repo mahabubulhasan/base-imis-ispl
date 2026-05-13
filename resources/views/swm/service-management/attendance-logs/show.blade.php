@@ -17,6 +17,10 @@
                 <div class="col-sm-9"><p class="form-control-plaintext mb-0">{{ $attendanceLog->id }}</p></div>
             </div>
             <div class="form-group row">
+                <span class="col-sm-3 control-label">{{ __('Entry Date and Time') }}</span>
+                <div class="col-sm-9"><p class="form-control-plaintext mb-0">{{ $attendanceLog->entry_at?->format('Y-m-d H:i') }}</p></div>
+            </div>
+            <div class="form-group row">
                 <span class="col-sm-3 control-label">{{ __('Organization') }}</span>
                 <div class="col-sm-9"><p class="form-control-plaintext mb-0">{{ $attendanceLog->organization?->name }}</p></div>
             </div>
@@ -39,10 +43,6 @@
             <div class="form-group row">
                 <span class="col-sm-3 control-label">{{ __("Supervisor's Name") }}</span>
                 <div class="col-sm-9"><p class="form-control-plaintext mb-0">{{ $attendanceLog->supervisor_name ?: '—' }}</p></div>
-            </div>
-            <div class="form-group row">
-                <span class="col-sm-3 control-label">{{ __('Entry Date and Time') }}</span>
-                <div class="col-sm-9"><p class="form-control-plaintext mb-0">{{ $attendanceLog->entry_at?->format('Y-m-d H:i') }}</p></div>
             </div>
             <div class="form-group row">
                 <span class="col-sm-3 control-label">{{ __('Attendance Status') }}</span>

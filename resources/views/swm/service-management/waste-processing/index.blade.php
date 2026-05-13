@@ -27,17 +27,6 @@
         <div id="collapseOne" class="collapse">
             <form class="form-horizontal" id="filter-form">
                 <div class="form-group row">
-                    @if(!$scopedOrganizationId)
-                    <label for="filter_organization_id" class="col-md-2 col-form-label">{{ __('Organization') }}</label>
-                    <div class="col-md-2">
-                        <select class="form-control" id="filter_organization_id">
-                            <option value="">{{ __('All') }}</option>
-                            @foreach($organizations as $oid => $oname)
-                            <option value="{{ $oid }}">{{ $oname }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    @endif
                     <label for="reporting_month" class="col-md-2 col-form-label">{{ __('Reporting Month') }}</label>
                     <div class="col-md-2"><input type="month" class="form-control" id="reporting_month" /></div>
                     <label for="date_from" class="col-md-2 col-form-label">{{ __('Report Date From') }}</label>
@@ -63,7 +52,6 @@
                         <th>{{ __('Entry Date and Time') }}</th>
                         <th>{{ __('Report Date') }}</th>
                         <th>{{ __('Reporting Month') }}</th>
-                        <th>{{ __('Organization') }}</th>
                         <th>{{ __('Quantity of Waste Received (Ton)') }}</th>
                         <th>{{ __('Residual Waste Landfilled (Ton)') }}</th>
                         <th>{{ __('Actions') }}</th>
@@ -86,7 +74,6 @@ $(function() {
         ajax: {
             url: '{!! route("swm.waste-processing.data") !!}',
             data: function(d) {
-                d.organization_id = $('#filter_organization_id').length ? $('#filter_organization_id').val() : '';
                 d.reporting_month = $('#reporting_month').val();
                 d.date_from = $('#date_from').val();
                 d.date_to = $('#date_to').val();
@@ -97,7 +84,6 @@ $(function() {
             { data: 'entry_at', name: 'entry_at' },
             { data: 'report_date', name: 'report_date' },
             { data: 'reporting_month_label', name: 'reporting_month' },
-            { data: 'organization_name', name: 'organization_id', orderable: true },
             { data: 'waste_received_ton', name: 'waste_received_ton' },
             { data: 'residual_waste_landfilled_ton', name: 'residual_waste_landfilled_ton' },
             { data: 'action', name: 'action', orderable: false, searchable: false }
@@ -135,12 +121,10 @@ $(function() {
 
     $('#export').on('click', function(e) {
         e.preventDefault();
-        var organization_id = $('#filter_organization_id').length ? ($('#filter_organization_id').val() || '') : '';
         var reporting_month = $('#reporting_month').val() || '';
         var date_from = $('#date_from').val() || '';
         var date_to = $('#date_to').val() || '';
-        window.location.href = "{!! route('swm.waste-processing.export') !!}?organization_id=" + encodeURIComponent(organization_id) +
-            "&reporting_month=" + encodeURIComponent(reporting_month) +
+        window.location.href = "{!! route('swm.waste-processing.export') !!}?reporting_month=" + encodeURIComponent(reporting_month) +
             "&date_from=" + encodeURIComponent(date_from) +
             "&date_to=" + encodeURIComponent(date_to);
     });

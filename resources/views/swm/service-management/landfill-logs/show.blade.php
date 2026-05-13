@@ -25,10 +25,6 @@
                 <div class="col-sm-9"><p class="form-control-plaintext mb-0">{{ $landfillLog->operation_date?->format('Y-m-d') }}</p></div>
             </div>
             <div class="form-group row">
-                <span class="col-sm-3 control-label">{{ __('Organization') }}</span>
-                <div class="col-sm-9"><p class="form-control-plaintext mb-0">{{ $landfillLog->organization?->name }}</p></div>
-            </div>
-            <div class="form-group row">
                 <span class="col-sm-3 control-label">{{ __('Vehicle Number') }}</span>
                 <div class="col-sm-9"><p class="form-control-plaintext mb-0">{{ $landfillLog->vehicle?->vehicle_number ?: '—' }}</p></div>
             </div>
@@ -48,13 +44,9 @@
                 <span class="col-sm-3 control-label">{{ __('Waste Type') }}</span>
                 <div class="col-sm-9"><p class="form-control-plaintext mb-0">{{ $landfillLog->waste_type_name ?: ($landfillLog->wasteType?->name ?: '—') }}</p></div>
             </div>
-            <div class="form-group row">
-                <span class="col-sm-3 control-label">{{ __('Quantity (Ton)') }}</span>
-                <div class="col-sm-9"><p class="form-control-plaintext mb-0">{{ $landfillLog->quantity_ton ?? '—' }}</p></div>
-            </div>
             @if($landfillLog->weighbridge_weight_ton === null)
             <div class="form-group row">
-                <span class="col-sm-3 control-label">{{ __('Effective Quantity (Ton)') }}</span>
+                <span class="col-sm-3 control-label">{{ __('Quantity (Ton)') }}</span>
                 <div class="col-sm-9"><p class="form-control-plaintext mb-0">{{ $landfillLog->quantity_ton ?? '—' }}</p></div>
             </div>
             @else
