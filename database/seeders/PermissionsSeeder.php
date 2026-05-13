@@ -1370,6 +1370,105 @@ class PermissionsSeeder extends Seeder
                 ],
             ],
             [
+                "group" => "SW STS Logs",
+                "perms" => [
+                    [
+                        "type" => "List",
+                        "name" => "List SW STS Logs",
+                    ],
+                    [
+                        "type" => "View",
+                        "name" => "View SW STS Log",
+                    ],
+                    [
+                        "type" => "Add",
+                        "name" => "Add SW STS Log",
+                    ],
+                    [
+                        "type" => "Edit",
+                        "name" => "Edit SW STS Log",
+                    ],
+                    [
+                        "type" => "Delete",
+                        "name" => "Delete SW STS Log",
+                    ],
+                    [
+                        "type" => "History",
+                        "name" => "View SW STS Log History",
+                    ],
+                    [
+                        "type" => "Export",
+                        "name" => "Export SW STS Logs to CSV",
+                    ],
+                ],
+            ],
+            [
+                "group" => "SW Landfill Logs",
+                "perms" => [
+                    [
+                        "type" => "List",
+                        "name" => "List SW Landfill Logs",
+                    ],
+                    [
+                        "type" => "View",
+                        "name" => "View SW Landfill Log",
+                    ],
+                    [
+                        "type" => "Add",
+                        "name" => "Add SW Landfill Log",
+                    ],
+                    [
+                        "type" => "Edit",
+                        "name" => "Edit SW Landfill Log",
+                    ],
+                    [
+                        "type" => "Delete",
+                        "name" => "Delete SW Landfill Log",
+                    ],
+                    [
+                        "type" => "History",
+                        "name" => "View SW Landfill Log History",
+                    ],
+                    [
+                        "type" => "Export",
+                        "name" => "Export SW Landfill Logs to CSV",
+                    ],
+                ],
+            ],
+            [
+                "group" => "SW Waste Processing",
+                "perms" => [
+                    [
+                        "type" => "List",
+                        "name" => "List SW Waste Processing",
+                    ],
+                    [
+                        "type" => "View",
+                        "name" => "View SW Waste Processing",
+                    ],
+                    [
+                        "type" => "Add",
+                        "name" => "Add SW Waste Processing",
+                    ],
+                    [
+                        "type" => "Edit",
+                        "name" => "Edit SW Waste Processing",
+                    ],
+                    [
+                        "type" => "Delete",
+                        "name" => "Delete SW Waste Processing",
+                    ],
+                    [
+                        "type" => "History",
+                        "name" => "View SW Waste Processing History",
+                    ],
+                    [
+                        "type" => "Export",
+                        "name" => "Export SW Waste Processing to CSV",
+                    ],
+                ],
+            ],
+            [
                 "group" => "SW Dashboard and KPIs",
                 "perms" => [
                     [

@@ -61,6 +61,7 @@ class WasteTypeService
         }
 
         $wasteType->name = $data['name'] ?? null;
+        $wasteType->description = $data['description'] ?? null;
         $wasteType->save();
 
         return $wasteType->id;

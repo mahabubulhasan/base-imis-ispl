@@ -49,6 +49,9 @@ class MunicipalitySolidWasteManagementDepartmentSeeder extends Seeder
                         'SW Billing Status',
                         'SW Complaints',
                         'SW Attendance Logs',
+                        'SW STS Logs',
+                        'SW Landfill Logs',
+                        'SW Waste Processing',
                     ];
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', $swmServiceFacilityGroups));
 

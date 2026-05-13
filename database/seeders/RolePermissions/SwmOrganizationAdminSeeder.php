@@ -27,6 +27,8 @@ class SwmOrganizationAdminSeeder extends Seeder
                 ]));
                 $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['SW Service Provider Workers']));
                 $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['SW Attendance Logs']));
+                $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['SW STS Logs']));
+                $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['SW Landfill Logs', 'SW Waste Processing']));
                 $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['SW Service Provider Vehicles']));
                 $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['SW Service Provider Work Types', 'SW Service Provider Vehicle Types'])
                     ->whereIn('type', ['List', 'View']));

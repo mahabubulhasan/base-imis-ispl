@@ -52,6 +52,8 @@ class MunicipalityExecutiveSeeder extends Seeder
                     ->whereIn('type', ['List', 'Export']));
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['SW Dashboard and KPIs'])
                     ->whereIn('type', ['List']));
+                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['SW Landfill Logs', 'SW Waste Processing'])
+                    ->whereIn('type', ['List', 'View']));
 
                     //For Public Health Module
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Water Samples', 'Hotspots', 'Yearly Waterborne Cases'])->whereNotIn('type', ['Add', 'Edit', 'Delete', 'Import', 'History']));

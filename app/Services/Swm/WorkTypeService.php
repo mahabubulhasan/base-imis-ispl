@@ -60,6 +60,7 @@ class WorkTypeService
         }
 
         $workType->name = $data['name'] ?? null;
+        $workType->description = $data['description'] ?? null;
         $workType->save();
 
         return $workType->id;

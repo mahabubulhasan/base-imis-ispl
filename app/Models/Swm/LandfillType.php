@@ -19,5 +19,6 @@ class LandfillType extends Model
 
     protected $fillable = [
         'name',
+        'description',
     ];
 }

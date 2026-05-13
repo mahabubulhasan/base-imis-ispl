@@ -17,6 +17,11 @@ class WorkType extends Model
 
     protected $table = 'swm.work_types';
 
+    protected $fillable = [
+        'name',
+        'description',
+    ];
+
     public function workers()
     {
         return $this->hasMany(Worker::class, 'work_type_id', 'id');

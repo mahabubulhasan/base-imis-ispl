@@ -35,6 +35,11 @@ class VehicleTypeRequest extends FormRequest
                         'max:255',
                         Rule::unique('pgsql.swm.vehicle_types', 'name')->whereNull('deleted_at'),
                     ],
+                    'description' => [
+                        'nullable',
+                        'string',
+                        'max:1000',
+                    ],
                 ];
             case 'PUT':
             case 'PATCH':
@@ -44,6 +49,11 @@ class VehicleTypeRequest extends FormRequest
                         'string',
                         'max:255',
                         Rule::unique('pgsql.swm.vehicle_types', 'name')->whereNull('deleted_at')->ignore($id),
+                    ],
+                    'description' => [
+                        'nullable',
+                        'string',
+                        'max:1000',
                     ],
                 ];
             default:

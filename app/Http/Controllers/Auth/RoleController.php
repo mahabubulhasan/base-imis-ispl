@@ -222,6 +222,9 @@ class RoleController extends Controller
         $swm_billing_status = Permission::where('group', 'SW Billing Status')->orderBy('type')->get();
         $swm_complaints = Permission::where('group', 'SW Complaints')->orderBy('type')->get();
         $swm_attendance_logs = Permission::where('group', 'SW Attendance Logs')->orderBy('type')->get();
+        $swm_sts_logs = Permission::where('group', 'SW STS Logs')->orderBy('type')->get();
+        $swm_landfill_logs = Permission::where('group', 'SW Landfill Logs')->orderBy('type')->get();
+        $swm_waste_processing = Permission::where('group', 'SW Waste Processing')->orderBy('type')->get();
         $swm_dashboard_and_kpis = Permission::where('group', 'SW Dashboard and KPIs')->orderBy('type')->get();
         $swm_service_facility_landfills = Permission::where('group', 'SW Service Facility Landfills')->orderBy('type')->get();
         $swm_service_facility_sts = Permission::where('group', 'SW Service Facility STS')->orderBy('type')->get();
@@ -281,6 +284,9 @@ class RoleController extends Controller
             'SW Billing Status' => $swm_billing_status,
             'SW Complaints' => $swm_complaints,
             'SW Attendance Logs' => $swm_attendance_logs,
+            'SW STS Logs' => $swm_sts_logs,
+            'SW Landfill Logs' => $swm_landfill_logs,
+            'SW Waste Processing' => $swm_waste_processing,
             'SW Dashboard and KPIs' => $swm_dashboard_and_kpis,
             'SW Service Facility Landfills' => $swm_service_facility_landfills,
             'SW Service Facility STS' => $swm_service_facility_sts,

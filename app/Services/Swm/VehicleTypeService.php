@@ -61,6 +61,7 @@ class VehicleTypeService
         }
 
         $vehicleType->name = $data['name'] ?? null;
+        $vehicleType->description = $data['description'] ?? null;
         $vehicleType->save();
 
         return $vehicleType->id;

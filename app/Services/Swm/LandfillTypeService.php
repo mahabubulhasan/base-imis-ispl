@@ -61,6 +61,7 @@ class LandfillTypeService
         }
 
         $landfillType->name = $data['name'] ?? null;
+        $landfillType->description = $data['description'] ?? null;
         $landfillType->save();
 
         return $landfillType->id;

@@ -118,6 +118,9 @@ class MunicipalityITAdminSeeder extends Seeder
                         'SW Billing Status',
                         'SW Complaints',
                         'SW Attendance Logs',
+                        'SW STS Logs',
+                        'SW Landfill Logs',
+                        'SW Waste Processing',
                         'SW Dashboard and KPIs',
                     ])
                         ->whereIn('type', ['View', 'List', 'Export', 'History', 'Add', 'Edit', 'Delete', 'Import']));

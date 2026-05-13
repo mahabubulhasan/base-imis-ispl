@@ -17,6 +17,11 @@ class VehicleType extends Model
 
     protected $table = 'swm.vehicle_types';
 
+    protected $fillable = [
+        'name',
+        'description',
+    ];
+
     public function vehicles()
     {
         return $this->hasMany(Vehicle::class, 'vehicle_type_id', 'id');

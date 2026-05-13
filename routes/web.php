@@ -359,6 +359,57 @@ Route::group([
             'update' => 'swm.attendance-logs.update',
             'destroy' => 'swm.attendance-logs.destroy',
         ]);
+
+        Route::get('sts-logs/data', 'StsLogController@getData')->name('swm.sts-logs.data');
+        Route::get('sts-logs/export', 'StsLogController@export')->name('swm.sts-logs.export');
+        Route::get('sts-logs/suggestions/vehicles', 'StsLogController@suggestionsVehicles')->name('swm.sts-logs.suggestions.vehicles');
+        Route::get('sts-logs/vehicle-context', 'StsLogController@vehicleContext')->name('swm.sts-logs.vehicle-context');
+        Route::get('sts-logs/sts-context', 'StsLogController@stsContext')->name('swm.sts-logs.sts-context');
+        Route::get('sts-logs/{sts_log}/history', 'StsLogController@history')->name('swm.sts-logs.history');
+        Route::resource('sts-logs', 'StsLogController')->parameters([
+            'sts-logs' => 'sts_log',
+        ])->names([
+            'index' => 'swm.sts-logs.index',
+            'create' => 'swm.sts-logs.create',
+            'store' => 'swm.sts-logs.store',
+            'show' => 'swm.sts-logs.show',
+            'edit' => 'swm.sts-logs.edit',
+            'update' => 'swm.sts-logs.update',
+            'destroy' => 'swm.sts-logs.destroy',
+        ]);
+
+        Route::get('landfill-logs/data', 'LandfillLogController@getData')->name('swm.landfill-logs.data');
+        Route::get('landfill-logs/export', 'LandfillLogController@export')->name('swm.landfill-logs.export');
+        Route::get('landfill-logs/suggestions/vehicles', 'LandfillLogController@suggestionsVehicles')->name('swm.landfill-logs.suggestions.vehicles');
+        Route::get('landfill-logs/vehicle-context', 'LandfillLogController@vehicleContext')->name('swm.landfill-logs.vehicle-context');
+        Route::get('landfill-logs/landfill-context', 'LandfillLogController@landfillContext')->name('swm.landfill-logs.landfill-context');
+        Route::get('landfill-logs/{landfill_log}/history', 'LandfillLogController@history')->name('swm.landfill-logs.history');
+        Route::resource('landfill-logs', 'LandfillLogController')->parameters([
+            'landfill-logs' => 'landfill_log',
+        ])->names([
+            'index' => 'swm.landfill-logs.index',
+            'create' => 'swm.landfill-logs.create',
+            'store' => 'swm.landfill-logs.store',
+            'show' => 'swm.landfill-logs.show',
+            'edit' => 'swm.landfill-logs.edit',
+            'update' => 'swm.landfill-logs.update',
+            'destroy' => 'swm.landfill-logs.destroy',
+        ]);
+
+        Route::get('waste-processing/data', 'WasteProcessingController@getData')->name('swm.waste-processing.data');
+        Route::get('waste-processing/export', 'WasteProcessingController@export')->name('swm.waste-processing.export');
+        Route::get('waste-processing/{waste_processing}/history', 'WasteProcessingController@history')->name('swm.waste-processing.history');
+        Route::resource('waste-processing', 'WasteProcessingController')->parameters([
+            'waste-processing' => 'waste_processing',
+        ])->names([
+            'index' => 'swm.waste-processing.index',
+            'create' => 'swm.waste-processing.create',
+            'store' => 'swm.waste-processing.store',
+            'show' => 'swm.waste-processing.show',
+            'edit' => 'swm.waste-processing.edit',
+            'update' => 'swm.waste-processing.update',
+            'destroy' => 'swm.waste-processing.destroy',
+        ]);
     });
 
     Route::prefix('service-facilities')->group(function () {
