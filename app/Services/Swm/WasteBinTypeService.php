@@ -60,6 +60,7 @@ class WasteBinTypeService
         }
 
         $wasteBinType->name = $data['name'] ?? null;
+        $wasteBinType->description = $data['description'] ?? null;
         $wasteBinType->save();
 
         return $wasteBinType->id;

@@ -54,6 +54,7 @@
             <thead>
                 <tr>
                 <th>{{ __('Landfill Type Name') }}</th>
+                <th>{{ __('Description') }}</th>
                 <th>{{ __('Actions') }}</th>
                 </tr>
             </thead>
@@ -80,6 +81,12 @@ $(function() {
         columns: [{
                 data: 'name',
                 name: 'name'
+            },
+            {
+                data: 'description',
+                name: 'description',
+                defaultContent: '',
+                orderable: false
             },
             {
                 data: 'action',
