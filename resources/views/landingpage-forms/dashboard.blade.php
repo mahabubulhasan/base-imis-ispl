@@ -1,4 +1,4 @@
-<!-- Last Modified: 2026-04-26
+<!-- Last Modified: 2026-05-13
 // Developed By: Streams Tech Ltd.
 // Description: Public dashboard with infographic card layout for municipal data visualization, including CWIS equity and safety metrics. -->
 
@@ -15,20 +15,20 @@
     ];
 
     $cwisSafetyCards = [
-        ['key' => 'sf1a', 'code' => 'SF-1a', 'label' => 'Population with access to safe individual toilets', 'icon' => 'shield'],
+        ['key' => 'sf1a', 'code' => 'SF-1a', 'label' => 'Percentage of population with access to safe, private, individual toilets/latrines', 'icon' => 'shield'],
         ['key' => 'sf1b', 'code' => 'SF-1b', 'label' => 'Percentage of on-site sanitation that have been desludged', 'icon' => 'shield'],
         ['key' => 'sf1c', 'code' => 'SF-1c', 'label' => 'Percentage of collected FS disposed at a treatment plant or at designated disposal site', 'icon' => 'shield'],
         ['key' => 'sf1d', 'code' => 'SF-1d', 'label' => 'FS treatment capacity as a percentage of total FS generated from NSS connections (excluding safely disposed in situ)', 'icon' => 'shield'],
         ['key' => 'sf1e', 'code' => 'SF-1e', 'label' => 'FS treatment capacity as a percentage of total FS collected from NSS connections', 'icon' => 'shield'],
         ['key' => 'sf1f', 'code' => 'SF-1f', 'label' => 'Wastewater treatment capacity as a percentage of total wastewater generated from sewered connections and greywater generated from non-sewered connections', 'icon' => 'shield'],
-        ['key' => 'sf1g', 'code' => 'SF-1g', 'label' => 'Percentage of wastewater flow from sewered households that is safely treated', 'icon' => 'shield'],
+        ['key' => 'sf1g', 'code' => 'SF-1g', 'label' => 'Effectiveness of FS/WW treatment in meeting prescribed standards for effluent discharge and biosolids disposal', 'icon' => 'shield'],
         ['key' => 'sf2a', 'code' => 'SF-2a', 'label' => 'Percentage LIC population with access to safe individual toilets', 'icon' => 'shield'],
         ['key' => 'sf2b', 'code' => 'SF-2b', 'label' => 'Percentage of LIC, NSS, IHHLs that have been desludged', 'icon' => 'shield'],
         ['key' => 'sf2c', 'code' => 'SF-2c', 'label' => 'Percentage of collected FS (collected from LIC) disposed at treatment plant or designated disposal sites', 'icon' => 'shield'],
         ['key' => 'sf3', 'code' => 'SF-3', 'label' => 'Percentage of dependent population (those without access to a private toilet/latrine) with access to safe shared facilities (CT/PT)', 'icon' => 'shield'],
         ['key' => 'sf3b', 'code' => 'SF-3b', 'label' => 'Percentage of CTs that adhere to principles of universal design', 'icon' => 'shield'],
         ['key' => 'sf3c', 'code' => 'SF-3c', 'label' => 'Percentage of users of CTs that are women', 'icon' => 'shield'],
-        ['key' => 'sf3e', 'code' => 'SF-3e', 'label' => 'Percentage of PTs where handwashing stations are functional with soap and water available', 'icon' => 'shield'],
+        ['key' => 'sf3e', 'code' => 'SF-3e', 'label' => 'Average distance from the house to the closest CT (in meters)', 'icon' => 'shield'],
         ['key' => 'sf4a', 'code' => 'SF-4a', 'label' => 'Percentage of PTs where FS and WW generated is safely transported to TP or safely disposed in situ', 'icon' => 'shield'],
         ['key' => 'sf4b', 'code' => 'SF-4b', 'label' => 'Percentage of PTs that adhere to principles of universal design', 'icon' => 'shield'],
         ['key' => 'sf4d', 'code' => 'SF-4d', 'label' => 'Percentage of users of PTs that are women', 'icon' => 'shield'],
@@ -196,6 +196,9 @@
                 <h4 class="text-lg font-extrabold text-slate-800 mb-4">Safety</h4>
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                     @foreach ($cwisSafetyCards as $card)
+                        @php
+                            $safetyUnit = \Illuminate\Support\Str::contains(\Illuminate\Support\Str::lower($card['label']), 'percentage') ? 'percent' : 'number';
+                        @endphp
                         <div class="infographic-card relative overflow-hidden bg-white p-6 rounded-xl border border-slate-300 shadow-sm h-full">
                             <div class="absolute inset-x-0 top-0 h-1 bg-cyan-600/75"></div>
                             <div class="flex items-start justify-between gap-4">
@@ -205,7 +208,7 @@
                                 </div>
                                 <span class="material-icons-round stat-icon text-cyan-600">{{ $card['icon'] }}</span>
                             </div>
-                            <h4 class="mt-8 text-3xl font-black text-slate-900 leading-none" data-cwis-group="safety" data-cwis-value="{{ $card['key'] }}" data-cwis-unit="percent">-</h4>
+                            <h4 class="mt-8 text-3xl font-black text-slate-900 leading-none" data-cwis-group="safety" data-cwis-value="{{ $card['key'] }}" data-cwis-unit="{{ $safetyUnit }}">-</h4>
                         </div>
                     @endforeach
                 </div>
