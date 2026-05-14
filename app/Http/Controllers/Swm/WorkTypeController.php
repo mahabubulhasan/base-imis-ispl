@@ -27,7 +27,7 @@ class WorkTypeController extends Controller
 
     public function index()
     {
-        $page_title = __('SW Work Types');
+        $page_title = __('Worker Types');
 
         return view('swm.service-providers.work-types.index', compact('page_title'));
     }
@@ -39,7 +39,7 @@ class WorkTypeController extends Controller
 
     public function create()
     {
-        $page_title = __('Add SW Work Type');
+        $page_title = __('Add Worker Type');
         $workType = null;
 
         return view('swm.service-providers.work-types.create', compact('page_title', 'workType'));
@@ -56,7 +56,7 @@ class WorkTypeController extends Controller
     {
         $workType = WorkType::find($id);
         if ($workType) {
-            $page_title = __('SW Work Type Details');
+            $page_title = __('Worker Type Details');
 
             return view('swm.service-providers.work-types.show', compact('page_title', 'workType'));
         }
@@ -68,7 +68,7 @@ class WorkTypeController extends Controller
     {
         $workType = WorkType::find($id);
         if ($workType) {
-            $page_title = __('Edit SW Work Type');
+            $page_title = __('Edit Worker Type');
 
             return view('swm.service-providers.work-types.edit', compact('page_title', 'workType'));
         }
@@ -107,7 +107,7 @@ class WorkTypeController extends Controller
     {
         $workType = WorkType::find($id);
         if ($workType) {
-            $page_title = __('SW Work Type History');
+            $page_title = __('Worker Type History');
 
             return view('swm.service-providers.work-types.history', compact('page_title', 'workType'));
         }

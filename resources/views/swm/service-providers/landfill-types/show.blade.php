@@ -8,7 +8,7 @@
 	<div class="form-horizontal">
 		<div class="card-body">
 		<div class="form-group row">
-    {!! Form::label('name', __('Landfill Type Name'), ['class' => 'col-sm-3 control-label']) !!}
+    {!! Form::label('name', __('Landfill Type'), ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-3">
         {!! Form::label(null, $landfillType->name, ['class' => 'form-control']) !!}
     </div>

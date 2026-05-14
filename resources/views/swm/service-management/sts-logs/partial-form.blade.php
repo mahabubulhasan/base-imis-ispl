@@ -19,7 +19,30 @@
     }
     $opDateVal = old('operation_date', $isEdit && $stsLog->operation_date ? $stsLog->operation_date->format('Y-m-d') : \Carbon\Carbon::now()->format('Y-m-d'));
     $statusVal = old('operation_status', $isEdit ? $stsLog->operation_status : \App\Models\Swm\StsLog::STATUS_PENDING);
-    $wasteTypeFieldVal = old('waste_type_id', $isEdit ? $stsLog->waste_type_id : null);
+    $wasteTypeIdsOld = old('waste_type_ids');
+    if (is_array($wasteTypeIdsOld)) {
+        $wasteTypeIdsForField = array_values(array_unique(array_filter(
+            array_map(static fn ($v) => (int) $v, $wasteTypeIdsOld),
+            static fn ($v) => $v > 0
+        )));
+    } elseif ($isEdit) {
+        $wasteTypeIdsForField = is_array($stsLog->waste_type_ids) && count($stsLog->waste_type_ids)
+            ? $stsLog->waste_type_ids
+            : ($stsLog->waste_type_id ? [$stsLog->waste_type_id] : []);
+    } else {
+        $wasteTypeIdsForField = [];
+    }
+    $initialWasteForJs = [];
+    if (count($wasteTypeIdsForField)) {
+        $initialWasteForJs = \App\Models\Swm\WasteType::query()
+            ->whereIn('id', $wasteTypeIdsForField)
+            ->whereNull('deleted_at')
+            ->orderBy('name')
+            ->get()
+            ->map(fn ($w) => ['id' => (string) $w->id, 'text' => $w->name])
+            ->values()
+            ->all();
+    }
     $wardsArr = old('source_wards', $isEdit && is_array($stsLog->source_wards) ? $stsLog->source_wards : []);
     $wardsArr = array_values(array_unique(array_filter(
         array_map(static fn ($v) => is_scalar($v) ? (string) $v : null, (array) $wardsArr),
@@ -75,14 +98,14 @@
     <div class="form-group row">
         {!! Form::label('sts_id', __('STS Name'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-9">
-            {!! Form::select('sts_id', ['' => __('Select STS')] + $stsList, old('sts_id', $isEdit ? $stsLog->sts_id : null), ['class' => 'form-control chosen-select', 'id' => 'sts_id']) !!}
+            {!! Form::select('sts_id', ['' => __('Select STS')] + $stsList, old('sts_id', $isEdit ? $stsLog->sts_id : null), ['class' => 'form-control swm-sts-select2', 'id' => 'sts_id', 'style' => 'width:100%', 'data-placeholder' => __('Search or select STS')]) !!}
         </div>
     </div>
 
     <div class="form-group row">
-        {!! Form::label('waste_type_id', __('Waste Type'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('waste_type_ids', __('Waste Types'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-9">
-            {!! Form::select('waste_type_id', ['' => __('Select Waste Type')] + $wasteTypeList, $wasteTypeFieldVal, ['class' => 'form-control chosen-select', 'id' => 'waste_type_id']) !!}
+            <select name="waste_type_ids[]" id="waste_type_ids" class="form-control" multiple style="width:100%" data-placeholder="{{ __('Search or select waste types') }}"></select>
         </div>
     </div>
 
@@ -126,11 +149,14 @@
 <script>
 $(function () {
     var vehiclesUrl = @json(route('swm.sts-logs.suggestions.vehicles'));
+    var wasteTypesUrl = @json(route('swm.sts-logs.suggestions.waste-types'));
     var vehicleContextUrl = @json(route('swm.sts-logs.vehicle-context'));
     var stsContextUrl = @json(route('swm.sts-logs.sts-context'));
     var csrf = @json(csrf_token());
     var initialVehicleId = @json($vehicleFieldVal ? (string) $vehicleFieldVal : null);
     var initialVehicleText = @json($isEdit && isset($stsLog) && $stsLog->vehicle ? ($stsLog->vehicle->vehicle_number ?: '') : null);
+    var initialWasteForJs = @json($initialWasteForJs);
+    var stsSkipContextOneShot = false;
 
     function setWardsFromArray(arr) {
         var clean = Array.isArray(arr) ? arr.map(function (v) { return String(v).trim(); }).filter(function (v) { return v.length > 0; }) : [];
@@ -156,26 +182,104 @@ $(function () {
 
     initSourceWardsSelect2();
 
+    function initStsSelect2() {
+        var $s = $('#sts_id');
+        if (!$s.length || !$.fn.select2) {
+            return;
+        }
+        if ($s.data('chosen')) {
+            try {
+                $s.chosen('destroy');
+            } catch (e) { /* ignore */ }
+        }
+        if ($s.data('select2')) {
+            $s.select2('destroy');
+        }
+        $s.select2({
+            width: '100%',
+            placeholder: $s.data('placeholder') || @json(__('Search or select STS')),
+            allowClear: true
+        });
+    }
+
+    initStsSelect2();
+
+    function destroyWasteTypesSelect2() {
+        var $wt = $('#waste_type_ids');
+        if ($wt.length && $wt.data('select2')) {
+            $wt.select2('destroy');
+        }
+    }
+
+    function initWasteTypesSelect2() {
+        var $wt = $('#waste_type_ids');
+        if (!$wt.length || !$.fn.select2) {
+            return;
+        }
+        destroyWasteTypesSelect2();
+        (initialWasteForJs || []).forEach(function (p) {
+            $wt.append(new Option(p.text, p.id, true, true));
+        });
+        $wt.select2({
+            placeholder: $wt.data('placeholder') || @json(__('Search or select waste types')),
+            allowClear: true,
+            width: '100%',
+            multiple: true,
+            closeOnSelect: false,
+            minimumInputLength: 0,
+            ajax: {
+                url: wasteTypesUrl,
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { q: params.term || '' };
+                },
+                processResults: function (data) {
+                    return { results: data.results || [] };
+                },
+                headers: { 'X-CSRF-TOKEN': csrf }
+            }
+        });
+    }
+
+    initWasteTypesSelect2();
+
+    function setWasteTypesFromContext(data) {
+        var $wt = $('#waste_type_ids');
+        if (!$wt.length) {
+            return;
+        }
+        var ids = [];
+        if (data && Array.isArray(data.waste_type_ids)) {
+            ids = data.waste_type_ids.map(function (x) { return String(x); });
+        } else if (data && data.waste_type_id != null && data.waste_type_id !== '') {
+            ids = [String(data.waste_type_id)];
+        }
+        var pairs = data && Array.isArray(data.waste_types) ? data.waste_types : [];
+        function optionExists(val) {
+            return $wt.find('option').filter(function () { return String(this.value) === String(val); }).length > 0;
+        }
+        pairs.forEach(function (p) {
+            var id = String(p.id);
+            if (!optionExists(id)) {
+                $wt.append(new Option(p.name, id, false, false));
+            }
+        });
+        ids.forEach(function (id) {
+            if (!optionExists(id)) {
+                $wt.append(new Option(id, id, false, false));
+            }
+        });
+        if ($wt.data('select2')) {
+            $wt.val(ids.length ? ids : null).trigger('change');
+        }
+    }
+
     function destroyVehicleSelect2() {
         var $v = $('#vehicle_id');
         if ($v.data('select2')) {
             $v.select2('destroy');
         }
-    }
-
-    function setWasteTypeFromContext(wasteTypeId) {
-        var $wt = $('#waste_type_id');
-        if (wasteTypeId != null && wasteTypeId !== '') {
-            var sid = String(wasteTypeId);
-            if ($wt.find('option[value="' + sid + '"]').length) {
-                $wt.val(sid);
-            } else {
-                $wt.val('');
-            }
-        } else {
-            $wt.val('');
-        }
-        $wt.trigger('chosen:updated');
     }
 
     function applyVehicleContext(data) {
@@ -188,9 +292,9 @@ $(function () {
             $('#quantity_ton').val(data.capacity);
         }
         if (data.sts_id) {
-            $('#sts_id').val(String(data.sts_id)).trigger('chosen:updated').trigger('change.skip-context');
+            stsSkipContextOneShot = true;
+            $('#sts_id').val(String(data.sts_id)).trigger('change');
         }
-        setWasteTypeFromContext(data.waste_type_id);
         if (Array.isArray(data.source_wards)) {
             setWardsFromArray(data.source_wards);
         }
@@ -213,7 +317,7 @@ $(function () {
         });
     }
 
-    function fetchStsContext(skipIfTriggeredBySelect) {
+    function fetchStsContext() {
         var sid = $('#sts_id').val();
         if (!sid) {
             return;
@@ -227,7 +331,7 @@ $(function () {
             if (!data || data.error) {
                 return;
             }
-            setWasteTypeFromContext(data.waste_type_id);
+            setWasteTypesFromContext(data);
             if (Array.isArray(data.source_wards)) {
                 setWardsFromArray(data.source_wards);
             }
@@ -279,8 +383,14 @@ $(function () {
         fetchVehicleContext();
     });
 
-    $('#sts_id').on('change', function (e) {
-        if (e.namespace === 'skip-context') {
+    $('#sts_id').on('change', function () {
+        if (stsSkipContextOneShot) {
+            stsSkipContextOneShot = false;
+            return;
+        }
+        var sid = $('#sts_id').val();
+        if (!sid) {
+            setWasteTypesFromContext({ waste_type_ids: [], waste_types: [] });
             return;
         }
         fetchStsContext();

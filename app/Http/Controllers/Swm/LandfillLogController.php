@@ -31,7 +31,7 @@ class LandfillLogController extends Controller
             }
 
             return $next($request);
-        })->only(['suggestionsVehicles', 'vehicleContext', 'landfillContext']);
+        })->only(['suggestionsVehicles', 'suggestionsWasteTypes', 'vehicleContext', 'landfillContext']);
         $this->middleware('permission:Delete SW Landfill Log', ['only' => ['destroy']]);
         $this->middleware('permission:Export SW Landfill Logs to CSV', ['only' => ['export']]);
         $this->middleware('permission:View SW Landfill Log History', ['only' => ['history']]);
@@ -40,15 +40,6 @@ class LandfillLogController extends Controller
     protected function landfillOptionsForForms(): array
     {
         return Landfill::query()
-            ->whereNull('deleted_at')
-            ->orderBy('name')
-            ->pluck('name', 'id')
-            ->all();
-    }
-
-    protected function wasteTypeOptionsForForms(): array
-    {
-        return WasteType::query()
             ->whereNull('deleted_at')
             ->orderBy('name')
             ->pluck('name', 'id')
@@ -71,7 +62,7 @@ class LandfillLogController extends Controller
 
     public function index()
     {
-        $page_title = __('Landfill Daily Tracking');
+        $page_title = __('Landfill Loading');
         $statusOptions = LandfillLog::statusOptions();
         $landfillList = $this->landfillOptionsForForms();
 
@@ -89,11 +80,10 @@ class LandfillLogController extends Controller
 
     public function create()
     {
-        $page_title = __('Add Landfill Log');
+        $page_title = __('Add Landfill Loading');
         $landfillLog = null;
         $statusOptions = LandfillLog::statusOptions();
         $landfillList = $this->landfillOptionsForForms();
-        $wasteTypeList = $this->wasteTypeOptionsForForms();
         $stsList = $this->stsOptionsForForms();
         $wardOptions = $this->wardOptionsForForms();
 
@@ -102,7 +92,6 @@ class LandfillLogController extends Controller
             'landfillLog',
             'statusOptions',
             'landfillList',
-            'wasteTypeList',
             'stsList',
             'wardOptions'
         ));
@@ -120,7 +109,7 @@ class LandfillLogController extends Controller
 
     public function show(LandfillLog $landfill_log)
     {
-        $page_title = __('Landfill Log Details');
+        $page_title = __('Landfill Loading Details');
         $landfillLog = $landfill_log->load(['vehicle', 'vehicleType', 'driver', 'landfill', 'wasteType']);
 
         return view('swm.service-management.landfill-logs.show', compact('page_title', 'landfillLog'));
@@ -128,11 +117,10 @@ class LandfillLogController extends Controller
 
     public function edit(LandfillLog $landfill_log)
     {
-        $page_title = __('Edit Landfill Log');
+        $page_title = __('Edit Landfill Loading');
         $landfillLog = $landfill_log->load(['vehicle', 'vehicleType', 'driver', 'landfill', 'wasteType']);
         $statusOptions = LandfillLog::statusOptions();
         $landfillList = $this->landfillOptionsForForms();
-        $wasteTypeList = $this->wasteTypeOptionsForForms();
         $stsList = $this->stsOptionsForForms();
         $wardOptions = $this->wardOptionsForForms();
 
@@ -141,7 +129,6 @@ class LandfillLogController extends Controller
             'landfillLog',
             'statusOptions',
             'landfillList',
-            'wasteTypeList',
             'stsList',
             'wardOptions'
         ));
@@ -166,7 +153,7 @@ class LandfillLogController extends Controller
 
     public function history(LandfillLog $landfill_log)
     {
-        $page_title = __('Landfill Log History');
+        $page_title = __('Landfill Loading History');
         $landfillLog = $landfill_log;
 
         return view('swm.service-management.landfill-logs.history', compact('page_title', 'landfillLog'));
@@ -203,6 +190,34 @@ class LandfillLogController extends Controller
             $results[] = [
                 'id' => (string) $v->id,
                 'text' => ($v->vehicle_number ?: '').$suffix,
+            ];
+        }
+
+        return response()->json(['results' => $results]);
+    }
+
+    public function suggestionsWasteTypes(Request $request)
+    {
+        $validated = $request->validate([
+            'q' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $term = trim((string) ($validated['q'] ?? ''));
+
+        $query = WasteType::query()
+            ->whereNull('deleted_at');
+
+        if ($term !== '') {
+            $query->where('name', 'ILIKE', '%'.$term.'%');
+        }
+
+        $types = $query->orderBy('name')->limit(50)->get(['id', 'name']);
+
+        $results = [];
+        foreach ($types as $w) {
+            $results[] = [
+                'id' => (string) $w->id,
+                'text' => $w->name,
             ];
         }
 
@@ -250,21 +265,14 @@ class LandfillLogController extends Controller
             return response()->json(['error' => __('Landfill not found.')], 404);
         }
 
-        $wasteType = null;
-        $wasteTypeId = null;
         $wasteTypes = $landfill->wasteTypes();
-        if ($wasteTypes->count() > 0) {
-            $first = $wasteTypes->first();
-            $wasteType = $first?->name;
-            $wasteTypeId = $first?->id;
-        }
 
         $sourceSts = $landfill->sourceSts()->map(fn ($sts) => ['id' => $sts->id, 'name' => $sts->name])->values()->all();
 
         return response()->json([
             'landfill_name' => $landfill->name,
-            'waste_type_id' => $wasteTypeId,
-            'waste_type_name' => $wasteType ?? '',
+            'waste_type_ids' => $wasteTypes->pluck('id')->values()->all(),
+            'waste_types' => $wasteTypes->map(fn ($t) => ['id' => $t->id, 'name' => $t->name])->values()->all(),
             'source_sts_ids' => is_array($landfill->source_sts_ids) ? $landfill->source_sts_ids : [],
             'source_sts' => $sourceSts,
             'source_wards' => is_array($landfill->source_wards) ? $landfill->source_wards : [],

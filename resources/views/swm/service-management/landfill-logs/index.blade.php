@@ -13,7 +13,7 @@
 <div class="card app-mobile-index">
     <div class="card-header">
         @can('Add SW Landfill Log')
-        <a href="{{ route('swm.landfill-logs.create') }}" class="btn btn-info">{{ __('Add Landfill Log') }}</a>
+        <a href="{{ route('swm.landfill-logs.create') }}" class="btn btn-info">{{ __('Add Landfill Loading') }}</a>
         @endcan
         @can('Export SW Landfill Logs to CSV')
         <a href="#" id="export" class="btn btn-info">{{ __('Export to CSV') }}</a>
@@ -66,7 +66,7 @@
             <table id="data-table" class="table table-bordered table-striped" width="100%">
                 <thead>
                     <tr>
-                        <th>{{ __('Landfill Log ID') }}</th>
+                        <th>{{ __('Landfill Loading ID') }}</th>
                         <th>{{ __('Entry Date and Time') }}</th>
                         <th>{{ __('Operation Date') }}</th>
                         <th>{{ __('Vehicle Number') }}</th>

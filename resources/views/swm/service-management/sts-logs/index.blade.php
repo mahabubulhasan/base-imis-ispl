@@ -13,7 +13,7 @@
 <div class="card app-mobile-index">
     <div class="card-header">
         @can('Add SW STS Log')
-        <a href="{{ route('swm.sts-logs.create') }}" class="btn btn-info">{{ __('Add STS Log') }}</a>
+        <a href="{{ route('swm.sts-logs.create') }}" class="btn btn-info">{{ __('Add STS Loading') }}</a>
         @endcan
         @can('Export SW STS Logs to CSV')
         <a href="#" id="export" class="btn btn-info">{{ __('Export to CSV') }}</a>
@@ -66,7 +66,7 @@
             <table id="data-table" class="table table-bordered table-striped" width="100%">
                 <thead>
                     <tr>
-                        <th>{{ __('STS Log ID') }}</th>
+                        <th>{{ __('STS Loading ID') }}</th>
                         <th>{{ __('Entry Date and Time') }}</th>
                         <th>{{ __('Operation Date') }}</th>
                         <th>{{ __('Vehicle Number') }}</th>

@@ -53,7 +53,7 @@
         <table id="data-table" class="table table-bordered table-striped" width="100%">
             <thead>
                 <tr>
-                <th>{{ __('Waste Bin Type Name') }}</th>
+                <th>{{ __('Waste Bin Type') }}</th>
                 <th>{{ __('Description') }}</th>
                 <th>{{ __('Actions') }}</th>
                 </tr>

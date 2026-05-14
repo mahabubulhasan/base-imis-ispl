@@ -595,7 +595,7 @@
                             <li class="nav-item">
                                 <a href="{{ route('swm.sts-logs.index') }}" class="nav-link {{ request()->is('swm/service-management/sts-logs', 'swm/service-management/sts-logs/*') ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>{{__('STSs')}}</p>
+                                    <p>{{__('STS Loading')}}</p>
                                 </a>
                             </li>
                             @endcan
@@ -603,7 +603,7 @@
                             <li class="nav-item">
                                 <a href="{{ route('swm.landfill-logs.index') }}" class="nav-link {{ request()->is('swm/service-management/landfill-logs', 'swm/service-management/landfill-logs/*') ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>{{__('Landfills')}}</p>
+                                    <p>{{__('Landfill Loading')}}</p>
                                 </a>
                             </li>
                             @endcan

@@ -42,7 +42,21 @@
             </div>
             <div class="form-group row">
                 <span class="col-sm-3 control-label">{{ __('Waste Type') }}</span>
-                <div class="col-sm-9"><p class="form-control-plaintext mb-0">{{ $stsLog->waste_type_name ?: ($stsLog->wasteType?->name ?: '—') }}</p></div>
+                <div class="col-sm-9">
+                    <p class="form-control-plaintext mb-0">
+                        @php
+                            $stsWasteTypes = $stsLog->wasteTypes();
+                            $wasteShow = $stsLog->waste_type_name;
+                            if (! $wasteShow && $stsWasteTypes->isNotEmpty()) {
+                                $wasteShow = $stsWasteTypes->pluck('name')->implode(', ');
+                            }
+                            if (! $wasteShow) {
+                                $wasteShow = $stsLog->wasteType?->name;
+                            }
+                        @endphp
+                        {{ $wasteShow ?: '—' }}
+                    </p>
+                </div>
             </div>
             <div class="form-group row">
                 <span class="col-sm-3 control-label">{{ __('Quantity (Ton)') }}</span>

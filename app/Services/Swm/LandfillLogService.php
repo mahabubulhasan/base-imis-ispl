@@ -40,7 +40,7 @@ class LandfillLogService
                 return $model->landfill_name ?: ($model->landfill?->name ?? '');
             })
             ->addColumn('waste_type_label', function (LandfillLog $model) {
-                return $model->waste_type_name ?: ($model->wasteType?->name ?? '');
+                return $this->wasteTypesDisplayLabel($model);
             })
             ->addColumn('source_sts_label', function (LandfillLog $model) {
                 if (! is_array($model->source_sts_ids) || empty($model->source_sts_ids)) {
@@ -154,27 +154,30 @@ class LandfillLogService
                 $log->landfill_id = (int) $data['landfill_id'];
                 $landfill = Landfill::query()->whereNull('deleted_at')->find((int) $data['landfill_id']);
                 $log->landfill_name = ! empty($data['landfill_name']) ? $data['landfill_name'] : ($landfill?->name);
-                if (empty($data['waste_type_id']) && $landfill) {
-                    $first = $landfill->wasteTypes()->first();
-                    if ($first) {
-                        $log->waste_type_id = $first->id;
-                    }
-                }
             } else {
                 $log->landfill_id = $vehicle->dumping_landfill_id;
                 $log->landfill_name = ! empty($data['landfill_name']) ? $data['landfill_name'] : ($vehicle->dumpingLandfill?->name);
+                $landfill = $log->landfill_id
+                    ? Landfill::query()->whereNull('deleted_at')->find((int) $log->landfill_id)
+                    : null;
             }
 
-            if (! empty($data['waste_type_id'])) {
-                $log->waste_type_id = (int) $data['waste_type_id'];
+            $wtIds = array_values(array_unique(array_filter(
+                array_map(static fn ($v) => (int) $v, $data['waste_type_ids'] ?? []),
+                static fn ($v) => $v > 0
+            )));
+
+            if (empty($wtIds) && $landfill) {
+                $fromLf = $landfill->waste_type_ids ?? [];
+                if (is_array($fromLf)) {
+                    $wtIds = array_values(array_unique(array_filter(
+                        array_map(static fn ($v) => (int) $v, $fromLf),
+                        static fn ($v) => $v > 0
+                    )));
+                }
             }
-            if (! empty($data['waste_type_name'])) {
-                $log->waste_type_name = $data['waste_type_name'];
-            } elseif ($log->waste_type_id) {
-                $log->waste_type_name = WasteType::query()->whereKey($log->waste_type_id)->value('name');
-            } else {
-                $log->waste_type_name = null;
-            }
+
+            $this->applyWasteTypeIdsToLandfillLog($log, $wtIds);
 
             $log->save();
         });
@@ -237,7 +240,7 @@ class LandfillLogService
                     $row->vehicle_type_name,
                     $row->driver_name,
                     $row->landfill_name ?: $row->landfill?->name,
-                    $row->waste_type_name ?: $row->wasteType?->name,
+                    $this->wasteTypesDisplayLabel($row),
                     $row->quantity_ton,
                     $row->weighbridge_weight_ton,
                     $effective,
@@ -250,6 +253,48 @@ class LandfillLogService
         });
 
         $writer->close();
+    }
+
+    protected function wasteTypesDisplayLabel(LandfillLog $model): string
+    {
+        if (! empty($model->waste_type_name)) {
+            return $model->waste_type_name;
+        }
+        $ids = $model->waste_type_ids ?? [];
+        if (! empty($ids)) {
+            return WasteType::query()
+                ->whereIn('id', $ids)
+                ->whereNull('deleted_at')
+                ->orderBy('name')
+                ->pluck('name')
+                ->implode(', ');
+        }
+
+        return $model->wasteType?->name ?? '';
+    }
+
+    /**
+     * @param  array<int>  $candidateIds
+     */
+    protected function applyWasteTypeIdsToLandfillLog(LandfillLog $log, array $candidateIds): void
+    {
+        $types = WasteType::query()
+            ->whereIn('id', $candidateIds)
+            ->whereNull('deleted_at')
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        if ($types->isEmpty()) {
+            $log->waste_type_ids = null;
+            $log->waste_type_id = null;
+            $log->waste_type_name = null;
+
+            return;
+        }
+
+        $log->waste_type_ids = $types->pluck('id')->values()->all();
+        $log->waste_type_id = $types->first()->id;
+        $log->waste_type_name = $types->pluck('name')->implode(', ');
     }
 
     protected function applyFilters($query, array $data): void

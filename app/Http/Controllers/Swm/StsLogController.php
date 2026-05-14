@@ -30,7 +30,7 @@ class StsLogController extends Controller
             }
 
             return $next($request);
-        })->only(['suggestionsVehicles', 'vehicleContext', 'stsContext']);
+        })->only(['suggestionsVehicles', 'suggestionsWasteTypes', 'vehicleContext', 'stsContext']);
         $this->middleware('permission:Delete SW STS Log', ['only' => ['destroy']]);
         $this->middleware('permission:Export SW STS Logs to CSV', ['only' => ['export']]);
         $this->middleware('permission:View SW STS Log History', ['only' => ['history']]);
@@ -45,15 +45,6 @@ class StsLogController extends Controller
             ->all();
     }
 
-    protected function wasteTypeOptionsForForms(): array
-    {
-        return WasteType::query()
-            ->whereNull('deleted_at')
-            ->orderBy('name')
-            ->pluck('name', 'id')
-            ->all();
-    }
-
     protected function wardOptionsForForms(): array
     {
         return Ward::getInAscOrder();
@@ -61,7 +52,7 @@ class StsLogController extends Controller
 
     public function index()
     {
-        $page_title = __('STS Daily Tracking');
+        $page_title = __('STS Loading');
         $statusOptions = StsLog::statusOptions();
         $stsList = $this->stsOptionsForForms();
 
@@ -79,11 +70,10 @@ class StsLogController extends Controller
 
     public function create()
     {
-        $page_title = __('Add STS Log');
+        $page_title = __('Add STS Loading');
         $stsLog = null;
         $statusOptions = StsLog::statusOptions();
         $stsList = $this->stsOptionsForForms();
-        $wasteTypeList = $this->wasteTypeOptionsForForms();
         $wardOptions = $this->wardOptionsForForms();
 
         return view('swm.service-management.sts-logs.create', compact(
@@ -91,7 +81,6 @@ class StsLogController extends Controller
             'stsLog',
             'statusOptions',
             'stsList',
-            'wasteTypeList',
             'wardOptions'
         ));
     }
@@ -108,7 +97,7 @@ class StsLogController extends Controller
 
     public function show(StsLog $sts_log)
     {
-        $page_title = __('STS Log Details');
+        $page_title = __('STS Loading Details');
         $stsLog = $sts_log->load(['vehicle', 'vehicleType', 'driver', 'sts', 'wasteType']);
 
         return view('swm.service-management.sts-logs.show', compact('page_title', 'stsLog'));
@@ -116,11 +105,10 @@ class StsLogController extends Controller
 
     public function edit(StsLog $sts_log)
     {
-        $page_title = __('Edit STS Log');
+        $page_title = __('Edit STS Loading');
         $stsLog = $sts_log->load(['vehicle', 'vehicleType', 'driver', 'sts', 'wasteType']);
         $statusOptions = StsLog::statusOptions();
         $stsList = $this->stsOptionsForForms();
-        $wasteTypeList = $this->wasteTypeOptionsForForms();
         $wardOptions = $this->wardOptionsForForms();
 
         return view('swm.service-management.sts-logs.edit', compact(
@@ -128,7 +116,6 @@ class StsLogController extends Controller
             'stsLog',
             'statusOptions',
             'stsList',
-            'wasteTypeList',
             'wardOptions'
         ));
     }
@@ -152,7 +139,7 @@ class StsLogController extends Controller
 
     public function history(StsLog $sts_log)
     {
-        $page_title = __('STS Log History');
+        $page_title = __('STS Loading History');
         $stsLog = $sts_log;
 
         return view('swm.service-management.sts-logs.history', compact('page_title', 'stsLog'));
@@ -195,6 +182,34 @@ class StsLogController extends Controller
         return response()->json(['results' => $results]);
     }
 
+    public function suggestionsWasteTypes(Request $request)
+    {
+        $validated = $request->validate([
+            'q' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $term = trim((string) ($validated['q'] ?? ''));
+
+        $query = WasteType::query()
+            ->whereNull('deleted_at');
+
+        if ($term !== '') {
+            $query->where('name', 'ILIKE', '%'.$term.'%');
+        }
+
+        $types = $query->orderBy('name')->limit(50)->get(['id', 'name']);
+
+        $results = [];
+        foreach ($types as $w) {
+            $results[] = [
+                'id' => (string) $w->id,
+                'text' => $w->name,
+            ];
+        }
+
+        return response()->json(['results' => $results]);
+    }
+
     public function vehicleContext(Request $request)
     {
         $validated = $request->validate([
@@ -212,17 +227,9 @@ class StsLogController extends Controller
         }
 
         $sts = $vehicle->dumpingSts;
-        $wasteType = null;
-        $wasteTypeId = null;
         $wards = [];
         if ($sts) {
             $wards = is_array($sts->source_wards) ? $sts->source_wards : [];
-            $wasteTypes = $sts->wasteTypes();
-            if ($wasteTypes->count() > 0) {
-                $first = $wasteTypes->first();
-                $wasteType = $first?->name;
-                $wasteTypeId = $first?->id;
-            }
         }
 
         return response()->json([
@@ -232,8 +239,6 @@ class StsLogController extends Controller
             'capacity' => $vehicle->capacity,
             'sts_id' => $sts?->id,
             'sts_name' => $sts?->name ?? '',
-            'waste_type_id' => $wasteTypeId,
-            'waste_type_name' => $wasteType ?? '',
             'source_wards' => $wards,
         ]);
     }
@@ -253,19 +258,12 @@ class StsLogController extends Controller
             return response()->json(['error' => __('STS not found.')], 404);
         }
 
-        $wasteType = null;
-        $wasteTypeId = null;
         $wasteTypes = $sts->wasteTypes();
-        if ($wasteTypes->count() > 0) {
-            $first = $wasteTypes->first();
-            $wasteType = $first?->name;
-            $wasteTypeId = $first?->id;
-        }
 
         return response()->json([
             'sts_name' => $sts->name,
-            'waste_type_id' => $wasteTypeId,
-            'waste_type_name' => $wasteType ?? '',
+            'waste_type_ids' => $wasteTypes->pluck('id')->values()->all(),
+            'waste_types' => $wasteTypes->map(fn ($t) => ['id' => $t->id, 'name' => $t->name])->values()->all(),
             'source_wards' => is_array($sts->source_wards) ? $sts->source_wards : [],
         ]);
     }

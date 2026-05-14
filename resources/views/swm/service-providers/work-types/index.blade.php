@@ -53,7 +53,7 @@
         <table id="data-table" class="table table-bordered table-striped" width="100%">
             <thead>
                 <tr>
-                <th>{{ __('Work Type Name') }}</th>
+                <th>{{ __('Worker Type') }}</th>
                 <th>{{ __('Description') }}</th>
                 <th>{{ __('Actions') }}</th>
                 </tr>

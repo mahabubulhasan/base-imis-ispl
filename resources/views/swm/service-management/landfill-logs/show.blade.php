@@ -42,7 +42,21 @@
             </div>
             <div class="form-group row">
                 <span class="col-sm-3 control-label">{{ __('Waste Type') }}</span>
-                <div class="col-sm-9"><p class="form-control-plaintext mb-0">{{ $landfillLog->waste_type_name ?: ($landfillLog->wasteType?->name ?: '—') }}</p></div>
+                <div class="col-sm-9">
+                    <p class="form-control-plaintext mb-0">
+                        @php
+                            $lfWasteTypes = $landfillLog->wasteTypes();
+                            $wasteShowLf = $landfillLog->waste_type_name;
+                            if (! $wasteShowLf && $lfWasteTypes->isNotEmpty()) {
+                                $wasteShowLf = $lfWasteTypes->pluck('name')->implode(', ');
+                            }
+                            if (! $wasteShowLf) {
+                                $wasteShowLf = $landfillLog->wasteType?->name;
+                            }
+                        @endphp
+                        {{ $wasteShowLf ?: '—' }}
+                    </p>
+                </div>
             </div>
             @if($landfillLog->weighbridge_weight_ton === null)
             <div class="form-group row">

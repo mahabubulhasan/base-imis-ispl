@@ -30,8 +30,22 @@ class LandfillLogRequest extends FormRequest
             }
         }
 
-        if ($this->input('waste_type_id') === '' || $this->input('waste_type_id') === null) {
-            $this->merge(['waste_type_id' => null]);
+        $wtIds = $this->input('waste_type_ids');
+        if (is_string($wtIds)) {
+            $decoded = json_decode($wtIds, true);
+            if (is_array($decoded)) {
+                $this->merge(['waste_type_ids' => $decoded]);
+            } elseif (trim($wtIds) === '') {
+                $this->merge(['waste_type_ids' => []]);
+            }
+        }
+
+        if (is_array($this->input('waste_type_ids'))) {
+            $cleanWt = array_values(array_unique(array_filter(
+                array_map(static fn ($v) => is_scalar($v) ? (int) $v : null, $this->input('waste_type_ids')),
+                static fn ($v) => $v !== null && $v > 0
+            )));
+            $this->merge(['waste_type_ids' => $cleanWt]);
         }
 
         if (is_array($this->input('source_wards'))) {
@@ -72,12 +86,11 @@ class LandfillLogRequest extends FormRequest
                 Rule::exists('pgsql.swm.landfills', 'id')->where(fn ($q) => $q->whereNull('deleted_at')),
             ],
             'landfill_name' => ['nullable', 'string', 'max:255'],
-            'waste_type_id' => [
-                'nullable',
+            'waste_type_ids' => ['nullable', 'array'],
+            'waste_type_ids.*' => [
                 'integer',
                 Rule::exists('pgsql.swm.waste_types', 'id')->where(fn ($q) => $q->whereNull('deleted_at')),
             ],
-            'waste_type_name' => ['nullable', 'string', 'max:255'],
             'quantity_ton' => ['nullable', 'numeric', 'min:0'],
             'weighbridge_weight_ton' => ['nullable', 'numeric', 'min:0'],
             'source_sts_ids' => ['nullable', 'array'],

@@ -40,7 +40,7 @@ class StsLogService
                 return $model->sts_name ?: ($model->sts?->name ?? '');
             })
             ->addColumn('waste_type_label', function (StsLog $model) {
-                return $model->waste_type_name ?: ($model->wasteType?->name ?? '');
+                return $this->wasteTypesDisplayLabel($model);
             })
             ->addColumn('source_wards_label', function (StsLog $model) {
                 return is_array($model->source_wards) ? implode(', ', $model->source_wards) : '';
@@ -142,14 +142,11 @@ class StsLogService
                 $log->sts_name = ! empty($data['sts_name']) ? $data['sts_name'] : ($vehicle->dumpingSts?->name);
             }
 
-            $log->waste_type_id = ! empty($data['waste_type_id']) ? (int) $data['waste_type_id'] : null;
-            if (! empty($data['waste_type_name'])) {
-                $log->waste_type_name = $data['waste_type_name'];
-            } elseif ($log->waste_type_id) {
-                $log->waste_type_name = WasteType::query()->whereKey($log->waste_type_id)->value('name');
-            } else {
-                $log->waste_type_name = null;
-            }
+            $wtIds = array_values(array_unique(array_filter(
+                array_map(static fn ($v) => (int) $v, $data['waste_type_ids'] ?? []),
+                static fn ($v) => $v > 0
+            )));
+            $this->applyWasteTypeIdsToStsLog($log, $wtIds);
 
             $log->save();
         });
@@ -201,7 +198,7 @@ class StsLogService
                     $row->vehicle_type_name,
                     $row->driver_name,
                     $row->sts_name ?: $row->sts?->name,
-                    $row->waste_type_name ?: $row->wasteType?->name,
+                    $this->wasteTypesDisplayLabel($row),
                     $row->quantity_ton,
                     $wards,
                     $statusLabels[$row->operation_status] ?? $row->operation_status,
@@ -211,6 +208,48 @@ class StsLogService
         });
 
         $writer->close();
+    }
+
+    protected function wasteTypesDisplayLabel(StsLog $model): string
+    {
+        if (! empty($model->waste_type_name)) {
+            return $model->waste_type_name;
+        }
+        $ids = $model->waste_type_ids ?? [];
+        if (! empty($ids)) {
+            return WasteType::query()
+                ->whereIn('id', $ids)
+                ->whereNull('deleted_at')
+                ->orderBy('name')
+                ->pluck('name')
+                ->implode(', ');
+        }
+
+        return $model->wasteType?->name ?? '';
+    }
+
+    /**
+     * @param  array<int>  $candidateIds
+     */
+    protected function applyWasteTypeIdsToStsLog(StsLog $log, array $candidateIds): void
+    {
+        $types = WasteType::query()
+            ->whereIn('id', $candidateIds)
+            ->whereNull('deleted_at')
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        if ($types->isEmpty()) {
+            $log->waste_type_ids = null;
+            $log->waste_type_id = null;
+            $log->waste_type_name = null;
+
+            return;
+        }
+
+        $log->waste_type_ids = $types->pluck('id')->values()->all();
+        $log->waste_type_id = $types->first()->id;
+        $log->waste_type_name = $types->pluck('name')->implode(', ');
     }
 
     protected function applyFilters($query, array $data): void

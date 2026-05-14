@@ -2,6 +2,7 @@
 
 namespace App\Models\Swm;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -30,6 +31,7 @@ class LandfillLog extends Model
         'landfill_id',
         'landfill_name',
         'waste_type_id',
+        'waste_type_ids',
         'waste_type_name',
         'quantity_ton',
         'weighbridge_weight_ton',
@@ -48,6 +50,7 @@ class LandfillLog extends Model
         'weighbridge_weight_ton' => 'decimal:3',
         'source_sts_ids' => 'array',
         'source_wards' => 'array',
+        'waste_type_ids' => 'array',
     ];
 
     public function vehicle()
@@ -73,6 +76,23 @@ class LandfillLog extends Model
     public function wasteType()
     {
         return $this->belongsTo(WasteType::class, 'waste_type_id');
+    }
+
+    /**
+     * Resolve waste types from waste_type_ids JSON. Canonical multi-value; waste_type_id is the first id for legacy.
+     */
+    public function wasteTypes(): Collection
+    {
+        $ids = $this->waste_type_ids ?? [];
+        if (empty($ids)) {
+            return new Collection();
+        }
+
+        return WasteType::query()
+            ->whereIn('id', $ids)
+            ->whereNull('deleted_at')
+            ->orderBy('name')
+            ->get();
     }
 
     public static function statusOptions(): array

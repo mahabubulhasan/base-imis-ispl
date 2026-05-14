@@ -363,6 +363,7 @@ Route::group([
         Route::get('sts-logs/data', 'StsLogController@getData')->name('swm.sts-logs.data');
         Route::get('sts-logs/export', 'StsLogController@export')->name('swm.sts-logs.export');
         Route::get('sts-logs/suggestions/vehicles', 'StsLogController@suggestionsVehicles')->name('swm.sts-logs.suggestions.vehicles');
+        Route::get('sts-logs/suggestions/waste-types', 'StsLogController@suggestionsWasteTypes')->name('swm.sts-logs.suggestions.waste-types');
         Route::get('sts-logs/vehicle-context', 'StsLogController@vehicleContext')->name('swm.sts-logs.vehicle-context');
         Route::get('sts-logs/sts-context', 'StsLogController@stsContext')->name('swm.sts-logs.sts-context');
         Route::get('sts-logs/{sts_log}/history', 'StsLogController@history')->name('swm.sts-logs.history');
@@ -381,6 +382,7 @@ Route::group([
         Route::get('landfill-logs/data', 'LandfillLogController@getData')->name('swm.landfill-logs.data');
         Route::get('landfill-logs/export', 'LandfillLogController@export')->name('swm.landfill-logs.export');
         Route::get('landfill-logs/suggestions/vehicles', 'LandfillLogController@suggestionsVehicles')->name('swm.landfill-logs.suggestions.vehicles');
+        Route::get('landfill-logs/suggestions/waste-types', 'LandfillLogController@suggestionsWasteTypes')->name('swm.landfill-logs.suggestions.waste-types');
         Route::get('landfill-logs/vehicle-context', 'LandfillLogController@vehicleContext')->name('swm.landfill-logs.vehicle-context');
         Route::get('landfill-logs/landfill-context', 'LandfillLogController@landfillContext')->name('swm.landfill-logs.landfill-context');
         Route::get('landfill-logs/{landfill_log}/history', 'LandfillLogController@history')->name('swm.landfill-logs.history');
