@@ -347,6 +347,8 @@ Route::group([
         Route::get('attendance-logs/export', 'AttendanceLogController@export')->name('swm.attendance-logs.export');
         Route::get('attendance-logs/suggestions/workers', 'AttendanceLogController@suggestionsWorkers')->name('swm.attendance-logs.suggestions.workers');
         Route::get('attendance-logs/worker-context', 'AttendanceLogController@workerContext')->name('swm.attendance-logs.worker-context');
+        Route::get('attendance-logs/suggestions/vehicles', 'AttendanceLogController@suggestionsVehicles')->name('swm.attendance-logs.suggestions.vehicles');
+        Route::get('attendance-logs/vehicle-context', 'AttendanceLogController@vehicleContext')->name('swm.attendance-logs.vehicle-context');
         Route::get('attendance-logs/{attendance_log}/history', 'AttendanceLogController@history')->name('swm.attendance-logs.history');
         Route::resource('attendance-logs', 'AttendanceLogController')->parameters([
             'attendance-logs' => 'attendance_log',

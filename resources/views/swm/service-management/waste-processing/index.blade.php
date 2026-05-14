@@ -13,7 +13,7 @@
 <div class="card app-mobile-index">
     <div class="card-header">
         @can('Add SW Waste Processing')
-        <a href="{{ route('swm.waste-processing.create') }}" class="btn btn-info">{{ __('Add Waste Processing') }}</a>
+        <a href="{{ route('swm.waste-processing.create') }}" class="btn btn-info">{{ __('Add Waste Processing Log') }}</a>
         @endcan
         @can('Export SW Waste Processing to CSV')
         <a href="#" id="export" class="btn btn-info">{{ __('Export to CSV') }}</a>

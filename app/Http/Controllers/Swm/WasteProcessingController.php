@@ -37,7 +37,7 @@ class WasteProcessingController extends Controller
 
     public function create()
     {
-        $page_title = __('Add Waste Processing');
+        $page_title = __('Add Waste Processing Log');
         $wasteProcessingLog = null;
 
         return view('swm.service-management.waste-processing.create', compact(

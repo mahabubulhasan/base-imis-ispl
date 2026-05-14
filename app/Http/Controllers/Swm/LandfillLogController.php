@@ -233,21 +233,13 @@ class LandfillLogController extends Controller
         $vehicle = Vehicle::query()
             ->whereNull('deleted_at')
             ->whereKey((int) $validated['vehicle_id'])
-            ->with(['vehicleType', 'driver', 'dumpingLandfill'])
             ->first();
 
         if (! $vehicle) {
             return response()->json(['error' => __('Vehicle not found.')], 404);
         }
 
-        return response()->json([
-            'vehicle_type_id' => $vehicle->vehicle_type_id,
-            'vehicle_type_name' => $vehicle->vehicleType?->name ?? '',
-            'driver_name' => $vehicle->driver?->name ?? '',
-            'capacity' => $vehicle->capacity,
-            'landfill_id' => $vehicle->dumpingLandfill?->id,
-            'landfill_name' => $vehicle->dumpingLandfill?->name ?? '',
-        ]);
+        return response()->json($vehicle->toLandfillLogVehicleContextPayload());
     }
 
     public function landfillContext(Request $request)

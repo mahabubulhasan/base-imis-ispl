@@ -50,17 +50,17 @@
         </div>
     @endif
 
-    <div class="form-group row">
-        {!! Form::label('department', __('Department'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
-            {!! Form::text('department', old('department', $isEdit ? $attendanceLog->department : null), ['class' => 'form-control', 'id' => 'department', 'placeholder' => __('Department'), 'autocomplete' => 'off']) !!}
-        </div>
-    </div>
-
     <div class="form-group row required">
         {!! Form::label('worker_id', __('Worker Name-ID'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-9">
             <select name="worker_id" id="worker_id" class="form-control" style="width:100%" data-placeholder="{{ __('Search worker') }}" @if(!$orgFieldVal) disabled @endif></select>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        {!! Form::label('department', __('Department'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-9">
+            {!! Form::text('department', old('department', $isEdit ? $attendanceLog->department : null), ['class' => 'form-control', 'id' => 'department', 'placeholder' => __('Department'), 'autocomplete' => 'off']) !!}
         </div>
     </div>
 
@@ -87,6 +87,39 @@
                 readonly
                 tabindex="-1"
                 autocomplete="off" />
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="attendance_vehicle_id" class="col-sm-3 control-label">{{ __('Vehicle (optional)') }}</label>
+        <div class="col-sm-9">
+            <select id="attendance_vehicle_id" class="form-control" style="width:100%" data-placeholder="{{ __('Search vehicle by number') }}" @if(!$orgFieldVal) disabled @endif></select>
+            <small class="form-text text-muted">{{ __('If the vehicle has a default dumping landfill, landfill and waste types are shown below.') }}</small>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="attendance_landfill_display" class="col-sm-3 control-label">{{ __('Default dumping landfill') }}</label>
+        <div class="col-sm-9">
+            <input type="text"
+                id="attendance_landfill_display"
+                class="form-control bg-light"
+                value=""
+                readonly
+                tabindex="-1"
+                autocomplete="off" />
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="attendance_waste_types_display" class="col-sm-3 control-label">{{ __('Landfill waste types') }}</label>
+        <div class="col-sm-9">
+            <textarea id="attendance_waste_types_display"
+                class="form-control bg-light"
+                rows="2"
+                readonly
+                tabindex="-1"
+                autocomplete="off"></textarea>
         </div>
     </div>
 
@@ -129,6 +162,8 @@
 $(function () {
     var workersUrl = @json(route('swm.attendance-logs.suggestions.workers'));
     var workerContextUrl = @json(route('swm.attendance-logs.worker-context'));
+    var attendanceVehiclesUrl = @json(route('swm.attendance-logs.suggestions.vehicles'));
+    var attendanceVehicleContextUrl = @json(route('swm.attendance-logs.vehicle-context'));
     var csrf = @json(csrf_token());
     var initialWorkerId = @json($workerFieldVal ? (string) $workerFieldVal : null);
     var initialWorkerText = @json($isEdit && isset($attendanceLog) && $attendanceLog->worker ? ($attendanceLog->worker->name . ($attendanceLog->worker->worker_id_no ? ' — ' . $attendanceLog->worker->worker_id_no : '')) : null);
@@ -229,10 +264,100 @@ $(function () {
         }
     }
 
+    function destroyAttendanceVehicleSelect2() {
+        var $v = $('#attendance_vehicle_id');
+        if ($v.data('select2')) {
+            $v.select2('destroy');
+        }
+    }
+
+    function applyAttendanceVehicleContext(data) {
+        if (!data || data.error) {
+            return;
+        }
+        $('#attendance_landfill_display').val(data.landfill_name != null ? String(data.landfill_name) : '');
+        var lines = [];
+        if (Array.isArray(data.waste_types)) {
+            data.waste_types.forEach(function (t) {
+                if (t && t.name != null && String(t.name).length) {
+                    lines.push(String(t.name));
+                }
+            });
+        }
+        $('#attendance_waste_types_display').val(lines.join(', '));
+    }
+
+    function fetchAttendanceVehicleContext() {
+        var oid = orgId();
+        var vid = $('#attendance_vehicle_id').val();
+        if (!oid || !vid) {
+            return;
+        }
+        $.ajax({
+            url: attendanceVehicleContextUrl,
+            dataType: 'json',
+            data: { organization_id: oid, vehicle_id: vid },
+            headers: { 'X-CSRF-TOKEN': csrf }
+        }).done(applyAttendanceVehicleContext).fail(function (xhr) {
+            if (window.console && console.warn) {
+                console.warn('attendance vehicle-context failed', xhr.status, xhr.responseJSON || xhr.responseText);
+            }
+        });
+    }
+
+    function initAttendanceVehicleSelect2() {
+        destroyAttendanceVehicleSelect2();
+        var oid = orgId();
+        var $v = $('#attendance_vehicle_id');
+        $v.prop('disabled', !oid);
+        $('#attendance_landfill_display').val('');
+        $('#attendance_waste_types_display').val('');
+        if (!oid) {
+            return;
+        }
+        $v.select2({
+            placeholder: $v.data('placeholder'),
+            allowClear: true,
+            width: '100%',
+            minimumInputLength: 0,
+            ajax: {
+                url: attendanceVehiclesUrl,
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        organization_id: oid,
+                        q: params.term || ''
+                    };
+                },
+                processResults: function (data) {
+                    return { results: data.results || [] };
+                },
+                headers: { 'X-CSRF-TOKEN': csrf }
+            }
+        });
+    }
+
     initWorkerSelect2();
+    initAttendanceVehicleSelect2();
 
     $('#worker_id').on('change', function () {
         fetchWorkerContext();
+    });
+
+    $('#attendance_vehicle_id').on('change', function () {
+        var vid = $('#attendance_vehicle_id').val();
+        if (!vid) {
+            $('#attendance_landfill_display').val('');
+            $('#attendance_waste_types_display').val('');
+            return;
+        }
+        fetchAttendanceVehicleContext();
+    });
+
+    $('#attendance_vehicle_id').on('select2:clear', function () {
+        $('#attendance_landfill_display').val('');
+        $('#attendance_waste_types_display').val('');
     });
 
     $('#worker_id').on('select2:clear', function () {
@@ -243,11 +368,15 @@ $(function () {
 
     @if(!$scopedOrganizationId)
     $('#organization_id').on('change', function () {
-        $('#worker_id').val(null).trigger('change');
         $('#work_type_display').val('');
         $('#supervisor_display').val('');
         $('#department').val('');
         initWorkerSelect2();
+        initAttendanceVehicleSelect2();
+        $('#worker_id').val(null).trigger('change');
+        $('#attendance_vehicle_id').val(null).trigger('change');
+        $('#attendance_landfill_display').val('');
+        $('#attendance_waste_types_display').val('');
     });
     @endif
 });

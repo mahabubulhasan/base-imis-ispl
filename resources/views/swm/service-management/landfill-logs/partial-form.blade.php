@@ -315,16 +315,22 @@ $(function () {
 
     function refreshEffectiveVisibility() {
         var weighbridgeVisible = $('#weighbridge_group').is(':visible');
-        var hasWeighbridgeWeight = $.trim($('#weighbridge_weight_ton').val() || '') !== '';
-        $('#effective_quantity_group').toggle(!(weighbridgeVisible && hasWeighbridgeWeight));
+        $('#effective_quantity_group').toggle(!weighbridgeVisible);
     }
 
-    function fetchLandfillContext(syncWasteTypes) {
+    function fetchLandfillContext(syncWasteTypes, syncSourceFields) {
+        if (typeof syncSourceFields === 'undefined') {
+            syncSourceFields = syncWasteTypes;
+        }
         var lid = $('#landfill_id').val();
         if (!lid) {
             toggleWeighbridge(false);
             if (syncWasteTypes) {
                 setWasteTypesFromContext({ waste_type_ids: [], waste_types: [] });
+            }
+            if (syncSourceFields) {
+                setSourceSts([]);
+                setWardsFromArray([]);
             }
             return;
         }
@@ -341,14 +347,16 @@ $(function () {
                 $('#landfill_name').val(String(data.landfill_name));
             }
             toggleWeighbridge(!!data.weighbridge_facility_available);
-            if (syncWasteTypes) {
-                setWasteTypesFromContext(data);
+            if (syncSourceFields) {
                 if (Array.isArray(data.source_sts_ids)) {
                     setSourceSts(data.source_sts_ids);
                 }
                 if (Array.isArray(data.source_wards)) {
                     setWardsFromArray(data.source_wards);
                 }
+            }
+            if (syncWasteTypes) {
+                setWasteTypesFromContext(data);
             }
         }).fail(function () {
             toggleWeighbridge(false);
@@ -371,6 +379,10 @@ $(function () {
         if (data.landfill_name) {
             $('#landfill_name').val(String(data.landfill_name));
         }
+        setWasteTypesFromContext({
+            waste_type_ids: Array.isArray(data.waste_type_ids) ? data.waste_type_ids : [],
+            waste_types: Array.isArray(data.waste_types) ? data.waste_types : [],
+        });
     }
 
     function fetchVehicleContext() {
@@ -441,7 +453,7 @@ $(function () {
     $('#landfill_id').on('change', function () {
         if (landfillSkipWasteOnNextChange) {
             landfillSkipWasteOnNextChange = false;
-            fetchLandfillContext(false);
+            fetchLandfillContext(false, true);
             return;
         }
         fetchLandfillContext(true);

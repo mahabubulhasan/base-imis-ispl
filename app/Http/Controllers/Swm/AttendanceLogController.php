@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Swm\AttendanceLogRequest;
 use App\Models\Swm\AttendanceLog;
 use App\Models\Swm\Organization;
+use App\Models\Swm\Vehicle;
 use App\Models\Swm\Worker;
 use App\Services\Swm\AttendanceLogService;
 use Illuminate\Http\Request;
@@ -28,7 +29,7 @@ class AttendanceLogController extends Controller
             }
 
             return $next($request);
-        })->only(['suggestionsWorkers', 'workerContext']);
+        })->only(['suggestionsWorkers', 'workerContext', 'suggestionsVehicles', 'vehicleContext']);
         $this->middleware('permission:Delete SW Attendance Log', ['only' => ['destroy']]);
         $this->middleware('permission:Export SW Attendance Logs to CSV', ['only' => ['export']]);
         $this->middleware('permission:View SW Attendance Log History', ['only' => ['history']]);
@@ -238,6 +239,66 @@ class AttendanceLogController extends Controller
             'supervisor_name' => $worker->supervisor_name ?? '',
             'department' => $worker->department ?? '',
         ]);
+    }
+
+    public function suggestionsVehicles(Request $request)
+    {
+        $validated = $request->validate([
+            'organization_id' => ['required', 'integer'],
+            'q' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $orgId = (int) $validated['organization_id'];
+        $this->authorizeOrganizationAccess($orgId);
+
+        $term = trim((string) ($validated['q'] ?? ''));
+
+        $query = Vehicle::query()
+            ->whereNull('deleted_at')
+            ->where('organization_id', $orgId);
+
+        if ($term !== '') {
+            $query->where(function ($q) use ($term) {
+                $q->where('vehicle_number', 'ILIKE', '%'.$term.'%')
+                    ->orWhere('vehicle_id_no', 'ILIKE', '%'.$term.'%');
+            });
+        }
+
+        $vehicles = $query->orderBy('vehicle_number')->limit(50)->get(['id', 'vehicle_number', 'vehicle_id_no']);
+
+        $results = [];
+        foreach ($vehicles as $v) {
+            $suffix = $v->vehicle_id_no ? ' — '.$v->vehicle_id_no : '';
+            $results[] = [
+                'id' => (string) $v->id,
+                'text' => ($v->vehicle_number ?: '').$suffix,
+            ];
+        }
+
+        return response()->json(['results' => $results]);
+    }
+
+    public function vehicleContext(Request $request)
+    {
+        $validated = $request->validate([
+            'organization_id' => ['required', 'integer'],
+            'vehicle_id' => ['required', 'integer'],
+        ]);
+
+        $orgId = (int) $validated['organization_id'];
+        $this->authorizeOrganizationAccess($orgId);
+
+        $vehicle = Vehicle::query()
+            ->whereNull('deleted_at')
+            ->where('organization_id', $orgId)
+            ->whereKey((int) $validated['vehicle_id'])
+            ->first();
+
+        if (! $vehicle) {
+            return response()->json(['error' => __('Vehicle not found.')], 404);
+        }
+
+        return response()->json($vehicle->toLandfillLogVehicleContextPayload());
     }
 
     protected function authorizeOrganizationAccess(int $organizationId): void

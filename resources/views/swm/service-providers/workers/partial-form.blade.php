@@ -8,13 +8,6 @@
             </div>
         </div>
         @endisset
-        <div class="form-group row">
-            {!! Form::label('department', __('Department'), ['class' => 'col-sm-3 control-label']) !!}
-            <div class="col-sm-9">
-                {!! Form::text('department', null, ['class' => 'form-control', 'id' => 'department', 'placeholder' => __('Department'), 'autocomplete' => 'off']) !!}
-                <small class="form-text text-muted">{{ __('Optional. Saved on this worker record.') }}</small>
-            </div>
-        </div>
         <div class="form-group row required">
             {!! Form::label('name', __('Name'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-9">
@@ -37,6 +30,13 @@
             {!! Form::label('mobile', __('Contact'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-9">
                 {!! Form::text('mobile', null, ['class' => 'form-control', 'placeholder' => __('Contact')]) !!}
+            </div>
+        </div>
+        <div class="form-group row">
+            {!! Form::label('department', __('Department'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-9">
+                {!! Form::text('department', null, ['class' => 'form-control', 'id' => 'department', 'placeholder' => __('Department'), 'autocomplete' => 'off']) !!}
+                <small class="form-text text-muted">{{ __('Optional. Saved on this worker record.') }}</small>
             </div>
         </div>
         <div class="form-group row required">

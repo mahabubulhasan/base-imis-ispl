@@ -70,4 +70,27 @@ class Vehicle extends Model
     {
         return $this->belongsTo(Landfill::class, 'dumping_landfill_id');
     }
+
+    /**
+     * Payload for landfill log / attendance vehicle-context APIs (vehicle + default dumping landfill + waste types).
+     *
+     * @return array<string, mixed>
+     */
+    public function toLandfillLogVehicleContextPayload(): array
+    {
+        $this->loadMissing(['vehicleType', 'driver', 'dumpingLandfill']);
+        $landfill = $this->dumpingLandfill;
+        $wasteTypes = $landfill ? $landfill->wasteTypes() : collect();
+
+        return [
+            'vehicle_type_id' => $this->vehicle_type_id,
+            'vehicle_type_name' => $this->vehicleType?->name ?? '',
+            'driver_name' => $this->driver?->name ?? '',
+            'capacity' => $this->capacity,
+            'landfill_id' => $landfill?->id,
+            'landfill_name' => $landfill?->name ?? '',
+            'waste_type_ids' => $wasteTypes->pluck('id')->values()->all(),
+            'waste_types' => $wasteTypes->map(fn ($t) => ['id' => $t->id, 'name' => $t->name])->values()->all(),
+        ];
+    }
 }
