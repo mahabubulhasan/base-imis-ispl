@@ -33,6 +33,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (!is_allowed_command($command)) {
         $error = 'Command not allowed. Only <code>git pull</code> and <code>php artisan &lt;command&gt;</code> (except <code>serve</code>) are permitted.';
     } else {
+        // Change to Laravel root (one level up from public/)
+        $laravelRoot = dirname(__DIR__);
+        chdir($laravelRoot);
+
         // Run the command, merge stderr into stdout
         $escaped = escapeshellcmd($command);
         $output  = shell_exec($escaped . ' 2>&1');
