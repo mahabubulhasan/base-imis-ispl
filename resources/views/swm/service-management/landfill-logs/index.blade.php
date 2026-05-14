@@ -13,7 +13,7 @@
 <div class="card app-mobile-index">
     <div class="card-header">
         @can('Add SW Landfill Log')
-        <a href="{{ route('swm.landfill-logs.create') }}" class="btn btn-info">{{ __('Add Landfill Loading') }}</a>
+        <a href="{{ route('swm.landfill-logs.create') }}" class="btn btn-info">{{ __('Add Landfill Loading Log') }}</a>
         @endcan
         @can('Export SW Landfill Logs to CSV')
         <a href="#" id="export" class="btn btn-info">{{ __('Export to CSV') }}</a>

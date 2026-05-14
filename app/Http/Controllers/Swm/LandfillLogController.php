@@ -80,7 +80,7 @@ class LandfillLogController extends Controller
 
     public function create()
     {
-        $page_title = __('Add Landfill Loading');
+        $page_title = __('Add Landfill Loading Log');
         $landfillLog = null;
         $statusOptions = LandfillLog::statusOptions();
         $landfillList = $this->landfillOptionsForForms();
@@ -109,7 +109,7 @@ class LandfillLogController extends Controller
 
     public function show(LandfillLog $landfill_log)
     {
-        $page_title = __('Landfill Loading Details');
+        $page_title = __('Landfill Loading Log Details');
         $landfillLog = $landfill_log->load(['vehicle', 'vehicleType', 'driver', 'landfill', 'wasteType']);
 
         return view('swm.service-management.landfill-logs.show', compact('page_title', 'landfillLog'));
@@ -117,7 +117,7 @@ class LandfillLogController extends Controller
 
     public function edit(LandfillLog $landfill_log)
     {
-        $page_title = __('Edit Landfill Loading');
+        $page_title = __('Edit Landfill Loading Log');
         $landfillLog = $landfill_log->load(['vehicle', 'vehicleType', 'driver', 'landfill', 'wasteType']);
         $statusOptions = LandfillLog::statusOptions();
         $landfillList = $this->landfillOptionsForForms();
