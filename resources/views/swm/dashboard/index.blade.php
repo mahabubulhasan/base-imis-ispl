@@ -24,7 +24,7 @@
         </form>
     </div>
 
-    <div id="swm-dashboard-modules">
+    <div id="swm-dashboard-modules" class="swm-dashboard-modules">
         @foreach($dashboard['modules'] ?? [] as $key => $modulePayload)
             @php $viewName = $dashboard['moduleViews'][$key] ?? null; @endphp
             @if($viewName)

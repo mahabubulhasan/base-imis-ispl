@@ -2,7 +2,7 @@
     $colClass = in_array($chart['type'] ?? '', ['heatmap', 'stackedBar'], true) ? 'col-md-12' : 'col-md-6';
     $height = $chart['height'] ?? 320;
 @endphp
-<div class="{{ $colClass }} mb-3">
+<div class="{{ $colClass }} mb-2">
     <div class="card card-outline card-info swm-chart-card">
         <div class="card-header">
             <h3 class="card-title">{{ $chart['title'] ?? '' }}</h3>
