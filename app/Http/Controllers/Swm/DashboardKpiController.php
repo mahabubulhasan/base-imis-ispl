@@ -3,100 +3,55 @@
 namespace App\Http\Controllers\Swm;
 
 use App\Http\Controllers\Controller;
-use App\Services\Swm\SwmDashboardKpiService;
-use Illuminate\Http\JsonResponse;
+use App\Services\Swm\Dashboard\SwmDashboardOrchestrator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DashboardKpiController extends Controller
 {
-    public function __construct(protected SwmDashboardKpiService $swmDashboardKpiService)
+    public function __construct(protected SwmDashboardOrchestrator $orchestrator)
     {
         $this->middleware('auth');
-        $this->middleware('permission:List SW Dashboard and KPIs', ['only' => [
-            'index',
-            'complaintsByTypeChart',
-            'complaintsByWardChart',
-            'workersByTypeChart',
-            'vehiclesByTypeChart',
-            'billingByMonthChart',
-            'householdsByWardChart',
-            'householdCoverageByWardChart',
-            'householdsVsVanPullersByWardChart',
-        ]]);
+        $this->middleware('permission:List SW Dashboard and KPIs', ['only' => ['index', 'data', 'wardGeometries']]);
     }
 
     public function index(Request $request)
     {
-        $request->validate([
-            'month_from' => ['nullable', 'date_format:Y-m'],
-            'month_to' => ['nullable', 'date_format:Y-m'],
-        ]);
-
         $page_title = __('Dashboard and KPIs');
-        $dashboard = $this->swmDashboardKpiService->buildDashboardData(
-            $request->input('month_from'),
-            $request->input('month_to')
-        );
-
-        if ($request->ajax() || $request->wantsJson()) {
-            return response()->json(['dashboard' => $dashboard]);
-        }
+        $dashboard = $this->orchestrator->build($request->input('to_month'));
 
         return view('swm.dashboard.index', compact('page_title', 'dashboard'));
     }
 
-    public function complaintsByTypeChart(Request $request): JsonResponse
+    public function data(Request $request)
     {
-        return response()->json(
-            $this->swmDashboardKpiService->complaintByTypeChart(
-                $request->input('month_from'),
-                $request->input('month_to')
-            )
-        );
+        return response()->json($this->orchestrator->build($request->input('to_month')));
     }
 
-    public function complaintsByWardChart(Request $request): JsonResponse
+    public function wardGeometries()
     {
-        return response()->json(
-            $this->swmDashboardKpiService->complaintByWardChart(
-                $request->input('month_from'),
-                $request->input('month_to')
-            )
-        );
-    }
+        $rows = DB::table('layer_info.wards')
+            ->whereNotNull('geom')
+            ->orderBy('ward')
+            ->selectRaw('ward, ST_AsGeoJSON(geom) AS geom_json')
+            ->get();
 
-    public function workersByTypeChart(): JsonResponse
-    {
-        return response()->json($this->swmDashboardKpiService->workersByTypeChart());
-    }
+        $features = [];
+        foreach ($rows as $row) {
+            $geometry = json_decode($row->geom_json, true);
+            if (! is_array($geometry)) {
+                continue;
+            }
+            $features[] = [
+                'type' => 'Feature',
+                'properties' => ['ward' => $row->ward],
+                'geometry' => $geometry,
+            ];
+        }
 
-    public function vehiclesByTypeChart(): JsonResponse
-    {
-        return response()->json($this->swmDashboardKpiService->vehiclesByTypeChart());
-    }
-
-    public function billingByMonthChart(Request $request): JsonResponse
-    {
-        return response()->json(
-            $this->swmDashboardKpiService->billingByMonthChart(
-                $request->input('month_from'),
-                $request->input('month_to')
-            )
-        );
-    }
-
-    public function householdsByWardChart(): JsonResponse
-    {
-        return response()->json($this->swmDashboardKpiService->householdsByWardChart());
-    }
-
-    public function householdCoverageByWardChart(): JsonResponse
-    {
-        return response()->json($this->swmDashboardKpiService->householdCoverageByWardChart());
-    }
-
-    public function householdsVsVanPullersByWardChart(): JsonResponse
-    {
-        return response()->json($this->swmDashboardKpiService->householdsVsVanPullersByWardChart());
+        return response()->json([
+            'type' => 'FeatureCollection',
+            'features' => $features,
+        ]);
     }
 }

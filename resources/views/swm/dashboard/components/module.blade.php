@@ -1,0 +1,9 @@
+<section class="dash-section" id="sec-{{ $moduleId }}">
+    <div class="section-banner swm-module-toggle" role="button" tabindex="0" aria-expanded="true">
+        <span>{{ $title }}</span>
+        <i class="fas fa-chevron-up section-chevron"></i>
+    </div>
+    <div class="section-content">
+        {{ $slot }}
+    </div>
+</section>

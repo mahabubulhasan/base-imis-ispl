@@ -122,6 +122,7 @@ class MunicipalityITAdminSeeder extends Seeder
                         'SW Landfill Logs',
                         'SW Waste Processing',
                         'SW Dashboard and KPIs',
+                        'SW Module Settings',
                     ])
                         ->whereIn('type', ['View', 'List', 'Export', 'History', 'Add', 'Edit', 'Delete', 'Import']));
 

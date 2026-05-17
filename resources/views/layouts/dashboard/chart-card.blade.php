@@ -24,25 +24,7 @@
     </div>
     <!-- /.card-header -->
     <div class="card-body collapse show">
-        @if($with_chart_loader ?? false)
-        <div class="position-relative" style="min-height:250px">
-            <div id="swm-chart-loader-{{ $canvas_id }}"
-                 class="swm-chart-card-loader position-absolute d-flex align-items-center justify-content-center w-100 h-100 bg-white"
-                 style="top:0;left:0;z-index:3;opacity:0.96;border-radius:0.25rem"
-                 data-swm-chart-loader="{{ $canvas_id }}"
-                 role="status"
-                 aria-live="polite"
-                 aria-busy="true">
-                <div class="text-center px-3">
-                    <div class="spinner-border text-info mb-2" style="width:2.5rem;height:2.5rem" aria-hidden="true"></div>
-                    <div class="small text-muted">{{ __('Loading…') }}</div>
-                </div>
-            </div>
-            <canvas id="{{ $canvas_id }}" style="height:250px"></canvas>
-        </div>
-        @else
         <canvas id="{{ $canvas_id }}" style="height:250px"></canvas>
-        @endif
     </div>
     <!-- /.card-body -->
 </div>

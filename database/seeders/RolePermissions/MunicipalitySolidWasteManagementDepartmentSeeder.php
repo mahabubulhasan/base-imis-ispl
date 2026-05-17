@@ -41,6 +41,7 @@ class MunicipalitySolidWasteManagementDepartmentSeeder extends Seeder
 
                     $swmServiceFacilityGroups = [
                         'SW Dashboard and KPIs',
+                        'SW Module Settings',
                         'SW Service Facility Landfills',
                         'SW Service Facility STS',
                         'SW Service Coverage LIC',

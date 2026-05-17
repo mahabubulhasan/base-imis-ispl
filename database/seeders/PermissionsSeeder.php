@@ -1478,6 +1478,19 @@ class PermissionsSeeder extends Seeder
                 ],
             ],
             [
+                "group" => "SW Module Settings",
+                "perms" => [
+                    [
+                        "type" => "View",
+                        "name" => "View SW Per Capita Generation Setting",
+                    ],
+                    [
+                        "type" => "Edit",
+                        "name" => "Edit SW Per Capita Generation Setting",
+                    ],
+                ],
+            ],
+            [
                 "group" => "Building Structures",
                 "perms" => [
                     [

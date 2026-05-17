@@ -55,6 +55,21 @@ class MapsService {
 
     }
 
+    /**
+     * Bounding box of the municipality (from citypolys) as "xmin,ymin,xmax,ymax" in EPSG:4326.
+     */
+    public function getCityBboxString(): ?string
+    {
+        $bboxValues = DB::select("SELECT
+            (ST_XMin(bbox) || ',' || ST_YMin(bbox) || ',' || ST_XMax(bbox) || ',' || ST_YMax(bbox)) AS bbox_values
+            FROM (
+                SELECT ST_Extent(geom) AS bbox FROM layer_info.citypolys
+            ) AS extent_subquery
+        ");
+
+        return $bboxValues[0]->bbox_values ?? null;
+    }
+
    /**
      * Retrieves necessary data for rendering the map index page.
      * @return \Illuminate\View\View

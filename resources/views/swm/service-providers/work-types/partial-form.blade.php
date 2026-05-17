@@ -1,6 +1,6 @@
 <div class="card-body">
         <div class="form-group row required">
-            {!! Form::label('name', __('Work Type'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('name', __('Worker Type'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
                 {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => __('Work Type Name')]) !!}
             </div>
