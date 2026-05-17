@@ -79,6 +79,52 @@
         });
     }
 
+    function stackedBarColors(count) {
+        var colors = palette.doughnut;
+        var result = [];
+        for (var i = 0; i < count; i++) {
+            result.push(colors[i % colors.length]);
+        }
+        return result;
+    }
+
+    function renderStackedBar(canvas, chart) {
+        var opts = chart.options || {};
+        var datasets = chart.datasets || [];
+        var colors = stackedBarColors(datasets.length);
+        var chartDatasets = datasets.map(function (ds, i) {
+            return {
+                label: ds.label || '',
+                data: ds.data || [],
+                backgroundColor: colors[i],
+                hoverBackgroundColor: colors[i],
+            };
+        });
+        var scales = scaleOptions(opts.unitX, opts.unitY);
+        if (opts.stacked) {
+            if (scales.xAxes && scales.xAxes[0]) {
+                scales.xAxes[0].stacked = true;
+            }
+            if (scales.yAxes && scales.yAxes[0]) {
+                scales.yAxes[0].stacked = true;
+            }
+        }
+        destroyChart(canvas.id);
+        chartInstances[canvas.id] = new ChartCtor(canvas.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: chart.labels || [],
+                datasets: chartDatasets,
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: { position: 'bottom' },
+                scales: scales,
+            },
+        });
+    }
+
     function renderDoughnut(canvas, chart) {
         var ds = (chart.datasets && chart.datasets[0]) ? chart.datasets[0] : { data: [] };
         var colors = palette.doughnut;
@@ -120,6 +166,8 @@
             }
             if (chart.type === 'doughnut') {
                 renderDoughnut(canvas, chart);
+            } else if (chart.type === 'stackedBar') {
+                renderStackedBar(canvas, chart);
             } else {
                 renderBar(canvas, chart);
             }

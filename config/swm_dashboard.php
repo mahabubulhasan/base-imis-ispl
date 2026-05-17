@@ -10,5 +10,11 @@ return [
             'permission' => null,
             'enabled' => true,
         ],
+        'service_providers' => [
+            'class' => \App\Services\Swm\Dashboard\Modules\ServiceProvidersDashboardModule::class,
+            'view' => 'swm.dashboard.modules.service-providers',
+            'permission' => null,
+            'enabled' => true,
+        ],
     ],
 ];

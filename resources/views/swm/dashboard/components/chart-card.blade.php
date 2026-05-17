@@ -1,5 +1,5 @@
 @php
-    $colClass = ($chart['type'] ?? 'bar') === 'heatmap' ? 'col-md-12' : 'col-md-6';
+    $colClass = in_array($chart['type'] ?? '', ['heatmap', 'stackedBar'], true) ? 'col-md-12' : 'col-md-6';
     $height = $chart['height'] ?? 320;
 @endphp
 <div class="{{ $colClass }} mb-3">
