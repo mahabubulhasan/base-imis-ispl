@@ -3,13 +3,6 @@
 @section('title', $page_title)
 
 @section('content_header_right')
-<form id="swm-dashboard-filter-form" class="form-inline swm-dashboard-filter-form d-flex flex-wrap align-items-center justify-content-sm-end gap-2" method="get" action="{{ route('swm.dashboard-kpis.index') }}">
-    <input type="month" id="to_month" name="to_month" class="form-control"
-        max="{{ $dashboard['period']['max_to_month'] ?? now()->subMonth()->format('Y-m') }}"
-        value="{{ $dashboard['period']['to_month'] ?? ($dashboard['period']['max_to_month'] ?? now()->subMonth()->format('Y-m')) }}"
-        aria-label="{{ __('To month') }}">
-    <button type="submit" class="btn btn-info">{{ __('Apply') }}</button>
-</form>
 @endsection
 
 @push('style')
@@ -24,6 +17,18 @@
 @endpush
 
 @section('content')
+<div class="swm-dashboard-toolbar d-flex justify-content-between align-items-center flex-wrap mb-3">
+    <form id="swm-dashboard-filter-form" class="swm-dashboard-filter-form form-inline d-flex flex-wrap align-items-center mb-0" method="get" action="{{ route('swm.dashboard-kpis.index') }}">
+        <label for="to_month" class="col-form-label mb-0 mr-2 font-weight-bold">{{ __('Through Month') }}</label>
+        <input type="month" id="to_month" name="to_month" class="form-control"
+            max="{{ $dashboard['period']['max_to_month'] ?? now()->subMonth()->format('Y-m') }}"
+            value="{{ $dashboard['period']['to_month'] ?? ($dashboard['period']['max_to_month'] ?? now()->subMonth()->format('Y-m')) }}"
+            aria-label="{{ __('Through month') }}">
+        <button type="submit" class="btn btn-info ml-2">{{ __('Apply') }}</button>
+    </form>
+    <button type="button" id="swm-dashboard-generate-report" class="btn btn-info swm-dashboard-generate-report flex-shrink-0">{{ __('Generate Report') }}</button>
+</div>
+
 <div class="swm-dashboard">
     <div id="swm-dashboard-modules" class="swm-dashboard-modules">
         @foreach($dashboard['modules'] ?? [] as $key => $modulePayload)
