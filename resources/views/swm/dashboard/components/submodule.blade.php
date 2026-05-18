@@ -29,6 +29,12 @@
                             @include('swm.dashboard.components.chart-card', ['chart' => $chart])
                         @endforeach
                     </div>
+                @elseif(($block['type'] ?? '') === 'table')
+                    @include('swm.dashboard.components.metric-table', [
+                        'title' => $block['title'] ?? null,
+                        'columns' => $block['columns'] ?? [],
+                        'rows' => $block['rows'] ?? [],
+                    ])
                 @endif
             </div>
         @endforeach

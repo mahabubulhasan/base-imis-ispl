@@ -99,6 +99,7 @@ Registered in [`config/swm_dashboard.php`](../../config/swm_dashboard.php) (orde
 | `service_providers` | `ServiceProvidersDashboardModule` | Service Providers | `swm.dashboard.modules.service-providers` | `null` |
 | `service_facilities` | `ServiceFacilitiesDashboardModule` | Service Facilities | `swm.dashboard.modules.service-facilities` | `null` |
 | `service_management` | `ServiceManagementDashboardModule` | Service Management | `swm.dashboard.modules.service-management` | `null` |
+| `billing` | `BillingDashboardModule` | Billing | `swm.dashboard.modules.billing` | `null` |
 
 ### `households` — Households & LIC
 
@@ -150,6 +151,18 @@ Registered in [`config/swm_dashboard.php`](../../config/swm_dashboard.php) (orde
 **Date logic:** Attendance uses `entry_at` (30-day charts; selected month for working-hours tile). STS/landfill logs use `operation_date` with **`operation_status = completed`**; ton tiles use selected reporting month; 30-day charts end at `periodEnd`. Waste processing uses `reporting_month` (first of month). Landfill ton uses `COALESCE(weighbridge_weight_ton, quantity_ton, 0)`.
 
 **Scope:** Attendance filtered by `organization_id` when user has `swm_organization_id`. STS/landfill logs scoped via `vehicle.organization_id`.
+
+### `billing` — Billing
+
+**File:** `app/Services/Swm/Dashboard/Modules/BillingDashboardModule.php`
+
+| Submodule key | Title | Blocks |
+|---------------|-------|--------|
+| `billing` | Billing | Tiles (due, revenue, efficiency, default rate) → Charts (12-month revenue line, payment-method doughnut, ward bars) → Table (households with 3+ due months, top 50) |
+
+**Date logic:** All metrics use the dashboard **selected month** (`$period->toMonth`). Per-household due/closing uses `BillCollectionPaymentService` (FIFO, same as Billing Status). Payment charts aggregate `swm.bill_collection_payments`; payment-method counts are cumulative through the selected month.
+
+**Formatting:** Taka tiles use whole numbers via `SwmDashboardFormatter::integer()` (not Lakh).
 
 ---
 
@@ -306,6 +319,7 @@ Rendered by [`resources/views/swm/dashboard/components/submodule.blade.php`](../
 | `tiles` | No (usually) | Info boxes — `label`, `value`, `icon` |
 | `kpis` | Often “Key Performance Indicators” | KPI cards — `name`, `value`, `unit`, `showFrequency`, `hideUnit` |
 | `charts` | Often “Visualizations” | Grid of chart cards |
+| `table` | Optional title on block | Server-rendered HTML table — `columns[]`, `rows[]` |
 
 ### Chart `type` values (Chart.js / custom)
 
@@ -578,6 +592,8 @@ Only when `bar`, `doughnut`, `stackedBar`, and `heatmap` are not enough:
 | `app/Services/Swm/Dashboard/Modules/ServiceProvidersDashboardModule.php` |
 | `app/Services/Swm/Dashboard/Modules/ServiceFacilitiesDashboardModule.php` |
 | `app/Services/Swm/Dashboard/Modules/ServiceManagementDashboardModule.php` |
+| `app/Services/Swm/Dashboard/Modules/BillingDashboardModule.php` |
+| `app/Services/Swm/Dashboard/Billing/BillingDashboardMetrics.php` |
 
 ### Frontend
 
@@ -600,6 +616,7 @@ Only when `bar`, `doughnut`, `stackedBar`, and `heatmap` are not enough:
 | `tests/Unit/SwmDashboardFormatterTest.php` | Formatting helpers |
 | `tests/Unit/ServiceProvidersDashboardModuleTest.php` | Service providers module output |
 | `tests/Unit/ServiceManagementDashboardModuleTest.php` | Service management module output |
+| `tests/Unit/BillingDashboardModuleTest.php` | Billing module output |
 
 Add module-specific tests when introducing new modules.
 
@@ -633,4 +650,4 @@ Use only `$period->periodEnd` (and optionally `whereThroughPeriodEnd`). Windows 
 
 ---
 
-*Last updated for the modular dashboard architecture with households, service providers, service facilities, and service management modules.*
+*Last updated for the modular dashboard architecture with households, service providers, service facilities, service management, and billing modules.*

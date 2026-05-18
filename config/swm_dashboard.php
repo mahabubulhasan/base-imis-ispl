@@ -28,5 +28,11 @@ return [
             'permission' => null,
             'enabled' => true,
         ],
+        'billing' => [
+            'class' => \App\Services\Swm\Dashboard\Modules\BillingDashboardModule::class,
+            'view' => 'swm.dashboard.modules.billing',
+            'permission' => null,
+            'enabled' => true,
+        ],
     ],
 ];

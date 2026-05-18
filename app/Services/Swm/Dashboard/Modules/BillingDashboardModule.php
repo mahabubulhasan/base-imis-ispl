@@ -1,0 +1,290 @@
+<?php
+
+namespace App\Services\Swm\Dashboard\Modules;
+
+use App\Services\Swm\Dashboard\Billing\BillingDashboardMetrics;
+use App\Services\Swm\Dashboard\Contracts\SwmDashboardModuleInterface;
+use App\Services\Swm\Dashboard\DashboardReportingPeriod;
+use App\Services\Swm\Dashboard\SwmDashboardFormatter;
+use Carbon\Carbon;
+
+class BillingDashboardModule implements SwmDashboardModuleInterface
+{
+    public function __construct(
+        protected SwmDashboardFormatter $formatter,
+        protected BillingDashboardMetrics $metrics,
+    ) {
+    }
+
+    public function key(): string
+    {
+        return 'billing';
+    }
+
+    public function label(): string
+    {
+        return __('Billing');
+    }
+
+    public function permission(): ?string
+    {
+        return null;
+    }
+
+    public function build(DashboardReportingPeriod $period): array
+    {
+        return [
+            'submodules' => [
+                $this->billingSubmodule($period),
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function billingSubmodule(DashboardReportingPeriod $period): array
+    {
+        $agg = $this->metrics->aggregate($period);
+
+        return [
+            'key' => 'billing',
+            'title' => __('Billing'),
+            'blocks' => [
+                [
+                    'type' => 'tiles',
+                    'items' => $this->tileItems($agg),
+                ],
+                [
+                    'type' => 'charts',
+                    'subsection' => __('Visualizations'),
+                    'items' => [
+                        $this->revenueTrendChart($period),
+                        $this->paymentMethodChart($period),
+                        $this->averageFeeByWardChart($period),
+                        $this->arrearsByWardChart($agg),
+                    ],
+                ],
+                [
+                    'type' => 'table',
+                    'title' => __('Households with 3+ Months of Dues'),
+                    'columns' => $this->arrearsTableColumns(),
+                    'rows' => $this->formatTableRows($agg['table_rows']),
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $agg
+     * @return list<array<string, string>>
+     */
+    protected function tileItems(array $agg): array
+    {
+        $billed = (int) ($agg['billed_household_count'] ?? 0);
+        $defaultCount = (int) ($agg['default_count'] ?? 0);
+        $defaultRate = $billed > 0
+            ? ((float) $defaultCount / (float) $billed) * 100
+            : 0.0;
+
+        return [
+            [
+                'label' => __('Due for This Month (Taka)'),
+                'value' => $this->formatter->integer($agg['due_for_this_month']),
+                'icon' => 'fa-calendar-alt',
+            ],
+            [
+                'label' => __('Total Due (Taka)'),
+                'value' => $this->formatter->integer($agg['total_due']),
+                'icon' => 'fa-file-invoice-dollar',
+            ],
+            [
+                'label' => __('Total Revenue Collected (Taka)'),
+                'value' => $this->formatter->integer($agg['total_revenue_collected']),
+                'icon' => 'fa-coins',
+            ],
+            [
+                'label' => __('Collection Efficiency (%)'),
+                'value' => $this->formatter->percent(
+                    $this->percentRatio($agg['total_paid'], $agg['total_payable']),
+                ),
+                'icon' => 'fa-percent',
+            ],
+            [
+                'label' => __('Previous Due Recovery Rate (%)'),
+                'value' => $this->formatter->percent(
+                    $this->percentRatio($agg['total_previous_due_paid'], $agg['total_previous_due']),
+                ),
+                'icon' => 'fa-hand-holding-usd',
+            ],
+            [
+                'label' => __('Default Rate (%)'),
+                'value' => $this->formatter->percent($defaultRate),
+                'icon' => 'fa-exclamation-triangle',
+            ],
+        ];
+    }
+
+    protected function revenueTrendChart(DashboardReportingPeriod $period): array
+    {
+        $endMonth = $period->toMonth->copy()->startOfMonth();
+        $revenueByMonth = $this->metrics->revenueByMonth($endMonth, 12);
+
+        $labels = [];
+        $values = [];
+        foreach ($revenueByMonth as $monthKey => $revenue) {
+            $labels[] = Carbon::parse($monthKey)->format('M Y');
+            $values[] = round($revenue, 2);
+        }
+
+        return [
+            'id' => 'swmChartBillingRevenueTrend',
+            'type' => 'line',
+            'title' => __('Revenue Collection Trend (Last 12 Months)'),
+            'labels' => $labels,
+            'datasets' => [
+                ['label' => __('Revenue (Taka)'), 'data' => $values],
+            ],
+            'options' => [
+                'unitX' => __('Month'),
+                'unitY' => __('Taka'),
+                'decimalValues' => true,
+            ],
+        ];
+    }
+
+    protected function paymentMethodChart(DashboardReportingPeriod $period): array
+    {
+        $counts = $this->metrics->paymentMethodCountsThroughMonth($period->toMonth);
+        $methods = config('bill_collection.payment_methods', []);
+
+        $labels = [];
+        $data = [];
+        foreach ($methods as $key => $label) {
+            $cnt = $counts[$key] ?? 0;
+            if ($cnt <= 0) {
+                continue;
+            }
+            $labels[] = __($label);
+            $data[] = $cnt;
+        }
+
+        foreach ($counts as $key => $cnt) {
+            if (isset($methods[$key]) || $cnt <= 0) {
+                continue;
+            }
+            $labels[] = (string) $key;
+            $data[] = $cnt;
+        }
+
+        return [
+            'id' => 'swmChartBillingPaymentMethod',
+            'type' => 'doughnut',
+            'title' => __('Payment-Method Distribution'),
+            'labels' => $labels,
+            'datasets' => [
+                ['label' => __('Payments'), 'data' => $data],
+            ],
+            'options' => [
+                'unitX' => __('Payment Method'),
+                'unitY' => __('Count'),
+            ],
+        ];
+    }
+
+    protected function averageFeeByWardChart(DashboardReportingPeriod $period): array
+    {
+        $byWard = $this->metrics->averageFeeByWard();
+        ksort($byWard, SORT_NATURAL);
+
+        $labels = array_keys($byWard);
+        $values = array_values($byWard);
+
+        return [
+            'id' => 'swmChartBillingAvgFeeByWard',
+            'type' => 'bar',
+            'title' => __('Average Fixed Service Fee by Ward'),
+            'labels' => $labels,
+            'datasets' => [
+                ['label' => __('Average Fee (Taka)'), 'data' => $values],
+            ],
+            'options' => [
+                'unitX' => __('Ward'),
+                'unitY' => __('Taka'),
+                'decimalValues' => true,
+            ],
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $agg
+     */
+    protected function arrearsByWardChart(array $agg): array
+    {
+        $topWards = $this->metrics->topArrearsWards($agg['ward_arrears'] ?? []);
+        $labels = array_keys($topWards);
+        $values = array_map(static fn (string $v) => round((float) $v, 2), array_values($topWards));
+
+        return [
+            'id' => 'swmChartBillingArrearsByWard',
+            'type' => 'bar',
+            'title' => __('Arrears by Ward (Top 10 Wards)'),
+            'labels' => $labels,
+            'datasets' => [
+                ['label' => __('Closing Due (Taka)'), 'data' => $values],
+            ],
+            'options' => [
+                'unitX' => __('Ward'),
+                'unitY' => __('Taka'),
+                'decimalValues' => true,
+            ],
+        ];
+    }
+
+    /**
+     * @return list<array{key: string, label: string}>
+     */
+    protected function arrearsTableColumns(): array
+    {
+        return [
+            ['key' => 'holding_number', 'label' => __('Holding Number')],
+            ['key' => 'household_owner_name', 'label' => __('Household Owner Name')],
+            ['key' => 'ward', 'label' => __('Ward')],
+            ['key' => 'fixed_service_fee', 'label' => __('Fixed Service Fee')],
+            ['key' => 'due_months', 'label' => __('Due Months')],
+            ['key' => 'closing_due', 'label' => __('Closing Due')],
+            ['key' => 'contact_number', 'label' => __('Contact Number')],
+        ];
+    }
+
+    /**
+     * @param  list<array<string, mixed>>  $rows
+     * @return list<array<string, string>>
+     */
+    protected function formatTableRows(array $rows): array
+    {
+        $out = [];
+        foreach ($rows as $row) {
+            $out[] = [
+                'holding_number' => (string) ($row['holding_number'] ?? ''),
+                'household_owner_name' => (string) ($row['household_owner_name'] ?? ''),
+                'ward' => (string) ($row['ward'] ?? ''),
+                'fixed_service_fee' => $this->formatter->integer($row['fixed_service_fee'] ?? 0),
+                'due_months' => (string) ($row['due_months'] ?? 0),
+                'closing_due' => $this->formatter->integer($row['closing_due'] ?? 0),
+                'contact_number' => (string) ($row['contact_number'] ?? ''),
+            ];
+        }
+
+        return $out;
+    }
+
+    protected function percentRatio(string $numerator, string $denominator): float
+    {
+        if (bccomp($denominator, '0', 2) <= 0) {
+            return 0.0;
+        }
+
+        return ((float) $numerator / (float) $denominator) * 100;
+    }
+}

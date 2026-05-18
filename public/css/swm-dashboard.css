@@ -391,3 +391,25 @@
     border-radius: 4px;
     background: #fbfcfd;
 }
+
+.swm-dashboard .swm-metric-table-wrap {
+    margin-top: 0.5rem;
+}
+
+.swm-dashboard .swm-metric-table-wrap .subsection-title {
+    margin-bottom: 0.75rem;
+}
+
+.swm-dashboard .swm-metric-table {
+    font-size: 0.875rem;
+}
+
+.swm-dashboard .swm-metric-table thead th {
+    white-space: nowrap;
+    background: #f4f6f9;
+    font-weight: 600;
+}
+
+.swm-dashboard .swm-metric-table tbody td {
+    vertical-align: middle;
+}
