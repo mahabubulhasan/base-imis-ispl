@@ -83,7 +83,7 @@ class AuthController extends Controller
                      "service_provider" => $user->service_provider->company_name ?? null,
                      "permissions" => [
                          "building-survey" => (bool)$user->can('Access Building Survey API'),
-                         "save-emptying-service" => (bool)$user->can('Access Emptying Service API'),
+                         "save-emptying-service" => (bool)$user->can('Add Emptying'),
                          "sewer-connection" => (bool)$user->can('Access Sewer Connection API'),
                          "sludge-collection" => (bool)$user->can('Add Sludge Collection'),
                      ],
