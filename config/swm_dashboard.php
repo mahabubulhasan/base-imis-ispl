@@ -34,5 +34,11 @@ return [
             'permission' => null,
             'enabled' => true,
         ],
+        'complaints' => [
+            'class' => \App\Services\Swm\Dashboard\Modules\ComplaintsDashboardModule::class,
+            'view' => 'swm.dashboard.modules.complaints',
+            'permission' => null,
+            'enabled' => true,
+        ],
     ],
 ];

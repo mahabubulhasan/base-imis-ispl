@@ -329,8 +329,9 @@
 
     function renderWardHeatmapGrid(el, chart) {
         var wards = chart.wards || [];
-        var values = chart.values || [];
-        var rowLabel = chart.rowLabel || 'Segregation Rate';
+        var multiRows = chart.heatmapRows;
+        var opts = chart.options || {};
+        var valueDisplay = opts.valueDisplay || (multiRows && multiRows.length ? 'count' : 'percent');
         var colCount = Math.max(wards.length, 1);
         var html = '<div class="swm-heatmap-table" style="--heatmap-cols:' + colCount + '">';
 
@@ -341,14 +342,73 @@
         });
         html += '</div>';
 
-        html += '<div class="heatmap-data-row">';
-        html += '<div class="heatmap-row-label">' + escapeHtml(rowLabel) + '</div>';
-        wards.forEach(function (ward, i) {
-            var v = values[i] != null ? values[i] : 0;
-            html += '<div class="heatmap-value-cell" style="background-color:' + heatmapColor(v) + '">';
-            html += '<span>' + escapeHtml(String(v)) + '%</span></div>';
-        });
-        html += '</div></div>';
+        var globalMax = 0;
+        if (multiRows && multiRows.length) {
+            multiRows.forEach(function (r) {
+                (r.values || []).forEach(function (v) {
+                    var n = Number(v);
+                    if (!isNaN(n) && n > globalMax) {
+                        globalMax = n;
+                    }
+                });
+            });
+        } else {
+            (chart.values || []).forEach(function (v) {
+                var n = Number(v);
+                if (!isNaN(n) && n > globalMax) {
+                    globalMax = n;
+                }
+            });
+        }
+        if (valueDisplay === 'count') {
+            globalMax = Math.max(globalMax, 1);
+        } else {
+            globalMax = Math.max(globalMax, 100);
+        }
+
+        function cellColor(v) {
+            var num = Number(v);
+            if (isNaN(num)) {
+                num = 0;
+            }
+            if (valueDisplay === 'percent') {
+                return heatmapColor(num);
+            }
+            var intensity = globalMax > 0 ? (num / globalMax) * 100 : 0;
+            return heatmapColor(intensity);
+        }
+
+        function cellText(v) {
+            var num = Number(v);
+            if (isNaN(num)) {
+                num = 0;
+            }
+            if (valueDisplay === 'count') {
+                return String(num);
+            }
+            return String(num) + '%';
+        }
+
+        function renderOneRow(rowLabel, rowValues) {
+            html += '<div class="heatmap-data-row">';
+            html += '<div class="heatmap-row-label">' + escapeHtml(rowLabel) + '</div>';
+            wards.forEach(function (ward, i) {
+                var v = rowValues[i] != null ? rowValues[i] : 0;
+                html += '<div class="heatmap-value-cell" style="background-color:' + cellColor(v) + '">';
+                html += '<span>' + escapeHtml(cellText(v)) + '</span></div>';
+            });
+            html += '</div>';
+        }
+
+        if (multiRows && multiRows.length) {
+            multiRows.forEach(function (r) {
+                renderOneRow(r.rowLabel || '', r.values || []);
+            });
+        } else {
+            renderOneRow(chart.rowLabel || 'Segregation Rate', chart.values || []);
+        }
+
+        html += '</div>';
 
         html += '<div class="heatmap-scale-legend">';
         html += '<span class="heatmap-scale-low">Low</span>';
