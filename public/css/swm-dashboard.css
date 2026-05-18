@@ -7,6 +7,7 @@
     --swm-kpi-bg: #fbfcfd;
     --swm-kpi-accent: #2c5777;
     --swm-gutter: 12px;
+    --swm-module-gap: 5px;
     --swm-section-gap: 10px;
     --swm-block-gap: 16px;
     --swm-metric-block-gap: 20px;
@@ -15,37 +16,30 @@
 .swm-dashboard .swm-dashboard-modules {
     display: flex;
     flex-direction: column;
-    gap: var(--swm-section-gap);
+    gap: var(--swm-module-gap);
 }
 
-.swm-dashboard .swm-page-header {
-    background: #fff;
-    border: 1px solid #dee2e6;
-    border-radius: 4px;
-    padding: 16px 20px;
-    margin-bottom: 16px;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 12px;
-}
-
-.swm-dashboard .swm-page-header h2 {
-    font-size: 22px;
-    font-weight: 600;
-    color: var(--swm-navy);
+.swm-dashboard-filter-form {
     margin: 0;
 }
 
-.swm-dashboard .swm-page-meta {
-    color: var(--swm-muted);
-    font-size: 13px;
-    margin-top: 4px;
+.swm-dashboard-filter-form .form-control {
+    min-width: 160px;
 }
 
+@media (max-width: 575.98px) {
+    .swm-dashboard-filter-form {
+        width: 100%;
+        justify-content: flex-start !important;
+        margin-top: 0.5rem;
+    }
+}
+
+/* Override global `section { padding: 60px 0; }` from style.css */
 .swm-dashboard .dash-section {
     margin: 0;
+    padding: 0;
+    overflow: visible;
 }
 
 .swm-dashboard .section-banner {

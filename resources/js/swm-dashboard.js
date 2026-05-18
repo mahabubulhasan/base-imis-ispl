@@ -37,14 +37,22 @@
         });
     }
 
-    function scaleOptions(unitX, unitY) {
+    function scaleOptions(unitX, unitY, opts) {
+        opts = opts || {};
         var scales = {};
         if (unitX) {
             scales.xAxes = [{ scaleLabel: { display: true, labelString: unitX } }];
         }
-        if (unitY) {
-            scales.yAxes = [{ scaleLabel: { display: true, labelString: unitY }, ticks: { beginAtZero: true } }];
+        var yTicks = { beginAtZero: true };
+        if (opts.integerYTicks || !unitY) {
+            yTicks.precision = 0;
+            yTicks.stepSize = 1;
         }
+        var yAxis = { ticks: yTicks };
+        if (unitY) {
+            yAxis.scaleLabel = { display: true, labelString: unitY };
+        }
+        scales.yAxes = [yAxis];
         return scales;
     }
 
@@ -65,7 +73,9 @@
                 labels: chart.labels || [],
                 datasets: [{
                     label: ds.label || '',
-                    data: ds.data || [],
+                    data: (ds.data || []).map(function (v) {
+                        return parseInt(v, 10) || 0;
+                    }),
                     backgroundColor: palette.bar,
                     hoverBackgroundColor: palette.barHover,
                 }],
@@ -74,7 +84,7 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 legend: { display: false },
-                scales: scaleOptions(opts.unitX, opts.unitY),
+                scales: scaleOptions(opts.unitX, opts.unitY, opts),
             },
         });
     }
@@ -95,12 +105,14 @@
         var chartDatasets = datasets.map(function (ds, i) {
             return {
                 label: ds.label || '',
-                data: ds.data || [],
+                data: (ds.data || []).map(function (v) {
+                    return parseInt(v, 10) || 0;
+                }),
                 backgroundColor: colors[i],
                 hoverBackgroundColor: colors[i],
             };
         });
-        var scales = scaleOptions(opts.unitX, opts.unitY);
+        var scales = scaleOptions(opts.unitX, opts.unitY, opts);
         if (opts.stacked) {
             if (scales.xAxes && scales.xAxes[0]) {
                 scales.xAxes[0].stacked = true;

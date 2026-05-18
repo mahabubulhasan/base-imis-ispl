@@ -105,6 +105,22 @@ class ServiceProvidersDashboardModuleTest extends TestCase
         $this->assertContains(__('Bachelor'), $charts['swmChartWorkerEducation']['labels']);
     }
 
+    public function test_gender_chart_does_not_double_count_empty_gender(): void
+    {
+        $period = $this->testPeriod();
+        $org = $this->createOrganization();
+        $workType = $this->createWorkType('Collector');
+        $this->createWorker($org, $workType, ['gender' => 'male']);
+        $this->createWorker($org, $workType, ['gender' => '']);
+
+        $result = $this->module->build($period);
+        $charts = $this->chartsById($result);
+        $genderChart = $charts['swmChartWorkerGender'];
+
+        $this->assertSame([__('Male'), __('N/A')], $genderChart['labels']);
+        $this->assertSame([1, 1], $genderChart['datasets'][0]['data']);
+    }
+
     public function test_scopes_metrics_to_authenticated_organization(): void
     {
         $period = $this->testPeriod();

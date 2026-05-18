@@ -166,7 +166,7 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
             'title' => __('Organizations Category'),
             'labels' => $labels,
             'datasets' => [
-                ['label' => __('Count'), 'data' => $values],
+                ['data' => $values],
             ],
             'options' => [],
         ];
@@ -182,18 +182,22 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
             ->orderByDesc('total')
             ->get();
 
+        $labels = [];
+        $values = [];
+        foreach ($rows as $row) {
+            $labels[] = $row->label;
+            $values[] = (int) $row->total;
+        }
+
         return [
             'id' => 'swmChartWorkersByType',
             'type' => 'bar',
             'title' => __('Workers by Worker Type'),
-            'labels' => $rows->pluck('label')->all(),
+            'labels' => $labels,
             'datasets' => [
-                [
-                    'label' => __('Count'),
-                    'data' => $rows->pluck('total')->map(fn ($v) => (int) $v)->all(),
-                ],
+                ['data' => $values],
             ],
-            'options' => ['unitX' => __('Worker Type'), 'unitY' => __('Count')],
+            'options' => ['unitX' => __('Worker Type')],
         ];
     }
 
@@ -254,7 +258,6 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
                 'options' => [
                     'stacked' => true,
                     'unitX' => __('Ward'),
-                    'unitY' => __('Count'),
                 ],
                 'height' => 400,
             ];
@@ -313,7 +316,6 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
             'options' => [
                 'stacked' => true,
                 'unitX' => __('Ward'),
-                'unitY' => __('Count'),
             ],
             'height' => 400,
         ];
@@ -335,11 +337,14 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
         $chartLabels = [];
         $values = [];
         foreach ($labels as $key => $label) {
-            $chartLabels[] = $label;
-            $values[] = (int) ($counts[$key] ?? 0);
+            $count = (int) $counts->get($key, 0);
+            if ($count > 0) {
+                $chartLabels[] = $label;
+                $values[] = $count;
+            }
         }
 
-        $unknown = (int) (($counts[null] ?? 0) + ($counts[''] ?? 0));
+        $unknown = $this->sumUnlistedBucketCounts($counts, array_keys($labels));
         if ($unknown > 0) {
             $chartLabels[] = __('N/A');
             $values[] = $unknown;
@@ -351,7 +356,7 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
             'title' => __('Worker Gender Distribution'),
             'labels' => $chartLabels,
             'datasets' => [
-                ['label' => __('Count'), 'data' => $values],
+                ['data' => $values],
             ],
             'options' => [],
         ];
@@ -391,9 +396,9 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
             'title' => __('Worker Age Distribution'),
             'labels' => $labels,
             'datasets' => [
-                ['label' => __('Count'), 'data' => $values],
+                ['data' => $values],
             ],
-            'options' => ['unitX' => __('Age'), 'unitY' => __('Count')],
+            'options' => ['unitX' => __('Age')],
         ];
     }
 
@@ -413,11 +418,14 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
         $chartLabels = [];
         $values = [];
         foreach ($labels as $key => $label) {
-            $chartLabels[] = $label;
-            $values[] = (int) ($counts[$key] ?? 0);
+            $count = (int) $counts->get($key, 0);
+            if ($count > 0) {
+                $chartLabels[] = $label;
+                $values[] = $count;
+            }
         }
 
-        $unknown = (int) (($counts[null] ?? 0) + ($counts[''] ?? 0));
+        $unknown = $this->sumUnlistedBucketCounts($counts, array_keys($labels));
         if ($unknown > 0) {
             $chartLabels[] = __('N/A');
             $values[] = $unknown;
@@ -429,7 +437,7 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
             'title' => __('Worker by Employment Type'),
             'labels' => $chartLabels,
             'datasets' => [
-                ['label' => __('Count'), 'data' => $values],
+                ['data' => $values],
             ],
             'options' => [],
         ];
@@ -467,10 +475,26 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
             'title' => __('Worker Education-Level Distribution'),
             'labels' => $chartLabels,
             'datasets' => [
-                ['label' => __('Count'), 'data' => $values],
+                ['data' => $values],
             ],
-            'options' => ['unitX' => __('Education Level'), 'unitY' => __('Count')],
+            'options' => ['unitX' => __('Education Level')],
         ];
+    }
+
+    /**
+     * Sum bucket totals for keys not in $knownKeys (null, empty string, or other).
+     * Avoids double-counting when PHP maps null and '' to the same array key.
+     */
+    protected function sumUnlistedBucketCounts(Collection $counts, array $knownKeys): int
+    {
+        $unknown = 0;
+        foreach ($counts as $value => $total) {
+            if (! in_array($value, $knownKeys, true)) {
+                $unknown += (int) $total;
+            }
+        }
+
+        return $unknown;
     }
 
     /** @return array<string, string> */

@@ -16,5 +16,11 @@ return [
             'permission' => null,
             'enabled' => true,
         ],
+        'service_facilities' => [
+            'class' => \App\Services\Swm\Dashboard\Modules\ServiceFacilitiesDashboardModule::class,
+            'view' => 'swm.dashboard.modules.service-facilities',
+            'permission' => null,
+            'enabled' => true,
+        ],
     ],
 ];

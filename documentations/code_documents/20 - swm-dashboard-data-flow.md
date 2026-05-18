@@ -1,630 +1,584 @@
 # SWM Dashboard — Data Flow & Architecture
 
-A detailed guide to how the Solid Waste Management (SWM) **Dashboard and KPIs** page prepares and displays data, from the HTTP request through backend services to Blade templates and browser JavaScript.
-
-Written for developers and stakeholders who want both the **big picture** and **where to change things**.
+A developer guide to the Solid Waste Management (SWM) **Dashboard and KPIs** page: how requests flow through the stack, how **modules** plug in, and how to add new metrics without changing the core orchestrator.
 
 ---
 
 ## Table of contents
 
-1. [Overview in plain language](#overview-in-plain-language)
-2. [End-to-end sequence](#end-to-end-sequence)
-3. [Routes and entry points](#routes-and-entry-points)
-4. [Backend layers](#backend-layers)
-   - [Controller](#1-controller-dashboardkpicontroller)
-   - [Orchestrator](#2-orchestrator-swmdashboardorchestrator)
-   - [Period resolver](#3-period-resolver-dashboardreportingperiodresolver)
-   - [Reporting period & windows](#4-reporting-period--windows)
-   - [Dashboard modules](#5-dashboard-modules)
-   - [Supporting services](#6-supporting-services)
-5. [Data structure returned to the view](#data-structure-returned-to-the-view)
-6. [Frontend layers](#frontend-layers)
-   - [Blade rendering](#blade-rendering)
-   - [JavaScript behavior](#javascript-behavior)
-7. [Worked example](#worked-example)
-8. [Month selection rules](#month-selection-rules)
-9. [Per-source reporting windows](#per-source-reporting-windows)
-10. [File reference](#file-reference)
-11. [Extending the dashboard](#extending-the-dashboard)
-12. [Common questions](#common-questions)
+1. [Overview](#overview)
+2. [Architecture at a glance](#architecture-at-a-glance)
+3. [Current modules](#current-modules)
+4. [Request flow](#request-flow)
+5. [Core platform (shared by all modules)](#core-platform-shared-by-all-modules)
+6. [Module contract & payload schema](#module-contract--payload-schema)
+7. [Block and chart types](#block-and-chart-types)
+8. [Date filtering strategies](#date-filtering-strategies)
+9. [Frontend rendering](#frontend-rendering)
+10. [Adding a new dashboard module](#adding-a-new-dashboard-module)
+11. [Adding charts, KPIs, and submodules](#adding-charts-kpis-and-submodules)
+12. [Adding a new chart type (platform)](#adding-a-new-chart-type-platform)
+13. [File reference](#file-reference)
+14. [Tests](#tests)
+15. [Common questions](#common-questions)
 
 ---
 
-## Overview in plain language
+## Overview
 
-When a user opens the dashboard, they are really asking:
+The dashboard answers one user question:
 
-> **“Show me waste and household statistics from when we started recording, up through the end of the month I pick.”**
+> **Show me SWM metrics from the beginning of recorded data through the end of the month I select.**
 
-The system does this in four broad steps:
+Execution is split into a **fixed platform** and **pluggable modules**:
 
-| Step | Where | What happens |
-|------|--------|----------------|
-| 1 | **Controller** | Receives the request, checks auth, reads `to_month` from the URL |
-| 2 | **Period resolver** | Decides which month is allowed, and how many “reporting days” apply per data source (household, landfill, complaints) |
-| 3 | **Modules** | Run SQL, compute KPIs, build chart definitions as PHP arrays |
-| 4 | **Blade + JS** | Print HTML (tiles, KPI cards, chart placeholders); JavaScript draws charts and the ward heatmap |
+| Layer | Responsibility |
+|-------|----------------|
+| **Controller** | Auth, read `to_month`, return HTML or JSON |
+| **Orchestrator** | Resolve reporting period, load enabled modules, merge output |
+| **Period resolver** | Clamp month, build per-source reporting windows (where used) |
+| **Modules** | Domain queries, KPI math, chart/tile payloads |
+| **Blade + CSS + JS** | Layout, accordions, Chart.js, heatmaps, month filter |
 
-**Important:** Most numbers (tiles, KPI values) are computed on the **server** and appear in HTML immediately. **Charts** and the **segregation heatmap** are rendered in the browser using JSON embedded in `data-*` attributes.
+**Server-rendered:** tile and KPI values are in HTML on first paint.  
+**Client-rendered:** charts and ward heatmaps use JSON in `data-chart` / `data-heatmap` attributes.
+
+Modules are registered in [`config/swm_dashboard.php`](../../config/swm_dashboard.php). The page loops config entries and includes each module’s Blade view—no change to routes or controller when adding a module.
 
 ---
 
-## End-to-end sequence
+## Architecture at a glance
+
+```mermaid
+flowchart TB
+    subgraph http [HTTP]
+        R[routes/web.php]
+        C[DashboardKpiController]
+    end
+
+    subgraph platform [Platform - do not duplicate per module]
+        O[SwmDashboardOrchestrator]
+        PR[DashboardReportingPeriodResolver]
+        P[DashboardReportingPeriod]
+        CFG[config/swm_dashboard.php]
+    end
+
+    subgraph modules [Pluggable modules]
+        M1[HouseholdDashboardModule]
+        M2[ServiceProvidersDashboardModule]
+        M3[ServiceFacilitiesDashboardModule]
+        MN[YourModule...]
+    end
+
+    subgraph ui [Presentation]
+        IDX[index.blade.php]
+        MOD[modules/*.blade.php]
+        COMP[components/*.blade.php]
+        JS[swm-dashboard.js]
+    end
+
+    R --> C --> O
+    O --> PR --> P
+    O --> CFG
+    CFG --> M1 & M2 & M3 & MN
+    M1 & M2 & M3 & MN --> O
+    O --> IDX --> MOD --> COMP
+    IDX --> JS
+```
+
+---
+
+## Current modules
+
+Registered in [`config/swm_dashboard.php`](../../config/swm_dashboard.php) (order = display order on the page).
+
+| Config key | Class | Accordion label | Blade view | Permission |
+|------------|-------|-----------------|------------|------------|
+| `households` | `HouseholdDashboardModule` | Households & LIC | `swm.dashboard.modules.households` | `null` (page gate only) |
+| `service_providers` | `ServiceProvidersDashboardModule` | Service Providers | `swm.dashboard.modules.service-providers` | `null` |
+| `service_facilities` | `ServiceFacilitiesDashboardModule` | Service Facilities | `swm.dashboard.modules.service-facilities` | `null` |
+
+### `households` — Households & LIC
+
+**File:** `app/Services/Swm/Dashboard/Modules/HouseholdDashboardModule.php`
+
+| Submodule key | Title | Blocks |
+|---------------|-------|--------|
+| `municipality` | Municipality Overview | Tiles → Charts (ward bar, waste-bin doughnut) |
+| `waste_generation` | Waste Generation & Collection | Tiles → KPIs → Charts (ward bars, functional-use doughnut, segregation heatmap) |
+| `lic` | LIC | Tiles → Charts (gender doughnut) |
+
+**Date logic:** Uses `BuildsCumulativeDateQueries` and **per-source reporting windows** (`SOURCE_HOUSEHOLD`, `SOURCE_LANDFILL`, `SOURCE_COMPLAINT`) for landfill disposal and complaint KPIs. Uses `SwmModuleSettingsService` for per-capita generation.
+
+### `service_providers` — Service Providers
+
+**File:** `app/Services/Swm/Dashboard/Modules/ServiceProvidersDashboardModule.php`
+
+| Submodule key | Title | Blocks |
+|---------------|-------|--------|
+| `overview` | Overview | Tiles (org count, worker count) → Charts |
+
+**Charts:** Organization category (doughnut), workers by type (bar), workers by ward & organization (stacked bar), gender (doughnut), age buckets (bar), employment type (doughnut), education level (bar).
+
+**Date logic:** Cumulative through `periodEnd` on `created_at` (`whereThroughPeriodEnd`). Counts **operational** organizations and **active** workers. Respects `Auth::user()->swm_organization_id` when set.
+
+### `service_facilities` — Service Facilities
+
+**File:** `app/Services/Swm/Dashboard/Modules/ServiceFacilitiesDashboardModule.php`
+
+| Submodule key | Title | Blocks |
+|---------------|-------|--------|
+| `overview` | Overview | Tiles → KPIs → Charts |
+
+**Charts:** Waste bins by type, household-to-bin ratio by ward, bin placement, vehicles by type, fleet capacity by ward (stacked bar), fuel type, STS capacity adequacy, STS/landfill waste type distributions.
+
+**Date logic:** Cumulative through `periodEnd` on facility `created_at`. Optional org scope on vehicles where applicable.
+
+---
+
+## Request flow
 
 ```mermaid
 sequenceDiagram
     participant User
-    participant Browser
     participant Controller as DashboardKpiController
     participant Orch as SwmDashboardOrchestrator
     participant Resolver as DashboardReportingPeriodResolver
-    participant Period as DashboardReportingPeriod
-    participant Module as HouseholdDashboardModule
-    participant DB as PostgreSQL
+    participant Module as SwmDashboardModuleInterface
     participant Blade as Blade views
     participant JS as swm-dashboard.js
 
-    User->>Browser: GET /swm/dashboard-kpis?to_month=2026-04
-    Browser->>Controller: index(request)
-    Controller->>Orch: build('2026-04')
-    Orch->>Resolver: resolve('2026-04')
-    Resolver->>DB: min(created_at), min(operation_date), min(date_time)
-    Resolver->>Period: new DashboardReportingPeriod(...)
-    Orch->>Module: build(period)
-    Module->>DB: aggregates, sums, group by ward
-    Module-->>Orch: submodules + blocks
+    User->>Controller: GET /swm/dashboard-kpis?to_month=YYYY-MM
+    Controller->>Orch: build(to_month)
+    Orch->>Resolver: resolve(to_month)
+    Resolver-->>Orch: DashboardReportingPeriod
+    loop Each enabled module in config
+        Orch->>Module: build(period)
+        Module-->>Orch: submodules + blocks
+    end
     Orch-->>Controller: dashboard array
-    Controller->>Blade: view index + $dashboard
-    Blade-->>Browser: HTML + window.swmDashboardConfig
-    Browser->>JS: DOMContentLoaded → init()
-    JS->>JS: initCharts(), initHeatmaps()
-    JS-->>User: Interactive dashboard
-
-    Note over User,JS: On Apply filter: fetch JSON, then full page reload with new to_month
+    Controller->>Blade: index + dashboard
+    Blade-->>User: HTML + swmDashboardConfig
+    User->>JS: init charts / heatmaps / accordions
 ```
 
----
+### Routes
 
-## Routes and entry points
-
-Defined in `routes/web.php` (under the SWM prefix):
+Defined in `routes/web.php` (SWM prefix):
 
 | Route name | Method | Handler | Purpose |
 |------------|--------|---------|---------|
-| `swm.dashboard-kpis.index` | GET | `DashboardKpiController@index` | Full HTML page |
-| `swm.dashboard-kpis.data` | GET | `DashboardKpiController@data` | Same payload as JSON (used when changing month) |
-| `swm.dashboard-kpis.ward-geometries` | GET | `DashboardKpiController@wardGeometries` | GeoJSON ward boundaries (optional / map-related) |
+| `swm.dashboard-kpis.index` | GET | `DashboardKpiController@index` | Full page |
+| `swm.dashboard-kpis.data` | GET | `DashboardKpiController@data` | Same payload as JSON |
+| `swm.dashboard-kpis.ward-geometries` | GET | `DashboardKpiController@wardGeometries` | Ward GeoJSON (map-related) |
 
-All dashboard routes require:
-
-- Authentication (`auth` middleware)
-- Permission: **List SW Dashboard and KPIs**
+**Access:** `auth` middleware + permission **List SW Dashboard and KPIs**.
 
 ---
 
-## Backend layers
+## Core platform (shared by all modules)
 
-### 1. Controller (`DashboardKpiController`)
+### Controller
 
-**File:** `app/Http/Controllers/Swm/DashboardKpiController.php`
+`app/Http/Controllers/Swm/DashboardKpiController.php` — reads `to_month`, calls `SwmDashboardOrchestrator::build()`, returns view or JSON. No domain queries here.
 
-Thin entry point:
+### Orchestrator
 
-```php
-public function index(Request $request)
-{
-    $page_title = __('Dashboard and KPIs');
-    $dashboard = $this->orchestrator->build($request->input('to_month'));
+`app/Services/Swm/Dashboard/SwmDashboardOrchestrator.php`
 
-    return view('swm.dashboard.index', compact('page_title', 'dashboard'));
-}
-
-public function data(Request $request)
-{
-    return response()->json($this->orchestrator->build($request->input('to_month')));
-}
-```
-
-**Responsibilities:**
-
-- Read optional `to_month` query parameter (`YYYY-MM`)
-- Delegate all logic to `SwmDashboardOrchestrator`
-- Return either a Blade view or JSON
-
-The controller does **not** query households or compute KPIs itself.
-
----
-
-### 2. Orchestrator (`SwmDashboardOrchestrator`)
-
-**File:** `app/Services/Swm/Dashboard/SwmDashboardOrchestrator.php`
-
-Acts as the **project manager** for the dashboard build.
-
-**Flow:**
-
-1. Call `DashboardReportingPeriodResolver::resolve($toMonthInput)` → get `DashboardReportingPeriod`
-2. Read enabled modules from `config/swm_dashboard.php`
-3. For each module:
-   - Skip if disabled or class missing
-   - Instantiate module (e.g. `HouseholdDashboardModule`)
-   - Skip if user lacks module permission
-   - Call `$module->build($period)`
-4. Merge module output into `modules`, track Blade view names in `moduleViews`
-5. Flatten all chart definitions into top-level `charts` (for JS config)
+1. Resolve `DashboardReportingPeriod`
+2. Iterate `config('swm_dashboard.modules')`
+3. Skip if `enabled` is false, class missing, or `permission()` denied
+4. Call `$module->build($period)` and merge into `modules` / `moduleViews`
+5. Flatten chart definitions into top-level `charts` (for `window.swmDashboardConfig`)
 6. Attach `period` metadata and `map` config
 
-**Returned `period` keys:**
+### Period resolver
+
+`app/Services/Swm/Dashboard/DashboardReportingPeriodResolver.php`
+
+- **Default month:** previous calendar month (not current/future)
+- **Clamp:** URL `to_month` and `config('swm_dashboard.default_to_month')` cannot exceed latest allowed month
+- **Windows:** earliest DB date per household / landfill log / complaint → `ReportingWindow` through `periodEnd`
+
+`DashboardReportingPeriod` and `ReportingWindow` are value objects in `app/Services/Swm/Dashboard/`.
+
+**Returned `period` keys (in view/API):**
 
 | Key | Meaning |
 |-----|---------|
-| `to_month` | Resolved selected month (`Y-m`) |
-| `period_end` | Last calendar day of that month |
-| `max_to_month` | Latest month the user is allowed to pick (previous calendar month) |
-| `reporting_days` | Household window day count (backward-compatible alias) |
-| `household_days` | Days in household reporting window |
-| `landfill_days` | Days in landfill reporting window |
-| `complaint_days` | Days in complaint reporting window |
+| `to_month` | Selected month `Y-m` |
+| `period_end` | Last day of that month |
+| `max_to_month` | Max selectable month (for `<input type="month" max="...">`) |
+| `reporting_days` | Household window days (legacy alias) |
+| `household_days` / `landfill_days` / `complaint_days` | Per-source window day counts |
+
+Modules that do not use windows can ignore window fields and only use `$period->periodEnd`.
+
+### Shared helpers
+
+| Component | Role |
+|-----------|------|
+| `SwmDashboardFormatter` | `integer()`, `decimal()`, `percent()`, etc. |
+| `SwmModuleSettingsService` | Module settings (e.g. per-capita kg/day for households) |
+| `BuildsCumulativeDateQueries` | `whereThroughPeriodEnd`, `whereWithinWindow` |
 
 ---
 
-### 3. Period resolver (`DashboardReportingPeriodResolver`)
+## Module contract & payload schema
 
-**File:** `app/Services/Swm/Dashboard/DashboardReportingPeriodResolver.php`
+### Interface
 
-This is the **only** class named “Resolver” in the dashboard stack. It answers all **time-related** questions before any KPI math runs.
-
-#### 3.1 Choosing the “To month”
-
-Method: `parseToMonth(?string $toMonthInput)`
-
-| Input | Behavior |
-|-------|----------|
-| Valid `YYYY-MM` in URL | Parsed, then **clamped** to `latestAllowedToMonth()` |
-| Invalid / missing | Default = **previous calendar month** |
-| `config('swm_dashboard.default_to_month')` | Used if set, also clamped |
-
-**Month bounds (business rules):**
-
-- Users cannot select the **current** month or any **future** month
-- Latest allowed = `now()->subMonth()->startOfMonth()`
-- Example: if today is 17 May 2026, default and max are **April 2026** (`2026-04`)
-
-Public helpers:
-
-- `latestAllowedToMonth(): Carbon`
-- `latestAllowedToMonthString(): string` — for Blade `max` attribute and API
-- `clampToMonth(Carbon $month): Carbon` — caps future/current selections
-
-#### 3.2 Building per-source windows
-
-For the resolved month, the resolver queries the **earliest record** per source:
-
-| Source constant | DB query | Column |
-|-----------------|----------|--------|
-| `SOURCE_HOUSEHOLD` | `Household::query()->min('created_at')` | When first household was created |
-| `SOURCE_LANDFILL` | `LandfillLog::query()->min('operation_date')` | First landfill log date |
-| `SOURCE_COMPLAINT` | `Complaint::query()->min('date_time')` | First complaint date |
-
-Each min date is passed to `resolveWindow($periodEnd, $minDate)`:
-
-- If min exists → `ReportingWindow::between($epoch, $periodEnd)`
-- If no rows → `ReportingWindow::empty($periodEnd)` → **0 days**, no epoch
-
-`periodEnd` is always **end of the selected month** (e.g. 30 Apr 2026 23:59:59).
-
----
-
-### 4. Reporting period & windows
-
-#### `DashboardReportingPeriod`
-
-**File:** `app/Services/Swm/Dashboard/DashboardReportingPeriod.php`
-
-Immutable value object holding:
-
-- `toMonth` — start of selected month
-- `periodEnd` — end of selected month
-- Three `ReportingWindow` instances (household, landfill, complaint)
-
-Access:
-
-```php
-$period->window(DashboardReportingPeriod::SOURCE_LANDFILL)->days;
-$period->reportingDays(); // same as household window days
-```
-
-Passed into every module’s `build()` method so modules share one consistent time context.
-
-#### `ReportingWindow`
-
-**File:** `app/Services/Swm/Dashboard/ReportingWindow.php`
-
-Describes one data source’s counting range:
-
-| Property | Description |
-|----------|-------------|
-| `epoch` | Start date (`null` if source has no data) |
-| `periodEnd` | End of selected month |
-| `days` | Inclusive day count (`0` if empty) |
-
-Factories:
-
-- `ReportingWindow::between($epoch, $periodEnd)` → `days = max(1, diffInDays + 1)`
-- `ReportingWindow::empty($periodEnd)` → `epoch = null`, `days = 0`
-- `hasData()` → `days > 0`
-
-**Why separate windows?**  
-Household, landfill, and complaints may start on different dates. Using one global “first record ever” would skew landfill daily averages (e.g. 34 days instead of 19 when landfill started mid-month).
-
----
-
-### 5. Dashboard modules
-
-#### Contract
-
-**File:** `app/Services/Swm/Dashboard/Contracts/SwmDashboardModuleInterface.php`
-
-Every module implements:
+`app/Services/Swm/Dashboard/Contracts/SwmDashboardModuleInterface.php`
 
 | Method | Purpose |
 |--------|---------|
-| `key()` | Config key (e.g. `households`) |
-| `label()` | Section title |
-| `build(DashboardReportingPeriod $period)` | Returns structured metrics array |
-| `permission()` | Optional gate; `null` = everyone |
+| `key()` | Must match config array key (e.g. `service_providers`) |
+| `label()` | Accordion banner title |
+| `build(DashboardReportingPeriod $period)` | Returns metrics structure (below) |
+| `permission()` | Optional `can()` permission name; `null` = no extra gate |
 
-#### Current module: `HouseholdDashboardModule`
+### Return shape
 
-**File:** `app/Services/Swm/Dashboard/Modules/HouseholdDashboardModule.php`  
-**Config:** `config/swm_dashboard.php` → `modules.households`  
-**View:** `resources/views/swm/dashboard/modules/households.blade.php`
-
-**Uses trait:** `BuildsCumulativeDateQueries` for date-scoped Eloquent/DB queries.
-
-**Submodules produced:**
-
-| Submodule key | Title | Contents |
-|---------------|-------|----------|
-| `municipality` | Municipality Overview | Population/household tiles; bar chart by ward; waste bin doughnut |
-| `waste_generation` | Waste Generation & Collection | Generation tiles; KPI row; ward bar charts; functional-use doughnut; segregation heatmap |
-| `lic` | LIC | LIC population tiles; gender doughnut; complaint density |
-
-**Block types inside each submodule:**
-
-| `type` | Rendered as | Data shape |
-|--------|-------------|------------|
-| `tiles` | Info boxes with icon | `label`, `value`, `icon` |
-| `kpis` | KPI cards | `name`, `value`, `unit`, `showFrequency` |
-| `charts` | Chart card → canvas or heatmap div | Chart.js config or heatmap `wards` + `values` |
-
-**Example KPI logic (waste generation):**
-
-- **Daily generation (Ton/day):** `perCapitaKg × activeMembers / 1000`
-- **Collected (Ton/day):** sum of active households’ `daily_waste_volume` / 1000
-- **Disposed at designated site (Ton/day):** sum landfill tonnage within **landfill window** ÷ **landfill days**
-- **Non-designated (Ton/day):** `max(0, collectedDailyTon - disposedDailyTon)`
-- **Uncollected (Ton/day):** `max(0, dailyGenTon - collectedDailyTon)`
-- **% Collected:** collected daily kg vs estimated generation (can exceed 100% if reported collection exceeds model)
-
-**Landfill total query** (`landfillDisposedTon`):
-
-- Short-circuit `0` if landfill window has no data
-- Else `whereWithinWindow` on `operation_date` (>= epoch, <= periodEnd)
-- Sum `weighbridge_weight_ton` or `quantity_ton`
-
-**Complaint count** (`licComplaintCount`):
-
-- Short-circuit `0` if complaint window empty
-- Filter complaints in window, joined to LIC households
-
----
-
-### 6. Supporting services
-
-#### `SwmDashboardFormatter`
-
-**File:** `app/Services/Swm/Dashboard/SwmDashboardFormatter.php`
-
-Display-only formatting: `integer()`, `decimal()`, `percent()`, `percentValue()`, `safePercent()`.
-
-#### `SwmModuleSettingsService`
-
-**File:** `app/Services/Swm/SwmModuleSettingsService.php`
-
-Provides settings such as **per-capita waste generation (kg/day)** used in formulas.
-
-#### `BuildsCumulativeDateQueries` (trait)
-
-**File:** `app/Services/Swm/Dashboard/Concerns/BuildsCumulativeDateQueries.php`
-
-| Method | SQL effect |
-|--------|------------|
-| `whereThroughPeriodEnd($query, $column, $period)` | `column <= periodEnd` |
-| `whereWithinWindow($query, $column, $window)` | `column >= epoch AND column <= periodEnd` (only if window has data) |
-
----
-
-## Data structure returned to the view
-
-Simplified shape of `$dashboard`:
+Every module returns:
 
 ```php
 [
-    'period' => [
-        'to_month' => '2026-04',
-        'period_end' => '2026-04-30',
-        'max_to_month' => '2026-04',
-        'reporting_days' => 34,
-        'household_days' => 34,
-        'landfill_days' => 19,
-        'complaint_days' => 12,
+    'submodules' => [
+        [
+            'key' => 'overview',           // unique within module
+            'title' => __('Overview'),
+            'blocks' => [ /* see below */ ],
+        ],
+        // more submodules...
     ],
+]
+```
+
+The orchestrator adds `'label' => $module->label()` when merging into `$dashboard['modules'][$key]`.
+
+### Orchestrator output (`$dashboard`)
+
+```php
+[
+    'period' => [ /* to_month, period_end, max_to_month, *_days */ ],
     'modules' => [
-        'households' => [
-            'label' => 'Households & LIC',
-            'submodules' => [
-                [
-                    'key' => 'waste_generation',
-                    'title' => 'Waste Generation & Collection',
-                    'blocks' => [
-                        [
-                            'type' => 'kpis',
-                            'subsection' => 'Key Performance Indicators',
-                            'items' => [
-                                [
-                                    'name' => 'SW Disposed at Designated Site',
-                                    'value' => '1.20',
-                                    'unit' => 'Ton/day',
-                                    'showFrequency' => true,
-                                ],
-                                // ...
-                            ],
-                        ],
-                        [
-                            'type' => 'charts',
-                            'subsection' => 'Visualizations',
-                            'items' => [
-                                [
-                                    'id' => 'swmChartWasteGenByWard',
-                                    'type' => 'bar',
-                                    'title' => 'Daily Waste Generation by Ward',
-                                    'labels' => ['1', '2', '3'],
-                                    'datasets' => [['label' => 'Ton/day', 'data' => [1.2, 0.8, ...]]],
-                                    'options' => ['unitX' => 'Ward', 'unitY' => 'Ton/day'],
-                                ],
-                                [
-                                    'id' => 'swmSegregationHeatmap',
-                                    'type' => 'heatmap',
-                                    'title' => 'Segregation Rate by Ward (%)',
-                                    'wards' => ['1', '2', ...],
-                                    'values' => [45.2, 67.0, ...],
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-            ],
+        'your_key' => [
+            'label' => '...',
+            'submodules' => [ /* from module */ ],
         ],
     ],
     'moduleViews' => [
-        'households' => 'swm.dashboard.modules.households',
+        'your_key' => 'swm.dashboard.modules.your_module',
     ],
-    'charts' => [ /* flat list of all chart items with ids */ ],
-    'map' => [ /* GeoServer URLs, bbox, ward geometries route */ ],
+    'charts' => [ /* flat list of all chart items with id */ ],
+    'map' => [ /* GeoServer / ward geometries */ ],
 ]
 ```
 
 ---
 
-## Frontend layers
+## Block and chart types
 
-### Blade rendering
+Rendered by [`resources/views/swm/dashboard/components/submodule.blade.php`](../../resources/views/swm/dashboard/components/submodule.blade.php). Each **block** is wrapped in `.swm-metric-block` for consistent vertical spacing.
 
-**Page shell:** `resources/views/swm/dashboard/index.blade.php`
+### Blocks
 
-- Extends `layouts.dashboard`
-- Month filter form: `#swm-dashboard-filter-form`, input `#to_month` with `max="{{ max_to_month }}"`
-- Loops `$dashboard['modules']` and `@include`s each `moduleViews[$key]`
+| `type` | Optional `subsection` | Renders |
+|--------|----------------------|---------|
+| `tiles` | No (usually) | Info boxes — `label`, `value`, `icon` |
+| `kpis` | Often “Key Performance Indicators” | KPI cards — `name`, `value`, `unit`, `showFrequency`, `hideUnit` |
+| `charts` | Often “Visualizations” | Grid of chart cards |
 
-**Include chain:**
+### Chart `type` values (Chart.js / custom)
+
+| `type` | Width | JS handler |
+|--------|-------|------------|
+| `bar` | half (`col-md-6`) | `renderBar()` |
+| `doughnut` | half | `renderDoughnut()` |
+| `stackedBar` | full (`col-md-12`) | `renderStackedBar()` — multiple `datasets` |
+| `heatmap` | full | `initHeatmaps()` — ward grid, not Chart.js |
+
+**Common chart fields:** `id` (unique globally), `title`, `labels`, `datasets`, `options` (`unitX`, `unitY`, `stacked`), optional `height`.
+
+**Heatmap fields:** `wards`, `values`, `rowLabel`, `options.unit`.
+
+**Example bar chart definition:**
+
+```php
+[
+    'id' => 'swmChartExample',
+    'type' => 'bar',
+    'title' => __('Example by Ward'),
+    'labels' => ['1', '2', '3'],
+    'datasets' => [
+        ['label' => __('Count'), 'data' => [10, 20, 15]],
+    ],
+    'options' => ['unitX' => __('Ward'), 'unitY' => __('Count')],
+]
+```
+
+---
+
+## Date filtering strategies
+
+Choose one pattern per metric; document it in your module class.
+
+| Strategy | Helper | Use when |
+|----------|--------|----------|
+| **Through period end** | `whereThroughPeriodEnd($query, $column, $period)` | Snapshot / cumulative counts: “records that existed by end of selected month” (`created_at <= periodEnd`) |
+| **Within source window** | `whereWithinWindow($query, $column, $window)` | Rates over days when a source has data (household, landfill, complaint windows) |
+| **Custom SQL** | — | JSON ward expansion, cross-schema joins, etc. |
+
+Reporting windows are built only for household, landfill, and complaint sources today. New time-series sources can extend `DashboardReportingPeriod` and the resolver if needed.
+
+**Month rules:** default and max selectable month = previous calendar month; current/future months are clamped server- and client-side.
+
+---
+
+## Frontend rendering
+
+### Page shell
+
+[`resources/views/swm/dashboard/index.blade.php`](../../resources/views/swm/dashboard/index.blade.php)
+
+- Page header + **To month** filter (`#swm-dashboard-filter-form`)
+- Loops `$dashboard['modules']` and `@include($dashboard['moduleViews'][$key])`
+
+### View hierarchy
 
 ```
 index.blade.php
-  └── modules/households.blade.php
-        └── components/metrics-body.blade.php
-              └── components/submodule.blade.php
-                    ├── components/tile.blade.php      (type: tiles)
-                    ├── components/kpi.blade.php       (type: kpis)
-                    └── components/chart-card.blade.php (type: charts)
+└── modules/{key}.blade.php          ← accordion (.dash-section)
+    └── components/metrics-body.blade.php
+        └── components/submodule.blade.php   ← per submodule
+            ├── components/tile.blade.php
+            ├── components/kpi.blade.php
+            └── components/chart-card.blade.php
 ```
 
-**Chart embedding** (`chart-card.blade.php`):
+**Module blade template** (minimal—copy from an existing module):
 
-- Bar/doughnut: `<canvas class="swm-chart-canvas" data-chart='@json($chart)'>`
-- Heatmap: `<motion.div id="..." class="heatmap-wrap swm-heatmap" data-heatmap='@json($chart)'></motion.div>` — see `chart-card.blade.php` (empty `div` until JS fills the ward grid)
+```blade
+<section class="dash-section" id="sec-your-module-id">
+    <div class="section-banner swm-module-toggle" role="button" tabindex="0" aria-expanded="true">
+        <span>{{ $module['label'] }}</span>
+        <i class="fas fa-chevron-up section-chevron"></i>
+    </div>
+    <div class="section-content">
+        @include('swm.dashboard.components.metrics-body', ['module' => $module])
+    </div>
+</section>
+```
 
-KPI and tile **values are already rendered in HTML** — no JavaScript required to see them.
+### Assets
 
-**Script bootstrapping:**
+| Asset | Role |
+|-------|------|
+| `public/css/swm-dashboard.css` | Layout, gutters, accordions, heatmap grid |
+| `resources/js/swm-dashboard.js` → `public/js/swm-dashboard.js` | Charts, heatmaps, filter, accordions (copied via Mix) |
+| `Chart.min.js` | Loaded from `index.blade.php` |
+
+**Month change:** Apply → `fetch(dataUrl)` → full page reload with `?to_month=` (server re-renders all tiles/KPIs).
+
+---
+
+## Adding a new dashboard module
+
+Checklist for a new domain area (e.g. billing, attendance):
+
+### 1. Create the module class
+
+Path: `app/Services/Swm/Dashboard/Modules/YourDashboardModule.php`
 
 ```php
-window.swmDashboardConfig = {
-    dataUrl: '/swm/.../dashboard-kpis/data',
-    period: { to_month, max_to_month, ... },
-    charts: [ ... ],
-};
+<?php
+
+namespace App\Services\Swm\Dashboard\Modules;
+
+use App\Services\Swm\Dashboard\Concerns\BuildsCumulativeDateQueries;
+use App\Services\Swm\Dashboard\Contracts\SwmDashboardModuleInterface;
+use App\Services\Swm\Dashboard\DashboardReportingPeriod;
+use App\Services\Swm\Dashboard\SwmDashboardFormatter;
+
+class YourDashboardModule implements SwmDashboardModuleInterface
+{
+    use BuildsCumulativeDateQueries;
+
+    public function __construct(
+        protected SwmDashboardFormatter $formatter,
+    ) {}
+
+    public function key(): string
+    {
+        return 'your_key'; // must match config key
+    }
+
+    public function label(): string
+    {
+        return __('Your Section Title');
+    }
+
+    public function permission(): ?string
+    {
+        return null; // or 'Some Permission'
+    }
+
+    public function build(DashboardReportingPeriod $period): array
+    {
+        return [
+            'submodules' => [
+                [
+                    'key' => 'overview',
+                    'title' => __('Overview'),
+                    'blocks' => [
+                        [
+                            'type' => 'tiles',
+                            'items' => [
+                                [
+                                    'label' => __('Total Items'),
+                                    'value' => $this->formatter->integer(0),
+                                    'icon' => 'fa-chart-bar',
+                                ],
+                            ],
+                        ],
+                        // Add kpis / charts blocks as needed
+                    ],
+                ],
+            ],
+        ];
+    }
+}
 ```
 
-Loads `Chart.min.js` and `public/js/swm-dashboard.js`.
+### 2. Register in config
 
-### JavaScript behavior
+[`config/swm_dashboard.php`](../../config/swm_dashboard.php):
 
-**File:** `resources/js/swm-dashboard.js` (built/copied to `public/js/swm-dashboard.js`)
-
-| Function | Role |
-|----------|------|
-| `initModuleAccordions()` | Toggle `.dash-section.collapsed` on banner click |
-| `initCharts()` | Parse `data-chart` on each canvas; render via Chart.js (bar/doughnut) |
-| `initHeatmaps()` | Parse `data-heatmap`; build ward grid HTML + color scale |
-| `initExportButtons()` | PNG download from chart canvas |
-| `clampToMaxMonth()` | On submit, if month > `max`, reset to max |
-| `refreshDashboard(toMonth)` | `fetch(dataUrl)` then **full page redirect** with `?to_month=` |
-| `bindFilterForm()` | Prevent default submit; run clamp + refresh |
-
-**Note:** Changing the month does not update KPIs via AJAX in place. The flow fetches JSON (validation path) then reloads the entire page so Blade re-renders all server-computed values.
-
-**Heatmap:** CSS grid (Ward 01–15 columns, Low→High legend), not OpenLayers on the main dashboard.
-
-**Styles:** `public/css/swm-dashboard.css`
-
----
-
-## Worked example
-
-**Assumptions:**
-
-- Today: **17 May 2026**
-- User opens dashboard with no `to_month` in URL
-- First household: **28 Apr 2026**
-- First landfill log: **13 May 2026**
-- User eventually selects **May 2026** (will be clamped)
-
-### Step 1 — Default month
-
-`parseToMonth(null)` → **April 2026** (`2026-04`)  
-`periodEnd` → 2026-04-30 23:59:59
-
-### Step 2 — Windows for April
-
-| Source | Epoch | Days (approx.) |
-|--------|-------|----------------|
-| Household | 2026-04-28 | 3 (28–30 Apr) |
-| Landfill | (none in April if first log is May 13) | 0 → disposal KPI = 0 |
-| Complaint | (depends on data) | … |
-
-If user selects **May 2026** (clamped to April in UI; if forced via URL for May):
-
-- Household window: 28 Apr → 31 May → **34 days**
-- Landfill window: 13 May → 31 May → **19 days**
-- Disposed daily = (sum of May landfill logs in range) ÷ **19**
-
-### Step 3 — Module output
-
-`HouseholdDashboardModule` runs SQL aggregates, fills submodule blocks, formats numbers.
-
-### Step 4 — Page render
-
-User sees tiles immediately; charts draw after `initCharts()` runs.
-
----
-
-## Month selection rules
-
-| Rule | Implementation |
-|------|----------------|
-| Default month | Previous calendar month |
-| Max selectable | Previous calendar month (`max` on `<input type="month">`) |
-| Current/future in URL | Clamped server-side in `clampToMonth()` |
-| Client submit | `clampToMaxMonth()` in JS before redirect |
-
----
-
-## Per-source reporting windows
-
-```mermaid
-flowchart LR
-    subgraph inputs [Earliest DB dates]
-        H[household min created_at]
-        L[landfill min operation_date]
-        C[complaint min date_time]
-    end
-
-    PE[periodEnd = end of To month]
-
-    H --> WH[household ReportingWindow]
-    L --> WL[landfill ReportingWindow]
-    C --> WC[complaint ReportingWindow]
-    PE --> WH
-    PE --> WL
-    PE --> WC
-
-    WH --> HD[household_days]
-    WL --> LD[landfill_days]
-    WC --> CD[complaint_days]
-
-    LD --> KPI[Disposed at designated site Ton/day]
-    HD --> GEN[Generation / collection scaling]
-    WC --> COMP[LIC complaint count]
+```php
+'your_key' => [
+    'class' => \App\Services\Swm\Dashboard\Modules\YourDashboardModule::class,
+    'view' => 'swm.dashboard.modules.your-module',
+    'permission' => null,
+    'enabled' => true,
+],
 ```
+
+### 3. Add the module Blade view
+
+`resources/views/swm/dashboard/modules/your-module.blade.php` — copy from [`households.blade.php`](../../resources/views/swm/dashboard/modules/households.blade.php), change section `id` and rely on `$module['label']`.
+
+### 4. Implement queries and payloads
+
+- Inject models/services as needed
+- Use `SwmDashboardFormatter` for display values
+- Use unique chart `id` values prefixed e.g. `swmChartYour...`
+- Apply date filters via `BuildsCumulativeDateQueries` or windows
+
+### 5. Add tests (recommended)
+
+`tests/Unit/YourDashboardModuleTest.php` — assert tile values and chart shapes for fixture data (see `ServiceProvidersDashboardModuleTest.php`).
+
+### 6. Verify in browser
+
+- `/swm/dashboard-kpis` — new accordion section appears
+- Change month — metrics update after reload
+- Collapse/expand accordion — charts init when expanded (accordion click re-runs `initCharts()`)
+
+**You do not need to change:** `DashboardKpiController`, `SwmDashboardOrchestrator`, routes, or `index.blade.php` (unless adding page-level behavior).
+
+---
+
+## Adding charts, KPIs, and submodules
+
+Within an **existing** module, extend `build()` only.
+
+### Add a submodule
+
+Add another element to the `submodules` array with a new `key` and `title`.
+
+### Add a block to a submodule
+
+Append to `blocks`:
+
+```php
+[
+    'type' => 'charts',
+    'subsection' => __('Visualizations'),
+    'items' => [
+        $this->myNewChart($period),
+    ],
+],
+```
+
+### Add a chart method
+
+Return a chart array from a protected method; keep `id` globally unique across all modules.
+
+### Add KPIs or tiles
+
+Same `blocks` pattern with `type` => `kpis` or `tiles` and `items` array.
+
+---
+
+## Adding a new chart type (platform)
+
+Only when `bar`, `doughnut`, `stackedBar`, and `heatmap` are not enough:
+
+1. Define the new `type` string in module chart payloads
+2. Branch in `initCharts()` / new init function in [`resources/js/swm-dashboard.js`](../../resources/js/swm-dashboard.js)
+3. Update [`chart-card.blade.php`](../../resources/views/swm/dashboard/components/chart-card.blade.php) if markup differs (e.g. full-width column)
+4. Copy JS to `public/js/swm-dashboard.js` (webpack Mix)
 
 ---
 
 ## File reference
 
-### Backend
+### Platform (shared)
 
 | File | Role |
 |------|------|
-| `routes/web.php` | Route definitions |
+| `config/swm_dashboard.php` | Module registry |
+| `routes/web.php` | Dashboard routes |
 | `app/Http/Controllers/Swm/DashboardKpiController.php` | HTTP entry |
-| `app/Services/Swm/Dashboard/SwmDashboardOrchestrator.php` | Coordinates build |
-| `app/Services/Swm/Dashboard/DashboardReportingPeriodResolver.php` | Month + window resolution |
+| `app/Services/Swm/Dashboard/SwmDashboardOrchestrator.php` | Build coordinator |
+| `app/Services/Swm/Dashboard/DashboardReportingPeriodResolver.php` | Month + windows |
 | `app/Services/Swm/Dashboard/DashboardReportingPeriod.php` | Period value object |
-| `app/Services/Swm/Dashboard/ReportingWindow.php` | Per-source window value object |
-| `app/Services/Swm/Dashboard/Modules/HouseholdDashboardModule.php` | Household/LIC metrics |
+| `app/Services/Swm/Dashboard/ReportingWindow.php` | Per-source window |
+| `app/Services/Swm/Dashboard/Contracts/SwmDashboardModuleInterface.php` | Module contract |
 | `app/Services/Swm/Dashboard/Concerns/BuildsCumulativeDateQueries.php` | Date query helpers |
 | `app/Services/Swm/Dashboard/SwmDashboardFormatter.php` | Number formatting |
-| `app/Services/Swm/SwmModuleSettingsService.php` | Per-capita etc. |
-| `config/swm_dashboard.php` | Module registry |
+
+### Modules (current)
+
+| File |
+|------|
+| `app/Services/Swm/Dashboard/Modules/HouseholdDashboardModule.php` |
+| `app/Services/Swm/Dashboard/Modules/ServiceProvidersDashboardModule.php` |
+| `app/Services/Swm/Dashboard/Modules/ServiceFacilitiesDashboardModule.php` |
 
 ### Frontend
 
 | File | Role |
 |------|------|
-| `resources/views/swm/dashboard/index.blade.php` | Page layout + filter |
-| `resources/views/swm/dashboard/modules/households.blade.php` | Module section |
+| `resources/views/swm/dashboard/index.blade.php` | Page + filter |
+| `resources/views/swm/dashboard/modules/*.blade.php` | Module accordions |
 | `resources/views/swm/dashboard/components/*.blade.php` | Tiles, KPIs, charts |
-| `resources/js/swm-dashboard.js` | Charts, heatmap, filter |
-| `public/js/swm-dashboard.js` | Served asset |
-| `public/css/swm-dashboard.css` | Dashboard styles |
+| `resources/js/swm-dashboard.js` | Client behavior |
+| `public/css/swm-dashboard.css` | Styles |
 
-### Tests
+---
+
+## Tests
 
 | File | Covers |
 |------|--------|
 | `tests/Unit/DashboardReportingPeriodResolverTest.php` | Month default, clamping, windows |
 | `tests/Unit/ReportingWindowTest.php` | Day counting, empty window |
+| `tests/Unit/SwmDashboardFormatterTest.php` | Formatting helpers |
+| `tests/Unit/ServiceProvidersDashboardModuleTest.php` | Service providers module output |
 
----
-
-## Extending the dashboard
-
-### Add a new module
-
-1. Create class implementing `SwmDashboardModuleInterface` under `app/Services/Swm/Dashboard/Modules/`
-2. Return `submodules` with `blocks` (`tiles`, `kpis`, `charts`)
-3. Register in `config/swm_dashboard.php`:
-
-```php
-'my_module' => [
-    'class' => \App\Services\Swm\Dashboard\Modules\MyModule::class,
-    'view' => 'swm.dashboard.modules.my_module',
-    'permission' => 'Some Permission',
-    'enabled' => true,
-],
-```
-
-4. Add Blade view `resources/views/swm/dashboard/modules/my_module.blade.php` including `metrics-body`
-
-Use `$period->window(...)` when metrics depend on date ranges.
-
-### Add a new chart type
-
-1. Add chart definition in module `charts` block with unique `id` and `type`
-2. Extend `initCharts()` in `swm-dashboard.js` to handle the new type
-3. Optionally extend `chart-card.blade.php` if markup differs
+Add module-specific tests when introducing new modules.
 
 ---
 
@@ -632,31 +586,28 @@ Use `$period->window(...)` when metrics depend on date ranges.
 
 ### Why is there only one “Resolver”?
 
-The name **resolver** here means “resolve the reporting period from user input + database facts.” Other classes are **value objects** (period, window), **coordinators** (orchestrator), or **data builders** (modules). Splitting them keeps date logic in one place.
+It resolves the reporting **period** from user input and DB facts. Modules and the orchestrator handle domain logic; value objects hold period/windows.
 
 ### Why does changing month reload the whole page?
 
-KPIs and tiles are server-rendered. The JSON `data` endpoint is used briefly on Apply, then the browser navigates to `?to_month=` so Blade recomputes everything consistently.
+Tiles and KPIs are server-rendered. JSON `data` validates the build, then the browser navigates with `?to_month=` so all modules recompute consistently.
 
-### Why can “% Collected” exceed 100%?
+### Do charts fetch data on a separate API?
 
-The model compares **reported daily collection** from households against **estimated generation** from per-capita × population. If reported collection is higher than the estimate, the percentage goes above 100%.
+No on initial load. Data is embedded in `data-chart` / `data-heatmap`. The flat `charts` array in `swmDashboardConfig` is available for future use.
 
-### Do charts load data via separate API calls?
+### Can I disable a module without deleting code?
 
-Not on initial load. Chart data is embedded in `data-chart` / `data-heatmap` attributes. The `charts` array in `swmDashboardConfig` is available for future use but primary rendering reads from the DOM.
+Set `'enabled' => false` in `config/swm_dashboard.php`.
 
-### What if landfill has no rows?
+### How do I restrict a module to certain users?
 
-`ReportingWindow::empty` → `landfill_days = 0`, `landfillDisposedTon()` returns `0`, disposal KPI shows `0` (no divide-by-zero).
+Return a permission name from `permission()` and ensure roles have that ability. The page still requires **List SW Dashboard and KPIs**.
 
----
+### What if my module does not need reporting windows?
 
-## Related documentation
-
-- Per-source reporting epochs implementation plan: `.cursor/plans/per-source_reporting_epochs_*.plan.md` (if present in your environment)
-- Dashboard month bounds plan: `.cursor/plans/dashboard_month_bounds_*.plan.md`
+Use only `$period->periodEnd` (and optionally `whereThroughPeriodEnd`). Windows are optional for modules.
 
 ---
 
-*Last updated to reflect the codebase as of the per-source reporting windows and month-selection bounds features.*
+*Last updated for the modular dashboard architecture with households, service providers, and service facilities modules.*

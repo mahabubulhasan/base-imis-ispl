@@ -2,28 +2,26 @@
 
 @section('title', $page_title)
 
+@section('content_header_right')
+<form id="swm-dashboard-filter-form" class="form-inline swm-dashboard-filter-form d-flex flex-wrap align-items-center justify-content-sm-end gap-2" method="get" action="{{ route('swm.dashboard-kpis.index') }}">
+    <input type="month" id="to_month" name="to_month" class="form-control"
+        max="{{ $dashboard['period']['max_to_month'] ?? now()->subMonth()->format('Y-m') }}"
+        value="{{ $dashboard['period']['to_month'] ?? ($dashboard['period']['max_to_month'] ?? now()->subMonth()->format('Y-m')) }}"
+        aria-label="{{ __('To month') }}">
+    <button type="submit" class="btn btn-info">{{ __('Apply') }}</button>
+</form>
+@endsection
+
 @push('style')
-<link rel="stylesheet" href="{{ asset('css/swm-dashboard.css') }}">
+@php
+    $swmDashboardCssPath = public_path('css/swm-dashboard.css');
+    $swmDashboardCssVersion = file_exists($swmDashboardCssPath) ? filemtime($swmDashboardCssPath) : time();
+@endphp
+<link rel="stylesheet" href="{{ asset('css/swm-dashboard.css') }}?v={{ $swmDashboardCssVersion }}">
 @endpush
 
 @section('content')
 <div class="swm-dashboard">
-    <div class="swm-page-header">
-        <div>
-            <h2>{{ $page_title }}</h2>
-            <p class="swm-page-meta">{{ __('Data from the beginning through end of selected month.') }}</p>
-        </div>
-        <form id="swm-dashboard-filter-form" class="form-inline d-flex flex-wrap align-items-end gap-2" method="get" action="{{ route('swm.dashboard-kpis.index') }}">
-            <div>
-                <label for="to_month" class="d-block small text-muted mb-0">{{ __('To month') }}</label>
-                <input type="month" id="to_month" name="to_month" class="form-control"
-                    max="{{ $dashboard['period']['max_to_month'] ?? now()->subMonth()->format('Y-m') }}"
-                    value="{{ $dashboard['period']['to_month'] ?? ($dashboard['period']['max_to_month'] ?? now()->subMonth()->format('Y-m')) }}">
-            </div>
-            <button type="submit" class="btn btn-info">{{ __('Apply') }}</button>
-        </form>
-    </div>
-
     <div id="swm-dashboard-modules" class="swm-dashboard-modules">
         @foreach($dashboard['modules'] ?? [] as $key => $modulePayload)
             @php $viewName = $dashboard['moduleViews'][$key] ?? null; @endphp
