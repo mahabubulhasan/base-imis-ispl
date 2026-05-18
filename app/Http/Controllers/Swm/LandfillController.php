@@ -44,14 +44,73 @@ class LandfillController extends Controller
             ->all();
     }
 
-    protected function stsWardMap(): array
+    /**
+     * STS id => list of source ward keys (for landfill form autofill union).
+     *
+     * @return array<string, list<string>>
+     */
+    protected function stsSourceWardsMap(): array
     {
-        return Sts::query()
+        $map = [];
+        Sts::query()
             ->whereNull('deleted_at')
-            ->whereNotNull('ward_no')
-            ->pluck('ward_no', 'id')
-            ->map(fn ($ward) => (int) $ward)
-            ->all();
+            ->orderBy('name')
+            ->get(['id', 'source_wards', 'ward_no'])
+            ->each(function (Sts $sts) use (&$map) {
+                $map[(string) $sts->id] = $this->wardsForStsRecord($sts);
+            });
+
+        return $map;
+    }
+
+    /**
+     * @return list<string>
+     */
+    protected function wardsForStsRecord(Sts $sts): array
+    {
+        $wardSet = [];
+        foreach ($sts->source_wards ?? [] as $ward) {
+            $normalized = $this->normalizeWardKey($ward);
+            if ($normalized !== null) {
+                $wardSet[$normalized] = true;
+            }
+        }
+        if ($wardSet === [] && $sts->ward_no !== null) {
+            $fallback = $this->normalizeWardKey($sts->ward_no);
+            if ($fallback !== null) {
+                $wardSet[$fallback] = true;
+            }
+        }
+
+        $wards = array_keys($wardSet);
+        sort($wards, SORT_NATURAL);
+
+        return array_values($wards);
+    }
+
+    /**
+     * Union of source wards across multiple STS records.
+     *
+     * @param  list<int>  $ids
+     * @return list<string>
+     */
+    protected function unionWardsForStsIds(array $ids): array
+    {
+        $wardSet = [];
+        Sts::query()
+            ->whereIn('id', $ids)
+            ->whereNull('deleted_at')
+            ->get(['id', 'source_wards', 'ward_no'])
+            ->each(function (Sts $sts) use (&$wardSet) {
+                foreach ($this->wardsForStsRecord($sts) as $ward) {
+                    $wardSet[$ward] = true;
+                }
+            });
+
+        $wards = array_keys($wardSet);
+        sort($wards, SORT_NATURAL);
+
+        return array_values($wards);
     }
 
     protected function wardOptions(): array
@@ -89,12 +148,12 @@ class LandfillController extends Controller
         $page_title = __('Add Landfill');
         $landfill = null;
         $stsOptions = $this->stsOptions();
-        $stsWardMap = $this->stsWardMap();
+        $stsSourceWardsMap = $this->stsSourceWardsMap();
         $wards = $this->wardOptions();
         $wasteTypes = $this->wasteTypeOptions();
         $landfillTypes = $this->landfillTypeOptions();
 
-        return view('swm.service-facilities.landfills.create', compact('page_title', 'landfill', 'stsOptions', 'stsWardMap', 'wards', 'wasteTypes', 'landfillTypes'));
+        return view('swm.service-facilities.landfills.create', compact('page_title', 'landfill', 'stsOptions', 'stsSourceWardsMap', 'wards', 'wasteTypes', 'landfillTypes'));
     }
 
     public function store(LandfillRequest $request)
@@ -118,12 +177,12 @@ class LandfillController extends Controller
     {
         $page_title = __('Edit Landfill');
         $stsOptions = $this->stsOptions();
-        $stsWardMap = $this->stsWardMap();
+        $stsSourceWardsMap = $this->stsSourceWardsMap();
         $wards = $this->wardOptions();
         $wasteTypes = $this->wasteTypeOptions();
         $landfillTypes = $this->landfillTypeOptions();
 
-        return view('swm.service-facilities.landfills.edit', compact('page_title', 'landfill', 'stsOptions', 'stsWardMap', 'wards', 'wasteTypes', 'landfillTypes'));
+        return view('swm.service-facilities.landfills.edit', compact('page_title', 'landfill', 'stsOptions', 'stsSourceWardsMap', 'wards', 'wasteTypes', 'landfillTypes'));
     }
 
     public function update(LandfillRequest $request, Landfill $landfill)
@@ -154,8 +213,8 @@ class LandfillController extends Controller
     }
 
     /**
-     * Return ward numbers derived from selected STS ids.
-     * Response: [ward_no, ...]
+     * Return ward numbers derived from selected STS records' source_wards.
+     * Response: ["1", "3", ...] (string ward keys matching the source_wards select options)
      */
     public function wardsForSts(Request $request)
     {
@@ -168,18 +227,20 @@ class LandfillController extends Controller
             return response()->json([]);
         }
 
-        $wards = Sts::query()
-            ->whereIn('id', $ids)
-            ->whereNull('deleted_at')
-            ->whereNotNull('ward_no')
-            ->pluck('ward_no')
-            ->map(fn ($w) => (int) $w)
-            ->unique()
-            ->sort()
-            ->values()
-            ->all();
+        return response()->json($this->unionWardsForStsIds($ids));
+    }
 
-        return response()->json($wards);
+    /**
+     * Normalize a ward value for select option matching (landfill source_wards uses int ward keys).
+     */
+    protected function normalizeWardKey(mixed $ward): ?string
+    {
+        $value = trim((string) $ward);
+        if ($value === '' || ! is_numeric($value)) {
+            return null;
+        }
+
+        return (string) (int) $value;
     }
 
     public function export(Request $request)

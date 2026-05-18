@@ -107,9 +107,9 @@ class ComplaintsDashboardModule implements SwmDashboardModuleInterface
             ],
             [
                 'label' => __('Average Resolution Time (Days)'),
-                'value' => $avgDays !== null
-                    ? $this->formatter->decimal($avgDays, 2)
-                    : $this->formatter->decimal(0, 2),
+                'value' => $this->formatter->integer(
+                    $avgDays !== null ? (int) round((float) $avgDays) : 0,
+                ),
                 'icon' => 'fa-calendar-day',
             ],
             [
@@ -163,11 +163,11 @@ class ComplaintsDashboardModule implements SwmDashboardModuleInterface
             'title' => __('Complaints by Type'),
             'labels' => $labels,
             'datasets' => [
-                ['label' => __('Count'), 'data' => $data],
+                ['data' => $data],
             ],
             'options' => [
                 'unitX' => __('Complaint Type'),
-                'unitY' => __('Count'),
+                'integerYTicks' => true,
             ],
         ];
     }
@@ -202,11 +202,11 @@ class ComplaintsDashboardModule implements SwmDashboardModuleInterface
             'title' => __('Complaints by Ward'),
             'labels' => $labels,
             'datasets' => [
-                ['label' => __('Count'), 'data' => $data],
+                ['data' => $data],
             ],
             'options' => [
                 'unitX' => __('Ward'),
-                'unitY' => __('Count'),
+                'integerYTicks' => true,
             ],
         ];
     }
@@ -250,7 +250,7 @@ class ComplaintsDashboardModule implements SwmDashboardModuleInterface
             'title' => __('Complaint Channel'),
             'labels' => $labels,
             'datasets' => [
-                ['label' => __('Count'), 'data' => $data],
+                ['data' => $data],
             ],
             'options' => [],
         ];
@@ -267,7 +267,7 @@ class ComplaintsDashboardModule implements SwmDashboardModuleInterface
         $data = [];
         foreach ($byType as $typeKey => $avgDays) {
             $labels[] = $this->metrics->complaintTypeLabel((string) $typeKey);
-            $data[] = $avgDays;
+            $data[] = (int) round((float) $avgDays);
         }
 
         return [
@@ -276,11 +276,11 @@ class ComplaintsDashboardModule implements SwmDashboardModuleInterface
             'title' => __('Resolution Time by Complaint Type'),
             'labels' => $labels,
             'datasets' => [
-                ['label' => __('Days'), 'data' => $data],
+                ['data' => $data],
             ],
             'options' => [
                 'unitX' => __('Days'),
-                'decimalValues' => true,
+                'integerXTicks' => true,
             ],
             'height' => max(280, count($labels) * 36),
         ];
@@ -337,11 +337,11 @@ class ComplaintsDashboardModule implements SwmDashboardModuleInterface
             'title' => __('Complaint Trend (Last 12 Months)'),
             'labels' => $labels,
             'datasets' => [
-                ['label' => __('Count'), 'data' => $values],
+                ['data' => $values],
             ],
             'options' => [
                 'unitX' => __('Month'),
-                'unitY' => __('Count'),
+                'integerYTicks' => true,
             ],
         ];
     }

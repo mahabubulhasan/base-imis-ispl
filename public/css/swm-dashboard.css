@@ -313,12 +313,37 @@
     min-width: 640px;
 }
 
+.swm-dashboard .swm-heatmap-table--multi-row {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.swm-dashboard .swm-heatmap-table--multi-row .heatmap-ward-headers {
+    margin-bottom: 0;
+}
+
 .swm-dashboard .heatmap-ward-headers,
 .swm-dashboard .heatmap-data-row {
     display: grid;
     grid-template-columns: var(--heatmap-row-label-width) repeat(var(--heatmap-cols), minmax(52px, 1fr));
     gap: 3px;
     align-items: stretch;
+}
+
+.swm-dashboard .swm-heatmap-table--multi-row .heatmap-data-row {
+    gap: 6px;
+}
+
+.swm-dashboard .swm-heatmap-table--multi-row .heatmap-value-cell {
+    min-height: 44px;
+    border-radius: 4px;
+}
+
+.swm-dashboard .swm-heatmap-table--multi-row .heatmap-row-label {
+    white-space: normal;
+    line-height: 1.35;
+    padding-right: 10px;
 }
 
 .swm-dashboard .heatmap-ward-headers {

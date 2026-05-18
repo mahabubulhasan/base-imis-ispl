@@ -120,7 +120,7 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
                     'items' => [
                         $this->stsReceiptsTrendChart($period),
                         $this->receiptsByStsChart($period),
-                        $this->sourceWardContributionToStsChart($period),
+                        // $this->sourceWardContributionToStsChart($period),
                     ],
                 ],
             ],
@@ -156,8 +156,8 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
                     'subsection' => __('Visualizations'),
                     'items' => [
                         $this->landfillReceiptsTrendChart($period),
-                        $this->sourceWardContributionToLandfillsChart($period),
-                        $this->sourceStsContributionToLandfillsChart($period),
+                        // $this->sourceWardContributionToLandfillsChart($period),
+                        // $this->sourceStsContributionToLandfillsChart($period),
                         $this->landfillCatchmentNetworkChart($period),
                     ],
                 ],
@@ -329,17 +329,18 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
 
         return [
             'id' => 'swmChartSmAttendanceByDept',
-            'type' => 'horizontalBar',
+            'type' => 'bar',
             'title' => __('Attendance by Department'),
             'labels' => array_column($rows, 'label'),
             'datasets' => [
                 ['data' => array_map(fn ($r) => round((float) $r['rate'], 1), $rows)],
             ],
             'options' => [
-                'unitX' => __('%'),
+                'unitX' => __('Department'),
+                'unitY' => __('%'),
+                'percentYAxis' => true,
                 'decimalValues' => true,
             ],
-            'height' => 360,
         ];
     }
 
@@ -388,17 +389,17 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
 
         return [
             'id' => 'swmChartSmReceiptsBySts',
-            'type' => 'horizontalBar',
+            'type' => 'bar',
             'title' => __('Receipts by STS'),
             'labels' => $rows->pluck('label')->all(),
             'datasets' => [
                 ['data' => $rows->pluck('total')->map(fn ($v) => round((float) $v, 2))->all()],
             ],
             'options' => [
-                'unitX' => __('Ton'),
+                'unitX' => __('STS'),
+                'unitY' => __('Ton'),
                 'decimalValues' => true,
             ],
-            'height' => 360,
         ];
     }
 
@@ -608,16 +609,7 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
             }
 
             foreach ($landfill->source_wards ?? [] as $ward) {
-                $wardKey = 'ward_'.(string) $ward;
-                if (! isset($nodeIds[$wardKey])) {
-                    $nodes[] = [
-                        'id' => $wardKey,
-                        'label' => __('Ward :ward', ['ward' => $ward]),
-                        'group' => 'ward',
-                    ];
-                    $nodeIds[$wardKey] = true;
-                }
-                $edges[] = ['from' => $wardKey, 'to' => $lfId];
+                $this->appendCatchmentWardLink($nodes, $edges, $nodeIds, $ward, $lfId);
             }
 
             $stsCollection = $landfill->sourceSts();
@@ -628,6 +620,10 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
                     $nodeIds[$stsKey] = true;
                 }
                 $edges[] = ['from' => $stsKey, 'to' => $lfId];
+
+                foreach ($sts->source_wards ?? [] as $ward) {
+                    $this->appendCatchmentWardLink($nodes, $edges, $nodeIds, $ward, $stsKey);
+                }
             }
         }
 
@@ -1047,5 +1043,35 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
             'sql' => ' AND v.organization_id = ?',
             'bindings' => [(int) $orgId],
         ];
+    }
+
+    /**
+     * @param  list<array<string, mixed>>  $nodes
+     * @param  list<array{from: string, to: string}>  $edges
+     * @param  array<string, true>  $nodeIds
+     */
+    protected function appendCatchmentWardLink(
+        array &$nodes,
+        array &$edges,
+        array &$nodeIds,
+        mixed $ward,
+        string $toNodeId,
+    ): void {
+        $wardLabel = trim((string) $ward);
+        if ($wardLabel === '') {
+            return;
+        }
+
+        $wardKey = 'ward_'.$wardLabel;
+        if (! isset($nodeIds[$wardKey])) {
+            $nodes[] = [
+                'id' => $wardKey,
+                'label' => __('Ward :ward', ['ward' => $wardLabel]),
+                'group' => 'ward',
+            ];
+            $nodeIds[$wardKey] = true;
+        }
+
+        $edges[] = ['from' => $wardKey, 'to' => $toNodeId];
     }
 }

@@ -168,17 +168,20 @@ class ServiceManagementDashboardModuleTest extends TestCase
 
         $this->assertSame('line', $attendanceCharts['swmChartSmAttendanceTrend']['type']);
         $this->assertSame('bar', $attendanceCharts['swmChartSmAttendanceByOrg']['type']);
-        $this->assertSame('horizontalBar', $attendanceCharts['swmChartSmAttendanceByDept']['type']);
+        $this->assertSame('bar', $attendanceCharts['swmChartSmAttendanceByDept']['type']);
         $this->assertSame('line', $stsCharts['swmChartSmStsReceiptsTrend']['type']);
-        $this->assertSame('horizontalBar', $stsCharts['swmChartSmReceiptsBySts']['type']);
+        $this->assertSame('bar', $stsCharts['swmChartSmReceiptsBySts']['type']);
         $this->assertSame('stackedBar', $stsCharts['swmChartSmWardToSts']['type']);
     }
 
     public function test_landfill_catchment_network_payload(): void
     {
         $period = $this->testPeriod();
-        $sts = $this->createSts(['name' => 'STS One']);
-        Landfill::query()->create([
+        $sts = $this->createSts([
+            'name' => 'STS One',
+            'source_wards' => ['3', '7'],
+        ]);
+        $landfill = Landfill::query()->create([
             'name' => 'Main Landfill',
             'operator_name' => 'Op',
             'contact_number' => '9800000001',
@@ -195,6 +198,18 @@ class ServiceManagementDashboardModuleTest extends TestCase
         $this->assertSame('network', $network['type']);
         $this->assertNotEmpty($network['nodes']);
         $this->assertNotEmpty($network['edges']);
+
+        $stsNodeId = 'sts_'.$sts->id;
+        $fromByTo = [];
+        foreach ($network['edges'] as $edge) {
+            $fromByTo[$edge['to']][] = $edge['from'];
+        }
+
+        $lfNodeId = 'lf_'.$landfill->id;
+        $this->assertContains('ward_5', $fromByTo[$lfNodeId] ?? []);
+        $this->assertContains($stsNodeId, $fromByTo[$lfNodeId] ?? []);
+        $this->assertContains('ward_3', $fromByTo[$stsNodeId] ?? []);
+        $this->assertContains('ward_7', $fromByTo[$stsNodeId] ?? []);
     }
 
     public function test_attendance_scoped_to_authenticated_organization(): void

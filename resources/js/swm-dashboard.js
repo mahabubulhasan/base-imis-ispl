@@ -65,7 +65,15 @@
         opts = opts || {};
         var scales = {};
         if (unitX) {
-            scales.xAxes = [{ scaleLabel: { display: true, labelString: unitX } }];
+            var xTicks = { beginAtZero: true };
+            if (opts.integerXTicks) {
+                xTicks.precision = 0;
+                xTicks.stepSize = 1;
+            }
+            scales.xAxes = [{
+                scaleLabel: { display: true, labelString: unitX },
+                ticks: xTicks,
+            }];
         }
         var yTicks = { beginAtZero: true };
         if (opts.percentYAxis) {
@@ -333,7 +341,8 @@
         var opts = chart.options || {};
         var valueDisplay = opts.valueDisplay || (multiRows && multiRows.length ? 'count' : 'percent');
         var colCount = Math.max(wards.length, 1);
-        var html = '<div class="swm-heatmap-table" style="--heatmap-cols:' + colCount + '">';
+        var multiRowClass = multiRows && multiRows.length > 1 ? ' swm-heatmap-table--multi-row' : '';
+        var html = '<div class="swm-heatmap-table' + multiRowClass + '" style="--heatmap-cols:' + colCount + '">';
 
         html += '<div class="heatmap-ward-headers">';
         html += '<div class="heatmap-corner" aria-hidden="true"></div>';

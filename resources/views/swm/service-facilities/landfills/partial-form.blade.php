@@ -57,9 +57,15 @@
             </div>
         </div>
         <div class="form-group row">
-            {!! Form::label('source_wards', __('Source Wards'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('sts_source_wards_display', __('STS Source Wards'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
-                {!! Form::select('source_wards[]', $wards ?? [], old('source_wards', optional($landfill)->source_wards), ['class' => 'form-control', 'id' => 'source_wards', 'multiple' => true, 'data-placeholder' => __('Source Wards')]) !!}
+                <span id="sts_source_wards_display" class="form-control bg-light" style="min-height: 38px; height: auto;">—</span>
+            </div>
+        </div>
+        <div class="form-group row">
+            {!! Form::label('source_wards', __('Other Source Wards'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-3">
+                {!! Form::select('source_wards[]', $wards ?? [], old('source_wards', optional($landfill)->source_wards), ['class' => 'form-control', 'id' => 'source_wards', 'multiple' => true, 'data-placeholder' => __('Other Source Wards')]) !!}
             </div>
         </div>
         <div class="form-group row">
@@ -146,7 +152,7 @@ $(function () {
     var $sourceStsSelect = $('#source_sts_ids');
     var $sourceWardsSelect = $('#source_wards');
     var $wasteTypesSelect = $('#waste_type_ids');
-    var wardsForStsUrl = '{!! route("swm.landfills.wards-for-sts") !!}';
+    var stsSourceWardsMap = @json($stsSourceWardsMap ?? []);
 
     function initSelect2($el, fallbackPlaceholder) {
         if (!$.fn.select2 || !$el.length) {
@@ -159,25 +165,36 @@ $(function () {
         });
     }
 
-    function syncWardsFromSelectedSts() {
-        var selectedStsIds = $sourceStsSelect.val() || [];
-        if (!selectedStsIds.length) {
-            $sourceWardsSelect.val([]).trigger('change');
-            return;
-        }
-
-        $.getJSON(wardsForStsUrl, { source_sts_ids: selectedStsIds }, function (resp) {
-            var wards = Array.isArray(resp) ? resp : [];
-            var wardValues = wards.map(function (w) { return String(w); });
-            $sourceWardsSelect.val(wardValues).trigger('change');
+    /** Union of source_wards across all selected STS ids (deduplicated). */
+    function unionWardsFromStsIds(stsIds) {
+        var wardSet = {};
+        stsIds.forEach(function (id) {
+            var wards = stsSourceWardsMap[String(id)] || stsSourceWardsMap[id] || [];
+            wards.forEach(function (ward) {
+                var key = String(ward).trim();
+                if (key !== '') {
+                    wardSet[key] = true;
+                }
+            });
+        });
+        return Object.keys(wardSet).sort(function (a, b) {
+            return parseInt(a, 10) - parseInt(b, 10);
         });
     }
 
+    var $stsSourceWardsDisplay = $('#sts_source_wards_display');
+
+    function updateStsSourceWardsDisplay() {
+        var wards = unionWardsFromStsIds($sourceStsSelect.val() || []);
+        $stsSourceWardsDisplay.text(wards.length ? wards.join(', ') : '—');
+    }
+
     initSelect2($sourceStsSelect, '{{ __("Source STS") }}');
-    initSelect2($sourceWardsSelect, '{{ __("Source Wards") }}');
+    initSelect2($sourceWardsSelect, '{{ __("Other Source Wards") }}');
     initSelect2($wasteTypesSelect, '{{ __("Waste Types") }}');
 
-    $sourceStsSelect.on('change', syncWardsFromSelectedSts);
+    $sourceStsSelect.on('change', updateStsSourceWardsDisplay);
+    updateStsSourceWardsDisplay();
 });
 </script>
 @endpush
