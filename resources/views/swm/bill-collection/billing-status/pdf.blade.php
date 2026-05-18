@@ -1,45 +1,68 @@
 <!doctype html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="utf-8">
-    <title>{{ __('Solid Waste Management Billing Report') }}</title>
+    <title>বাসাবাড়ীর বর্জ্য ব্যবস্থাপনা সেবামূল্য আদায় সীট</title>
     <style>
+        @font-face {
+            font-family: 'Noto Sans Bengali';
+            src: url('file://{{ str_replace('\\', '/', public_path('fonts/NotoSansBengali-Regular.ttf')) }}') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        @page {
+            margin: 12mm 8mm;
+        }
         body {
-            font-family: DejaVu Sans, sans-serif;
+            font-family: 'Noto Sans Bengali', 'SolaimanLipi', 'Kalpurush', 'Arial Unicode MS', sans-serif;
             font-size: 10px;
             color: #111827;
         }
-        .title {
-            font-size: 14px;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 4px;
-        }
-        .subtitle {
-            font-size: 10px;
-            text-align: center;
+        .pdf-header {
+            width: 100%;
             margin-bottom: 10px;
         }
-        table {
+        .pdf-header td {
+            border: none;
+            padding: 0;
+            vertical-align: middle;
+        }
+        .pdf-logo {
+            width: 90px;
+            max-height: 80px;
+        }
+        .pdf-header-title {
+            text-align: center;
+            line-height: 1.45;
+        }
+        .pdf-header-title .org {
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .pdf-header-title .report {
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 4px;
+        }
+        .pdf-month {
+            font-size: 11px;
+            margin-bottom: 10px;
+        }
+        table.data-table {
             width: 100%;
             border-collapse: collapse;
         }
-        th, td {
+        table.data-table th,
+        table.data-table td {
             border: 1px solid #d1d5db;
             padding: 3px 4px;
             vertical-align: middle;
         }
-        thead th {
+        table.data-table thead th {
             background: #f3f4f6;
             text-align: center;
-            font-size: 9px;
-        }
-        thead tr.header-group th {
-            background: #e5e7eb;
-            font-size: 10px;
-            font-weight: 700;
-            padding-top: 5px;
-            padding-bottom: 5px;
+            font-size: 8px;
+            font-weight: bold;
         }
         .text-right {
             text-align: right;
@@ -68,57 +91,65 @@
 
             return number_format((float) $normalized, 2, '.', ',');
         };
+
+        $logoPath = public_path(config('constants.LOGO_URL', 'img/stl/logo-chapainawabganj.png'));
+        $logoDataUri = is_file($logoPath)
+            ? 'data:image/png;base64,'.base64_encode(file_get_contents($logoPath))
+            : null;
+
+        $monthFromYm = $monthFrom ? $monthFrom->format('Y-m') : null;
+        $monthToYm = $monthTo ? $monthTo->format('Y-m') : null;
+        $monthLabelSame = $monthFrom && $monthTo && $monthFromYm === $monthToYm;
+        if ($monthFrom && $monthTo) {
+            $monthLabel = $monthLabelSame
+                ? $monthFrom->format('F Y')
+                : $monthFrom->format('F Y').' - '.$monthTo->format('F Y');
+        } elseif ($monthFrom) {
+            $monthLabel = $monthFrom->format('F Y');
+        } elseif ($monthTo) {
+            $monthLabel = $monthTo->format('F Y');
+        } else {
+            $monthLabel = '-';
+        }
     @endphp
 
-    <div class="title">{{ __('Solid Waste Management Billing Report') }}</div>
-    <div class="subtitle">
-        @php
-            $monthFromYm = $monthFrom ? $monthFrom->format('Y-m') : null;
-            $monthToYm = $monthTo ? $monthTo->format('Y-m') : null;
-            $monthLabelSame = $monthFrom && $monthTo && $monthFromYm === $monthToYm;
-        @endphp
-        {{ __('Reporting Month') }}:
-        @if($monthFrom && $monthTo)
-            @if($monthLabelSame)
-                {{ $monthFrom->format('F Y') }}
-            @else
-                {{ $monthFrom->format('F Y') }} - {{ $monthTo->format('F Y') }}
-            @endif
-        @elseif($monthFrom)
-            {{ $monthFrom->format('F Y') }}
-        @elseif($monthTo)
-            {{ $monthTo->format('F Y') }}
-        @else
-            -
-        @endif
-    </div>
-    {{-- <div class="subtitle">
-        {{ __('Closing Due is the canonical outstanding balance through the selected end month.') }}
-    </div> --}}
+    <table class="pdf-header" cellpadding="0" cellspacing="0">
+        <tr>
+            <td style="width: 100px;">
+                @if($logoDataUri)
+                    <img src="{{ $logoDataUri }}" alt="" class="pdf-logo">
+                @endif
+            </td>
+            <td class="pdf-header-title">
+                <div class="org">চাঁপাইনবাবগঞ্জ পৌরসভা</div>
+                <div class="report">বাসাবাড়ীর বর্জ্য ব্যবস্থাপনা সেবামূল্য আদায় সীট</div>
+            </td>
+            <td style="width: 100px;"></td>
+        </tr>
+    </table>
 
-    <table>
+    <div class="pdf-month">মাসঃ {{ $monthLabel }}</div>
+
+    <table class="data-table">
         <thead>
-            <tr class="header-group">
-                <th rowspan="2">{{ __('SL') }}</th>
-                <th rowspan="2">{{ __('Holding Number') }}</th>
-                <th rowspan="2">{{ __('Household ID') }}</th>
-                <th rowspan="2">{{ __('Household Owner Name') }}</th>
-                <th rowspan="2">{{ __("Father's/Husband's Name") }}</th>
-                <th rowspan="2">{{ __('Sub Location') }}</th>
-                <th rowspan="2">{{ __('Ward No.') }}</th>
-                <th rowspan="2">{{ __('Contact Number') }}</th>
-                <th colspan="9">{{ __('Billing Summary (in Taka)') }}</th>
-            </tr>
             <tr>
-                <th>{{ __('Fixed Service Fee') }}</th>
-                <th>{{ __('Previous Due') }}</th>
-                <th>{{ __('Due Months') }}</th>
-                <th>{{ __('Current Due') }}</th>
-                <th>{{ __('Payable Amount') }}</th>
-                <th>{{ __('Current Paid') }}</th>
-                <th>{{ __('Previous Due Paid') }}</th>
-                <th>{{ __('Total Paid') }}</th>
-                <th>{{ __('Closing Due') }}</th>
+                <th>ক্রমিক নং</th>
+                <th>হোল্ডিং নং</th>
+                <th>বাসার আইডি</th>
+                <th>বাসার মালিকের নাম</th>
+                <th>পিতা/স্বামীর নাম</th>
+                <th>পাড়া/মহল্লা</th>
+                <th>ওয়ার্ড নং</th>
+                <th>মোবাইল নং</th>
+                <th>নির্ধারিত সেবামূল্য</th>
+                <th>বিগত মাসসমূহ বকেয়া</th>
+                <th>বকেয়া মাসসমূহ</th>
+                <th>চলতি</th>
+                <th>আদায়যোগ্য মোট সেবামূল্য</th>
+                <th>আদায়কৃত চলতি</th>
+                <th>আদায়কৃত বকেয়া</th>
+                <th>মোট আদায়</th>
+                <th>আদায় শেষে বকেয়া</th>
             </tr>
         </thead>
         <tbody>
@@ -144,7 +175,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="18" class="text-center">{{ __('No data found') }}</td>
+                    <td colspan="17"></td>
                 </tr>
             @endforelse
         </tbody>

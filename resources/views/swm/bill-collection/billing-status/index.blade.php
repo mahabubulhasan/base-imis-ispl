@@ -37,8 +37,9 @@
 @include('layouts.components.error-alert')
 
 @php
-    $defaultMonthFrom = now()->copy()->subMonths(5)->format('Y-m');
-    $defaultMonthTo = now()->format('Y-m');
+    $maxMonthTo = now()->copy()->subMonth()->startOfMonth();
+    $defaultMonthTo = $maxMonthTo->format('Y-m');
+    $defaultMonthFrom = $maxMonthTo->copy()->subMonths(5)->format('Y-m');
 @endphp
 
 <div class="row">
@@ -88,7 +89,7 @@
                     <label for="month_from" class="col-md-2 col-form-label">{{ __('Month from') }}</label>
                     <div class="col-md-2"><input type="month" class="form-control" id="month_from" value="{{ $defaultMonthFrom }}" /></div>
                     <label for="month_to" class="col-md-2 col-form-label">{{ __('Month to') }}</label>
-                    <div class="col-md-2"><input type="month" class="form-control" id="month_to" value="{{ $defaultMonthTo }}" /></div>
+                    <div class="col-md-2"><input type="month" class="form-control" id="month_to" value="{{ $defaultMonthTo }}" max="{{ $defaultMonthTo }}" /></div>
                     <label for="filter_holding_select" class="col-md-2 col-form-label">{{ __('Holding Number') }}</label>
                     <div class="col-md-2 bs-filter-select2">
                         <select class="form-control" id="filter_holding_select" name="holding_numbers[]" multiple="multiple" style="width:100%"></select>

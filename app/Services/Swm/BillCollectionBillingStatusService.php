@@ -73,7 +73,7 @@ class BillCollectionBillingStatusService
         [$monthFrom, $monthTo] = $this->resolveMonthRange($data);
         $query = $this->baseStatusQuery($monthFrom, $monthTo);
 
-        $currentMonthStart = Carbon::now()->startOfMonth();
+        $reportMonthStart = $this->reportMonthStart($monthTo);
 
         return DataTables::of($query)
             ->filter(function (Builder $q) use ($data) {
@@ -113,8 +113,8 @@ class BillCollectionBillingStatusService
             ->addColumn('current_service_fee', function (Household $site) {
                 return $this->formatMoney((string) ($site->waste_charge ?? 0));
             })
-            ->addColumn('due_current_month', function (Household $site) use ($currentMonthStart) {
-                return $this->formatMoney($this->currentMonthDueFromOutstandingMap($site, $currentMonthStart));
+            ->addColumn('due_current_month', function (Household $site) use ($reportMonthStart) {
+                return $this->formatMoney($this->currentMonthDueFromOutstandingMap($site, $reportMonthStart));
             })
             ->addColumn('due_months_of', function (Household $site) use ($monthFrom, $monthTo) {
                 return $this->monthsWithMarginalDueLabelsInRange($site, $monthFrom, $monthTo);
@@ -123,13 +123,10 @@ class BillCollectionBillingStatusService
                 return $this->formatMoney($this->sumMarginalDueInRange($site, $monthFrom, $monthTo));
             })
             ->addColumn('total_due_amount', function (Household $site) use ($monthTo) {
-                return $this->formatMoney($this->dueThroughMonth($site, $monthTo));
+                return $this->formatMoney($this->billingStatusAmounts($site, $monthTo)['payable']);
             })
-            ->addColumn('previous_due_amount', function (Household $site) use ($currentMonthStart, $monthTo) {
-                $totalDueAmount = (float) ($this->dueThroughMonth($site, $monthTo) ?? '0');
-                $currentMonthDue = (float) $this->currentMonthDueFromOutstandingMap($site, $currentMonthStart);
-
-                return $this->formatMoney((string) max(0, $totalDueAmount - $currentMonthDue));
+            ->addColumn('previous_due_amount', function (Household $site) use ($monthTo) {
+                return $this->formatMoney($this->billingStatusAmounts($site, $monthTo)['previous_due']);
             })
             ->addColumn('current_month_paid', function (Household $site) {
                 return $this->formatMoney((string) ($site->current_month_paid ?? 0));
@@ -141,8 +138,7 @@ class BillCollectionBillingStatusService
                 return $this->formatMoney((string) ($site->revenue_collected ?? 0));
             })
             ->addColumn('remaining_due', function (Household $site) use ($monthTo) {
-                $totalDueAmount = (float) ($this->dueThroughMonth($site, $monthTo) ?? '0');
-                return $this->formatMoney((string) $totalDueAmount);
+                return $this->formatMoney($this->billingStatusAmounts($site, $monthTo)['closing']);
             })
             ->rawColumns([])
             ->make(true);
@@ -161,14 +157,11 @@ class BillCollectionBillingStatusService
 
         $rows = [];
         $serial = 1;
-        $currentMonthStart = Carbon::now()->startOfMonth();
         foreach ($query->orderBy('building_info.households.holding_number')->orderBy('building_info.households.household_id')->get() as $site) {
             if (! $site instanceof Household) {
                 continue;
             }
-            $totalDueAmount = (float) ($this->dueThroughMonth($site, $monthTo) ?? '0');
-            $currentMonthDue = (float) $this->currentMonthDueFromOutstandingMap($site, $currentMonthStart);
-            $revenueCollected = (float) ($site->revenue_collected ?? 0);
+            $amounts = $this->billingStatusAmounts($site, $monthTo);
 
             $rows[] = [
                 'sl' => (string) $serial++,
@@ -181,14 +174,14 @@ class BillCollectionBillingStatusService
                 'ward' => ($site->ward !== null && $site->ward !== '') ? (string) $site->ward : '',
                 'contact_number' => (string) ($site->contact_number ?? ''),
                 'current_service_fee' => $this->formatMoney((string) ($site->waste_charge ?? 0)),
-                'previous_due_amount' => $this->formatMoney((string) max(0, $totalDueAmount - $currentMonthDue)),
-                'due_current_month' => $this->formatMoney((string) $currentMonthDue),
-                'total_due_amount' => $this->formatMoney((string) $totalDueAmount),
+                'previous_due_amount' => $this->formatMoney($amounts['previous_due']),
+                'due_current_month' => $this->formatMoney($amounts['current_due']),
+                'total_due_amount' => $this->formatMoney($amounts['payable']),
                 'due_months_of' => $this->monthsWithMarginalDueLabelsInRange($site, $monthFrom, $monthTo),
                 'current_month_paid' => $this->formatMoney((string) ($site->current_month_paid ?? 0)),
                 'previous_due_paid' => $this->formatMoney((string) ($site->previous_due_paid ?? 0)),
-                'revenue_collected' => $this->formatMoney((string) $revenueCollected),
-                'remaining_due' => $this->formatMoney((string) $totalDueAmount),
+                'revenue_collected' => $this->formatMoney((string) ($site->revenue_collected ?? 0)),
+                'remaining_due' => $this->formatMoney($amounts['closing']),
             ];
         }
 
@@ -200,18 +193,37 @@ class BillCollectionBillingStatusService
     }
 
     /**
+     * Latest selectable report end month (previous calendar month).
+     */
+    public function maxAllowedMonthTo(): Carbon
+    {
+        return Carbon::now()->startOfMonth()->subMonth();
+    }
+
+    /**
      * @param array<string, mixed> $data
      * @return array{0: Carbon, 1: Carbon}
      */
     protected function resolveMonthRange(array $data): array
     {
-        $monthFrom = $this->parseMonthStart($data['month_from'] ?? null) ?? Carbon::now()->startOfMonth()->subMonths(5);
-        $monthTo = $this->parseMonthStart($data['month_to'] ?? null) ?? Carbon::now()->startOfMonth();
+        $maxMonthTo = $this->maxAllowedMonthTo();
+        $monthTo = $this->clampMonthTo(
+            $this->parseMonthStart($data['month_to'] ?? null) ?? $maxMonthTo->copy()
+        );
+        $monthFrom = $this->parseMonthStart($data['month_from'] ?? null) ?? $maxMonthTo->copy()->subMonths(5);
         if ($monthFrom->gt($monthTo)) {
             [$monthFrom, $monthTo] = [$monthTo->copy(), $monthFrom->copy()];
         }
 
         return [$monthFrom, $monthTo];
+    }
+
+    protected function clampMonthTo(Carbon $month): Carbon
+    {
+        $month = $month->copy()->startOfMonth();
+        $max = $this->maxAllowedMonthTo();
+
+        return $month->gt($max) ? $max->copy() : $month;
     }
 
     protected function baseStatusQuery(Carbon $monthFrom, Carbon $monthTo): Builder
@@ -255,6 +267,62 @@ class BillCollectionBillingStatusService
         }
 
         return (string) $due;
+    }
+
+    /**
+     * Report month for "current" due columns: end of selected range, capped at max allowed month_to.
+     */
+    protected function reportMonthStart(Carbon $monthTo): Carbon
+    {
+        return $this->clampMonthTo($monthTo);
+    }
+
+    /**
+     * Payable / previous / current / closing amounts for one household row.
+     *
+     * - closing: FIFO net outstanding from billing anchor through month_to
+     * - payable: closing plus collections in the report month_from..month_to window
+     *
+     * @return array{payable: string, previous_due: string, current_due: string, closing: string}
+     */
+    protected function billingStatusAmounts(Household $site, Carbon $monthTo): array
+    {
+        $reportMonth = $this->reportMonthStart($monthTo);
+        $revenueInPeriod = (string) ($site->revenue_collected ?? '0.00');
+        $closing = $this->fifoOutstandingThroughMonth($site, $monthTo);
+        $payable = $this->maxMoney(bcadd($closing, $revenueInPeriod, 2));
+        $currentDue = $this->currentMonthDueFromOutstandingMap($site, $reportMonth);
+        $previousDue = $this->maxMoney(bcsub($closing, $currentDue, 2));
+
+        return [
+            'payable' => $payable,
+            'previous_due' => $previousDue,
+            'current_due' => $currentDue,
+            'closing' => $closing,
+        ];
+    }
+
+    /**
+     * Sum of per-month FIFO remaining balances from billing anchor through {@see $monthTo}.
+     */
+    protected function fifoOutstandingThroughMonth(Household $site, Carbon $monthTo): string
+    {
+        if ($site->waste_charge === null) {
+            return '0.00';
+        }
+
+        $anchor = $this->billCollectionPaymentService->billingAnchor($site);
+        $rangeStart = $anchor?->copy()->startOfMonth() ?? $monthTo->copy()->startOfMonth();
+        if ($rangeStart->gt($monthTo)) {
+            return '0.00';
+        }
+
+        return $this->sumMarginalDueInRange($site, $rangeStart, $monthTo);
+    }
+
+    protected function maxMoney(string $amount): string
+    {
+        return bccomp($amount, '0', 2) < 0 ? '0.00' : $amount;
     }
 
     /**

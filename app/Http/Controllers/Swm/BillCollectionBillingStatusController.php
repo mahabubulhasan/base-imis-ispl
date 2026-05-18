@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Swm\Worker;
 use App\Services\Swm\BillCollectionBillingStatusService;
 use App\Services\Swm\BillCollectionPaymentService;
+use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use PDF;
 
 class BillCollectionBillingStatusController extends Controller
 {
@@ -121,7 +121,14 @@ class BillCollectionBillingStatusController extends Controller
             'rows' => $result['rows'] ?? [],
             'monthFrom' => $result['month_from'] ?? null,
             'monthTo' => $result['month_to'] ?? null,
-        ])->setPaper('a4', 'landscape');
+        ])
+            ->setPaper('a4', 'landscape')
+            ->setOption('encoding', 'UTF-8')
+            ->setOption('enable-local-file-access', true)
+            ->setOption('footer-line', false)
+            ->setOption('footer-html', null)
+            ->setOption('enable-javascript', false)
+            ->setOption('javascript-delay', 0);
 
         $monthFrom = $result['month_from'] ?? null;
         $monthTo = $result['month_to'] ?? null;
