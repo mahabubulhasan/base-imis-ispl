@@ -22,5 +22,11 @@ return [
             'permission' => null,
             'enabled' => true,
         ],
+        'service_management' => [
+            'class' => \App\Services\Swm\Dashboard\Modules\ServiceManagementDashboardModule::class,
+            'view' => 'swm.dashboard.modules.service-management',
+            'permission' => null,
+            'enabled' => true,
+        ],
     ],
 ];

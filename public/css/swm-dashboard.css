@@ -383,3 +383,11 @@
     font-weight: 500;
     color: var(--swm-navy);
 }
+
+.swm-dashboard .swm-network {
+    min-height: 400px;
+    width: 100%;
+    border: 1px solid var(--swm-border-soft);
+    border-radius: 4px;
+    background: #fbfcfd;
+}

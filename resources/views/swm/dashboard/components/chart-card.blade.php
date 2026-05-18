@@ -1,6 +1,9 @@
 @php
-    $colClass = in_array($chart['type'] ?? '', ['heatmap', 'stackedBar'], true) ? 'col-md-12' : 'col-md-6';
+    $fullWidthTypes = ['heatmap', 'stackedBar', 'stackedArea', 'network'];
+    $isFullWidth = ! empty($chart['fullWidth']) || in_array($chart['type'] ?? '', $fullWidthTypes, true);
+    $colClass = $isFullWidth ? 'col-md-12' : 'col-md-6';
     $height = $chart['height'] ?? 320;
+    $chartType = $chart['type'] ?? '';
 @endphp
 <div class="{{ $colClass }} mb-2">
     <div class="card card-outline card-info swm-chart-card">
@@ -9,14 +12,16 @@
             <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                 <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i></button>
-                @if(($chart['type'] ?? '') !== 'heatmap')
+                @if(! in_array($chartType, ['heatmap', 'network'], true))
                 <button type="button" class="btn btn-tool swm-export-chart" data-target="{{ $chart['id'] ?? '' }}"><i class="fa-solid fa-image"></i></button>
                 @endif
             </div>
         </div>
         <div class="card-body collapse show">
-            @if(($chart['type'] ?? '') === 'heatmap')
+            @if($chartType === 'heatmap')
                 <div id="{{ $chart['id'] ?? '' }}" class="heatmap-wrap swm-heatmap" data-heatmap='@json($chart)'></div>
+            @elseif($chartType === 'network')
+                <div id="{{ $chart['id'] ?? '' }}" class="swm-network" data-network='@json($chart)' style="height:{{ (int) ($chart['height'] ?? 400) }}px"></div>
             @else
                 <div class="chart-wrap" style="height:{{ (int) $height }}px">
                     <canvas id="{{ $chart['id'] ?? '' }}" class="swm-chart-canvas" data-chart='@json($chart)'></canvas>

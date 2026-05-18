@@ -1,5 +1,5 @@
 /**
- * SWM Dashboard: module accordions, Chart.js charts, ward grid heatmaps, To-month refresh.
+ * SWM Dashboard: module accordions, Chart.js charts, ward grid heatmaps, networks, To-month refresh.
  */
 (function () {
     'use strict';
@@ -7,10 +7,13 @@
     var cfg = window.swmDashboardConfig || {};
     var ChartCtor = typeof window.Chart === 'function' ? window.Chart : null;
     var chartInstances = {};
+    var networkInstances = {};
 
     var palette = {
         bar: 'rgba(54, 162, 235, 0.75)',
         barHover: 'rgba(54, 162, 235, 0.9)',
+        line: 'rgba(54, 162, 235, 1)',
+        lineFill: 'rgba(54, 162, 235, 0.15)',
         doughnut: [
             'rgba(54, 162, 235, 0.65)',
             'rgba(251, 176, 64, 0.85)',
@@ -19,6 +22,12 @@
             'rgba(255, 99, 132, 0.65)',
             'rgba(153, 102, 255, 0.65)',
         ],
+    };
+
+    var networkGroupColors = {
+        landfill: { background: '#1f3a52', border: '#117a8b' },
+        sts: { background: '#17a2b8', border: '#138496' },
+        ward: { background: '#6c757d', border: '#5a6268' },
     };
 
     function initModuleAccordions() {
@@ -32,8 +41,23 @@
                 if (!section.classList.contains('collapsed')) {
                     initCharts();
                     initHeatmaps();
+                    initNetworks();
                 }
             });
+        });
+    }
+
+    function parseChartValue(v, decimalValues) {
+        if (decimalValues) {
+            var f = parseFloat(v);
+            return isNaN(f) ? 0 : f;
+        }
+        return parseInt(v, 10) || 0;
+    }
+
+    function mapChartData(data, decimalValues) {
+        return (data || []).map(function (v) {
+            return parseChartValue(v, decimalValues);
         });
     }
 
@@ -44,7 +68,10 @@
             scales.xAxes = [{ scaleLabel: { display: true, labelString: unitX } }];
         }
         var yTicks = { beginAtZero: true };
-        if (opts.integerYTicks || !unitY) {
+        if (opts.percentYAxis) {
+            yTicks.max = 100;
+            yTicks.suggestedMax = 100;
+        } else if (opts.integerYTicks || !unitY) {
             yTicks.precision = 0;
             yTicks.stepSize = 1;
         }
@@ -73,9 +100,7 @@
                 labels: chart.labels || [],
                 datasets: [{
                     label: ds.label || '',
-                    data: (ds.data || []).map(function (v) {
-                        return parseInt(v, 10) || 0;
-                    }),
+                    data: mapChartData(ds.data, opts.decimalValues),
                     backgroundColor: palette.bar,
                     hoverBackgroundColor: palette.barHover,
                 }],
@@ -105,9 +130,7 @@
         var chartDatasets = datasets.map(function (ds, i) {
             return {
                 label: ds.label || '',
-                data: (ds.data || []).map(function (v) {
-                    return parseInt(v, 10) || 0;
-                }),
+                data: mapChartData(ds.data, opts.decimalValues),
                 backgroundColor: colors[i],
                 hoverBackgroundColor: colors[i],
             };
@@ -124,6 +147,94 @@
         destroyChart(canvas.id);
         chartInstances[canvas.id] = new ChartCtor(canvas.getContext('2d'), {
             type: 'bar',
+            data: {
+                labels: chart.labels || [],
+                datasets: chartDatasets,
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: { position: 'bottom' },
+                scales: scales,
+            },
+        });
+    }
+
+    function renderLine(canvas, chart) {
+        var opts = chart.options || {};
+        var ds = (chart.datasets && chart.datasets[0]) ? chart.datasets[0] : { data: [] };
+        destroyChart(canvas.id);
+        chartInstances[canvas.id] = new ChartCtor(canvas.getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: chart.labels || [],
+                datasets: [{
+                    label: ds.label || '',
+                    data: mapChartData(ds.data, opts.decimalValues),
+                    borderColor: palette.line,
+                    backgroundColor: palette.lineFill,
+                    fill: false,
+                    lineTension: 0.2,
+                    pointRadius: 3,
+                    pointHoverRadius: 5,
+                }],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: { display: false },
+                scales: scaleOptions(opts.unitX, opts.unitY, opts),
+            },
+        });
+    }
+
+    function renderHorizontalBar(canvas, chart) {
+        var opts = chart.options || {};
+        var ds = (chart.datasets && chart.datasets[0]) ? chart.datasets[0] : { data: [] };
+        var scales = scaleOptions(opts.unitX, opts.unitY, opts);
+        destroyChart(canvas.id);
+        chartInstances[canvas.id] = new ChartCtor(canvas.getContext('2d'), {
+            type: 'horizontalBar',
+            data: {
+                labels: chart.labels || [],
+                datasets: [{
+                    label: ds.label || '',
+                    data: mapChartData(ds.data, opts.decimalValues),
+                    backgroundColor: palette.bar,
+                    hoverBackgroundColor: palette.barHover,
+                }],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: { display: false },
+                scales: scales,
+            },
+        });
+    }
+
+    function renderStackedArea(canvas, chart) {
+        var opts = chart.options || {};
+        var datasets = chart.datasets || [];
+        var colors = stackedBarColors(datasets.length);
+        var chartDatasets = datasets.map(function (ds, i) {
+            return {
+                label: ds.label || '',
+                data: mapChartData(ds.data, opts.decimalValues),
+                borderColor: colors[i],
+                backgroundColor: colors[i].replace('0.85', '0.45').replace('0.65', '0.35'),
+                fill: true,
+                lineTension: 0.2,
+                pointRadius: 2,
+            };
+        });
+        var scales = scaleOptions(opts.unitX, opts.unitY, opts);
+        if (scales.yAxes && scales.yAxes[0]) {
+            scales.yAxes[0].stacked = true;
+        }
+        destroyChart(canvas.id);
+        chartInstances[canvas.id] = new ChartCtor(canvas.getContext('2d'), {
+            type: 'line',
             data: {
                 labels: chart.labels || [],
                 datasets: chartDatasets,
@@ -180,6 +291,12 @@
                 renderDoughnut(canvas, chart);
             } else if (chart.type === 'stackedBar') {
                 renderStackedBar(canvas, chart);
+            } else if (chart.type === 'line') {
+                renderLine(canvas, chart);
+            } else if (chart.type === 'horizontalBar') {
+                renderHorizontalBar(canvas, chart);
+            } else if (chart.type === 'stackedArea') {
+                renderStackedArea(canvas, chart);
             } else {
                 renderBar(canvas, chart);
             }
@@ -254,6 +371,119 @@
                 return;
             }
             renderWardHeatmapGrid(el, chart);
+        });
+    }
+
+    function networkNodeColor(group) {
+        var style = networkGroupColors[group] || networkGroupColors.ward;
+        return {
+            background: style.background,
+            border: style.border,
+            highlight: {
+                background: style.background,
+                border: style.border,
+            },
+            hover: {
+                background: style.background,
+                border: style.border,
+            },
+        };
+    }
+
+    function networkNodeFont() {
+        return {
+            color: '#ffffff',
+            size: 13,
+            face: 'Tahoma, Verdana, sans-serif',
+            strokeWidth: 2,
+            strokeColor: '#1f3a52',
+        };
+    }
+
+    function networkGroupsOptions() {
+        var groups = {};
+        Object.keys(networkGroupColors).forEach(function (group) {
+            groups[group] = {
+                color: networkNodeColor(group),
+                font: networkNodeFont(),
+                shape: group === 'landfill' ? 'box' : 'ellipse',
+                margin: 10,
+            };
+        });
+        return groups;
+    }
+
+    function renderNetwork(el, chart) {
+        var id = chart.id || el.id;
+        if (!id) {
+            return;
+        }
+        if (networkInstances[id]) {
+            networkInstances[id].destroy();
+            delete networkInstances[id];
+        }
+        if (typeof window.vis === 'undefined' || !window.vis.Network) {
+            el.innerHTML = '<p class="text-muted mb-0">Network chart library is not loaded.</p>';
+            return;
+        }
+        var nodeFont = networkNodeFont();
+        var nodes = new window.vis.DataSet((chart.nodes || []).map(function (n) {
+            var group = n.group || 'ward';
+            return {
+                id: n.id,
+                label: n.label,
+                group: group,
+                color: networkNodeColor(group),
+                font: nodeFont,
+                shape: group === 'landfill' ? 'box' : 'ellipse',
+                margin: 10,
+            };
+        }));
+        var edges = new window.vis.DataSet(chart.edges || []);
+        networkInstances[id] = new window.vis.Network(el, { nodes: nodes, edges: edges }, {
+            groups: networkGroupsOptions(),
+            layout: {
+                hierarchical: {
+                    enabled: true,
+                    direction: 'UD',
+                    sortMethod: 'directed',
+                },
+                improvedLayout: true,
+            },
+            physics: { enabled: false },
+            edges: {
+                arrows: { to: { enabled: true, scaleFactor: 0.6 } },
+                color: { color: '#adb5bd' },
+                smooth: { type: 'cubicBezier' },
+                font: {
+                    color: '#495057',
+                    size: 11,
+                    strokeWidth: 2,
+                    strokeColor: '#ffffff',
+                },
+            },
+            nodes: {
+                font: nodeFont,
+                borderWidth: 2,
+                shadow: false,
+            },
+            interaction: { hover: true, zoomView: true, dragView: true },
+        });
+    }
+
+    function initNetworks() {
+        document.querySelectorAll('.swm-network').forEach(function (el) {
+            var raw = el.getAttribute('data-network');
+            if (!raw) {
+                return;
+            }
+            var chart;
+            try {
+                chart = JSON.parse(raw);
+            } catch (e) {
+                return;
+            }
+            renderNetwork(el, chart);
         });
     }
 
@@ -335,6 +565,7 @@
         initModuleAccordions();
         initCharts();
         initHeatmaps();
+        initNetworks();
         initExportButtons();
         bindFilterForm();
     }

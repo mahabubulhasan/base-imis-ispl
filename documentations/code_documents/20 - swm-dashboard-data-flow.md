@@ -67,6 +67,7 @@ flowchart TB
         M1[HouseholdDashboardModule]
         M2[ServiceProvidersDashboardModule]
         M3[ServiceFacilitiesDashboardModule]
+        M4[ServiceManagementDashboardModule]
         MN[YourModule...]
     end
 
@@ -80,8 +81,8 @@ flowchart TB
     R --> C --> O
     O --> PR --> P
     O --> CFG
-    CFG --> M1 & M2 & M3 & MN
-    M1 & M2 & M3 & MN --> O
+    CFG --> M1 & M2 & M3 & M4 & MN
+    M1 & M2 & M3 & M4 & MN --> O
     O --> IDX --> MOD --> COMP
     IDX --> JS
 ```
@@ -97,6 +98,7 @@ Registered in [`config/swm_dashboard.php`](../../config/swm_dashboard.php) (orde
 | `households` | `HouseholdDashboardModule` | Households & LIC | `swm.dashboard.modules.households` | `null` (page gate only) |
 | `service_providers` | `ServiceProvidersDashboardModule` | Service Providers | `swm.dashboard.modules.service-providers` | `null` |
 | `service_facilities` | `ServiceFacilitiesDashboardModule` | Service Facilities | `swm.dashboard.modules.service-facilities` | `null` |
+| `service_management` | `ServiceManagementDashboardModule` | Service Management | `swm.dashboard.modules.service-management` | `null` |
 
 ### `households` — Households & LIC
 
@@ -133,6 +135,21 @@ Registered in [`config/swm_dashboard.php`](../../config/swm_dashboard.php) (orde
 **Charts:** Waste bins by type, household-to-bin ratio by ward, bin placement, vehicles by type, fleet capacity by ward (stacked bar), fuel type, STS capacity adequacy, STS/landfill waste type distributions.
 
 **Date logic:** Cumulative through `periodEnd` on facility `created_at`. Optional org scope on vehicles where applicable.
+
+### `service_management` — Service Management
+
+**File:** `app/Services/Swm/Dashboard/Modules/ServiceManagementDashboardModule.php`
+
+| Submodule key | Title | Blocks |
+|---------------|-------|--------|
+| `attendance` | Attendance | Tile (avg working hours) → Charts (30-day trend line, org bar, department horizontal bar) |
+| `sts_loading` | STS Loading | Tile (daily STS receipts) → Charts (30-day trend line, receipts by STS horizontal bar, ward→STS stacked bar) |
+| `landfill_loading` | Landfill Loading | Tiles (daily/monthly receipts) → Charts (30-day trend line, ward→landfill stacked bar, STS→landfill stacked bar, catchment network) |
+| `waste_processing` | Waste Processing | Tiles (received + processing rates) → Charts (distribution doughnut, 12-month stacked area) |
+
+**Date logic:** Attendance uses `entry_at` (30-day charts; selected month for working-hours tile). STS/landfill logs use `operation_date` with **`operation_status = completed`**; ton tiles use selected reporting month; 30-day charts end at `periodEnd`. Waste processing uses `reporting_month` (first of month). Landfill ton uses `COALESCE(weighbridge_weight_ton, quantity_ton, 0)`.
+
+**Scope:** Attendance filtered by `organization_id` when user has `swm_organization_id`. STS/landfill logs scoped via `vehicle.organization_id`.
 
 ---
 
@@ -297,6 +314,10 @@ Rendered by [`resources/views/swm/dashboard/components/submodule.blade.php`](../
 | `bar` | half (`col-md-6`) | `renderBar()` |
 | `doughnut` | half | `renderDoughnut()` |
 | `stackedBar` | full (`col-md-12`) | `renderStackedBar()` — multiple `datasets` |
+| `line` | half | `renderLine()` — time series (%, ton) |
+| `horizontalBar` | half | `renderHorizontalBar()` — Chart.js 2.x `horizontalBar` |
+| `stackedArea` | full | `renderStackedArea()` — stacked line fill |
+| `network` | full | `initNetworks()` — vis-network graph (`nodes`, `edges`) |
 | `heatmap` | full | `initHeatmaps()` — ward grid, not Chart.js |
 
 **Common chart fields:** `id` (unique globally), `title`, `labels`, `datasets`, `options` (`unitX`, `unitY`, `stacked`), optional `height`.
@@ -556,6 +577,7 @@ Only when `bar`, `doughnut`, `stackedBar`, and `heatmap` are not enough:
 | `app/Services/Swm/Dashboard/Modules/HouseholdDashboardModule.php` |
 | `app/Services/Swm/Dashboard/Modules/ServiceProvidersDashboardModule.php` |
 | `app/Services/Swm/Dashboard/Modules/ServiceFacilitiesDashboardModule.php` |
+| `app/Services/Swm/Dashboard/Modules/ServiceManagementDashboardModule.php` |
 
 ### Frontend
 
@@ -577,6 +599,7 @@ Only when `bar`, `doughnut`, `stackedBar`, and `heatmap` are not enough:
 | `tests/Unit/ReportingWindowTest.php` | Day counting, empty window |
 | `tests/Unit/SwmDashboardFormatterTest.php` | Formatting helpers |
 | `tests/Unit/ServiceProvidersDashboardModuleTest.php` | Service providers module output |
+| `tests/Unit/ServiceManagementDashboardModuleTest.php` | Service management module output |
 
 Add module-specific tests when introducing new modules.
 
@@ -610,4 +633,4 @@ Use only `$period->periodEnd` (and optionally `whereThroughPeriodEnd`). Windows 
 
 ---
 
-*Last updated for the modular dashboard architecture with households, service providers, and service facilities modules.*
+*Last updated for the modular dashboard architecture with households, service providers, service facilities, and service management modules.*

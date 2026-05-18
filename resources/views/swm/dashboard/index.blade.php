@@ -16,8 +16,11 @@
 @php
     $swmDashboardCssPath = public_path('css/swm-dashboard.css');
     $swmDashboardCssVersion = file_exists($swmDashboardCssPath) ? filemtime($swmDashboardCssPath) : time();
+    $visNetworkCssPath = public_path('css/vendor/vis-network.min.css');
+    $visNetworkCssVersion = file_exists($visNetworkCssPath) ? filemtime($visNetworkCssPath) : time();
 @endphp
 <link rel="stylesheet" href="{{ asset('css/swm-dashboard.css') }}?v={{ $swmDashboardCssVersion }}">
+<link rel="stylesheet" href="{{ asset('css/vendor/vis-network.min.css') }}?v={{ $visNetworkCssVersion }}">
 @endpush
 
 @section('content')
@@ -42,6 +45,11 @@
     ];
 @endphp
 <script src="{{ asset('js/vendor/Chart.min.js') }}"></script>
+@php
+    $visNetworkJsPath = public_path('js/vendor/vis-network.min.js');
+    $visNetworkJsVersion = file_exists($visNetworkJsPath) ? filemtime($visNetworkJsPath) : time();
+@endphp
+<script src="{{ asset('js/vendor/vis-network.min.js') }}?v={{ $visNetworkJsVersion }}"></script>
 <script>
     window.swmDashboardConfig = @json($swmDashboardConfig);
 </script>
