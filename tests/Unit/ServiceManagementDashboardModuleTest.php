@@ -96,7 +96,7 @@ class ServiceManagementDashboardModuleTest extends TestCase
         $this->assertSame('0.40', $tiles[__('Daily Landfill Receipts (Ton)')]);
     }
 
-    public function test_waste_processing_tiles_and_charts_for_reporting_month(): void
+    public function test_waste_processing_tiles_kpis_and_charts_for_reporting_month(): void
     {
         $period = $this->testPeriod();
 
@@ -113,12 +113,22 @@ class ServiceManagementDashboardModuleTest extends TestCase
         ]);
 
         $result = $this->module->build($period);
-        $tiles = $this->tilesFromSubmodule($result, 'waste_processing');
-        $charts = $this->chartsFromSubmodule($result, 'waste_processing');
 
+        $this->assertSame(['tiles', 'kpis', 'charts'], $this->blockTypesFromSubmodule($result, 'waste_processing'));
+
+        $tiles = $this->tilesFromSubmodule($result, 'waste_processing');
+        $this->assertCount(1, $tiles);
         $this->assertSame('100.00', $tiles[__('Quantity of Waste Received in Last Month')]);
-        $this->assertSame('20.0 %', $tiles[__('Composting Rate')]);
-        $this->assertSame('30.0 %', $tiles[__('Resource Recovery Rate')]);
+
+        $kpis = $this->kpisFromSubmodule($result, 'waste_processing');
+        $this->assertCount(6, $kpis);
+        $this->assertSame('20.0', $kpis[__('Composting Rate')]['value']);
+        $this->assertSame('%', $kpis[__('Composting Rate')]['unit']);
+        $this->assertTrue($kpis[__('Composting Rate')]['showFrequency']);
+        $this->assertSame('30.0', $kpis[__('Resource Recovery Rate')]['value']);
+        $this->assertSame('60.0', $kpis[__('Residual Waste Landfilling Rate')]['value']);
+
+        $charts = $this->chartsFromSubmodule($result, 'waste_processing');
         $this->assertSame('doughnut', $charts['swmChartSmWasteDistribution']['type']);
         $this->assertSame('stackedArea', $charts['swmChartSmWasteTrend']['type']);
         $this->assertCount(12, $charts['swmChartSmWasteTrend']['labels']);
@@ -313,6 +323,25 @@ class ServiceManagementDashboardModuleTest extends TestCase
     }
 
     /**
+     * @return list<string>
+     */
+    private function blockTypesFromSubmodule(array $result, string $submoduleKey): array
+    {
+        foreach ($result['submodules'] as $submodule) {
+            if (($submodule['key'] ?? '') !== $submoduleKey) {
+                continue;
+            }
+
+            return array_map(
+                fn (array $block) => $block['type'] ?? '',
+                $submodule['blocks'] ?? [],
+            );
+        }
+
+        return [];
+    }
+
+    /**
      * @return array<string, string>
      */
     private function tilesFromSubmodule(array $result, string $submoduleKey): array
@@ -333,6 +362,29 @@ class ServiceManagementDashboardModuleTest extends TestCase
         }
 
         return $tiles;
+    }
+
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    private function kpisFromSubmodule(array $result, string $submoduleKey): array
+    {
+        $kpis = [];
+        foreach ($result['submodules'] as $submodule) {
+            if (($submodule['key'] ?? '') !== $submoduleKey) {
+                continue;
+            }
+            foreach ($submodule['blocks'] ?? [] as $block) {
+                if (($block['type'] ?? '') !== 'kpis') {
+                    continue;
+                }
+                foreach ($block['items'] ?? [] as $item) {
+                    $kpis[$item['name']] = $item;
+                }
+            }
+        }
+
+        return $kpis;
     }
 
     /**

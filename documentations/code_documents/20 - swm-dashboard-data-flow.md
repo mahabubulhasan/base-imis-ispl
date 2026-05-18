@@ -145,7 +145,7 @@ Registered in [`config/swm_dashboard.php`](../../config/swm_dashboard.php) (orde
 | `attendance` | Attendance | Tile (avg working hours) → Charts (30-day trend line, org bar, department horizontal bar) |
 | `sts_loading` | STS Loading | Tile (daily STS receipts) → Charts (30-day trend line, receipts by STS horizontal bar, ward→STS stacked bar) |
 | `landfill_loading` | Landfill Loading | Tiles (daily/monthly receipts) → Charts (30-day trend line, ward→landfill stacked bar, STS→landfill stacked bar, catchment network) |
-| `waste_processing` | Waste Processing | Tiles (received + processing rates) → Charts (distribution doughnut, 12-month stacked area) |
+| `waste_processing` | Waste Processing | Tiles (received ton) → KPIs (six monthly % rates) → Charts (distribution doughnut, 12-month stacked area) |
 
 **Date logic:** Attendance uses `entry_at` (30-day charts; selected month for working-hours tile). STS/landfill logs use `operation_date` with **`operation_status = completed`**; ton tiles use selected reporting month; 30-day charts end at `periodEnd`. Waste processing uses `reporting_month` (first of month). Landfill ton uses `COALESCE(weighbridge_weight_ton, quantity_ton, 0)`.
 

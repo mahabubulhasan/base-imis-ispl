@@ -2,9 +2,9 @@
     <div class="kpi-box">
         <div class="kpi-header">
             <span class="kpi-tag">KPI</span>
-            {{-- @if($showFrequency ?? true)
+            @if($showFrequency ?? true)
                 <span class="kpi-freq">{{ __('Monthly') }}</span>
-            @endif --}}
+            @endif
         </div>
         <div class="kpi-name">{{ $name }}</div>
         <div class="kpi-value-row">

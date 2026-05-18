@@ -185,40 +185,12 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
                             'value' => $this->formatter->decimal($received),
                             'icon' => 'fa-recycle',
                         ],
-                        [
-                            'label' => __('Composting Rate'),
-                            'value' => $this->formatter->safePercent($streams['organic_waste_composted_ton'], $received),
-                            'icon' => 'fa-seedling',
-                        ],
-                        [
-                            'label' => __('Recycling Rate'),
-                            'value' => $this->formatter->safePercent($streams['inorganic_waste_recycled_ton'], $received),
-                            'icon' => 'fa-arrows-rotate',
-                        ],
-                        [
-                            'label' => __('Incineration Rate'),
-                            'value' => $this->formatter->safePercent($streams['waste_incinerated_ton'], $received),
-                            'icon' => 'fa-fire',
-                        ],
-                        [
-                            'label' => __('Open Burning Rate'),
-                            'value' => $this->formatter->safePercent($streams['waste_burned_open_air_ton'], $received),
-                            'icon' => 'fa-smog',
-                        ],
-                        [
-                            'label' => __('Residual Waste Landfilling Rate'),
-                            'value' => $this->formatter->safePercent($streams['residual_waste_landfilled_ton'], $received),
-                            'icon' => 'fa-dumpster',
-                        ],
-                        [
-                            'label' => __('Resource Recovery Rate'),
-                            'value' => $this->formatter->safePercent(
-                                $streams['organic_waste_composted_ton'] + $streams['inorganic_waste_recycled_ton'],
-                                $received,
-                            ),
-                            'icon' => 'fa-leaf',
-                        ],
                     ],
+                ],
+                [
+                    'type' => 'kpis',
+                    'subsection' => __('Key Performance Indicators'),
+                    'items' => $this->wasteProcessingRateKpis($received, $streams),
                 ],
                 [
                     'type' => 'charts',
@@ -228,6 +200,55 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
                         $this->monthlyWasteProcessingTrendChart($period),
                     ],
                 ],
+            ],
+        ];
+    }
+
+    /**
+     * @param  array<string, float>  $streams
+     * @return list<array<string, mixed>>
+     */
+    protected function wasteProcessingRateKpis(float $received, array $streams): array
+    {
+        return [
+            [
+                'name' => __('Composting Rate'),
+                'value' => $this->formatter->safePercent($streams['organic_waste_composted_ton'], $received),
+                'unit' => '%',
+                'showFrequency' => true,
+            ],
+            [
+                'name' => __('Recycling Rate'),
+                'value' => $this->formatter->safePercent($streams['inorganic_waste_recycled_ton'], $received),
+                'unit' => '%',
+                'showFrequency' => true,
+            ],
+            [
+                'name' => __('Incineration Rate'),
+                'value' => $this->formatter->safePercent($streams['waste_incinerated_ton'], $received),
+                'unit' => '%',
+                'showFrequency' => true,
+            ],
+            [
+                'name' => __('Open Burning Rate'),
+                'value' => $this->formatter->safePercent($streams['waste_burned_open_air_ton'], $received),
+                'unit' => '%',
+                'showFrequency' => true,
+            ],
+            [
+                'name' => __('Residual Waste Landfilling Rate'),
+                'value' => $this->formatter->safePercent($streams['residual_waste_landfilled_ton'], $received),
+                'unit' => '%',
+                'showFrequency' => true,
+            ],
+            [
+                'name' => __('Resource Recovery Rate'),
+                'value' => $this->formatter->safePercent(
+                    $streams['organic_waste_composted_ton'] + $streams['inorganic_waste_recycled_ton'],
+                    $received,
+                ),
+                'unit' => '%',
+                'showFrequency' => true,
             ],
         ];
     }
