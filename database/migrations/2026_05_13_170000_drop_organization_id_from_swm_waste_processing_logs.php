@@ -45,7 +45,8 @@ return new class extends Migration
 
         if (Schema::getConnection()->getDriverName() === 'pgsql' ? ! $exists : ! Schema::hasColumn('swm.waste_processing_logs', 'organization_id')) {
             Schema::table('swm.waste_processing_logs', function (Blueprint $table) {
-                $table->foreignId('organization_id')->after('id')->constrained('swm.organizations')->restrictOnDelete();
+                // Nullable so rollback works when rows already exist (NOT NULL + no default would fail).
+                $table->foreignId('organization_id')->nullable()->after('id')->constrained('swm.organizations')->restrictOnDelete();
                 $table->index(['organization_id', 'report_date']);
             });
         }
