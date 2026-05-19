@@ -2,8 +2,10 @@
 
 namespace App\Services\Swm;
 
-use App\Models\Swm\BillCollectionPayment;
 use App\Models\BuildingInfo\Household;
+use App\Models\Swm\BillCollectionPayment;
+use App\Services\Formatting\Currency;
+use App\Services\Formatting\CurrencyFormatter;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -11,8 +13,10 @@ use Yajra\DataTables\DataTables;
 
 class BillCollectionBillingStatusService
 {
-    public function __construct(protected BillCollectionPaymentService $billCollectionPaymentService)
-    {
+    public function __construct(
+        protected BillCollectionPaymentService $billCollectionPaymentService,
+        protected CurrencyFormatter $currencyFormatter,
+    ) {
     }
 
     /**
@@ -54,11 +58,11 @@ class BillCollectionBillingStatusService
             ->whereNull('deleted_at')
             ->whereYear('payment_for_month', (int) Carbon::now()->year)
             ->sum(DB::raw('amount + COALESCE(due_paid, 0)'));
-        $revenue = $this->formatMoney((string) $sum);
+        $revenue = $this->currencyFormatter->format(Currency::TK, (string) $sum);
 
         return [
-            'due_for_this_month' => $this->formatMoney($dueThisMonthMarginal),
-            'total_due' => $this->formatMoney($totalDueCumulative),
+            'due_for_this_month' => $this->currencyFormatter->format(Currency::TK, $dueThisMonthMarginal),
+            'total_due' => $this->currencyFormatter->format(Currency::TK, $totalDueCumulative),
             'total_revenue_collected' => $revenue,
         ];
     }
@@ -111,34 +115,34 @@ class BillCollectionBillingStatusService
                 return (string) ($site->contact_number ?? '');
             })
             ->addColumn('current_service_fee', function (Household $site) {
-                return $this->formatMoney((string) ($site->waste_charge ?? 0));
+                return $this->currencyFormatter->format(Currency::TK, (string) ($site->waste_charge ?? 0));
             })
             ->addColumn('due_current_month', function (Household $site) use ($reportMonthStart) {
-                return $this->formatMoney($this->currentMonthDueFromOutstandingMap($site, $reportMonthStart));
+                return $this->currencyFormatter->format(Currency::TK, $this->currentMonthDueFromOutstandingMap($site, $reportMonthStart));
             })
             ->addColumn('due_months_of', function (Household $site) use ($monthFrom, $monthTo) {
                 return $this->monthsWithMarginalDueLabelsInRange($site, $monthFrom, $monthTo);
             })
             ->addColumn('due_in_selected_months', function (Household $site) use ($monthFrom, $monthTo) {
-                return $this->formatMoney($this->sumMarginalDueInRange($site, $monthFrom, $monthTo));
+                return $this->currencyFormatter->format(Currency::TK, $this->sumMarginalDueInRange($site, $monthFrom, $monthTo));
             })
             ->addColumn('total_due_amount', function (Household $site) use ($monthTo) {
-                return $this->formatMoney($this->billingStatusAmounts($site, $monthTo)['payable']);
+                return $this->currencyFormatter->format(Currency::TK, $this->billingStatusAmounts($site, $monthTo)['payable']);
             })
             ->addColumn('previous_due_amount', function (Household $site) use ($monthTo) {
-                return $this->formatMoney($this->billingStatusAmounts($site, $monthTo)['previous_due']);
+                return $this->currencyFormatter->format(Currency::TK, $this->billingStatusAmounts($site, $monthTo)['previous_due']);
             })
             ->addColumn('current_month_paid', function (Household $site) {
-                return $this->formatMoney((string) ($site->current_month_paid ?? 0));
+                return $this->currencyFormatter->format(Currency::TK, (string) ($site->current_month_paid ?? 0));
             })
             ->addColumn('previous_due_paid', function (Household $site) {
-                return $this->formatMoney((string) ($site->previous_due_paid ?? 0));
+                return $this->currencyFormatter->format(Currency::TK, (string) ($site->previous_due_paid ?? 0));
             })
             ->editColumn('revenue_collected', function (Household $site) {
-                return $this->formatMoney((string) ($site->revenue_collected ?? 0));
+                return $this->currencyFormatter->format(Currency::TK, (string) ($site->revenue_collected ?? 0));
             })
             ->addColumn('remaining_due', function (Household $site) use ($monthTo) {
-                return $this->formatMoney($this->billingStatusAmounts($site, $monthTo)['closing']);
+                return $this->currencyFormatter->format(Currency::TK, $this->billingStatusAmounts($site, $monthTo)['closing']);
             })
             ->rawColumns([])
             ->make(true);
@@ -173,15 +177,15 @@ class BillCollectionBillingStatusService
                 'sub_location' => (string) ($site->area_mohalla_name ?? ''),
                 'ward' => ($site->ward !== null && $site->ward !== '') ? (string) $site->ward : '',
                 'contact_number' => (string) ($site->contact_number ?? ''),
-                'current_service_fee' => $this->formatMoney((string) ($site->waste_charge ?? 0)),
-                'previous_due_amount' => $this->formatMoney($amounts['previous_due']),
-                'due_current_month' => $this->formatMoney($amounts['current_due']),
-                'total_due_amount' => $this->formatMoney($amounts['payable']),
+                'current_service_fee' => $this->currencyFormatter->format(Currency::TK, (string) ($site->waste_charge ?? 0)),
+                'previous_due_amount' => $this->currencyFormatter->format(Currency::TK, $amounts['previous_due']),
+                'due_current_month' => $this->currencyFormatter->format(Currency::TK, $amounts['current_due']),
+                'total_due_amount' => $this->currencyFormatter->format(Currency::TK, $amounts['payable']),
                 'due_months_of' => $this->monthsWithMarginalDueLabelsInRange($site, $monthFrom, $monthTo),
-                'current_month_paid' => $this->formatMoney((string) ($site->current_month_paid ?? 0)),
-                'previous_due_paid' => $this->formatMoney((string) ($site->previous_due_paid ?? 0)),
-                'revenue_collected' => $this->formatMoney((string) ($site->revenue_collected ?? 0)),
-                'remaining_due' => $this->formatMoney($amounts['closing']),
+                'current_month_paid' => $this->currencyFormatter->format(Currency::TK, (string) ($site->current_month_paid ?? 0)),
+                'previous_due_paid' => $this->currencyFormatter->format(Currency::TK, (string) ($site->previous_due_paid ?? 0)),
+                'revenue_collected' => $this->currencyFormatter->format(Currency::TK, (string) ($site->revenue_collected ?? 0)),
+                'remaining_due' => $this->currencyFormatter->format(Currency::TK, $amounts['closing']),
             ];
         }
 
@@ -462,12 +466,4 @@ class BillCollectionBillingStatusService
         }
     }
 
-    protected function formatMoney(?string $value): string
-    {
-        if ($value === null || $value === '') {
-            return '';
-        }
-
-        return number_format((float) $value, 2, '.', ',');
-    }
 }

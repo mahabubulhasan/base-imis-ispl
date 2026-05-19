@@ -169,7 +169,7 @@
                 <li><strong>{{ __('Household') }}:</strong> <span id="bcp-no-due-household">—</span></li>
                 <li><strong>{{ __('Payment Month') }}:</strong> <span id="bcp-no-due-month">—</span></li>
                 <li><strong>{{ __('Waste Collection Fee') }}:</strong> <span id="bcp-no-due-waste-charge">—</span></li>
-                <li><strong>{{ __('Total Due Through Month') }}:</strong> <span id="bcp-no-due-total-due">0.00</span></li>
+                <li><strong>{{ __('Total Due Through Month') }}:</strong> <span id="bcp-no-due-total-due">0</span></li>
             </ul>
         </div>
     </div>
@@ -185,7 +185,7 @@
         {!! Form::label('amount', __('Current Month Payment') . ' (' . __('Taka') . ')', ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-9 bcp-payment-field-col">
             <div id="bcp-current-amount-input-wrap">
-                {!! Form::number('amount', old('amount', $isEdit ? $payment->amount : null), ['class' => 'form-control w-100', 'step' => '0.01', 'min' => '0']) !!}
+                {!! Form::number('amount', old('amount', $isEdit ? currency_input($payment->amount) : null), ['class' => 'form-control w-100', 'step' => '1', 'min' => '0', 'inputmode' => 'numeric']) !!}
             </div>
             <small id="bcp-current-month-paid-note" class="form-text text-info d-none">
                 {{ __("The current month's waste collection fee has been paid. You may only pay previous dues.") }}
@@ -196,7 +196,7 @@
     <div class="form-group row bcp-due-dependent-row" id="bcp-due-paid-row">
         {!! Form::label('due_paid', __('Previous Due Payment') . ' (' . __('Taka') . ')', ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-9 bcp-payment-field-col">
-            {!! Form::number('due_paid', old('due_paid', $isEdit ? ($payment->due_paid ?? 0) : 0), ['class' => 'form-control w-100', 'step' => '0.01', 'min' => '0']) !!}
+            {!! Form::number('due_paid', old('due_paid', $isEdit ? currency_input($payment->due_paid ?? 0) : 0), ['class' => 'form-control w-100', 'step' => '1', 'min' => '0', 'inputmode' => 'numeric']) !!}
         </div>
     </div>
 
@@ -250,6 +250,7 @@
 </div>
 
 @push('scripts')
+@include('components.formatting.currency-script')
 <script>
 (function() {
     var holdingsUrl = @json(route('swm.bill-collection.holdings-search'));
@@ -317,9 +318,7 @@
     }
 
     function formatCurrencyDisplay(value) {
-        var n = Number(value);
-        if (!isFinite(n)) return '—';
-        return n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        return window.ImisFormat.currency('tk', value);
     }
 
     function setNoDueState(isNoDue) {
@@ -358,7 +357,7 @@
         );
         $('#bcp-no-due-total-due').text(
             (data.due === null || data.due === undefined)
-                ? '0.00'
+                ? '0'
                 : formatCurrencyDisplay(data.due)
         );
     }
@@ -432,7 +431,7 @@
                 $('#bcp-current-amount-input-wrap').hide();
                 $('input[name="amount"]').val('0');
                 $('#bcp-current-month-paid-note').removeClass('d-none');
-                $('#due_paid').prop('required', true).attr('min', '0.01');
+                $('#due_paid').prop('required', true).attr('min', '1');
                 $('#bcp-current-amount-row').removeClass('required');
                 $('#bcp-due-paid-row').addClass('required');
             } else {

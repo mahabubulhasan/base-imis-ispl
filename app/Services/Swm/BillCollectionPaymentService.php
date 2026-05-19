@@ -2,8 +2,10 @@
 
 namespace App\Services\Swm;
 
-use App\Models\Swm\BillCollectionPayment;
 use App\Models\BuildingInfo\Household;
+use App\Models\Swm\BillCollectionPayment;
+use App\Services\Formatting\Currency;
+use App\Services\Formatting\CurrencyFormatter;
 use Auth;
 use Box\Spout\Common\Type;
 use Box\Spout\Writer\Style\Color;
@@ -16,6 +18,11 @@ use Yajra\DataTables\DataTables;
 
 class BillCollectionPaymentService
 {
+    public function __construct(
+        protected CurrencyFormatter $currencyFormatter,
+    ) {
+    }
+
     /**
      * @return array<string, string> holding_number => label for Select2
      */
@@ -234,7 +241,9 @@ class BillCollectionPaymentService
         }
 
         return [
-            'waste_charge' => $wasteCharge !== null ? number_format((float) $wasteCharge, 2, '.', '') : null,
+            'waste_charge' => $wasteCharge !== null
+                ? $this->currencyFormatter->format(Currency::TK, $wasteCharge, false)
+                : null,
             'billing_anchor' => $anchor?->toDateString(),
             'billable_month_count' => $billableMonths,
             'cumulative_obligation' => $cumulativeObligation,
@@ -485,15 +494,15 @@ class BillCollectionPaymentService
                 return $model->payment_time?->format('Y-m-d H:i') ?? '';
             })
             ->editColumn('amount', function ($model) {
-                return number_format((float) $model->amount, 2, '.', ',');
+                return $this->currencyFormatter->format(Currency::TK, $model->amount);
             })
             ->addColumn('due_paid', function ($model) {
-                return number_format((float) ($model->due_paid ?? 0), 2, '.', ',');
+                return $this->currencyFormatter->format(Currency::TK, $model->due_paid ?? 0);
             })
             ->addColumn('total_collected', function ($model) {
                 $total = (float) ($model->amount ?? 0) + (float) ($model->due_paid ?? 0);
 
-                return number_format($total, 2, '.', ',');
+                return $this->currencyFormatter->format(Currency::TK, $total);
             })
             ->editColumn('payment_method', function ($model) {
                 $methods = config('bill_collection.payment_methods', []);

@@ -4,6 +4,8 @@ namespace App\Services\BuildingInfo;
 
 use App\Models\BuildingInfo\Building;
 use App\Models\BuildingInfo\Household;
+use App\Services\Formatting\Currency;
+use App\Services\Formatting\CurrencyFormatter;
 use App\Models\Swm\WasteBin;
 use App\Models\Swm\Worker;
 use App\Models\UtilityInfo\Roadline;
@@ -16,6 +18,11 @@ use Yajra\DataTables\DataTables;
 
 class HouseholdService
 {
+    public function __construct(
+        protected CurrencyFormatter $currencyFormatter,
+    ) {
+    }
+
     public function getAllHouseholds(array $data)
     {
         $query = Household::query()->whereNull('deleted_at');
@@ -221,7 +228,7 @@ class HouseholdService
                     $row->holding_number,
                     $row->tax_id,
                     $row->bin,
-                    $row->waste_charge,
+                    $this->currencyFormatter->format(Currency::TK, $row->waste_charge),
                     $row->is_owner ? __('Yes') : __('No'),
                     $row->functional_use,
                     $row->is_lic ? __('Yes') : __('No'),

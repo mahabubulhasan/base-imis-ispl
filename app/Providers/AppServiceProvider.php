@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Services\Formatting\CurrencyFormatter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL;
 use Cookie;
@@ -19,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->singleton(CurrencyFormatter::class);
     }
 
     /**

@@ -29,17 +29,18 @@
             <dd class="col-sm-9">{{ $payment->payment_for_month?->format('M, Y') }}</dd>
             <dt class="col-sm-3">{{ __('Billing summary') }}</dt>
             <dd class="col-sm-9">
-                {{ __('Charge') }} ({{ __('Taka') .' / '.  __('Month') }}): {{ optional($payment->primaryCollectionSite)->waste_charge ?? '—' }}<br>
+                @php $siteCharge = optional($payment->primaryCollectionSite)->waste_charge; @endphp
+                {{ __('Charge') }} ({{ __('Taka') .' / '.  __('Month') }}): {{ $siteCharge !== null && $siteCharge !== '' ? currency($siteCharge) : '—' }}<br>
                 {{ __('Status') }}: {{ $hhStatusLabel }}
             </dd>
             <dt class="col-sm-3">{{ __('Payment time') }}</dt>
             <dd class="col-sm-9">{{ $payment->payment_time?->format('Y-m-d H:i') }}</dd>
             <dt class="col-sm-3">{{ __('Current month paid') }} ({{ __('Taka') }})</dt>
-            <dd class="col-sm-9">{{ number_format((float) $payment->amount, 2) }}</dd>
+            <dd class="col-sm-9">{{ currency($payment->amount) }}</dd>
             <dt class="col-sm-3">{{ __('Previous due paid') }} ({{ __('Taka') }})</dt>
-            <dd class="col-sm-9">{{ number_format((float) ($payment->due_paid ?? 0), 2) }}</dd>
+            <dd class="col-sm-9">{{ currency($payment->due_paid ?? 0) }}</dd>
             <dt class="col-sm-3">{{ __('Total collected') }} ({{ __('Taka') }})</dt>
-            <dd class="col-sm-9">{{ number_format((float) $payment->amount + (float) ($payment->due_paid ?? 0), 2) }}</dd>
+            <dd class="col-sm-9">{{ currency((float) $payment->amount + (float) ($payment->due_paid ?? 0)) }}</dd>
             <dt class="col-sm-3">{{ __('Payment method') }}</dt>
             <dd class="col-sm-9">{{ config('bill_collection.payment_methods')[$payment->payment_method] ?? $payment->payment_method }}</dd>
             <dt class="col-sm-3">{{ __('Receipt no') }}</dt>

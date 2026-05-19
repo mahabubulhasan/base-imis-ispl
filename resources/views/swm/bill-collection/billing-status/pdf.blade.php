@@ -82,16 +82,6 @@
 </head>
 <body>
     @php
-        $formatAmount = static function ($value): string {
-            if ($value === null || $value === '') {
-                return '0.00';
-            }
-
-            $normalized = is_string($value) ? str_replace(',', '', $value) : $value;
-
-            return number_format((float) $normalized, 2, '.', ',');
-        };
-
         $logoPath = public_path(config('constants.LOGO_URL', 'img/stl/logo-chapainawabganj.png'));
         $logoDataUri = is_file($logoPath)
             ? 'data:image/png;base64,'.base64_encode(file_get_contents($logoPath))
@@ -163,15 +153,15 @@
                     <td>{{ $row['sub_location'] }}</td>
                     <td>{{ $row['ward'] }}</td>
                     <td class="nowrap">{{ $row['contact_number'] }}</td>
-                    <td class="amount">{{ $formatAmount($row['current_service_fee'] ?? null) }}</td>
-                    <td class="amount">{{ $formatAmount($row['previous_due_amount'] ?? null) }}</td>
+                    <td class="amount">{{ $row['current_service_fee'] ?? currency(0) }}</td>
+                    <td class="amount">{{ $row['previous_due_amount'] ?? currency(0) }}</td>
                     <td>{{ $row['due_months_of'] }}</td>
-                    <td class="amount">{{ $formatAmount($row['due_current_month'] ?? null) }}</td>
-                    <td class="amount">{{ $formatAmount($row['total_due_amount'] ?? null) }}</td>
-                    <td class="amount">{{ $formatAmount($row['current_month_paid'] ?? null) }}</td>
-                    <td class="amount">{{ $formatAmount($row['previous_due_paid'] ?? null) }}</td>
-                    <td class="amount">{{ $formatAmount($row['revenue_collected'] ?? null) }}</td>
-                    <td class="amount">{{ $formatAmount($row['remaining_due'] ?? null) }}</td>
+                    <td class="amount">{{ $row['due_current_month'] ?? currency(0) }}</td>
+                    <td class="amount">{{ $row['total_due_amount'] ?? currency(0) }}</td>
+                    <td class="amount">{{ $row['current_month_paid'] ?? currency(0) }}</td>
+                    <td class="amount">{{ $row['previous_due_paid'] ?? currency(0) }}</td>
+                    <td class="amount">{{ $row['revenue_collected'] ?? currency(0) }}</td>
+                    <td class="amount">{{ $row['remaining_due'] ?? currency(0) }}</td>
                 </tr>
             @empty
                 <tr>

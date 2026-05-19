@@ -2,11 +2,19 @@
 
 namespace App\Services\Swm\Dashboard;
 
+use App\Services\Formatting\Currency;
+use App\Services\Formatting\CurrencyFormatter;
+
 final class SwmDashboardFormatter
 {
+    public function __construct(
+        protected CurrencyFormatter $currency,
+    ) {
+    }
+
     public function integer(int|float|null $value): string
     {
-        return number_format((int) round((float) ($value ?? 0)));
+        return $this->currency->format(Currency::TK, $value);
     }
 
     public function decimal(int|float|null $value, int $decimals = 2): string
