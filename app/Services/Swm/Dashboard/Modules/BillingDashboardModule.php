@@ -190,7 +190,6 @@ class BillingDashboardModule implements SwmDashboardModuleInterface
             ],
             'options' => [
                 'unitX' => __('Payment Method'),
-                'unitY' => $this->countChartAxisY(__('Payments')),
             ],
         ];
     }

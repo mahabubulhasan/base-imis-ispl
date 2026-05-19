@@ -326,12 +326,16 @@
         });
     }
 
+    function isNumberOfEntityUnit(unit) {
+        return /^Number of\s+/i.test(String(unit || '').trim());
+    }
+
     function doughnutTooltipUnit(opts, dataset) {
         opts = opts || {};
         if (opts.unit) {
             return String(opts.unit);
         }
-        if (opts.unitY) {
+        if (opts.unitY && !isNumberOfEntityUnit(opts.unitY)) {
             return String(opts.unitY);
         }
         if (opts.percentValues) {

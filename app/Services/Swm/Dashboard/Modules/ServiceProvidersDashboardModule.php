@@ -170,9 +170,7 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
             'datasets' => [
                 ['data' => $values],
             ],
-            'options' => [
-                'unitY' => $this->countChartAxisY(__('Organizations')),
-            ],
+            'options' => [],
         ];
     }
 
@@ -370,9 +368,7 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
             'datasets' => [
                 ['data' => $values],
             ],
-            'options' => [
-                'unitY' => $this->countChartAxisY(__('Workers')),
-            ],
+            'options' => [],
         ];
     }
 
@@ -457,9 +453,7 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
             'datasets' => [
                 ['data' => $values],
             ],
-            'options' => [
-                'unitY' => $this->countChartAxisY(__('Workers')),
-            ],
+            'options' => [],
         ];
     }
 

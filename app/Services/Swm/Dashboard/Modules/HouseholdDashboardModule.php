@@ -156,9 +156,7 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
                             'datasets' => [
                                 ['label' => __('Count'), 'data' => $binValues],
                             ],
-                            'options' => [
-                                'unitY' => $this->countChartAxisY(__('Buildings')),
-                            ],
+                            'options' => [],
                         ],
                     ],
                 ],
@@ -313,15 +311,13 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
                             'title' => __('LIC Gender Distribution'),
                             'labels' => [__('Male'), __('Female'), __('Other')],
                             'datasets' => [
-                                ['label' => __('Population'), 'data' => [
+                                ['data' => [
                                     (int) $gender->male,
                                     (int) $gender->female,
                                     (int) $gender->others,
                                 ]],
                             ],
-                            'options' => [
-                                'unit' => __('Population'),
-                            ],
+                            'options' => [],
                         ],
                     ],
                 ],

@@ -257,9 +257,7 @@ class ComplaintsDashboardModule implements SwmDashboardModuleInterface
             'datasets' => [
                 ['data' => $data],
             ],
-            'options' => [
-                'unitY' => $this->countChartAxisY(__('Complaints')),
-            ],
+            'options' => [],
         ];
     }
 
