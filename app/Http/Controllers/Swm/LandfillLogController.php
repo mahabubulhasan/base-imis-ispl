@@ -60,6 +60,83 @@ class LandfillLogController extends Controller
         return Ward::getInAscOrder();
     }
 
+    /**
+     * STS id => list of source ward keys (for landfill log form STS wards display).
+     *
+     * @return array<string, list<string>>
+     */
+    protected function stsSourceWardsMap(): array
+    {
+        $map = [];
+        Sts::query()
+            ->whereNull('deleted_at')
+            ->orderBy('name')
+            ->get(['id', 'source_wards', 'ward_no'])
+            ->each(function (Sts $sts) use (&$map) {
+                $map[(string) $sts->id] = $this->wardsForStsRecord($sts);
+            });
+
+        return $map;
+    }
+
+    /**
+     * @return list<string>
+     */
+    protected function wardsForStsRecord(Sts $sts): array
+    {
+        $wardSet = [];
+        foreach ($sts->source_wards ?? [] as $ward) {
+            $normalized = $this->normalizeWardKey($ward);
+            if ($normalized !== null) {
+                $wardSet[$normalized] = true;
+            }
+        }
+        if ($wardSet === [] && $sts->ward_no !== null) {
+            $fallback = $this->normalizeWardKey($sts->ward_no);
+            if ($fallback !== null) {
+                $wardSet[$fallback] = true;
+            }
+        }
+
+        $wards = array_keys($wardSet);
+        sort($wards, SORT_NATURAL);
+
+        return array_values($wards);
+    }
+
+    /**
+     * @param  list<int>  $ids
+     * @return list<string>
+     */
+    protected function unionWardsForStsIds(array $ids): array
+    {
+        $wardSet = [];
+        Sts::query()
+            ->whereIn('id', $ids)
+            ->whereNull('deleted_at')
+            ->get(['id', 'source_wards', 'ward_no'])
+            ->each(function (Sts $sts) use (&$wardSet) {
+                foreach ($this->wardsForStsRecord($sts) as $ward) {
+                    $wardSet[$ward] = true;
+                }
+            });
+
+        $wards = array_keys($wardSet);
+        sort($wards, SORT_NATURAL);
+
+        return array_values($wards);
+    }
+
+    protected function normalizeWardKey(mixed $ward): ?string
+    {
+        $value = trim((string) $ward);
+        if ($value === '' || ! is_numeric($value)) {
+            return null;
+        }
+
+        return (string) (int) $value;
+    }
+
     public function index()
     {
         $page_title = __('Landfill Loading');
@@ -86,6 +163,7 @@ class LandfillLogController extends Controller
         $landfillList = $this->landfillOptionsForForms();
         $stsList = $this->stsOptionsForForms();
         $wardOptions = $this->wardOptionsForForms();
+        $stsSourceWardsMap = $this->stsSourceWardsMap();
 
         return view('swm.service-management.landfill-logs.create', compact(
             'page_title',
@@ -93,7 +171,8 @@ class LandfillLogController extends Controller
             'statusOptions',
             'landfillList',
             'stsList',
-            'wardOptions'
+            'wardOptions',
+            'stsSourceWardsMap'
         ));
     }
 
@@ -111,8 +190,16 @@ class LandfillLogController extends Controller
     {
         $page_title = __('Landfill Loading Log Details');
         $landfillLog = $landfill_log->load(['vehicle', 'vehicleType', 'driver', 'landfill', 'wasteType']);
+        $stsIds = is_array($landfillLog->source_sts_ids) ? array_values(array_filter(array_map('intval', $landfillLog->source_sts_ids), fn ($id) => $id > 0)) : [];
+        $stsSourceWards = $this->unionWardsForStsIds($stsIds);
+        $otherSourceWards = is_array($landfillLog->source_wards) ? $landfillLog->source_wards : [];
 
-        return view('swm.service-management.landfill-logs.show', compact('page_title', 'landfillLog'));
+        return view('swm.service-management.landfill-logs.show', compact(
+            'page_title',
+            'landfillLog',
+            'stsSourceWards',
+            'otherSourceWards'
+        ));
     }
 
     public function edit(LandfillLog $landfill_log)
@@ -123,6 +210,7 @@ class LandfillLogController extends Controller
         $landfillList = $this->landfillOptionsForForms();
         $stsList = $this->stsOptionsForForms();
         $wardOptions = $this->wardOptionsForForms();
+        $stsSourceWardsMap = $this->stsSourceWardsMap();
 
         return view('swm.service-management.landfill-logs.edit', compact(
             'page_title',
@@ -130,7 +218,8 @@ class LandfillLogController extends Controller
             'statusOptions',
             'landfillList',
             'stsList',
-            'wardOptions'
+            'wardOptions',
+            'stsSourceWardsMap'
         ));
     }
 

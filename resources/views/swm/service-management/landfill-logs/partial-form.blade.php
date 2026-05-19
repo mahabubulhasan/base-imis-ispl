@@ -155,9 +155,16 @@
     </div>
 
     <div class="form-group row">
-        {!! Form::label('source_wards', __('Source Wards'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('sts_source_wards_display', __('STS Source Wards'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-9">
-            {!! Form::select('source_wards[]', $wardOptions, $sourceWardsArr, ['class' => 'form-control', 'id' => 'source_wards', 'multiple' => true, 'data-placeholder' => __('Source Wards')]) !!}
+            <span id="sts_source_wards_display" class="form-control bg-light" style="min-height: 38px; height: auto;">—</span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        {!! Form::label('source_wards', __('Other Source Wards'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-9">
+            {!! Form::select('source_wards[]', $wardOptions, $sourceWardsArr, ['class' => 'form-control', 'id' => 'source_wards', 'multiple' => true, 'data-placeholder' => __('Other Source Wards')]) !!}
         </div>
     </div>
 
@@ -193,6 +200,30 @@ $(function () {
     var initialVehicleText = @json($isEdit && isset($landfillLog) && $landfillLog->vehicle ? ($landfillLog->vehicle->vehicle_number ?: '') : null);
     var initialWasteForJs = @json($initialWasteForJs);
     var landfillSkipWasteOnNextChange = false;
+    var stsSourceWardsMap = @json($stsSourceWardsMap ?? []);
+    var $sourceStsSelect = $('#source_sts_ids');
+    var $stsSourceWardsDisplay = $('#sts_source_wards_display');
+
+    function unionWardsFromStsIds(stsIds) {
+        var wardSet = {};
+        (stsIds || []).forEach(function (id) {
+            var wards = stsSourceWardsMap[String(id)] || stsSourceWardsMap[id] || [];
+            wards.forEach(function (ward) {
+                var key = String(ward).trim();
+                if (key !== '') {
+                    wardSet[key] = true;
+                }
+            });
+        });
+        return Object.keys(wardSet).sort(function (a, b) {
+            return parseInt(a, 10) - parseInt(b, 10);
+        });
+    }
+
+    function updateStsSourceWardsDisplay() {
+        var wards = unionWardsFromStsIds($sourceStsSelect.val() || []);
+        $stsSourceWardsDisplay.text(wards.length ? wards.join(', ') : '—');
+    }
 
     function setWardsFromArray(arr) {
         var clean = Array.isArray(arr) ? arr.map(function (v) { return String(v).trim(); }).filter(function (v) { return v.length > 0; }) : [];
@@ -222,7 +253,9 @@ $(function () {
     }
 
     initMultiSelect($('#source_wards'));
-    initMultiSelect($('#source_sts_ids'));
+    initMultiSelect($sourceStsSelect);
+    $sourceStsSelect.on('change', updateStsSourceWardsDisplay);
+    updateStsSourceWardsDisplay();
 
     function initLandfillSelect2() {
         var $l = $('#landfill_id');

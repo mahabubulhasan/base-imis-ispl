@@ -86,8 +86,12 @@
                 </div>
             </div>
             <div class="form-group row">
-                <span class="col-sm-3 control-label">{{ __('Source Wards') }}</span>
-                <div class="col-sm-9"><p class="form-control-plaintext mb-0">{{ is_array($landfillLog->source_wards) && count($landfillLog->source_wards) ? implode(', ', $landfillLog->source_wards) : '—' }}</p></div>
+                <span class="col-sm-3 control-label">{{ __('STS Source Wards') }}</span>
+                <div class="col-sm-9"><p class="form-control-plaintext mb-0">{{ count($stsSourceWards) ? implode(', ', $stsSourceWards) : '—' }}</p></div>
+            </div>
+            <div class="form-group row">
+                <span class="col-sm-3 control-label">{{ __('Other Source Wards') }}</span>
+                <div class="col-sm-9"><p class="form-control-plaintext mb-0">{{ count($otherSourceWards) ? implode(', ', $otherSourceWards) : '—' }}</p></div>
             </div>
             <div class="form-group row">
                 <span class="col-sm-3 control-label">{{ __('Operation Status') }}</span>
