@@ -103,7 +103,7 @@
         <div class="col-sm-3">{!! Form::date('using_this_service_since', optional(old('using_this_service_since', optional($household)->using_this_service_since))->format('Y-m-d'), ['class' => 'form-control']) !!}</div>
     </div>
     <div class="form-group row">
-        {!! Form::label('daily_waste_volume', __('Avg Waste Collected') . ' (' . __('Kg') . '/' . __('Day') . ')', ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('daily_waste_volume', __('Average Waste Collected') . ' (' . __('Kg') . '/' . __('Day') . ')', ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">{!! Form::number('daily_waste_volume', null, ['class' => 'form-control', 'step' => '0.01', 'min' => '0']) !!}</div>
     </div>
     

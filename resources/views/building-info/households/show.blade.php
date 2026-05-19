@@ -54,7 +54,7 @@
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Segregation Practiced?') }}</label><div class="col-sm-3">{!! Form::label(null, $household->segregation_practiced ? __('Yes') : __('No'), ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Household Status') }}</label><div class="col-sm-3">{!! Form::label(null, \App\Models\BuildingInfo\Household::statusOptions()[$household->status] ?? $household->status, ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Remarks') }}</label><div class="col-sm-3">{!! Form::label(null, $household->remarks, ['class' => 'form-control']) !!}</div></div>
-            <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Survey Date') }}</label><div class="col-sm-3">{!! Form::label(null, $household->survey_date, ['class' => 'form-control']) !!}</div></div>
+            <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Survey Date') }}</label><div class="col-sm-3">{!! Form::label(null, $household->survey_date?->format('Y-m-d'), ['class' => 'form-control']) !!}</div></div>
         </div>
     </div>
 </div>

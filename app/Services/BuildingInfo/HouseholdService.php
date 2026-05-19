@@ -10,6 +10,7 @@ use App\Models\Swm\WasteBin;
 use App\Models\Swm\Worker;
 use App\Models\UtilityInfo\Roadline;
 use Auth;
+use Illuminate\Database\Eloquent\Builder;
 use Box\Spout\Common\Type;
 use Box\Spout\Writer\Style\Color;
 use Box\Spout\Writer\Style\StyleBuilder;
@@ -28,37 +29,10 @@ class HouseholdService
         $query = Household::query()->whereNull('deleted_at');
 
         return DataTables::of($query)
-            ->filter(function ($q) use ($data) {
-                if (! empty($data['household_id'] ?? null)) {
-                    $q->where('household_id', 'ILIKE', '%'.trim((string) $data['household_id']).'%');
-                }
-                if (! empty($data['household_owner_name'] ?? null)) {
-                    $q->where('household_owner_name', 'ILIKE', '%'.trim((string) $data['household_owner_name']).'%');
-                }
-                if (! empty($data['father_or_husband_name'] ?? null)) {
-                    $q->where('father_or_husband_name', 'ILIKE', '%'.trim((string) $data['father_or_husband_name']).'%');
-                }
-                if (! empty($data['contact_number'] ?? null)) {
-                    $q->where('contact_number', 'ILIKE', '%'.trim((string) $data['contact_number']).'%');
-                }
-                if (! empty($data['bin'] ?? null)) {
-                    $q->where('bin', 'ILIKE', '%'.trim((string) $data['bin']).'%');
-                }
-                if (array_key_exists('is_lic', $data) && $data['is_lic'] !== '' && $data['is_lic'] !== null) {
-                    $q->where('is_lic', filter_var($data['is_lic'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? $data['is_lic']);
-                }
-                if (! empty($data['lic_id'] ?? null)) {
-                    $q->where('lic_id', $data['lic_id']);
-                }
-                if (! empty($data['survey_date'] ?? null)) {
-                    $q->whereDate('survey_date', $data['survey_date']);
-                }
-                if (! empty($data['status'] ?? null)) {
-                    $q->where('status', $data['status']);
-                }
-            })
+            ->filter(fn ($q) => $this->applyHouseholdFilters($q, $data))
             ->editColumn('is_owner', fn ($m) => $m->is_owner ? __('Yes') : __('No'))
             ->editColumn('is_lic', fn ($m) => $m->is_lic ? __('Yes') : __('No'))
+            ->editColumn('survey_date', fn ($m) => $m->survey_date?->format('Y-m-d') ?? '')
             ->editColumn('status', fn ($m) => Household::statusOptions()[$m->status] ?? (string) $m->status)
             ->addColumn('action', function ($model) {
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['building-info.households.destroy', $model->id]]);
@@ -209,6 +183,7 @@ class HouseholdService
         ];
 
         $query = Household::query()->whereNull('deleted_at')->orderBy('id');
+        $this->applyHouseholdFilters($query, $data);
         $style = (new StyleBuilder())->setFontBold()->setFontSize(13)->setBackgroundColor(Color::rgb(228, 228, 228))->build();
         $writer = WriterFactory::create(Type::CSV);
         $writer->openToBrowser('Households.csv')->addRowWithStyle($columns, $style);
@@ -233,10 +208,41 @@ class HouseholdService
                     $row->functional_use,
                     $row->is_lic ? __('Yes') : __('No'),
                     $row->lic_id,
-                    $row->survey_date,
+                    $row->survey_date?->format('Y-m-d'),
                 ]);
             }
         });
         $writer->close();
+    }
+
+    private function applyHouseholdFilters(Builder $query, array $data): void
+    {
+        if (! empty($data['household_id'] ?? null)) {
+            $query->where('household_id', 'ILIKE', '%'.trim((string) $data['household_id']).'%');
+        }
+        if (! empty($data['household_owner_name'] ?? null)) {
+            $query->where('household_owner_name', 'ILIKE', '%'.trim((string) $data['household_owner_name']).'%');
+        }
+        if (! empty($data['father_or_husband_name'] ?? null)) {
+            $query->where('father_or_husband_name', 'ILIKE', '%'.trim((string) $data['father_or_husband_name']).'%');
+        }
+        if (! empty($data['contact_number'] ?? null)) {
+            $query->where('contact_number', 'ILIKE', '%'.trim((string) $data['contact_number']).'%');
+        }
+        if (! empty($data['bin'] ?? null)) {
+            $query->where('bin', 'ILIKE', '%'.trim((string) $data['bin']).'%');
+        }
+        if (array_key_exists('is_lic', $data) && $data['is_lic'] !== '' && $data['is_lic'] !== null) {
+            $query->where('is_lic', filter_var($data['is_lic'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? $data['is_lic']);
+        }
+        if (! empty($data['lic_id'] ?? null)) {
+            $query->where('lic_id', $data['lic_id']);
+        }
+        if (! empty($data['survey_date'] ?? null)) {
+            $query->whereDate('survey_date', $data['survey_date']);
+        }
+        if (! empty($data['status'] ?? null)) {
+            $query->where('status', $data['status']);
+        }
     }
 }
