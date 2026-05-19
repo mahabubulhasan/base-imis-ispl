@@ -145,7 +145,7 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
                         [
                             'id' => 'swmChartWasteBinPresence',
                             'type' => 'doughnut',
-                            'title' => __('Buildings with vs without Waste Bin'),
+                            'title' => __('Buildings by Waste Bin Availability'),
                             'labels' => $binLabels,
                             'datasets' => [
                                 ['label' => __('Count'), 'data' => $binValues],
@@ -288,7 +288,7 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
                         ['label' => __('LIC Population Covered'), 'value' => $this->formatter->integer($licPopulationCovered), 'icon' => 'fa-people-group'],
                         ['label' => __('LICs with Water Connection'), 'value' => $this->formatter->integer($waterCount), 'icon' => 'fa-faucet'],
                         ['label' => __('LICs with Sanitation Facility'), 'value' => $this->formatter->integer($sanitationCount), 'icon' => 'fa-toilet'],
-                        ['label' => __('LIC Segregation Rate'), 'value' => $this->formatter->percent($licSegRate), 'icon' => 'fa-recycle'],
+                        ['label' => __('LIC Waste Segregation Rate'), 'value' => $this->formatter->percent($licSegRate), 'icon' => 'fa-recycle'],
                         // ['label' => __('LIC Complaint Density (Per 1,000 HH)'), 'value' => $this->formatter->decimal($complaintDensity, 1), 'icon' => 'fa-comment-dots'],
                     ],
                 ],

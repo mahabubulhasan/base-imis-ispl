@@ -21,12 +21,12 @@ document.addEventListener('DOMContentLoaded', function() {
         datasets: [
             {
                 label: "Yes",
-                backgroundColor: "#89CFF0",
+                backgroundColor: window.dashboardColorForLabel("Yes", 0),
                 data: buildingsWithSW
             },
             {
                 label: "No",
-                backgroundColor: " #808080",
+                backgroundColor: window.dashboardColorForLabel("No", 1),
                 data: buildingsWithoutSW
             }
         ]

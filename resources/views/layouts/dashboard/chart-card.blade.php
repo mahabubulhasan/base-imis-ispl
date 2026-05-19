@@ -1,3 +1,37 @@
+@once
+@push('scripts')
+<script>
+(function () {
+    var colors = @json(config('swm_dashboard.chart_colors', [
+        'yes' => 'rgba(54, 162, 235, 0.75)',
+        'no' => 'rgba(251, 176, 64, 0.85)',
+    ]));
+    var fallbackPalette = [
+        colors.yes,
+        colors.no,
+        'rgba(153, 202, 60, 0.85)',
+        'rgba(90, 155, 212, 0.65)',
+        'rgba(255, 99, 132, 0.65)',
+        'rgba(153, 102, 255, 0.65)',
+    ];
+
+    window.dashboardChartColors = colors;
+
+    window.dashboardColorForLabel = function (label, index) {
+        var key = String(label || '').trim().toLowerCase();
+        if (key === 'yes') {
+            return colors.yes;
+        }
+        if (key === 'no') {
+            return colors.no;
+        }
+        return fallbackPalette[(index || 0) % fallbackPalette.length];
+    };
+})();
+</script>
+@endpush
+@endonce
+
 <div class="card card-outline card-info">
     <div class="card-header">
         <h3 class="card-title">{{ $card_title }}</h3>

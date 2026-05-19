@@ -9,20 +9,38 @@
     var chartInstances = {};
     var networkInstances = {};
 
+    var defaultChartColors = {
+        yes: 'rgba(54, 162, 235, 0.75)',
+        no: 'rgba(251, 176, 64, 0.85)',
+    };
+
+    var chartColors = Object.assign({}, defaultChartColors, cfg.chartColors || {});
+
     var palette = {
-        bar: 'rgba(54, 162, 235, 0.75)',
+        bar: chartColors.yes,
         barHover: 'rgba(54, 162, 235, 0.9)',
         line: 'rgba(54, 162, 235, 1)',
         lineFill: 'rgba(54, 162, 235, 0.15)',
         doughnut: [
-            'rgba(54, 162, 235, 0.65)',
-            'rgba(251, 176, 64, 0.85)',
+            chartColors.yes,
+            chartColors.no,
             'rgba(153, 202, 60, 0.85)',
             'rgba(90, 155, 212, 0.65)',
             'rgba(255, 99, 132, 0.65)',
             'rgba(153, 102, 255, 0.65)',
         ],
     };
+
+    function colorForLabel(label, index) {
+        var key = String(label || '').trim().toLowerCase();
+        if (key === 'yes') {
+            return chartColors.yes;
+        }
+        if (key === 'no') {
+            return chartColors.no;
+        }
+        return palette.doughnut[index % palette.doughnut.length];
+    }
 
     var networkGroupColors = {
         landfill: { background: '#1f3a52', border: '#117a8b' },
@@ -59,6 +77,50 @@
         return (data || []).map(function (v) {
             return parseChartValue(v, decimalValues);
         });
+    }
+
+    function isWardAxisChart(opts) {
+        if (!opts) {
+            return false;
+        }
+        if (opts.wardAxis) {
+            return true;
+        }
+        var wardLabel = cfg.wardAxisLabel || 'Ward';
+        return opts.unitX === wardLabel || opts.unitY === wardLabel;
+    }
+
+    function formatWardTooltipLine(ward) {
+        var raw = String(ward || '').trim();
+        if (raw === '' || raw === '__unknown__' || raw.toLowerCase() === 'unknown') {
+            return 'Ward: Unknown';
+        }
+        var n = parseInt(raw, 10);
+        if (!isNaN(n)) {
+            return 'Ward: ' + (n < 10 ? '0' + n : String(n));
+        }
+        return 'Ward: ' + raw;
+    }
+
+    function applyWardTooltips(options, opts) {
+        if (!isWardAxisChart(opts)) {
+            return options;
+        }
+        options.tooltips = options.tooltips || {};
+        options.tooltips.callbacks = options.tooltips.callbacks || {};
+        options.tooltips.callbacks.title = function (tooltipItems, data) {
+            if (!tooltipItems.length) {
+                return '';
+            }
+            return formatWardTooltipLine(data.labels[tooltipItems[0].index]);
+        };
+        options.tooltips.callbacks.label = function () {
+            return null;
+        };
+        options.tooltips.callbacks.footer = function () {
+            return null;
+        };
+        return options;
     }
 
     function scaleOptions(unitX, unitY, opts) {
@@ -113,12 +175,12 @@
                     hoverBackgroundColor: palette.barHover,
                 }],
             },
-            options: {
+            options: applyWardTooltips({
                 responsive: true,
                 maintainAspectRatio: false,
                 legend: { display: false },
                 scales: scaleOptions(opts.unitX, opts.unitY, opts),
-            },
+            }, opts),
         });
     }
 
@@ -134,13 +196,13 @@
     function renderStackedBar(canvas, chart) {
         var opts = chart.options || {};
         var datasets = chart.datasets || [];
-        var colors = stackedBarColors(datasets.length);
         var chartDatasets = datasets.map(function (ds, i) {
+            var seriesColor = colorForLabel(ds.label, i);
             return {
                 label: ds.label || '',
                 data: mapChartData(ds.data, opts.decimalValues),
-                backgroundColor: colors[i],
-                hoverBackgroundColor: colors[i],
+                backgroundColor: seriesColor,
+                hoverBackgroundColor: seriesColor,
             };
         });
         var scales = scaleOptions(opts.unitX, opts.unitY, opts);
@@ -159,12 +221,12 @@
                 labels: chart.labels || [],
                 datasets: chartDatasets,
             },
-            options: {
+            options: applyWardTooltips({
                 responsive: true,
                 maintainAspectRatio: false,
                 legend: { position: 'bottom' },
                 scales: scales,
-            },
+            }, opts),
         });
     }
 
@@ -187,12 +249,12 @@
                     pointHoverRadius: 5,
                 }],
             },
-            options: {
+            options: applyWardTooltips({
                 responsive: true,
                 maintainAspectRatio: false,
                 legend: { display: false },
                 scales: scaleOptions(opts.unitX, opts.unitY, opts),
-            },
+            }, opts),
         });
     }
 
@@ -212,12 +274,12 @@
                     hoverBackgroundColor: palette.barHover,
                 }],
             },
-            options: {
+            options: applyWardTooltips({
                 responsive: true,
                 maintainAspectRatio: false,
                 legend: { display: false },
                 scales: scales,
-            },
+            }, opts),
         });
     }
 
@@ -226,11 +288,12 @@
         var datasets = chart.datasets || [];
         var colors = stackedBarColors(datasets.length);
         var chartDatasets = datasets.map(function (ds, i) {
+            var seriesColor = colorForLabel(ds.label, i);
             return {
                 label: ds.label || '',
                 data: mapChartData(ds.data, opts.decimalValues),
-                borderColor: colors[i],
-                backgroundColor: colors[i].replace('0.85', '0.45').replace('0.65', '0.35'),
+                borderColor: seriesColor,
+                backgroundColor: seriesColor.replace('0.85', '0.45').replace('0.75', '0.35').replace('0.65', '0.35'),
                 fill: true,
                 lineTension: 0.2,
                 pointRadius: 2,
@@ -247,18 +310,17 @@
                 labels: chart.labels || [],
                 datasets: chartDatasets,
             },
-            options: {
+            options: applyWardTooltips({
                 responsive: true,
                 maintainAspectRatio: false,
                 legend: { position: 'bottom' },
                 scales: scales,
-            },
+            }, opts),
         });
     }
 
     function renderDoughnut(canvas, chart) {
         var ds = (chart.datasets && chart.datasets[0]) ? chart.datasets[0] : { data: [] };
-        var colors = palette.doughnut;
         destroyChart(canvas.id);
         chartInstances[canvas.id] = new ChartCtor(canvas.getContext('2d'), {
             type: 'doughnut',
@@ -266,8 +328,8 @@
                 labels: chart.labels || [],
                 datasets: [{
                     data: ds.data || [],
-                    backgroundColor: (chart.labels || []).map(function (_, i) {
-                        return colors[i % colors.length];
+                    backgroundColor: (chart.labels || []).map(function (label, i) {
+                        return colorForLabel(label, i);
                     }),
                 }],
             },
@@ -403,7 +465,7 @@
             html += '<div class="heatmap-row-label">' + escapeHtml(rowLabel) + '</div>';
             wards.forEach(function (ward, i) {
                 var v = rowValues[i] != null ? rowValues[i] : 0;
-                html += '<div class="heatmap-value-cell" style="background-color:' + cellColor(v) + '">';
+                html += '<div class="heatmap-value-cell" style="background-color:' + cellColor(v) + '" title="' + escapeHtml(formatWardTooltipLine(ward)) + '">';
                 html += '<span>' + escapeHtml(cellText(v)) + '</span></div>';
             });
             html += '</div>';

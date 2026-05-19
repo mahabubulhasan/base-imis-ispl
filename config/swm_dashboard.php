@@ -3,6 +3,11 @@
 return [
     'default_to_month' => null,
 
+    'chart_colors' => [
+        'yes' => 'rgba(54, 162, 235, 0.75)',
+        'no' => 'rgba(251, 176, 64, 0.85)',
+    ],
+
     'modules' => [
         'households' => [
             'class' => \App\Services\Swm\Dashboard\Modules\HouseholdDashboardModule::class,

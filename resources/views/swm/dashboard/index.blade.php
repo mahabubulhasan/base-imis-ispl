@@ -47,6 +47,8 @@
         'dataUrl' => route('swm.dashboard-kpis.data'),
         'period' => $dashboard['period'] ?? [],
         'charts' => $dashboard['charts'] ?? [],
+        'chartColors' => config('swm_dashboard.chart_colors', []),
+        'wardAxisLabel' => __('Ward'),
     ];
 @endphp
 <script src="{{ asset('js/vendor/Chart.min.js') }}"></script>
