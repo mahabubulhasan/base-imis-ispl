@@ -13,7 +13,7 @@
     <div class="app-mobile-form">
         <div class="card-body">
             <div class="form-group row">
-                <span class="col-sm-3 control-label">{{ __('Landfill Log ID') }}</span>
+                <span class="col-sm-3 control-label">{{ __('Landfill Loading Log ID') }}</span>
                 <div class="col-sm-9"><p class="form-control-plaintext mb-0">{{ $landfillLog->id }}</p></div>
             </div>
             <div class="form-group row">

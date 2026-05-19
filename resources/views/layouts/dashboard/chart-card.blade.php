@@ -2,10 +2,7 @@
 @push('scripts')
 <script>
 (function () {
-    var colors = @json(config('swm_dashboard.chart_colors', [
-        'yes' => 'rgba(54, 162, 235, 0.75)',
-        'no' => 'rgba(251, 176, 64, 0.85)',
-    ]));
+    var colors = @json(config('swm_dashboard.chart_colors'));
     var fallbackPalette = [
         colors.yes,
         colors.no,

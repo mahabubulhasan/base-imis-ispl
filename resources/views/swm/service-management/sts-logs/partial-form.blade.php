@@ -53,7 +53,7 @@
 <div class="card-body">
     @if($isEdit)
         <div class="form-group row">
-            <label class="col-sm-3 control-label">{{ __('STS Log ID') }}</label>
+            <label class="col-sm-3 control-label">{{ __('STS Loading Log ID') }}</label>
             <div class="col-sm-9">
                 <p class="form-control-plaintext">{{ $stsLog->id }}</p>
             </div>

@@ -51,7 +51,7 @@
 <div class="card-body">
     @if($isEdit)
         <div class="form-group row">
-            <label class="col-sm-3 control-label">{{ __('Landfill Log ID') }}</label>
+            <label class="col-sm-3 control-label">{{ __('Landfill Loading Log ID') }}</label>
             <div class="col-sm-9">
                 <p class="form-control-plaintext">{{ $landfillLog->id }}</p>
             </div>

@@ -66,7 +66,7 @@
             <table id="data-table" class="table table-bordered table-striped" width="100%">
                 <thead>
                     <tr>
-                        <th>{{ __('Landfill Loading ID') }}</th>
+                        <th>{{ __('Landfill Loading Log ID') }}</th>
                         <th>{{ __('Entry Date and Time') }}</th>
                         <th>{{ __('Operation Date') }}</th>
                         <th>{{ __('Vehicle Number') }}</th>

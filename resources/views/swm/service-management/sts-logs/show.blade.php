@@ -13,7 +13,7 @@
     <div class="swm-sts-log-form-mobile app-mobile-form">
         <div class="card-body">
             <div class="form-group row">
-                <span class="col-sm-3 control-label">{{ __('STS Log ID') }}</span>
+                <span class="col-sm-3 control-label">{{ __('STS Loading Log ID') }}</span>
                 <div class="col-sm-9"><p class="form-control-plaintext mb-0">{{ $stsLog->id }}</p></div>
             </div>
             <div class="form-group row">

@@ -55,8 +55,8 @@ class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
         $vehicleCount = (int) $this->vehicleQuery($period)->count();
         $fleetCapacityTon = $this->sumVehicleCapacity($period);
         $maintainedRatio = $this->vehiclesMaintainedRatio($period);
-        $functionalStsRatio = $this->functionalRatio($this->stsQuery($period), 'operational_status', 'active');
-        $functionalLandfillRatio = $this->functionalRatio($this->landfillQuery($period), 'operational_status', 'active');
+        $totalStsCount = (int) $this->stsQuery($period)->count();
+        $totalLandfillCount = (int) $this->landfillQuery($period)->count();
         $manpowerDeployed = (int) $this->landfillQuery($period)->sum('manpower_deployed');
         $activeStsCount = (int) $this->stsQuery($period)->where('operational_status', 'active')->count();
         $activeLandfillCount = (int) $this->landfillQuery($period)->where('operational_status', 'active')->count();
@@ -97,13 +97,13 @@ class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
                                     'icon' => 'fa-wrench',
                                 ],
                                 [
-                                    'label' => __('Functional STSs'),
-                                    'value' => $this->formatter->percent($functionalStsRatio),
+                                    'label' => __('Total STSs'),
+                                    'value' => $this->formatter->integer($totalStsCount),
                                     'icon' => 'fa-warehouse',
                                 ],
                                 [
-                                    'label' => __('Functional Landfills'),
-                                    'value' => $this->formatter->percent($functionalLandfillRatio),
+                                    'label' => __('Total Landfills'),
+                                    'value' => $this->formatter->integer($totalLandfillCount),
                                     'icon' => 'fa-mountain-city',
                                 ],
                                 [
@@ -118,7 +118,7 @@ class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
                             'subsection' => __('Key Performance Indicators'),
                             'items' => [
                                 [
-                                    'name' => __('Functional Secondary Transfer Stations (STSs)'),
+                                    'name' => __('Functional STSs'),
                                     'value' => $this->formatter->integer($activeStsCount),
                                     'unit' => __('Number'),
                                     'showFrequency' => true,

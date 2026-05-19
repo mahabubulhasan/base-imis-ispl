@@ -68,7 +68,7 @@
             <table id="data-table" class="table table-bordered table-striped" width="100%">
                 <thead>
                     <tr>
-                        <th>{{ __('ID') }}</th>
+                        <th>{{ __('Attendance Log ID') }}</th>
                         <th>{{ __('Entry Date and Time') }}</th>
                         <th>{{ __('Organization') }}</th>
                         <th>{{ __('Worker Name-ID') }}</th>

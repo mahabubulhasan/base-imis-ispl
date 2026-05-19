@@ -70,7 +70,7 @@ class StsLogController extends Controller
 
     public function create()
     {
-        $page_title = __('Add STS Loading');
+        $page_title = __('Add STS Loading Log');
         $stsLog = null;
         $statusOptions = StsLog::statusOptions();
         $stsList = $this->stsOptionsForForms();
@@ -97,7 +97,7 @@ class StsLogController extends Controller
 
     public function show(StsLog $sts_log)
     {
-        $page_title = __('STS Loading Details');
+        $page_title = __('STS Loading Log Details');
         $stsLog = $sts_log->load(['vehicle', 'vehicleType', 'driver', 'sts', 'wasteType']);
 
         return view('swm.service-management.sts-logs.show', compact('page_title', 'stsLog'));
@@ -105,7 +105,7 @@ class StsLogController extends Controller
 
     public function edit(StsLog $sts_log)
     {
-        $page_title = __('Edit STS Loading');
+        $page_title = __('Edit STS Loading Log');
         $stsLog = $sts_log->load(['vehicle', 'vehicleType', 'driver', 'sts', 'wasteType']);
         $statusOptions = StsLog::statusOptions();
         $stsList = $this->stsOptionsForForms();
@@ -139,7 +139,7 @@ class StsLogController extends Controller
 
     public function history(StsLog $sts_log)
     {
-        $page_title = __('STS Loading History');
+        $page_title = __('STS Loading Log History');
         $stsLog = $sts_log;
 
         return view('swm.service-management.sts-logs.history', compact('page_title', 'stsLog'));

@@ -53,6 +53,10 @@
                         <th>{{ __('Report Date') }}</th>
                         <th>{{ __('Reporting Month') }}</th>
                         <th>{{ __('Quantity of Waste Received (Ton)') }}</th>
+                        <th>{{ __('Organic Waste Composted (Ton)') }}</th>
+                        <th>{{ __('Inorganic Non-biodegradable Waste Recycled (Ton)') }}</th>
+                        <th>{{ __('Waste Incinerated (Ton)') }}</th>
+                        <th>{{ __('Waste Burned in Open Air (Ton)') }}</th>
                         <th>{{ __('Residual Waste Landfilled (Ton)') }}</th>
                         <th>{{ __('Actions') }}</th>
                     </tr>
@@ -85,6 +89,10 @@ $(function() {
             { data: 'report_date', name: 'report_date' },
             { data: 'reporting_month_label', name: 'reporting_month' },
             { data: 'waste_received_ton', name: 'waste_received_ton' },
+            { data: 'organic_waste_composted_ton', name: 'organic_waste_composted_ton' },
+            { data: 'inorganic_waste_recycled_ton', name: 'inorganic_waste_recycled_ton' },
+            { data: 'waste_incinerated_ton', name: 'waste_incinerated_ton' },
+            { data: 'waste_burned_open_air_ton', name: 'waste_burned_open_air_ton' },
             { data: 'residual_waste_landfilled_ton', name: 'residual_waste_landfilled_ton' },
             { data: 'action', name: 'action', orderable: false, searchable: false }
         ],

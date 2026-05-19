@@ -145,7 +145,7 @@ class LandfillController extends Controller
 
     public function create()
     {
-        $page_title = __('Add Landfill');
+        $page_title = __('Add Landfill Log');
         $landfill = null;
         $stsOptions = $this->stsOptions();
         $stsSourceWardsMap = $this->stsSourceWardsMap();
@@ -165,7 +165,7 @@ class LandfillController extends Controller
 
     public function show(Landfill $landfill)
     {
-        $page_title = __('Landfill Details');
+        $page_title = __('Landfill Log Details');
         $sourceSts = $landfill->sourceSts();
         $wasteTypes = $landfill->wasteTypes();
         $landfill->load('landfillType');
@@ -175,7 +175,7 @@ class LandfillController extends Controller
 
     public function edit(Landfill $landfill)
     {
-        $page_title = __('Edit Landfill');
+        $page_title = __('Edit Landfill Log');
         $stsOptions = $this->stsOptions();
         $stsSourceWardsMap = $this->stsSourceWardsMap();
         $wards = $this->wardOptions();
@@ -207,7 +207,7 @@ class LandfillController extends Controller
 
     public function history(Landfill $landfill)
     {
-        $page_title = __('Landfill History');
+        $page_title = __('Landfill Log History');
 
         return view('swm.service-facilities.landfills.history', compact('page_title', 'landfill'));
     }

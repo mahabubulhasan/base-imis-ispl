@@ -27,6 +27,14 @@
 @endphp
 <div class="swm-attendance-form-mobile app-mobile-form">
 <div class="card-body">
+    @if($isEdit)
+        <div class="form-group row">
+            <label class="col-sm-3 control-label">{{ __('Attendance Log ID') }}</label>
+            <div class="col-sm-9">
+                <p class="form-control-plaintext">{{ $attendanceLog->id }}</p>
+            </div>
+        </div>
+    @endif
     <div class="form-group row required">
         {!! Form::label('entry_at', __('Entry Date and Time'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-9">
