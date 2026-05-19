@@ -289,7 +289,7 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
                         ['label' => __('LICs with Water Connection'), 'value' => $this->formatter->integer($waterCount), 'icon' => 'fa-faucet'],
                         ['label' => __('LICs with Sanitation Facility'), 'value' => $this->formatter->integer($sanitationCount), 'icon' => 'fa-toilet'],
                         ['label' => __('LIC Segregation Rate'), 'value' => $this->formatter->percent($licSegRate), 'icon' => 'fa-recycle'],
-                        ['label' => __('LIC Complaint Density (Per 1,000 HH)'), 'value' => $this->formatter->decimal($complaintDensity, 1), 'icon' => 'fa-comment-dots'],
+                        // ['label' => __('LIC Complaint Density (Per 1,000 HH)'), 'value' => $this->formatter->decimal($complaintDensity, 1), 'icon' => 'fa-comment-dots'],
                     ],
                 ],
                 [
