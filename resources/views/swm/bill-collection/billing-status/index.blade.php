@@ -93,14 +93,12 @@
                     <label for="filter_holding_select" class="col-md-2 col-form-label">{{ __('Holding Number') }}</label>
                     <div class="col-md-2 bs-filter-select2">
                         <select class="form-control" id="filter_holding_select" name="holding_numbers[]" multiple="multiple" style="width:100%"></select>
-                        <small class="form-text text-muted">{{ __('Search and select one or more holdings (min. 2 characters).') }}</small>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="filter_customer_select" class="col-md-2 col-form-label">{{ __('Household ID') }}</label>
                     <div class="col-md-2 bs-filter-select2">
                         <select class="form-control" id="filter_customer_select" name="customer_site_ids[]" multiple="multiple" style="width:100%"></select>
-                        <small class="form-text text-muted">{{ __('Search households globally, or narrow by selected holdings.') }}</small>
                     </div>
                     <label for="is_owner" class="col-md-2 col-form-label">{{ __('Owner') }}</label>
                     <div class="col-md-2">
@@ -189,7 +187,7 @@ $(function() {
     }
 
     $('#filter_holding_select').select2({
-        placeholder: '{{ __('Search holdings') }}',
+        placeholder: '{{ __('Search Holdings') }}',
         allowClear: true,
         multiple: true,
         minimumInputLength: 2,
@@ -227,7 +225,7 @@ $(function() {
             $('#filter_customer_select').select2('destroy');
         }
         $('#filter_customer_select').select2({
-            placeholder: '{{ __('Search customers') }}',
+            placeholder: '{{ __('Search Households') }}',
             allowClear: true,
             multiple: true,
             minimumInputLength: customerMinInputLength(),

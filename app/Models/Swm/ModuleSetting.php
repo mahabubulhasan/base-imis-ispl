@@ -10,6 +10,7 @@ class ModuleSetting extends Model
 
     protected $fillable = [
         'per_capita_sw_generation_kg_per_day',
+        'description',
     ];
 
     protected $casts = [

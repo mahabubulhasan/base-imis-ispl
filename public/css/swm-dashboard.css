@@ -214,7 +214,7 @@
 
 .swm-dashboard .info-box-number {
     display: block;
-    font-size: 12.5px;
+    font-size: 14px;
     color: var(--swm-muted);
     font-weight: 500;
     margin-top: 2px;
@@ -277,7 +277,7 @@
 }
 
 .swm-dashboard .kpi-unit {
-    font-size: 11.5px;
+    font-size: 13px;
     color: var(--swm-muted);
 }
 

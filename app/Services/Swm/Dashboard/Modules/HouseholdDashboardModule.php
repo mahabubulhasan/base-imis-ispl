@@ -140,7 +140,7 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
                             'datasets' => [
                                 ['label' => __('Count'), 'data' => $wardCounts->pluck('total')->map(fn ($v) => (int) $v)->all()],
                             ],
-                            'options' => ['unitX' => __('Ward'), 'unitY' => __('Count')],
+                            'options' => ['unitX' => __('Ward'), 'integerYTicks' => true],
                         ],
                         [
                             'id' => 'swmChartWasteBinPresence',

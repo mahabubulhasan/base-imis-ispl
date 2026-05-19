@@ -20,6 +20,11 @@ class PerCapitaSwGenerationRequest extends FormRequest
                 'min:0',
                 'regex:/^\d+(\.\d{1,2})?$/',
             ],
+            'description' => [
+                'nullable',
+                'string',
+                'max:1000',
+            ],
         ];
     }
 }
