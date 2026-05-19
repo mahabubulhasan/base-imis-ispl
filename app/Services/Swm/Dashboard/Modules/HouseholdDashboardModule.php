@@ -6,6 +6,7 @@ use App\Models\BuildingInfo\Household;
 use App\Models\LayerInfo\Lic;
 use App\Models\Swm\Complaint;
 use App\Models\Swm\LandfillLog;
+use App\Services\Swm\Dashboard\Concerns\BuildsCountChartAxisLabels;
 use App\Services\Swm\Dashboard\Concerns\BuildsCumulativeDateQueries;
 use App\Services\Swm\Dashboard\Contracts\SwmDashboardModuleInterface;
 use App\Services\Swm\Dashboard\DashboardReportingPeriod;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 
 class HouseholdDashboardModule implements SwmDashboardModuleInterface
 {
+    use BuildsCountChartAxisLabels;
     use BuildsCumulativeDateQueries;
 
     public function __construct(
@@ -140,7 +142,11 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
                             'datasets' => [
                                 ['label' => __('Count'), 'data' => $wardCounts->pluck('total')->map(fn ($v) => (int) $v)->all()],
                             ],
-                            'options' => ['unitX' => __('Ward'), 'integerYTicks' => true],
+                            'options' => [
+                                'unitX' => __('Ward'),
+                                'unitY' => $this->countChartAxisY(__('Households')),
+                                'integerYTicks' => true,
+                            ],
                         ],
                         [
                             'id' => 'swmChartWasteBinPresence',
@@ -150,7 +156,9 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
                             'datasets' => [
                                 ['label' => __('Count'), 'data' => $binValues],
                             ],
-                            'options' => [],
+                            'options' => [
+                                'unitY' => $this->countChartAxisY(__('Buildings')),
+                            ],
                         ],
                     ],
                 ],
@@ -241,7 +249,10 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
                             'title' => __('Daily Waste Collected by Functional Use'),
                             'labels' => $functionalUse['labels'],
                             'datasets' => [['label' => __('Ton/day'), 'data' => $functionalUse['values']]],
-                            'options' => [],
+                            'options' => [
+                                'unit' => __('Ton/day'),
+                                'decimalValues' => true,
+                            ],
                         ],
                         [
                             'id' => 'swmSegregationHeatmap',
@@ -308,7 +319,9 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
                                     (int) $gender->others,
                                 ]],
                             ],
-                            'options' => [],
+                            'options' => [
+                                'unit' => __('Population'),
+                            ],
                         ],
                     ],
                 ],

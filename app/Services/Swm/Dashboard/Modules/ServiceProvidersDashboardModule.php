@@ -4,6 +4,7 @@ namespace App\Services\Swm\Dashboard\Modules;
 
 use App\Models\Swm\Organization;
 use App\Models\Swm\Worker;
+use App\Services\Swm\Dashboard\Concerns\BuildsCountChartAxisLabels;
 use App\Services\Swm\Dashboard\Concerns\BuildsCumulativeDateQueries;
 use App\Services\Swm\Dashboard\Contracts\SwmDashboardModuleInterface;
 use App\Services\Swm\Dashboard\DashboardReportingPeriod;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 
 class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
 {
+    use BuildsCountChartAxisLabels;
     use BuildsCumulativeDateQueries;
 
     private const TOP_ORGANIZATIONS_FOR_STACKED_CHART = 8;
@@ -168,7 +170,9 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
             'datasets' => [
                 ['data' => $values],
             ],
-            'options' => [],
+            'options' => [
+                'unitY' => $this->countChartAxisY(__('Organizations')),
+            ],
         ];
     }
 
@@ -197,7 +201,11 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
             'datasets' => [
                 ['data' => $values],
             ],
-            'options' => ['unitX' => __('Worker Type')],
+            'options' => [
+                'unitX' => __('Worker Type'),
+                'unitY' => $this->countChartAxisY(__('Workers')),
+                'integerYTicks' => true,
+            ],
         ];
     }
 
@@ -258,6 +266,8 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
                 'options' => [
                     'stacked' => true,
                     'unitX' => __('Ward'),
+                    'unitY' => $this->countChartAxisY(__('Workers')),
+                    'integerYTicks' => true,
                 ],
                 'height' => 400,
             ];
@@ -316,6 +326,8 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
             'options' => [
                 'stacked' => true,
                 'unitX' => __('Ward'),
+                'unitY' => $this->countChartAxisY(__('Workers')),
+                'integerYTicks' => true,
             ],
             'height' => 400,
         ];
@@ -358,7 +370,9 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
             'datasets' => [
                 ['data' => $values],
             ],
-            'options' => [],
+            'options' => [
+                'unitY' => $this->countChartAxisY(__('Workers')),
+            ],
         ];
     }
 
@@ -398,7 +412,11 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
             'datasets' => [
                 ['data' => $values],
             ],
-            'options' => ['unitX' => __('Age')],
+            'options' => [
+                'unitX' => __('Age'),
+                'unitY' => $this->countChartAxisY(__('Workers')),
+                'integerYTicks' => true,
+            ],
         ];
     }
 
@@ -439,7 +457,9 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
             'datasets' => [
                 ['data' => $values],
             ],
-            'options' => [],
+            'options' => [
+                'unitY' => $this->countChartAxisY(__('Workers')),
+            ],
         ];
     }
 
@@ -477,7 +497,11 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
             'datasets' => [
                 ['data' => $values],
             ],
-            'options' => ['unitX' => __('Education Level')],
+            'options' => [
+                'unitX' => __('Education Level'),
+                'unitY' => $this->countChartAxisY(__('Workers')),
+                'integerYTicks' => true,
+            ],
         ];
     }
 

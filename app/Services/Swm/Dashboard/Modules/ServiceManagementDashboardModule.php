@@ -286,7 +286,7 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
         return [
             'id' => 'swmChartSmAttendanceTrend',
             'type' => 'line',
-            'title' => __('Attendance Trend (Last 30 Days)'),
+            'title' => __('Attendance Trend'),
             'labels' => $labels,
             'datasets' => [
                 ['label' => __('Attendance Rate'), 'data' => $values],
@@ -369,7 +369,7 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
 
         return $this->dailyTonLineChart(
             'swmChartSmStsReceiptsTrend',
-            __('Receipts Trend (Last 30 Days)'),
+            __('Receipts Trend'),
             $start,
             $end,
             $totals,
@@ -494,7 +494,7 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
 
         return $this->dailyTonLineChart(
             'swmChartSmLandfillReceiptsTrend',
-            __('Receipts Trend (Last 30 Days)'),
+            __('Receipts Trend'),
             $start,
             $end,
             $totals,
@@ -695,7 +695,10 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
             'datasets' => [
                 ['data' => $values],
             ],
-            'options' => [],
+            'options' => [
+                'unit' => '%',
+                'percentValues' => true,
+            ],
             'fullWidth' => true,
         ];
     }
@@ -744,7 +747,7 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
         return [
             'id' => 'swmChartSmWasteTrend',
             'type' => 'stackedArea',
-            'title' => __('Monthly Waste Processing Trend (Last 12 Months)'),
+            'title' => __('Monthly Waste Processing Trend'),
             'labels' => $labels,
             'datasets' => $datasets,
             'options' => [

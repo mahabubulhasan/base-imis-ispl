@@ -7,6 +7,7 @@ use App\Models\Swm\Landfill;
 use App\Models\Swm\Sts;
 use App\Models\Swm\Vehicle;
 use App\Models\Swm\WasteBin;
+use App\Services\Swm\Dashboard\Concerns\BuildsCountChartAxisLabels;
 use App\Services\Swm\Dashboard\Concerns\BuildsCumulativeDateQueries;
 use App\Services\Swm\Dashboard\Contracts\SwmDashboardModuleInterface;
 use App\Services\Swm\Dashboard\DashboardReportingPeriod;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 
 class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
 {
+    use BuildsCountChartAxisLabels;
     use BuildsCumulativeDateQueries;
 
     private const LANDFILL_COMPLIANCE_FIELDS = [
@@ -148,10 +150,10 @@ class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
                                 $this->wasteBinsPlacementChart($period),
                                 $this->vehiclesByTypeChart($period),
                                 $this->fleetCapacityByServiceWardsChart($period),
-                                $this->fuelTypeDistributionChart($period),
+                                // $this->fuelTypeDistributionChart($period),
                                 $this->stsCapacityAdequacyChart($period),
-                                $this->stsWasteTypeDistributionChart($period),
-                                $this->landfillWasteTypeDistributionChart($period),
+                                // $this->stsWasteTypeDistributionChart($period),
+                                // $this->landfillWasteTypeDistributionChart($period),
                             ],
                         ],
                     ],
@@ -288,7 +290,11 @@ class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
             'datasets' => [
                 ['data' => $values],
             ],
-            'options' => ['unitX' => __('Type of Waste Bin')],
+            'options' => [
+                'unitX' => __('Type of Waste Bin'),
+                'unitY' => $this->countChartAxisY(__('Waste Bins')),
+                'integerYTicks' => true,
+            ],
         ];
     }
 
@@ -356,7 +362,9 @@ class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
             'datasets' => [
                 ['data' => $values],
             ],
-            'options' => [],
+            'options' => [
+                'unitY' => $this->countChartAxisY(__('Waste Bins')),
+            ],
         ];
     }
 
@@ -385,7 +393,11 @@ class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
             'datasets' => [
                 ['data' => $values],
             ],
-            'options' => ['unitX' => __('Vehicle Type')],
+            'options' => [
+                'unitX' => __('Vehicle Type'),
+                'unitY' => $this->countChartAxisY(__('Vehicles')),
+                'integerYTicks' => true,
+            ],
         ];
     }
 
@@ -473,7 +485,9 @@ class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
             'datasets' => [
                 ['data' => $values],
             ],
-            'options' => [],
+            'options' => [
+                'unitY' => $this->countChartAxisY(__('Vehicles')),
+            ],
         ];
     }
 
@@ -513,7 +527,7 @@ class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
             'labels' => $labels,
             'datasets' => [
                 ['label' => __('Capacity (Ton)'), 'data' => $capacityValues],
-                ['label' => __('Demand (Ton/day)'), 'data' => $demandValues],
+                ['label' => __('Estimated Daily Demand (Ton)'), 'data' => $demandValues],
             ],
             'options' => [
                 'stacked' => false,
@@ -532,6 +546,7 @@ class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
             'swm.sts',
             's',
             $period,
+            __('STS'),
         );
     }
 
@@ -543,6 +558,7 @@ class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
             'swm.landfills',
             'l',
             $period,
+            __('Landfills'),
         );
     }
 
@@ -566,6 +582,7 @@ class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
         string $table,
         string $alias,
         DashboardReportingPeriod $period,
+        string $countEntity,
     ): array {
         $rows = DB::select(
             "
@@ -604,7 +621,9 @@ class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
             'datasets' => [
                 ['data' => $values],
             ],
-            'options' => [],
+            'options' => [
+                'unitY' => $this->countChartAxisY($countEntity),
+            ],
         ];
     }
 }

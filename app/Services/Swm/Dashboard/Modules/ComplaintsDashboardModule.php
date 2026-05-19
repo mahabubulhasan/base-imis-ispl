@@ -2,6 +2,7 @@
 
 namespace App\Services\Swm\Dashboard\Modules;
 
+use App\Services\Swm\Dashboard\Concerns\BuildsCountChartAxisLabels;
 use App\Services\Swm\Dashboard\Complaints\ComplaintsDashboardMetrics;
 use App\Services\Swm\Dashboard\Contracts\SwmDashboardModuleInterface;
 use App\Services\Swm\Dashboard\DashboardReportingPeriod;
@@ -10,6 +11,8 @@ use Carbon\Carbon;
 
 class ComplaintsDashboardModule implements SwmDashboardModuleInterface
 {
+    use BuildsCountChartAxisLabels;
+
     public function __construct(
         protected SwmDashboardFormatter $formatter,
         protected ComplaintsDashboardMetrics $metrics,
@@ -167,6 +170,7 @@ class ComplaintsDashboardModule implements SwmDashboardModuleInterface
             ],
             'options' => [
                 'unitX' => __('Complaint Type'),
+                'unitY' => $this->countChartAxisY(__('Complaints')),
                 'integerYTicks' => true,
             ],
         ];
@@ -206,6 +210,7 @@ class ComplaintsDashboardModule implements SwmDashboardModuleInterface
             ],
             'options' => [
                 'unitX' => __('Ward'),
+                'unitY' => $this->countChartAxisY(__('Complaints')),
                 'integerYTicks' => true,
             ],
         ];
@@ -252,7 +257,9 @@ class ComplaintsDashboardModule implements SwmDashboardModuleInterface
             'datasets' => [
                 ['data' => $data],
             ],
-            'options' => [],
+            'options' => [
+                'unitY' => $this->countChartAxisY(__('Complaints')),
+            ],
         ];
     }
 
@@ -312,6 +319,7 @@ class ComplaintsDashboardModule implements SwmDashboardModuleInterface
             'options' => [
                 'unit' => '',
                 'valueDisplay' => 'count',
+                'unitY' => $this->countChartAxisY(__('Complaints')),
             ],
         ];
     }
@@ -334,13 +342,14 @@ class ComplaintsDashboardModule implements SwmDashboardModuleInterface
         return [
             'id' => 'swmChartComplaintsTrend12m',
             'type' => 'line',
-            'title' => __('Complaint Trend (Last 12 Months)'),
+            'title' => __('Complaint Trend'),
             'labels' => $labels,
             'datasets' => [
                 ['data' => $values],
             ],
             'options' => [
                 'unitX' => __('Month'),
+                'unitY' => $this->countChartAxisY(__('Complaints')),
                 'integerYTicks' => true,
             ],
         ];

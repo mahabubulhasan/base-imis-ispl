@@ -326,14 +326,44 @@
         });
     }
 
+    function doughnutTooltipUnit(opts, dataset) {
+        opts = opts || {};
+        if (opts.unit) {
+            return String(opts.unit);
+        }
+        if (opts.unitY) {
+            return String(opts.unitY);
+        }
+        if (opts.percentValues) {
+            return '%';
+        }
+        var dsLabel = dataset && dataset.label ? String(dataset.label).trim() : '';
+        if (dsLabel && dsLabel.toLowerCase() !== 'count') {
+            return dsLabel;
+        }
+        return '';
+    }
+
+    function formatDoughnutTooltipValue(value, decimalValues) {
+        var num = parseChartValue(value, decimalValues);
+        if (decimalValues) {
+            return num.toLocaleString(undefined, { maximumFractionDigits: 1 });
+        }
+        return num.toLocaleString();
+    }
+
     function renderDoughnut(canvas, chart) {
+        var opts = chart.options || {};
         var ds = (chart.datasets && chart.datasets[0]) ? chart.datasets[0] : { data: [] };
+        var valueUnit = doughnutTooltipUnit(opts, ds);
+        var decimalValues = !!opts.decimalValues || !!opts.percentValues;
         destroyChart(canvas.id);
         chartInstances[canvas.id] = new ChartCtor(canvas.getContext('2d'), {
             type: 'doughnut',
             data: {
                 labels: chart.labels || [],
                 datasets: [{
+                    label: ds.label || '',
                     data: ds.data || [],
                     backgroundColor: (chart.labels || []).map(function (label, i) {
                         return colorForLabel(label, i);
@@ -344,6 +374,22 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 legend: { position: 'bottom' },
+                tooltips: {
+                    callbacks: {
+                        label: function (tooltipItem, data) {
+                            var dataset = data.datasets[tooltipItem.datasetIndex];
+                            var segmentLabel = data.labels[tooltipItem.index] || '';
+                            var formatted = formatDoughnutTooltipValue(
+                                dataset.data[tooltipItem.index],
+                                decimalValues
+                            );
+                            if (valueUnit) {
+                                return segmentLabel + ': ' + formatted + ' ' + valueUnit;
+                            }
+                            return segmentLabel + ': ' + formatted;
+                        },
+                    },
+                },
             },
         });
     }
@@ -489,6 +535,9 @@
         html += '</div>';
 
         html += '<div class="heatmap-scale-legend">';
+        if (opts.unitY && valueDisplay === 'count') {
+            html += '<span class="heatmap-value-unit">' + escapeHtml(opts.unitY) + '</span>';
+        }
         html += '<span class="heatmap-scale-low">Low</span>';
         html += '<span class="heatmap-scale-bar" aria-hidden="true"></span>';
         html += '<span class="heatmap-scale-high">High</span></div>';

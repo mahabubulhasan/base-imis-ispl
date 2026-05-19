@@ -2,6 +2,7 @@
 
 namespace App\Services\Swm\Dashboard\Modules;
 
+use App\Services\Swm\Dashboard\Concerns\BuildsCountChartAxisLabels;
 use App\Services\Swm\Dashboard\Billing\BillingDashboardMetrics;
 use App\Services\Swm\Dashboard\Contracts\SwmDashboardModuleInterface;
 use App\Services\Swm\Dashboard\DashboardReportingPeriod;
@@ -10,6 +11,8 @@ use Carbon\Carbon;
 
 class BillingDashboardModule implements SwmDashboardModuleInterface
 {
+    use BuildsCountChartAxisLabels;
+
     public function __construct(
         protected SwmDashboardFormatter $formatter,
         protected BillingDashboardMetrics $metrics,
@@ -140,7 +143,7 @@ class BillingDashboardModule implements SwmDashboardModuleInterface
         return [
             'id' => 'swmChartBillingRevenueTrend',
             'type' => 'line',
-            'title' => __('Revenue Collection Trend (Last 12 Months)'),
+            'title' => __('Revenue Collection Trend'),
             'labels' => $labels,
             'datasets' => [
                 ['label' => __('Revenue (Taka)'), 'data' => $values],
@@ -187,7 +190,7 @@ class BillingDashboardModule implements SwmDashboardModuleInterface
             ],
             'options' => [
                 'unitX' => __('Payment Method'),
-                'unitY' => __('Count'),
+                'unitY' => $this->countChartAxisY(__('Payments')),
             ],
         ];
     }
