@@ -68,7 +68,7 @@ class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
             'submodules' => [
                 [
                     'key' => 'overview',
-                    'title' => __('Overview'),
+                    'title' => __('Service Facilities'),
                     'blocks' => [
                         [
                             'type' => 'tiles',

@@ -71,7 +71,7 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
             'submodules' => [
                 [
                     'key' => 'overview',
-                    'title' => __('Overview'),
+                    'title' => __('Service Providers'),
                     'blocks' => [
                         [
                             'type' => 'tiles',
