@@ -211,6 +211,7 @@ Route::group([
 ], function () {
     Route::get('dashboard-kpis', 'DashboardKpiController@index')->name('swm.dashboard-kpis.index');
     Route::get('dashboard-kpis/data', 'DashboardKpiController@data')->name('swm.dashboard-kpis.data');
+    Route::get('dashboard-kpis/modules', 'DashboardKpiController@modules')->name('swm.dashboard-kpis.modules');
     Route::get('dashboard-kpis/ward-geometries', 'DashboardKpiController@wardGeometries')->name('swm.dashboard-kpis.ward-geometries');
 
     Route::get('settings/per-capita-sw-generation', 'PerCapitaSwGenerationController@edit')->name('swm.settings.per-capita-sw-generation.edit');

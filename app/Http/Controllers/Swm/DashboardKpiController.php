@@ -12,7 +12,7 @@ class DashboardKpiController extends Controller
     public function __construct(protected SwmDashboardOrchestrator $orchestrator)
     {
         $this->middleware('auth');
-        $this->middleware('permission:List SW Dashboard and KPIs', ['only' => ['index', 'data', 'wardGeometries']]);
+        $this->middleware('permission:List SW Dashboard and KPIs', ['only' => ['index', 'data', 'modules', 'wardGeometries']]);
     }
 
     public function index(Request $request)
@@ -26,6 +26,13 @@ class DashboardKpiController extends Controller
     public function data(Request $request)
     {
         return response()->json($this->orchestrator->build($request->input('to_month')));
+    }
+
+    public function modules(Request $request)
+    {
+        $dashboard = $this->orchestrator->build($request->input('to_month'));
+
+        return view('swm.dashboard.partials.modules', compact('dashboard'));
     }
 
     public function wardGeometries()

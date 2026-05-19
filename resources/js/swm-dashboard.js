@@ -49,19 +49,26 @@
     };
 
     function initModuleAccordions() {
-        document.querySelectorAll('.swm-module-toggle').forEach(function (el) {
-            el.addEventListener('click', function () {
-                var section = el.closest('.dash-section');
-                if (!section) {
-                    return;
-                }
-                section.classList.toggle('collapsed');
-                if (!section.classList.contains('collapsed')) {
-                    initCharts();
-                    initHeatmaps();
-                    initNetworks();
-                }
-            });
+        var root = document.querySelector('.swm-dashboard');
+        if (!root || root.dataset.accordionBound === '1') {
+            return;
+        }
+        root.dataset.accordionBound = '1';
+        root.addEventListener('click', function (e) {
+            var toggle = e.target.closest('.swm-module-toggle');
+            if (!toggle) {
+                return;
+            }
+            var section = toggle.closest('.dash-section');
+            if (!section) {
+                return;
+            }
+            section.classList.toggle('collapsed');
+            if (!section.classList.contains('collapsed')) {
+                initCharts();
+                initHeatmaps();
+                initNetworks();
+            }
         });
     }
 
@@ -619,41 +626,101 @@
     }
 
     function initExportButtons() {
-        document.querySelectorAll('.swm-export-chart').forEach(function (btn) {
-            btn.addEventListener('click', function () {
-                var id = btn.getAttribute('data-target');
-                var ch = chartInstances[id];
-                if (!ch || !ch.canvas) {
-                    return;
-                }
-                var link = document.createElement('a');
-                link.download = (id || 'chart') + '.png';
-                link.href = ch.canvas.toDataURL('image/png');
-                link.click();
-            });
+        var root = document.querySelector('.swm-dashboard');
+        if (!root || root.dataset.exportBound === '1') {
+            return;
+        }
+        root.dataset.exportBound = '1';
+        root.addEventListener('click', function (e) {
+            var btn = e.target.closest('.swm-export-chart');
+            if (!btn) {
+                return;
+            }
+            var id = btn.getAttribute('data-target');
+            var ch = chartInstances[id];
+            if (!ch || !ch.canvas) {
+                return;
+            }
+            var link = document.createElement('a');
+            link.download = (id || 'chart') + '.png';
+            link.href = ch.canvas.toDataURL('image/png');
+            link.click();
         });
     }
 
-    function refreshDashboard(toMonth) {
-        var url = new URL(cfg.dataUrl, window.location.href);
+    function destroyAllCharts() {
+        Object.keys(chartInstances).forEach(function (id) {
+            destroyChart(id);
+        });
+    }
+
+    function destroyAllNetworks() {
+        Object.keys(networkInstances).forEach(function (id) {
+            if (networkInstances[id]) {
+                networkInstances[id].destroy();
+                delete networkInstances[id];
+            }
+        });
+    }
+
+    function updateBrowserMonth(toMonth) {
+        if (!cfg.indexUrl) {
+            return;
+        }
+        var indexUrl = new URL(cfg.indexUrl, window.location.href);
         if (toMonth) {
-            url.searchParams.set('to_month', toMonth);
+            indexUrl.searchParams.set('to_month', toMonth);
+        } else {
+            indexUrl.searchParams.delete('to_month');
+        }
+        window.history.replaceState({ toMonth: toMonth || '' }, '', indexUrl.toString());
+    }
+
+    function refreshDashboard(toMonth) {
+        var modulesUrl = new URL(cfg.modulesUrl || cfg.dataUrl, window.location.href);
+        if (toMonth) {
+            modulesUrl.searchParams.set('to_month', toMonth);
+        } else {
+            modulesUrl.searchParams.delete('to_month');
+        }
+
+        var container = document.getElementById('swm-dashboard-modules');
+        if (!container) {
+            return;
+        }
+
+        var submitBtn = document.querySelector('#swm-dashboard-filter-form button[type="submit"]');
+        if (submitBtn) {
+            submitBtn.disabled = true;
         }
         if (typeof window.displayAjaxLoader === 'function') {
             window.displayAjaxLoader('');
         }
-        return fetch(url.toString(), {
-            headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+
+        return fetch(modulesUrl.toString(), {
+            headers: {
+                Accept: 'text/html',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
             credentials: 'same-origin',
         })
             .then(function (r) {
                 if (!r.ok) {
                     throw new Error('HTTP ' + r.status);
                 }
-                return r.json();
+                return r.text();
             })
-            .then(function () {
-                window.location.href = url.pathname + '?to_month=' + encodeURIComponent(toMonth || '');
+            .then(function (html) {
+                destroyAllCharts();
+                destroyAllNetworks();
+                container.innerHTML = html;
+                if (cfg.period) {
+                    cfg.period.to_month = toMonth || cfg.period.to_month;
+                }
+                updateBrowserMonth(toMonth);
+                initCharts();
+                initHeatmaps();
+                initNetworks();
             })
             .catch(function (err) {
                 console.error(err);
@@ -662,6 +729,9 @@
                 }
             })
             .finally(function () {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                }
                 if (typeof window.removeAjaxLoader === 'function') {
                     window.removeAjaxLoader();
                 }

@@ -44,7 +44,9 @@
 @push('scripts')
 @php
     $swmDashboardConfig = [
+        'indexUrl' => route('swm.dashboard-kpis.index'),
         'dataUrl' => route('swm.dashboard-kpis.data'),
+        'modulesUrl' => route('swm.dashboard-kpis.modules'),
         'period' => $dashboard['period'] ?? [],
         'charts' => $dashboard['charts'] ?? [],
         'chartColors' => config('swm_dashboard.chart_colors', []),
