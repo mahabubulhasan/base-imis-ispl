@@ -46,6 +46,26 @@
     }
     $sourceStsArr = old('source_sts_ids', $isEdit && is_array($landfillLog->source_sts_ids) ? $landfillLog->source_sts_ids : []);
     $sourceWardsArr = old('source_wards', $isEdit && is_array($landfillLog->source_wards) ? $landfillLog->source_wards : []);
+    $landfillHasWeighbridge = false;
+    if ($isEdit && $landfillLog->landfill) {
+        $landfillHasWeighbridge = (bool) $landfillLog->landfill->weighbridge_facility_available;
+    } elseif (old('landfill_id')) {
+        $oldLandfill = \App\Models\Swm\Landfill::query()->whereNull('deleted_at')->find((int) old('landfill_id'));
+        $landfillHasWeighbridge = (bool) optional($oldLandfill)->weighbridge_facility_available;
+    }
+    $useWeighbridgeWeight = $landfillHasWeighbridge || ($isEdit && $landfillLog->weighbridge_weight_ton !== null);
+    $quantityTonVal = old('quantity_ton');
+    if ($quantityTonVal === null && $isEdit && ! $useWeighbridgeWeight) {
+        $quantityTonVal = $landfillLog->quantity_ton;
+    }
+    if ($useWeighbridgeWeight && old('quantity_ton') === null) {
+        $quantityTonVal = null;
+    }
+    $weighbridgeWeightTonVal = old('weighbridge_weight_ton');
+    if ($weighbridgeWeightTonVal === null && $isEdit) {
+        $weighbridgeWeightTonVal = $landfillLog->weighbridge_weight_ton;
+    }
+    $initialWeighbridgeVisible = $useWeighbridgeWeight;
 @endphp
 <div class="swm-landfill-log-form-mobile app-mobile-form">
 <div class="card-body">
@@ -109,21 +129,21 @@
         </div>
     </div>
 
-    <div class="form-group row" id="effective_quantity_group">
+    <div class="form-group row" id="effective_quantity_group" @if($initialWeighbridgeVisible) style="display:none;" @endif>
         {!! Form::label('quantity_ton', __('Quantity (Ton)'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-9">
             <input type="number" name="quantity_ton" id="quantity_ton" class="form-control" step="0.001" min="0"
-                value="{{ old('quantity_ton', $isEdit && $landfillLog->quantity_ton !== null ? $landfillLog->quantity_ton : null) }}"
-                placeholder="{{ __('Quantity in tons') }}" />
+                value="{{ $quantityTonVal }}"
+                placeholder="{{ __('Quantity in tons') }}" @if($initialWeighbridgeVisible) disabled @endif />
         </div>
     </div>
 
-    <div class="form-group row" id="weighbridge_group" style="display:none;">
+    <div class="form-group row" id="weighbridge_group" @unless($initialWeighbridgeVisible) style="display:none;" @endunless>
         {!! Form::label('weighbridge_weight_ton', __('Weighbridge Weight (Ton)'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-9">
             <input type="number" name="weighbridge_weight_ton" id="weighbridge_weight_ton" class="form-control" step="0.001" min="0"
-                value="{{ old('weighbridge_weight_ton', $isEdit && $landfillLog->weighbridge_weight_ton !== null ? $landfillLog->weighbridge_weight_ton : null) }}"
-                placeholder="{{ __('Weighbridge weight in tons') }}" />
+                value="{{ $weighbridgeWeightTonVal }}"
+                placeholder="{{ __('Weighbridge weight in tons') }}" @unless($initialWeighbridgeVisible) disabled @endunless />
         </div>
     </div>
 
@@ -304,18 +324,18 @@ $(function () {
         }
     }
 
-    function toggleWeighbridge(show) {
-        $('#weighbridge_group').toggle(!!show);
-        refreshEffectiveVisibility();
-    }
-
-    function syncEffectiveQuantity() {
-        $('#effective_quantity_ton_display').val($('#quantity_ton').val());
-    }
-
-    function refreshEffectiveVisibility() {
-        var weighbridgeVisible = $('#weighbridge_group').is(':visible');
-        $('#effective_quantity_group').toggle(!weighbridgeVisible);
+    function setWeightInputMode(useWeighbridge) {
+        var $quantity = $('#quantity_ton');
+        var $weighbridge = $('#weighbridge_weight_ton');
+        $('#weighbridge_group').toggle(!!useWeighbridge);
+        $('#effective_quantity_group').toggle(!useWeighbridge);
+        if (useWeighbridge) {
+            $quantity.val('').prop('disabled', true);
+            $weighbridge.prop('disabled', false);
+        } else {
+            $weighbridge.val('').prop('disabled', true);
+            $quantity.prop('disabled', false);
+        }
     }
 
     function fetchLandfillContext(syncWasteTypes, syncSourceFields) {
@@ -324,7 +344,7 @@ $(function () {
         }
         var lid = $('#landfill_id').val();
         if (!lid) {
-            toggleWeighbridge(false);
+            setWeightInputMode(false);
             if (syncWasteTypes) {
                 setWasteTypesFromContext({ waste_type_ids: [], waste_types: [] });
             }
@@ -346,7 +366,7 @@ $(function () {
             if (data.landfill_name) {
                 $('#landfill_name').val(String(data.landfill_name));
             }
-            toggleWeighbridge(!!data.weighbridge_facility_available);
+            setWeightInputMode(!!data.weighbridge_facility_available);
             if (syncSourceFields) {
                 if (Array.isArray(data.source_sts_ids)) {
                     setSourceSts(data.source_sts_ids);
@@ -359,7 +379,7 @@ $(function () {
                 setWasteTypesFromContext(data);
             }
         }).fail(function () {
-            toggleWeighbridge(false);
+            setWeightInputMode(false);
         });
     }
 
@@ -369,7 +389,7 @@ $(function () {
         }
         $('#vehicle_type_name').val(data.vehicle_type_name != null ? String(data.vehicle_type_name) : '');
         $('#driver_name').val(data.driver_name != null ? String(data.driver_name) : '');
-        if (data.capacity != null && data.capacity !== '') {
+        if (data.capacity != null && data.capacity !== '' && !$('#weighbridge_group').is(':visible')) {
             $('#quantity_ton').val(data.capacity);
         }
         if (data.landfill_id) {
@@ -431,23 +451,12 @@ $(function () {
     }
 
     initVehicleSelect2();
-    @if($landfillFieldVal)
+    @if($landfillFieldVal && ! $initialWeighbridgeVisible)
     fetchLandfillContext(false);
     @endif
-    syncEffectiveQuantity();
-    refreshEffectiveVisibility();
 
     $('#vehicle_id').on('change', function () {
         fetchVehicleContext();
-    });
-
-    $('#quantity_ton').on('input change', function () {
-        syncEffectiveQuantity();
-        refreshEffectiveVisibility();
-    });
-
-    $('#weighbridge_weight_ton').on('input change', function () {
-        refreshEffectiveVisibility();
     });
 
     $('#landfill_id').on('change', function () {

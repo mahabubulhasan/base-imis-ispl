@@ -74,7 +74,7 @@
                         <th>{{ __('Waste Type') }}</th>
                         <th>{{ __('Quantity (Ton)') }}</th>
                         <th>{{ __('Weighbridge Weight (Ton)') }}</th>
-                        <th>{{ __('Effective Quantity (Ton)') }}</th>
+                        <th>{{ __('Weighbridge Facility Available') }}</th>
                         <th>{{ __('Operation Status') }}</th>
                         <th>{{ __('Actions') }}</th>
                     </tr>
@@ -112,7 +112,7 @@ $(function() {
             { data: 'waste_type_label', name: 'waste_type_name' },
             { data: 'quantity_ton', name: 'quantity_ton' },
             { data: 'weighbridge_weight_ton', name: 'weighbridge_weight_ton' },
-            { data: 'effective_quantity_ton', name: 'effective_quantity_ton', orderable: false, searchable: false },
+            { data: 'weighbridge_weight_used_text', name: 'weighbridge_weight_used_text', orderable: false, searchable: false },
             { data: 'operation_status', name: 'operation_status' },
             { data: 'action', name: 'action', orderable: false, searchable: false }
         ],

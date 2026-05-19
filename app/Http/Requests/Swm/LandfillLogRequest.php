@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Swm;
 
+use App\Models\Swm\Landfill;
 use App\Models\Swm\LandfillLog;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -62,6 +63,16 @@ class LandfillLogRequest extends FormRequest
                 static fn ($v) => $v !== null && $v > 0
             )));
             $this->merge(['source_sts_ids' => $clean]);
+        }
+
+        $landfillId = $this->input('landfill_id');
+        if ($landfillId) {
+            $landfill = Landfill::query()->whereNull('deleted_at')->find((int) $landfillId);
+            if ($landfill && $landfill->weighbridge_facility_available) {
+                $this->merge(['quantity_ton' => null]);
+            } else {
+                $this->merge(['weighbridge_weight_ton' => null]);
+            }
         }
     }
 
