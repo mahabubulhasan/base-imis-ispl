@@ -75,6 +75,7 @@
                 <thead>
                     <tr>
                         <th>{{ __('Household ID') }}</th>
+                        <th>{{ __('Holding Number') }}</th>
                         <th>{{ __('Household Owner Name') }}</th>
                         <th>{{ __("Father's/Husband's Name") }}</th>
                         <th>{{ __('Contact Number') }}</th>
@@ -120,6 +121,7 @@ $(function() {
         },
         columns: [
             { data: 'household_id', name: 'household_id' },
+            { data: 'holding_number', name: 'holding_number' },
             { data: 'household_owner_name', name: 'household_owner_name' },
             { data: 'father_or_husband_name', name: 'father_or_husband_name' },
             { data: 'contact_number', name: 'contact_number' },
