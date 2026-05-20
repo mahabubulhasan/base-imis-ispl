@@ -255,7 +255,7 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
                         [
                             'id' => 'swmSegregationHeatmap',
                             'type' => 'heatmap',
-                            'title' => __('Segregation Rate by Ward (%)'),
+                            'title' => __('Segregation Rate by Ward'),
                             'rowLabel' => __('Segregation Rate'),
                             'wards' => $heatmap['wards'],
                             'values' => $heatmap['values'],
