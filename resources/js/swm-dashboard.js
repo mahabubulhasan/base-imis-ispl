@@ -815,6 +815,23 @@
         });
     }
 
+    function bindGenerateReport() {
+        var btn = document.getElementById('swm-dashboard-generate-report');
+        if (!btn || btn.dataset.bound === '1') {
+            return;
+        }
+        btn.dataset.bound = '1';
+        btn.addEventListener('click', function () {
+            var year = String(new Date().getFullYear());
+            var base = cfg.complianceReportUrl || '';
+            if (!base) {
+                return;
+            }
+            var url = base + (base.indexOf('?') >= 0 ? '&' : '?') + 'year=' + encodeURIComponent(year);
+            window.open(url, '_blank');
+        });
+    }
+
     function init() {
         initModuleAccordions();
         initCharts();
@@ -822,6 +839,7 @@
         initNetworks();
         initExportButtons();
         bindFilterForm();
+        bindGenerateReport();
     }
 
     if (document.readyState === 'loading') {

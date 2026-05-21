@@ -5,8 +5,6 @@ namespace App\Http\Requests\Swm;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
-use App\Models\Swm\Organization;
-
 class OrganizationRequest extends FormRequest
 {
     public function authorize(): bool
@@ -55,8 +53,7 @@ class OrganizationRequest extends FormRequest
                     'address' => ['required', 'string', 'max:2000'],
                     'contact_person_name' => ['required', 'string', 'max:255'],
                     'contact_number' => ['required', 'regex:/^[0-9]+$/'],
-                    'organization_category' => ['required', Rule::in(array_keys(Organization::CATEGORY_OPTIONS))],
-                    'organization_category_other' => ['required_if:organization_category,other', 'nullable', 'string', 'max:255'],
+                    'organization_type_id' => ['required', 'integer', Rule::exists('pgsql.swm.organization_types', 'id')->whereNull('deleted_at')],
                     'service_wards' => ['nullable', 'array'],
                     'service_wards.*' => [
                         'integer',
@@ -103,8 +100,7 @@ class OrganizationRequest extends FormRequest
                     'address' => ['required', 'string', 'max:2000'],
                     'contact_person_name' => ['required', 'string', 'max:255'],
                     'contact_number' => ['required', 'regex:/^[0-9]+$/'],
-                    'organization_category' => ['required', Rule::in(array_keys(Organization::CATEGORY_OPTIONS))],
-                    'organization_category_other' => ['required_if:organization_category,other', 'nullable', 'string', 'max:255'],
+                    'organization_type_id' => ['required', 'integer', Rule::exists('pgsql.swm.organization_types', 'id')->whereNull('deleted_at')],
                     'service_wards' => ['nullable', 'array'],
                     'service_wards.*' => [
                         'integer',
@@ -128,9 +124,8 @@ class OrganizationRequest extends FormRequest
             'address.required' => __('The Address is required.'),
             'contact_person_name.required' => __('The contact person name is required.'),
             'contact_number.required' => __('The contact number is required.'),
-            'organization_category.required' => __('The organization category is required.'),
-            'organization_category.in' => __('Please select a valid organization category.'),
-            'organization_category_other.required_if' => __('Please specify organization category when selecting others.'),
+            'organization_type_id.required' => __('The organization type is required.'),
+            'organization_type_id.exists' => __('Please select a valid organization type.'),
             'service_wards.array' => __('Service wards must be a list.'),
             'service_wards.*.integer' => __('Each service ward must be a valid ward number.'),
             'service_wards.*.exists' => __('One or more selected service wards are invalid.'),

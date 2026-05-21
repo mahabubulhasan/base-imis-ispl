@@ -26,7 +26,7 @@
             aria-label="{{ __('Through month') }}">
         <button type="submit" class="btn btn-info ml-2">{{ __('Apply') }}</button>
     </form>
-    <button type="button" id="swm-dashboard-generate-report" class="btn btn-info swm-dashboard-generate-report flex-shrink-0">{{ __('Generate Report') }}</button>
+    <button type="button" id="swm-dashboard-generate-report" class="btn btn-info swm-dashboard-generate-report flex-shrink-0 ml-2">{{ __('Generate Report') }}</button>
 </div>
 
 <div class="swm-dashboard">
@@ -47,6 +47,7 @@
         'indexUrl' => route('swm.dashboard-kpis.index'),
         'dataUrl' => route('swm.dashboard-kpis.data'),
         'modulesUrl' => route('swm.dashboard-kpis.modules'),
+        'complianceReportUrl' => route('swm.dashboard-kpis.compliance-report'),
         'period' => $dashboard['period'] ?? [],
         'charts' => $dashboard['charts'] ?? [],
         'chartColors' => config('swm_dashboard.chart_colors', []),

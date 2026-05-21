@@ -6,6 +6,7 @@ use App\Models\Swm\AttendanceLog;
 use App\Models\Swm\Landfill;
 use App\Models\Swm\LandfillLog;
 use App\Models\Swm\Organization;
+use App\Models\Swm\OrganizationType;
 use App\Models\Swm\Sts;
 use App\Models\Swm\StsLog;
 use App\Models\Swm\Vehicle;
@@ -263,6 +264,14 @@ class ServiceManagementDashboardModuleTest extends TestCase
      */
     private function createOrganization(array $overrides = []): Organization
     {
+        if (isset($overrides['organization_category'])) {
+            $code = $overrides['organization_category'];
+            unset($overrides['organization_category']);
+            $overrides['organization_type_id'] = OrganizationType::query()
+                ->where('code', $code)
+                ->value('id');
+        }
+
         return Organization::forceCreate(array_merge([
             'name' => 'Test Org',
             'email' => 'org@example.com',
@@ -270,7 +279,9 @@ class ServiceManagementDashboardModuleTest extends TestCase
             'contact_person_name' => 'Contact',
             'contact_number' => '9800000000',
             'status' => true,
-            'organization_category' => Organization::CATEGORY_PRIVATE,
+            'organization_type_id' => OrganizationType::query()
+                ->where('code', OrganizationType::CODE_PRIVATE)
+                ->value('id'),
             'created_at' => '2026-01-15 00:00:00',
             'updated_at' => '2026-01-15 00:00:00',
         ], $overrides));

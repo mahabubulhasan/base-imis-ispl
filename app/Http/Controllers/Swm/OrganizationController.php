@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Swm\OrganizationRequest;
 use App\Models\LayerInfo\Ward;
 use App\Models\Swm\Organization;
+use App\Models\Swm\OrganizationType;
 use App\Services\Auth\UserService;
 use App\Services\Swm\OrganizationService;
 use Illuminate\Http\Request;
@@ -37,12 +38,29 @@ class OrganizationController extends Controller
         return Ward::getInAscOrder();
     }
 
+    protected function organizationTypeOptions(): array
+    {
+        return OrganizationType::query()
+            ->whereNull('deleted_at')
+            ->orderBy('name')
+            ->get()
+            ->mapWithKeys(function (OrganizationType $type) {
+                $label = $type->code
+                    ? $type->name.' ('.$type->code.')'
+                    : $type->name;
+
+                return [$type->id => $label];
+            })
+            ->all();
+    }
+
     public function index()
     {
         $page_title = __('Organizations');
         $organizationStatus = SwmOrganizationStatus::asSelectArray();
+        $organizationTypes = $this->organizationTypeOptions();
 
-        return view('swm.service-providers.organizations.index', compact('page_title', 'organizationStatus'));
+        return view('swm.service-providers.organizations.index', compact('page_title', 'organizationStatus', 'organizationTypes'));
     }
 
     public function getData(Request $request)
@@ -55,10 +73,10 @@ class OrganizationController extends Controller
         $page_title = __('Add Organization');
         $organization = null;
         $organizationStatus = SwmOrganizationStatus::asSelectArray();
-        $organizationCategories = Organization::categoryOptions();
+        $organizationTypes = $this->organizationTypeOptions();
         $wards = $this->wardOptions();
 
-        return view('swm.service-providers.organizations.create', compact('page_title', 'organization', 'organizationStatus', 'organizationCategories', 'wards'));
+        return view('swm.service-providers.organizations.create', compact('page_title', 'organization', 'organizationStatus', 'organizationTypes', 'wards'));
     }
 
     public function store(OrganizationRequest $request)
@@ -99,12 +117,12 @@ class OrganizationController extends Controller
     {
         $organization = Organization::find($id);
         $organizationStatus = SwmOrganizationStatus::asSelectArray();
-        $organizationCategories = Organization::categoryOptions();
+        $organizationTypes = $this->organizationTypeOptions();
         $wards = $this->wardOptions();
         if ($organization) {
             $page_title = __('Edit Organization');
 
-            return view('swm.service-providers.organizations.edit', compact('page_title', 'organization', 'organizationStatus', 'organizationCategories', 'wards'));
+            return view('swm.service-providers.organizations.edit', compact('page_title', 'organization', 'organizationStatus', 'organizationTypes', 'wards'));
         }
 
         abort(404);

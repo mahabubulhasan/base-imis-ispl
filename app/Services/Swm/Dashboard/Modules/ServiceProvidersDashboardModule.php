@@ -109,12 +109,14 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
 
     protected function organizationQuery(DashboardReportingPeriod $period): Builder
     {
-        $query = Organization::query()
-            ->operational()
-            ->whereNull('deleted_at');
+        $table = (new Organization)->getTable();
 
-        $this->whereThroughPeriodEnd($query, 'created_at', $period);
-        $this->applyOrganizationScope($query);
+        $query = Organization::query()
+            ->where($table.'.status', true)
+            ->whereNull($table.'.deleted_at');
+
+        $this->whereThroughPeriodEnd($query, $table.'.created_at', $period);
+        $this->applyOrganizationScope($query, $table.'.id');
 
         return $query;
     }
@@ -147,25 +149,25 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
     protected function organizationCategoryChart(DashboardReportingPeriod $period): array
     {
         $rows = $this->organizationQuery($period)
-            ->selectRaw('organization_category, COUNT(*) as total')
-            ->groupBy('organization_category')
+            ->join('swm.organization_types', 'swm.organizations.organization_type_id', '=', 'swm.organization_types.id')
+            ->whereNull('swm.organization_types.deleted_at')
+            ->selectRaw('swm.organization_types.name as organization_type_name, COUNT(*) as total')
+            ->groupBy('swm.organization_types.name')
             ->orderByDesc('total')
             ->get();
 
-        $categoryLabels = Organization::categoryOptions();
         $labels = [];
         $values = [];
 
         foreach ($rows as $row) {
-            $key = $row->organization_category;
-            $labels[] = $key ? ($categoryLabels[$key] ?? $key) : __('N/A');
+            $labels[] = $row->organization_type_name ?: __('N/A');
             $values[] = (int) $row->total;
         }
 
         return [
             'id' => 'swmChartOrgCategory',
             'type' => 'doughnut',
-            'title' => __('Organizations Category'),
+            'title' => __('Organizations Type'),
             'labels' => $labels,
             'datasets' => [
                 ['data' => $values],

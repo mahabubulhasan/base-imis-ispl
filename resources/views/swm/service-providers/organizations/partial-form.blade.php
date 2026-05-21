@@ -36,9 +36,9 @@
         </div>
 
         <div class="form-group row required">
-            {!! Form::label('organization_category', __('Organization Category'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('organization_type_id', __('Organization Type'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
-                {!! Form::select('organization_category', $organizationCategories, null, ['class' => 'form-control chosen-select', 'placeholder' => __('Organization Category'), 'id' => 'organization_category']) !!}
+                {!! Form::select('organization_type_id', $organizationTypes, null, ['class' => 'form-control chosen-select', 'placeholder' => __('Organization Type'), 'id' => 'organization_type_id']) !!}
             </div>
         </div>
 

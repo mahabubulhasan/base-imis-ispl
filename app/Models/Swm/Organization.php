@@ -14,16 +14,6 @@ class Organization extends Model
     use RevisionableTrait;
     use SoftDeletes;
 
-    public const CATEGORY_PRIVATE = 'private';
-    public const CATEGORY_GOVERNMENT = 'government';
-    public const CATEGORY_OTHER = 'other';
-
-    public const CATEGORY_OPTIONS = [
-        self::CATEGORY_PRIVATE => 'Private',
-        self::CATEGORY_GOVERNMENT => 'Government',
-        self::CATEGORY_OTHER => 'Others',
-    ];
-
     protected $revisionCreationsEnabled = true;
 
     protected $table = 'swm.organizations';
@@ -35,14 +25,14 @@ class Organization extends Model
         'service_wards' => 'array',
     ];
 
-    public static function categoryOptions(): array
+    public function getOrganizationTypeLabelAttribute(): string
     {
-        return array_map(static fn (string $label) => __($label), self::CATEGORY_OPTIONS);
+        return $this->organizationType?->name ?? __('N/A');
     }
 
-    public function getOrganizationCategoryLabelAttribute(): string
+    public function organizationType()
     {
-        return __(self::CATEGORY_OPTIONS[$this->organization_category] ?? 'N/A');
+        return $this->belongsTo(OrganizationType::class, 'organization_type_id', 'id');
     }
 
     public function users()

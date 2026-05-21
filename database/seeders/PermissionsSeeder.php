@@ -941,6 +941,39 @@ class PermissionsSeeder extends Seeder
                 ],
             ],
             [
+                "group" => "SW Service Provider Organization Types",
+                "perms" => [
+                    [
+                        "type" => "List",
+                        "name" => "List SW Organization Types",
+                    ],
+                    [
+                        "type" => "View",
+                        "name" => "View SW Organization Type",
+                    ],
+                    [
+                        "type" => "Add",
+                        "name" => "Add SW Organization Type",
+                    ],
+                    [
+                        "type" => "Edit",
+                        "name" => "Edit SW Organization Type",
+                    ],
+                    [
+                        "type" => "Delete",
+                        "name" => "Delete SW Organization Type",
+                    ],
+                    [
+                        "type" => "History",
+                        "name" => "View SW Organization Type History",
+                    ],
+                    [
+                        "type" => "Export",
+                        "name" => "Export SW Organization Types to CSV",
+                    ],
+                ],
+            ],
+            [
                 "group" => "SW Service Provider Vehicle Types",
                 "perms" => [
                     [

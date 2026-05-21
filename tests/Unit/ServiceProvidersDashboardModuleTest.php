@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Models\Swm\Organization;
+use App\Models\Swm\OrganizationType;
 use App\Models\Swm\Worker;
 use App\Models\Swm\WorkType;
 use App\Models\User;
@@ -29,7 +30,7 @@ class ServiceProvidersDashboardModuleTest extends TestCase
     public function test_build_counts_operational_orgs_and_active_workers(): void
     {
         $period = $this->testPeriod();
-        $org = $this->createOrganization(['organization_category' => Organization::CATEGORY_GOVERNMENT]);
+        $org = $this->createOrganization(['organization_category' => OrganizationType::CODE_GOVERNMENT]);
         $workType = $this->createWorkType('Collector');
         $this->createWorker($org, $workType, [
             'gender' => 'male',
@@ -68,7 +69,7 @@ class ServiceProvidersDashboardModuleTest extends TestCase
     public function test_chart_shapes_for_distributions(): void
     {
         $period = $this->testPeriod();
-        $org = $this->createOrganization(['organization_category' => Organization::CATEGORY_PRIVATE]);
+        $org = $this->createOrganization(['organization_category' => OrganizationType::CODE_PRIVATE]);
         $workType = $this->createWorkType('Supervisor');
         $this->createWorker($org, $workType, [
             'gender' => 'female',
@@ -162,6 +163,14 @@ class ServiceProvidersDashboardModuleTest extends TestCase
      */
     private function createOrganization(array $overrides = []): Organization
     {
+        if (isset($overrides['organization_category'])) {
+            $code = $overrides['organization_category'];
+            unset($overrides['organization_category']);
+            $overrides['organization_type_id'] = OrganizationType::query()
+                ->where('code', $code)
+                ->value('id');
+        }
+
         return Organization::forceCreate(array_merge([
             'name' => 'Test Org',
             'email' => 'org@example.com',
@@ -169,7 +178,9 @@ class ServiceProvidersDashboardModuleTest extends TestCase
             'contact_person_name' => 'Contact',
             'contact_number' => '9800000000',
             'status' => true,
-            'organization_category' => Organization::CATEGORY_PRIVATE,
+            'organization_type_id' => OrganizationType::query()
+                ->where('code', OrganizationType::CODE_PRIVATE)
+                ->value('id'),
             'created_at' => '2026-01-15 00:00:00',
             'updated_at' => '2026-01-15 00:00:00',
         ], $overrides));

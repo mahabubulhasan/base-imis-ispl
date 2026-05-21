@@ -14,7 +14,10 @@ return [
     */
 
     'name' => env('APP_NAME', 'Integrated Municipal Information System'),
-    'city' => env('CITY', 'DefaultCity'),
+    'city' => env('CITY', 'Chapainawabganj'),
+    'city_bn' => env('CITY_BN', 'চাঁপাইনবাবগঞ্জ'),
+    'city_suffix' => env('CITY_SUFFIX', 'Pouroshova'),
+    'city_suffix_bn' => env('CITY_SUFFIX_BN', 'পৌরসভা'),
 
     /*
     |--------------------------------------------------------------------------

@@ -3,14 +3,11 @@
 // Developed By: Streams Tech Ltd.
 // Description: Registers web routes including FSM pending application create, store, index, view, and delete endpoints.
 
-use App\Http\Controllers\BuildingInfo\BuildingController;
 use App\Http\Controllers\ChartController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContactController;
-use App\Http\Controllers\Fsm\ApplicationController;
 use App\Http\Controllers\Api\ApiServiceController;
-use App\Http\Controllers\MapsController;
-use App\Http\Controllers\Proxy\WMSProxyController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -214,6 +211,10 @@ Route::group([
     Route::get('dashboard-kpis/modules', 'DashboardKpiController@modules')->name('swm.dashboard-kpis.modules');
     Route::get('dashboard-kpis/ward-geometries', 'DashboardKpiController@wardGeometries')->name('swm.dashboard-kpis.ward-geometries');
 
+    Route::get('dashboard-kpis/compliance-report', 'DoEComplianceReportController@index')->name('swm.dashboard-kpis.compliance-report');
+    Route::get('dashboard-kpis/compliance-report/data', 'DoEComplianceReportController@data')->name('swm.dashboard-kpis.compliance-report.data');
+    Route::post('dashboard-kpis/compliance-report/pdf', 'DoEComplianceReportController@downloadPdf')->name('swm.dashboard-kpis.compliance-report.pdf');
+
     Route::get('settings/per-capita-sw-generation', 'PerCapitaSwGenerationController@edit')->name('swm.settings.per-capita-sw-generation.edit');
     Route::put('settings/per-capita-sw-generation', 'PerCapitaSwGenerationController@update')->name('swm.settings.per-capita-sw-generation.update');
 
@@ -308,6 +309,19 @@ Route::group([
             'edit' => 'swm.landfill-types.edit',
             'update' => 'swm.landfill-types.update',
             'destroy' => 'swm.landfill-types.destroy',
+        ]);
+
+        Route::get('organization-types/data', 'OrganizationTypeController@getData')->name('swm.organization-types.data');
+        Route::get('organization-types/export', 'OrganizationTypeController@export')->name('swm.organization-types.export');
+        Route::get('organization-types/{organization_type}/history', 'OrganizationTypeController@history')->name('swm.organization-types.history');
+        Route::resource('organization-types', 'OrganizationTypeController')->names([
+            'index' => 'swm.organization-types.index',
+            'create' => 'swm.organization-types.create',
+            'store' => 'swm.organization-types.store',
+            'show' => 'swm.organization-types.show',
+            'edit' => 'swm.organization-types.edit',
+            'update' => 'swm.organization-types.update',
+            'destroy' => 'swm.organization-types.destroy',
         ]);
 
         Route::get('vehicles/drivers-for-organization', 'VehicleController@driversForOrganization')->name('swm.vehicles.drivers-for-organization');

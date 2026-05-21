@@ -43,13 +43,11 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
     public function build(DashboardReportingPeriod $period): array
     {
         $p = $this->settingsService->perCapitaKgPerDay();
-        $agg = $this->householdAggregates();
+        $agg = $this->householdAggregates($period);
         $activeMembers = (float) $agg->active_members;
-        $nonLicActiveHh = (int) $agg->non_lic_active_hh;
         $avgFamilySize = (float) $agg->avg_family_size;
         $dailyGenTon = ($p * $activeMembers) / 1000;
-        $licPopulationTotal = (float) Lic::query()->sum('population_total');
-        $totalPopulation = $licPopulationTotal + ($nonLicActiveHh * $avgFamilySize);
+        $totalPopulation = $this->settingsService->totalPopulationAsOf($period->periodEnd);
 
         $collectedDailyKg = (float) $agg->active_collected_daily_kg;
         $disposedDesignated = $this->landfillDisposedTon($period);
@@ -72,10 +70,11 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
         ];
     }
 
-    protected function householdAggregates(): object
+    protected function householdAggregates(DashboardReportingPeriod $period): object
     {
         return DB::table('building_info.households')
             ->whereNull('deleted_at')
+            ->where('created_at', '<=', $period->periodEnd)
             ->selectRaw('COUNT(*) as total_households')
             ->selectRaw('COUNT(DISTINCT holding_number) as total_holdings')
             ->selectRaw('COUNT(DISTINCT ward) as total_wards')

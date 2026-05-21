@@ -49,13 +49,13 @@
                                     <div class="col-md-2">
                                         <input type="text" class="form-control" id="contact_person_name" placeholder="{{ __('Contact Person Name') }}" />
                                     </div>
-                                    <label for="organization_category" class="col-md-2 col-form-label">{{ __('Organization Category') }}</label>
+                                    <label for="organization_type_id" class="col-md-2 col-form-label">{{ __('Organization Type') }}</label>
                                     <div class="col-md-2">
-                                        <select class="form-control chosen-select" id="organization_category" name="organization_category">
-                                            <option value="">{{ __('Organization Category') }}</option>
-                                            <option value="private">{{ __('Private') }}</option>
-                                            <option value="government">{{ __('Government') }}</option>
-                                            <option value="other">{{ __('Others') }}</option>
+                                        <select class="form-control chosen-select" id="organization_type_id" name="organization_type_id">
+                                            <option value="">{{ __('Organization Type') }}</option>
+                                            @foreach($organizationTypes as $typeId => $typeName)
+                                            <option value="{{ $typeId }}">{{ $typeName }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                     <label for="status" class="col-md-2 col-form-label">{{ __('Status') }}</label>
@@ -89,7 +89,7 @@
                 <th>{{ __('Address') }}</th>
                 <th>{{ __('Contact Person Name') }}</th>
                 <th>{{ __('Contact Number') }}</th>
-                <th>{{ __('Organization Category') }}</th>
+                <th>{{ __('Organization Type') }}</th>
                 <th>{{ __('Status') }}</th>
                 <th>{{ __('Actions') }}</th>
                 </tr>
@@ -115,7 +115,7 @@ $(function() {
                 d.email = $('#email').val();
                 d.address = $('#address').val();
                 d.contact_person_name = $('#contact_person_name').val();
-                d.organization_category = $('#organization_category').val();
+                d.organization_type_id = $('#organization_type_id').val();
                 d.status = $('#status').val();
             }
         },
@@ -140,8 +140,8 @@ $(function() {
                 name: 'contact_number'
             },
             {
-                data: 'organization_category',
-                name: 'organization_category'
+                data: 'organization_type',
+                name: 'organization_type_id'
             },
             {
                 data: 'status',
@@ -191,14 +191,14 @@ $(function() {
         var email = $('#email').val();
         var address = $('#address').val();
         var contact_person_name = $('#contact_person_name').val();
-        var organization_category = $('#organization_category').val();
+        var organization_type_id = $('#organization_type_id').val();
         var status = $('#status').val();
         window.location.href = "{!! route('swm.organizations.export') !!}?searchData=" + searchData +
             "&name=" + encodeURIComponent(name) +
             "&email=" + encodeURIComponent(email) +
             "&address=" + encodeURIComponent(address) +
             "&contact_person_name=" + encodeURIComponent(contact_person_name) +
-            "&organization_category=" + encodeURIComponent(organization_category) +
+            "&organization_type_id=" + encodeURIComponent(organization_type_id) +
             "&status=" + encodeURIComponent(status);
     })
 });

@@ -652,9 +652,9 @@
                         </a>
                     </li>
                     @endcan
-                    @if(Auth::user()->can('List SW Work Types') || Auth::user()->can('List SW Vehicle Types') || Auth::user()->can('List SW Waste Types') || Auth::user()->can('List SW Landfill Types') || Auth::user()->can('List SW Waste Bin Types') || Auth::user()->can('View SW Per Capita Generation Setting'))
-                    <li class="nav-item {{ request()->is('swm/service-providers/work-types*', 'swm/service-providers/vehicle-types*', 'swm/service-providers/waste-types*', 'swm/service-providers/landfill-types*', 'swm/service-providers/waste-bin-types*', 'swm/settings/per-capita-sw-generation*') ? 'menu-is-opening menu-open' : '' }}">
-                        <a href="#" class="nav-link {{ request()->is('swm/service-providers/work-types*', 'swm/service-providers/vehicle-types*', 'swm/service-providers/waste-types*', 'swm/service-providers/landfill-types*', 'swm/service-providers/waste-bin-types*', 'swm/settings/per-capita-sw-generation*') ? 'active subnav' : '' }}">
+                    @if(Auth::user()->can('List SW Work Types') || Auth::user()->can('List SW Vehicle Types') || Auth::user()->can('List SW Waste Types') || Auth::user()->can('List SW Landfill Types') || Auth::user()->can('List SW Waste Bin Types') || Auth::user()->can('List SW Organization Types') || Auth::user()->can('View SW Per Capita Generation Setting'))
+                    <li class="nav-item {{ request()->is('swm/service-providers/work-types*', 'swm/service-providers/vehicle-types*', 'swm/service-providers/waste-types*', 'swm/service-providers/landfill-types*', 'swm/service-providers/waste-bin-types*', 'swm/service-providers/organization-types*', 'swm/settings/per-capita-sw-generation*') ? 'menu-is-opening menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ request()->is('swm/service-providers/work-types*', 'swm/service-providers/vehicle-types*', 'swm/service-providers/waste-types*', 'swm/service-providers/landfill-types*', 'swm/service-providers/waste-bin-types*', 'swm/service-providers/organization-types*', 'swm/settings/per-capita-sw-generation*') ? 'active subnav' : '' }}">
                             <i class="far fa-circle nav-icon"></i>
                             <p>{{__('SW Module Settings')}} <i class="right fas fa-angle-left"></i></p>
                         </a>
@@ -696,6 +696,14 @@
                                 <a href="{{ action('Swm\WasteBinTypeController@index') }}" class="nav-link {{ request()->is('swm/service-providers/waste-bin-types', 'swm/service-providers/waste-bin-types/*') ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>{{__('Waste Bin Type')}}</p>
+                                </a>
+                            </li>
+                            @endcan
+                            @can('List SW Organization Types')
+                            <li class="nav-item">
+                                <a href="{{ action('Swm\OrganizationTypeController@index') }}" class="nav-link {{ request()->is('swm/service-providers/organization-types', 'swm/service-providers/organization-types/*') ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>{{__('Organization Type')}}</p>
                                 </a>
                             </li>
                             @endcan

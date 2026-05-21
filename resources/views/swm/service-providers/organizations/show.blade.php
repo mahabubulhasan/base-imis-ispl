@@ -43,9 +43,9 @@
 		</div>
 
 		<div class="form-group row">
-			{!! Form::label('organization_category', __('Organization Category'), ['class' => 'col-sm-3 control-label']) !!}
+			{!! Form::label('organization_type_id', __('Organization Type'), ['class' => 'col-sm-3 control-label']) !!}
 			<div class="col-sm-3">
-				{!! Form::label(null, $organization->organization_category_label, ['class' => 'form-control']) !!}
+				{!! Form::label(null, $organization->organization_type_label, ['class' => 'form-control']) !!}
 			</div>
 		</div>
 

@@ -15,7 +15,9 @@ class OrganizationService
 {
     public function getAllOrganizations(array $data)
     {
-        $query = Organization::query()->whereNull('deleted_at');
+        $query = Organization::query()
+            ->with('organizationType')
+            ->whereNull('deleted_at');
 
         return DataTables::of($query)
             ->filter(function ($q) use ($data) {
@@ -31,18 +33,15 @@ class OrganizationService
                 if (! empty($data['contact_person_name'] ?? null)) {
                     $q->where('contact_person_name', 'ILIKE', '%'.trim((string) $data['contact_person_name']).'%');
                 }
-                if (! empty($data['organization_category'] ?? null)) {
-                    $q->where('organization_category', trim((string) $data['organization_category']));
-                }
-                if (! empty($data['organization_category_other'] ?? null)) {
-                    $q->where('organization_category_other', 'ILIKE', '%'.trim((string) $data['organization_category_other']).'%');
+                if (! empty($data['organization_type_id'] ?? null)) {
+                    $q->where('organization_type_id', (int) $data['organization_type_id']);
                 }
                 if (array_key_exists('status', $data) && $data['status'] !== '' && $data['status'] !== null) {
                     $q->where('status', filter_var($data['status'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? $data['status']);
                 }
             })
-            ->editColumn('organization_category', function ($model) {
-                return $model->organization_category_label;
+            ->editColumn('organization_type', function ($model) {
+                return $model->organization_type_label;
             })
             ->addColumn('action', function ($model) {
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['swm.organizations.destroy', $model->id]]);
@@ -89,10 +88,7 @@ class OrganizationService
         $organization->address = $data['address'] ?? null;
         $organization->contact_person_name = $data['contact_person_name'] ?? null;
         $organization->contact_number = $data['contact_number'] ?? null;
-        $organization->organization_category = $data['organization_category'] ?? null;
-        $organization->organization_category_other = ($data['organization_category'] ?? null) === Organization::CATEGORY_OTHER
-            ? ($data['organization_category_other'] ?? null)
-            : null;
+        $organization->organization_type_id = $data['organization_type_id'] ?? null;
         $organization->service_wards = $data['service_wards'] ?? null;
         $organization->remarks = $data['remarks'] ?? null;
         $organization->status = isset($data['status']) ? (bool) $data['status'] : false;
@@ -107,8 +103,7 @@ class OrganizationService
         $email = $data['email'] ?? null;
         $address = $data['address'] ?? null;
         $contactPersonName = $data['contact_person_name'] ?? null;
-        $organizationCategory = $data['organization_category'] ?? null;
-        $organizationCategoryOther = $data['organization_category_other'] ?? null;
+        $organizationTypeId = $data['organization_type_id'] ?? null;
         $status = $data['status'] ?? null;
 
         $columns = [
@@ -117,22 +112,21 @@ class OrganizationService
             __('Address'),
             __('Contact Person Name'),
             __('Contact Number'),
-            __('Organization Category'),
-            __('Organization Category (Others specify)'),
+            __('Organization Type'),
             __('Service Wards'),
             __('Remarks'),
             __('Status'),
         ];
 
         $query = Organization::query()
+            ->with('organizationType')
             ->select(
                 'name',
                 'email',
                 'address',
                 'contact_person_name',
                 'contact_number',
-                'organization_category',
-                'organization_category_other',
+                'organization_type_id',
                 'service_wards',
                 'remarks',
                 'status'
@@ -151,11 +145,8 @@ class OrganizationService
         if (! empty($contactPersonName)) {
             $query->where('contact_person_name', 'ILIKE', '%'.trim((string) $contactPersonName).'%');
         }
-        if (! empty($organizationCategory)) {
-            $query->where('organization_category', trim((string) $organizationCategory));
-        }
-        if (! empty($organizationCategoryOther)) {
-            $query->where('organization_category_other', 'ILIKE', '%'.trim((string) $organizationCategoryOther).'%');
+        if (! empty($organizationTypeId)) {
+            $query->where('organization_type_id', (int) $organizationTypeId);
         }
         if ($status !== '' && $status !== null) {
             $query->where('status', filter_var($status, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? $status);
@@ -179,8 +170,7 @@ class OrganizationService
                     $row->address,
                     $row->contact_person_name,
                     $row->contact_number,
-                    $row->organization_category_label,
-                    $row->organization_category_other,
+                    $row->organization_type_label,
                     is_array($row->service_wards) ? implode(', ', $row->service_wards) : '',
                     $row->remarks,
                     SwmOrganizationStatus::getDescription($row->status),
