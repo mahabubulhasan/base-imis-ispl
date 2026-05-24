@@ -119,12 +119,6 @@
         </div>
     </div>
     <div class="form-group row">
-        {!! Form::label('lic_status',__('LIC Status'),['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-3">
-            {!! Form::label(null,$lic->lic_status === null ? '' : ($lic->lic_status ? __('Active') : __('Inactive')),['class' => 'form-control']) !!}
-        </div>
-    </div>
-    <div class="form-group row">
         {!! Form::label('remarks',__('Remarks'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             {!! Form::label(null,$lic->remarks,['class' => 'form-control']) !!}

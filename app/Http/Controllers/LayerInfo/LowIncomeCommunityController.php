@@ -124,34 +124,18 @@ class LowIncomeCommunityController extends Controller
     {
         $lic = LowIncomeCommunity::find($id);
         if ($lic) {
-                $building_count = Building::where('lic_id',$lic->id)->count();
-                if($building_count == 0)
-                {
-                    $lic->delete();
-                    return redirect('layer-info/low-income-communities')->with('success',__('Low Income Community deleted successfully.'));
-                }
-                else
-                {
-                    return redirect('layer-info/low-income-communities')->with('error',__('Cannot delete Low Income Community that has associated Buildings.'));
-                }
-            } else {
-                return redirect('layer-info/low-income-communities')->with('error',__('Failed to delete Low Income Community.'));
+            $building_count = Building::where('lic_id', $lic->id)->count();
+            if ($building_count == 0) {
+                $lic->delete();
+
+                return redirect('layer-info/low-income-communities')->with('success', __('Low Income Community deleted successfully.'));
             }
-{
-    $lic = LowIncomeCommunity::find($id);
-    if ($lic) {
-        $building_count = Building::where('lic_id', $lic->id)->count();
-        if ($building_count == 0) {
-            $lic->delete();
-            return redirect('layer-info/low-income-communities')->with('success', __('Low Income Community deleted successfully.'));
-        } else {
+
             return redirect('layer-info/low-income-communities')->with('error', __('Cannot delete Low Income Community that has associated Buildings.'));
         }
-    } else {
+
         return redirect('layer-info/low-income-communities')->with('error', __('Failed to delete Low Income Community.'));
     }
-}
-}
 
     /**
     * Display the history of a Hotspots record.

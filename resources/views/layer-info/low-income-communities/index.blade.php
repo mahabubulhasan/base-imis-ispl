@@ -63,7 +63,6 @@
                             <th>{{ __('ID') }}</th>
                             <th>{{ __('LIC Name') }}</th>
                             <th>{{ __('Ward No.') }}</th>
-                            <th>{{ __('LIC Status') }}</th>
                             <th>{{ __('No. of Buildings') }}</th>
                             <th>{{ __('No. of Households') }}</th>
                             <th>{{ __('Population') }}</th>
@@ -100,12 +99,6 @@
                         {
                             data: 'ward',
                             name: 'ward'
-                        },
-                        {
-                            data: 'lic_status_label',
-                            name: 'lic_status',
-                            orderable: false,
-                            searchable: false
                         },
                         {
                             data: 'no_of_buildings',

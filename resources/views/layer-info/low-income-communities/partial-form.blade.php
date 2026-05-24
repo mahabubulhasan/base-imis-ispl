@@ -57,7 +57,6 @@
 </style>
 @php
     $yesNoOptions = ['' => __('Select'), '1' => __('Yes'), '0' => __('No')];
-    $statusOptions = ['' => __('Select'), '1' => __('Active'), '0' => __('Inactive')];
 @endphp
 
 <div class="app-mobile-form lic-form-mobile">
@@ -206,12 +205,6 @@
         {!! Form::label('area_decima', __('Area (Decimal)'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             {!! Form::number('area_decima', null, ['class' => 'form-control', 'placeholder' => __('Area (Decimal)'), 'step' => '0.01', 'min' => '0']) !!}
-        </div>
-    </div>
-    <div class="form-group required row">
-        {!! Form::label('lic_status', __('LIC Status'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-3">
-            {!! Form::select('lic_status', $statusOptions, old('lic_status', isset($lic) ? (($lic->lic_status === null) ? '' : (string) (int) $lic->lic_status) : ''), ['class' => 'form-control', 'id' => 'lic_status']) !!}
         </div>
     </div>
     <div class="form-group row">

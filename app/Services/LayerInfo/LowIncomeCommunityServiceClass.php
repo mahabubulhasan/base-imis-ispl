@@ -32,13 +32,6 @@ class LowIncomeCommunityServiceClass
 
 
         return Datatables::of($lic)
-            ->addColumn('lic_status_label', function ($model) {
-                if ($model->lic_status === null) {
-                    return '';
-                }
-
-                return $model->lic_status ? __('Active') : __('Inactive');
-            })
             ->filter(function ($query) use ($request) {
                 if ($request->community_name) {
                     $query->whereRaw('LOWER(community_name) LIKE ?', ['%' . strtolower($request->community_name) . '%']);
@@ -85,7 +78,6 @@ class LowIncomeCommunityServiceClass
     }
 
     $lic = new LowIncomeCommunity();
-    $lic->lic_status = $request->lic_status;
     $lic->sub_location = $request->sub_location;
     $lic->ward = $request->ward;
     $lic->road_no = $request->road_no;
@@ -160,8 +152,6 @@ class LowIncomeCommunityServiceClass
         $lic = LowIncomeCommunity::find($id);
 
         if ($lic) {
-            // Update all fields as in the original method
-            $lic->lic_status = $request->lic_status;
             $lic->sub_location = $request->sub_location;
             $lic->ward = $request->ward;
             $lic->road_no = $request->road_no;
@@ -259,7 +249,6 @@ class LowIncomeCommunityServiceClass
             __('Ward No.'),
             __('Road No.'),
             __('Road Name'),
-            __('LIC Status'),
             __('Area (Decima)'),
             __("Representative's Name"),
             __("Representative's Contact No."),
@@ -287,7 +276,6 @@ class LowIncomeCommunityServiceClass
             'ward',
             'road_no',
             'road_name',
-            'lic_status',
             'area_decima',
             'representative_name',
             'representative_contact_no',
@@ -328,7 +316,6 @@ class LowIncomeCommunityServiceClass
                 $values[] = $lic->ward;
                 $values[] = $lic->road_no;
                 $values[] = $lic->road_name;
-                $values[] = $lic->lic_status === null ? '' : ($lic->lic_status ? __('Active') : __('Inactive'));
                 $values[] = $lic->area_decima;
                 $values[] = $lic->representative_name;
                 $values[] = $lic->representative_contact_no;

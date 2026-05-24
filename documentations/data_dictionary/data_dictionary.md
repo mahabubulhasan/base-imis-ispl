@@ -539,7 +539,6 @@ This table stores information about low-income communities in the area.
 | ----------------------- | ------------------------ | --------------------------------------------------------------------------------------------- | --------------------------- |
 | id                      |                          | Unique identifier for the record (auto generated)                                             | integer pk                  |
 | community_name          | Community Name           | Name of Community                                                                             | Character varying           |
-| lic_status              | LIC Status               | Indicates whether the LIC record is active or inactive                                        | boolean                     |
 | geom                    | Area                     | Geospatial coordinates of the boundary of the low income community (represented as a polygon) | geometry(MultiPolygon,4326) |
 | area_decima             | Area (Decima)            | Area of the low income community in decima                                                    | decimal                     |
 | representative_name     | Representative's Name    | Name of community representative                                                              | character varying           |
