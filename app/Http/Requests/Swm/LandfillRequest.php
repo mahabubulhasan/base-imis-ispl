@@ -44,7 +44,6 @@ class LandfillRequest extends FormRequest
                         Rule::exists('pgsql.layer_info.wards', 'ward'),
                     ],
                     'segregation_practiced' => ['nullable', 'boolean'],
-                    'reuse_practiced' => ['nullable', 'boolean'],
                     'waste_type_ids' => ['nullable', 'array'],
                     'waste_type_ids.*' => [
                         'integer',
@@ -57,7 +56,6 @@ class LandfillRequest extends FormRequest
                     'adequate_covering_arrangement_available' => ['nullable', 'boolean'],
                     'gas_control_system_available' => ['nullable', 'boolean'],
                     'leachate_collection_system_available' => ['nullable', 'boolean'],
-                    'treatment' => ['nullable', 'boolean'],
                     'operational_status' => ['required', 'in:active,inactive'],
                 ];
             default:
@@ -116,8 +114,6 @@ class LandfillRequest extends FormRequest
 
         $this->merge([
             'segregation_practiced' => $this->nullableBoolean('segregation_practiced'),
-            'reuse_practiced' => $this->nullableBoolean('reuse_practiced'),
-            'treatment' => $this->nullableBoolean('treatment'),
             'weighbridge_facility_available' => $this->nullableBoolean('weighbridge_facility_available'),
             'boundary_wall_available' => $this->nullableBoolean('boundary_wall_available'),
             'lighting_arrangement_available' => $this->nullableBoolean('lighting_arrangement_available'),

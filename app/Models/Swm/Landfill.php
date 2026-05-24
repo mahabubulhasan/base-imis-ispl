@@ -30,7 +30,6 @@ class Landfill extends Model
         'source_sts_ids',
         'source_wards',
         'segregation_practiced',
-        'reuse_practiced',
         'waste_type_ids',
         'weighbridge_facility_available',
         'boundary_wall_available',
@@ -39,7 +38,6 @@ class Landfill extends Model
         'adequate_covering_arrangement_available',
         'gas_control_system_available',
         'leachate_collection_system_available',
-        'treatment',
         'operational_status',
     ];
 
@@ -48,7 +46,6 @@ class Landfill extends Model
         'source_wards' => 'array',
         'landfill_type_id' => 'integer',
         'segregation_practiced' => 'boolean',
-        'reuse_practiced' => 'boolean',
         'waste_type_ids' => 'array',
         'weighbridge_facility_available' => 'boolean',
         'boundary_wall_available' => 'boolean',
@@ -57,7 +54,6 @@ class Landfill extends Model
         'adequate_covering_arrangement_available' => 'boolean',
         'gas_control_system_available' => 'boolean',
         'leachate_collection_system_available' => 'boolean',
-        'treatment' => 'boolean',
         'area' => 'decimal:2',
     ];
 

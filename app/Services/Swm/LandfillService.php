@@ -60,12 +60,6 @@ class LandfillService
                 if (array_key_exists('segregation_practiced', $data) && $data['segregation_practiced'] !== '' && $data['segregation_practiced'] !== null) {
                     $q->where('segregation_practiced', filter_var($data['segregation_practiced'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? $data['segregation_practiced']);
                 }
-                if (array_key_exists('reuse_practiced', $data) && $data['reuse_practiced'] !== '' && $data['reuse_practiced'] !== null) {
-                    $q->where('reuse_practiced', filter_var($data['reuse_practiced'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? $data['reuse_practiced']);
-                }
-                if (array_key_exists('treatment', $data) && $data['treatment'] !== '' && $data['treatment'] !== null) {
-                    $q->where('treatment', filter_var($data['treatment'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? $data['treatment']);
-                }
                 if (array_key_exists('weighbridge_facility_available', $data) && $data['weighbridge_facility_available'] !== '' && $data['weighbridge_facility_available'] !== null) {
                     $q->where('weighbridge_facility_available', filter_var($data['weighbridge_facility_available'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? $data['weighbridge_facility_available']);
                 }
@@ -87,8 +81,6 @@ class LandfillService
             })
             ->editColumn('operational_status', fn ($m) => ucfirst((string) $m->operational_status))
             ->editColumn('segregation_practiced', fn ($m) => is_null($m->segregation_practiced) ? '' : ($m->segregation_practiced ? __('Yes') : __('No')))
-            ->editColumn('reuse_practiced', fn ($m) => is_null($m->reuse_practiced) ? '' : ($m->reuse_practiced ? __('Yes') : __('No')))
-            ->editColumn('treatment', fn ($m) => is_null($m->treatment) ? '' : ($m->treatment ? __('Yes') : __('No')))
             ->addColumn('landfill_type_name', fn ($m) => $landfillTypeMap[$m->landfill_type_id] ?? '')
             ->addColumn('weighbridge_facility_available_text', fn ($m) => is_null($m->weighbridge_facility_available) ? '' : ($m->weighbridge_facility_available ? __('Yes') : __('No')))
             ->addColumn('boundary_wall_available_text', fn ($m) => is_null($m->boundary_wall_available) ? '' : ($m->boundary_wall_available ? __('Yes') : __('No')))
@@ -212,7 +204,6 @@ class LandfillService
         $landfill->source_sts_ids = $sourceStsIds;
         $landfill->source_wards = $sourceWards;
         $landfill->segregation_practiced = ! is_null($data['segregation_practiced'] ?? null) ? (bool) $data['segregation_practiced'] : null;
-        $landfill->reuse_practiced = ! is_null($data['reuse_practiced'] ?? null) ? (bool) $data['reuse_practiced'] : null;
         $landfill->waste_type_ids = $data['waste_type_ids'] ?? null;
         $landfill->weighbridge_facility_available = ! is_null($data['weighbridge_facility_available'] ?? null) ? (bool) $data['weighbridge_facility_available'] : null;
         $landfill->boundary_wall_available = ! is_null($data['boundary_wall_available'] ?? null) ? (bool) $data['boundary_wall_available'] : null;
@@ -221,7 +212,6 @@ class LandfillService
         $landfill->adequate_covering_arrangement_available = ! is_null($data['adequate_covering_arrangement_available'] ?? null) ? (bool) $data['adequate_covering_arrangement_available'] : null;
         $landfill->gas_control_system_available = ! is_null($data['gas_control_system_available'] ?? null) ? (bool) $data['gas_control_system_available'] : null;
         $landfill->leachate_collection_system_available = ! is_null($data['leachate_collection_system_available'] ?? null) ? (bool) $data['leachate_collection_system_available'] : null;
-        $landfill->treatment = ! is_null($data['treatment'] ?? null) ? (bool) $data['treatment'] : null;
         $landfill->operational_status = $data['operational_status'] ?? 'active';
 
         if ($landfill->exists && empty(trim((string) ($landfill->landfill_id ?? '')))) {
@@ -248,8 +238,7 @@ class LandfillService
             __('Source STS'),
             __('Source Wards'),
             __('Segregation Practiced'),
-            __('Reuse Practiced'),
-            __('Waste Types'),
+            __('Waste Type'),
             __('Weighbridge Facility Available'),
             __('Boundary Wall Around Landfill Area Available'),
             __('Lighting Arrangement at Landfill Site Available'),
@@ -257,7 +246,6 @@ class LandfillService
             __('Adequate Covering Arrangement at Landfill Site Available'),
             __('System for Gas Control from Filled Landfill Available'),
             __('Leachate Collection System Available'),
-            __('Treatment'),
             __('Operational Status'),
         ];
 
@@ -301,12 +289,6 @@ class LandfillService
         }
         if (array_key_exists('segregation_practiced', $data) && $data['segregation_practiced'] !== '' && $data['segregation_practiced'] !== null) {
             $query->where('segregation_practiced', filter_var($data['segregation_practiced'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? $data['segregation_practiced']);
-        }
-        if (array_key_exists('reuse_practiced', $data) && $data['reuse_practiced'] !== '' && $data['reuse_practiced'] !== null) {
-            $query->where('reuse_practiced', filter_var($data['reuse_practiced'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? $data['reuse_practiced']);
-        }
-        if (array_key_exists('treatment', $data) && $data['treatment'] !== '' && $data['treatment'] !== null) {
-            $query->where('treatment', filter_var($data['treatment'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? $data['treatment']);
         }
         if (array_key_exists('weighbridge_facility_available', $data) && $data['weighbridge_facility_available'] !== '' && $data['weighbridge_facility_available'] !== null) {
             $query->where('weighbridge_facility_available', filter_var($data['weighbridge_facility_available'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? $data['weighbridge_facility_available']);
@@ -364,7 +346,6 @@ class LandfillService
                     implode(', ', $sourceSts),
                     implode(', ', $row->source_wards ?? []),
                     is_null($row->segregation_practiced) ? '' : ($row->segregation_practiced ? __('Yes') : __('No')),
-                    is_null($row->reuse_practiced) ? '' : ($row->reuse_practiced ? __('Yes') : __('No')),
                     implode(', ', $wasteTypes),
                     is_null($row->weighbridge_facility_available) ? '' : ($row->weighbridge_facility_available ? __('Yes') : __('No')),
                     is_null($row->boundary_wall_available) ? '' : ($row->boundary_wall_available ? __('Yes') : __('No')),
@@ -373,7 +354,6 @@ class LandfillService
                     is_null($row->adequate_covering_arrangement_available) ? '' : ($row->adequate_covering_arrangement_available ? __('Yes') : __('No')),
                     is_null($row->gas_control_system_available) ? '' : ($row->gas_control_system_available ? __('Yes') : __('No')),
                     is_null($row->leachate_collection_system_available) ? '' : ($row->leachate_collection_system_available ? __('Yes') : __('No')),
-                    is_null($row->treatment) ? '' : ($row->treatment ? __('Yes') : __('No')),
                     ucfirst((string) $row->operational_status),
                 ]);
             }

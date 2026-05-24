@@ -69,27 +69,15 @@
             </div>
         </div>
         <div class="form-group row">
-            {!! Form::label('waste_type_ids', __('Waste Types'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('waste_type_ids', __('Waste Type'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
-                {!! Form::select('waste_type_ids[]', $wasteTypes, optional($landfill)->waste_type_ids, ['class' => 'form-control', 'id' => 'waste_type_ids', 'multiple' => true, 'data-placeholder' => __('Waste Types')]) !!}
+                {!! Form::select('waste_type_ids[]', $wasteTypes, optional($landfill)->waste_type_ids, ['class' => 'form-control', 'id' => 'waste_type_ids', 'multiple' => true, 'data-placeholder' => __('Waste Type')]) !!}
             </div>
         </div>
         <div class="form-group row">
             {!! Form::label('segregation_practiced', __('Segregation Practiced?'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
                 {!! Form::select('segregation_practiced', ['' => __('Select')] + [1 => __('Yes'), 0 => __('No')], old('segregation_practiced', optional($landfill)->segregation_practiced), ['class' => 'form-control', 'id' => 'segregation_practiced']) !!}
-            </div>
-        </div>
-        <div class="form-group row">
-            {!! Form::label('reuse_practiced', __('Reuse Practiced?'), ['class' => 'col-sm-3 control-label']) !!}
-            <div class="col-sm-3">
-                {!! Form::select('reuse_practiced', ['' => __('Select')] + [1 => __('Yes'), 0 => __('No')], old('reuse_practiced', optional($landfill)->reuse_practiced), ['class' => 'form-control', 'id' => 'reuse_practiced']) !!}
-            </div>
-        </div>
-        <div class="form-group row">
-            {!! Form::label('treatment', __('Treatment Practiced?'), ['class' => 'col-sm-3 control-label']) !!}
-            <div class="col-sm-3">
-                {!! Form::select('treatment', ['' => __('Select')] + [1 => __('Yes'), 0 => __('No')], old('treatment', optional($landfill)->treatment), ['class' => 'form-control', 'id' => 'treatment']) !!}
             </div>
         </div>
         <div class="form-group row">
@@ -191,7 +179,7 @@ $(function () {
 
     initSelect2($sourceStsSelect, '{{ __("Source STS") }}');
     initSelect2($sourceWardsSelect, '{{ __("Other Source Wards") }}');
-    initSelect2($wasteTypesSelect, '{{ __("Waste Types") }}');
+    initSelect2($wasteTypesSelect, '{{ __("Waste Type") }}');
 
     $sourceStsSelect.on('change', updateStsSourceWardsDisplay);
     updateStsSourceWardsDisplay();

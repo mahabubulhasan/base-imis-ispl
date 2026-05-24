@@ -68,7 +68,7 @@
 			</div>
 		</div>
 		<div class="form-group row">
-			{!! Form::label('waste_type_ids', __('Waste Types'), ['class' => 'col-sm-3 control-label']) !!}
+			{!! Form::label('waste_type_ids', __('Waste Type'), ['class' => 'col-sm-3 control-label']) !!}
 			<div class="col-sm-3">
 				{!! Form::label(null, $wasteTypes->pluck('name')->implode(', '), ['class' => 'form-control']) !!}
 			</div>
@@ -77,18 +77,6 @@
 			{!! Form::label('segregation_practiced', __('Segregation Practiced?'), ['class' => 'col-sm-3 control-label']) !!}
 			<div class="col-sm-3">
 				{!! Form::label(null, is_null($landfill->segregation_practiced) ? '' : ($landfill->segregation_practiced ? __('Yes') : __('No')), ['class' => 'form-control']) !!}
-			</div>
-		</div>
-		<div class="form-group row">
-			{!! Form::label('reuse_practiced', __('Reuse Practiced?'), ['class' => 'col-sm-3 control-label']) !!}
-			<div class="col-sm-3">
-				{!! Form::label(null, is_null($landfill->reuse_practiced) ? '' : ($landfill->reuse_practiced ? __('Yes') : __('No')), ['class' => 'form-control']) !!}
-			</div>
-		</div>
-		<div class="form-group row">
-			{!! Form::label('treatment', __('Treatment Practiced?'), ['class' => 'col-sm-3 control-label']) !!}
-			<div class="col-sm-3">
-				{!! Form::label(null, is_null($landfill->treatment) ? '' : ($landfill->treatment ? __('Yes') : __('No')), ['class' => 'form-control']) !!}
 			</div>
 		</div>
 		<div class="form-group row">
