@@ -39,9 +39,15 @@ class VehicleRequest extends FormRequest
             }
         }
 
-        $this->merge([
+        $merge = [
             'service_wards' => $serviceWards,
-        ]);
+        ];
+
+        if ($this->input('operational_type') !== 'other') {
+            $merge['operational_type_other'] = null;
+        }
+
+        $this->merge($merge);
     }
 
     protected function vehicleId(): ?int
@@ -164,8 +170,13 @@ class VehicleRequest extends FormRequest
                         Rule::exists('pgsql.layer_info.wards', 'ward'),
                     ],
                     'fuel_type' => ['nullable', 'string', 'max:255'],
-                    'operational_type' => ['nullable', 'string', 'max:255'],
-                    'vehicle_registration_no' => ['nullable', 'string', 'max:255'],
+                    'operational_type' => ['nullable', 'string', Rule::in(['day', 'night', 'mobile', 'other'])],
+                    'operational_type_other' => [
+                        'nullable',
+                        'string',
+                        'max:255',
+                        Rule::requiredIf(fn () => $this->input('operational_type') === 'other'),
+                    ],
                     'engine_no' => ['nullable', 'string', 'max:255'],
                     'chassis_no' => [
                         'nullable',
@@ -215,6 +226,7 @@ class VehicleRequest extends FormRequest
             'service_wards.*.integer' => __('Each service ward must be a valid ward number.'),
             'service_wards.*.exists' => __('One or more selected service wards are invalid.'),
             'dumping_place_kind.required' => __('The dumping place type is required.'),
+            'operational_type_other.required_if' => __('Please specify operational type when selecting Others (specify).'),
         ];
     }
 }

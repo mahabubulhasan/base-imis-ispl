@@ -116,13 +116,18 @@
         <div class="form-group row">
             {!! Form::label('operational_type', __('Operational Type'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-9">
-                {!! Form::text('operational_type', null, ['class' => 'form-control', 'placeholder' => __('Operational Type')]) !!}
+                {!! Form::select('operational_type', [
+                    'day' => __('Day'),
+                    'night' => __('Night'),
+                    'mobile' => __('Mobile'),
+                    'other' => __('Others (specify)'),
+                ], null, ['class' => 'form-control', 'id' => 'operational_type', 'placeholder' => __('Operational Type')]) !!}
             </div>
         </div>
-        <div class="form-group row">
-            {!! Form::label('vehicle_registration_no', __('Vehicle Registration No.'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="form-group row" id="operational_type_other_group" style="display: none;">
+            {!! Form::label('operational_type_other', __('Specify Operational Type'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-9">
-                {!! Form::text('vehicle_registration_no', null, ['class' => 'form-control', 'placeholder' => __('Vehicle Registration No.')]) !!}
+                {!! Form::text('operational_type_other', null, ['class' => 'form-control', 'placeholder' => __('Specify Operational Type')]) !!}
             </div>
         </div>
         <div class="form-group row">
@@ -144,9 +149,9 @@
             </div>
         </div>
         <div class="form-group row">
-            {!! Form::label('last_maintenance_year', __('Last Maintenance'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('last_maintenance_year', __('Last Maintenance Year'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-9">
-                {!! Form::number('last_maintenance_year', null, ['class' => 'form-control', 'placeholder' => __('Year'), 'min' => 1900, 'max' => 2100]) !!}
+                {!! Form::number('last_maintenance_year', null, ['class' => 'form-control', 'placeholder' => __('Last Maintenance Year'), 'min' => 1900, 'max' => 2100]) !!}
             </div>
         </div>
         <div class="form-group row">
@@ -189,6 +194,19 @@ $(function() {
 
     $('#dumping_place_kind').on('change', refreshDumpingVisibility);
     refreshDumpingVisibility();
+
+    var $operationalType = $('#operational_type');
+    var $operationalTypeOtherGroup = $('#operational_type_other_group');
+
+    function syncOperationalTypeOther() {
+        if (!$operationalType.length || !$operationalTypeOtherGroup.length) {
+            return;
+        }
+        $operationalTypeOtherGroup.toggle($operationalType.val() === 'other');
+    }
+
+    $operationalType.on('change', syncOperationalTypeOther);
+    syncOperationalTypeOther();
 
     @if(empty($scopedOrganizationId))
     function loadDrivers(orgId) {

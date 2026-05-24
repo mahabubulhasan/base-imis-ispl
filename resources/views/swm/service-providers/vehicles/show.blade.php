@@ -8,6 +8,10 @@
     $serviceWards = collect($vehicle->service_wards ?? [])
         ->map(fn ($wardId) => $wards[$wardId] ?? $wardId)
         ->implode(', ');
+    $operationalTypeLabels = \App\Services\Swm\VehicleService::operationalTypeLabels();
+    $operationalTypeLabel = $vehicle->operational_type
+        ? ($operationalTypeLabels[$vehicle->operational_type] ?? $vehicle->operational_type)
+        : '';
 @endphp
 <div class="card card-info">
 	<div class="card-header bg-transparent">
@@ -90,15 +94,17 @@
 		<div class="form-group row">
     {!! Form::label('operational_type', __('Operational Type'), ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-3">
-        {!! Form::label(null, $vehicle->operational_type, ['class' => 'form-control']) !!}
+        {!! Form::label(null, $operationalTypeLabel, ['class' => 'form-control']) !!}
     </div>
 		</div>
+		@if($vehicle->operational_type === 'other')
 		<div class="form-group row">
-    {!! Form::label('vehicle_registration_no', __('Vehicle Registration No.'), ['class' => 'col-sm-3 control-label']) !!}
+    {!! Form::label('operational_type_other', __('Specify Operational Type'), ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-3">
-        {!! Form::label(null, $vehicle->vehicle_registration_no, ['class' => 'form-control']) !!}
+        {!! Form::label(null, $vehicle->operational_type_other, ['class' => 'form-control']) !!}
     </div>
 		</div>
+		@endif
 		<div class="form-group row">
     {!! Form::label('engine_no', __('Engine No.'), ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-3">
@@ -118,7 +124,7 @@
     </div>
 		</div>
 		<div class="form-group row">
-    {!! Form::label('last_maintenance_year', __('Last Maintenance'), ['class' => 'col-sm-3 control-label']) !!}
+    {!! Form::label('last_maintenance_year', __('Last Maintenance Year'), ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-3">
         {!! Form::label(null, $vehicle->last_maintenance_year, ['class' => 'form-control']) !!}
     </div>

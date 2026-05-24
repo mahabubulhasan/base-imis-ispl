@@ -28,7 +28,7 @@ class Vehicle extends Model
         'service_wards',
         'fuel_type',
         'operational_type',
-        'vehicle_registration_no',
+        'operational_type_other',
         'engine_no',
         'chassis_no',
         'status',

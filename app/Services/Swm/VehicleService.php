@@ -18,6 +18,19 @@ use Yajra\DataTables\DataTables;
 
 class VehicleService
 {
+    /**
+     * @return array<string, string>
+     */
+    public static function operationalTypeLabels(): array
+    {
+        return [
+            'day' => __('Day'),
+            'night' => __('Night'),
+            'mobile' => __('Mobile'),
+            'other' => __('Others (specify)'),
+        ];
+    }
+
     public static function driverWorkTypeId(): ?int
     {
         $name = (string) config('swm.driver_work_type_name', 'Driver');
@@ -218,7 +231,7 @@ class VehicleService
         $vehicle->service_wards = $data['service_wards'] ?? null;
         $vehicle->fuel_type = $data['fuel_type'] ?? null;
         $vehicle->operational_type = $data['operational_type'] ?? null;
-        $vehicle->vehicle_registration_no = $data['vehicle_registration_no'] ?? null;
+        $vehicle->operational_type_other = $data['operational_type_other'] ?? null;
         $vehicle->engine_no = $data['engine_no'] ?? null;
         $vehicle->chassis_no = $data['chassis_no'] ?? null;
         $vehicle->status = $data['status'] ?? 'active';
@@ -282,10 +295,10 @@ class VehicleService
             __('Service Wards'),
             __('Fuel Type'),
             __('Operational Type'),
-            __('Vehicle Registration No.'),
+            __('Specify Operational Type'),
             __('Engine No.'),
             __('Status'),
-            __('Last Maintenance (Year)'),
+            __('Last Maintenance Year'),
             __('Remarks'),
             __('Dumping Place'),
         ];
@@ -322,7 +335,9 @@ class VehicleService
             ->addRowWithStyle($columns, $style);
         $wardLabels = Ward::getInAscOrder();
 
-        $query->orderBy('swm.vehicles.id')->chunk(5000, function ($rows) use ($writer, $wardLabels) {
+        $operationalTypeLabels = self::operationalTypeLabels();
+
+        $query->orderBy('swm.vehicles.id')->chunk(5000, function ($rows) use ($writer, $wardLabels, $operationalTypeLabels) {
             foreach ($rows as $row) {
                 $dumping = match ($row->dumping_place_kind) {
                     'sts' => (string) ($row->dumping_sts_name ?? ''),
@@ -333,6 +348,9 @@ class VehicleService
                 $serviceWards = collect($row->service_wards ?? [])
                     ->map(fn ($wardId) => $wardLabels[$wardId] ?? $wardId)
                     ->implode(', ');
+                $operationalType = $row->operational_type
+                    ? ($operationalTypeLabels[$row->operational_type] ?? $row->operational_type)
+                    : '';
                 $writer->addRow([
                     $row->vehicle_id_no,
                     $row->vehicle_number,
@@ -343,8 +361,8 @@ class VehicleService
                     $row->driver_name,
                     $serviceWards,
                     $row->fuel_type,
-                    $row->operational_type,
-                    $row->vehicle_registration_no,
+                    $operationalType,
+                    $row->operational_type_other,
                     $row->engine_no,
                     $row->status,
                     $row->last_maintenance_year,
