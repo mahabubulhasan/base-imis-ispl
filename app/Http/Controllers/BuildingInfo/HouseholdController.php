@@ -5,7 +5,6 @@ namespace App\Http\Controllers\BuildingInfo;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BuildingInfo\HouseholdRequest;
 use App\Models\BuildingInfo\Building;
-use App\Models\BuildingInfo\FunctionalUse;
 use App\Models\BuildingInfo\Household;
 use App\Models\LayerInfo\Lic;
 use App\Models\Swm\WasteBinType;
@@ -53,11 +52,6 @@ class HouseholdController extends Controller
         return $out;
     }
 
-    protected function functionalUseOptions()
-    {
-        return FunctionalUse::query()->orderBy('name')->pluck('name', 'name')->all();
-    }
-
     protected function wasteBinTypeOptions(): array
     {
         return WasteBinType::query()->whereNull('deleted_at')->orderBy('name')->pluck('name', 'id')->all();
@@ -76,7 +70,7 @@ class HouseholdController extends Controller
 
     public function getBuildingSnapshot(Request $request)
     {
-        $building = Building::query()->with(['functionalUse'])->whereNull('deleted_at')->find($request->input('bin'));
+        $building = Building::query()->whereNull('deleted_at')->find($request->input('bin'));
         if (! $building) {
             return response()->json([], 404);
         }
@@ -96,7 +90,6 @@ class HouseholdController extends Controller
             'holding_number' => $building->house_number,
             'tax_id' => $building->tax_code,
             'bin' => $building->bin,
-            'functional_use' => optional($building->functionalUse)->name,
             'lic_id' => $building->lic_id,
             'area_mohalla_name' => $building->house_locality
         ]);
@@ -109,7 +102,6 @@ class HouseholdController extends Controller
         $bins = $this->bins();
         $vanPullers = $this->vanPullers();
         $licOptions = $this->licOptions();
-        $functionalUses = $this->functionalUseOptions();
         $wasteBinTypes = $this->wasteBinTypeOptions();
 
         return view('building-info.households.create', compact(
@@ -118,7 +110,6 @@ class HouseholdController extends Controller
             'bins',
             'vanPullers',
             'licOptions',
-            'functionalUses',
             'wasteBinTypes'
         ));
     }
@@ -144,7 +135,6 @@ class HouseholdController extends Controller
         $bins = $this->bins();
         $vanPullers = $this->vanPullers();
         $licOptions = $this->licOptions();
-        $functionalUses = $this->functionalUseOptions();
         $wasteBinTypes = $this->wasteBinTypeOptions();
 
         return view('building-info.households.edit', compact(
@@ -153,7 +143,6 @@ class HouseholdController extends Controller
             'bins',
             'vanPullers',
             'licOptions',
-            'functionalUses',
             'wasteBinTypes'
         ));
     }

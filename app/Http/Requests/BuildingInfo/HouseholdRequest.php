@@ -51,7 +51,6 @@ class HouseholdRequest extends FormRequest
             'tax_id' => ['nullable', 'string', 'max:255'],
             'waste_charge' => ['nullable', 'numeric', 'min:0'],
             'is_owner' => ['sometimes', 'boolean'],
-            'functional_use' => ['nullable', 'string', 'max:255'],
             'is_lic' => ['sometimes', 'boolean'],
             'lic_id' => [
                 'nullable',

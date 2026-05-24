@@ -85,12 +85,6 @@
         <div class="col-sm-3">{!! Form::text('tax_id', null, ['class' => 'form-control', 'id' => 'tax_id']) !!}</div>
     </div>
     <div class="form-group row">
-        {!! Form::label('functional_use', __('Functional Use'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-3">
-            {!! Form::select('functional_use', $functionalUses, null, ['class' => 'form-control chosen-select', 'id' => 'functional_use', 'placeholder' => __('Select Functional Use')]) !!}
-        </div>
-    </div>
-    <div class="form-group row">
         {!! Form::label('waste_charge', __('Waste Collection Fee') . ' (' . __('Taka') . '/' . __('Month') . ')', ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">{!! Form::number('waste_charge', $wasteChargeInput, ['class' => 'form-control', 'step' => '1', 'min' => '0', 'inputmode' => 'numeric']) !!}</div>
     </div>
@@ -237,9 +231,6 @@ $(function() {
         $('#area_mohalla_name').val(data.area_mohalla_name || '');
         if (!$('#tax_id').val()) {
             $('#tax_id').val(data.tax_id || '');
-        }
-        if (data.functional_use) {
-            $('#functional_use').val(data.functional_use).trigger('chosen:updated');
         }
         if (data.lic_id) {
             $('#is_lic').val('1');

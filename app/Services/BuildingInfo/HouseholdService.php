@@ -9,13 +9,13 @@ use App\Services\Formatting\CurrencyFormatter;
 use App\Models\Swm\WasteBin;
 use App\Models\Swm\Worker;
 use App\Models\UtilityInfo\Roadline;
-use Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Box\Spout\Common\Type;
 use Box\Spout\Writer\Style\Color;
 use Box\Spout\Writer\Style\StyleBuilder;
 use Box\Spout\Writer\WriterFactory;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\Auth;
 
 class HouseholdService
 {
@@ -59,7 +59,7 @@ class HouseholdService
     {
         $building = null;
         if (! empty($data['bin'] ?? null)) {
-            $building = Building::query()->with(['functionalUse'])->find($data['bin']);
+            $building = Building::query()->find($data['bin']);
         }
 
         $roadNo = isset($data['road_no']) ? trim((string) $data['road_no']) : '';
@@ -103,7 +103,6 @@ class HouseholdService
         $household->tax_id = $data['tax_id'] ?? ($building?->tax_code);
         $household->waste_charge = $data['waste_charge'] ?? null;
         $household->is_owner = (bool) ($data['is_owner'] ?? false);
-        $household->functional_use = $data['functional_use'] ?? ($building?->functionalUse?->name);
         $household->is_lic = (bool) ($data['is_lic'] ?? false);
         $household->lic_id = $data['lic_id'] ?? ($building?->lic_id);
         $household->number_of_family_members = $data['number_of_family_members'] ?? null;
@@ -178,7 +177,7 @@ class HouseholdService
             __('Household ID'), __('Household Owner Name'), __("Father's/Husband's Name"), __('Status'), __('Contact Number'), __('Ward'),
             __('Area / Mohalla Name'), __('Sub Location'), __('Road No.'), __('Road Name'), __('Holding Number'),
             __('Tax ID'), __('BIN'), __('Waste collection fee (BDT/Month)'),
-            __('Building owner (Yes/No)'), __('Functional Use'), __('LIC'),
+            __('Building owner (Yes/No)'), __('LIC'),
             __('LIC ID'), __('Survey Date'),
         ];
 
@@ -205,7 +204,6 @@ class HouseholdService
                     $row->bin,
                     $this->currencyFormatter->format(Currency::TK, $row->waste_charge),
                     $row->is_owner ? __('Yes') : __('No'),
-                    $row->functional_use,
                     $row->is_lic ? __('Yes') : __('No'),
                     $row->lic_id,
                     $row->survey_date?->format('Y-m-d'),

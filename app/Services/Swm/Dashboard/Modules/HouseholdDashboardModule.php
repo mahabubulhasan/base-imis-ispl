@@ -393,10 +393,14 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
 
     protected function functionalUseCollectedTon(): array
     {
-        $rows = DB::table('building_info.households')
-            ->whereNull('deleted_at')
-            ->selectRaw("COALESCE(NULLIF(TRIM(functional_use), ''), 'Unknown') as use_label, SUM(COALESCE(daily_waste_volume, 0)) as kg")
-            ->groupBy(DB::raw("COALESCE(NULLIF(TRIM(functional_use), ''), 'Unknown')"))
+        $rows = DB::table('building_info.households as h')
+            ->leftJoin('building_info.buildings as b', function ($join) {
+                $join->on('b.bin', '=', 'h.bin')->whereNull('b.deleted_at');
+            })
+            ->leftJoin('building_info.functional_uses as fu', 'fu.id', '=', 'b.functional_use_id')
+            ->whereNull('h.deleted_at')
+            ->selectRaw("COALESCE(NULLIF(TRIM(fu.name), ''), 'Unknown') as use_label, SUM(COALESCE(h.daily_waste_volume, 0)) as kg")
+            ->groupBy(DB::raw("COALESCE(NULLIF(TRIM(fu.name), ''), 'Unknown')"))
             ->orderByDesc('kg')
             ->get();
 
