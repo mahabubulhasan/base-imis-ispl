@@ -443,7 +443,6 @@ Route::group([
 
         Route::get('sts/data', 'StsController@getData')->name('swm.sts.data');
         Route::get('sts/export', 'StsController@export')->name('swm.sts.export');
-        Route::get('sts/roads-for-ward', 'StsController@roadsForWard')->name('swm.sts.roads-for-ward');
         Route::get('sts/{sts}/history', 'StsController@history')->name('swm.sts.history');
         Route::resource('sts', 'StsController')->parameters([
             'sts' => 'sts',

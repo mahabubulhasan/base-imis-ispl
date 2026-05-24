@@ -123,7 +123,7 @@
                 <th>{{ __('Capacity') }} ({{ __('Ton') }})</th>
                 <th>{{ __('Source Wards') }}</th>
                 <th>{{ __('Segregation Practiced') }}</th>
-                <th>{{ __('Waste Types') }}</th>
+                <th>{{ __('Waste Type') }}</th>
                 <th>{{ __('Destination Landfill') }}</th>
                 <th>{{ __('Operational Status') }}</th>
                 <th>{{ __('Actions') }}</th>

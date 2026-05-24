@@ -27,9 +27,9 @@
             </div>
         </div>
         <div class="form-group row">
-            {!! Form::label('road_id', __('Road ID'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('road_id', __('Road No.'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
-                {!! Form::select('road_id', optional($sts)->road_id ? [$sts->road_id => $sts->road_id] : [], null, ['class' => 'form-control chosen-select', 'id' => 'road_id', 'placeholder' => __('Road ID')]) !!}
+                {!! Form::text('road_id', null, ['class' => 'form-control', 'id' => 'road_id', 'placeholder' => __('Road No.')]) !!}
             </div>
         </div>
         <div class="form-group row">
@@ -41,13 +41,13 @@
         <div class="form-group row">
             {!! Form::label('latitude', __('Latitude'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
-                {!! Form::number('latitude', null, ['class' => 'form-control', 'placeholder' => __('Latitude'), 'step' => 'any', 'min' => -90, 'max' => 90, 'inputmode' => 'decimal']) !!}
+                {!! Form::number('latitude', null, ['class' => 'form-control', 'id' => 'latitude', 'placeholder' => __('Decimal Degrees (WGS84)'), 'step' => 'any', 'min' => -90, 'max' => 90, 'inputmode' => 'decimal']) !!}
             </div>
         </div>
         <div class="form-group row">
             {!! Form::label('longitude', __('Longitude'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
-                {!! Form::number('longitude', null, ['class' => 'form-control', 'placeholder' => __('Longitude'), 'step' => 'any', 'min' => -180, 'max' => 180, 'inputmode' => 'decimal']) !!}
+                {!! Form::number('longitude', null, ['class' => 'form-control', 'id' => 'longitude', 'placeholder' => __('Decimal Degrees (WGS84)'), 'step' => 'any', 'min' => -180, 'max' => 180, 'inputmode' => 'decimal']) !!}
             </div>
         </div>
         <div class="form-group row required">
@@ -65,13 +65,13 @@
         <div class="form-group row">
             {!! Form::label('capacity', __('Capacity') . ' (' . __('Ton') . ')', ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
-                {!! Form::number('capacity', null, ['class' => 'form-control', 'placeholder' => __('Capacity'), 'min' => 0, 'step' => '0.01', 'inputmode' => 'decimal']) !!}
+                {!! Form::number('capacity', null, ['class' => 'form-control', 'placeholder' => __('Capacity (Ton)'), 'min' => 0, 'step' => '0.01', 'inputmode' => 'decimal']) !!}
             </div>
         </div>
         <div class="form-group row">
             {!! Form::label('area', __('Area') . ' (' . __('Decimal') . ')', ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
-                {!! Form::number('area', null, ['class' => 'form-control', 'placeholder' => __('Area'), 'min' => 0, 'step' => '0.01', 'inputmode' => 'decimal']) !!}
+                {!! Form::number('area', null, ['class' => 'form-control', 'placeholder' => __('Area (Decimal)'), 'min' => 0, 'step' => '0.01', 'inputmode' => 'decimal']) !!}
             </div>
         </div>
         <div class="form-group row">
@@ -81,9 +81,9 @@
             </div>
         </div>
         <div class="form-group row">
-            {!! Form::label('waste_type_ids', __('Waste Types'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('waste_type_ids', __('Waste Type'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
-                {!! Form::select('waste_type_ids[]', $wasteTypes, optional($sts)->waste_type_ids, ['class' => 'form-control', 'id' => 'waste_type_ids', 'multiple' => true, 'data-placeholder' => __('Waste Types')]) !!}
+                {!! Form::select('waste_type_ids[]', $wasteTypes, optional($sts)->waste_type_ids, ['class' => 'form-control', 'id' => 'waste_type_ids', 'multiple' => true, 'data-placeholder' => __('Waste Type')]) !!}
             </div>
         </div>
         <div class="form-group row">
@@ -113,13 +113,8 @@
 @push('scripts')
 <script>
 $(function() {
-    var roadsForWardUrl = '{!! route("swm.sts.roads-for-ward") !!}';
-    var $wardSelect = $('#ward_no');
-    var $roadSelect = $('#road_id');
-    var $roadName = $('#road_name');
     var $sourceWardsSelect = $('#source_wards');
     var $wasteTypesSelect = $('#waste_type_ids');
-    var roadsCache = {};
 
     if ($.fn.select2 && $sourceWardsSelect.length) {
         $sourceWardsSelect.select2({
@@ -131,59 +126,11 @@ $(function() {
 
     if ($.fn.select2 && $wasteTypesSelect.length) {
         $wasteTypesSelect.select2({
-            placeholder: $wasteTypesSelect.data('placeholder') || '{{ __("Waste Types") }}',
+            placeholder: $wasteTypesSelect.data('placeholder') || '{{ __("Waste Type") }}',
             width: '100%',
             closeOnSelect: false
         });
     }
-
-    function refreshRoads(ward, selectedCode) {
-        $roadSelect.empty();
-        $roadSelect.append($('<option/>', { value: '', text: '{{ __("Road ID") }}' }));
-        if (!ward) {
-            $roadSelect.trigger('chosen:updated');
-            return;
-        }
-        var apply = function (roads) {
-            roadsCache[ward] = roads;
-            $.each(roads, function (_, r) {
-                var opt = $('<option/>', { value: r.code, text: r.code + (r.name ? ' - ' + r.name : '') });
-                opt.data('name', r.name || '');
-                if (selectedCode && String(r.code) === String(selectedCode)) {
-                    opt.attr('selected', 'selected');
-                }
-                $roadSelect.append(opt);
-            });
-            if (selectedCode && !$roadSelect.find('option[value="' + selectedCode + '"]').length) {
-                $roadSelect.append($('<option/>', { value: selectedCode, text: selectedCode, selected: true }));
-            }
-            $roadSelect.trigger('chosen:updated');
-        };
-        if (roadsCache[ward]) {
-            apply(roadsCache[ward]);
-            return;
-        }
-        $.getJSON(roadsForWardUrl, { ward_no: ward }, function (resp) {
-            apply(Array.isArray(resp) ? resp : []);
-        });
-    }
-
-    var initialWard = $wardSelect.val();
-    var initialRoad = $roadSelect.val();
-    if (initialWard) {
-        refreshRoads(initialWard, initialRoad);
-    }
-
-    $wardSelect.on('change', function () {
-        refreshRoads($(this).val(), null);
-    });
-
-    $roadSelect.on('change', function () {
-        var name = $roadSelect.find('option:selected').data('name') || '';
-        if (name) {
-            $roadName.val(name);
-        }
-    });
 });
 </script>
 @endpush

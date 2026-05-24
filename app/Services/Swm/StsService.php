@@ -155,7 +155,7 @@ class StsService
             __('Name'),
             __('Location'),
             __('Ward No.'),
-            __('Road ID'),
+            __('Road No.'),
             __('Road Name'),
             __('Latitude'),
             __('Longitude'),
@@ -165,7 +165,7 @@ class StsService
             __('Area'),
             __('Source Wards'),
             __('Segregation Practiced'),
-            __('Waste Types'),
+            __('Waste Type'),
             __('Destination Landfill'),
             __('Operational Status'),
         ];

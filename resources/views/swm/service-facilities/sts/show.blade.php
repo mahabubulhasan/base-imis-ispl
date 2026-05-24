@@ -24,7 +24,7 @@
     <div class="col-sm-3">{!! Form::label(null, $sts->ward_no, ['class' => 'form-control']) !!}</div>
 		</div>
 		<div class="form-group row">
-    {!! Form::label('road_id', __('Road ID'), ['class' => 'col-sm-3 control-label']) !!}
+    {!! Form::label('road_id', __('Road No.'), ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-3">{!! Form::label(null, $sts->road_id, ['class' => 'form-control']) !!}</div>
 		</div>
 		<div class="form-group row">
@@ -60,7 +60,7 @@
 			<div class="col-sm-3">{!! Form::label(null, implode(', ', $sts->source_wards ?? []), ['class' => 'form-control']) !!}</div>
 		</div>
 		<div class="form-group row">
-			{!! Form::label('waste_type_ids', __('Waste Types'), ['class' => 'col-sm-3 control-label']) !!}
+			{!! Form::label('waste_type_ids', __('Waste Type'), ['class' => 'col-sm-3 control-label']) !!}
 			<div class="col-sm-3">{!! Form::label(null, $wasteTypes->pluck('name')->implode(', '), ['class' => 'form-control']) !!}</div>
 		</div>
 		<div class="form-group row">

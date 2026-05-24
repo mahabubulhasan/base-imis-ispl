@@ -9,7 +9,6 @@ use App\Models\Swm\Landfill;
 use App\Models\Swm\Sts;
 use App\Models\Swm\Vehicle;
 use App\Models\Swm\WasteType;
-use App\Models\UtilityInfo\Roadline;
 use App\Services\Swm\StsService;
 use Illuminate\Http\Request;
 
@@ -133,26 +132,5 @@ class StsController extends Controller
     public function export(Request $request)
     {
         return $this->stsService->download($request->all());
-    }
-
-    /**
-     * Return roads in the given ward for autopopulating road_name when road_id is selected.
-     * Response: [{ code, name }, ...]
-     */
-    public function roadsForWard(Request $request)
-    {
-        $ward = $request->input('ward_no');
-
-        $query = Roadline::query()
-            ->whereNull('deleted_at')
-            ->select(['code', 'name']);
-
-        if ($ward !== null && $ward !== '') {
-            $query->where('ward', (int) $ward);
-        }
-
-        return response()->json(
-            $query->orderBy('name')->limit(2000)->get()
-        );
     }
 }
