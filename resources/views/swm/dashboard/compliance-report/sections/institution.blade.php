@@ -23,7 +23,7 @@
                 <input name="phone" type="tel" />
             </div>
             <div class="field" style="grid-column:1/-1">
-                <label><span class="num">১.৬</span><span class="text">ইমেইল ও ঠিকানা</span></label>
+                <label><span class="num">১.৬</span><span class="text">ইমেইল</span></label>
                 <input name="email" type="email" />
             </div>
         </div>

@@ -11,7 +11,10 @@
             font-style: normal;
         }
         @page {
-            margin: 12mm 8mm;
+            margin-top: 28mm;
+            margin-right: 25mm;
+            margin-bottom: 18mm;
+            margin-left: 25mm;
         }
         body {
             font-family: 'Noto Sans Bengali', 'SolaimanLipi', 'Kalpurush', 'Arial Unicode MS', sans-serif;
@@ -124,7 +127,6 @@
         <thead>
             <tr>
                 <th>ক্রমিক নং</th>
-                <th>হোল্ডিং নং</th>
                 <th>বাসার আইডি</th>
                 <th>বাসার মালিকের নাম</th>
                 <th>পিতা/স্বামীর নাম</th>

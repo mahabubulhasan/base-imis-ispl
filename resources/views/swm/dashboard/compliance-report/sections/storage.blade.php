@@ -14,7 +14,7 @@
             </div>
         </div>
         <div class="subsection">
-            <h3 class="subsection-title">৩.৩ বাড়ি বাড়ি সংগ্রহের জন্য নিয়োজিত বেসরকারি সংগঠন</h3>
+            <h3 class="subsection-title">৩.৩ বাড়ি বাড়ি বর্জ্য সংগ্রহের জন্য কোনো বেসরকারি সংগঠন বা অন্য কাউকে নিয়োগ করা হয়ে থাকলে তার বিবরণ</h3>
             <div class="tbl-wrap">
                 <table class="tbl" id="tbl-door-orgs">
                     <thead>
@@ -48,7 +48,7 @@
                             <th style="width:36px;">ক্রম</th>
                             <th>প্রকার</th>
                             <th>ধারণ ক্ষমতা</th>
-                            <th class="col-num">একক</th>
+                            <th class="col-num">ধারণ ক্ষমতার একক</th>
                             <th class="col-num">সংখ্যা</th>
                             <th class="col-act"></th>
                         </tr>
@@ -61,7 +61,7 @@
         <div class="subsection">
             <div class="grid">
                 <div class="field">
-                    <label><span class="num">৩.৫</span><span class="text">সকল আধার ও সংগ্রহস্থল হইতে প্রতিদিন বর্জ্য লইয়া যাওয়া হয় কিনা</span></label>
+                    <label><span class="num">৩.৫</span><span class="text">সকল আধার ও সংগ্রহস্থল হতে প্রতিদিন বর্জ্য নিয়ে যাওয়া হয় কিনা</span></label>
                     <select name="daily_pickup">
                         <option value="">-- নির্বাচন করুন --</option>
                         <option value="yes">হ্যাঁ</option>
@@ -69,7 +69,7 @@
                     </select>
                 </div>
                 <div class="field">
-                    <label><span class="num">৩.৬</span><span class="text">আধার হইতে বর্জ্য কায়িকভাবে নাকি যান্ত্রিক উপায়ে উত্তোলন করা হয়</span></label>
+                    <label><span class="num">৩.৬</span><span class="text">আধার হতে বর্জ্য কায়িক নাকি যান্ত্রিক উপায়ে উত্তোলন করা হয়</span></label>
                     <select name="lifting_method">
                         <option value="">-- নির্বাচন করুন --</option>
                         <option value="manual">কায়িক</option>

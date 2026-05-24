@@ -220,6 +220,42 @@ a.doe-report-back-btn:hover {
     width: 240px;
 }
 
+.doe-report-page #tbl-landfill-info thead th.doe-th-marker,
+.doe-report-page #tbl-landfill-info thead tr.sub-header th {
+    text-align: center;
+}
+
+.doe-report-page #tbl-landfill-info thead th.doe-th-marker {
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 4px;
+    vertical-align: bottom;
+}
+
+.doe-report-page #tbl-landfill-info thead tr.sub-header th {
+    vertical-align: top;
+}
+
+.doe-report-page .doe-field-colon-row {
+    display: grid;
+    grid-template-columns: 49% 2% 49%;
+    align-items: center;
+    gap: 0 8px;
+    margin-bottom: 12px;
+}
+
+.doe-report-page .doe-field-colon-row label {
+    margin-bottom: 0;
+}
+
+.doe-report-page .doe-field-colon-row .doe-field-colon {
+    text-align: center;
+    color: var(--ink);
+}
+
+.doe-report-page .doe-field-colon-row input {
+    width: 100%;
+}
+
 .doe-report-page #tbl-landfill-type td:nth-child(2),
 .doe-report-page #tbl-landfill-type th:nth-child(2) {
     min-width: 200px;

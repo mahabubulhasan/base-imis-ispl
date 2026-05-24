@@ -10,32 +10,124 @@
             font-weight: normal;
             font-style: normal;
         }
-        @page { margin: 14mm 12mm; }
+        @page { margin: 18mm 45mm; }
         body {
             font-family: 'Noto Sans Bengali', 'SolaimanLipi', 'Kalpurush', sans-serif;
-            font-size: 11px;
+            font-size: 12px;
             color: #111;
-            line-height: 1.4;
+            line-height: 1.5;
+            padding: 0 10px;
         }
-        h1 { font-size: 16px; text-align: center; margin: 0 0 4px; }
-        h2 { font-size: 13px; margin: 14px 0 6px; border-bottom: 1px solid #333; padding-bottom: 2px; }
-        h3 { font-size: 12px; margin: 10px 0 4px; }
-        .meta { text-align: center; margin-bottom: 12px; font-size: 11px; }
+        body, table, th, td, p, h1, h2, span { font-size: 12px; }
+        .report-header { text-align: center; line-height: 1.2; margin-bottom: 20px; }
+        .report-header h1 { margin: 2px 0; font-weight: normal; line-height: 1.2; }
+        .report-header .meta { margin: 0; }
+        .report-header .meta-row { margin: 0; display: block; }
+        h1 { text-align: center; margin: 0 0 6px; font-weight: normal; }
+        h2 {
+            margin: 10px 0 6px;
+            padding-bottom: 0;
+            text-decoration: none;
+            font-weight: normal;
+        }
+        .meta { text-align: center; margin-bottom: 12px; }
         .meta-row { margin: 2px 0; }
         table { width: 100%; border-collapse: collapse; margin: 6px 0 10px; }
         th, td { border: 1px solid #444; padding: 4px 6px; vertical-align: top; }
-        th { background: #f0f0f0; font-weight: bold; }
-        .field-grid { width: 100%; margin-bottom: 8px; }
-        .field-grid td { border: none; padding: 3px 6px; }
-        .label { width: 55%; font-weight: 600; }
-        .value { width: 45%; }
-        .section { page-break-inside: avoid; }
-        .text-block { white-space: pre-wrap; min-height: 24px; }
+        th { background: #f0f0f0; font-weight: normal; }
+        th.th-stacked { text-align: center; line-height: 1.25; }
+        th.th-stacked .th-marker { display: block; }
+        th.th-stacked .th-label { display: block; }
+        .field-grid {
+            width: 100%;
+            margin-bottom: 6px;
+            table-layout: fixed;
+            border-collapse: collapse;
+        }
+        .field-grid col.col-label { width: 49%; }
+        .field-grid col.col-colon { width: 2%; }
+        .field-grid col.col-value { width: 49%; }
+        .field-grid .field-grid-width-ref td {
+            height: 0;
+            padding: 0;
+            border: none;
+            font-size: 0;
+            line-height: 0;
+            visibility: hidden;
+            overflow: hidden;
+        }
+        .field-grid td { border: none; padding: 3px 0; vertical-align: top; }
+        .field-grid .field-label {
+            width: 49%;
+            text-align: left;
+            padding-right: 8px;
+            font-weight: normal;
+            white-space: normal;
+        }
+        .field-grid .field-colon {
+            width: 2%;
+            text-align: center;
+            padding: 0 2px;
+            white-space: nowrap;
+        }
+        .field-grid .field-value {
+            width: 49%;
+            text-align: left;
+            padding-left: 8px;
+            white-space: normal;
+        }
+        .field-grid .field-value.text-block { white-space: pre-wrap; }
+        .field-grid-auto {
+            table-layout: auto;
+        }
+        .field-grid-auto .field-label {
+            width: auto;
+            padding-right: 4px;
+        }
+        .field-grid-auto .field-colon {
+            width: 1%;
+            white-space: nowrap;
+            padding: 0 4px 0 0;
+        }
+        .field-grid-auto .field-value {
+            width: auto;
+            padding-left: 0;
+        }
+        .field-grid-auto .field-row-heading .field-label {
+            padding-left: 0;
+        }
+        .field-row-sub .field-label { padding-left: 1.2em; }
+        .meta-dual { border: none; margin-bottom: 10px; margin-top: 0; table-layout: fixed; }
+        .meta-dual > tbody > tr > td { border: none; padding: 0 6px; vertical-align: top; width: 50%; }
+        .meta-dual .field-grid { margin-bottom: 0; }
+        .section {
+            page-break-inside: avoid;
+            border-top: 1px solid #333;
+            padding-top: 10px;
+            margin-top: 12px;
+        }
+        .section:first-of-type { border-top: none; padding-top: 0; margin-top: 0; }
+        .text-block { white-space: pre-wrap; min-height: 20px; }
+        .subsection-note { color: #444; margin: 0 0 6px; }
+        .field-row-heading .field-label { padding-bottom: 2px; }
+        .na-text { margin: 4px 0 8px; }
+        .col-serial { width: 36px; }
+        .col-org-name { width: 28%; }
+        .col-desc { width: 62%; }
+        .signature-block {
+            text-align: right;
+            margin-top: 24px;
+        }
+        .signature-block .signature-line {
+            margin: 0 0 8px;
+            padding: 0;
+        }
     </style>
 </head>
 <body>
 @php
     $f = $form;
+    $na = 'প্রযোজ্য নয়';
     $yn = static function ($v) {
         if ($v === 'yes') return 'হ্যাঁ';
         if ($v === 'no') return 'না';
@@ -44,217 +136,507 @@
         if ($v === 'both') return 'উভয়';
         return $v ?? '';
     };
+    $display = static function ($v) use ($na) {
+        if ($v === null || $v === '') {
+            return $na;
+        }
+        return $v;
+    };
+    $displayYn = static function ($v) use ($yn, $na) {
+        $t = $yn($v);
+        return $t === '' ? $na : $t;
+    };
+    $bnDigits = static fn ($value) => strtr((string) $value, [
+        '0' => '০', '1' => '১', '2' => '২', '3' => '৩', '4' => '৪',
+        '5' => '৫', '6' => '৬', '7' => '৭', '8' => '৮', '9' => '৯',
+    ]);
 @endphp
-
-<h1>কঠিন বর্জ্য ব্যবস্থাপনা সংক্রান্ত বার্ষিক প্রতিবেদন</h1>
-<p class="meta">ছক-২ [বিধি ১৩(১)] — বর্ষ: {{ $f['year'] ?? '' }}</p>
-<table class="field-grid">
-    <tr><td class="label">প্রতিবেদন নম্বর</td><td class="value">{{ $f['report_no'] ?? '' }}</td></tr>
-    <tr><td class="label">তারিখ</td><td class="value">{{ $f['report_date'] ?? '' }}</td></tr>
+<div class="report-header">
+@if(!empty($f['org_name']))
+    <p class="meta"><span class="meta-row">{{ $f['org_name'] }}</span></p>
+@endif
+    <h1>কঠিন বর্জ্য ব্যবস্থাপনা সংক্রান্ত বার্ষিক প্রতিবেদন</h1>
+    <p class="meta"><span class="meta-row">পরিবেশ অধিদপ্তরের জন্য প্রস্তুতকৃত {{ $bnDigits($f['year'] ?? '') }} সালের প্রতিবেদন</span></p>
+</div>
+<table class="meta-dual">
+    <tr>
+        <td>
+            <table class="field-grid">
+                <tr>
+                    <td class="field-label">প্রতিবেদন নম্বর</td>
+                    <td class="field-colon">:</td>
+                    <td class="field-value">{{ $display($f['report_no'] ?? null) }}</td>
+                </tr>
+            </table>
+        </td>
+        <td>
+            <table class="field-grid">
+                <tr>
+                    <td class="field-label">তারিখ</td>
+                    <td class="field-colon">:</td>
+                    <td class="field-value">{{ $display($f['report_date'] ?? null) }}</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
 </table>
 
 <div class="section">
     <h2>(১) প্রতিষ্ঠানের বিবরণ</h2>
     <table class="field-grid">
-        <tr><td class="label">১.১ স্থানীয় সরকার প্রতিষ্ঠানের নাম</td><td class="value">{{ $f['org_name'] ?? '' }}</td></tr>
-        <tr><td class="label">১.২ মোট জনসংখ্যা</td><td class="value">{{ $f['population'] ?? '' }}</td></tr>
-        <tr><td class="label">১.৩ ডাক যোগাযোগের ঠিকানা</td><td class="value">{{ $f['address'] ?? '' }}</td></tr>
-        <tr><td class="label">১.৪ প্রধান কর্মকর্তার নাম</td><td class="value">{{ $f['chief_officer'] ?? '' }}</td></tr>
-        <tr><td class="label">১.৫ ফোন নম্বর</td><td class="value">{{ $f['phone'] ?? '' }}</td></tr>
-        <tr><td class="label">১.৬ ইমেইল ও ঠিকানা</td><td class="value">{{ $f['email'] ?? '' }}</td></tr>
+        <tr class="field-row">
+            <td class="field-label">১.১ স্থানীয় সরকার প্রতিষ্ঠানের নাম</td>
+            <td class="field-colon">:</td>
+            <td class="field-value">{{ $display($f['org_name'] ?? null) }}</td>
+        </tr>
+        <tr class="field-row">
+            <td class="field-label">১.২ মোট জনসংখ্যা</td>
+            <td class="field-colon">:</td>
+            <td class="field-value">{{ $display($f['population'] ?? null) }}</td>
+        </tr>
+        <tr class="field-row">
+            <td class="field-label wrap-label">১.৩ ডাক যোগাযোগের ঠিকানা</td>
+            <td class="field-colon">:</td>
+            <td class="field-value text-block">{{ $display($f['address'] ?? null) }}</td>
+        </tr>
+        <tr class="field-row">
+            <td class="field-label wrap-label">১.৪ কনজার্ভেন্সির দায়িত্বে নিয়োজিত প্রধান কর্মকর্তার নাম</td>
+            <td class="field-colon">:</td>
+            <td class="field-value">{{ $display($f['chief_officer'] ?? null) }}</td>
+        </tr>
+        <tr class="field-row">
+            <td class="field-label">১.৫ ফোন নম্বর</td>
+            <td class="field-colon">:</td>
+            <td class="field-value">{{ $display($f['phone'] ?? null) }}</td>
+        </tr>
+        <tr class="field-row">
+            <td class="field-label">১.৬ ইমেইল</td>
+            <td class="field-colon">:</td>
+            <td class="field-value">{{ $display($f['email'] ?? null) }}</td>
+        </tr>
     </table>
 </div>
 
 <div class="section">
-    <h2>(২) দৈনিক সৃজিত গড় কঠিন বর্জ্যের পরিমাণ</h2>
+    <h2>(২) কঠিন বর্জ্যের পরিমাণ ও সংশ্লিষ্ট তথ্যাদি</h2>
     <table class="field-grid">
-        <tr><td class="label">২.০ দৈনিক সৃজিত গড় (টন/দিন)</td><td class="value">{{ $f['daily_avg'] ?? '' }}</td></tr>
-        <tr><td class="label">২.১ বাৎসরিক কঠিন বর্জ্য (টন)</td><td class="value">{{ $f['annual_total'] ?? '' }}</td></tr>
-        <tr><td class="label">২.২ বিধিবদ্ধ পদ্ধতিতে সংগৃহীত বাৎসরিক (টন)</td><td class="value">{{ $f['collected_formal'] ?? '' }}</td></tr>
-        <tr><td class="label">২.৩ অনুমোদিত স্থানে স্তূপীকৃত বাৎসরিক (টন)</td><td class="value">{{ $f['stockpiled'] ?? '' }}</td></tr>
-        <tr><td class="label">২.৪ অসংগৃহীত বাৎসরিক (টন)</td><td class="value">{{ $f['uncollected'] ?? '' }}</td></tr>
-        <tr><td class="label">২.৫ ঝুঁকিপূর্ণ শিল্প বর্জ্য (টন)</td><td class="value">{{ $f['hazardous'] ?? '' }}</td></tr>
-    </table>
-    <h3>২.৬ বাৎসরিক বর্জ্য প্রক্রিয়াকরণ (টন)</h3>
-    <table class="field-grid">
-        <tr><td class="label">(অ) জৈবিক/কম্পোস্টিং</td><td class="value">{{ $f['proc_organic'] ?? '' }}</td></tr>
-        <tr><td class="label">(আ) পুনর্ব্যবহার</td><td class="value">{{ $f['proc_recycle'] ?? '' }}</td></tr>
-        <tr><td class="label">(ই) ইনসিনারেশন</td><td class="value">{{ $f['proc_incineration'] ?? '' }}</td></tr>
-        <tr><td class="label">(ঈ) উন্মুক্ত পোড়ানো</td><td class="value">{{ $f['proc_openburn'] ?? '' }}</td></tr>
-        <tr><td class="label">(উ) ল্যান্ডফিল</td><td class="value">{{ $f['proc_landfill'] ?? '' }}</td></tr>
+        <colgroup>
+            <col class="col-label">
+            <col class="col-colon">
+            <col class="col-value">
+        </colgroup>
+        <tr class="field-row">
+            <td class="field-label">২.১ দৈনিক সৃজিত গড় কঠিন বর্জ্যের পরিমাণ (টন/দিন)</td>
+            <td class="field-colon">:</td>
+            <td class="field-value">{{ $display($f['daily_avg'] ?? null) }}</td>
+        </tr>
+        <tr class="field-row">
+            <td class="field-label">২.২ বাৎসরিক কঠিন বর্জ্যের পরিমাণ (টন)</td>
+            <td class="field-colon">:</td>
+            <td class="field-value">{{ $display($f['annual_total'] ?? null) }}</td>
+        </tr>
+        <tr class="field-row">
+            <td class="field-label">২.৩ বিধিবদ্ধ পদ্ধতিতে সংগৃহীত বাৎসরিক কঠিন বর্জ্যের পরিমাণ (টন)</td>
+            <td class="field-colon">:</td>
+            <td class="field-value">{{ $display($f['collected_formal'] ?? null) }}</td>
+        </tr>
+        <tr class="field-row">
+            <td class="field-label">২.৪ অনুমোদিত স্থানে স্তুপীকৃত কঠিন বর্জ্যের পরিমাণ (বাৎসরিক) (টন)</td>
+            <td class="field-colon">:</td>
+            <td class="field-value">{{ $display($f['stockpiled'] ?? null) }}</td>
+        </tr>
+        <tr class="field-row">
+            <td class="field-label">২.৫ অসংগৃহীত কঠিন বর্জ্যের পরিমাণ (বাৎসরিক) (টন)</td>
+            <td class="field-colon">:</td>
+            <td class="field-value">{{ $display($f['uncollected'] ?? null) }}</td>
+        </tr>
+        <tr class="field-row">
+            <td class="field-label">২.৬ ঝুঁকিপূর্ণ শিল্প বর্জ্য সংগ্রহের পরিমাণ (বাৎসরিক) (টন)</td>
+            <td class="field-colon">:</td>
+            <td class="field-value">{{ $display($f['hazardous'] ?? null) }}</td>
+        </tr>
+        <tr class="field-row field-row-heading">
+            <td class="field-label" colspan="3">২.৭ বাৎসরিক বর্জ্য প্রক্রিয়াকরণের পরিমাণ (সরকারি/বেসরকারি উদ্যোগে)</td>
+        </tr>
+        <tr class="field-row field-row-sub">
+            <td class="field-label">(অ) জৈবিক বর্জ্য প্রক্রিয়াকরণ/কম্পোস্টিং (টন)</td>
+            <td class="field-colon">:</td>
+            <td class="field-value">{{ $display($f['proc_organic'] ?? null) }}</td>
+        </tr>
+        <tr class="field-row field-row-sub">
+            <td class="field-label">(আ) অজৈবিক অপচনযোগ্য বর্জ্য পুনর্ব্যবহারোপযোগীকরণ (টন)</td>
+            <td class="field-colon">:</td>
+            <td class="field-value">{{ $display($f['proc_recycle'] ?? null) }}</td>
+        </tr>
+        <tr class="field-row field-row-sub">
+            <td class="field-label">(ই) বর্জ্য ইনসিনারেশন (টন)</td>
+            <td class="field-colon">:</td>
+            <td class="field-value">{{ $display($f['proc_incineration'] ?? null) }}</td>
+        </tr>
+        <tr class="field-row field-row-sub">
+            <td class="field-label">(ঈ) উন্মুক্ত অবস্থায় বর্জ্য পোড়ানো (টন)</td>
+            <td class="field-colon">:</td>
+            <td class="field-value">{{ $display($f['proc_openburn'] ?? null) }}</td>
+        </tr>
+        <tr class="field-row field-row-sub">
+            <td class="field-label">(উ) বর্জ্য ল্যান্ডফিলের পরিমাণ (টন)</td>
+            <td class="field-colon">:</td>
+            <td class="field-value">{{ $display($f['proc_landfill'] ?? null) }}</td>
+        </tr>
+        <tr class="field-row field-row-heading">
+            <td class="field-label" colspan="3">২.৮ ল্যান্ডফিলের প্রকার</td>
+        </tr>
     </table>
     @if(!empty($f['landfill_types']))
-    <h3>২.৭ ল্যান্ডফিলের প্রকার</h3>
-    <table>
-        <thead><tr><th>ক্রম</th><th>সাইটের নাম</th><th>প্রকার</th><th>ধারণ ক্ষমতা</th><th>একক</th></tr></thead>
-        <tbody>
-        @foreach($f['landfill_types'] as $i => $row)
-            <tr>
-                <td>{{ $i + 1 }}</td>
-                <td>{{ $row['name'] ?? '' }}</td>
-                <td>{{ $row['type'] ?? '' }}</td>
-                <td>{{ $row['capacity'] ?? '' }}</td>
-                <td>{{ $row['unit'] ?? '' }}</td>
-            </tr>
-        @endforeach
-        </tbody>
-    </table>
+        <table>
+            <thead><tr><th>ক্রম</th><th>ল্যান্ডফিল সাইটের নাম</th><th>প্রকার</th><th>ধারণ ক্ষমতা</th><th>ধারণ ক্ষমতার একক</th></tr></thead>
+            <tbody>
+            @foreach($f['landfill_types'] as $i => $row)
+                <tr>
+                    <td>{{ $i + 1 }}</td>
+                    <td>{{ $display($row['name'] ?? null) }}</td>
+                    <td>{{ $display($row['type'] ?? null) }}</td>
+                    <td>{{ $display($row['capacity'] ?? null) }}</td>
+                    <td>{{ $display($row['unit'] ?? null) }}</td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
+    @else
+        <p class="na-text">{{ $na }}</p>
     @endif
-    <h3>২.৮ ল্যান্ডফিলের অন্যান্য তথ্যাদি</h3>
-    <p>ল্যান্ডফিল স্থানের সংখ্যা: {{ $f['num_landfill_sites'] ?? '' }}</p>
+    <table class="field-grid">
+        <colgroup>
+            <col class="col-label">
+            <col class="col-colon">
+            <col class="col-value">
+        </colgroup>
+        <tr class="field-grid-width-ref" aria-hidden="true">
+            <td class="field-label">(অ) জৈবিক বর্জ্য প্রক্রিয়াকরণ/কম্পোস্টিং (টন)</td>
+            <td class="field-colon">:</td>
+            <td class="field-value">0</td>
+        </tr>
+        <tr class="field-row field-row-heading">
+            <td class="field-label" colspan="3">২.৯ ল্যান্ডফিলের অন্যান্য তথ্যাদি</td>
+        </tr>
+        <tr class="field-row field-row-sub">
+            <td class="field-label">(অ) ল্যান্ডফিল স্থানের সংখ্যা</td>
+            <td class="field-colon">:</td>
+            <td class="field-value">{{ $display($f['num_landfill_sites'] ?? null) }}</td>
+        </tr>
+    </table>
     @if(!empty($f['landfill_sites']))
-    <table>
-        <thead>
-            <tr>
-                <th>ক্রম</th><th>নাম</th><th>আয়তন</th><th>একক</th><th>ওজন সেতু</th><th>সীমানা প্রাচীর</th>
-                <th>আলোকিতকরণ</th><th>জনবল</th><th>আচ্ছাদিতকরণ</th><th>গ্যাস নিয়ন্ত্রণ</th><th>চোয়ানি সংগ্রহ</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach($f['landfill_sites'] as $i => $row)
-            <tr>
-                <td>{{ $i + 1 }}</td>
-                <td>{{ $row['name'] ?? '' }}</td>
-                <td>{{ $row['area'] ?? '' }}</td>
-                <td>{{ $row['unit'] ?? 'একর' }}</td>
-                <td>{{ $yn($row['wb'] ?? '') }}</td>
-                <td>{{ $yn($row['bw'] ?? '') }}</td>
-                <td>{{ $yn($row['lt'] ?? '') }}</td>
-                <td>{{ $row['pax'] ?? '' }}</td>
-                <td>{{ $yn($row['cv'] ?? '') }}</td>
-                <td>{{ $yn($row['gas'] ?? '') }}</td>
-                <td>{{ $yn($row['lc'] ?? '') }}</td>
-            </tr>
-        @endforeach
-        </tbody>
-    </table>
+        <table>
+            <thead>
+                <tr>
+                    <th class="th-stacked"><span class="th-label">ক্রম</span></th>
+                    <th class="th-stacked"><span class="th-label">ল্যান্ডফিল সাইটের নাম</span></th>
+                    <th class="th-stacked"><span class="th-marker">(আ)</span><span class="th-label">আয়তন</span></th>
+                    <th class="th-stacked"><span class="th-marker">(আ)</span><span class="th-label">আয়তনের একক</span></th>
+                    <th class="th-stacked"><span class="th-marker">(ই)</span><span class="th-label">Weighbridge</span></th>
+                    <th class="th-stacked"><span class="th-marker">(ঈ)</span><span class="th-label">সীমানা প্রাচীর</span></th>
+                    <th class="th-stacked"><span class="th-marker">(উ)</span><span class="th-label">আলোকিতকরণ</span></th>
+                    <th class="th-stacked"><span class="th-marker">(ঊ)</span><span class="th-label">জনবল সংখ্যা</span></th>
+                    <th class="th-stacked"><span class="th-marker">(ঋ)</span><span class="th-label">আচ্ছাদিতকরণ</span></th>
+                    <th class="th-stacked"><span class="th-marker">(এ)</span><span class="th-label">গ্যাস নিয়ন্ত্রণ</span></th>
+                    <th class="th-stacked"><span class="th-marker">(ঐ)</span><span class="th-label">চোয়ানি সংগ্রহ</span></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach($f['landfill_sites'] as $i => $row)
+                <tr>
+                    <td>{{ $i + 1 }}</td>
+                    <td>{{ $display($row['name'] ?? null) }}</td>
+                    <td>{{ $display($row['area'] ?? null) }}</td>
+                    <td>{{ $display($row['unit'] ?? null) }}</td>
+                    <td>{{ $displayYn($row['wb'] ?? null) }}</td>
+                    <td>{{ $displayYn($row['bw'] ?? null) }}</td>
+                    <td>{{ $displayYn($row['lt'] ?? null) }}</td>
+                    <td>{{ $display($row['pax'] ?? null) }}</td>
+                    <td>{{ $displayYn($row['cv'] ?? null) }}</td>
+                    <td>{{ $displayYn($row['gas'] ?? null) }}</td>
+                    <td>{{ $displayYn($row['lc'] ?? null) }}</td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
+    @else
+        <p class="na-text">{{ $na }}</p>
     @endif
-    @if(!empty($f['equipment']))
-    <h3>২.৮ (ঊ) যন্ত্রপাতির তথ্য</h3>
-    <table>
-        <thead><tr><th>ক্রম</th><th>সাইট</th><th>ধরন</th><th>সংখ্যা</th></tr></thead>
-        <tbody>
-        @foreach($f['equipment'] as $i => $row)
-            <tr><td>{{ $i + 1 }}</td><td>{{ $row['name'] ?? '' }}</td><td>{{ $row['eq'] ?? '' }}</td><td>{{ $row['count'] ?? '' }}</td></tr>
-        @endforeach
-        </tbody>
+    <table class="field-grid">
+        <colgroup>
+            <col class="col-label">
+            <col class="col-colon">
+            <col class="col-value">
+        </colgroup>
+        <tr class="field-row field-row-heading">
+            <td class="field-label" colspan="3">(ও) ল্যান্ডফিলের যন্ত্রপাতির তথ্য</td>
+        </tr>
     </table>
+    <p class="subsection-note">বুলডোজার, কম্প্যাক্টর এবং অনুরূপ অন্যান্য ধরনের যন্ত্রপাতি থাকিলে উহার নাম।</p>
+    @if(!empty($f['equipment']))
+        <table>
+            <thead><tr><th>ক্রম</th><th>ল্যান্ডফিল সাইটের নাম</th><th>যন্ত্রপাতির ধরন</th><th>সংখ্যা</th></tr></thead>
+            <tbody>
+            @foreach($f['equipment'] as $i => $row)
+                <tr>
+                    <td>{{ $i + 1 }}</td>
+                    <td>{{ $display($row['name'] ?? null) }}</td>
+                    <td>{{ $display($row['eq'] ?? null) }}</td>
+                    <td>{{ $display($row['count'] ?? null) }}</td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
+    @else
+        <p class="na-text">{{ $na }}</p>
     @endif
 </div>
 
 <div class="section">
     <h2>(৩) মজুদকরণ সুবিধা</h2>
     <table class="field-grid">
-        <tr><td class="label">৩.১ বর্জ্য সংগ্রহকরণের আয়তন (টন)</td><td class="value">{{ $f['collection_volume'] ?? '' }}</td></tr>
-        <tr><td class="label">৩.২ বাড়ির সংখ্যা</td><td class="value">{{ $f['num_houses'] ?? '' }}</td></tr>
-        <tr><td class="label">৩.৫ প্রতিদিন বর্জ্য লইয়া যায় কিনা</td><td class="value">{{ $yn($f['daily_pickup'] ?? '') }}</td></tr>
-        <tr><td class="label">৩.৬ উত্তোলন পদ্ধতি</td><td class="value">{{ $yn($f['lifting_method'] ?? '') }}</td></tr>
+        <tr class="field-row">
+            <td class="field-label">৩.১ বর্জ্য সংগ্রহকরণের আয়তন (টন)</td>
+            <td class="field-colon">:</td>
+            <td class="field-value">{{ $display($f['collection_volume'] ?? null) }}</td>
+        </tr>
+        <tr class="field-row">
+            <td class="field-label">৩.২ বাড়ির সংখ্যা</td>
+            <td class="field-colon">:</td>
+            <td class="field-value">{{ $display($f['num_houses'] ?? null) }}</td>
+        </tr>
+        <tr class="field-row field-row-heading">
+            <td class="field-label" colspan="3">৩.৩ বাড়ি বাড়ি বর্জ্য সংগ্রহের জন্য কোনো বেসরকারি সংগঠন বা অন্য কাউকে নিয়োগ করা হয়ে থাকলে তার বিবরণ</td>
+        </tr>
     </table>
     @if(!empty($f['door_orgs']))
-    <h3>৩.৩ বেসরকারি সংগঠন</h3>
-    <table>
-        <thead><tr><th>ক্রম</th><th>নাম</th><th>বিবরণ</th></tr></thead>
-        <tbody>
-        @foreach($f['door_orgs'] as $i => $row)
-            <tr><td>{{ $i + 1 }}</td><td>{{ $row['name'] ?? '' }}</td><td>{{ $row['desc'] ?? '' }}</td></tr>
-        @endforeach
-        </tbody>
-    </table>
+        <table>
+            <thead><tr><th class="col-serial">ক্রম</th><th class="col-org-name">সংগঠনের নাম</th><th class="col-desc">বিবরণ</th></tr></thead>
+            <tbody>
+            @foreach($f['door_orgs'] as $i => $row)
+                <tr>
+                    <td class="col-serial">{{ $i + 1 }}</td>
+                    <td class="col-org-name">{{ $display($row['name'] ?? null) }}</td>
+                    <td class="col-desc">{{ $display($row['desc'] ?? null) }}</td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
+    @else
+        <p class="na-text">{{ $na }}</p>
     @endif
+    <table class="field-grid">
+        <tr class="field-row field-row-heading">
+            <td class="field-label" colspan="3">৩.৪ বর্জ্যাধার (Bins)</td>
+        </tr>
+    </table>
     @if(!empty($f['bins']))
-    <h3>৩.৪ বর্জ্যাধার (Bins)</h3>
-    <table>
-        <thead><tr><th>ক্রম</th><th>প্রকার</th><th>ধারণ ক্ষমতা</th><th>একক</th><th>সংখ্যা</th></tr></thead>
-        <tbody>
-        @foreach($f['bins'] as $i => $row)
-            <tr><td>{{ $i + 1 }}</td><td>{{ $row['type'] ?? '' }}</td><td>{{ $row['size'] ?? '' }}</td><td>{{ $row['unit'] ?? '' }}</td><td>{{ $row['count'] ?? '' }}</td></tr>
-        @endforeach
-        </tbody>
-    </table>
+        <table>
+            <thead><tr><th>ক্রম</th><th>প্রকার</th><th>ধারণ ক্ষমতা</th><th>ধারণ ক্ষমতার একক</th><th>সংখ্যা</th></tr></thead>
+            <tbody>
+            @foreach($f['bins'] as $i => $row)
+                <tr>
+                    <td>{{ $i + 1 }}</td>
+                    <td>{{ $display($row['type'] ?? null) }}</td>
+                    <td>{{ $display($row['size'] ?? null) }}</td>
+                    <td>{{ $display($row['unit'] ?? null) }}</td>
+                    <td>{{ $display($row['count'] ?? null) }}</td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
+    @else
+        <p class="na-text">{{ $na }}</p>
     @endif
+    <table class="field-grid">
+        <tr class="field-row">
+            <td class="field-label">৩.৫ সকল আধার ও সংগ্রহস্থল হতে প্রতিদিন বর্জ্য নিয়ে যাওয়া হয় কিনা</td>
+            <td class="field-colon">:</td>
+            <td class="field-value">{{ $displayYn($f['daily_pickup'] ?? null) }}</td>
+        </tr>
+        <tr class="field-row">
+            <td class="field-label">৩.৬ আধার হতে বর্জ্য কায়িক নাকি যান্ত্রিক উপায়ে উত্তোলন করা হয়</td>
+            <td class="field-colon">:</td>
+            <td class="field-value">{{ $displayYn($f['lifting_method'] ?? null) }}</td>
+        </tr>
+    </table>
 </div>
 
-@if(!empty($f['transport']))
 <div class="section">
     <h2>(৪) বর্জ্য পরিবহন</h2>
+    @if(!empty($f['transport']))
     <table>
         <thead><tr><th>ক্রম</th><th>ধরন</th><th>বিদ্যমান সংখ্যা</th><th>প্রকৃত প্রয়োজন</th></tr></thead>
         <tbody>
         @foreach($f['transport'] as $i => $row)
-            <tr><td>{{ $i + 1 }}</td><td>{{ $row['type'] ?? '' }}</td><td>{{ $row['existing'] ?? '' }}</td><td>{{ $row['required'] ?? '' }}</td></tr>
+            <tr>
+                <td>{{ $i + 1 }}</td>
+                <td>{{ $display($row['type'] ?? null) }}</td>
+                <td>{{ $display($row['existing'] ?? null) }}</td>
+                <td>{{ $display($row['required'] ?? null) }}</td>
+            </tr>
         @endforeach
         </tbody>
     </table>
-</div>
-@endif
-
-<div class="section">
-    <h2>(৫) উন্নয়ন প্রস্তাবনা</h2>
-    <div class="text-block">{{ $f['proposals'] ?? '' }}</div>
+    @else
+    <p class="na-text">{{ $na }}</p>
+    @endif
 </div>
 
-@if(!empty($f['contracts']))
 <div class="section">
-    <h2>(৬) বেসরকারি প্রক্রিয়াকরণ চুক্তি</h2>
+    <h2>(৫) কঠিন বর্জ্য ব্যবস্থাপনার উন্নতি সাধনে কোনো প্রস্তাব থাকলে তা বিবৃত করুন</h2>
+    <table class="field-grid">
+        <tr>
+            <td class="field-value text-block">{{ $display($f['proposals'] ?? null) }}</td>
+        </tr>
+    </table>
+</div>
+
+<div class="section">
+    <h2>(৬) কোনো বেসরকারি ব্যক্তি বা প্রতিষ্ঠানকে কঠিন বর্জ্য প্রক্রিয়াকরণের দায়িত্ব প্রদান করা হয়ে থাকলে তার বিবরণ</h2>
+    @if(!empty($f['contracts']))
     <table>
-        <thead><tr><th>ক্রম</th><th>নাম</th><th>প্রযুক্তি</th><th>সময় ও পরিমাণ</th><th>ঠিকানা</th></tr></thead>
+        <thead><tr><th>ক্রম</th><th>ব্যক্তি বা প্রতিষ্ঠানের নাম</th><th>প্রযুক্তির নাম</th><th>প্রক্রিয়াকরণের সময় ও পরিমাণ</th><th>নাম ও ঠিকানা</th></tr></thead>
         <tbody>
         @foreach($f['contracts'] as $i => $row)
-            <tr><td>{{ $i + 1 }}</td><td>{{ $row['person'] ?? '' }}</td><td>{{ $row['tech'] ?? '' }}</td><td>{{ $row['dur'] ?? '' }}</td><td>{{ $row['addr'] ?? '' }}</td></tr>
+            <tr>
+                <td>{{ $i + 1 }}</td>
+                <td>{{ $display($row['person'] ?? null) }}</td>
+                <td>{{ $display($row['tech'] ?? null) }}</td>
+                <td>{{ $display($row['dur'] ?? null) }}</td>
+                <td>{{ $display($row['addr'] ?? null) }}</td>
+            </tr>
         @endforeach
         </tbody>
     </table>
+    @else
+    <table class="field-grid">
+        <tr>
+            <td class="field-value text-block">{{ $na }}</td>
+        </tr>
+    </table>
+    @endif
 </div>
-@endif
 
 <div class="section">
-    <h2>(৭) স্বাস্থ্যসম্মত পদক্ষেপ</h2>
+    <h2>(৭) নিম্নোক্ত কার্যাদি স্বাস্থ্যসম্মত উপায়ে সম্পাদন নিশ্চিতকরণের লক্ষ্যে গৃহীত পদক্ষেপ</h2>
     <table class="field-grid">
-        <tr><td class="label">দুগ্ধ খামার</td><td class="value text-block">{{ $f['step_dairy'] ?? '' }}</td></tr>
-        <tr><td class="label">পশু জবেহ</td><td class="value text-block">{{ $f['step_slaughter'] ?? '' }}</td></tr>
-        <tr><td class="label">নির্মাণ-ভাঙন বর্জ্য</td><td class="value text-block">{{ $f['step_construction'] ?? '' }}</td></tr>
-        <tr><td class="label">জবর দখল</td><td class="value text-block">{{ $f['step_encroachment'] ?? '' }}</td></tr>
+        <tr class="field-row field-row-sub">
+            <td class="field-label">(অ) দুগ্ধ খামার</td>
+            <td class="field-colon">:</td>
+            <td class="field-value text-block">{{ $display($f['step_dairy'] ?? null) }}</td>
+        </tr>
+        <tr class="field-row field-row-sub">
+            <td class="field-label">(আ) পশু জবেহ</td>
+            <td class="field-colon">:</td>
+            <td class="field-value text-block">{{ $display($f['step_slaughter'] ?? null) }}</td>
+        </tr>
+        <tr class="field-row field-row-sub">
+            <td class="field-label">(ই) নির্মাণ-ভাঙন বর্জ্য</td>
+            <td class="field-colon">:</td>
+            <td class="field-value text-block">{{ $display($f['step_construction'] ?? null) }}</td>
+        </tr>
+        <tr class="field-row field-row-sub">
+            <td class="field-label">(ঈ) পার্ক, হাঁটার পথ, ইত্যাদি জবর দখল</td>
+            <td class="field-colon">:</td>
+            <td class="field-value text-block">{{ $display($f['step_encroachment'] ?? null) }}</td>
+        </tr>
     </table>
 </div>
 
 <div class="section">
     <h2>(৮) বস্তি</h2>
     <table class="field-grid">
-        <tr><td class="label">৮.১ মোট বস্তির সংখ্যা</td><td class="value">{{ $f['total_slums'] ?? '' }}</td></tr>
-        <tr><td class="label">৮.২ স্যানিটারী ব্যবস্থা সম্পন্ন</td><td class="value">{{ $f['slums_sanitation'] ?? '' }}</td></tr>
+        <tr class="field-row">
+            <td class="field-label">৮.১ মোট বস্তির সংখ্যা</td>
+            <td class="field-colon">:</td>
+            <td class="field-value">{{ $display($f['total_slums'] ?? null) }}</td>
+        </tr>
+        <tr class="field-row">
+            <td class="field-label">৮.২ স্যানিটারী ব্যবস্থা (Sanitation Facility) সম্পন্ন বস্তির সংখ্যা</td>
+            <td class="field-colon">:</td>
+            <td class="field-value">{{ $display($f['slums_sanitation'] ?? null) }}</td>
+        </tr>
     </table>
 </div>
 
 <div class="section">
-    <h2>(৯) মোবাইল কোর্ট পরিচালনা</h2>
+    <h2>(৯) মোবাইল কোর্ট পরিচালনা করা হয়ে থাকলে তার বিবরণ</h2>
+    @php
+        $hasMobileCourt = false;
+        foreach (['mc_cases', 'mc_convicted', 'mc_fines', 'mc_imprisoned'] as $mcKey) {
+            $mcVal = $f[$mcKey] ?? null;
+            if ($mcVal !== null && $mcVal !== '') {
+                $hasMobileCourt = true;
+                break;
+            }
+        }
+    @endphp
+    @if($hasMobileCourt)
     <table>
-        <thead><tr><th>মোট মামলা</th><th>দোষী সাব্যস্ত</th><th>জরিমানা (টাকা)</th><th>কারাদণ্ড</th></tr></thead>
+        <thead><tr><th>মোট মামলার সংখ্যা</th><th>দোষী সাব্যস্ত আসামীর সংখ্যা</th><th>আদায়কৃত জরিমানার পরিমাণ (টাকা)</th><th>কারাদণ্ডে দণ্ডিত আসামীর সংখ্যা</th></tr></thead>
         <tbody>
             <tr>
-                <td>{{ $f['mc_cases'] ?? '' }}</td>
-                <td>{{ $f['mc_convicted'] ?? '' }}</td>
-                <td>{{ $f['mc_fines'] ?? '' }}</td>
-                <td>{{ $f['mc_imprisoned'] ?? '' }}</td>
+                <td>{{ $display($f['mc_cases'] ?? null) }}</td>
+                <td>{{ $display($f['mc_convicted'] ?? null) }}</td>
+                <td>{{ $display($f['mc_fines'] ?? null) }}</td>
+                <td>{{ $display($f['mc_imprisoned'] ?? null) }}</td>
             </tr>
         </tbody>
     </table>
+    @else
+    <table class="field-grid">
+        <tr>
+            <td class="field-value text-block">{{ $na }}</td>
+        </tr>
+    </table>
+    @endif
 </div>
 
 <div class="section">
     <h2>(১০) চিকিৎসা বর্জ্য ব্যবস্থাপনা</h2>
     <table class="field-grid">
-        <tr><td class="label">১০ (অ) সরকারি হাসপাতাল/ক্লিনিক</td><td class="value">{{ $f['gov_hospitals'] ?? '' }}</td></tr>
-        <tr><td class="label">১০ (আ) পৌরসভা/সিটি কর্পোরেশন</td><td class="value">{{ $f['city_hospitals'] ?? '' }}</td></tr>
-        <tr><td class="label">১০ (ই) বেসরকারি</td><td class="value">{{ $f['private_hospitals'] ?? '' }}</td></tr>
-        <tr><td class="label">১০ (ঈ) বিধিমালা ২০০৮ অনুসরণ</td><td class="value">{{ $yn($f['medical_compliance'] ?? '') }}</td></tr>
-        <tr><td class="label">১০ (উ) অসুবিধার বিবরণ</td><td class="value text-block">{{ $f['medical_issues'] ?? '' }}</td></tr>
+        <tr class="field-row field-row-sub">
+            <td class="field-label">(অ) সরকারি হাসপাতাল বা ক্লিনিক বা স্বাস্থ্য কেন্দ্র সংখ্যা</td>
+            <td class="field-colon">:</td>
+            <td class="field-value">{{ $display($f['gov_hospitals'] ?? null) }}</td>
+        </tr>
+        <tr class="field-row field-row-sub">
+            <td class="field-label">(আ) সিটি কর্পোরেশন বা পৌরসভার হাসপাতাল বা ক্লিনিক সংখ্যা</td>
+            <td class="field-colon">:</td>
+            <td class="field-value">{{ $display($f['city_hospitals'] ?? null) }}</td>
+        </tr>
+        <tr class="field-row field-row-sub">
+            <td class="field-label">(ই) বেসরকারি হাসপাতাল বা ক্লিনিক সংখ্যা</td>
+            <td class="field-colon">:</td>
+            <td class="field-value">{{ $display($f['private_hospitals'] ?? null) }}</td>
+        </tr>
+        <tr class="field-row field-row-sub">
+            <td class="field-label">(ঈ) সকল হাসপাতাল বা ক্লিনিক ও স্বাস্থ্য কেন্দ্রের ক্ষেত্রে চিকিৎসা বর্জ্য (ব্যবস্থাপনা ও প্রক্রিয়াজাতকরণ) বিধিমালা, ২০০৮ এর বিধানাবলি যথাযথভাবে অনুসরণ করা হয় কিনা</td>
+            <td class="field-colon">:</td>
+            <td class="field-value">{{ $displayYn($f['medical_compliance'] ?? null) }}</td>
+        </tr>
+        <tr class="field-row field-row-sub">
+            <td class="field-label">(উ) চিকিৎসা বর্জ্য (ব্যবস্থাপনা ও প্রক্রিয়াজাতকরণ) বিধিমালা, ২০০৮ এর বিধানাবলি অনুসরণ করতে কোনো অসুবিধা হয়ে থাকলে তার বিবরণ</td>
+            <td class="field-colon">:</td>
+            <td class="field-value text-block">{{ $display($f['medical_issues'] ?? null) }}</td>
+        </tr>
     </table>
 </div>
 
 <br><br>
-<table class="field-grid">
-    <tr><td class="label">স্বাক্ষর ও তারিখ</td><td class="value" style="height:40px;"></td></tr>
-    <tr><td class="label">নাম ও পদবি (সীল মোহর)</td><td class="value" style="height:40px;"></td></tr>
+<table class="field-grid signature-block">
+    <tr>
+        <td class="field-label">স্বাক্ষর ও তারিখ</td>
+        <td class="field-colon"></td>
+        <td class="field-value signature-line">&nbsp;</td>
+    </tr>
+    <tr>
+        <td class="field-label">নাম ও পদবি (সীল মোহর)</td>
+        <td class="field-colon"></td>
+        <td class="field-value signature-line">&nbsp;</td>
+    </tr>
 </table>
 </body>
 </html>

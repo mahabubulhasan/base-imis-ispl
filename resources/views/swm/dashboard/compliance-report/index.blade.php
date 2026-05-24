@@ -52,7 +52,7 @@
             </header>
 
             <section class="section">
-                <div class="section-header"><h2>প্রতিবেদনের পরিচিতি</h2></div>
+                {{-- <div class="section-header"><h2>প্রতিবেদনের পরিচিতি</h2></div> --}}
                 <div class="section-body">
                     <div class="grid">
                         <div class="field">
