@@ -15,7 +15,7 @@
             </div>
         </div>
         <div class="form-group row">
-            {!! Form::label('age', __('Age'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('age', __('Age (Years)'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-9">
                 {!! Form::number('age', null, ['class' => 'form-control', 'placeholder' => __('Age (Years)'), 'min' => 0, 'max' => 120]) !!}
             </div>
@@ -82,17 +82,17 @@
         <div class="form-group row">
             {!! Form::label('supervisor_name', __('Supervisor\'s Name'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-9">
-                {!! Form::text('supervisor_name', null, ['class' => 'form-control', 'placeholder' => __('Supervisor Name')]) !!}
+                {!! Form::text('supervisor_name', null, ['class' => 'form-control', 'placeholder' => __('Supervisor\'s Name')]) !!}
             </div>
         </div>
         <div class="form-group row">
-            {!! Form::label('total_work_experience_years', __('Total Work Experience'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('total_work_experience_years', __('Total Work Experience (Years)'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-9">
                 {!! Form::number('total_work_experience_years', null, ['class' => 'form-control', 'placeholder' => __('Total Work Experience (Years)'), 'min' => 0, 'step' => '0.01']) !!}
             </div>
         </div>
         <div class="form-group row">
-            {!! Form::label('organization_work_experience_years', __('Work Experience in This Organization'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('organization_work_experience_years', __('Work Experience in This Organization (Years)'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-9">
                 {!! Form::number('organization_work_experience_years', null, ['class' => 'form-control', 'placeholder' => __('Work Experience in This Organization (Years)'), 'min' => 0, 'step' => '0.01']) !!}
             </div>
@@ -119,15 +119,15 @@
             </div>
         </div>
         <div class="form-group row">
-            {!! Form::label('employee_id', __('Employee ID'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('employee_id', __('Employee ID (Current Organization)'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-9">
                 {!! Form::text('employee_id', null, ['class' => 'form-control', 'placeholder' => __('Employee ID (Current Organization)')]) !!}
             </div>
         </div>
         <div class="form-group row">
-            {!! Form::label('national_id_no', __('National ID No.'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('national_id_no', __('National ID'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-9">
-                {!! Form::text('national_id_no', null, ['class' => 'form-control', 'placeholder' => __('National ID No.')]) !!}
+                {!! Form::text('national_id_no', null, ['class' => 'form-control', 'placeholder' => __('National ID')]) !!}
             </div>
         </div>
         <div class="form-group row">
