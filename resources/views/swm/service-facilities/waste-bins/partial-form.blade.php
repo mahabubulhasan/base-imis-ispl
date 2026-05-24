@@ -75,14 +75,14 @@
     <div class="form-group row">
         {!! Form::label('latitude', __('Latitude'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::number('latitude', null, ['class' => 'form-control', 'id' => 'latitude', 'step' => 'any', 'min' => -90, 'max' => 90, 'inputmode' => 'decimal', 'placeholder' => __('Decimal degrees (WGS84)')]) !!}
+            {!! Form::number('latitude', null, ['class' => 'form-control', 'id' => 'latitude', 'step' => 'any', 'min' => -90, 'max' => 90, 'inputmode' => 'decimal', 'placeholder' => __('Decimal Degrees (WGS84)')]) !!}
         </div>
     </div>
 
     <div class="form-group row">
         {!! Form::label('longitude', __('Longitude'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::number('longitude', null, ['class' => 'form-control', 'id' => 'longitude', 'step' => 'any', 'min' => -180, 'max' => 180, 'inputmode' => 'decimal', 'placeholder' => __('Decimal degrees (WGS84)')]) !!}
+            {!! Form::number('longitude', null, ['class' => 'form-control', 'id' => 'longitude', 'step' => 'any', 'min' => -180, 'max' => 180, 'inputmode' => 'decimal', 'placeholder' => __('Decimal Degrees (WGS84)')]) !!}
         </div>
     </div>
 </div>
