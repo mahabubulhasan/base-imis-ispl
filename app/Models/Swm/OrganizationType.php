@@ -13,17 +13,12 @@ class OrganizationType extends Model
     use RevisionableTrait;
     use SoftDeletes;
 
-    public const CODE_GOVERNMENT = 'government';
+    /** Seeded organization type IDs (insert order in migration). */
+    public const ID_PRIVATE = 1;
 
-    public const CODE_PRIVATE = 'private';
+    public const ID_GOVERNMENT = 2;
 
-    public const CODE_OTHER = 'other';
-
-    public const CODE_OPTIONS = [
-        self::CODE_PRIVATE => 'Private',
-        self::CODE_GOVERNMENT => 'Government',
-        self::CODE_OTHER => 'Others',
-    ];
+    public const ID_OTHER = 3;
 
     protected $revisionCreationsEnabled = true;
 
@@ -32,21 +27,20 @@ class OrganizationType extends Model
     protected $fillable = [
         'name',
         'description',
-        'code',
     ];
 
-    public static function codeOptions(): array
-    {
-        return array_map(static fn (string $label) => __($label), self::CODE_OPTIONS);
-    }
-
-    public static function seededCodes(): array
+    public static function seededIds(): array
     {
         return [
-            self::CODE_PRIVATE,
-            self::CODE_GOVERNMENT,
-            self::CODE_OTHER,
+            self::ID_PRIVATE,
+            self::ID_GOVERNMENT,
+            self::ID_OTHER,
         ];
+    }
+
+    public static function isSeeded(?int $id): bool
+    {
+        return $id !== null && in_array($id, self::seededIds(), true);
     }
 
     public function organizations()

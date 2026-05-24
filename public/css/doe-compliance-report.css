@@ -235,25 +235,13 @@ a.doe-report-back-btn:hover {
     vertical-align: top;
 }
 
-.doe-report-page .doe-field-colon-row {
-    display: grid;
-    grid-template-columns: 49% 2% 49%;
-    align-items: center;
-    gap: 0 8px;
+.doe-report-page .doe-field-narrow {
     margin-bottom: 12px;
 }
 
-.doe-report-page .doe-field-colon-row label {
-    margin-bottom: 0;
-}
-
-.doe-report-page .doe-field-colon-row .doe-field-colon {
-    text-align: center;
-    color: var(--ink);
-}
-
-.doe-report-page .doe-field-colon-row input {
-    width: 100%;
+.doe-report-page .doe-field-narrow input {
+    width: 7rem;
+    max-width: 100%;
 }
 
 .doe-report-page #tbl-landfill-type td:nth-child(2),

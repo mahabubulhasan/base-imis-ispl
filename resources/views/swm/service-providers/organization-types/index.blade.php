@@ -35,15 +35,6 @@
                                     <div class="col-md-2">
                                         <input type="text" class="form-control" id="name" placeholder="{{ __('Organization Type Name') }}" />
                                     </div>
-                                    <label for="code" class="col-md-2 col-form-label">{{ __('Code') }}</label>
-                                    <div class="col-md-2">
-                                        <select class="form-control chosen-select" id="code" name="code">
-                                            <option value="">{{ __('Code') }}</option>
-                                            @foreach(\App\Models\Swm\OrganizationType::codeOptions() as $codeValue => $codeLabel)
-                                            <option value="{{ $codeValue }}">{{ $codeLabel }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
                                 </div>
                                 <div class="card-footer text-right">
                                     <button type="submit" class="btn btn-info">{{ __('Filter') }}</button>
@@ -63,7 +54,6 @@
             <thead>
                 <tr>
                 <th>{{ __('Organization Type') }}</th>
-                <th>{{ __('Code') }}</th>
                 <th>{{ __('Description') }}</th>
                 <th>{{ __('Actions') }}</th>
                 </tr>
@@ -86,17 +76,11 @@ $(function() {
             url: '{!! route("swm.organization-types.data") !!}',
             data: function(d) {
                 d.name = $('#name').val();
-                d.code = $('#code').val();
             }
         },
         columns: [{
                 data: 'name',
                 name: 'name'
-            },
-            {
-                data: 'code',
-                name: 'code',
-                defaultContent: '',
             },
             {
                 data: 'description',
@@ -145,10 +129,8 @@ $(function() {
         e.preventDefault();
         var searchData = $('input[type=search]').val();
         var name = $('#name').val();
-        var code = $('#code').val();
         window.location.href = "{!! route('swm.organization-types.export') !!}?searchData=" + searchData +
-            "&name=" + encodeURIComponent(name) +
-            "&code=" + encodeURIComponent(code);
+            "&name=" + encodeURIComponent(name);
     })
 });
 </script>

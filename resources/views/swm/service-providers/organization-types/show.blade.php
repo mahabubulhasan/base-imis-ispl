@@ -14,12 +14,6 @@
     </div>
 		</div>
 		<div class="form-group row">
-    {!! Form::label('code', __('Code'), ['class' => 'col-sm-3 control-label']) !!}
-    <div class="col-sm-3">
-        {!! Form::label(null, $organizationType->code ?? __('N/A'), ['class' => 'form-control']) !!}
-    </div>
-		</div>
-		<div class="form-group row">
     {!! Form::label('description', __('Description'), ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-3">
         {!! Form::label(null, $organizationType->description ?? '', ['class' => 'form-control']) !!}

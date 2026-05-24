@@ -21,9 +21,6 @@ class OrganizationTypeService
                 if (! empty($data['name'] ?? null)) {
                     $q->where('name', 'ILIKE', '%'.trim((string) $data['name']).'%');
                 }
-                if (! empty($data['code'] ?? null)) {
-                    $q->where('code', trim((string) $data['code']));
-                }
             })
             ->addColumn('action', function ($model) {
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['swm.organization-types.destroy', $model->id]]);
@@ -65,13 +62,6 @@ class OrganizationTypeService
 
         $organizationType->name = $data['name'] ?? null;
         $organizationType->description = $data['description'] ?? null;
-
-        if (is_null($id)) {
-            $organizationType->code = ! empty($data['code'] ?? null) ? $data['code'] : null;
-        } elseif (! in_array($organizationType->code, OrganizationType::seededCodes(), true)) {
-            $organizationType->code = ! empty($data['code'] ?? null) ? $data['code'] : null;
-        }
-
         $organizationType->save();
 
         return $organizationType->id;
@@ -80,23 +70,18 @@ class OrganizationTypeService
     public function download(array $data): void
     {
         $name = $data['name'] ?? null;
-        $code = $data['code'] ?? null;
 
         $columns = [
             __('Organization Type Name'),
-            __('Code'),
             __('Description'),
         ];
 
         $query = OrganizationType::query()
-            ->select('name', 'code', 'description')
+            ->select('name', 'description')
             ->whereNull('deleted_at');
 
         if (! empty($name)) {
             $query->where('name', 'ILIKE', '%'.trim((string) $name).'%');
-        }
-        if (! empty($code)) {
-            $query->where('code', trim((string) $code));
         }
 
         $style = (new StyleBuilder())
@@ -113,7 +98,6 @@ class OrganizationTypeService
             foreach ($rows as $row) {
                 $writer->addRow([
                     $row->name,
-                    $row->code,
                     $row->description,
                 ]);
             }

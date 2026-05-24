@@ -425,10 +425,7 @@ class DoEComplianceReportService
             ->where('status', true)
             ->whereHas('organizationType', function ($q) {
                 $q->whereNull('deleted_at')
-                    ->where(function ($q) {
-                        $q->whereNull('code')
-                            ->orWhere('code', '!=', OrganizationType::CODE_GOVERNMENT);
-                    });
+                    ->where('id', '!=', OrganizationType::ID_GOVERNMENT);
             })
             ->where('created_at', '<=', $period->yearEnd)
             ->orderBy('name')

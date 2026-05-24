@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Swm;
 
-use App\Models\Swm\OrganizationType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -36,12 +35,6 @@ class OrganizationTypeRequest extends FormRequest
                         'max:255',
                         Rule::unique('pgsql.swm.organization_types', 'name')->whereNull('deleted_at'),
                     ],
-                    'code' => [
-                        'nullable',
-                        'string',
-                        Rule::in(array_merge([''], array_keys(OrganizationType::CODE_OPTIONS))),
-                        Rule::unique('pgsql.swm.organization_types', 'code')->whereNull('deleted_at'),
-                    ],
                     'description' => [
                         'nullable',
                         'string',
@@ -56,21 +49,6 @@ class OrganizationTypeRequest extends FormRequest
                         'string',
                         'max:255',
                         Rule::unique('pgsql.swm.organization_types', 'name')->whereNull('deleted_at')->ignore($id),
-                    ],
-                    'code' => [
-                        'nullable',
-                        'string',
-                        Rule::in(array_merge([''], array_keys(OrganizationType::CODE_OPTIONS))),
-                        Rule::unique('pgsql.swm.organization_types', 'code')->whereNull('deleted_at')->ignore($id),
-                        function ($attribute, $value, $fail) use ($id) {
-                            if ($id === null) {
-                                return;
-                            }
-                            $type = OrganizationType::find($id);
-                            if ($type && in_array($type->code, OrganizationType::seededCodes(), true) && $value !== $type->code) {
-                                $fail(__('The code cannot be changed for seeded organization types.'));
-                            }
-                        },
                     ],
                     'description' => [
                         'nullable',
@@ -88,8 +66,6 @@ class OrganizationTypeRequest extends FormRequest
         return [
             'name.required' => __('The organization type name is required.'),
             'name.unique' => __('The organization type name has already been taken.'),
-            'code.unique' => __('The organization type code has already been taken.'),
-            'code.in' => __('Please select a valid organization type code.'),
         ];
     }
 }

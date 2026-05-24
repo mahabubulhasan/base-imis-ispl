@@ -20,9 +20,8 @@
 
         <div class="subsection">
             <h3 class="subsection-title">২.৯ ল্যান্ডফিলের অন্যান্য তথ্যাদি</h3>
-            <div class="doe-field-colon-row">
+            <div class="field doe-field-narrow">
                 <label><span class="num">(অ)</span><span class="text">ল্যান্ডফিল স্থানের সংখ্যা</span>@include('swm.dashboard.compliance-report.partials.auto-tip')</label>
-                <span class="doe-field-colon" aria-hidden="true">:</span>
                 <input name="num_landfill_sites" type="number" min="0" class="auto-filled" value="{{ $lfInfo['num_landfill_sites'] ?? '' }}" />
             </div>
             <div class="tbl-wrap">

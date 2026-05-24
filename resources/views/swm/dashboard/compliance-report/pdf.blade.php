@@ -111,9 +111,17 @@
         }
         .section:first-of-type { border-top: none; padding-top: 0; margin-top: 0; }
         .text-block { white-space: pre-wrap; min-height: 20px; }
-        .subsection-note { color: #444; margin: 0 0 6px; }
+        .subsection-note { color: #444; margin: 0 0 6px; padding-left: 0; }
         .field-row-heading .field-label { padding-bottom: 2px; }
-        .na-text { margin: 4px 0 8px; }
+        .na-text { margin: 4px 0 8px; padding-left: 0; }
+        .field-grid td.subsection-note,
+        .field-grid .na-inline {
+            border: none;
+            padding: 0 0 6px;
+            text-align: left;
+            vertical-align: top;
+        }
+        .field-grid .na-inline { padding-bottom: 8px; }
         .col-serial { width: 36px; }
         .col-org-name { width: 28%; }
         .col-desc { width: 62%; }
@@ -332,7 +340,7 @@
         <tr class="field-row field-row-heading">
             <td class="field-label" colspan="3">২.৯ ল্যান্ডফিলের অন্যান্য তথ্যাদি</td>
         </tr>
-        <tr class="field-row field-row-sub">
+        <tr class="field-row">
             <td class="field-label">(অ) ল্যান্ডফিল স্থানের সংখ্যা</td>
             <td class="field-colon">:</td>
             <td class="field-value">{{ $display($f['num_landfill_sites'] ?? null) }}</td>
@@ -374,7 +382,11 @@
             </tbody>
         </table>
     @else
-        <p class="na-text">{{ $na }}</p>
+        <table class="field-grid">
+            <tr>
+                <td colspan="3" class="na-inline">{{ $na }}</td>
+            </tr>
+        </table>
     @endif
     <table class="field-grid">
         <colgroup>
@@ -385,8 +397,10 @@
         <tr class="field-row field-row-heading">
             <td class="field-label" colspan="3">(ও) ল্যান্ডফিলের যন্ত্রপাতির তথ্য</td>
         </tr>
+        <tr>
+            <td colspan="3" class="subsection-note">বুলডোজার, কম্প্যাক্টর এবং অনুরূপ অন্যান্য ধরনের যন্ত্রপাতি থাকিলে উহার নাম।</td>
+        </tr>
     </table>
-    <p class="subsection-note">বুলডোজার, কম্প্যাক্টর এবং অনুরূপ অন্যান্য ধরনের যন্ত্রপাতি থাকিলে উহার নাম।</p>
     @if(!empty($f['equipment']))
         <table>
             <thead><tr><th>ক্রম</th><th>ল্যান্ডফিল সাইটের নাম</th><th>যন্ত্রপাতির ধরন</th><th>সংখ্যা</th></tr></thead>
@@ -402,7 +416,11 @@
             </tbody>
         </table>
     @else
-        <p class="na-text">{{ $na }}</p>
+        <table class="field-grid">
+            <tr>
+                <td colspan="3" class="na-inline">{{ $na }}</td>
+            </tr>
+        </table>
     @endif
 </div>
 

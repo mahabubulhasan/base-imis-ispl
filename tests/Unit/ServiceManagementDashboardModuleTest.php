@@ -264,14 +264,6 @@ class ServiceManagementDashboardModuleTest extends TestCase
      */
     private function createOrganization(array $overrides = []): Organization
     {
-        if (isset($overrides['organization_category'])) {
-            $code = $overrides['organization_category'];
-            unset($overrides['organization_category']);
-            $overrides['organization_type_id'] = OrganizationType::query()
-                ->where('code', $code)
-                ->value('id');
-        }
-
         return Organization::forceCreate(array_merge([
             'name' => 'Test Org',
             'email' => 'org@example.com',
@@ -279,9 +271,7 @@ class ServiceManagementDashboardModuleTest extends TestCase
             'contact_person_name' => 'Contact',
             'contact_number' => '9800000000',
             'status' => true,
-            'organization_type_id' => OrganizationType::query()
-                ->where('code', OrganizationType::CODE_PRIVATE)
-                ->value('id'),
+            'organization_type_id' => OrganizationType::ID_PRIVATE,
             'created_at' => '2026-01-15 00:00:00',
             'updated_at' => '2026-01-15 00:00:00',
         ], $overrides));

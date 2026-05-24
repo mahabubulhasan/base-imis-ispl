@@ -296,19 +296,19 @@ class DoEComplianceReportServiceTest extends TestCase
         $this->createOrganization([
             'name' => 'Gov Org',
             'email' => 'gov@example.com',
-            'organization_category' => OrganizationType::CODE_GOVERNMENT,
+            'organization_type_id' => OrganizationType::ID_GOVERNMENT,
             'remarks' => 'Government remarks',
         ]);
         $this->createOrganization([
             'name' => 'Private Org',
             'email' => 'private@example.com',
-            'organization_category' => OrganizationType::CODE_PRIVATE,
+            'organization_type_id' => OrganizationType::ID_PRIVATE,
             'remarks' => 'Private remarks',
         ]);
         $this->createOrganization([
             'name' => 'Other Org',
             'email' => 'other@example.com',
-            'organization_category' => OrganizationType::CODE_OTHER,
+            'organization_type_id' => OrganizationType::ID_OTHER,
             'remarks' => 'Other remarks',
         ]);
 
@@ -366,14 +366,6 @@ class DoEComplianceReportServiceTest extends TestCase
      */
     private function createOrganization(array $overrides = []): Organization
     {
-        if (isset($overrides['organization_category'])) {
-            $code = $overrides['organization_category'];
-            unset($overrides['organization_category']);
-            $overrides['organization_type_id'] = OrganizationType::query()
-                ->where('code', $code)
-                ->value('id');
-        }
-
         return Organization::forceCreate(array_merge([
             'name' => 'Test Org',
             'email' => 'org@example.com',
@@ -381,9 +373,7 @@ class DoEComplianceReportServiceTest extends TestCase
             'contact_person_name' => 'Contact',
             'contact_number' => '9800000000',
             'status' => true,
-            'organization_type_id' => OrganizationType::query()
-                ->where('code', OrganizationType::CODE_GOVERNMENT)
-                ->value('id'),
+            'organization_type_id' => OrganizationType::ID_GOVERNMENT,
             'created_at' => '2026-01-01 00:00:00',
             'updated_at' => '2026-01-01 00:00:00',
         ], $overrides));

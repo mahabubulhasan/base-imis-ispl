@@ -44,13 +44,7 @@ class OrganizationController extends Controller
             ->whereNull('deleted_at')
             ->orderBy('name')
             ->get()
-            ->mapWithKeys(function (OrganizationType $type) {
-                $label = $type->code
-                    ? $type->name.' ('.$type->code.')'
-                    : $type->name;
-
-                return [$type->id => $label];
-            })
+            ->mapWithKeys(fn (OrganizationType $type) => [$type->id => $type->name])
             ->all();
     }
 
