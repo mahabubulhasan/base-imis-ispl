@@ -62,7 +62,7 @@ class OrganizationRequest extends FormRequest
                     'remarks' => ['nullable', 'string', 'max:2000'],
                     'status' => 'required|boolean',
                     'password' => [
-                        'required_if:create_user,on',
+                        'required_if:create_user,1',
                         'nullable',
                         Password::min(8)
                             ->letters()

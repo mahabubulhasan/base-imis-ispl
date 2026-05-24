@@ -64,15 +64,13 @@
         </div>
 
 	@if(!$organization)
+	@php
+		$createUserOptions = ['' => __('Select'), '1' => __('Yes'), '0' => __('No')];
+	@endphp
 	<div class="form-group row">
-		{!! Form::label('create_user', __('Create User?'),['class' => 'col-sm-3 control-label']) !!}
+		{!! Form::label('create_user', __('Create User?'), ['class' => 'col-sm-3 control-label']) !!}
 		<div class="col-sm-3">
-		<input type="checkbox"
-       name="create_user"
-       id="create_user"
-       class="create_user"
-       value="on"
-       {{ old('create_user') ? 'checked' : '' }}>
+			{!! Form::select('create_user', $createUserOptions, old('create_user', '0'), ['class' => 'form-control', 'id' => 'create_user']) !!}
 		</div>
 	</div>
 	<div id="user-password">

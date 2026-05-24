@@ -98,27 +98,41 @@ function preventMultipleSubmit() {
     $('.prevent-multiple-submits').attr('disabled', 'true');
 };
 
-$(document).ready(function () {
-    // Check if the create_user checkbox is checked on page load
-    if ($('#create_user').is(":checked")) {
+function isCreateUserSelected() {
+    var $el = $('#create_user');
+    if (!$el.length) {
+        return false;
+    }
+    if ($el.attr('type') === 'checkbox') {
+        return $el.is(':checked');
+    }
+    var val = $el.val();
+
+    return val === '1' || val === 'on' || val === 1;
+}
+
+function toggleCreateUserPassword() {
+    if (!$('#user-password').length) {
+        return;
+    }
+    if (isCreateUserSelected()) {
         $('#user-password').show();
     } else {
         $('#user-password').hide();
+    }
+}
+
+$(document).ready(function () {
+    if ($('#create_user').length) {
+        toggleCreateUserPassword();
+        $('#create_user').off('change.createUser').on('change.createUser', toggleCreateUserPassword);
     }
 });
 
 // function to check if user is to be created or not
 function createUser() {
-    $('#create_user').on('change', function () {
-        if ($('#create_user').is(":checked")) {
-
-            $('#user-password').show();
-        }
-        else {
-            $('#user-password').hide();
-
-        }
-    });
+    $('#create_user').off('change.createUser').on('change.createUser', toggleCreateUserPassword);
+    toggleCreateUserPassword();
 }
 
 

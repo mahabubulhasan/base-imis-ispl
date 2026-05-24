@@ -78,7 +78,7 @@ class OrganizationController extends Controller
         $data = $request->all();
         $organizationId = $this->organizationService->storeOrUpdate(null, $data);
 
-        if ($request->has('create_user')) {
+        if ($request->boolean('create_user')) {
             $data['swm_organization_id'] = $organizationId;
             $data['user_type'] = 'SW Organization';
             $data['roles'] = 'SW Organization - Admin';
