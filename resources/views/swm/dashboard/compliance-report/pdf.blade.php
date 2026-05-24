@@ -56,25 +56,28 @@
             visibility: hidden;
             overflow: hidden;
         }
-        .field-grid td { border: none; padding: 3px 0; vertical-align: top; }
+        .field-grid td { border: none; padding: 2px 0; vertical-align: middle; line-height: 1.4; }
         .field-grid .field-label {
             width: 49%;
             text-align: left;
-            padding-right: 8px;
+            padding: 2px 8px 2px 0;
             font-weight: normal;
             white-space: normal;
+            vertical-align: middle;
         }
         .field-grid .field-colon {
             width: 2%;
             text-align: center;
-            padding: 0 2px;
+            padding: 2px;
             white-space: nowrap;
+            vertical-align: middle;
         }
         .field-grid .field-value {
             width: 49%;
             text-align: left;
-            padding-left: 8px;
+            padding: 2px 0 2px 8px;
             white-space: normal;
+            vertical-align: middle;
         }
         .field-grid .field-value.text-block { white-space: pre-wrap; }
         .field-grid-auto {
@@ -98,7 +101,7 @@
         }
         .field-row-sub .field-label { padding-left: 1.2em; }
         .meta-dual { border: none; margin-bottom: 10px; margin-top: 0; table-layout: fixed; }
-        .meta-dual > tbody > tr > td { border: none; padding: 0 6px; vertical-align: top; width: 50%; }
+        .meta-dual > tbody > tr > td { border: none; padding: 0 6px; vertical-align: middle; width: 50%; }
         .meta-dual .field-grid { margin-bottom: 0; }
         .section {
             page-break-inside: avoid;
@@ -115,12 +118,22 @@
         .col-org-name { width: 28%; }
         .col-desc { width: 62%; }
         .signature-block {
-            text-align: right;
             margin-top: 24px;
+            width: 100%;
+            overflow: hidden;
         }
-        .signature-block .signature-line {
+        .signature-block-inner {
+            float: right;
+            clear: both;
+            text-align: center;
+        }
+        .signature-block-inner .signature-line {
             margin: 0 0 8px;
             padding: 0;
+            line-height: 1.5;
+        }
+        .signature-block-inner .signature-line:last-child {
+            margin-bottom: 0;
         }
     </style>
 </head>
@@ -625,18 +638,11 @@
     </table>
 </div>
 
-<br><br>
-<table class="field-grid signature-block">
-    <tr>
-        <td class="field-label">স্বাক্ষর ও তারিখ</td>
-        <td class="field-colon"></td>
-        <td class="field-value signature-line">&nbsp;</td>
-    </tr>
-    <tr>
-        <td class="field-label">নাম ও পদবি (সীল মোহর)</td>
-        <td class="field-colon"></td>
-        <td class="field-value signature-line">&nbsp;</td>
-    </tr>
-</table>
+<div class="signature-block">
+    <div class="signature-block-inner">
+        <p class="signature-line">স্বাক্ষর ও তারিখ</p>
+        <p class="signature-line">নাম ও পদবি সম্বলিত সীল মোহর।</p>
+    </div>
+</div>
 </body>
 </html>
