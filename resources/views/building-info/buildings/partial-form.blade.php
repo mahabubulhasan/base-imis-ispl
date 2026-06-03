@@ -213,7 +213,7 @@
             ]) !!}
         </div>
     </div>
-    <div class="form-group row required" id="use-category">
+    <div class="form-group row" id="use-category">
         {!! Form::label('use_category_id', __('Use Category of Building'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-5">
             {!! Form::select('use_category_id', $use_category_id, null, [
@@ -411,7 +411,7 @@
             </div>
         </div>
     </div>
-    <div class="form-group row required" id = "water-pipe-id" style="display: none;">
+    <div class="form-group row" id = "water-pipe-id" style="display: none;">
         {!! Form::label('watersupply_pipe_code', __('Water Supply Pipe Line Code'), ['class' => 'col-sm-3 control-label ']) !!}
         <div class="col-sm-5">
             {!! Form::select('watersupply_pipe_code', $waterSupply, null, [
