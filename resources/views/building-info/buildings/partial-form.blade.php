@@ -365,7 +365,7 @@
 
 
 
-    <div class="form-group row " id="lic_status">
+    <div class="form-group row " id="lic_status_wrapper">
         {!! Form::label('lic_status', __('Located In LIC'), ['class' => 'col-sm-3 control-label ']) !!}
         <div class="col-sm-5">
             {!! Form::select('lic_status', [true => 'Yes', false => 'No'], null, [
