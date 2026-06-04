@@ -2,6 +2,7 @@
 
 namespace App\Services\Swm\Dashboard\Concerns;
 
+use App\Services\Swm\Dashboard\SwmDashboardAxisKeys;
 use App\Models\Swm\Landfill;
 use App\Models\Swm\Organization;
 use App\Models\Swm\OrganizationType;
@@ -15,8 +16,6 @@ use Illuminate\Support\Facades\DB;
 
 trait AlignsChartsToStaticCategoryAxis
 {
-    public const CATEGORY_AXIS_NA_KEY = 'N/A';
-
     /** @var array<string, list<string>> */
     protected array $cachedCategoryMasterKeys = [];
 
@@ -154,7 +153,7 @@ trait AlignsChartsToStaticCategoryAxis
         }
 
         if (strcasecmp($normalized, 'n/a') === 0) {
-            return self::CATEGORY_AXIS_NA_KEY;
+            return SwmDashboardAxisKeys::CATEGORY_AXIS_NA_KEY;
         }
 
         return $normalized;
@@ -162,7 +161,7 @@ trait AlignsChartsToStaticCategoryAxis
 
     protected function categoryAxisDisplayLabel(string $key): string
     {
-        if ($key === self::CATEGORY_AXIS_NA_KEY) {
+        if ($key === SwmDashboardAxisKeys::CATEGORY_AXIS_NA_KEY) {
             return __('N/A');
         }
 
@@ -186,7 +185,7 @@ trait AlignsChartsToStaticCategoryAxis
                 ->all();
 
             if ($includeNa) {
-                $keys[] = self::CATEGORY_AXIS_NA_KEY;
+                $keys[] = SwmDashboardAxisKeys::CATEGORY_AXIS_NA_KEY;
             }
 
             return $keys;
@@ -210,7 +209,7 @@ trait AlignsChartsToStaticCategoryAxis
                 ->all();
 
             if ($includeNa) {
-                $keys[] = self::CATEGORY_AXIS_NA_KEY;
+                $keys[] = SwmDashboardAxisKeys::CATEGORY_AXIS_NA_KEY;
             }
 
             return $keys;
@@ -244,13 +243,13 @@ trait AlignsChartsToStaticCategoryAxis
                 ->whereNull('deleted_at')
                 ->orderBy('name')
                 ->pluck('name')
-                ->map(fn ($name) => $this->normalizeCategoryKey($name) ?: self::CATEGORY_AXIS_NA_KEY)
+                ->map(fn ($name) => $this->normalizeCategoryKey($name) ?: SwmDashboardAxisKeys::CATEGORY_AXIS_NA_KEY)
                 ->unique()
                 ->values()
                 ->all();
 
-            if (! in_array(self::CATEGORY_AXIS_NA_KEY, $keys, true)) {
-                $keys[] = self::CATEGORY_AXIS_NA_KEY;
+            if (! in_array(SwmDashboardAxisKeys::CATEGORY_AXIS_NA_KEY, $keys, true)) {
+                $keys[] = SwmDashboardAxisKeys::CATEGORY_AXIS_NA_KEY;
             }
 
             return $keys;
@@ -289,7 +288,7 @@ trait AlignsChartsToStaticCategoryAxis
                 ->values()
                 ->all();
 
-            $keys[] = self::CATEGORY_AXIS_NA_KEY;
+            $keys[] = SwmDashboardAxisKeys::CATEGORY_AXIS_NA_KEY;
 
             return $keys;
         });
@@ -354,7 +353,7 @@ trait AlignsChartsToStaticCategoryAxis
                     {$orgScope['sql']}
                 ORDER BY department
                 ",
-                array_merge([self::CATEGORY_AXIS_NA_KEY], $orgScope['bindings']),
+                array_merge([SwmDashboardAxisKeys::CATEGORY_AXIS_NA_KEY], $orgScope['bindings']),
             );
 
             return array_map(

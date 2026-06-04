@@ -3,12 +3,11 @@
 namespace App\Services\Swm\Dashboard\Concerns;
 
 use App\Models\LayerInfo\Ward;
+use App\Services\Swm\Dashboard\SwmDashboardAxisKeys;
 
 trait BuildsCountChartAxisLabels
 {
     use AlignsChartsToStaticCategoryAxis;
-
-    public const WARD_AXIS_UNKNOWN_KEY = '__unknown__';
 
     /** @var list<string>|null */
     protected ?array $cachedMunicipalWardKeys = null;
@@ -49,7 +48,7 @@ trait BuildsCountChartAxisLabels
         }
 
         if ($appendUnknown) {
-            $keys[] = self::WARD_AXIS_UNKNOWN_KEY;
+            $keys[] = SwmDashboardAxisKeys::WARD_AXIS_UNKNOWN_KEY;
         }
 
         return $keys;
@@ -68,7 +67,7 @@ trait BuildsCountChartAxisLabels
 
     protected function wardAxisDisplayLabel(string $wardKey): string
     {
-        if ($wardKey === self::WARD_AXIS_UNKNOWN_KEY) {
+        if ($wardKey === SwmDashboardAxisKeys::WARD_AXIS_UNKNOWN_KEY) {
             return __('Unknown');
         }
 
@@ -140,10 +139,10 @@ trait BuildsCountChartAxisLabels
         } else {
             $keys = array_keys($countsByWard);
             usort($keys, static function (string $a, string $b): int {
-                if ($a === self::WARD_AXIS_UNKNOWN_KEY) {
+                if ($a === SwmDashboardAxisKeys::WARD_AXIS_UNKNOWN_KEY) {
                     return 1;
                 }
-                if ($b === self::WARD_AXIS_UNKNOWN_KEY) {
+                if ($b === SwmDashboardAxisKeys::WARD_AXIS_UNKNOWN_KEY) {
                     return -1;
                 }
 
@@ -151,8 +150,8 @@ trait BuildsCountChartAxisLabels
             });
         }
 
-        if ($appendUnknown && ! in_array(self::WARD_AXIS_UNKNOWN_KEY, $keys, true)) {
-            $keys[] = self::WARD_AXIS_UNKNOWN_KEY;
+        if ($appendUnknown && ! in_array(SwmDashboardAxisKeys::WARD_AXIS_UNKNOWN_KEY, $keys, true)) {
+            $keys[] = SwmDashboardAxisKeys::WARD_AXIS_UNKNOWN_KEY;
         }
 
         return $keys;

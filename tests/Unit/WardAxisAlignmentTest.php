@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Services\Swm\Dashboard\Concerns\BuildsCountChartAxisLabels;
+use App\Services\Swm\Dashboard\SwmDashboardAxisKeys;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
@@ -28,7 +28,7 @@ class WardAxisAlignmentTest extends TestCase
 
         $helper = new WardAxisAlignmentTestHelper();
         $aligned = $helper->publicAlignCounts(
-            ['1' => 2, BuildsCountChartAxisLabels::WARD_AXIS_UNKNOWN_KEY => 1],
+            ['1' => 2, SwmDashboardAxisKeys::WARD_AXIS_UNKNOWN_KEY => 1],
             true,
         );
 

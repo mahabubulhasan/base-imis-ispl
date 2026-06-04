@@ -8,6 +8,7 @@ use App\Services\Swm\Dashboard\Concerns\BuildsCountChartAxisLabels;
 use App\Services\Swm\Dashboard\Concerns\BuildsCumulativeDateQueries;
 use App\Services\Swm\Dashboard\Contracts\SwmDashboardModuleInterface;
 use App\Services\Swm\Dashboard\DashboardReportingPeriod;
+use App\Services\Swm\Dashboard\SwmDashboardAxisKeys;
 use App\Services\Swm\Dashboard\SwmDashboardFormatter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -158,7 +159,7 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
 
         $byType = [];
         foreach ($rows as $row) {
-            $key = $row->organization_type_name ?: self::CATEGORY_AXIS_NA_KEY;
+            $key = $row->organization_type_name ?: SwmDashboardAxisKeys::CATEGORY_AXIS_NA_KEY;
             $byType[$key] = ($byType[$key] ?? 0) + (int) $row->total;
         }
         $aligned = $this->alignCountsToCategoryAxis($byType, $this->masterOrganizationTypeCategoryKeys());
@@ -333,8 +334,8 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
         foreach ($labels as $key => $label) {
             $byGender[$key] = (int) $counts->get($key, 0);
         }
-        $byGender[self::CATEGORY_AXIS_NA_KEY] = $this->sumUnlistedBucketCounts($counts, array_keys($labels));
-        $masterKeys = array_merge(array_keys($labels), [self::CATEGORY_AXIS_NA_KEY]);
+        $byGender[SwmDashboardAxisKeys::CATEGORY_AXIS_NA_KEY] = $this->sumUnlistedBucketCounts($counts, array_keys($labels));
+        $masterKeys = array_merge(array_keys($labels), [SwmDashboardAxisKeys::CATEGORY_AXIS_NA_KEY]);
         $aligned = $this->alignCountsToCategoryAxis(
             $byGender,
             $masterKeys,
@@ -419,10 +420,10 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
         foreach ($labels as $key => $label) {
             $byEmployment[$key] = (int) $counts->get($key, 0);
         }
-        $byEmployment[self::CATEGORY_AXIS_NA_KEY] = $this->sumUnlistedBucketCounts($counts, array_keys($labels));
+        $byEmployment[SwmDashboardAxisKeys::CATEGORY_AXIS_NA_KEY] = $this->sumUnlistedBucketCounts($counts, array_keys($labels));
         $aligned = $this->alignCountsToCategoryAxis(
             $byEmployment,
-            array_merge(array_keys($labels), [self::CATEGORY_AXIS_NA_KEY]),
+            array_merge(array_keys($labels), [SwmDashboardAxisKeys::CATEGORY_AXIS_NA_KEY]),
             fn (string $key) => $labels[$key] ?? __('N/A'),
         );
 
@@ -451,12 +452,12 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
         foreach (self::EDUCATION_LEVEL_ORDER as $key) {
             $byEducation[$key] = (int) ($counts[$key] ?? 0);
         }
-        $byEducation[self::CATEGORY_AXIS_NA_KEY] = (int) $counts->filter(
+        $byEducation[SwmDashboardAxisKeys::CATEGORY_AXIS_NA_KEY] = (int) $counts->filter(
             fn ($_, $key) => $key === null || $key === '' || ! in_array($key, self::EDUCATION_LEVEL_ORDER, true),
         )->sum();
         $aligned = $this->alignCountsToCategoryAxis(
             $byEducation,
-            array_merge(self::EDUCATION_LEVEL_ORDER, [self::CATEGORY_AXIS_NA_KEY]),
+            array_merge(self::EDUCATION_LEVEL_ORDER, [SwmDashboardAxisKeys::CATEGORY_AXIS_NA_KEY]),
             fn (string $key) => $labels[$key] ?? __('N/A'),
         );
 
