@@ -384,46 +384,337 @@
         return num.toLocaleString();
     }
 
+    var swmDoughnutPluginRegistered = false;
+
+    function sumChartValues(data, decimalValues) {
+        return (data || []).reduce(function (sum, v) {
+            return sum + parseChartValue(v, decimalValues);
+        }, 0);
+    }
+
+    function segmentPercent(value, total, percentValues, decimalValues) {
+        var num = parseChartValue(value, decimalValues);
+        if (percentValues) {
+            return num;
+        }
+        return total > 0 ? (num / total) * 100 : 0;
+    }
+
+    function formatDoughnutPercent(pct, decimalValues) {
+        if (decimalValues) {
+            return pct.toLocaleString(undefined, { maximumFractionDigits: 1 }) + '%';
+        }
+        return Math.round(pct) + '%';
+    }
+
+    function truncateDoughnutLabel(text, maxLen) {
+        var s = String(text || '');
+        if (s.length <= maxLen) {
+            return s;
+        }
+        return s.slice(0, maxLen - 1) + '\u2026';
+    }
+
+    function parseColorToRgb(color) {
+        var raw = String(color || '').trim();
+        var match = raw.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
+        if (match) {
+            return {
+                r: parseInt(match[1], 10),
+                g: parseInt(match[2], 10),
+                b: parseInt(match[3], 10),
+            };
+        }
+        if (raw.charAt(0) === '#') {
+            var hex = raw.slice(1);
+            if (hex.length === 3) {
+                hex = hex.split('').map(function (c) {
+                    return c + c;
+                }).join('');
+            }
+            if (hex.length === 6) {
+                return {
+                    r: parseInt(hex.slice(0, 2), 16),
+                    g: parseInt(hex.slice(2, 4), 16),
+                    b: parseInt(hex.slice(4, 6), 16),
+                };
+            }
+        }
+        return { r: 108, g: 117, b: 125 };
+    }
+
+    function colorLuminance(r, g, b) {
+        return 0.299 * r + 0.587 * g + 0.114 * b;
+    }
+
+    function labelTextColorForBackground(bgColor) {
+        var rgb = parseColorToRgb(bgColor);
+        return colorLuminance(rgb.r, rgb.g, rgb.b) < 140 ? '#ffffff' : '#2d3748';
+    }
+
+    function textAlignForAngle(angle) {
+        var cos = Math.cos(angle);
+        if (cos > 0.25) {
+            return 'left';
+        }
+        if (cos < -0.25) {
+            return 'right';
+        }
+        return 'center';
+    }
+
+    function textBaselineForAngle(angle) {
+        var sin = Math.sin(angle);
+        if (sin > 0.35) {
+            return 'top';
+        }
+        if (sin < -0.35) {
+            return 'bottom';
+        }
+        return 'middle';
+    }
+
+    function drawSwmDoughnutLabels(chart, meta) {
+        var ctx = chart.ctx;
+        var dataset = chart.data.datasets[0];
+        var chartMeta = chart.getDatasetMeta(0);
+        if (!dataset || !chartMeta || !chartMeta.data.length) {
+            return;
+        }
+
+        var data = dataset.data || [];
+        var labels = chart.data.labels || [];
+        var decimalValues = !!meta.decimalValues;
+        var percentValues = !!meta.percentValues;
+        var total = sumChartValues(data, decimalValues);
+        var hasPositive = data.some(function (v) {
+            return parseChartValue(v, decimalValues) > 0;
+        });
+
+        if (!hasPositive) {
+            var area = chart.chartArea;
+            if (!area) {
+                return;
+            }
+            ctx.save();
+            ctx.fillStyle = '#6c757d';
+            ctx.font = '600 14px Tahoma, Verdana, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('No data', (area.left + area.right) / 2, (area.top + area.bottom) / 2);
+            ctx.restore();
+            return;
+        }
+
+        var minArcSpan = (12 * Math.PI) / 180;
+        var labelCount = labels.length;
+        var positiveCount = countPositiveDoughnutSegments(data, decimalValues);
+        var outsideOffset = labelCount > 5 ? 28 : 22;
+        var leaderOffset = labelCount > 5 ? 46 : 40;
+
+        chartMeta.data.forEach(function (arc, i) {
+            if (!arc || arc.hidden) {
+                return;
+            }
+            var model = arc._model;
+            if (!model || !model.circumference) {
+                return;
+            }
+
+            var value = data[i];
+            var pct = segmentPercent(value, total, percentValues, decimalValues);
+
+            var angle = (model.startAngle + model.endAngle) / 2;
+            var arcSpan = model.endAngle - model.startAngle;
+            var fullRing = isDoughnutFullRing(arcSpan, labelCount, positiveCount);
+            var useLeader = !fullRing && arcSpan < minArcSpan;
+            var bgColor = dataset.backgroundColor[i] || palette.doughnut[i % palette.doughnut.length];
+            var insideColor = labelTextColorForBackground(bgColor);
+            var midRadius = (model.innerRadius + model.outerRadius) / 2;
+            var insideX = fullRing ? model.x : model.x + Math.cos(angle) * midRadius;
+            var insideY = fullRing ? model.y : model.y + Math.sin(angle) * midRadius;
+
+            ctx.save();
+            ctx.fillStyle = insideColor;
+            ctx.font = 'bold 13px Tahoma, Verdana, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(formatDoughnutPercent(pct, decimalValues || percentValues), insideX, insideY);
+            ctx.restore();
+
+            var segmentName = labels[i] || '';
+            var outsideLabel = truncateDoughnutLabel(segmentName, fullRing ? 36 : 28);
+            var formattedValue = formatDoughnutTooltipValue(value, decimalValues);
+            var valueSuffix = meta.valueUnit ? ' ' + meta.valueUnit : '';
+            var outsideDetail = formattedValue + valueSuffix;
+            var labelX;
+            var labelY;
+            var textAlign;
+            var baseline;
+            var nameY;
+            var detailY;
+            var lineHeight = 14;
+
+            if (fullRing) {
+                labelX = model.x + model.outerRadius + outsideOffset + 6;
+                labelY = model.y;
+                textAlign = 'left';
+                baseline = 'middle';
+                nameY = labelY - lineHeight / 2;
+                detailY = labelY + lineHeight / 2;
+            } else {
+                var outsideRadius = model.outerRadius + (useLeader ? leaderOffset : outsideOffset);
+                labelX = model.x + Math.cos(angle) * outsideRadius;
+                labelY = model.y + Math.sin(angle) * outsideRadius;
+                textAlign = textAlignForAngle(angle);
+                baseline = textBaselineForAngle(angle);
+                nameY = labelY;
+                detailY = labelY;
+                if (baseline === 'middle') {
+                    nameY = labelY - lineHeight / 2;
+                    detailY = labelY + lineHeight / 2;
+                } else if (baseline === 'top') {
+                    detailY = labelY + lineHeight;
+                } else {
+                    detailY = labelY - lineHeight;
+                }
+
+                if (useLeader) {
+                    var edgeX = model.x + Math.cos(angle) * model.outerRadius;
+                    var edgeY = model.y + Math.sin(angle) * model.outerRadius;
+                    ctx.save();
+                    ctx.setLineDash([2, 2]);
+                    ctx.strokeStyle = '#6c757d';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(edgeX, edgeY);
+                    ctx.lineTo(labelX, labelY);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            }
+
+            ctx.save();
+            ctx.fillStyle = '#2d3748';
+            ctx.textAlign = textAlign;
+            ctx.textBaseline = baseline;
+            ctx.font = '600 12px Tahoma, Verdana, sans-serif';
+            ctx.fillText(outsideLabel, labelX, nameY);
+            ctx.font = '11px Tahoma, Verdana, sans-serif';
+            ctx.fillStyle = '#6c757d';
+            ctx.fillText(outsideDetail, labelX, detailY);
+            ctx.restore();
+        });
+    }
+
+    function swmDoughnutChartMeta(chart) {
+        return chart.$swmDoughnutMeta
+            || (chart.options && chart.options.swmDoughnutMeta)
+            || null;
+    }
+
+    function registerSwmDoughnutPlugin() {
+        if (swmDoughnutPluginRegistered || !ChartCtor || !ChartCtor.plugins) {
+            return;
+        }
+        ChartCtor.plugins.register({
+            afterDraw: function (chart) {
+                if (chart.config.type !== 'doughnut') {
+                    return;
+                }
+                var meta = swmDoughnutChartMeta(chart);
+                if (!meta) {
+                    return;
+                }
+                drawSwmDoughnutLabels(chart, meta);
+            },
+        });
+        swmDoughnutPluginRegistered = true;
+    }
+
+    function countPositiveDoughnutSegments(data, decimalValues) {
+        return (data || []).filter(function (v) {
+            return parseChartValue(v, decimalValues) > 0;
+        }).length;
+    }
+
+    function isDoughnutFullRing(arcSpan, labelCount, positiveCount) {
+        return arcSpan >= (2 * Math.PI) - 0.02
+            || (labelCount === 1 && positiveCount >= 1)
+            || (positiveCount === 1 && arcSpan >= Math.PI);
+    }
+
+    function doughnutLayoutPadding(labelCount, fullRing) {
+        if (fullRing) {
+            return {
+                top: 28,
+                bottom: 28,
+                left: 36,
+                right: 110,
+            };
+        }
+        var base = labelCount > 5 ? 48 : 40;
+        return {
+            top: 36,
+            bottom: 44,
+            left: base,
+            right: base,
+        };
+    }
+
     function renderDoughnut(canvas, chart) {
+        registerSwmDoughnutPlugin();
+
         var opts = chart.options || {};
         var ds = (chart.datasets && chart.datasets[0]) ? chart.datasets[0] : { data: [] };
         var valueUnit = doughnutTooltipUnit(opts, ds);
         var decimalValues = !!opts.decimalValues || !!opts.percentValues;
+        var labels = chart.labels || [];
+        var labelCount = labels.length;
+        var dataValues = ds.data || [];
+        var positiveCount = countPositiveDoughnutSegments(dataValues, decimalValues);
+        var fullRing = labelCount === 1 || positiveCount === 1;
+        var wrap = canvas.closest('.chart-wrap--doughnut');
+        if (wrap) {
+            wrap.style.minHeight = fullRing ? '400px' : '';
+        }
+
         destroyChart(canvas.id);
-        chartInstances[canvas.id] = new ChartCtor(canvas.getContext('2d'), {
+        var instance = new ChartCtor(canvas.getContext('2d'), {
             type: 'doughnut',
             data: {
-                labels: chart.labels || [],
+                labels: labels,
                 datasets: [{
                     label: ds.label || '',
                     data: ds.data || [],
-                    backgroundColor: (chart.labels || []).map(function (label, i) {
+                    backgroundColor: labels.map(function (label, i) {
                         return colorForLabel(label, i);
                     }),
+                    borderWidth: 0,
+                    hoverBorderWidth: 2,
                 }],
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                legend: { position: 'bottom' },
+                cutoutPercentage: 58,
+                layout: {
+                    padding: doughnutLayoutPadding(labelCount, fullRing),
+                },
+                legend: { display: false },
                 tooltips: {
-                    callbacks: {
-                        label: function (tooltipItem, data) {
-                            var dataset = data.datasets[tooltipItem.datasetIndex];
-                            var segmentLabel = data.labels[tooltipItem.index] || '';
-                            var formatted = formatDoughnutTooltipValue(
-                                dataset.data[tooltipItem.index],
-                                decimalValues
-                            );
-                            if (valueUnit) {
-                                return segmentLabel + ': ' + formatted + ' ' + valueUnit;
-                            }
-                            return segmentLabel + ': ' + formatted;
-                        },
-                    },
+                    enabled: false,
+                },
+                swmDoughnutMeta: {
+                    percentValues: !!opts.percentValues,
+                    decimalValues: decimalValues,
+                    valueUnit: valueUnit,
                 },
             },
         });
+
+        instance.$swmDoughnutMeta = instance.options.swmDoughnutMeta;
+        chartInstances[canvas.id] = instance;
     }
 
     function initCharts() {

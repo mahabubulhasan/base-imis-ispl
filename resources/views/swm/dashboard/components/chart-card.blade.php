@@ -4,11 +4,12 @@
         ? ! empty($chart['fullWidth'])
         : (! empty($chart['fullWidth']) || in_array($chart['type'] ?? '', $fullWidthTypes, true));
     $colClass = $isFullWidth ? 'col-md-12' : 'col-md-6';
-    $height = $chart['height'] ?? 320;
     $chartType = $chart['type'] ?? '';
+    $isDoughnut = $chartType === 'doughnut';
+    $height = $chart['height'] ?? ($isDoughnut ? 380 : 320);
 @endphp
 <div class="{{ $colClass }} mb-2">
-    <div class="card card-outline card-info swm-chart-card">
+    <div class="card card-outline card-info swm-chart-card{{ $isDoughnut ? ' swm-chart-card--doughnut' : '' }}">
         <div class="card-header">
             <h3 class="card-title">{{ $chart['title'] ?? '' }}</h3>
             <div class="card-tools">
@@ -25,7 +26,7 @@
             @elseif($chartType === 'network')
                 <div id="{{ $chart['id'] ?? '' }}" class="swm-network" data-network='@json($chart)' style="height:{{ (int) ($chart['height'] ?? 400) }}px"></div>
             @else
-                <div class="chart-wrap" style="height:{{ (int) $height }}px">
+                <div class="chart-wrap{{ $isDoughnut ? ' chart-wrap--doughnut' : '' }}" style="height:{{ (int) $height }}px">
                     <canvas id="{{ $chart['id'] ?? '' }}" class="swm-chart-canvas" data-chart='@json($chart)'></canvas>
                 </div>
             @endif

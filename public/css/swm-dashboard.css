@@ -296,6 +296,31 @@
     padding-top: 6px;
 }
 
+.swm-dashboard .swm-chart-card--doughnut .card-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #2c3e50;
+    line-height: 1.35;
+}
+
+.swm-dashboard .chart-wrap--doughnut {
+    padding-top: 10px;
+    padding-bottom: 12px;
+    overflow: visible;
+}
+
+.swm-dashboard .swm-chart-card--doughnut .card-body {
+    overflow: visible;
+}
+
+.swm-dashboard .swm-chart-card.swm-chart-card--doughnut {
+    overflow: visible;
+}
+
+.swm-dashboard .swm-charts-row > [class*="col-"]:has(.swm-chart-card--doughnut) {
+    overflow: visible;
+}
+
 .swm-dashboard .heatmap-wrap {
     padding: 8px 4px 4px;
     overflow-x: auto;

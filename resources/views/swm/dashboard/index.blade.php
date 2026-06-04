@@ -65,7 +65,12 @@
     window.swmDashboardConfig = @json($swmDashboardConfig);
 </script>
 @php
+    $swmDashboardJsSource = resource_path('js/swm-dashboard.js');
     $swmDashboardJsPath = public_path('js/swm-dashboard.js');
+    if (file_exists($swmDashboardJsSource)
+        && (! file_exists($swmDashboardJsPath) || filemtime($swmDashboardJsSource) > filemtime($swmDashboardJsPath))) {
+        @copy($swmDashboardJsSource, $swmDashboardJsPath);
+    }
     $swmDashboardJsVersion = file_exists($swmDashboardJsPath) ? filemtime($swmDashboardJsPath) : time();
 @endphp
 <script src="{{ asset('js/swm-dashboard.js') }}?v={{ $swmDashboardJsVersion }}"></script>
