@@ -52,67 +52,52 @@ class VehicleTypeController extends Controller
         return redirect()->route('swm.vehicle-types.index')->with('success', __('SW vehicle type created successfully.'));
     }
 
-    public function show($id)
+    public function show(VehicleType $vehicle_type)
     {
-        $vehicleType = VehicleType::find($id);
-        if ($vehicleType) {
-            $page_title = __('SW Vehicle Type Details');
+        $page_title = __('SW Vehicle Type Details');
 
-            return view('swm.service-providers.vehicle-types.show', compact('page_title', 'vehicleType'));
-        }
-
-        abort(404);
+        return view('swm.service-providers.vehicle-types.show', [
+            'page_title' => $page_title,
+            'vehicleType' => $vehicle_type,
+        ]);
     }
 
-    public function edit($id)
+    public function edit(VehicleType $vehicle_type)
     {
-        $vehicleType = VehicleType::find($id);
-        if ($vehicleType) {
-            $page_title = __('Edit SW Vehicle Type');
+        $page_title = __('Edit SW Vehicle Type');
 
-            return view('swm.service-providers.vehicle-types.edit', compact('page_title', 'vehicleType'));
-        }
-
-        abort(404);
+        return view('swm.service-providers.vehicle-types.edit', [
+            'page_title' => $page_title,
+            'vehicleType' => $vehicle_type,
+        ]);
     }
 
-    public function update(VehicleTypeRequest $request, $id)
+    public function update(VehicleTypeRequest $request, VehicleType $vehicle_type)
     {
-        $vehicleType = VehicleType::find($id);
-        if ($vehicleType) {
-            $this->vehicleTypeService->storeOrUpdate((int) $vehicleType->id, $request->all());
+        $this->vehicleTypeService->storeOrUpdate((int) $vehicle_type->id, $request->all());
 
-            return redirect()->route('swm.vehicle-types.index')->with('success', __('SW vehicle type updated successfully.'));
-        }
-
-        return redirect()->route('swm.vehicle-types.index')->with('error', __('Failed to update SW vehicle type.'));
+        return redirect()->route('swm.vehicle-types.index')->with('success', __('SW vehicle type updated successfully.'));
     }
 
-    public function destroy($id)
+    public function destroy(VehicleType $vehicle_type)
     {
-        $vehicleType = VehicleType::find($id);
-        if ($vehicleType) {
-            if ($vehicleType->vehicles()->exists()) {
-                return redirect()->route('swm.vehicle-types.index')->with('error', __('Cannot delete SW vehicle type that has associated vehicles.'));
-            }
-            $vehicleType->delete();
-
-            return redirect()->route('swm.vehicle-types.index')->with('success', __('SW vehicle type deleted successfully.'));
+        if ($vehicle_type->vehicles()->exists()) {
+            return redirect()->route('swm.vehicle-types.index')->with('error', __('Cannot delete SW vehicle type that has associated vehicles.'));
         }
 
-        return redirect()->route('swm.vehicle-types.index')->with('error', __('Failed to delete SW vehicle type.'));
+        $vehicle_type->delete();
+
+        return redirect()->route('swm.vehicle-types.index')->with('success', __('SW vehicle type deleted successfully.'));
     }
 
-    public function history($id)
+    public function history(VehicleType $vehicle_type)
     {
-        $vehicleType = VehicleType::find($id);
-        if ($vehicleType) {
-            $page_title = __('SW Vehicle Type History');
+        $page_title = __('SW Vehicle Type History');
 
-            return view('swm.service-providers.vehicle-types.history', compact('page_title', 'vehicleType'));
-        }
-
-        abort(404);
+        return view('swm.service-providers.vehicle-types.history', [
+            'page_title' => $page_title,
+            'vehicleType' => $vehicle_type,
+        ]);
     }
 
     public function export(Request $request)
