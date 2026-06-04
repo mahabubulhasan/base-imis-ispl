@@ -116,6 +116,7 @@ class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
                         ],
                         [
                             'type' => 'kpis',
+                            'subsection' => __('KPI'),
                             'items' => [
                                 [
                                     'name' => __('Functional STSs'),
