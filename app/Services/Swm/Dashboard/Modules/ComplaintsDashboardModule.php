@@ -134,28 +134,30 @@ class ComplaintsDashboardModule implements SwmDashboardModuleInterface
      */
     protected function complaintsByTypeChart(array $agg): array
     {
-        $byType = $agg['by_type'] ?? [];
-        ksort($byType, SORT_NATURAL);
-        $labels = [];
-        $data = [];
-        foreach ($byType as $key => $cnt) {
-            $labels[] = $this->metrics->complaintTypeLabel((string) $key);
-            $data[] = (int) $cnt;
+        $byType = [];
+        foreach ($agg['by_type'] ?? [] as $key => $cnt) {
+            $byType[(string) $key] = (int) $cnt;
         }
+        $typeKeys = array_keys(config('swm_complaints.complaint_types', []));
+        $aligned = $this->alignCountsToCategoryAxis(
+            $byType,
+            $typeKeys,
+            fn (string $key) => $this->metrics->complaintTypeLabel($key),
+        );
 
         return [
             'id' => 'swmChartComplaintsByType',
             'type' => 'bar',
             'title' => __('Complaints by Type'),
-            'labels' => $labels,
+            'labels' => $aligned['labels'],
             'datasets' => [
-                ['data' => $data],
+                ['data' => array_map(static fn ($v) => (int) $v, $aligned['values'])],
             ],
-            'options' => [
-                'unitX' => __('Complaint Type'),
-                'unitY' => $this->countChartAxisY(__('Complaints')),
-                'integerYTicks' => true,
-            ],
+            'options' => $this->staticCategoryChartOptions(
+                __('Complaint Type'),
+                $this->countChartAxisY(__('Complaints')),
+                ['integerYTicks' => true],
+            ),
         ];
     }
 
@@ -165,37 +167,26 @@ class ComplaintsDashboardModule implements SwmDashboardModuleInterface
      */
     protected function complaintsByWardChart(array $agg): array
     {
-        $byWard = $agg['by_ward'] ?? [];
-        uksort($byWard, static function (string $a, string $b): int {
-            if ($a === '__unknown__') {
-                return 1;
-            }
-            if ($b === '__unknown__') {
-                return -1;
-            }
-
-            return strnatcasecmp($a, $b);
-        });
-        $labels = [];
-        $data = [];
-        foreach ($byWard as $key => $cnt) {
-            $labels[] = $key === '__unknown__' ? __('Unknown') : (string) $key;
-            $data[] = (int) $cnt;
+        $byWard = [];
+        foreach ($agg['by_ward'] ?? [] as $key => $cnt) {
+            $byWard[(string) $key] = (int) $cnt;
         }
+
+        $aligned = $this->alignCountsToWardAxis($byWard, appendUnknown: true);
 
         return [
             'id' => 'swmChartComplaintsByWard',
             'type' => 'bar',
             'title' => __('Complaints by Ward'),
-            'labels' => $labels,
+            'labels' => $aligned['labels'],
             'datasets' => [
-                ['data' => $data],
+                ['data' => array_map(static fn ($v) => (int) $v, $aligned['values'])],
             ],
-            'options' => [
-                'unitX' => __('Ward'),
-                'unitY' => $this->countChartAxisY(__('Complaints')),
-                'integerYTicks' => true,
-            ],
+            'options' => $this->staticCategoryChartOptions(
+                __('Ward'),
+                $this->countChartAxisY(__('Complaints')),
+                ['integerYTicks' => true],
+            ),
         ];
     }
 
@@ -205,44 +196,34 @@ class ComplaintsDashboardModule implements SwmDashboardModuleInterface
      */
     protected function complaintStatusByWardChart(array $agg): array
     {
-        $statusByWard = $agg['status_by_ward'] ?? [];
-        uksort($statusByWard, static function (string $a, string $b): int {
-            if ($a === '__unknown__') {
-                return 1;
-            }
-            if ($b === '__unknown__') {
-                return -1;
-            }
-
-            return strnatcasecmp($a, $b);
-        });
-
-        $labels = [];
-        $resolved = [];
-        $pending = [];
-        $others = [];
-        foreach ($statusByWard as $wardKey => $counts) {
-            $labels[] = $wardKey === '__unknown__' ? __('Unknown') : (string) $wardKey;
-            $resolved[] = (int) ($counts['resolved'] ?? 0);
-            $pending[] = (int) ($counts['pending'] ?? 0);
-            $others[] = (int) ($counts['others'] ?? 0);
-        }
+        $aligned = $this->alignStackedSeriesToWardAxis(
+            $agg['status_by_ward'] ?? [],
+            ['resolved', 'pending', 'others'],
+            fn (string $key) => match ($key) {
+                'resolved' => __('Resolved'),
+                'pending' => __('Pending'),
+                default => __('Others'),
+            },
+            appendUnknown: true,
+        );
 
         return [
             'id' => 'swmChartComplaintsStatusByWard',
             'type' => 'stackedBar',
             'title' => __('Complaint Status by Ward'),
-            'labels' => $labels,
-            'datasets' => [
-                ['label' => __('Resolved'), 'data' => $resolved],
-                ['label' => __('Pending'), 'data' => $pending],
-                ['label' => __('Others'), 'data' => $others],
-            ],
-            'options' => [
-                'unitX' => __('Ward'),
-                'unitY' => $this->countChartAxisY(__('Complaints')),
-                'integerYTicks' => true,
-            ],
+            'labels' => $aligned['labels'],
+            'datasets' => array_map(
+                static fn (array $dataset) => [
+                    'label' => $dataset['label'],
+                    'data' => array_map(static fn ($v) => (int) $v, $dataset['data']),
+                ],
+                $aligned['datasets'],
+            ),
+            'options' => $this->staticCategoryChartOptions(
+                __('Ward'),
+                $this->countChartAxisY(__('Complaints')),
+                ['integerYTicks' => true],
+            ),
             'fullWidth' => false,
             'height' => 280,
         ];
@@ -271,11 +252,11 @@ class ComplaintsDashboardModule implements SwmDashboardModuleInterface
             'title' => __('Complaint Type by Ward'),
             'labels' => $wardLabels,
             'datasets' => $datasets,
-            'options' => [
-                'unitX' => __('Ward'),
-                'unitY' => $this->countChartAxisY(__('Complaints')),
-                'integerYTicks' => true,
-            ],
+            'options' => $this->staticCategoryChartOptions(
+                __('Ward'),
+                $this->countChartAxisY(__('Complaints')),
+                ['integerYTicks' => true],
+            ),
             'fullWidth' => false,
             'height' => 280,
         ];
@@ -287,40 +268,24 @@ class ComplaintsDashboardModule implements SwmDashboardModuleInterface
      */
     protected function complaintChannelChart(array $agg): array
     {
-        $byChannel = $agg['by_channel'] ?? [];
-        $channels = config('swm_complaints.submitted_through', []);
-
-        $labels = [];
-        $data = [];
-        foreach ($channels as $key => $_label) {
-            $cnt = (int) ($byChannel[$key] ?? 0);
-            if ($cnt <= 0) {
-                continue;
-            }
-            $labels[] = $this->metrics->complaintChannelLabel((string) $key);
-            $data[] = $cnt;
+        $byChannel = [];
+        foreach ($agg['by_channel'] ?? [] as $key => $cnt) {
+            $byChannel[(string) $key] = (int) $cnt;
         }
-
-        foreach ($byChannel as $key => $cnt) {
-            if (isset($channels[$key]) || (int) $cnt <= 0) {
-                continue;
-            }
-            $labels[] = (string) $key;
-            $data[] = (int) $cnt;
-        }
-
-        if ($labels === []) {
-            $labels = [__('No data')];
-            $data = [0];
-        }
+        $channelKeys = array_keys(config('swm_complaints.submitted_through', []));
+        $aligned = $this->alignCountsToCategoryAxis(
+            $byChannel,
+            $channelKeys,
+            fn (string $key) => $this->metrics->complaintChannelLabel($key),
+        );
 
         return [
             'id' => 'swmChartComplaintsChannel',
             'type' => 'doughnut',
             'title' => __('Complaint Channel'),
-            'labels' => $labels,
+            'labels' => $aligned['labels'],
             'datasets' => [
-                ['data' => $data],
+                ['data' => array_map(static fn ($v) => (int) $v, $aligned['values'])],
             ],
             'options' => [],
         ];
@@ -332,27 +297,32 @@ class ComplaintsDashboardModule implements SwmDashboardModuleInterface
      */
     protected function resolutionTimeByTypeChart(array $agg): array
     {
-        $byType = $agg['avg_resolution_by_type'] ?? [];
-        $labels = [];
-        $data = [];
-        foreach ($byType as $typeKey => $avgDays) {
-            $labels[] = $this->metrics->complaintTypeLabel((string) $typeKey);
-            $data[] = (int) round((float) $avgDays);
+        $byType = [];
+        foreach ($agg['avg_resolution_by_type'] ?? [] as $typeKey => $avgDays) {
+            $byType[(string) $typeKey] = (int) round((float) $avgDays);
         }
+        $typeKeys = array_keys(config('swm_complaints.complaint_types', []));
+        $aligned = $this->alignCountsToCategoryAxis(
+            $byType,
+            $typeKeys,
+            fn (string $key) => $this->metrics->complaintTypeLabel($key),
+        );
 
         return [
             'id' => 'swmChartComplaintsResolutionByType',
             'type' => 'horizontalBar',
             'title' => __('Resolution Time by Complaint Type'),
-            'labels' => $labels,
+            'labels' => $aligned['labels'],
             'datasets' => [
-                ['data' => $data],
+                ['data' => array_map(static fn ($v) => (int) $v, $aligned['values'])],
             ],
             'options' => [
                 'unitX' => __('Days'),
                 'integerXTicks' => true,
+                'staticCategoryAxis' => true,
+                'categoryAxisDimension' => 'y',
             ],
-            'height' => max(280, count($labels) * 36),
+            'height' => max(280, count($aligned['labels']) * 36),
         ];
     }
 

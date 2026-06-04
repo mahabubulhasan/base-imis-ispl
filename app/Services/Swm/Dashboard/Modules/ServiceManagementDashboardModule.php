@@ -7,6 +7,7 @@ use App\Models\Swm\Landfill;
 use App\Models\Swm\LandfillLog;
 use App\Models\Swm\StsLog;
 use App\Models\Swm\WasteProcessingLog;
+use App\Services\Swm\Dashboard\Concerns\BuildsCountChartAxisLabels;
 use App\Services\Swm\Dashboard\Concerns\BuildsCumulativeDateQueries;
 use App\Services\Swm\Dashboard\Contracts\SwmDashboardModuleInterface;
 use App\Services\Swm\Dashboard\DashboardReportingPeriod;
@@ -19,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 
 class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
 {
+    use BuildsCountChartAxisLabels;
     use BuildsCumulativeDateQueries;
 
     private const TOP_STACKED_SERIES = 10;
@@ -151,7 +153,12 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
                         ],
                         [
                             'label' => __('Average Daily Loading at Landfill (Ton)'),
-                            'value' => $this->formatter->decimal($this->dailyLandfillReceiptsAverage($period)),
+                            'value' => $this->formatter->decimal($this->dailyLandfillLoadingAverage($period)),
+                            'icon' => 'fa-weight-scale',
+                        ],
+                        [
+                            'label' => __('Average Monthly Loading at Landfill (Ton)'),
+                            'value' => $this->formatter->decimal($this->monthlyLandfillLoadingAverage($period)),
                             'icon' => 'fa-mountain-city',
                         ],
                     ],
@@ -186,9 +193,9 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
                     'type' => 'tiles',
                     'items' => [
                         [
-                            'label' => __('Average Daily Waste Received for Processing (Ton)'),
-                            'value' => $this->formatter->decimal($this->averageDailyWasteReceivedForProcessingTon($period)),
-                            'icon' => 'fa-weight-scale',
+                            'label' => __('Average Monthly Waste Received for Processing (Ton)'),
+                            'value' => $this->formatter->decimal($this->averageMonthlyWasteReceivedForProcessingTon($period)),
+                            'icon' => 'fa-mountain-city',
                         ],
                         [
                             'label' => __('Average Daily Waste Received for Processing (Ton)'),
@@ -319,21 +326,24 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
     {
         [$start, $end] = $this->last30DaysRange($period);
         $rows = $this->averageDailyAttendanceRatesGrouped($start, $end, $period, 'organization');
+        $byOrg = [];
+        foreach ($rows as $row) {
+            $byOrg[$row['label']] = round((float) $row['rate'], 1);
+        }
+        $aligned = $this->alignCountsToCategoryAxis($byOrg, $this->masterOrganizationCategoryKeys());
 
         return [
             'id' => 'swmChartSmAttendanceByOrg',
             'type' => 'bar',
             'title' => __('Attendance by Organization'),
-            'labels' => array_column($rows, 'label'),
+            'labels' => $aligned['labels'],
             'datasets' => [
-                ['data' => array_map(fn ($r) => round((float) $r['rate'], 1), $rows)],
+                ['data' => $aligned['values']],
             ],
-            'options' => [
-                'unitX' => __('Organization'),
-                'unitY' => __('%'),
+            'options' => $this->staticCategoryChartOptions(__('Organization'), __('%'), [
                 'percentYAxis' => true,
                 'decimalValues' => true,
-            ],
+            ]),
         ];
     }
 
@@ -341,21 +351,24 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
     {
         [$start, $end] = $this->last30DaysRange($period);
         $rows = $this->averageDailyAttendanceRatesGrouped($start, $end, $period, 'department');
+        $byDept = [];
+        foreach ($rows as $row) {
+            $byDept[$row['label']] = round((float) $row['rate'], 1);
+        }
+        $aligned = $this->alignCountsToCategoryAxis($byDept, $this->masterAttendanceDepartmentCategoryKeys());
 
         return [
             'id' => 'swmChartSmAttendanceByDept',
             'type' => 'bar',
             'title' => __('Attendance by Department'),
-            'labels' => array_column($rows, 'label'),
+            'labels' => $aligned['labels'],
             'datasets' => [
-                ['data' => array_map(fn ($r) => round((float) $r['rate'], 1), $rows)],
+                ['data' => $aligned['values']],
             ],
-            'options' => [
-                'unitX' => __('Department'),
-                'unitY' => __('%'),
+            'options' => $this->staticCategoryChartOptions(__('Department'), __('%'), [
                 'percentYAxis' => true,
                 'decimalValues' => true,
-            ],
+            ]),
         ];
     }
 
@@ -405,22 +418,25 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
             ->whereDate('operation_date', '<=', $period->periodEnd->toDateString())
             ->selectRaw("COALESCE(NULLIF(TRIM(sts_name), ''), 'N/A') as label, SUM(COALESCE(quantity_ton, 0))::float as total")
             ->groupByRaw('1')
-            ->orderByDesc('total')
             ->get();
+
+        $bySts = [];
+        foreach ($rows as $row) {
+            $bySts[$row->label] = round((float) $row->total, 2);
+        }
+        $aligned = $this->alignCountsToCategoryAxis($bySts, $this->masterStsCategoryKeys());
 
         return [
             'id' => 'swmChartSmReceiptsBySts',
             'type' => 'bar',
             'title' => __('Waste Loading at STS'),
-            'labels' => $rows->pluck('label')->all(),
+            'labels' => $aligned['labels'],
             'datasets' => [
-                ['data' => $rows->pluck('total')->map(fn ($v) => round((float) $v, 2))->all()],
+                ['data' => $aligned['values']],
             ],
-            'options' => [
-                'unitX' => __('STS'),
-                'unitY' => __('Ton'),
+            'options' => $this->staticCategoryChartOptions(__('STS'), __('Ton'), [
                 'decimalValues' => true,
-            ],
+            ]),
         ];
     }
 
@@ -476,12 +492,17 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
             ->value('total'), 2);
     }
 
-    protected function dailyLandfillReceiptsAverage(DashboardReportingPeriod $period): float
+    protected function dailyLandfillLoadingAverage(DashboardReportingPeriod $period): float
     {
         $monthStart = $period->toMonth->copy()->startOfMonth();
         $daysInMonth = max(1, $monthStart->daysInMonth);
 
         return round($this->totalLandfillLoadingTon($period) / $daysInMonth, 2);
+    }
+
+    protected function monthlyLandfillLoadingAverage(DashboardReportingPeriod $period): float
+    {
+        return $this->totalLandfillLoadingTon($period);
     }
 
     protected function landfillReceiptsTrendChart(DashboardReportingPeriod $period): array
@@ -512,7 +533,7 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
 
         return $this->dailyTonLineChart(
             'swmChartSmLandfillReceiptsTrend',
-            __('Receipts Trend'),
+            __('Waste Loading Trend'),
             $start,
             $end,
             $totals,
@@ -668,7 +689,7 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
         return round($this->totalWasteReceivedForProcessingTon($period) / $daysInMonth, 2);
     }
 
-    protected function wasteReceivedLastMonth(DashboardReportingPeriod $period): float
+    protected function averageMonthlyWasteReceivedForProcessingTon(DashboardReportingPeriod $period): float
     {
         return $this->totalWasteReceivedForProcessingTon($period);
     }
@@ -906,7 +927,6 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
         $topSet = array_flip($topSeries);
         $hasOthers = $seriesTotals->count() > count($topSeries);
 
-        $labelKeys = $rows->pluck('ward')->unique()->sort()->values()->all();
         $matrix = [];
         foreach ($rows as $row) {
             $ward = (string) ($row->ward ?? 'Unknown');
@@ -919,14 +939,52 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
             $datasetKeys[] = 'others';
         }
 
-        $datasets = [];
-        foreach ($datasetKeys as $key) {
-            $label = $key === 'others' ? __('Others') : (string) $key;
-            $data = [];
-            foreach ($labelKeys as $ward) {
-                $data[] = round((float) ($matrix[$ward][$key] ?? 0), 2);
+        $masterCategoryKeys = $unitX === __('Ward')
+            ? $this->wardAxisKeys()
+            : $this->categoryAxisMasterKeysForUnit($unitX);
+
+        if ($masterCategoryKeys !== null) {
+            $alignStacked = $unitX === __('Ward')
+                ? $this->alignStackedSeriesToWardAxis(
+                    $matrix,
+                    $datasetKeys,
+                    fn (string $key) => $key === 'others' ? __('Others') : (string) $key,
+                )
+                : $this->alignStackedSeriesToCategoryAxis(
+                    $matrix,
+                    $datasetKeys,
+                    fn (string $key) => $key === 'others' ? __('Others') : (string) $key,
+                    $masterCategoryKeys,
+                );
+            $labelKeys = $alignStacked['labels'];
+            $datasets = array_map(
+                static fn (array $dataset) => [
+                    'label' => $dataset['label'],
+                    'data' => array_map(static fn ($v) => round((float) $v, 2), $dataset['data']),
+                ],
+                $alignStacked['datasets'],
+            );
+        } else {
+            $labelKeys = $rows->pluck('ward')->unique()->sort()->values()->all();
+            $datasets = [];
+            foreach ($datasetKeys as $key) {
+                $label = $key === 'others' ? __('Others') : (string) $key;
+                $data = [];
+                foreach ($labelKeys as $ward) {
+                    $data[] = round((float) ($matrix[$ward][$key] ?? 0), 2);
+                }
+                $datasets[] = ['label' => $label, 'data' => $data];
             }
-            $datasets[] = ['label' => $label, 'data' => $data];
+        }
+
+        $chartOptions = [
+            'stacked' => true,
+            'unitX' => $unitX,
+            'unitY' => __('Ton'),
+            'decimalValues' => $decimalValues,
+        ];
+        if ($masterCategoryKeys !== null) {
+            $chartOptions['staticCategoryAxis'] = true;
         }
 
         return [
@@ -935,12 +993,7 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
             'title' => $title,
             'labels' => $labelKeys,
             'datasets' => $datasets,
-            'options' => [
-                'stacked' => true,
-                'unitX' => $unitX,
-                'unitY' => __('Ton'),
-                'decimalValues' => $decimalValues,
-            ],
+            'options' => $chartOptions,
             'height' => 400,
         ];
     }

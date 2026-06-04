@@ -268,26 +268,25 @@ class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
             ->orderByDesc('total')
             ->get();
 
-        $labels = [];
-        $values = [];
+        $byType = [];
         foreach ($rows as $row) {
-            $labels[] = $row->label;
-            $values[] = (int) $row->total;
+            $byType[$row->label] = (int) $row->total;
         }
+        $aligned = $this->alignCountsToCategoryAxis($byType, $this->masterWasteBinTypeCategoryKeys());
 
         return [
             'id' => 'swmChartSfBinsByType',
             'type' => 'bar',
             'title' => __('Waste Bins by Type'),
-            'labels' => $labels,
+            'labels' => $aligned['labels'],
             'datasets' => [
-                ['data' => $values],
+                ['data' => array_map(static fn ($v) => (int) $v, $aligned['values'])],
             ],
-            'options' => [
-                'unitX' => __('Type of Waste Bin'),
-                'unitY' => $this->countChartAxisY(__('Waste Bins')),
-                'integerYTicks' => true,
-            ],
+            'options' => $this->staticCategoryChartOptions(
+                __('Type of Waste Bin'),
+                $this->countChartAxisY(__('Waste Bins')),
+                ['integerYTicks' => true],
+            ),
         ];
     }
 
@@ -306,30 +305,33 @@ class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
             ->groupBy('ward_no')
             ->pluck('total', 'ward');
 
-        $wards = $buildingsByWard->keys()
-            ->merge($binsByWard->keys())
-            ->unique()
-            ->sortBy(fn (string $ward) => (int) $ward)
-            ->values();
-
-        $labels = [];
-        $values = [];
-        foreach ($wards as $ward) {
+        $ratioByWard = [];
+        foreach ($this->wardAxisKeys() as $ward) {
             $buildingCount = (int) ($buildingsByWard[$ward] ?? 0);
             $binCount = (int) ($binsByWard[$ward] ?? 0);
-            $labels[] = (string) $ward;
-            $values[] = $binCount > 0 ? round($buildingCount / $binCount, 2) : 0;
+            $ratioByWard[$ward] = $binCount > 0 ? round($buildingCount / $binCount, 2) : 0;
         }
+
+        if ($ratioByWard === []) {
+            foreach ($buildingsByWard->keys()->merge($binsByWard->keys())->unique() as $ward) {
+                $ward = (string) $ward;
+                $buildingCount = (int) ($buildingsByWard[$ward] ?? 0);
+                $binCount = (int) ($binsByWard[$ward] ?? 0);
+                $ratioByWard[$ward] = $binCount > 0 ? round($buildingCount / $binCount, 2) : 0;
+            }
+        }
+
+        $aligned = $this->alignCountsToWardAxis($ratioByWard);
 
         return [
             'id' => 'swmChartSfHhBinRatio',
             'type' => 'bar',
             'title' => __('Buildings-to-Waste Bin Ratio by Ward'),
-            'labels' => $labels,
+            'labels' => $aligned['labels'],
             'datasets' => [
-                ['label' => __('Ratio'), 'data' => $values],
+                ['label' => __('Ratio'), 'data' => $aligned['values']],
             ],
-            'options' => ['unitX' => __('Ward'), 'unitY' => __('Ratio')],
+            'options' => $this->staticCategoryChartOptions(__('Ward'), __('Ratio')),
         ];
     }
 
@@ -340,20 +342,27 @@ class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
             ->groupBy('placed_at_buildings')
             ->get();
 
-        $labels = [];
-        $values = [];
+        $byPlacement = [
+            'at_buildings' => 0,
+            'other_places' => 0,
+        ];
         foreach ($rows as $row) {
-            $labels[] = $row->placed_at_buildings ? __('At Buildings') : __('Other Places');
-            $values[] = (int) $row->total;
+            $key = $row->placed_at_buildings ? 'at_buildings' : 'other_places';
+            $byPlacement[$key] = (int) $row->total;
         }
+        $aligned = $this->alignCountsToCategoryAxis(
+            $byPlacement,
+            ['at_buildings', 'other_places'],
+            fn (string $key) => $key === 'at_buildings' ? __('At Buildings') : __('Other Places'),
+        );
 
         return [
             'id' => 'swmChartSfBinPlacement',
             'type' => 'doughnut',
             'title' => __('Waste Bins Placement Distribution'),
-            'labels' => $labels,
+            'labels' => $aligned['labels'],
             'datasets' => [
-                ['data' => $values],
+                ['data' => array_map(static fn ($v) => (int) $v, $aligned['values'])],
             ],
             'options' => [],
         ];
@@ -369,26 +378,22 @@ class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
             ->orderByDesc('total')
             ->get();
 
-        $labels = [];
-        $values = [];
-        foreach ($rows as $row) {
-            $labels[] = $row->label;
-            $values[] = (int) $row->total;
-        }
+        $byType = $rows->pluck('total', 'label')->all();
+        $aligned = $this->alignCountsToCategoryAxis($byType, $this->masterVehicleTypeCategoryKeys());
 
         return [
             'id' => 'swmChartSfVehiclesByType',
             'type' => 'bar',
             'title' => __('Vehicles by Type'),
-            'labels' => $labels,
+            'labels' => $aligned['labels'],
             'datasets' => [
-                ['data' => $values],
+                ['data' => array_map(static fn ($v) => (int) $v, $aligned['values'])],
             ],
-            'options' => [
-                'unitX' => __('Vehicle Type'),
-                'unitY' => $this->countChartAxisY(__('Vehicles')),
-                'integerYTicks' => true,
-            ],
+            'options' => $this->staticCategoryChartOptions(
+                __('Vehicle Type'),
+                $this->countChartAxisY(__('Vehicles')),
+                ['integerYTicks' => true],
+            ),
         ];
     }
 
@@ -432,22 +437,24 @@ class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
             $bindings,
         );
 
-        $labels = [];
-        $values = [];
+        $byWard = [];
         foreach ($rows as $row) {
-            $labels[] = (string) $row->ward;
-            $values[] = round((float) $row->total_capacity, 2);
+            $byWard[(string) $row->ward] = round((float) $row->total_capacity, 2);
         }
+
+        $aligned = $this->alignCountsToWardAxis($byWard);
 
         return [
             'id' => 'swmChartSfFleetByWard',
             'type' => 'bar',
             'title' => __('Fleet Capacity by Service Wards'),
-            'labels' => $labels,
+            'labels' => $aligned['labels'],
             'datasets' => [
-                ['label' => __('Capacity'), 'data' => $values],
+                ['label' => __('Capacity'), 'data' => $aligned['values']],
             ],
-            'options' => ['unitX' => __('Service Wards'), 'unitY' => __('Ton')],
+            'options' => $this->staticCategoryChartOptions(__('Service Wards'), __('Ton'), [
+                'decimalValues' => true,
+            ]),
         ];
     }
 
@@ -489,26 +496,22 @@ class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
             ->orderBy('ward_no')
             ->get();
 
-        $labels = [];
-        $values = [];
-        foreach ($rows as $row) {
-            $labels[] = $row->ward;
-            $values[] = (int) $row->total;
-        }
+        $byWard = $rows->pluck('total', 'ward')->all();
+        $aligned = $this->alignCountsToWardAxis($byWard);
 
         return [
             'id' => 'swmChartSfStsCapacity',
             'type' => 'bar',
             'title' => __('STS by Ward'),
-            'labels' => $labels,
+            'labels' => $aligned['labels'],
             'datasets' => [
-                ['label' => __('Count'), 'data' => $values],
+                ['label' => __('Count'), 'data' => array_map(static fn ($v) => (int) $v, $aligned['values'])],
             ],
-            'options' => [
-                'unitX' => __('Ward'),
-                'unitY' => $this->countChartAxisY(__('STS')),
-                'integerYTicks' => true,
-            ],
+            'options' => $this->staticCategoryChartOptions(
+                __('Ward'),
+                $this->countChartAxisY(__('STS')),
+                ['integerYTicks' => true],
+            ),
         ];
     }
 
@@ -563,20 +566,19 @@ class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
             [$period->periodEnd],
         );
 
-        $labels = [];
-        $values = [];
+        $byType = [];
         foreach ($rows as $row) {
-            $labels[] = $row->label;
-            $values[] = (int) $row->total;
+            $byType[$row->label] = (int) $row->total;
         }
+        $aligned = $this->alignCountsToCategoryAxis($byType, $this->masterWasteTypeCategoryKeys());
 
         return [
             'id' => $id,
             'type' => 'doughnut',
             'title' => $title,
-            'labels' => $labels,
+            'labels' => $aligned['labels'],
             'datasets' => [
-                ['data' => $values],
+                ['data' => array_map(static fn ($v) => (int) $v, $aligned['values'])],
             ],
             'options' => [],
         ];

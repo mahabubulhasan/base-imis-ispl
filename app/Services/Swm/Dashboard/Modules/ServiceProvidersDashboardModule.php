@@ -156,21 +156,20 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
             ->orderByDesc('total')
             ->get();
 
-        $labels = [];
-        $values = [];
-
+        $byType = [];
         foreach ($rows as $row) {
-            $labels[] = $row->organization_type_name ?: __('N/A');
-            $values[] = (int) $row->total;
+            $key = $row->organization_type_name ?: self::CATEGORY_AXIS_NA_KEY;
+            $byType[$key] = ($byType[$key] ?? 0) + (int) $row->total;
         }
+        $aligned = $this->alignCountsToCategoryAxis($byType, $this->masterOrganizationTypeCategoryKeys());
 
         return [
             'id' => 'swmChartOrgCategory',
             'type' => 'doughnut',
             'title' => __('Organizations Type'),
-            'labels' => $labels,
+            'labels' => $aligned['labels'],
             'datasets' => [
-                ['data' => $values],
+                ['data' => array_map(static fn ($v) => (int) $v, $aligned['values'])],
             ],
             'options' => [],
         ];
@@ -183,29 +182,24 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
             ->whereNull('wt.deleted_at')
             ->selectRaw('wt.name as label, COUNT(*) as total')
             ->groupBy('wt.id', 'wt.name')
-            ->orderByDesc('total')
             ->get();
 
-        $labels = [];
-        $values = [];
-        foreach ($rows as $row) {
-            $labels[] = $row->label;
-            $values[] = (int) $row->total;
-        }
+        $byType = $rows->pluck('total', 'label')->all();
+        $aligned = $this->alignCountsToCategoryAxis($byType, $this->masterWorkTypeCategoryKeys());
 
         return [
             'id' => 'swmChartWorkersByType',
             'type' => 'bar',
             'title' => __('Workers by Worker Type'),
-            'labels' => $labels,
+            'labels' => $aligned['labels'],
             'datasets' => [
-                ['data' => $values],
+                ['data' => array_map(static fn ($v) => (int) $v, $aligned['values'])],
             ],
-            'options' => [
-                'unitX' => __('Worker Type'),
-                'unitY' => $this->countChartAxisY(__('Workers')),
-                'integerYTicks' => true,
-            ],
+            'options' => $this->staticCategoryChartOptions(
+                __('Worker Type'),
+                $this->countChartAxisY(__('Workers')),
+                ['integerYTicks' => true],
+            ),
         ];
     }
 
@@ -263,12 +257,11 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
                 'title' => __('Workers by Ward and Organization'),
                 'labels' => [],
                 'datasets' => [],
-                'options' => [
-                    'stacked' => true,
-                    'unitX' => __('Ward'),
-                    'unitY' => $this->countChartAxisY(__('Workers')),
-                    'integerYTicks' => true,
-                ],
+                'options' => $this->staticCategoryChartOptions(
+                    __('Ward'),
+                    $this->countChartAxisY(__('Workers')),
+                    ['stacked' => true, 'integerYTicks' => true],
+                ),
                 'height' => 400,
             ];
         }
@@ -279,12 +272,6 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
 
         $topOrgIds = $orgTotals->keys()->take(self::TOP_ORGANIZATIONS_FOR_STACKED_CHART)->all();
         $topOrgIdSet = array_flip($topOrgIds);
-
-        $wardLabels = $rows->pluck('ward')
-            ->unique()
-            ->sortBy(fn (string $ward) => (int) $ward)
-            ->values()
-            ->all();
 
         $countsByWardOrg = [];
         foreach ($rows as $row) {
@@ -300,35 +287,31 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
             $datasetKeys[] = 'others';
         }
 
-        $datasets = [];
-        foreach ($datasetKeys as $key) {
-            $label = $key === 'others'
+        $aligned = $this->alignStackedSeriesToWardAxis(
+            $countsByWardOrg,
+            $datasetKeys,
+            fn (string $key) => $key === 'others'
                 ? __('Others')
-                : (string) ($orgNames[(int) $key] ?? $key);
-
-            $data = [];
-            foreach ($wardLabels as $ward) {
-                $data[] = (int) ($countsByWardOrg[$ward][$key] ?? 0);
-            }
-
-            $datasets[] = [
-                'label' => $label,
-                'data' => $data,
-            ];
-        }
+                : (string) ($orgNames[(int) $key] ?? $key),
+        );
 
         return [
             'id' => 'swmChartWorkersWardOrg',
             'type' => 'stackedBar',
             'title' => __('Workers by Ward and Organization'),
-            'labels' => $wardLabels,
-            'datasets' => $datasets,
-            'options' => [
-                'stacked' => true,
-                'unitX' => __('Ward'),
-                'unitY' => $this->countChartAxisY(__('Workers')),
-                'integerYTicks' => true,
-            ],
+            'labels' => $aligned['labels'],
+            'datasets' => array_map(
+                static fn (array $dataset) => [
+                    'label' => $dataset['label'],
+                    'data' => array_map(static fn ($v) => (int) $v, $dataset['data']),
+                ],
+                $aligned['datasets'],
+            ),
+            'options' => $this->staticCategoryChartOptions(
+                __('Ward'),
+                $this->countChartAxisY(__('Workers')),
+                ['stacked' => true, 'integerYTicks' => true],
+            ),
             'height' => 400,
         ];
     }
@@ -346,29 +329,30 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
             ->groupBy('gender')
             ->pluck('total', 'gender');
 
-        $chartLabels = [];
-        $values = [];
+        $byGender = [];
         foreach ($labels as $key => $label) {
-            $count = (int) $counts->get($key, 0);
-            if ($count > 0) {
-                $chartLabels[] = $label;
-                $values[] = $count;
-            }
+            $byGender[$key] = (int) $counts->get($key, 0);
         }
-
-        $unknown = $this->sumUnlistedBucketCounts($counts, array_keys($labels));
-        if ($unknown > 0) {
-            $chartLabels[] = __('N/A');
-            $values[] = $unknown;
-        }
+        $byGender[self::CATEGORY_AXIS_NA_KEY] = $this->sumUnlistedBucketCounts($counts, array_keys($labels));
+        $masterKeys = array_merge(array_keys($labels), [self::CATEGORY_AXIS_NA_KEY]);
+        $aligned = $this->alignCountsToCategoryAxis(
+            $byGender,
+            $masterKeys,
+            fn (string $key) => match ($key) {
+                'male' => __('Male'),
+                'female' => __('Female'),
+                'others' => __('Others'),
+                default => __('N/A'),
+            },
+        );
 
         return [
             'id' => 'swmChartWorkerGender',
             'type' => 'doughnut',
             'title' => __('Worker Gender Distribution'),
-            'labels' => $chartLabels,
+            'labels' => $aligned['labels'],
             'datasets' => [
-                ['data' => $values],
+                ['data' => array_map(static fn ($v) => (int) $v, $aligned['values'])],
             ],
             'options' => [],
         ];
@@ -410,11 +394,11 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
             'datasets' => [
                 ['data' => $values],
             ],
-            'options' => [
-                'unitX' => __('Age'),
-                'unitY' => $this->countChartAxisY(__('Workers')),
-                'integerYTicks' => true,
-            ],
+            'options' => $this->staticCategoryChartOptions(
+                __('Age'),
+                $this->countChartAxisY(__('Workers')),
+                ['integerYTicks' => true],
+            ),
         ];
     }
 
@@ -431,29 +415,24 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
             ->groupBy('employment_type')
             ->pluck('total', 'employment_type');
 
-        $chartLabels = [];
-        $values = [];
+        $byEmployment = [];
         foreach ($labels as $key => $label) {
-            $count = (int) $counts->get($key, 0);
-            if ($count > 0) {
-                $chartLabels[] = $label;
-                $values[] = $count;
-            }
+            $byEmployment[$key] = (int) $counts->get($key, 0);
         }
-
-        $unknown = $this->sumUnlistedBucketCounts($counts, array_keys($labels));
-        if ($unknown > 0) {
-            $chartLabels[] = __('N/A');
-            $values[] = $unknown;
-        }
+        $byEmployment[self::CATEGORY_AXIS_NA_KEY] = $this->sumUnlistedBucketCounts($counts, array_keys($labels));
+        $aligned = $this->alignCountsToCategoryAxis(
+            $byEmployment,
+            array_merge(array_keys($labels), [self::CATEGORY_AXIS_NA_KEY]),
+            fn (string $key) => $labels[$key] ?? __('N/A'),
+        );
 
         return [
             'id' => 'swmChartWorkerEmploymentType',
             'type' => 'doughnut',
             'title' => __('Worker by Employment Type'),
-            'labels' => $chartLabels,
+            'labels' => $aligned['labels'],
             'datasets' => [
-                ['data' => $values],
+                ['data' => array_map(static fn ($v) => (int) $v, $aligned['values'])],
             ],
             'options' => [],
         ];
@@ -468,36 +447,32 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
             ->groupBy('education_level')
             ->pluck('total', 'education_level');
 
-        $chartLabels = [];
-        $values = [];
+        $byEducation = [];
         foreach (self::EDUCATION_LEVEL_ORDER as $key) {
-            $count = (int) ($counts[$key] ?? 0);
-            if ($count === 0) {
-                continue;
-            }
-            $chartLabels[] = $labels[$key];
-            $values[] = $count;
+            $byEducation[$key] = (int) ($counts[$key] ?? 0);
         }
-
-        $unknown = (int) $counts->filter(fn ($_, $key) => $key === null || $key === '' || ! in_array($key, self::EDUCATION_LEVEL_ORDER, true))->sum();
-        if ($unknown > 0) {
-            $chartLabels[] = __('N/A');
-            $values[] = $unknown;
-        }
+        $byEducation[self::CATEGORY_AXIS_NA_KEY] = (int) $counts->filter(
+            fn ($_, $key) => $key === null || $key === '' || ! in_array($key, self::EDUCATION_LEVEL_ORDER, true),
+        )->sum();
+        $aligned = $this->alignCountsToCategoryAxis(
+            $byEducation,
+            array_merge(self::EDUCATION_LEVEL_ORDER, [self::CATEGORY_AXIS_NA_KEY]),
+            fn (string $key) => $labels[$key] ?? __('N/A'),
+        );
 
         return [
             'id' => 'swmChartWorkerEducation',
             'type' => 'bar',
             'title' => __('Worker Education-Level Distribution'),
-            'labels' => $chartLabels,
+            'labels' => $aligned['labels'],
             'datasets' => [
-                ['data' => $values],
+                ['data' => array_map(static fn ($v) => (int) $v, $aligned['values'])],
             ],
-            'options' => [
-                'unitX' => __('Education Level'),
-                'unitY' => $this->countChartAxisY(__('Workers')),
-                'integerYTicks' => true,
-            ],
+            'options' => $this->staticCategoryChartOptions(
+                __('Education Level'),
+                $this->countChartAxisY(__('Workers')),
+                ['integerYTicks' => true],
+            ),
         ];
     }
 

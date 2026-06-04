@@ -94,7 +94,27 @@
             return true;
         }
         var wardLabel = cfg.wardAxisLabel || 'Ward';
-        return opts.unitX === wardLabel || opts.unitY === wardLabel;
+        var serviceWardsLabel = cfg.serviceWardsAxisLabel || 'Service Wards';
+        return opts.unitX === wardLabel
+            || opts.unitY === wardLabel
+            || opts.unitX === serviceWardsLabel
+            || opts.unitY === serviceWardsLabel;
+    }
+
+    function isStaticCategoryAxisChart(opts) {
+        if (!opts) {
+            return false;
+        }
+        return opts.staticCategoryAxis === true || isWardAxisChart(opts);
+    }
+
+    function applyStaticCategoryAxisTicks(ticks, opts) {
+        if (!isStaticCategoryAxisChart(opts)) {
+            return ticks;
+        }
+        ticks.autoSkip = false;
+        ticks.maxRotation = 45;
+        return ticks;
     }
 
     function formatWardTooltipLine(ward) {
@@ -133,8 +153,13 @@
     function scaleOptions(unitX, unitY, opts) {
         opts = opts || {};
         var scales = {};
+        var categoryDim = opts.categoryAxisDimension || 'x';
+        var staticAxis = isStaticCategoryAxisChart(opts);
         if (unitX) {
             var xTicks = { beginAtZero: true };
+            if (staticAxis && categoryDim === 'x') {
+                xTicks = applyStaticCategoryAxisTicks(xTicks, opts);
+            }
             if (opts.integerXTicks) {
                 xTicks.precision = 0;
                 xTicks.stepSize = 1;
@@ -145,6 +170,9 @@
             }];
         }
         var yTicks = { beginAtZero: true };
+        if (staticAxis && categoryDim === 'y') {
+            yTicks = applyStaticCategoryAxisTicks(yTicks, opts);
+        }
         if (opts.percentYAxis) {
             yTicks.max = 100;
             yTicks.suggestedMax = 100;

@@ -52,6 +52,7 @@
         'charts' => $dashboard['charts'] ?? [],
         'chartColors' => config('swm_dashboard.chart_colors', []),
         'wardAxisLabel' => __('Ward'),
+        'serviceWardsAxisLabel' => __('Service Wards'),
     ];
 @endphp
 <script src="{{ asset('js/vendor/Chart.min.js') }}"></script>

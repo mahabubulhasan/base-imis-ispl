@@ -165,61 +165,47 @@ class BillingDashboardModule implements SwmDashboardModuleInterface
     protected function billCollectionByWardChart(DashboardReportingPeriod $period): array
     {
         $byWard = $this->metrics->billCollectionByWard($period->toMonth);
-        ksort($byWard, SORT_NATURAL);
-
-        $labels = array_keys($byWard);
-        $values = array_values($byWard);
+        $aligned = $this->alignCountsToWardAxis($byWard);
 
         return [
             'id' => 'swmChartBillingCollectionByWard',
             'type' => 'bar',
             'title' => __('Bill Collection by Ward'),
-            'labels' => $labels,
+            'labels' => $aligned['labels'],
             'datasets' => [
-                ['label' => __('Bill Collected (Taka)'), 'data' => $values],
+                ['label' => __('Bill Collected (Taka)'), 'data' => $aligned['values']],
             ],
-            'options' => [
-                'unitX' => __('Ward'),
-                'unitY' => __('Taka'),
+            'options' => $this->staticCategoryChartOptions(__('Ward'), __('Taka'), [
                 'decimalValues' => true,
-            ],
+            ]),
         ];
     }
 
     protected function paymentMethodChart(DashboardReportingPeriod $period): array
     {
-        $counts = $this->metrics->paymentMethodCountsThroughMonth($period->toMonth);
+        $collected = $this->metrics->paymentMethodCollectedThroughMonth($period->toMonth);
         $methods = config('bill_collection.payment_methods', []);
-
-        $labels = [];
-        $data = [];
-        foreach ($methods as $key => $label) {
-            $cnt = $counts[$key] ?? 0;
-            if ($cnt <= 0) {
-                continue;
-            }
-            $labels[] = __($label);
-            $data[] = $cnt;
+        $byMethod = [];
+        foreach ($collected as $key => $amount) {
+            $byMethod[(string) $key] = (float) $amount;
         }
-
-        foreach ($counts as $key => $cnt) {
-            if (isset($methods[$key]) || $cnt <= 0) {
-                continue;
-            }
-            $labels[] = (string) $key;
-            $data[] = $cnt;
-        }
+        $aligned = $this->alignCountsToCategoryAxis(
+            $byMethod,
+            array_keys($methods),
+            fn (string $key) => isset($methods[$key]) ? __($methods[$key]) : $key,
+        );
 
         return [
             'id' => 'swmChartBillingPaymentMethod',
             'type' => 'doughnut',
             'title' => __('Payment-Method Distribution'),
-            'labels' => $labels,
+            'labels' => $aligned['labels'],
             'datasets' => [
-                ['label' => __('Payments'), 'data' => $data],
+                ['label' => __('Bill Collected (Taka)'), 'data' => $aligned['values']],
             ],
             'options' => [
                 'unitX' => __('Payment Method'),
+                'decimalValues' => true,
             ],
         ];
     }
@@ -227,24 +213,19 @@ class BillingDashboardModule implements SwmDashboardModuleInterface
     protected function averageFeeByWardChart(DashboardReportingPeriod $period): array
     {
         $byWard = $this->metrics->averageFeeByWard();
-        ksort($byWard, SORT_NATURAL);
-
-        $labels = array_keys($byWard);
-        $values = array_values($byWard);
+        $aligned = $this->alignCountsToWardAxis($byWard);
 
         return [
             'id' => 'swmChartBillingAvgFeeByWard',
             'type' => 'bar',
             'title' => __('Waste Collection Fee by Ward'),
-            'labels' => $labels,
+            'labels' => $aligned['labels'],
             'datasets' => [
-                ['label' => __('Average Fee (Taka)'), 'data' => $values],
+                ['label' => __('Average Fee (Taka)'), 'data' => $aligned['values']],
             ],
-            'options' => [
-                'unitX' => __('Ward'),
-                'unitY' => __('Taka'),
+            'options' => $this->staticCategoryChartOptions(__('Ward'), __('Taka'), [
                 'decimalValues' => true,
-            ],
+            ]),
         ];
     }
 
@@ -253,25 +234,23 @@ class BillingDashboardModule implements SwmDashboardModuleInterface
      */
     protected function arrearsByWardChart(array $agg): array
     {
-        $byWard = $agg['ward_arrears'] ?? [];
-        ksort($byWard, SORT_NATURAL);
-
-        $labels = array_keys($byWard);
-        $values = array_map(static fn (string $v) => round((float) $v, 2), array_values($byWard));
+        $byWard = [];
+        foreach ($agg['ward_arrears'] ?? [] as $ward => $amount) {
+            $byWard[$ward] = round((float) $amount, 2);
+        }
+        $aligned = $this->alignCountsToWardAxis($byWard);
 
         return [
             'id' => 'swmChartBillingArrearsByWard',
             'type' => 'bar',
             'title' => __('Due Amount by Ward'),
-            'labels' => $labels,
+            'labels' => $aligned['labels'],
             'datasets' => [
-                ['label' => __('Due Amount (Taka)'), 'data' => $values],
+                ['label' => __('Due Amount (Taka)'), 'data' => $aligned['values']],
             ],
-            'options' => [
-                'unitX' => __('Ward'),
-                'unitY' => __('Taka'),
+            'options' => $this->staticCategoryChartOptions(__('Ward'), __('Taka'), [
                 'decimalValues' => true,
-            ],
+            ]),
         ];
     }
 

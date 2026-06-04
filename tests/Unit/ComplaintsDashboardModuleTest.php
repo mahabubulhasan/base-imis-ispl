@@ -19,6 +19,7 @@ class ComplaintsDashboardModuleTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->seedMunicipalWards([1, 2, 3, 4, 5]);
         $this->module = app(ComplaintsDashboardModule::class);
     }
 
@@ -60,6 +61,10 @@ class ComplaintsDashboardModuleTest extends TestCase
 
         $charts = $this->chartsFromResult($this->module->build($period));
 
+        $byType = $charts['swmChartComplaintsByType'];
+        $this->assertCount(count(config('swm_complaints.complaint_types', [])), $byType['labels']);
+        $this->assertTrue($byType['options']['staticCategoryAxis'] ?? false);
+
         $this->assertArrayHasKey('swmChartComplaintsByType', $charts);
         $this->assertArrayHasKey('swmChartComplaintsByWard', $charts);
         $this->assertArrayHasKey('swmChartComplaintsStatusByWard', $charts);
@@ -77,7 +82,8 @@ class ComplaintsDashboardModuleTest extends TestCase
         $this->assertFalse($heatmap['fullWidth']);
         $this->assertSame(280, $heatmap['height']);
         $this->assertSame(__('Complaint Type by Ward'), $heatmap['title']);
-        $this->assertSame(['1', '2', __('Unknown')], $heatmap['labels']);
+        $expectedWardLabels = ['1', '2', '3', '4', '5', __('Unknown')];
+        $this->assertSame($expectedWardLabels, $heatmap['labels']);
         $this->assertCount(2, $heatmap['datasets']);
 
         $statusByWard = $charts['swmChartComplaintsStatusByWard'];
@@ -85,13 +91,13 @@ class ComplaintsDashboardModuleTest extends TestCase
         $this->assertFalse($statusByWard['fullWidth']);
         $this->assertSame(280, $statusByWard['height']);
         $this->assertSame(__('Complaint Status by Ward'), $statusByWard['title']);
-        $this->assertSame(['1', '2', __('Unknown')], $statusByWard['labels']);
+        $this->assertSame($expectedWardLabels, $statusByWard['labels']);
         $this->assertSame(__('Resolved'), $statusByWard['datasets'][0]['label']);
         $this->assertSame(__('Pending'), $statusByWard['datasets'][1]['label']);
         $this->assertSame(__('Others'), $statusByWard['datasets'][2]['label']);
-        $this->assertSame([1, 1, 0], $statusByWard['datasets'][0]['data']);
-        $this->assertSame([1, 0, 0], $statusByWard['datasets'][1]['data']);
-        $this->assertSame([0, 0, 1], $statusByWard['datasets'][2]['data']);
+        $this->assertSame([1, 1, 0, 0, 0, 0], $statusByWard['datasets'][0]['data']);
+        $this->assertSame([1, 0, 0, 0, 0, 0], $statusByWard['datasets'][1]['data']);
+        $this->assertSame([0, 0, 0, 0, 0, 1], $statusByWard['datasets'][2]['data']);
     }
 
     public function test_empty_complaint_window_returns_zeros(): void
@@ -126,6 +132,18 @@ class ComplaintsDashboardModuleTest extends TestCase
                 DashboardReportingPeriod::SOURCE_COMPLAINT => ReportingWindow::between($epoch, $periodEnd),
             ],
         );
+    }
+
+    /**
+     * @param  list<int>  $wards
+     */
+    private function seedMunicipalWards(array $wards): void
+    {
+        foreach ($wards as $ward) {
+            DB::table('layer_info.wards')->insertOrIgnore([
+                'ward' => $ward,
+            ]);
+        }
     }
 
     private function seedComplaintsForPeriod(): void

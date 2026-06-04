@@ -263,22 +263,22 @@ final class BillingDashboardMetrics
     }
 
     /**
-     * @return array<string, int> payment_method key => count
+     * @return array<string, float> payment_method key => collected amount (Taka)
      */
-    public function paymentMethodCountsThroughMonth(Carbon $endMonth): array
+    public function paymentMethodCollectedThroughMonth(Carbon $endMonth): array
     {
         $endDate = $endMonth->copy()->startOfMonth()->toDateString();
 
         $rows = BillCollectionPayment::query()
             ->whereNull('deleted_at')
             ->whereDate('payment_for_month', '<=', $endDate)
-            ->selectRaw('payment_method, COUNT(*)::int as cnt')
+            ->selectRaw('payment_method, COALESCE(SUM(amount + COALESCE(due_paid, 0)), 0)::float as collected')
             ->groupBy('payment_method')
             ->get();
 
         $out = [];
         foreach ($rows as $row) {
-            $out[(string) $row->payment_method] = (int) $row->cnt;
+            $out[(string) $row->payment_method] = (float) $row->collected;
         }
 
         return $out;

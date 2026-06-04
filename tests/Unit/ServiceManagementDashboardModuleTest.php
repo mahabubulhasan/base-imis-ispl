@@ -97,6 +97,7 @@ class ServiceManagementDashboardModuleTest extends TestCase
 
         $this->assertSame('5.00', $tiles[__('Total Loading at Landfill')]);
         $this->assertSame('0.17', $tiles[__('Average Daily Loading at Landfill (Ton)']);
+        $this->assertSame('5.00', $tiles[__('Average Monthly Loading at Landfill (Ton)']);
     }
 
     public function test_waste_processing_tiles_kpis_and_charts_for_reporting_month(): void
@@ -121,8 +122,8 @@ class ServiceManagementDashboardModuleTest extends TestCase
 
         $tileItems = $this->tileItemsFromSubmodule($result, 'waste_processing');
         $this->assertCount(3, $tileItems);
-        $this->assertSame(__('Average Daily Waste Received for Processing (Ton)'), $tileItems[0]['label']);
-        $this->assertSame('3.33', $tileItems[0]['value']);
+        $this->assertSame(__('Average Monthly Waste Received for Processing (Ton)'), $tileItems[0]['label']);
+        $this->assertSame('100.00', $tileItems[0]['value']);
         $this->assertSame(__('Average Daily Waste Received for Processing (Ton)'), $tileItems[1]['label']);
         $this->assertSame('3.33', $tileItems[1]['value']);
         $this->assertSame(__('Total Waste Received for Processing (Ton)'), $tileItems[2]['label']);

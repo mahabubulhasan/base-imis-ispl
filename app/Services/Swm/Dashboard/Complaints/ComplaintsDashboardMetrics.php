@@ -2,6 +2,7 @@
 
 namespace App\Services\Swm\Dashboard\Complaints;
 
+use App\Services\Swm\Dashboard\Concerns\BuildsCountChartAxisLabels;
 use App\Services\Swm\Dashboard\DashboardReportingPeriod;
 use App\Services\Swm\Dashboard\ReportingWindow;
 use Carbon\Carbon;
@@ -9,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 final class ComplaintsDashboardMetrics
 {
+    use BuildsCountChartAxisLabels;
     /**
      * @return array{
      *     total: int,
@@ -185,28 +187,18 @@ final class ComplaintsDashboardMetrics
             "))
             ->get();
 
-        $wardSet = [];
         $typeSet = [];
         $matrix = [];
+        $wardTotals = [];
         foreach ($rows as $row) {
             $t = (string) $row->type_key;
             $w = (string) $row->ward_key;
             $typeSet[$t] = true;
-            $wardSet[$w] = true;
             $matrix[$t][$w] = (int) $row->cnt;
+            $wardTotals[$w] = ($wardTotals[$w] ?? 0) + (int) $row->cnt;
         }
 
-        $wards = array_keys($wardSet);
-        usort($wards, static function (string $a, string $b): int {
-            if ($a === '__unknown__') {
-                return 1;
-            }
-            if ($b === '__unknown__') {
-                return -1;
-            }
-
-            return strnatcasecmp($a, $b);
-        });
+        $wards = $this->resolveWardAxisKeys($wardTotals, appendUnknown: true);
 
         $types = array_keys($typeSet);
         usort($types, static fn (string $a, string $b) => strnatcasecmp($a, $b));
@@ -224,7 +216,7 @@ final class ComplaintsDashboardMetrics
             ];
         }
 
-        $wardLabels = array_map(fn (string $wk) => $this->wardDisplayLabel($wk), $wards);
+        $wardLabels = array_map(fn (string $wk) => $this->wardAxisDisplayLabel($wk), $wards);
 
         return [
             'wards' => $wardLabels,
@@ -380,12 +372,4 @@ final class ComplaintsDashboardMetrics
         return __($labels[$key] ?? $key);
     }
 
-    protected function wardDisplayLabel(string $wardKey): string
-    {
-        if ($wardKey === '__unknown__') {
-            return __('Unknown');
-        }
-
-        return $wardKey;
-    }
 }

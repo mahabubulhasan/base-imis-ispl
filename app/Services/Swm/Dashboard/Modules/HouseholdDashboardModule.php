@@ -94,13 +94,16 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
 
     protected function municipalitySubmodule(object $agg, float $totalPopulation, float $avgFamilySize): array
     {
-        $wardCounts = DB::table('building_info.households')
+        $wardCountsByWard = DB::table('building_info.households')
             ->whereNull('deleted_at')
             ->whereNotNull('ward')
             ->selectRaw('ward, COUNT(*) as total')
             ->groupBy('ward')
             ->orderBy('ward')
-            ->get();
+            ->pluck('total', 'ward')
+            ->all();
+
+        $householdsByWard = $this->alignCountsToWardAxis($wardCountsByWard);
 
         $binCounts = DB::table('building_info.households')
             ->whereNull('deleted_at')
@@ -108,12 +111,19 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
             ->groupBy('waste_bin_provided')
             ->get();
 
-        $binLabels = [];
-        $binValues = [];
+        $byBin = [
+            'yes' => 0,
+            'no' => 0,
+        ];
         foreach ($binCounts as $row) {
-            $binLabels[] = $row->waste_bin_provided ? __('Yes') : __('No');
-            $binValues[] = (int) $row->total;
+            $key = $row->waste_bin_provided ? 'yes' : 'no';
+            $byBin[$key] = (int) $row->total;
         }
+        $binAligned = $this->alignCountsToCategoryAxis(
+            $byBin,
+            ['yes', 'no'],
+            fn (string $key) => $key === 'yes' ? __('Yes') : __('No'),
+        );
 
         return [
             'key' => 'municipality',
@@ -137,23 +147,23 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
                             'id' => 'swmChartHouseholdsByWard',
                             'type' => 'bar',
                             'title' => __('Households by Ward'),
-                            'labels' => $wardCounts->pluck('ward')->all(),
+                            'labels' => $householdsByWard['labels'],
                             'datasets' => [
-                                ['label' => __('Count'), 'data' => $wardCounts->pluck('total')->map(fn ($v) => (int) $v)->all()],
+                                ['label' => __('Count'), 'data' => array_map(static fn ($v) => (int) $v, $householdsByWard['values'])],
                             ],
-                            'options' => [
-                                'unitX' => __('Ward'),
-                                'unitY' => $this->countChartAxisY(__('Households')),
-                                'integerYTicks' => true,
-                            ],
+                            'options' => $this->staticCategoryChartOptions(
+                                __('Ward'),
+                                $this->countChartAxisY(__('Households')),
+                                ['integerYTicks' => true],
+                            ),
                         ],
                         [
                             'id' => 'swmChartWasteBinPresence',
                             'type' => 'doughnut',
                             'title' => __('Buildings by Waste Bin Availability'),
-                            'labels' => $binLabels,
+                            'labels' => $binAligned['labels'],
                             'datasets' => [
-                                ['label' => __('Count'), 'data' => $binValues],
+                                ['label' => __('Count'), 'data' => array_map(static fn ($v) => (int) $v, $binAligned['values'])],
                             ],
                             'options' => [],
                         ],
@@ -230,7 +240,9 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
                             'title' => __('Daily Waste Generation by Ward'),
                             'labels' => $wardGen['labels'],
                             'datasets' => [['label' => __('Ton/day'), 'data' => $wardGen['values']]],
-                            'options' => ['unitX' => __('Ward'), 'unitY' => __('Ton/day')],
+                            'options' => $this->staticCategoryChartOptions(__('Ward'), __('Ton/day'), [
+                                'decimalValues' => true,
+                            ]),
                         ],
                         [
                             'id' => 'swmChartWasteCollectedByWard',
@@ -238,7 +250,9 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
                             'title' => __('Daily Waste Collected per Ward'),
                             'labels' => $wardCollected['labels'],
                             'datasets' => [['label' => __('Ton/day'), 'data' => $wardCollected['values']]],
-                            'options' => ['unitX' => __('Ward'), 'unitY' => __('Ton/day')],
+                            'options' => $this->staticCategoryChartOptions(__('Ward'), __('Ton/day'), [
+                                'decimalValues' => true,
+                            ]),
                         ],
                         // [
                         //     'id' => 'swmChartWasteByFunctionalUse',
@@ -259,12 +273,10 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
                             'datasets' => [
                                 ['label' => __('Segregation Rate'), 'data' => $segregationByWard['values']],
                             ],
-                            'options' => [
-                                'unitX' => __('Ward'),
-                                'unitY' => '%',
+                            'options' => $this->staticCategoryChartOptions(__('Ward'), '%', [
                                 'percentYAxis' => true,
                                 'decimalValues' => true,
-                            ],
+                            ]),
                         ],
                     ],
                 ],
@@ -321,11 +333,11 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
                             'datasets' => [
                                 ['label' => __('Count'), 'data' => $licsByWard['values']],
                             ],
-                            'options' => [
-                                'unitX' => __('Ward'),
-                                'unitY' => $this->countChartAxisY(__('LICs')),
-                                'integerYTicks' => true,
-                            ],
+                            'options' => $this->staticCategoryChartOptions(
+                                __('Ward'),
+                                $this->countChartAxisY(__('LICs')),
+                                ['integerYTicks' => true],
+                            ),
                         ],
                         [
                             'id' => 'swmChartLicGender',
@@ -392,10 +404,12 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
             ->orderBy('ward')
             ->get();
 
-        return [
-            'labels' => $rows->pluck('ward')->all(),
-            'values' => $rows->map(fn ($r) => round(($p * (float) $r->members) / 1000, 2))->all(),
-        ];
+        $byWard = [];
+        foreach ($rows as $row) {
+            $byWard[$row->ward] = round(($p * (float) $row->members) / 1000, 2);
+        }
+
+        return $this->alignCountsToWardAxis($byWard);
     }
 
     protected function wardCollectedTon(): array
@@ -408,10 +422,12 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
             ->orderBy('ward')
             ->get();
 
-        return [
-            'labels' => $rows->pluck('ward')->all(),
-            'values' => $rows->map(fn ($r) => round((float) $r->kg / 1000, 2))->all(),
-        ];
+        $byWard = [];
+        foreach ($rows as $row) {
+            $byWard[$row->ward] = round((float) $row->kg / 1000, 2);
+        }
+
+        return $this->alignCountsToWardAxis($byWard);
     }
 
     protected function functionalUseCollectedTon(): array
@@ -445,12 +461,14 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
             ->orderBy('ward')
             ->get();
 
-        return [
-            'labels' => $rows->pluck('ward')->all(),
-            'values' => $rows->map(fn ($r) => (int) $r->total > 0
-                ? round(((int) $r->yes_count / (int) $r->total) * 100, 1)
-                : 0)->all(),
-        ];
+        $byWard = [];
+        foreach ($rows as $row) {
+            $byWard[$row->ward] = (int) $row->total > 0
+                ? round(((int) $row->yes_count / (int) $row->total) * 100, 1)
+                : 0;
+        }
+
+        return $this->alignCountsToWardAxis($byWard);
     }
 
     protected function licsByWard(): array
@@ -463,9 +481,8 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
             ->orderBy('ward')
             ->get();
 
-        return [
-            'labels' => $rows->pluck('ward')->all(),
-            'values' => $rows->pluck('total')->map(fn ($v) => (int) $v)->all(),
-        ];
+        $byWard = $rows->pluck('total', 'ward')->all();
+
+        return $this->alignCountsToWardAxis($byWard);
     }
 }

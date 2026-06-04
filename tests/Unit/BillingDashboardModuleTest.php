@@ -122,7 +122,7 @@ class BillingDashboardModuleTest extends TestCase
         $this->assertCount(12, $trend['labels']);
     }
 
-    public function test_payment_method_chart_counts_cumulative_through_period(): void
+    public function test_payment_method_chart_sums_collected_amount_cumulative_through_period(): void
     {
         $period = $this->testPeriod();
         $site = $this->createHousehold();
@@ -166,7 +166,7 @@ class BillingDashboardModuleTest extends TestCase
         $this->assertSame('doughnut', $donut['type']);
         $cashIndex = array_search(__('Cash'), $donut['labels'], true);
         $this->assertNotFalse($cashIndex);
-        $this->assertSame(1, $donut['datasets'][0]['data'][$cashIndex]);
+        $this->assertSame(100.0, $donut['datasets'][0]['data'][$cashIndex]);
     }
 
     public function test_table_includes_household_with_three_or_more_due_months(): void
