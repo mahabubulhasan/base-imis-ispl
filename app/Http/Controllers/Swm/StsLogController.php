@@ -53,12 +53,10 @@ class StsLogController extends Controller
     public function index()
     {
         $page_title = __('STS Loading');
-        $statusOptions = StsLog::statusOptions();
         $stsList = $this->stsOptionsForForms();
 
         return view('swm.service-management.sts-logs.index', compact(
             'page_title',
-            'statusOptions',
             'stsList'
         ));
     }
@@ -72,14 +70,12 @@ class StsLogController extends Controller
     {
         $page_title = __('Add STS Loading Log');
         $stsLog = null;
-        $statusOptions = StsLog::statusOptions();
         $stsList = $this->stsOptionsForForms();
         $wardOptions = $this->wardOptionsForForms();
 
         return view('swm.service-management.sts-logs.create', compact(
             'page_title',
             'stsLog',
-            'statusOptions',
             'stsList',
             'wardOptions'
         ));
@@ -107,14 +103,12 @@ class StsLogController extends Controller
     {
         $page_title = __('Edit STS Loading Log');
         $stsLog = $sts_log->load(['vehicle', 'vehicleType', 'driver', 'sts', 'wasteType']);
-        $statusOptions = StsLog::statusOptions();
         $stsList = $this->stsOptionsForForms();
         $wardOptions = $this->wardOptionsForForms();
 
         return view('swm.service-management.sts-logs.edit', compact(
             'page_title',
             'stsLog',
-            'statusOptions',
             'stsList',
             'wardOptions'
         ));

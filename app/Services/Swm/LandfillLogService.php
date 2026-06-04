@@ -58,17 +58,14 @@ class LandfillLogService
             ->addColumn('source_wards_label', function (LandfillLog $model) {
                 return is_array($model->source_wards) ? implode(', ', $model->source_wards) : '';
             })
-            ->addColumn('weighbridge_weight_used_text', function (LandfillLog $model) {
-                return $this->weighbridgeWeightUsedLabel($model);
-            })
             ->editColumn('entry_at', function (LandfillLog $model) {
                 return $model->entry_at?->format('Y-m-d H:i') ?? '';
             })
             ->editColumn('operation_date', function (LandfillLog $model) {
                 return $model->operation_date?->format('Y-m-d') ?? '';
             })
-            ->editColumn('operation_status', function (LandfillLog $model) {
-                return LandfillLog::statusOptions()[$model->operation_status] ?? $model->operation_status;
+            ->editColumn('quantity_ton', function (LandfillLog $model) {
+                return $model->quantity_ton !== null ? (string) $model->quantity_ton : '';
             })
             ->orderColumn('vehicle_number', function ($query, $order) {
                 $query->orderBy(
@@ -131,7 +128,6 @@ class LandfillLogService
             $log->vehicle_id = (int) $data['vehicle_id'];
             $log->entry_at = Carbon::parse($data['entry_at']);
             $log->operation_date = Carbon::parse($data['operation_date'])->toDateString();
-            $log->operation_status = $data['operation_status'];
             $log->source_sts_ids = $data['source_sts_ids'] ?? null;
             $log->source_wards = $data['source_wards'] ?? null;
             $log->remarks = $data['remarks'] ?? null;
@@ -174,7 +170,9 @@ class LandfillLogService
             }
 
             $this->applyWasteTypeIdsToLandfillLog($log, $wtIds);
-            $this->applyWeightFields($log, $data, $landfill ?? null);
+            $quantity = $data['quantity_ton'] ?? null;
+            $log->quantity_ton = ($quantity !== null && $quantity !== '') ? $quantity : null;
+            $log->weighbridge_weight_ton = null;
 
             $log->save();
         });
@@ -197,11 +195,8 @@ class LandfillLogService
             __('Landfill Name'),
             __('Waste Type'),
             __('Quantity (Ton)'),
-            __('Weighbridge Weight (Ton)'),
-            __('Weighbridge Facility Available'),
             __('Source STSs'),
             __('Source Wards'),
-            __('Operation Status'),
             __('Remarks'),
         ];
 
@@ -215,9 +210,7 @@ class LandfillLogService
         $writer->openToBrowser('SW Landfill Logs.csv')
             ->addRowWithStyle($columns, $style);
 
-        $statusLabels = LandfillLog::statusOptions();
-
-        $query->orderBy('id')->chunk(5000, function ($rows) use ($writer, $statusLabels) {
+        $query->orderBy('id')->chunk(5000, function ($rows) use ($writer) {
             foreach ($rows as $row) {
                 $wards = is_array($row->source_wards) ? implode(', ', $row->source_wards) : '';
                 $stsNames = \App\Models\Swm\Sts::query()
@@ -237,30 +230,14 @@ class LandfillLogService
                     $row->landfill_name ?: $row->landfill?->name,
                     $this->wasteTypesDisplayLabel($row),
                     $row->quantity_ton,
-                    $row->weighbridge_weight_ton,
-                    $this->weighbridgeWeightUsedLabel($row),
                     $sourceSts,
                     $wards,
-                    $statusLabels[$row->operation_status] ?? $row->operation_status,
                     $row->remarks,
                 ]);
             }
         });
 
         $writer->close();
-    }
-
-    protected function weighbridgeWeightUsedLabel(LandfillLog $model): string
-    {
-        if ($model->weighbridge_weight_ton !== null) {
-            return __('Yes');
-        }
-
-        if ($model->quantity_ton !== null) {
-            return __('No');
-        }
-
-        return '';
     }
 
     protected function wasteTypesDisplayLabel(LandfillLog $model): string
@@ -279,26 +256,6 @@ class LandfillLogService
         }
 
         return $model->wasteType?->name ?? '';
-    }
-
-    /**
-     * @param  array<int>  $candidateIds
-     */
-    protected function applyWeightFields(LandfillLog $log, array $data, ?Landfill $landfill): void
-    {
-        $hasWeighbridge = $landfill && (bool) $landfill->weighbridge_facility_available;
-
-        if ($hasWeighbridge) {
-            $log->quantity_ton = null;
-            $weighbridge = $data['weighbridge_weight_ton'] ?? null;
-            $log->weighbridge_weight_ton = ($weighbridge !== null && $weighbridge !== '') ? $weighbridge : null;
-
-            return;
-        }
-
-        $log->weighbridge_weight_ton = null;
-        $quantity = $data['quantity_ton'] ?? null;
-        $log->quantity_ton = ($quantity !== null && $quantity !== '') ? $quantity : null;
     }
 
     protected function applyWasteTypeIdsToLandfillLog(LandfillLog $log, array $candidateIds): void
@@ -333,9 +290,6 @@ class LandfillLogService
         }
         if (! empty($data['landfill_id'] ?? null)) {
             $query->where('landfill_id', (int) $data['landfill_id']);
-        }
-        if (! empty($data['operation_status'] ?? null)) {
-            $query->where('operation_status', $data['operation_status']);
         }
         if (! empty($data['date_from'] ?? null)) {
             $query->whereDate('operation_date', '>=', Carbon::parse($data['date_from'])->toDateString());

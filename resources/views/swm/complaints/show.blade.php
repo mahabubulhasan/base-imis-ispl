@@ -14,7 +14,7 @@
                 <div class="col-sm-3">{!! Form::label(null, optional($complaint->date_time)->format('Y-m-d H:i'), ['class' => 'form-control']) !!}</div>
             </div>
             <div class="form-group row">
-                {!! Form::label('holding_number', __('Holding number'), ['class' => 'col-sm-3 control-label']) !!}
+                {!! Form::label('holding_number', __('Holding Number'), ['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-sm-3">{!! Form::label(null, $complaint->holding_number, ['class' => 'form-control']) !!}</div>
                 {!! Form::label('customer_id', __('Household ID'), ['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-sm-3">{!! Form::label(null, $complaint->customer_id, ['class' => 'form-control']) !!}</div>
@@ -22,7 +22,7 @@
             <div class="form-group row">
                 {!! Form::label('name', __('Name'), ['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-sm-3">{!! Form::label(null, $complaint->name, ['class' => 'form-control']) !!}</div>
-                {!! Form::label('contact_number', __('Contact number'), ['class' => 'col-sm-3 control-label']) !!}
+                {!! Form::label('contact_number', __('Contact Number'), ['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-sm-3">{!! Form::label(null, $complaint->contact_number, ['class' => 'form-control']) !!}</div>
             </div>
             <div class="form-group row">
@@ -34,13 +34,13 @@
             <div class="form-group row">
                 {!! Form::label('complaint_type', __('Complaint Type'), ['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-sm-3">{!! Form::label(null, __(config('swm_complaints.complaint_types')[$complaint->complaint_type] ?? $complaint->complaint_type), ['class' => 'form-control']) !!}</div>
-                {!! Form::label('submitted_through', __('Complaint Submitted through'), ['class' => 'col-sm-3 control-label']) !!}
+                {!! Form::label('submitted_through', __('Complaint Submitted Through'), ['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-sm-3">{!! Form::label(null, __(config('swm_complaints.submitted_through')[$complaint->submitted_through] ?? $complaint->submitted_through), ['class' => 'form-control']) !!}</div>
             </div>
             <div class="form-group row">
                 {!! Form::label('complaint_status', __('Complaint Status'), ['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-sm-3">{!! Form::label(null, __(config('swm_complaints.complaint_statuses')[$complaint->complaint_status] ?? $complaint->complaint_status), ['class' => 'form-control']) !!}</div>
-                {!! Form::label('resolution_time_days', __('Resolution Time (days)'), ['class' => 'col-sm-3 control-label']) !!}
+                {!! Form::label('resolution_time_days', __('Resolution Time (Days)'), ['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-sm-3">{!! Form::label(null, $complaint->resolution_time_days, ['class' => 'form-control']) !!}</div>
             </div>
             <div class="form-group row">
@@ -64,7 +64,7 @@
                 <div class="col-sm-9 form-control">
                     @if(!empty($complaint->photo_attachment_path))
                         <a href="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($complaint->photo_attachment_path) }}" target="_blank">
-                            {{ __('View attachment') }}
+                            {{ __('View Attachment') }}
                         </a>
                     @else
                         {{ __('N/A') }}

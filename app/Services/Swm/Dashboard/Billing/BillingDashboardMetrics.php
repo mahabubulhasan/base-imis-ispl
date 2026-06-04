@@ -23,6 +23,7 @@ final class BillingDashboardMetrics
 
     /**
      * @return array{
+     *     total_billed_amount: string,
      *     due_for_this_month: string,
      *     total_due: string,
      *     total_revenue_collected: string,
@@ -41,6 +42,7 @@ final class BillingDashboardMetrics
         $monthStart = $period->toMonth->copy()->startOfMonth();
         $monthDate = $monthStart->toDateString();
 
+        $totalBilledAmount = '0.00';
         $dueForThisMonth = '0.00';
         $totalDue = '0.00';
         $totalPayable = '0.00';
@@ -64,6 +66,7 @@ final class BillingDashboardMetrics
             ->chunkById(500, function ($sites) use (
                 $monthStart,
                 $paymentsByHousehold,
+                &$totalBilledAmount,
                 &$dueForThisMonth,
                 &$totalDue,
                 &$totalPayable,
@@ -81,6 +84,15 @@ final class BillingDashboardMetrics
                     }
 
                     $billedCount++;
+
+                    $billableUnits = $this->paymentService->marginalBillableUnitCount($site, $monthStart);
+                    if ($billableUnits > 0) {
+                        $totalBilledAmount = bcadd(
+                            $totalBilledAmount,
+                            bcmul((string) $site->waste_charge, (string) $billableUnits, 2),
+                            2,
+                        );
+                    }
 
                     $balance = $this->paymentService->balanceThroughMonth($site, $monthStart);
                     $closingDue = (string) ($balance['due'] ?? '0.00');
@@ -132,6 +144,7 @@ final class BillingDashboardMetrics
         }, $tableCandidates), 0, self::TABLE_ROW_LIMIT);
 
         return [
+            'total_billed_amount' => $totalBilledAmount,
             'due_for_this_month' => $dueForThisMonth,
             'total_due' => $totalDue,
             'total_revenue_collected' => $this->sumRevenueForMonth($monthDate),
@@ -144,6 +157,38 @@ final class BillingDashboardMetrics
             'ward_arrears' => $wardArrears,
             'table_rows' => $tableRows,
         ];
+    }
+
+    /**
+     * @return array<string, float>
+     */
+    public function billCollectionByWard(Carbon $monthStart): array
+    {
+        $monthDate = $monthStart->copy()->startOfMonth()->toDateString();
+
+        $rows = BillCollectionPayment::query()
+            ->join('building_info.households as h', 'swm.bill_collection_payments.household_id', '=', 'h.id')
+            ->whereNull('swm.bill_collection_payments.deleted_at')
+            ->whereNull('h.deleted_at')
+            ->whereDate('swm.bill_collection_payments.payment_for_month', $monthDate)
+            ->whereNotNull('h.ward')
+            ->selectRaw('
+                h.ward as ward,
+                COALESCE(SUM(swm.bill_collection_payments.amount + COALESCE(swm.bill_collection_payments.due_paid, 0)), 0)::float as collected
+            ')
+            ->groupBy('h.ward')
+            ->orderBy('h.ward')
+            ->get();
+
+        $out = [];
+        foreach ($rows as $row) {
+            $ward = $this->normalizeWard($row->ward);
+            if ($ward !== '') {
+                $out[$ward] = round((float) $row->collected, 2);
+            }
+        }
+
+        return $out;
     }
 
     /**

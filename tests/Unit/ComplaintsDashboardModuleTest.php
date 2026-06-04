@@ -32,25 +32,25 @@ class ComplaintsDashboardModuleTest extends TestCase
         $blocks = $result['submodules'][0]['blocks'] ?? [];
         $types = array_column($blocks, 'type');
 
-        $this->assertSame(['tiles', 'kpis', 'charts'], $types);
+        $this->assertSame(['tiles', 'charts'], $types);
     }
 
-    public function test_tiles_status_duplicate_and_kpi_percent(): void
+    public function test_tiles_status_duplicate_and_resolution_percent(): void
     {
         $period = $this->testPeriod();
         $this->seedComplaintsForPeriod();
 
-        $tiles = $this->tilesFromResult($this->module->build($period));
+        $result = $this->module->build($period);
+        $tiles = $this->tilesFromResult($result);
+        $tileItems = $this->tileItemsFromResult($result);
 
+        $this->assertSame(__('Complaint Resolution'), $tileItems[0]['label']);
+        $this->assertSame('50.0 %', $tiles[__('Complaint Resolution')]);
         $this->assertSame('4', $tiles[__('Total Complaints Received')]);
         $this->assertSame('2', $tiles[__('Resolved Complaints')]);
         $this->assertSame('1', $tiles[__('Pending Complaints')]);
         $this->assertSame('1', $tiles[__('Others Complaints')]);
         $this->assertStringContainsString('%', $tiles[__('Duplicate-Complaint Rate')]);
-
-        $kpis = $this->kpisFromResult($this->module->build($period));
-        $this->assertArrayHasKey(__('Complaint Resolution'), $kpis);
-        $this->assertSame('50.0', $kpis[__('Complaint Resolution')]);
     }
 
     public function test_charts_include_expected_ids_and_twelve_month_trend(): void
@@ -62,23 +62,36 @@ class ComplaintsDashboardModuleTest extends TestCase
 
         $this->assertArrayHasKey('swmChartComplaintsByType', $charts);
         $this->assertArrayHasKey('swmChartComplaintsByWard', $charts);
+        $this->assertArrayHasKey('swmChartComplaintsStatusByWard', $charts);
         $this->assertArrayHasKey('swmChartComplaintsChannel', $charts);
         $this->assertArrayHasKey('swmChartComplaintsResolutionByType', $charts);
-        $this->assertArrayHasKey('swmChartComplaintsTypeByWardHeatmap', $charts);
+        $this->assertArrayHasKey('swmChartComplaintsTypeByWard', $charts);
         $this->assertArrayHasKey('swmChartComplaintsTrend12m', $charts);
 
         $trend = $charts['swmChartComplaintsTrend12m'];
         $this->assertSame('line', $trend['type']);
         $this->assertCount(12, $trend['labels']);
 
-        $heatmap = $charts['swmChartComplaintsTypeByWardHeatmap'];
-        $this->assertSame('heatmap', $heatmap['type']);
-        $this->assertNotEmpty($heatmap['wards']);
-        $this->assertNotEmpty($heatmap['heatmapRows']);
-        $wardCount = count($heatmap['wards']);
-        foreach ($heatmap['heatmapRows'] as $row) {
-            $this->assertCount($wardCount, $row['values']);
-        }
+        $heatmap = $charts['swmChartComplaintsTypeByWard'];
+        $this->assertSame('stackedBar', $heatmap['type']);
+        $this->assertFalse($heatmap['fullWidth']);
+        $this->assertSame(280, $heatmap['height']);
+        $this->assertSame(__('Complaint Type by Ward'), $heatmap['title']);
+        $this->assertSame(['1', '2', __('Unknown')], $heatmap['labels']);
+        $this->assertCount(2, $heatmap['datasets']);
+
+        $statusByWard = $charts['swmChartComplaintsStatusByWard'];
+        $this->assertSame('stackedBar', $statusByWard['type']);
+        $this->assertFalse($statusByWard['fullWidth']);
+        $this->assertSame(280, $statusByWard['height']);
+        $this->assertSame(__('Complaint Status by Ward'), $statusByWard['title']);
+        $this->assertSame(['1', '2', __('Unknown')], $statusByWard['labels']);
+        $this->assertSame(__('Resolved'), $statusByWard['datasets'][0]['label']);
+        $this->assertSame(__('Pending'), $statusByWard['datasets'][1]['label']);
+        $this->assertSame(__('Others'), $statusByWard['datasets'][2]['label']);
+        $this->assertSame([1, 1, 0], $statusByWard['datasets'][0]['data']);
+        $this->assertSame([1, 0, 0], $statusByWard['datasets'][1]['data']);
+        $this->assertSame([0, 0, 1], $statusByWard['datasets'][2]['data']);
     }
 
     public function test_empty_complaint_window_returns_zeros(): void
@@ -206,21 +219,24 @@ class ComplaintsDashboardModuleTest extends TestCase
 
     /**
      * @param  array<string, mixed>  $result
-     * @return array<string, string>
+     * @return list<array{label: string, value: string}>
      */
-    private function kpisFromResult(array $result): array
+    private function tileItemsFromResult(array $result): array
     {
-        $kpis = [];
+        $items = [];
         foreach ($result['submodules'][0]['blocks'] ?? [] as $block) {
-            if (($block['type'] ?? '') !== 'kpis') {
+            if (($block['type'] ?? '') !== 'tiles') {
                 continue;
             }
-            foreach ($block['items'] ?? [] as $item) {
-                $kpis[$item['name']] = $item['value'];
+            foreach ($block['items'] ?? [] as $tile) {
+                $items[] = [
+                    'label' => $tile['label'],
+                    'value' => $tile['value'],
+                ];
             }
         }
 
-        return $kpis;
+        return $items;
     }
 
     /**

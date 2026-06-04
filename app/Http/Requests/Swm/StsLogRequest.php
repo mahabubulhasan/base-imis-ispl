@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Swm;
 
-use App\Models\Swm\StsLog;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -91,10 +90,6 @@ class StsLogRequest extends FormRequest
             ],
             'entry_at' => ['required', 'date'],
             'operation_date' => ['required', 'date'],
-            'operation_status' => ['required', Rule::in([
-                StsLog::STATUS_COMPLETED,
-                StsLog::STATUS_PENDING,
-            ])],
             'remarks' => ['nullable', 'string'],
         ];
     }

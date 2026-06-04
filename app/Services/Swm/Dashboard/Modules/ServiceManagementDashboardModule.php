@@ -108,7 +108,12 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
                     'type' => 'tiles',
                     'items' => [
                         [
-                            'label' => __('Daily STS Receipts (Ton)'),
+                            'label' => __('Total Loading at STS (Ton)'),
+                            'value' => $this->formatter->decimal($this->totalStsLoadingTon($period)),
+                            'icon' => 'fa-weight-hanging',
+                        ],
+                        [
+                            'label' => __('Average Daily Loading at STS (Ton)'),
                             'value' => $this->formatter->decimal($this->dailyStsReceiptsAverage($period)),
                             'icon' => 'fa-weight-scale',
                         ],
@@ -140,14 +145,14 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
                     'type' => 'tiles',
                     'items' => [
                         [
-                            'label' => __('Daily Landfill Receipts (Ton)'),
-                            'value' => $this->formatter->decimal($this->dailyLandfillReceiptsAverage($period)),
-                            'icon' => 'fa-mountain-city',
+                            'label' => __('Total Loading at Landfill'),
+                            'value' => $this->formatter->decimal($this->totalLandfillLoadingTon($period)),
+                            'icon' => 'fa-weight-hanging',
                         ],
                         [
-                            'label' => __('Monthly Landfill Receipts (Ton)'),
-                            'value' => $this->formatter->decimal($this->monthlyLandfillReceipts($period)),
-                            'icon' => 'fa-chart-line',
+                            'label' => __('Average Daily Loading at Landfill (Ton)'),
+                            'value' => $this->formatter->decimal($this->dailyLandfillReceiptsAverage($period)),
+                            'icon' => 'fa-mountain-city',
                         ],
                     ],
                 ],
@@ -158,7 +163,7 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
                         $this->landfillReceiptsTrendChart($period),
                         // $this->sourceWardContributionToLandfillsChart($period),
                         // $this->sourceStsContributionToLandfillsChart($period),
-                        $this->landfillCatchmentNetworkChart($period),
+                        // $this->landfillCatchmentNetworkChart($period),
                     ],
                 ],
             ],
@@ -170,7 +175,7 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
      */
     protected function wasteProcessingSubmodule(DashboardReportingPeriod $period): array
     {
-        $received = $this->wasteReceivedLastMonth($period);
+        $received = $this->totalWasteReceivedForProcessingTon($period);
         $streams = $this->wasteStreamTotalsLastMonth($period);
 
         return [
@@ -181,15 +186,24 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
                     'type' => 'tiles',
                     'items' => [
                         [
-                            'label' => __('Quantity of Waste Received in Last Month'),
+                            'label' => __('Average Daily Waste Received for Processing (Ton)'),
+                            'value' => $this->formatter->decimal($this->averageDailyWasteReceivedForProcessingTon($period)),
+                            'icon' => 'fa-weight-scale',
+                        ],
+                        [
+                            'label' => __('Average Daily Waste Received for Processing (Ton)'),
+                            'value' => $this->formatter->decimal($this->averageDailyWasteReceivedForProcessingTon($period)),
+                            'icon' => 'fa-weight-scale',
+                        ],
+                        [
+                            'label' => __('Total Waste Received for Processing (Ton)'),
                             'value' => $this->formatter->decimal($received),
-                            'icon' => 'fa-recycle',
+                            'icon' => 'fa-weight-hanging',
                         ],
                     ],
                 ],
                 [
                     'type' => 'kpis',
-                    'subsection' => __('Key Performance Indicators'),
                     'items' => $this->wasteProcessingRateKpis($received, $streams),
                 ],
                 [
@@ -344,16 +358,22 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
         ];
     }
 
+    protected function totalStsLoadingTon(DashboardReportingPeriod $period): float
+    {
+        $monthStart = $period->toMonth->copy()->startOfMonth();
+
+        return round((float) $this->stsLogQuery($period)
+            ->whereDate('operation_date', '>=', $monthStart->toDateString())
+            ->whereDate('operation_date', '<=', $period->periodEnd->toDateString())
+            ->sum('quantity_ton'), 2);
+    }
+
     protected function dailyStsReceiptsAverage(DashboardReportingPeriod $period): float
     {
         $monthStart = $period->toMonth->copy()->startOfMonth();
         $daysInMonth = max(1, $monthStart->daysInMonth);
-        $total = (float) $this->stsLogQuery($period)
-            ->whereDate('operation_date', '>=', $monthStart->toDateString())
-            ->whereDate('operation_date', '<=', $period->periodEnd->toDateString())
-            ->sum('quantity_ton');
 
-        return round($total / $daysInMonth, 2);
+        return round($this->totalStsLoadingTon($period) / $daysInMonth, 2);
     }
 
     protected function stsReceiptsTrendChart(DashboardReportingPeriod $period): array
@@ -369,7 +389,7 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
 
         return $this->dailyTonLineChart(
             'swmChartSmStsReceiptsTrend',
-            __('Receipts Trend'),
+            __('Waste Loading Trend'),
             $start,
             $end,
             $totals,
@@ -390,7 +410,7 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
         return [
             'id' => 'swmChartSmReceiptsBySts',
             'type' => 'bar',
-            'title' => __('Receipts by STS'),
+            'title' => __('Waste Loading at STS'),
             'labels' => $rows->pluck('label')->all(),
             'datasets' => [
                 ['data' => $rows->pluck('total')->map(fn ($v) => round((float) $v, 2))->all()],
@@ -429,7 +449,6 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
                 ) AS elem
             ) AS ward_rows
             WHERE l.deleted_at IS NULL
-                AND l.operation_status = ?
                 AND l.operation_date >= ?
                 AND l.operation_date <= ?
                 {$orgScope['sql']}
@@ -437,7 +456,7 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
             ORDER BY ward_rows.ward, series_name
             ",
             array_merge(
-                [StsLog::STATUS_COMPLETED, $monthStart->toDateString(), $period->periodEnd->toDateString()],
+                [$monthStart->toDateString(), $period->periodEnd->toDateString()],
                 $orgScope['bindings'],
             ),
         ));
@@ -445,24 +464,23 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
         return $this->buildStackedBarFromRows($rows, 'swmChartSmWardToSts', __('Source-Ward Contribution to STS'), __('Ward'), true);
     }
 
-    protected function dailyLandfillReceiptsAverage(DashboardReportingPeriod $period): float
-    {
-        $monthStart = $period->toMonth->copy()->startOfMonth();
-        $daysInMonth = max(1, $monthStart->daysInMonth);
-        $total = $this->monthlyLandfillReceipts($period);
-
-        return round($total / $daysInMonth, 2);
-    }
-
-    protected function monthlyLandfillReceipts(DashboardReportingPeriod $period): float
+    protected function totalLandfillLoadingTon(DashboardReportingPeriod $period): float
     {
         $monthStart = $period->toMonth->copy()->startOfMonth();
 
         return round((float) $this->landfillLogQuery($period)
             ->whereDate('operation_date', '>=', $monthStart->toDateString())
             ->whereDate('operation_date', '<=', $period->periodEnd->toDateString())
-            ->selectRaw('SUM(COALESCE(weighbridge_weight_ton, quantity_ton, 0)) as total')
+            ->selectRaw('SUM(COALESCE(quantity_ton, 0)) as total')
             ->value('total'), 2);
+    }
+
+    protected function dailyLandfillReceiptsAverage(DashboardReportingPeriod $period): float
+    {
+        $monthStart = $period->toMonth->copy()->startOfMonth();
+        $daysInMonth = max(1, $monthStart->daysInMonth);
+
+        return round($this->totalLandfillLoadingTon($period) / $daysInMonth, 2);
     }
 
     protected function landfillReceiptsTrendChart(DashboardReportingPeriod $period): array
@@ -477,7 +495,6 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
             FROM swm.landfill_logs l
             INNER JOIN swm.vehicles v ON v.id = l.vehicle_id AND v.deleted_at IS NULL
             WHERE l.deleted_at IS NULL
-                AND l.operation_status = ?
                 AND l.operation_date >= ?
                 AND l.operation_date <= ?
                 {$orgScope['sql']}
@@ -485,7 +502,7 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
             ORDER BY l.operation_date
             ",
             array_merge(
-                [LandfillLog::STATUS_COMPLETED, $start->toDateString(), $end->toDateString()],
+                [$start->toDateString(), $end->toDateString()],
                 $orgScope['bindings'],
             ),
         ));
@@ -527,7 +544,6 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
                 ) AS elem
             ) AS ward_rows
             WHERE l.deleted_at IS NULL
-                AND l.operation_status = ?
                 AND l.operation_date >= ?
                 AND l.operation_date <= ?
                 {$orgScope['sql']}
@@ -535,7 +551,7 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
             ORDER BY ward_rows.ward, series_name
             ",
             array_merge(
-                [LandfillLog::STATUS_COMPLETED, $monthStart->toDateString(), $period->periodEnd->toDateString()],
+                [$monthStart->toDateString(), $period->periodEnd->toDateString()],
                 $orgScope['bindings'],
             ),
         ));
@@ -570,7 +586,6 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
             ) AS sts_rows
             LEFT JOIN swm.sts s ON s.id = sts_rows.sts_id::bigint AND s.deleted_at IS NULL
             WHERE l.deleted_at IS NULL
-                AND l.operation_status = ?
                 AND l.operation_date >= ?
                 AND l.operation_date <= ?
                 AND sts_rows.sts_id <> '0'
@@ -579,7 +594,7 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
             ORDER BY s.name, series_name
             ",
             array_merge(
-                [LandfillLog::STATUS_COMPLETED, $monthStart->toDateString(), $period->periodEnd->toDateString()],
+                [$monthStart->toDateString(), $period->periodEnd->toDateString()],
                 $orgScope['bindings'],
             ),
         ));
@@ -637,11 +652,24 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
         ];
     }
 
+    protected function totalWasteReceivedForProcessingTon(DashboardReportingPeriod $period): float
+    {
+        return round((float) $this->wasteProcessingQuery($period)
+            ->whereDate('reporting_month', $this->reportingMonthDate($period))
+            ->sum('waste_received_ton'), 2);
+    }
+
+    protected function averageDailyWasteReceivedForProcessingTon(DashboardReportingPeriod $period): float
+    {
+        $monthStart = $period->toMonth->copy()->startOfMonth();
+        $daysInMonth = max(1, $monthStart->daysInMonth);
+
+        return round($this->totalWasteReceivedForProcessingTon($period) / $daysInMonth, 2);
+    }
+
     protected function wasteReceivedLastMonth(DashboardReportingPeriod $period): float
     {
-        return (float) $this->wasteProcessingQuery($period)
-            ->whereDate('reporting_month', $this->reportingMonthDate($period))
-            ->sum('waste_received_ton');
+        return $this->totalWasteReceivedForProcessingTon($period);
     }
 
     /**
@@ -699,7 +727,7 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
                 'unit' => '%',
                 'percentValues' => true,
             ],
-            'fullWidth' => true,
+            'height' => 280,
         ];
     }
 
@@ -746,7 +774,7 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
 
         return [
             'id' => 'swmChartSmWasteTrend',
-            'type' => 'stackedArea',
+            'type' => 'stackedBar',
             'title' => __('Monthly Waste Processing Trend'),
             'labels' => $labels,
             'datasets' => $datasets,
@@ -958,7 +986,7 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
 
     protected function effectiveWeightSql(string $alias = 'l'): string
     {
-        return "COALESCE({$alias}.weighbridge_weight_ton, {$alias}.quantity_ton, 0)";
+        return "COALESCE({$alias}.quantity_ton, 0)";
     }
 
     protected function attendanceQuery(DashboardReportingPeriod $period): Builder
@@ -972,8 +1000,7 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
     protected function stsLogQuery(DashboardReportingPeriod $period): Builder
     {
         $query = StsLog::query()
-            ->whereNull('deleted_at')
-            ->where('operation_status', StsLog::STATUS_COMPLETED);
+            ->whereNull('deleted_at');
 
         $this->applyVehicleOrganizationScope($query);
 
@@ -983,8 +1010,7 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
     protected function landfillLogQuery(DashboardReportingPeriod $period): Builder
     {
         $query = LandfillLog::query()
-            ->whereNull('deleted_at')
-            ->where('operation_status', LandfillLog::STATUS_COMPLETED);
+            ->whereNull('deleted_at');
 
         $this->applyVehicleOrganizationScope($query);
 

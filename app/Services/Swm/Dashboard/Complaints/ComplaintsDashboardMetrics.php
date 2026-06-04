@@ -19,6 +19,7 @@ final class ComplaintsDashboardMetrics
      *     avg_resolution_days: float|null,
      *     by_type: array<string, int>,
      *     by_ward: array<string, int>,
+     *     status_by_ward: array<string, array{resolved: int, pending: int, others: int}>,
      *     by_channel: array<string, int>,
      *     avg_resolution_by_type: array<string, float>,
      *     trend_12m: array<string, int>,
@@ -53,6 +54,7 @@ final class ComplaintsDashboardMetrics
 
         $byType = $this->countsGrouped(clone $base, 'complaint_type');
         $byWard = $this->countsGrouped(clone $base, 'ward_no', true);
+        $statusByWard = $this->complaintStatusByWard($window);
         $byChannel = $this->countsGrouped(clone $base, 'submitted_through');
 
         $avgByType = $this->avgResolutionByType($window);
@@ -70,6 +72,7 @@ final class ComplaintsDashboardMetrics
             'avg_resolution_days' => $avgResolution !== null ? (float) $avgResolution : null,
             'by_type' => $byType,
             'by_ward' => $byWard,
+            'status_by_ward' => $statusByWard,
             'by_channel' => $byChannel,
             'avg_resolution_by_type' => $avgByType,
             'trend_12m' => $trend12m,
@@ -115,6 +118,43 @@ final class ComplaintsDashboardMetrics
             if (array_key_exists($key, $out)) {
                 $out[$key] = (int) $row->cnt;
             }
+        }
+
+        return $out;
+    }
+
+    /**
+     * @return array<string, array{resolved: int, pending: int, others: int}>
+     */
+    protected function complaintStatusByWard(ReportingWindow $window): array
+    {
+        $wardKeySql = "
+            CASE
+                WHEN ward_no IS NULL OR TRIM(COALESCE(ward_no, '')) = '' THEN '__unknown__'
+                ELSE TRIM(ward_no)
+            END
+        ";
+
+        $rows = DB::table('swm.complaints')
+            ->whereNull('deleted_at')
+            ->where('date_time', '>=', $window->epoch)
+            ->where('date_time', '<=', $window->periodEnd)
+            ->selectRaw("{$wardKeySql} as ward_key")
+            ->selectRaw("
+                SUM(CASE WHEN complaint_status = 'resolved' THEN 1 ELSE 0 END)::int as resolved,
+                SUM(CASE WHEN complaint_status = 'pending' THEN 1 ELSE 0 END)::int as pending,
+                SUM(CASE WHEN complaint_status NOT IN ('resolved', 'pending') OR complaint_status IS NULL THEN 1 ELSE 0 END)::int as others
+            ")
+            ->groupBy(DB::raw($wardKeySql))
+            ->get();
+
+        $out = [];
+        foreach ($rows as $row) {
+            $out[(string) $row->ward_key] = [
+                'resolved' => (int) $row->resolved,
+                'pending' => (int) $row->pending,
+                'others' => (int) $row->others,
+            ];
         }
 
         return $out;
@@ -295,6 +335,7 @@ final class ComplaintsDashboardMetrics
      *     avg_resolution_days: float|null,
      *     by_type: array<string, int>,
      *     by_ward: array<string, int>,
+     *     status_by_ward: array<string, array{resolved: int, pending: int, others: int}>,
      *     by_channel: array<string, int>,
      *     avg_resolution_by_type: array<string, float>,
      *     trend_12m: array<string, int>,
@@ -316,6 +357,7 @@ final class ComplaintsDashboardMetrics
             'avg_resolution_days' => null,
             'by_type' => [],
             'by_ward' => [],
+            'status_by_ward' => [],
             'by_channel' => [],
             'avg_resolution_by_type' => [],
             'trend_12m' => $trend,

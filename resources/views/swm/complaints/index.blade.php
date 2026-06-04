@@ -59,7 +59,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <label for="submitted_through" class="col-md-2 col-form-label">{{ __('Complaint Submitted through') }}</label>
+                    <label for="submitted_through" class="col-md-2 col-form-label">{{ __('Complaint Submitted Through') }}</label>
                     <div class="col-md-2">
                         <select class="form-control" id="submitted_through">
                             <option value="">{{ __('Select') }}</option>
@@ -68,7 +68,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <label for="contact_number" class="col-md-2 col-form-label">{{ __('Contact number') }}</label>
+                    <label for="contact_number" class="col-md-2 col-form-label">{{ __('Contact Number') }}</label>
                     <div class="col-md-2"><input type="text" class="form-control" id="contact_number" /></div>
                 </div>
                 <div class="form-group row">
@@ -119,10 +119,10 @@
                         <th>{{ __('Holding Number') }}</th>
                         <th>{{ __('Household ID') }}</th>
                         <th>{{ __('Name') }}</th>
-                        <th>{{ __('Contact number') }}</th>
+                        <th>{{ __('Contact Number') }}</th>
                         <th>{{ __('Ward No.') }}</th>
                         <th>{{ __('Complaint Type') }}</th>
-                        <th>{{ __('Complaint Submitted through') }}</th>
+                        <th>{{ __('Complaint Submitted Through') }}</th>
                         <th>{{ __('Priority') }}</th>
                         <th>{{ __('Assigned To') }}</th>
                         <th>{{ __('Duplicate') }}</th>
@@ -144,7 +144,7 @@ $(function() {
     var csrf = @json(csrf_token());
 
     $('#filter_holding_number_select').select2({
-        placeholder: '{{ __('Search holding') }}',
+        placeholder: '{{ __('Search Holdings') }}',
         allowClear: true,
         minimumInputLength: 2,
         ajax: {
@@ -171,7 +171,7 @@ $(function() {
             $('#filter_customer_id_select').select2('destroy');
         }
         $('#filter_customer_id_select').select2({
-            placeholder: '{{ __('Search household') }}',
+            placeholder: '{{ __('Search Households') }}',
             allowClear: true,
             minimumInputLength: selectedHoldingFilter().length > 0 ? 0 : 2,
             ajax: {
@@ -252,7 +252,7 @@ $(function() {
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: '{{ __('Yes, delete it!') }}',
+                confirmButtonText: '{{ __('Yes, Delete It!') }}',
                 cancelButtonText: '{{ __('Cancel') }}',
             }).then((result) => {
                 if (result.isConfirmed) {

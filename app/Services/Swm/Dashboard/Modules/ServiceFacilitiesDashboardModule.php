@@ -2,7 +2,6 @@
 
 namespace App\Services\Swm\Dashboard\Modules;
 
-use App\Models\BuildingInfo\Household;
 use App\Models\Swm\Landfill;
 use App\Models\Swm\Sts;
 use App\Models\Swm\Vehicle;
@@ -89,7 +88,7 @@ class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
                                     'icon' => 'fa-truck',
                                 ],
                                 [
-                                    'label' => __('Total Fleet Capacity (Ton)'),
+                                    'label' => __('Total Waste Transport Capacity (Ton)'),
                                     'value' => $this->formatter->decimal($fleetCapacityTon),
                                     'icon' => 'fa-truck-ramp-box',
                                 ],
@@ -117,7 +116,6 @@ class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
                         ],
                         [
                             'type' => 'kpis',
-                            'subsection' => __('Key Performance Indicators'),
                             'items' => [
                                 [
                                     'name' => __('Functional STSs'),
@@ -132,13 +130,7 @@ class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
                                     'unit' => __('Number'),
                                     'showFrequency' => true,
                                     'hideUnit' => true,
-                                ],
-                                [
-                                    'name' => __('Landfill Compliance Score'),
-                                    'value' => $this->formatter->percentValue($complianceScore),
-                                    'unit' => '%',
-                                    'showFrequency' => true,
-                                ],
+                                ]
                             ],
                         ],
                         [
@@ -146,12 +138,12 @@ class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
                             'subsection' => __('Visualizations'),
                             'items' => [
                                 $this->wasteBinsByTypeChart($period),
-                                $this->householdsToWasteBinRatioByWardChart($period),
+                                $this->buildingsToWasteBinRatioByWardChart($period),
                                 $this->wasteBinsPlacementChart($period),
                                 $this->vehiclesByTypeChart($period),
-                                $this->fleetCapacityByServiceWardsChart($period),
+                                // $this->fleetCapacityByServiceWardsChart($period),
                                 // $this->fuelTypeDistributionChart($period),
-                                $this->stsCapacityAdequacyChart($period),
+                                $this->stsByWardChart($period),
                                 // $this->stsWasteTypeDistributionChart($period),
                                 // $this->landfillWasteTypeDistributionChart($period),
                             ],
@@ -298,9 +290,9 @@ class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
         ];
     }
 
-    protected function householdsToWasteBinRatioByWardChart(DashboardReportingPeriod $period): array
+    protected function buildingsToWasteBinRatioByWardChart(DashboardReportingPeriod $period): array
     {
-        $hhByWard = DB::table('building_info.households')
+        $buildingsByWard = DB::table('building_info.buildings')
             ->whereNull('deleted_at')
             ->whereNotNull('ward')
             ->selectRaw('ward::text as ward, COUNT(*)::int as total')
@@ -313,7 +305,7 @@ class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
             ->groupBy('ward_no')
             ->pluck('total', 'ward');
 
-        $wards = $hhByWard->keys()
+        $wards = $buildingsByWard->keys()
             ->merge($binsByWard->keys())
             ->unique()
             ->sortBy(fn (string $ward) => (int) $ward)
@@ -322,16 +314,16 @@ class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
         $labels = [];
         $values = [];
         foreach ($wards as $ward) {
-            $hhCount = (int) ($hhByWard[$ward] ?? 0);
+            $buildingCount = (int) ($buildingsByWard[$ward] ?? 0);
             $binCount = (int) ($binsByWard[$ward] ?? 0);
             $labels[] = (string) $ward;
-            $values[] = $binCount > 0 ? round($hhCount / $binCount, 2) : 0;
+            $values[] = $binCount > 0 ? round($buildingCount / $binCount, 2) : 0;
         }
 
         return [
             'id' => 'swmChartSfHhBinRatio',
             'type' => 'bar',
-            'title' => __('Households-to-Waste Bin Ratio by Ward'),
+            'title' => __('Buildings-to-Waste Bin Ratio by Ward'),
             'labels' => $labels,
             'datasets' => [
                 ['label' => __('Ratio'), 'data' => $values],
@@ -487,50 +479,35 @@ class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
         ];
     }
 
-    protected function stsCapacityAdequacyChart(DashboardReportingPeriod $period): array
+    protected function stsByWardChart(DashboardReportingPeriod $period): array
     {
-        $wardDemandKg = DB::table('building_info.households')
-            ->whereNull('deleted_at')
-            ->where('status', Household::STATUS_ACTIVE)
-            ->whereNotNull('ward')
-            ->selectRaw('ward::text as ward, SUM(COALESCE(daily_waste_volume, 0)) as kg')
-            ->groupBy('ward')
-            ->pluck('kg', 'ward');
-
-        $stsRows = $this->stsQuery($period)
-            ->orderBy('name')
-            ->get(['id', 'name', 'capacity', 'source_wards']);
+        $rows = $this->stsQuery($period)
+            ->whereNotNull('ward_no')
+            ->selectRaw('ward_no::text as ward, COUNT(*)::int as total')
+            ->groupBy('ward_no')
+            ->orderBy('ward_no')
+            ->get();
 
         $labels = [];
-        $capacityValues = [];
-        $demandValues = [];
-
-        foreach ($stsRows as $sts) {
-            $demandKg = 0.0;
-            foreach ($sts->source_wards ?? [] as $ward) {
-                $demandKg += (float) ($wardDemandKg[(string) $ward] ?? $wardDemandKg[(int) $ward] ?? 0);
-            }
-
-            $labels[] = $sts->name;
-            $capacityValues[] = round($this->parseNumericCapacity($sts->capacity), 2);
-            $demandValues[] = round($demandKg / 1000, 2);
+        $values = [];
+        foreach ($rows as $row) {
+            $labels[] = $row->ward;
+            $values[] = (int) $row->total;
         }
 
         return [
             'id' => 'swmChartSfStsCapacity',
-            'type' => 'stackedBar',
-            'title' => __('STS Capacity Adequacy'),
+            'type' => 'bar',
+            'title' => __('STS by Ward'),
             'labels' => $labels,
             'datasets' => [
-                ['label' => __('Capacity (Ton)'), 'data' => $capacityValues],
-                ['label' => __('Estimated Daily Demand (Ton)'), 'data' => $demandValues],
+                ['label' => __('Count'), 'data' => $values],
             ],
             'options' => [
-                'stacked' => false,
-                'unitX' => __('STS'),
-                'unitY' => __('Ton'),
+                'unitX' => __('Ward'),
+                'unitY' => $this->countChartAxisY(__('STS')),
+                'integerYTicks' => true,
             ],
-            'height' => 400,
         ];
     }
 
@@ -554,20 +531,6 @@ class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
             'l',
             $period,
         );
-    }
-
-    protected function parseNumericCapacity(mixed $value): float
-    {
-        if ($value === null) {
-            return 0.0;
-        }
-
-        $trimmed = trim((string) $value);
-        if ($trimmed === '' || ! is_numeric($trimmed)) {
-            return 0.0;
-        }
-
-        return (float) $trimmed;
     }
 
     protected function wasteTypeDistributionChart(

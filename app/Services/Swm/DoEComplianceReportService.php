@@ -198,10 +198,9 @@ class DoEComplianceReportService
     {
         return (float) LandfillLog::query()
             ->whereNull('deleted_at')
-            ->where('operation_status', LandfillLog::STATUS_COMPLETED)
             ->whereDate('operation_date', '>=', $period->yearStartDateString())
             ->whereDate('operation_date', '<=', $period->yearEndDateString())
-            ->selectRaw('COALESCE(SUM(COALESCE(weighbridge_weight_ton, quantity_ton)), 0) as total')
+            ->selectRaw('COALESCE(SUM(COALESCE(quantity_ton, 0)), 0) as total')
             ->value('total');
     }
 
@@ -209,7 +208,6 @@ class DoEComplianceReportService
     {
         return (float) StsLog::query()
             ->whereNull('deleted_at')
-            ->where('operation_status', StsLog::STATUS_COMPLETED)
             ->whereDate('operation_date', '>=', $period->yearStartDateString())
             ->whereDate('operation_date', '<=', $period->yearEndDateString())
             ->sum('quantity_ton');

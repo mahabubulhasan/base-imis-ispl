@@ -39,7 +39,6 @@ class LandfillLog extends Model
         'source_wards',
         'entry_at',
         'operation_date',
-        'operation_status',
         'remarks',
     ];
 
@@ -95,11 +94,4 @@ class LandfillLog extends Model
             ->get();
     }
 
-    public static function statusOptions(): array
-    {
-        return [
-            self::STATUS_COMPLETED => __('Completed'),
-            self::STATUS_PENDING => __('Pending'),
-        ];
-    }
 }

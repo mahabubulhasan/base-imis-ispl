@@ -58,17 +58,10 @@
                     </p>
                 </div>
             </div>
-            @if($landfillLog->weighbridge_weight_ton === null)
             <div class="form-group row">
                 <span class="col-sm-3 control-label">{{ __('Quantity (Ton)') }}</span>
                 <div class="col-sm-9"><p class="form-control-plaintext mb-0">{{ $landfillLog->quantity_ton ?? '—' }}</p></div>
             </div>
-            @else
-            <div class="form-group row">
-                <span class="col-sm-3 control-label">{{ __('Weighbridge Weight (Ton)') }}</span>
-                <div class="col-sm-9"><p class="form-control-plaintext mb-0">{{ $landfillLog->weighbridge_weight_ton ?? '—' }}</p></div>
-            </div>
-            @endif
             <div class="form-group row">
                 <span class="col-sm-3 control-label">{{ __('Source STSs') }}</span>
                 <div class="col-sm-9">
@@ -92,10 +85,6 @@
             <div class="form-group row">
                 <span class="col-sm-3 control-label">{{ __('Other Source Wards') }}</span>
                 <div class="col-sm-9"><p class="form-control-plaintext mb-0">{{ count($otherSourceWards) ? implode(', ', $otherSourceWards) : '—' }}</p></div>
-            </div>
-            <div class="form-group row">
-                <span class="col-sm-3 control-label">{{ __('Operation Status') }}</span>
-                <div class="col-sm-9"><p class="form-control-plaintext mb-0">{{ \App\Models\Swm\LandfillLog::statusOptions()[$landfillLog->operation_status] ?? $landfillLog->operation_status }}</p></div>
             </div>
             <div class="form-group row">
                 <span class="col-sm-3 control-label">{{ __('Remarks') }}</span>

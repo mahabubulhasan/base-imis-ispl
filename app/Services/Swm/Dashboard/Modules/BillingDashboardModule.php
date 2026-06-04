@@ -63,17 +63,18 @@ class BillingDashboardModule implements SwmDashboardModuleInterface
                     'subsection' => __('Visualizations'),
                     'items' => [
                         $this->revenueTrendChart($period),
+                        $this->billCollectionByWardChart($period),
                         $this->paymentMethodChart($period),
                         $this->averageFeeByWardChart($period),
                         $this->arrearsByWardChart($agg),
                     ],
                 ],
-                [
-                    'type' => 'table',
-                    'title' => __('Households with 3+ Months of Dues'),
-                    'columns' => $this->arrearsTableColumns(),
-                    'rows' => $this->formatTableRows($agg['table_rows']),
-                ],
+                // [
+                //     'type' => 'table',
+                //     'title' => __('Households with 3+ Months of Dues'),
+                //     'columns' => $this->arrearsTableColumns(),
+                //     'rows' => $this->formatTableRows($agg['table_rows']),
+                // ],
             ],
         ];
     }
@@ -92,9 +93,19 @@ class BillingDashboardModule implements SwmDashboardModuleInterface
 
         return [
             [
-                'label' => __('Due for This Month (Taka)'),
-                'value' => $this->formatter->integer($agg['due_for_this_month']),
-                'icon' => 'fa-calendar-alt',
+                'label' => __('Total Billed Amount (Taka)'),
+                'value' => $this->formatter->integer($agg['total_billed_amount']),
+                'icon' => 'fa-file-invoice',
+            ],
+            // [
+            //     'label' => __('Due for This Month (Taka)'),
+            //     'value' => $this->formatter->integer($agg['due_for_this_month']),
+            //     'icon' => 'fa-calendar-alt',
+            // ],
+            [
+                'label' => __('Total Bill Collected (Taka)'),
+                'value' => $this->formatter->integer($agg['total_revenue_collected']),
+                'icon' => 'fa-coins',
             ],
             [
                 'label' => __('Total Due (Taka)'),
@@ -102,27 +113,22 @@ class BillingDashboardModule implements SwmDashboardModuleInterface
                 'icon' => 'fa-file-invoice-dollar',
             ],
             [
-                'label' => __('Total Revenue Collected (Taka)'),
-                'value' => $this->formatter->integer($agg['total_revenue_collected']),
-                'icon' => 'fa-coins',
-            ],
-            [
-                'label' => __('Collection Efficiency (%)'),
+                'label' => __('Bill Collection Efficiency (%)'),
                 'value' => $this->formatter->percent(
-                    $this->percentRatio($agg['total_paid'], $agg['total_payable']),
+                $this->percentRatio($agg['total_paid'], $agg['total_payable']),
                 ),
                 'icon' => 'fa-percent',
             ],
+            // [
+            //     'label' => __('Previous Due Recovery Rate (%)'),
+            //     'value' => $this->formatter->percent(
+            //         $this->percentRatio($agg['total_previous_due_paid'], $agg['total_previous_due']),
+            //     ),
+            //     'icon' => 'fa-hand-holding-usd',
+            // ],
             [
-                'label' => __('Previous Due Recovery Rate (%)'),
-                'value' => $this->formatter->percent(
-                    $this->percentRatio($agg['total_previous_due_paid'], $agg['total_previous_due']),
-                ),
-                'icon' => 'fa-hand-holding-usd',
-            ],
-            [
-                'label' => __('Default Rate (%)'),
-                'value' => $this->formatter->percent($defaultRate),
+                'label' => __('Number of Households Having Some Due'),
+                'value' => $defaultCount,
                 'icon' => 'fa-exclamation-triangle',
             ],
         ];
@@ -143,13 +149,37 @@ class BillingDashboardModule implements SwmDashboardModuleInterface
         return [
             'id' => 'swmChartBillingRevenueTrend',
             'type' => 'line',
-            'title' => __('Revenue Collection Trend'),
+            'title' => __('Bill Collection Trend'),
             'labels' => $labels,
             'datasets' => [
                 ['label' => __('Revenue (Taka)'), 'data' => $values],
             ],
             'options' => [
                 'unitX' => __('Month'),
+                'unitY' => __('Taka'),
+                'decimalValues' => true,
+            ],
+        ];
+    }
+
+    protected function billCollectionByWardChart(DashboardReportingPeriod $period): array
+    {
+        $byWard = $this->metrics->billCollectionByWard($period->toMonth);
+        ksort($byWard, SORT_NATURAL);
+
+        $labels = array_keys($byWard);
+        $values = array_values($byWard);
+
+        return [
+            'id' => 'swmChartBillingCollectionByWard',
+            'type' => 'bar',
+            'title' => __('Bill Collection by Ward'),
+            'labels' => $labels,
+            'datasets' => [
+                ['label' => __('Bill Collected (Taka)'), 'data' => $values],
+            ],
+            'options' => [
+                'unitX' => __('Ward'),
                 'unitY' => __('Taka'),
                 'decimalValues' => true,
             ],
@@ -205,7 +235,7 @@ class BillingDashboardModule implements SwmDashboardModuleInterface
         return [
             'id' => 'swmChartBillingAvgFeeByWard',
             'type' => 'bar',
-            'title' => __('Average Fixed Service Fee by Ward'),
+            'title' => __('Waste Collection Fee by Ward'),
             'labels' => $labels,
             'datasets' => [
                 ['label' => __('Average Fee (Taka)'), 'data' => $values],
@@ -223,17 +253,19 @@ class BillingDashboardModule implements SwmDashboardModuleInterface
      */
     protected function arrearsByWardChart(array $agg): array
     {
-        $topWards = $this->metrics->topArrearsWards($agg['ward_arrears'] ?? []);
-        $labels = array_keys($topWards);
-        $values = array_map(static fn (string $v) => round((float) $v, 2), array_values($topWards));
+        $byWard = $agg['ward_arrears'] ?? [];
+        ksort($byWard, SORT_NATURAL);
+
+        $labels = array_keys($byWard);
+        $values = array_map(static fn (string $v) => round((float) $v, 2), array_values($byWard));
 
         return [
             'id' => 'swmChartBillingArrearsByWard',
             'type' => 'bar',
-            'title' => __('Arrears by Ward (Top 10 Wards)'),
+            'title' => __('Due Amount by Ward'),
             'labels' => $labels,
             'datasets' => [
-                ['label' => __('Closing Due (Taka)'), 'data' => $values],
+                ['label' => __('Due Amount (Taka)'), 'data' => $values],
             ],
             'options' => [
                 'unitX' => __('Ward'),

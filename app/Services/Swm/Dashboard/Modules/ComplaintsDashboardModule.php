@@ -58,19 +58,15 @@ class ComplaintsDashboardModule implements SwmDashboardModuleInterface
                     'items' => $this->tileItems($agg),
                 ],
                 [
-                    'type' => 'kpis',
-                    'subsection' => __('Key Performance Indicators'),
-                    'items' => $this->kpiItems($agg),
-                ],
-                [
                     'type' => 'charts',
                     'subsection' => __('Visualizations'),
                     'items' => [
                         $this->complaintsByTypeChart($agg),
                         $this->complaintsByWardChart($agg),
+                        $this->complaintStatusByWardChart($agg),
+                        $this->complaintTypeByWardChart($agg),
                         $this->complaintChannelChart($agg),
                         $this->resolutionTimeByTypeChart($agg),
-                        $this->complaintTypeByWardHeatmapChart($agg),
                         $this->complaintTrendChart($agg),
                     ],
                 ],
@@ -85,9 +81,16 @@ class ComplaintsDashboardModule implements SwmDashboardModuleInterface
     protected function tileItems(array $agg): array
     {
         $total = (int) ($agg['total'] ?? 0);
+        $resolved = (int) ($agg['status_resolved'] ?? 0);
+        $resolutionPct = $total > 0 ? ((float) $resolved / (float) $total) * 100 : 0.0;
         $avgDays = $agg['avg_resolution_days'];
 
         return [
+            [
+                'label' => __('Complaint Resolution'),
+                'value' => $this->formatter->percent($resolutionPct),
+                'icon' => 'fa-percent',
+            ],
             [
                 'label' => __('Total Complaints Received'),
                 'value' => $this->formatter->integer($total),
@@ -121,26 +124,6 @@ class ComplaintsDashboardModule implements SwmDashboardModuleInterface
                     $total > 0 ? ((float) ($agg['duplicate_yes'] ?? 0) / (float) $total) * 100 : 0.0,
                 ),
                 'icon' => 'fa-copy',
-            ],
-        ];
-    }
-
-    /**
-     * @param  array<string, mixed>  $agg
-     * @return list<array<string, mixed>>
-     */
-    protected function kpiItems(array $agg): array
-    {
-        $total = (int) ($agg['total'] ?? 0);
-        $resolved = (int) ($agg['status_resolved'] ?? 0);
-        $pct = $total > 0 ? ((float) $resolved / (float) $total) * 100 : 0.0;
-
-        return [
-            [
-                'name' => __('Complaint Resolution'),
-                'value' => $this->formatter->percentValue($pct),
-                'unit' => '%',
-                'showFrequency' => true,
             ],
         ];
     }
@@ -220,6 +203,88 @@ class ComplaintsDashboardModule implements SwmDashboardModuleInterface
      * @param  array<string, mixed>  $agg
      * @return array<string, mixed>
      */
+    protected function complaintStatusByWardChart(array $agg): array
+    {
+        $statusByWard = $agg['status_by_ward'] ?? [];
+        uksort($statusByWard, static function (string $a, string $b): int {
+            if ($a === '__unknown__') {
+                return 1;
+            }
+            if ($b === '__unknown__') {
+                return -1;
+            }
+
+            return strnatcasecmp($a, $b);
+        });
+
+        $labels = [];
+        $resolved = [];
+        $pending = [];
+        $others = [];
+        foreach ($statusByWard as $wardKey => $counts) {
+            $labels[] = $wardKey === '__unknown__' ? __('Unknown') : (string) $wardKey;
+            $resolved[] = (int) ($counts['resolved'] ?? 0);
+            $pending[] = (int) ($counts['pending'] ?? 0);
+            $others[] = (int) ($counts['others'] ?? 0);
+        }
+
+        return [
+            'id' => 'swmChartComplaintsStatusByWard',
+            'type' => 'stackedBar',
+            'title' => __('Complaint Status by Ward'),
+            'labels' => $labels,
+            'datasets' => [
+                ['label' => __('Resolved'), 'data' => $resolved],
+                ['label' => __('Pending'), 'data' => $pending],
+                ['label' => __('Others'), 'data' => $others],
+            ],
+            'options' => [
+                'unitX' => __('Ward'),
+                'unitY' => $this->countChartAxisY(__('Complaints')),
+                'integerYTicks' => true,
+            ],
+            'fullWidth' => false,
+            'height' => 280,
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $agg
+     * @return array<string, mixed>
+     */
+    protected function complaintTypeByWardChart(array $agg): array
+    {
+        $wardLabels = $agg['heatmap_wards'] ?? [];
+        $rows = $agg['heatmap_rows'] ?? [];
+
+        $datasets = [];
+        foreach ($rows as $row) {
+            $datasets[] = [
+                'label' => (string) ($row['row_label'] ?? ''),
+                'data' => array_map(static fn ($v) => (int) $v, $row['values'] ?? []),
+            ];
+        }
+
+        return [
+            'id' => 'swmChartComplaintsTypeByWard',
+            'type' => 'stackedBar',
+            'title' => __('Complaint Type by Ward'),
+            'labels' => $wardLabels,
+            'datasets' => $datasets,
+            'options' => [
+                'unitX' => __('Ward'),
+                'unitY' => $this->countChartAxisY(__('Complaints')),
+                'integerYTicks' => true,
+            ],
+            'fullWidth' => false,
+            'height' => 280,
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $agg
+     * @return array<string, mixed>
+     */
     protected function complaintChannelChart(array $agg): array
     {
         $byChannel = $agg['by_channel'] ?? [];
@@ -288,37 +353,6 @@ class ComplaintsDashboardModule implements SwmDashboardModuleInterface
                 'integerXTicks' => true,
             ],
             'height' => max(280, count($labels) * 36),
-        ];
-    }
-
-    /**
-     * @param  array<string, mixed>  $agg
-     * @return array<string, mixed>
-     */
-    protected function complaintTypeByWardHeatmapChart(array $agg): array
-    {
-        $wards = $agg['heatmap_wards'] ?? [];
-        $rows = $agg['heatmap_rows'] ?? [];
-
-        $heatmapRows = [];
-        foreach ($rows as $row) {
-            $heatmapRows[] = [
-                'rowLabel' => (string) ($row['row_label'] ?? ''),
-                'values' => array_map(static fn ($v) => (int) $v, $row['values'] ?? []),
-            ];
-        }
-
-        return [
-            'id' => 'swmChartComplaintsTypeByWardHeatmap',
-            'type' => 'heatmap',
-            'title' => __('Complaint Type by Ward'),
-            'wards' => $wards,
-            'heatmapRows' => $heatmapRows,
-            'options' => [
-                'unit' => '',
-                'valueDisplay' => 'count',
-                'unitY' => $this->countChartAxisY(__('Complaints')),
-            ],
         ];
     }
 

@@ -21,6 +21,7 @@ class WasteProcessingLog extends Model
         'entry_at',
         'report_date',
         'reporting_month',
+        'waste_processing_site_name',
         'waste_received_ton',
         'organic_waste_composted_ton',
         'inorganic_waste_recycled_ton',

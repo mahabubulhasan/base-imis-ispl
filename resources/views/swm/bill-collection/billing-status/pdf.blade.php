@@ -11,10 +11,8 @@
             font-style: normal;
         }
         @page {
-            margin-top: 28mm;
-            margin-right: 25mm;
-            margin-bottom: 18mm;
-            margin-left: 25mm;
+            size: A4 landscape;
+            margin: 15mm;
         }
         body {
             font-family: 'Noto Sans Bengali', 'SolaimanLipi', 'Kalpurush', 'Arial Unicode MS', sans-serif;
@@ -23,32 +21,34 @@
         }
         .pdf-header {
             width: 100%;
-            margin-bottom: 10px;
+            text-align: center;
+            margin-bottom: 8px;
         }
-        .pdf-header td {
-            border: none;
-            padding: 0;
-            vertical-align: middle;
+        .pdf-header-logo-wrap {
+            margin-bottom: 4px;
         }
         .pdf-logo {
-            width: 90px;
-            max-height: 80px;
+            width: 72px;
+            height: 72px;
+            object-fit: contain;
+            display: inline-block;
         }
         .pdf-header-title {
             text-align: center;
-            line-height: 1.45;
+            line-height: 1.35;
         }
         .pdf-header-title .org {
             font-size: 14px;
             font-weight: bold;
+            margin-bottom: 2px;
         }
         .pdf-header-title .report {
             font-size: 12px;
             font-weight: bold;
-            margin-top: 4px;
         }
         .pdf-month {
             font-size: 11px;
+            text-align: center;
             margin-bottom: 10px;
         }
         table.data-table {
@@ -60,15 +60,18 @@
             border: 1px solid #d1d5db;
             padding: 3px 4px;
             vertical-align: middle;
+            font-size: 10px;
         }
         table.data-table thead th {
             background: #f3f4f6;
             text-align: center;
-            font-size: 8px;
             font-weight: bold;
         }
         .text-right {
             text-align: right;
+        }
+        .text-left {
+            text-align: left;
         }
         .amount {
             text-align: right;
@@ -80,6 +83,21 @@
         }
         .nowrap {
             white-space: nowrap;
+        }
+        .sub-location-col {
+            width: 70mm;
+        }
+        .due-months-col {
+            width: 38mm;
+            white-space: nowrap;
+        }
+        .pdf-footer {
+            position: fixed;
+            left: 0;
+            bottom: -14mm;
+            font-size: 8px;
+            color: #6b7280;
+            text-align: left;
         }
     </style>
 </head>
@@ -106,58 +124,68 @@
         }
     @endphp
 
-    <table class="pdf-header" cellpadding="0" cellspacing="0">
-        <tr>
-            <td style="width: 100px;">
-                @if($logoDataUri)
-                    <img src="{{ $logoDataUri }}" alt="" class="pdf-logo">
-                @endif
-            </td>
-            <td class="pdf-header-title">
-                <div class="org">চাঁপাইনবাবগঞ্জ পৌরসভা</div>
-                <div class="report">বাসাবাড়ীর বর্জ্য ব্যবস্থাপনা সেবামূল্য আদায় সীট</div>
-            </td>
-            <td style="width: 100px;"></td>
-        </tr>
-    </table>
+    <div class="pdf-header">
+        @if($logoDataUri)
+            <div class="pdf-header-logo-wrap">
+                <img src="{{ $logoDataUri }}" alt="" class="pdf-logo">
+            </div>
+        @endif
+        <div class="pdf-header-title">
+            <div class="org">চাঁপাইনবাবগঞ্জ পৌরসভা</div>
+            <div class="report">বাসাবাড়ীর বর্জ্য ব্যবস্থাপনা সেবামূল্য আদায় সীট</div>
+        </div>
+    </div>
 
     <div class="pdf-month">মাসঃ {{ $monthLabel }}</div>
 
     <table class="data-table">
         <thead>
             <tr>
-                <th>ক্রমিক নং</th>
-                <th>বাসার আইডি</th>
-                <th>বাসার মালিকের নাম</th>
-                <th>পিতা/স্বামীর নাম</th>
-                <th>পাড়া/মহল্লা</th>
-                <th>ওয়ার্ড নং</th>
-                <th>মোবাইল নং</th>
+                <th rowspan="2">ক্রমিক নং</th>
+                <th rowspan="2">হোল্ডিং নং</th>
+                <th rowspan="2">খানার আইডি</th>
+                <th rowspan="2">খানা প্রধানের নাম</th>
+                <th rowspan="2">পিতা/স্বামীর নাম</th>
+                <th rowspan="2" class="sub-location-col">পাড়া/মহল্লা</th>
+                <th rowspan="2">ওয়ার্ড নং</th>
+                <th rowspan="2">মোবাইল নং</th>
+                <th colspan="9">বিলিং সারসংক্ষেপ (টাকায়)</th>
+            </tr>
+            <tr>
                 <th>নির্ধারিত সেবামূল্য</th>
                 <th>বিগত মাসসমূহ বকেয়া</th>
-                <th>বকেয়া মাসসমূহ</th>
+                <th class="due-months-col">বকেয়া মাসসমূহ</th>
                 <th>চলতি</th>
                 <th>আদায়যোগ্য মোট সেবামূল্য</th>
                 <th>আদায়কৃত চলতি</th>
                 <th>আদায়কৃত বকেয়া</th>
-                <th>মোট আদায়</th>
+                <th>মোট বিল আদায়</th>
                 <th>আদায় শেষে বকেয়া</th>
             </tr>
         </thead>
         <tbody>
             @forelse($rows as $row)
                 <tr>
-                    <td class="text-center">{{ $row['sl'] }}</td>
-                    <td class="nowrap">{{ $row['holding_number'] }}</td>
-                    <td class="nowrap">{{ $row['household_id'] }}</td>
-                    <td>{{ $row['household_owner_name'] }}</td>
-                    <td>{{ $row['father_or_husband_name'] }}</td>
-                    <td>{{ $row['sub_location'] }}</td>
-                    <td>{{ $row['ward'] }}</td>
-                    <td class="nowrap">{{ $row['contact_number'] }}</td>
+                    <td class="text-left">{{ $row['sl'] }}</td>
+                    <td class="text-left nowrap">{{ $row['holding_number'] }}</td>
+                    <td class="text-left nowrap">{{ $row['household_id'] }}</td>
+                    <td class="text-left">{{ $row['household_owner_name'] }}</td>
+                    <td class="text-left">{{ $row['father_or_husband_name'] }}</td>
+                    <td class="text-left sub-location-col">{{ $row['sub_location'] }}</td>
+                    <td class="text-left">{{ $row['ward'] }}</td>
+                    <td class="text-left nowrap">{{ $row['contact_number'] }}</td>
                     <td class="amount">{{ $row['current_service_fee'] ?? currency(0) }}</td>
                     <td class="amount">{{ $row['previous_due_amount'] ?? currency(0) }}</td>
-                    <td>{{ $row['due_months_of'] }}</td>
+                    <td class="text-left due-months-col">
+                        @php
+                            $dueMonthsParts = array_values(array_filter(array_map('trim', explode(',', (string) ($row['due_months_of'] ?? '')))));
+                            $dueMonthsLines = [];
+                            for ($i = 0; $i < count($dueMonthsParts); $i += 2) {
+                                $dueMonthsLines[] = implode(', ', array_slice($dueMonthsParts, $i, 2));
+                            }
+                        @endphp
+                        {!! implode('<br>', $dueMonthsLines) !!}
+                    </td>
                     <td class="amount">{{ $row['due_current_month'] ?? currency(0) }}</td>
                     <td class="amount">{{ $row['total_due_amount'] ?? currency(0) }}</td>
                     <td class="amount">{{ $row['current_month_paid'] ?? currency(0) }}</td>
@@ -172,5 +200,7 @@
             @endforelse
         </tbody>
     </table>
+
+    <div class="pdf-footer">{{__('This billing report is generated using IMIS application.')}}</div>
 </body>
 </html>

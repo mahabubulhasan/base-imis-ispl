@@ -52,6 +52,7 @@
                         <th>{{ __('Entry Date and Time') }}</th>
                         <th>{{ __('Report Date') }}</th>
                         <th>{{ __('Reporting Month') }}</th>
+                        <th>{{ __('Waste Processing Site Name') }}</th>
                         <th>{{ __('Quantity of Waste Received (Ton)') }}</th>
                         <th>{{ __('Organic Waste Composted (Ton)') }}</th>
                         <th>{{ __('Inorganic Non-biodegradable Waste Recycled (Ton)') }}</th>
@@ -88,6 +89,7 @@ $(function() {
             { data: 'entry_at', name: 'entry_at' },
             { data: 'report_date', name: 'report_date' },
             { data: 'reporting_month_label', name: 'reporting_month' },
+            { data: 'waste_processing_site_name', name: 'waste_processing_site_name' },
             { data: 'waste_received_ton', name: 'waste_received_ton' },
             { data: 'organic_waste_composted_ton', name: 'organic_waste_composted_ton' },
             { data: 'inorganic_waste_recycled_ton', name: 'inorganic_waste_recycled_ton' },

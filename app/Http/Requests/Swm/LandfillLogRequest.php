@@ -2,8 +2,6 @@
 
 namespace App\Http\Requests\Swm;
 
-use App\Models\Swm\Landfill;
-use App\Models\Swm\LandfillLog;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -65,15 +63,6 @@ class LandfillLogRequest extends FormRequest
             $this->merge(['source_sts_ids' => $clean]);
         }
 
-        $landfillId = $this->input('landfill_id');
-        if ($landfillId) {
-            $landfill = Landfill::query()->whereNull('deleted_at')->find((int) $landfillId);
-            if ($landfill && $landfill->weighbridge_facility_available) {
-                $this->merge(['quantity_ton' => null]);
-            } else {
-                $this->merge(['weighbridge_weight_ton' => null]);
-            }
-        }
     }
 
     public function rules(): array
@@ -103,7 +92,6 @@ class LandfillLogRequest extends FormRequest
                 Rule::exists('pgsql.swm.waste_types', 'id')->where(fn ($q) => $q->whereNull('deleted_at')),
             ],
             'quantity_ton' => ['nullable', 'numeric', 'min:0'],
-            'weighbridge_weight_ton' => ['nullable', 'numeric', 'min:0'],
             'source_sts_ids' => ['nullable', 'array'],
             'source_sts_ids.*' => [
                 'nullable',
@@ -119,10 +107,6 @@ class LandfillLogRequest extends FormRequest
             ],
             'entry_at' => ['required', 'date'],
             'operation_date' => ['required', 'date'],
-            'operation_status' => ['required', Rule::in([
-                LandfillLog::STATUS_COMPLETED,
-                LandfillLog::STATUS_PENDING,
-            ])],
             'remarks' => ['nullable', 'string'],
         ];
     }

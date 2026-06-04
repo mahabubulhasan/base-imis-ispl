@@ -188,7 +188,7 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
         $wardGen = $this->wardGenerationTon($p);
         $wardCollected = $this->wardCollectedTon();
         $functionalUse = $this->functionalUseCollectedTon();
-        $heatmap = $this->segregationHeatmap();
+        $segregationByWard = $this->segregationRateByWard();
 
         return [
             'key' => 'waste_generation',
@@ -207,7 +207,6 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
                 ],
                 [
                     'type' => 'kpis',
-                    'subsection' => __('Key Performance Indicators'),
                     'items' => [
                         ['name' => __('Total SW Generation'), 'value' => $this->formatter->decimal($dailyGenTon), 'unit' => __('Ton/day'), 'showFrequency' => false],
                         ['name' => __('Per Household SW Generation'), 'value' => $this->formatter->decimal($pTimesAvgFamily), 'unit' => __('Kg/day'), 'showFrequency' => true],
@@ -252,13 +251,19 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
                             ],
                         ],
                         [
-                            'id' => 'swmSegregationHeatmap',
-                            'type' => 'heatmap',
+                            'id' => 'swmChartSegregationByWard',
+                            'type' => 'bar',
                             'title' => __('Segregation Rate by Ward'),
-                            'rowLabel' => __('Segregation Rate'),
-                            'wards' => $heatmap['wards'],
-                            'values' => $heatmap['values'],
-                            'options' => ['unit' => '%'],
+                            'labels' => $segregationByWard['labels'],
+                            'datasets' => [
+                                ['label' => __('Segregation Rate'), 'data' => $segregationByWard['values']],
+                            ],
+                            'options' => [
+                                'unitX' => __('Ward'),
+                                'unitY' => '%',
+                                'percentYAxis' => true,
+                                'decimalValues' => true,
+                            ],
                         ],
                     ],
                 ],
@@ -286,6 +291,8 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
             ->selectRaw('COALESCE(SUM(population_others), 0) as others')
             ->first();
 
+        $licsByWard = $this->licsByWard();
+
         return [
             'key' => 'lic',
             'title' => __('LIC'),
@@ -293,6 +300,7 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
                 [
                     'type' => 'tiles',
                     'items' => [
+                        ['label' => __('Total LICs'), 'value' => $this->formatter->integer($licTotal), 'icon' => 'fa-building'],
                         ['label' => __('LIC Population Covered'), 'value' => $this->formatter->integer($licPopulationCovered), 'icon' => 'fa-people-group'],
                         ['label' => __('LICs with Water Connection'), 'value' => $this->formatter->integer($waterCount), 'icon' => 'fa-faucet'],
                         ['label' => __('LICs with Sanitation Facility'), 'value' => $this->formatter->integer($sanitationCount), 'icon' => 'fa-toilet'],
@@ -305,9 +313,23 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
                     'subsection' => __('Visualizations'),
                     'items' => [
                         [
+                            'id' => 'swmChartLicsByWard',
+                            'type' => 'bar',
+                            'title' => __('LICs by Ward'),
+                            'labels' => $licsByWard['labels'],
+                            'datasets' => [
+                                ['label' => __('Count'), 'data' => $licsByWard['values']],
+                            ],
+                            'options' => [
+                                'unitX' => __('Ward'),
+                                'unitY' => $this->countChartAxisY(__('LICs')),
+                                'integerYTicks' => true,
+                            ],
+                        ],
+                        [
                             'id' => 'swmChartLicGender',
                             'type' => 'doughnut',
-                            'title' => __('LIC Gender Distribution'),
+                            'title' => __('Gender Distribution in LIC'),
                             'labels' => [__('Male'), __('Female'), __('Other')],
                             'datasets' => [
                                 ['data' => [
@@ -334,7 +356,7 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
         $query = LandfillLog::query();
         $this->whereWithinWindow($query, 'operation_date', $window);
 
-        return (float) $query->selectRaw('COALESCE(SUM(COALESCE(weighbridge_weight_ton, quantity_ton)), 0) as total')->value('total');
+        return (float) $query->selectRaw('COALESCE(SUM(COALESCE(quantity_ton, 0)), 0) as total')->value('total');
     }
 
     protected function licComplaintCount(DashboardReportingPeriod $period): int
@@ -410,7 +432,7 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
         ];
     }
 
-    protected function segregationHeatmap(): array
+    protected function segregationRateByWard(): array
     {
         $rows = DB::table('building_info.households')
             ->whereNull('deleted_at')
@@ -423,10 +445,26 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
             ->get();
 
         return [
-            'wards' => $rows->pluck('ward')->all(),
+            'labels' => $rows->pluck('ward')->all(),
             'values' => $rows->map(fn ($r) => (int) $r->total > 0
                 ? round(((int) $r->yes_count / (int) $r->total) * 100, 1)
                 : 0)->all(),
+        ];
+    }
+
+    protected function licsByWard(): array
+    {
+        $rows = Lic::query()
+            ->whereNotNull('ward')
+            ->selectRaw('ward')
+            ->selectRaw('COUNT(*) as total')
+            ->groupBy('ward')
+            ->orderBy('ward')
+            ->get();
+
+        return [
+            'labels' => $rows->pluck('ward')->all(),
+            'values' => $rows->pluck('total')->map(fn ($v) => (int) $v)->all(),
         ];
     }
 }

@@ -40,15 +40,6 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="operation_status" class="col-md-2 col-form-label">{{ __('Operation Status') }}</label>
-                    <div class="col-md-2">
-                        <select class="form-control" id="operation_status">
-                            <option value="">{{ __('All') }}</option>
-                            @foreach($statusOptions as $k => $label)
-                            <option value="{{ $k }}">{{ $label }}</option>
-                            @endforeach
-                        </select>
-                    </div>
                     <label for="date_from" class="col-md-2 col-form-label">{{ __('Operation Date From') }}</label>
                     <div class="col-md-2"><input type="date" class="form-control" id="date_from" /></div>
                     <label for="date_to" class="col-md-2 col-form-label">{{ __('Operation Date To') }}</label>
@@ -74,7 +65,6 @@
                         <th>{{ __('Waste Type') }}</th>
                         <th>{{ __('Quantity (Ton)') }}</th>
                         <th>{{ __('Source Wards') }}</th>
-                        <th>{{ __('Operation Status') }}</th>
                         <th>{{ __('Actions') }}</th>
                     </tr>
                 </thead>
@@ -97,7 +87,6 @@ $(function() {
             data: function(d) {
                 d.vehicle_search = $('#vehicle_search').val();
                 d.sts_id = $('#sts_id').val();
-                d.operation_status = $('#operation_status').val();
                 d.date_from = $('#date_from').val();
                 d.date_to = $('#date_to').val();
             }
@@ -111,7 +100,6 @@ $(function() {
             { data: 'waste_type_label', name: 'waste_type_name' },
             { data: 'quantity_ton', name: 'quantity_ton' },
             { data: 'source_wards_label', name: 'source_wards', orderable: false, searchable: false },
-            { data: 'operation_status', name: 'operation_status' },
             { data: 'action', name: 'action', orderable: false, searchable: false }
         ],
         order: [[2, 'desc']]
@@ -149,12 +137,10 @@ $(function() {
         e.preventDefault();
         var vehicle_search = $('#vehicle_search').val() || '';
         var sts_id = $('#sts_id').val() || '';
-        var operation_status = $('#operation_status').val() || '';
         var date_from = $('#date_from').val() || '';
         var date_to = $('#date_to').val() || '';
         window.location.href = "{!! route('swm.sts-logs.export') !!}?vehicle_search=" + encodeURIComponent(vehicle_search) +
             "&sts_id=" + encodeURIComponent(sts_id) +
-            "&operation_status=" + encodeURIComponent(operation_status) +
             "&date_from=" + encodeURIComponent(date_from) +
             "&date_to=" + encodeURIComponent(date_to);
     });

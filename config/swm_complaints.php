@@ -2,17 +2,17 @@
 
 return [
     'complaint_types' => [
-        'waste_not_collected' => 'Waste not collected',
-        'about_service_provider' => 'About service provider',
-        'emergency_service_required' => 'Emergency service required',
-        'waste_bin_condition' => 'Waste bin condition',
+        'waste_not_collected' => 'Waste Not Collected',
+        'about_service_provider' => 'About Service Provider',
+        'emergency_service_required' => 'Emergency Service Required',
+        'waste_bin_condition' => 'Waste Bin Condition',
         'others' => 'Others',
     ],
     'submitted_through' => [
         'hotline' => 'Hotline',
-        'complaint_form' => 'Complaint form',
+        'complaint_form' => 'Complaint Form',
         'survey' => 'Survey',
-        'phone_call' => 'Phone call',
+        'phone_call' => 'Phone Call',
     ],
     'complaint_statuses' => [
         'resolved' => 'Resolved',

@@ -140,12 +140,10 @@ class LandfillLogController extends Controller
     public function index()
     {
         $page_title = __('Landfill Loading');
-        $statusOptions = LandfillLog::statusOptions();
         $landfillList = $this->landfillOptionsForForms();
 
         return view('swm.service-management.landfill-logs.index', compact(
             'page_title',
-            'statusOptions',
             'landfillList'
         ));
     }
@@ -159,7 +157,6 @@ class LandfillLogController extends Controller
     {
         $page_title = __('Add Landfill Loading Log');
         $landfillLog = null;
-        $statusOptions = LandfillLog::statusOptions();
         $landfillList = $this->landfillOptionsForForms();
         $stsList = $this->stsOptionsForForms();
         $wardOptions = $this->wardOptionsForForms();
@@ -168,7 +165,6 @@ class LandfillLogController extends Controller
         return view('swm.service-management.landfill-logs.create', compact(
             'page_title',
             'landfillLog',
-            'statusOptions',
             'landfillList',
             'stsList',
             'wardOptions',
@@ -206,7 +202,6 @@ class LandfillLogController extends Controller
     {
         $page_title = __('Edit Landfill Loading Log');
         $landfillLog = $landfill_log->load(['vehicle', 'vehicleType', 'driver', 'landfill', 'wasteType']);
-        $statusOptions = LandfillLog::statusOptions();
         $landfillList = $this->landfillOptionsForForms();
         $stsList = $this->stsOptionsForForms();
         $wardOptions = $this->wardOptionsForForms();
@@ -215,7 +210,6 @@ class LandfillLogController extends Controller
         return view('swm.service-management.landfill-logs.edit', compact(
             'page_title',
             'landfillLog',
-            'statusOptions',
             'landfillList',
             'stsList',
             'wardOptions',

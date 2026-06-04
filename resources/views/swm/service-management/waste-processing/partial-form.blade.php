@@ -43,6 +43,14 @@
     </div>
 
     <div class="form-group row">
+        {!! Form::label('waste_processing_site_name', __('Waste Processing Site Name'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-9">
+            <input type="text" name="waste_processing_site_name" id="waste_processing_site_name" class="form-control"
+                value="{{ old('waste_processing_site_name', $isEdit ? $wasteProcessingLog->waste_processing_site_name : null) }}" />
+        </div>
+    </div>
+
+    <div class="form-group row">
         {!! Form::label('waste_received_ton', __('Quantity of Waste Received (Ton)'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-9">
             <input type="number" name="waste_received_ton" id="waste_received_ton" class="form-control" step="0.01" min="0"

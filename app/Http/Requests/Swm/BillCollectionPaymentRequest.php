@@ -117,7 +117,7 @@ class BillCollectionPaymentRequest extends FormRequest
             if ($fixedCharge !== null && $amount > $fixedCharge) {
                 $validator->errors()->add(
                     'amount',
-                    __('Current month paid cannot be greater than the fixed service fee (:fee).', [
+                    __('Current month paid cannot be greater than the waste collection fee (:fee).', [
                         'fee' => number_format($fixedCharge, 2, '.', ''),
                     ])
                 );
@@ -158,7 +158,7 @@ class BillCollectionPaymentRequest extends FormRequest
                     if (($existingAmountSum + $amount) > $fixedCharge) {
                         $validator->errors()->add(
                             'amount',
-                            __('Total current month paid for this household and month cannot exceed fixed service fee (:fee).', [
+                            __('Total current month paid for this household and month cannot exceed waste collection fee (:fee).', [
                                 'fee' => number_format($fixedCharge, 2, '.', ''),
                             ])
                         );

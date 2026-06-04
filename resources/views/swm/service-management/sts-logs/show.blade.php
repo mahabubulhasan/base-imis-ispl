@@ -67,10 +67,6 @@
                 <div class="col-sm-9"><p class="form-control-plaintext mb-0">{{ is_array($stsLog->source_wards) && count($stsLog->source_wards) ? implode(', ', $stsLog->source_wards) : '—' }}</p></div>
             </div>
             <div class="form-group row">
-                <span class="col-sm-3 control-label">{{ __('Operation Status') }}</span>
-                <div class="col-sm-9"><p class="form-control-plaintext mb-0">{{ \App\Models\Swm\StsLog::statusOptions()[$stsLog->operation_status] ?? $stsLog->operation_status }}</p></div>
-            </div>
-            <div class="form-group row">
                 <span class="col-sm-3 control-label">{{ __('Remarks') }}</span>
                 <div class="col-sm-9"><p class="form-control-plaintext mb-0">{{ $stsLog->remarks ?: '—' }}</p></div>
             </div>

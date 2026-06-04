@@ -18,7 +18,6 @@
         $entryVal = \Carbon\Carbon::now()->format('Y-m-d\TH:i');
     }
     $opDateVal = old('operation_date', $isEdit && $stsLog->operation_date ? $stsLog->operation_date->format('Y-m-d') : \Carbon\Carbon::now()->format('Y-m-d'));
-    $statusVal = old('operation_status', $isEdit ? $stsLog->operation_status : \App\Models\Swm\StsLog::STATUS_PENDING);
     $wasteTypeIdsOld = old('waste_type_ids');
     if (is_array($wasteTypeIdsOld)) {
         $wasteTypeIdsForField = array_values(array_unique(array_filter(
@@ -122,13 +121,6 @@
         {!! Form::label('source_wards', __('Source Wards'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-9">
             {!! Form::select('source_wards[]', $wardOptions, $wardsArr, ['class' => 'form-control', 'id' => 'source_wards', 'multiple' => true, 'data-placeholder' => __('Source Wards')]) !!}
-        </div>
-    </div>
-
-    <div class="form-group row required">
-        {!! Form::label('operation_status', __('Operation Status'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
-            {!! Form::select('operation_status', $statusOptions, $statusVal, ['class' => 'form-control', 'id' => 'operation_status']) !!}
         </div>
     </div>
 

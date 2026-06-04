@@ -19,7 +19,7 @@
     @endif
 
     <div class="form-group row">
-        {!! Form::label('holding_select', __('Holding number'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('holding_select', __('Holding Number'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             <select class="form-control" id="holding_select" style="width:100%"></select>
         </div>
@@ -34,9 +34,9 @@
         <div class="col-sm-3">
             {!! Form::text('name', old('name', $isEdit ? $complaint->name : null), ['class' => 'form-control', 'placeholder' => __('Name')]) !!}
         </div>
-        {!! Form::label('contact_number', __('Contact number'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('contact_number', __('Contact Number'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::text('contact_number', old('contact_number', $isEdit ? $complaint->contact_number : null), ['class' => 'form-control', 'placeholder' => __('Contact number')]) !!}
+            {!! Form::text('contact_number', old('contact_number', $isEdit ? $complaint->contact_number : null), ['class' => 'form-control', 'placeholder' => __('Contact Number')]) !!}
         </div>
     </div>
 
@@ -56,7 +56,7 @@
         <div class="col-sm-3">
             {!! Form::select('complaint_type', collect($complaintTypes)->mapWithKeys(fn ($label, $key) => [$key => __($label)])->all(), old('complaint_type', $isEdit ? $complaint->complaint_type : null), ['class' => 'form-control', 'placeholder' => __('Select Complaint Type')]) !!}
         </div>
-        {!! Form::label('submitted_through', __('Complaint Submitted through'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('submitted_through', __('Complaint Submitted Through'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             {!! Form::select('submitted_through', collect($submittedThroughOptions)->mapWithKeys(fn ($label, $key) => [$key => __($label)])->all(), old('submitted_through', $isEdit ? $complaint->submitted_through : null), ['class' => 'form-control', 'placeholder' => __('Select')]) !!}
         </div>
@@ -67,9 +67,9 @@
         <div class="col-sm-3">
             {!! Form::select('complaint_status', collect($complaintStatuses)->mapWithKeys(fn ($label, $key) => [$key => __($label)])->all(), old('complaint_status', $isEdit ? $complaint->complaint_status : 'pending'), ['class' => 'form-control', 'placeholder' => __('Select Complaint Status')]) !!}
         </div>
-        {!! Form::label('resolution_time_days', __('Resolution Time (days)'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('resolution_time_days', __('Resolution Time (Days)'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::number('resolution_time_days', old('resolution_time_days', $isEdit ? $complaint->resolution_time_days : null), ['class' => 'form-control', 'placeholder' => __('Resolution Time (days)'), 'min' => 0]) !!}
+            {!! Form::number('resolution_time_days', old('resolution_time_days', $isEdit ? $complaint->resolution_time_days : null), ['class' => 'form-control', 'placeholder' => __('Resolution Time (Days)'), 'min' => 0]) !!}
         </div>
     </div>
 
@@ -80,7 +80,7 @@
         </div>
         {!! Form::label('duplicate_reference', __('Duplicate Complaint'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::text('duplicate_reference', old('duplicate_reference', $isEdit ? $complaint->duplicate_reference : null), ['class' => 'form-control', 'placeholder' => __('Linked Complaint ID (optional)')]) !!}
+            {!! Form::text('duplicate_reference', old('duplicate_reference', $isEdit ? $complaint->duplicate_reference : null), ['class' => 'form-control', 'placeholder' => __('Linked Complaint ID (Optional)')]) !!}
         </div>
     </div>
 
@@ -91,7 +91,7 @@
         </div>
         {!! Form::label('assigned_to', __('Assigned To'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::text('assigned_to', old('assigned_to', $isEdit ? $complaint->assigned_to : null), ['class' => 'form-control', 'placeholder' => __('Assigned worker/driver')]) !!}
+            {!! Form::text('assigned_to', old('assigned_to', $isEdit ? $complaint->assigned_to : null), ['class' => 'form-control', 'placeholder' => __('Assigned Worker/Driver')]) !!}
         </div>
     </div>
 
@@ -109,7 +109,7 @@
             @if($isEdit && !empty($complaint->photo_attachment_path))
                 <small class="text-muted d-block mt-2">
                     <a href="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($complaint->photo_attachment_path) }}" target="_blank">
-                        {{ __('View current attachment') }}
+                        {{ __('View Current Attachment') }}
                     </a>
                 </small>
             @endif
@@ -137,7 +137,7 @@ $(function() {
     var csrf = @json(csrf_token());
 
     $('#holding_select').select2({
-        placeholder: '{{ __('Search holding') }}',
+        placeholder: '{{ __('Search Holdings') }}',
         allowClear: true,
         minimumInputLength: 2,
         ajax: {
@@ -164,7 +164,7 @@ $(function() {
             $('#customer_id_select').select2('destroy');
         }
         $('#customer_id_select').select2({
-            placeholder: '{{ __('Search household') }}',
+            placeholder: '{{ __('Search Households') }}',
             allowClear: true,
             minimumInputLength: selectedHoldingNumbers().length > 0 ? 0 : 2,
             ajax: {

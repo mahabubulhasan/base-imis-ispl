@@ -70,8 +70,10 @@ class ServiceManagementDashboardModuleTest extends TestCase
 
         $tiles = $this->tilesFromSubmodule($this->module->build($period), 'sts_loading');
 
+        // 30 ton completed only; pending log excluded
+        $this->assertSame('30.00', $tiles[__('Total Loading at STS')]);
         // 30 ton / 30 days in April
-        $this->assertSame('1.00', $tiles[__('Daily STS Receipts (Ton)')]);
+        $this->assertSame('1.00', $tiles[__('Average Daily Loading at STS (Ton)']);
     }
 
     public function test_landfill_monthly_total_prefers_weighbridge_weight(): void
@@ -93,8 +95,8 @@ class ServiceManagementDashboardModuleTest extends TestCase
 
         $tiles = $this->tilesFromSubmodule($this->module->build($period), 'landfill_loading');
 
-        $this->assertSame('12.00', $tiles[__('Monthly Landfill Receipts (Ton)')]);
-        $this->assertSame('0.40', $tiles[__('Daily Landfill Receipts (Ton)')]);
+        $this->assertSame('5.00', $tiles[__('Total Loading at Landfill')]);
+        $this->assertSame('0.17', $tiles[__('Average Daily Loading at Landfill (Ton)']);
     }
 
     public function test_waste_processing_tiles_kpis_and_charts_for_reporting_month(): void
@@ -117,9 +119,14 @@ class ServiceManagementDashboardModuleTest extends TestCase
 
         $this->assertSame(['tiles', 'kpis', 'charts'], $this->blockTypesFromSubmodule($result, 'waste_processing'));
 
-        $tiles = $this->tilesFromSubmodule($result, 'waste_processing');
-        $this->assertCount(1, $tiles);
-        $this->assertSame('100.00', $tiles[__('Quantity of Waste Received in Last Month')]);
+        $tileItems = $this->tileItemsFromSubmodule($result, 'waste_processing');
+        $this->assertCount(3, $tileItems);
+        $this->assertSame(__('Average Daily Waste Received for Processing (Ton)'), $tileItems[0]['label']);
+        $this->assertSame('3.33', $tileItems[0]['value']);
+        $this->assertSame(__('Average Daily Waste Received for Processing (Ton)'), $tileItems[1]['label']);
+        $this->assertSame('3.33', $tileItems[1]['value']);
+        $this->assertSame(__('Total Waste Received for Processing (Ton)'), $tileItems[2]['label']);
+        $this->assertSame('100.00', $tileItems[2]['value']);
 
         $kpis = $this->kpisFromSubmodule($result, 'waste_processing');
         $this->assertCount(6, $kpis);
@@ -131,7 +138,7 @@ class ServiceManagementDashboardModuleTest extends TestCase
 
         $charts = $this->chartsFromSubmodule($result, 'waste_processing');
         $this->assertSame('doughnut', $charts['swmChartSmWasteDistribution']['type']);
-        $this->assertSame('stackedArea', $charts['swmChartSmWasteTrend']['type']);
+        $this->assertSame('stackedBar', $charts['swmChartSmWasteTrend']['type']);
         $this->assertCount(12, $charts['swmChartSmWasteTrend']['labels']);
     }
 
@@ -378,6 +385,32 @@ class ServiceManagementDashboardModuleTest extends TestCase
         }
 
         return $tiles;
+    }
+
+    /**
+     * @return list<array{label: string, value: string}>
+     */
+    private function tileItemsFromSubmodule(array $result, string $submoduleKey): array
+    {
+        $items = [];
+        foreach ($result['submodules'] as $submodule) {
+            if (($submodule['key'] ?? '') !== $submoduleKey) {
+                continue;
+            }
+            foreach ($submodule['blocks'] ?? [] as $block) {
+                if (($block['type'] ?? '') !== 'tiles') {
+                    continue;
+                }
+                foreach ($block['items'] ?? [] as $item) {
+                    $items[] = [
+                        'label' => $item['label'],
+                        'value' => $item['value'],
+                    ];
+                }
+            }
+        }
+
+        return $items;
     }
 
     /**

@@ -10,11 +10,11 @@
             @foreach($complaint->revisionHistory as $history)
                 @if($history->key == 'created_at' && !$history->old_value)
                     @if($history->userResponsible())
-                    <li>{{ $history->userResponsible()->name }} created this resource at {{ $history->newValue() }}</li>
+                    <li>{{ $history->userResponsible()->name }} {{ __('Created This Resource At') }} {{ $history->newValue() }}</li>
                     @endif
                 @else
                     @if($history->userResponsible())
-                    <li>{{ $history->userResponsible()->name }} changed {{ $history->fieldName() }} from {{ $history->oldValue() }} to {{ $history->newValue() }} on {{ $history->created_at }}</li>
+                    <li>{{ $history->userResponsible()->name }} {{ __('Changed') }} {{ $history->fieldName() }} {{ __('From') }} {{ $history->oldValue() }} {{ __('To') }} {{ $history->newValue() }} {{ __('On') }} {{ $history->created_at }}</li>
                     @endif
                 @endif
             @endforeach

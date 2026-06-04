@@ -34,6 +34,9 @@ class WasteProcessingService
             ->addColumn('reporting_month_label', function (WasteProcessingLog $model) {
                 return $model->reporting_month?->format('M Y') ?? '';
             })
+            ->addColumn('waste_processing_site_name', function (WasteProcessingLog $model) {
+                return $model->waste_processing_site_name ?? '';
+            })
             ->addColumn('action', function (WasteProcessingLog $model) {
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['swm.waste-processing.destroy', $model->id]]);
 
@@ -72,6 +75,7 @@ class WasteProcessingService
             $log->entry_at = Carbon::parse($data['entry_at']);
             $log->report_date = Carbon::parse($data['report_date'])->toDateString();
             $log->reporting_month = Carbon::parse($data['reporting_month'])->startOfMonth()->toDateString();
+            $log->waste_processing_site_name = $data['waste_processing_site_name'] ?? null;
             $log->waste_received_ton = $data['waste_received_ton'] ?? null;
             $log->organic_waste_composted_ton = $data['organic_waste_composted_ton'] ?? null;
             $log->inorganic_waste_recycled_ton = $data['inorganic_waste_recycled_ton'] ?? null;
@@ -95,6 +99,7 @@ class WasteProcessingService
             __('Entry Date and Time'),
             __('Report Date'),
             __('Reporting Month'),
+            __('Waste Processing Site Name'),
             __('Quantity of Waste Received (Ton)'),
             __('Organic Waste Composted (Ton)'),
             __('Inorganic Non-biodegradable Waste Recycled (Ton)'),
@@ -121,6 +126,7 @@ class WasteProcessingService
                     $row->entry_at?->format('Y-m-d H:i:s'),
                     $row->report_date?->format('Y-m-d'),
                     $row->reporting_month?->format('M Y'),
+                    $row->waste_processing_site_name,
                     $row->waste_received_ton,
                     $row->organic_waste_composted_ton,
                     $row->inorganic_waste_recycled_ton,

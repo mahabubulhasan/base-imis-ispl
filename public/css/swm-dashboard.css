@@ -233,27 +233,25 @@
     width: 100%;
 }
 
-.swm-dashboard .kpi-header {
+.swm-dashboard .kpi-value-row {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 6px;
+    align-items: baseline;
 }
 
-.swm-dashboard .kpi-tag {
-    background: var(--swm-kpi-accent);
-    color: #fff;
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    padding: 2px 7px;
-    border-radius: 2px;
-    font-weight: 600;
+.swm-dashboard .kpi-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--swm-kpi-accent);
+    line-height: 1.1;
 }
 
-.swm-dashboard .kpi-freq {
-    font-size: 11px;
-    color: var(--swm-muted);
-    font-style: italic;
+.swm-dashboard .kpi-footer {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: auto;
+    padding-top: 6px;
 }
 
 .swm-dashboard .kpi-name {
@@ -261,19 +259,6 @@
     color: var(--swm-navy);
     font-weight: 600;
     line-height: 1.3;
-}
-
-.swm-dashboard .kpi-value-row {
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-    margin-top: 6px;
-}
-
-.swm-dashboard .kpi-value {
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--swm-kpi-accent);
 }
 
 .swm-dashboard .kpi-unit {

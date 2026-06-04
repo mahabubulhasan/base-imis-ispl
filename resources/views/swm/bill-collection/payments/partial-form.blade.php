@@ -153,7 +153,7 @@
                 </div>
                 <div id="balance-panel-body">
                     <div><strong>{{ __('Waste Collection Fee') }} ({{ __('Taka') .' / '.  __('Month') }}):</strong> <span id="bcp-waste-charge">—</span></div>
-                    <div><strong><span id="bcp-due-label-prefix">{{ __('Total due through') }}</span> <span id="bcp-due-month-label">{{ __('selected month') }}</span>:</strong> <span id="bcp-due">—</span></div>
+                    <div><strong><span id="bcp-due-label-prefix">{{ __('Total Amount to be Paid Through') }}</span> <span id="bcp-due-month-label">{{ __('selected month') }}</span>:</strong> <span id="bcp-due">N/A</span></div>
                     <div class="small text-muted mt-2">{{ __('Due is based on billing from service start or survey date through the selected month, minus all payments recorded for months up to and including that month.') }}</div>
                 </div>
             </div>
@@ -391,8 +391,8 @@
         updateDueMonthLabel();
         if (!siteId || !pm) {
             setBalanceLoading(false);
-            $('#bcp-waste-charge').text('—');
-            $('#bcp-due').text('—');
+            $('#bcp-waste-charge').text('');
+            $('#bcp-due').text('');
             setNoDueState(false);
             if (!siteId) {
                 clearHouseholdInfoPanel();

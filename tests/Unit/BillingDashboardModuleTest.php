@@ -58,9 +58,58 @@ class BillingDashboardModuleTest extends TestCase
 
         $tiles = $this->tilesFromResult($this->module->build($period));
 
+        $this->assertSame('500', $tiles[__('Total Billed Amount (Taka)')]);
         $this->assertSame('100', $tiles[__('Due for This Month (Taka)')]);
-        $this->assertSame('400', $tiles[__('Total Revenue Collected (Taka)']);
+        $this->assertSame('400', $tiles[__('Total Bill Collected (Taka)']);
         $this->assertSame('100', $tiles[__('Total Due (Taka)']);
+    }
+
+    public function test_bill_collection_by_ward_chart_sums_selected_month(): void
+    {
+        $period = $this->testPeriod();
+        $wardFive = $this->createHousehold(['ward' => '5']);
+        $wardSeven = $this->createHousehold(['ward' => '7']);
+
+        BillCollectionPayment::query()->create([
+            'household_id' => $wardFive->id,
+            'holding_number' => $wardFive->holding_number,
+            'customer_id' => $wardFive->household_id,
+            'amount' => 300,
+            'due_paid' => 100,
+            'payment_for_month' => '2026-04-01',
+            'payment_time' => '2026-04-15 10:00:00',
+            'payment_method' => 'cash',
+        ]);
+
+        BillCollectionPayment::query()->create([
+            'household_id' => $wardSeven->id,
+            'holding_number' => $wardSeven->holding_number,
+            'customer_id' => $wardSeven->household_id,
+            'amount' => 200,
+            'due_paid' => 0,
+            'payment_for_month' => '2026-04-01',
+            'payment_time' => '2026-04-16 10:00:00',
+            'payment_method' => 'cash',
+        ]);
+
+        BillCollectionPayment::query()->create([
+            'household_id' => $wardFive->id,
+            'holding_number' => $wardFive->holding_number,
+            'customer_id' => $wardFive->household_id,
+            'amount' => 50,
+            'due_paid' => 0,
+            'payment_for_month' => '2026-03-01',
+            'payment_time' => '2026-03-15 10:00:00',
+            'payment_method' => 'cash',
+        ]);
+
+        $charts = $this->chartsFromResult($this->module->build($period));
+        $chart = $charts['swmChartBillingCollectionByWard'];
+
+        $this->assertSame('bar', $chart['type']);
+        $this->assertSame(__('Bill Collection by Ward'), $chart['title']);
+        $this->assertSame(['5', '7'], $chart['labels']);
+        $this->assertSame([400.0, 200.0], $chart['datasets'][0]['data']);
     }
 
     public function test_revenue_trend_chart_has_twelve_months(): void

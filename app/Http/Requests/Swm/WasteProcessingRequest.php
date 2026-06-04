@@ -30,6 +30,7 @@ class WasteProcessingRequest extends FormRequest
             'entry_at' => ['required', 'date'],
             'report_date' => ['required', 'date'],
             'reporting_month' => ['required', 'date_format:Y-m-d'],
+            'waste_processing_site_name' => ['nullable', 'string', 'max:255'],
             'waste_received_ton' => ['nullable', 'numeric', 'min:0'],
             'organic_waste_composted_ton' => ['nullable', 'numeric', 'min:0'],
             'inorganic_waste_recycled_ton' => ['nullable', 'numeric', 'min:0'],

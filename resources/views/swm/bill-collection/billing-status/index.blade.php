@@ -29,6 +29,17 @@
     line-height: 1.2;
     text-align: center;
 }
+#data-table th.sub-location-col,
+#data-table td.sub-location-col {
+    min-width: 220px;
+    width: 220px;
+}
+#data-table th.due-months-col,
+#data-table td.due-months-col {
+    min-width: 170px;
+    width: 170px;
+    white-space: nowrap;
+}
 </style>
 @endpush
 @section('title', $page_title)
@@ -45,7 +56,7 @@
 <div class="row">
     <div class="col-md-4 col-sm-6 col-12">
         <div class="info-box">
-            <span class="info-box-icon bg-warning"><i class="fas fa-calendar-alt"></i></span>
+            <span class="info-box-icon bg-info"><i class="fas fa-calendar-alt"></i></span>
             <div class="info-box-content">
                 <span class="info-box-text">{{ __('Due for this month') }}</span>
                 <span class="info-box-number" id="summary-due-this-month">—</span>
@@ -54,7 +65,7 @@
     </div>
     <div class="col-md-4 col-sm-6 col-12">
         <div class="info-box">
-            <span class="info-box-icon bg-danger"><i class="fas fa-file-invoice-dollar"></i></span>
+            <span class="info-box-icon bg-info"><i class="fas fa-file-invoice-dollar"></i></span>
             <div class="info-box-content">
                 <span class="info-box-text">{{ __('Total due') }} ({{ __('Taka') }})</span>
                 <span class="info-box-number" id="summary-total-due">—</span>
@@ -63,9 +74,9 @@
     </div>
     <div class="col-md-4 col-sm-6 col-12">
         <div class="info-box">
-            <span class="info-box-icon bg-success"><i class="fas fa-coins"></i></span>
+            <span class="info-box-icon bg-info"><i class="fas fa-coins"></i></span>
             <div class="info-box-content">
-                <span class="info-box-text">{{ __('Total revenue collected') }} ({{ __('Taka') }})</span>
+                <span class="info-box-text">{{ __('Total Bill Collected') }} ({{ __('Taka') }})</span>
                 <span class="info-box-number" id="summary-revenue-ytd">—</span>
             </div>
         </div>
@@ -74,7 +85,7 @@
 
 <div class="card app-mobile-index">
     <div class="card-header">
-        <a href="#" class="btn btn-danger float-right ml-2" id="download-pdf">
+        <a href="#" class="btn btn-info float-right ml-2" id="download-pdf">
             {{ __('Download Billing Report') }}
         </a>
         <a href="#" class="btn btn-info float-right" id="headingFilters" type="button" data-toggle="collapse"
@@ -135,20 +146,20 @@
                         <th rowspan="2">{{ __('Household ID') }}</th>
                         <th rowspan="2">{{ __('Household Owner Name') }}</th>
                         <th rowspan="2">{{ __("Father's/Husband's Name") }}</th>
-                        <th rowspan="2">{{ __('Sub Location') }}</th>
+                        <th rowspan="2" class="sub-location-col">{{ __('Sub Location') }}</th>
                         <th rowspan="2">{{ __('Ward') }}</th>
                         <th rowspan="2">{{ __('Contact Number') }}</th>
                         <th colspan="9">{{ __('Billing Summary') }} ({{ __('in Taka') }})</th>
                     </tr>
                     <tr class="header-columns">
-                        <th>{{ __('Fixed Service Fee') }}</th>
+                        <th>{{ __('Waste Collection Fee') }}</th>
                         <th>{{ __('Previous Due') }}</th>
-                        <th>{{ __('Due Months') }}</th>
+                        <th class="due-months-col">{{ __('Due Months') }}</th>
                         <th>{{ __('Current Due') }}</th>
                         <th>{{ __('Payable Amount') }}</th>
                         <th>{{ __('Current Paid') }}</th>
                         <th>{{ __('Previous Due Paid') }}</th>
-                        <th>{{ __('Total Paid') }}</th>
+                        <th>{{ __('Total Bill Collected') }}</th>
                         <th>{{ __('Closing Due') }}</th>
                     </tr>
                 </thead>
@@ -279,20 +290,50 @@ $(function() {
                 name: 'sl',
                 searchable: false,
                 orderable: false,
+                className: 'text-left',
                 render: function(data, type, row, meta) {
                     return meta.row + meta.settings._iDisplayStart + 1;
                 }
             },
-            { data: 'holding_number', name: 'holding_number', searchable: false, orderable: true },
-            { data: 'household_id', name: 'household_id', searchable: false, orderable: true },
-            { data: 'household_owner_name', name: 'household_owner_name', searchable: false, orderable: true },
-            { data: 'father_or_husband_name', name: 'father_or_husband_name', searchable: false, orderable: true },
-            { data: 'sub_location', name: 'sub_location', searchable: false, orderable: true },
-            { data: 'ward', name: 'ward', searchable: false, orderable: true },
-            { data: 'contact_number', name: 'contact_number', searchable: false, orderable: true },
+            { data: 'holding_number', name: 'holding_number', searchable: false, orderable: true, className: 'text-left' },
+            { data: 'household_id', name: 'household_id', searchable: false, orderable: true, className: 'text-left' },
+            { data: 'household_owner_name', name: 'household_owner_name', searchable: false, orderable: true, className: 'text-left' },
+            { data: 'father_or_husband_name', name: 'father_or_husband_name', searchable: false, orderable: true, className: 'text-left' },
+            { data: 'sub_location', name: 'sub_location', searchable: false, orderable: true, className: 'text-left sub-location-col', width: '220px' },
+            { data: 'ward', name: 'ward', searchable: false, orderable: true, className: 'text-left' },
+            { data: 'contact_number', name: 'contact_number', searchable: false, orderable: true, className: 'text-left' },
             { data: 'current_service_fee', name: 'current_service_fee', searchable: false, orderable: false, className: 'text-right' },
             { data: 'previous_due_amount', name: 'previous_due_amount', searchable: false, orderable: false, className: 'text-right' },
-            { data: 'due_months_of', name: 'due_months_of', searchable: false, orderable: false },
+            {
+                data: 'due_months_of',
+                name: 'due_months_of',
+                searchable: false,
+                orderable: false,
+                className: 'text-left due-months-col',
+                width: '170px',
+                render: function(data) {
+                    if (!data) {
+                        return '';
+                    }
+
+                    var parts = String(data).split(',').map(function(part) {
+                        return part.trim();
+                    }).filter(function(part) {
+                        return part.length > 0;
+                    });
+
+                    if (parts.length <= 2) {
+                        return parts.join(', ');
+                    }
+
+                    var lines = [];
+                    for (var i = 0; i < parts.length; i += 2) {
+                        lines.push(parts.slice(i, i + 2).join(', '));
+                    }
+
+                    return lines.join('<br>');
+                }
+            },
             { data: 'due_current_month', name: 'due_current_month', searchable: false, orderable: false, className: 'text-right' },
             { data: 'total_due_amount', name: 'total_due_amount', searchable: false, orderable: false, className: 'text-right' },
             { data: 'current_month_paid', name: 'current_month_paid', searchable: false, orderable: true, className: 'text-right' },

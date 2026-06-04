@@ -54,9 +54,6 @@ class StsLogService
             ->editColumn('quantity_ton', function (StsLog $model) {
                 return $model->quantity_ton !== null ? (string) $model->quantity_ton : '';
             })
-            ->editColumn('operation_status', function (StsLog $model) {
-                return StsLog::statusOptions()[$model->operation_status] ?? $model->operation_status;
-            })
             ->orderColumn('vehicle_number', function ($query, $order) {
                 $query->orderBy(
                     Vehicle::query()
@@ -118,7 +115,6 @@ class StsLogService
             $log->vehicle_id = (int) $data['vehicle_id'];
             $log->entry_at = Carbon::parse($data['entry_at']);
             $log->operation_date = Carbon::parse($data['operation_date'])->toDateString();
-            $log->operation_status = $data['operation_status'];
             $log->quantity_ton = $data['quantity_ton'] ?? null;
             $log->source_wards = $data['source_wards'] ?? null;
             $log->remarks = $data['remarks'] ?? null;
@@ -170,7 +166,6 @@ class StsLogService
             __('Waste Type'),
             __('Quantity (Ton)'),
             __('Source Wards'),
-            __('Operation Status'),
             __('Remarks'),
         ];
 
@@ -184,9 +179,7 @@ class StsLogService
         $writer->openToBrowser('SW STS Logs.csv')
             ->addRowWithStyle($columns, $style);
 
-        $statusLabels = StsLog::statusOptions();
-
-        $query->orderBy('id')->chunk(5000, function ($rows) use ($writer, $statusLabels) {
+        $query->orderBy('id')->chunk(5000, function ($rows) use ($writer) {
             foreach ($rows as $row) {
                 $wards = is_array($row->source_wards) ? implode(', ', $row->source_wards) : '';
 
@@ -201,7 +194,6 @@ class StsLogService
                     $this->wasteTypesDisplayLabel($row),
                     $row->quantity_ton,
                     $wards,
-                    $statusLabels[$row->operation_status] ?? $row->operation_status,
                     $row->remarks,
                 ]);
             }
@@ -263,9 +255,6 @@ class StsLogService
         }
         if (! empty($data['sts_id'] ?? null)) {
             $query->where('sts_id', (int) $data['sts_id']);
-        }
-        if (! empty($data['operation_status'] ?? null)) {
-            $query->where('operation_status', $data['operation_status']);
         }
         if (! empty($data['date_from'] ?? null)) {
             $query->whereDate('operation_date', '>=', Carbon::parse($data['date_from'])->toDateString());

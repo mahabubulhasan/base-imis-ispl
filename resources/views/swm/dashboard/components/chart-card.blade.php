@@ -1,6 +1,8 @@
 @php
     $fullWidthTypes = ['heatmap', 'stackedBar', 'stackedArea', 'network'];
-    $isFullWidth = ! empty($chart['fullWidth']) || in_array($chart['type'] ?? '', $fullWidthTypes, true);
+    $isFullWidth = array_key_exists('fullWidth', $chart)
+        ? ! empty($chart['fullWidth'])
+        : (! empty($chart['fullWidth']) || in_array($chart['type'] ?? '', $fullWidthTypes, true));
     $colClass = $isFullWidth ? 'col-md-12' : 'col-md-6';
     $height = $chart['height'] ?? 320;
     $chartType = $chart['type'] ?? '';
