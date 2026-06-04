@@ -8,9 +8,12 @@
 @endphp
 <div class="card card-info">
 	<div class="card-header bg-transparent">
-		<a href="{{ route('swm.workers.index') }}" class="btn btn-info">{{__('Back to List')}}</a>
+		<a href="{{ route('swm.workers.index') }}" class="btn btn-info">{{ __('Back to List') }}</a>
+		@can('Edit SW Worker')
+		<a href="{{ route('swm.workers.edit', $worker->id) }}" class="btn btn-info">{{ __('Edit') }}</a>
+		@endcan
 	</div>
-	<div class="form-horizontal">
+	<div class="form-horizontal swm-worker-form-mobile app-mobile-form">
 		<div class="card-body">
 		<div class="form-group row">
     {!! Form::label('worker_id_no', __('ID'), ['class' => 'col-sm-3 control-label']) !!}

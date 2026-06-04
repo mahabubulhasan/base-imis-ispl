@@ -1,3 +1,4 @@
+<div class="swm-primary-collection-site-form-mobile app-mobile-form">
 <div class="card-body">
     <div class="form-group row required">
         {!! Form::label('customer_id', __('Customer ID'), ['class' => 'col-sm-3 control-label']) !!}
@@ -150,6 +151,7 @@
 <div class="card-footer">
     <a href="{{ route('swm.primary-collection-sites.index') }}" class="btn btn-info">{{ __('Back to List')}}</a>
     {!! Form::submit( __('Save'), ['class' => 'btn btn-info']) !!}
+</div>
 </div>
 
 @push('scripts')

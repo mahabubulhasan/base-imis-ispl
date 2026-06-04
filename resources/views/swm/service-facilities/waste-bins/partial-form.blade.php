@@ -9,7 +9,7 @@
     $placedAtBuildingsOptions = ['1' => __('Yes'), '0' => __('No')];
 @endphp
 
-<div class="app-mobile-form">
+<div class="swm-waste-bin-form-mobile app-mobile-form">
 <div class="card-body">
     @if ($wasteBin !== null)
     <div class="form-group row">

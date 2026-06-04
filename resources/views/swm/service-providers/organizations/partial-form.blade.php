@@ -1,4 +1,4 @@
-<div class="app-mobile-form">
+<div class="swm-organization-form-mobile app-mobile-form">
 <div class="card-body">
         <div class="form-group row required">
             {!! Form::label('name', __('Organization Name'), ['class' => 'col-sm-3 control-label']) !!}

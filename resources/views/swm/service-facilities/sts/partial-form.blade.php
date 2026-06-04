@@ -1,4 +1,4 @@
-<div class="app-mobile-form">
+<div class="swm-sts-form-mobile app-mobile-form">
 <div class="card-body">
         @if(optional($sts)->id)
         <div class="form-group row">

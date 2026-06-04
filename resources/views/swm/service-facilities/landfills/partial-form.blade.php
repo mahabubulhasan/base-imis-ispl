@@ -1,4 +1,4 @@
-<div class="app-mobile-form">
+<div class="swm-landfill-form-mobile app-mobile-form">
 <div class="card-body">
         @if(optional($landfill)->landfill_id)
         <div class="form-group row">

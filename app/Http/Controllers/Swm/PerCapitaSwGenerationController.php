@@ -17,7 +17,7 @@ class PerCapitaSwGenerationController extends Controller
 
     public function edit()
     {
-        $page_title = __('Per Capita SW Generation');
+        $page_title = __('Waste Generation');
         $setting = $this->settingsService->get();
 
         return view('swm.settings.per-capita-sw-generation', compact('page_title', 'setting'));

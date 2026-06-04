@@ -240,17 +240,17 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
                             'datasets' => [['label' => __('Ton/day'), 'data' => $wardCollected['values']]],
                             'options' => ['unitX' => __('Ward'), 'unitY' => __('Ton/day')],
                         ],
-                        [
-                            'id' => 'swmChartWasteByFunctionalUse',
-                            'type' => 'doughnut',
-                            'title' => __('Daily Waste Collected by Functional Use'),
-                            'labels' => $functionalUse['labels'],
-                            'datasets' => [['label' => __('Ton/day'), 'data' => $functionalUse['values']]],
-                            'options' => [
-                                'unit' => __('Ton/day'),
-                                'decimalValues' => true,
-                            ],
-                        ],
+                        // [
+                        //     'id' => 'swmChartWasteByFunctionalUse',
+                        //     'type' => 'doughnut',
+                        //     'title' => __('Daily Waste Collected by Functional Use'),
+                        //     'labels' => $functionalUse['labels'],
+                        //     'datasets' => [['label' => __('Ton/day'), 'data' => $functionalUse['values']]],
+                        //     'options' => [
+                        //         'unit' => __('Ton/day'),
+                        //         'decimalValues' => true,
+                        //     ],
+                        // ],
                         [
                             'id' => 'swmChartSegregationByWard',
                             'type' => 'bar',

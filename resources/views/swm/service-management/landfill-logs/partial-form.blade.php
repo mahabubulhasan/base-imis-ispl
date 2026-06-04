@@ -52,50 +52,50 @@
     @if($isEdit)
         <div class="form-group row">
             <label class="col-sm-3 control-label">{{ __('Landfill Loading Log ID') }}</label>
-            <div class="col-sm-9">
-                <p class="form-control-plaintext">{{ $landfillLog->id }}</p>
+            <div class="col-sm-3">
+                {!! Form::label(null, $landfillLog->id, ['class' => 'form-control']) !!}
             </div>
         </div>
     @endif
 
     <div class="form-group row required">
         {!! Form::label('entry_at', __('Entry Date and Time'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
+        <div class="col-sm-3">
             <input type="datetime-local" name="entry_at" id="entry_at" class="form-control" value="{{ $entryVal }}" />
         </div>
     </div>
 
     <div class="form-group row required">
         {!! Form::label('operation_date', __('Operation Date'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
+        <div class="col-sm-3">
             <input type="date" name="operation_date" id="operation_date" class="form-control" value="{{ $opDateVal }}" />
         </div>
     </div>
 
     <div class="form-group row required">
         {!! Form::label('vehicle_id', __('Vehicle Number'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
+        <div class="col-sm-3">
             <select name="vehicle_id" id="vehicle_id" class="form-control" style="width:100%" data-placeholder="{{ __('Search vehicle by number') }}"></select>
         </div>
     </div>
 
     <div class="form-group row">
         {!! Form::label('vehicle_type_name', __('Vehicle Type'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
+        <div class="col-sm-3">
             {!! Form::text('vehicle_type_name', old('vehicle_type_name', $isEdit ? $landfillLog->vehicle_type_name : null), ['class' => 'form-control', 'id' => 'vehicle_type_name', 'placeholder' => __('Vehicle Type'), 'autocomplete' => 'off']) !!}
         </div>
     </div>
 
     <div class="form-group row">
         {!! Form::label('driver_name', __('Driver Name'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
+        <div class="col-sm-3">
             {!! Form::text('driver_name', old('driver_name', $isEdit ? $landfillLog->driver_name : null), ['class' => 'form-control', 'id' => 'driver_name', 'placeholder' => __('Driver Name'), 'autocomplete' => 'off']) !!}
         </div>
     </div>
 
     <div class="form-group row">
         {!! Form::label('landfill_id', __('Landfill Name'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
+        <div class="col-sm-3">
             {!! Form::select('landfill_id', ['' => __('Select Landfill')] + $landfillList, $landfillFieldVal, ['class' => 'form-control swm-landfill-select2', 'id' => 'landfill_id', 'style' => 'width:100%', 'data-placeholder' => __('Search or select landfill')]) !!}
         </div>
     </div>
@@ -104,14 +104,14 @@
 
     <div class="form-group row">
         {!! Form::label('waste_type_ids', __('Waste Types'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
+        <div class="col-sm-3">
             <select name="waste_type_ids[]" id="waste_type_ids" class="form-control" multiple style="width:100%" data-placeholder="{{ __('Search or select waste types') }}"></select>
         </div>
     </div>
 
     <div class="form-group row">
         {!! Form::label('quantity_ton', __('Quantity (Ton)'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
+        <div class="col-sm-3">
             <input type="number" name="quantity_ton" id="quantity_ton" class="form-control" step="0.001" min="0"
                 value="{{ $quantityTonVal }}"
                 placeholder="{{ __('Quantity in tons') }}" />
@@ -120,29 +120,29 @@
 
     <div class="form-group row">
         {!! Form::label('source_sts_ids', __('Source STSs'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
+        <div class="col-sm-3">
             {!! Form::select('source_sts_ids[]', $stsList, $sourceStsArr, ['class' => 'form-control', 'id' => 'source_sts_ids', 'multiple' => true, 'data-placeholder' => __('Source STSs')]) !!}
         </div>
     </div>
 
     <div class="form-group row">
         {!! Form::label('sts_source_wards_display', __('STS Source Wards'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
+        <div class="col-sm-3">
             <span id="sts_source_wards_display" class="form-control bg-light" style="min-height: 38px; height: auto;">—</span>
         </div>
     </div>
 
     <div class="form-group row">
         {!! Form::label('source_wards', __('Other Source Wards'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
+        <div class="col-sm-3">
             {!! Form::select('source_wards[]', $wardOptions, $sourceWardsArr, ['class' => 'form-control', 'id' => 'source_wards', 'multiple' => true, 'data-placeholder' => __('Other Source Wards')]) !!}
         </div>
     </div>
 
     <div class="form-group row">
         {!! Form::label('remarks', __('Remarks'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
-            {!! Form::textarea('remarks', old('remarks', $isEdit ? $landfillLog->remarks : null), ['class' => 'form-control', 'rows' => 3, 'placeholder' => __('Remarks')]) !!}
+        <div class="col-sm-3">
+            {!! Form::textarea('remarks', old('remarks', $isEdit ? $landfillLog->remarks : null), ['class' => 'form-control', 'rows' => 2, 'placeholder' => __('Remarks')]) !!}
         </div>
     </div>
 </div>

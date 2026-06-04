@@ -30,14 +30,14 @@
     @if($isEdit)
         <div class="form-group row">
             <label class="col-sm-3 control-label">{{ __('Attendance Log ID') }}</label>
-            <div class="col-sm-9">
-                <p class="form-control-plaintext">{{ $attendanceLog->id }}</p>
+            <div class="col-sm-3">
+                {!! Form::label(null, $attendanceLog->id, ['class' => 'form-control']) !!}
             </div>
         </div>
     @endif
     <div class="form-group row required">
         {!! Form::label('entry_at', __('Entry Date and Time'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
+        <div class="col-sm-3">
             <input type="datetime-local" name="entry_at" id="entry_at" class="form-control" value="{{ $entryVal }}" />
         </div>
     </div>
@@ -45,14 +45,14 @@
         {!! Form::hidden('organization_id', $scopedOrganizationId) !!}
         <div class="form-group row">
             {!! Form::label('organization_display', __('Organization'), ['class' => 'col-sm-3 control-label']) !!}
-            <div class="col-sm-9">
-                <p class="form-control-plaintext">{{ $organizations[$scopedOrganizationId] ?? '' }}</p>
+            <div class="col-sm-3">
+                {!! Form::label(null, $organizations[$scopedOrganizationId] ?? '', ['class' => 'form-control']) !!}
             </div>
         </div>
     @else
         <div class="form-group row required">
             {!! Form::label('organization_id', __('Organization'), ['class' => 'col-sm-3 control-label']) !!}
-            <div class="col-sm-9">
+            <div class="col-sm-3">
                 {!! Form::select('organization_id', $organizations, $orgFieldVal, ['class' => 'form-control chosen-select', 'id' => 'organization_id', 'placeholder' => __('Select Organization')]) !!}
             </div>
         </div>
@@ -60,21 +60,21 @@
 
     <div class="form-group row required">
         {!! Form::label('worker_id', __('Worker Name-ID'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
+        <div class="col-sm-3">
             <select name="worker_id" id="worker_id" class="form-control" style="width:100%" data-placeholder="{{ __('Search worker') }}" @if(!$orgFieldVal) disabled @endif></select>
         </div>
     </div>
 
     <div class="form-group row">
         {!! Form::label('department', __('Department'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
+        <div class="col-sm-3">
             {!! Form::text('department', old('department', $isEdit ? $attendanceLog->department : null), ['class' => 'form-control', 'id' => 'department', 'placeholder' => __('Department'), 'autocomplete' => 'off']) !!}
         </div>
     </div>
 
     <div class="form-group row">
         <label for="work_type_display" class="col-sm-3 control-label">{{ __('Worker Type') }}</label>
-        <div class="col-sm-9">
+        <div class="col-sm-3">
             <input type="text"
                 id="work_type_display"
                 class="form-control bg-light"
@@ -86,7 +86,7 @@
 
     <div class="form-group row">
         <label for="supervisor_display" class="col-sm-3 control-label">{{ __("Supervisor's Name") }}</label>
-        <div class="col-sm-9">
+        <div class="col-sm-3">
             <input type="text"
                 id="supervisor_display"
                 class="form-control bg-light"
@@ -98,27 +98,30 @@
 
     <div class="form-group row required">
         {!! Form::label('attendance_status', __('Attendance Status'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
+        <div class="col-sm-3">
             {!! Form::select('attendance_status', $statusOptions, $statusVal, ['class' => 'form-control', 'id' => 'attendance_status']) !!}
         </div>
     </div>
 
-    <div id="present-times-group" class="form-group row" style="{{ $statusVal === \App\Models\Swm\AttendanceLog::STATUS_PRESENT ? '' : 'display:none' }}">
-        {!! Form::label('check_in_at', __('Check-in Time'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9 col-md-4 mb-2 mb-md-0">
-            <input type="datetime-local" name="check_in_at" id="check_in_at" class="form-control" value="{{ $checkInVal }}" />
+    <div id="present-times-group" style="{{ $statusVal === \App\Models\Swm\AttendanceLog::STATUS_PRESENT ? '' : 'display:none' }}">
+        <div class="form-group row">
+            {!! Form::label('check_in_at', __('Check-in Time'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-3">
+                <input type="datetime-local" name="check_in_at" id="check_in_at" class="form-control" value="{{ $checkInVal }}" />
+            </div>
         </div>
-        <div class="w-100 d-none d-md-block"></div>
-        {!! Form::label('check_out_at', __('Check-out Time'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9 col-md-4">
-            <input type="datetime-local" name="check_out_at" id="check_out_at" class="form-control" value="{{ $checkOutVal }}" />
+        <div class="form-group row">
+            {!! Form::label('check_out_at', __('Check-out Time'), ['class' => 'col-sm-3 control-label']) !!}
+            <div class="col-sm-3">
+                <input type="datetime-local" name="check_out_at" id="check_out_at" class="form-control" value="{{ $checkOutVal }}" />
+            </div>
         </div>
     </div>
 
     <div class="form-group row">
         {!! Form::label('remarks', __('Remarks'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
-            {!! Form::textarea('remarks', old('remarks', $isEdit ? $attendanceLog->remarks : null), ['class' => 'form-control', 'rows' => 3, 'placeholder' => __('Remarks')]) !!}
+        <div class="col-sm-3">
+            {!! Form::textarea('remarks', old('remarks', $isEdit ? $attendanceLog->remarks : null), ['class' => 'form-control', 'rows' => 2, 'placeholder' => __('Remarks')]) !!}
         </div>
     </div>
 </div>

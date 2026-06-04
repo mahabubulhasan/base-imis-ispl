@@ -15,9 +15,12 @@
 @endphp
 <div class="card card-info">
 	<div class="card-header bg-transparent">
-		<a href="{{ route('swm.vehicles.index') }}" class="btn btn-info">{{__('Back to List')}}</a>
+		<a href="{{ route('swm.vehicles.index') }}" class="btn btn-info">{{ __('Back to List') }}</a>
+		@can('Edit SW Vehicle')
+		<a href="{{ route('swm.vehicles.edit', $vehicle->id) }}" class="btn btn-info">{{ __('Edit') }}</a>
+		@endcan
 	</div>
-	<div class="form-horizontal">
+	<div class="form-horizontal swm-vehicle-form-mobile app-mobile-form">
 		<div class="card-body">
 		<div class="form-group row">
     {!! Form::label('vehicle_id_no', __('Vehicle ID'), ['class' => 'col-sm-3 control-label']) !!}

@@ -1,6 +1,7 @@
 @php
     $readOnly = ! auth()->user()?->can('Edit SW Per Capita Generation Setting');
 @endphp
+<div class="swm-per-capita-form-mobile app-mobile-form">
 <div class="card-body">
     <div class="form-group row {{ $readOnly ? '' : 'required' }}">
         {!! Form::label('per_capita_sw_generation_kg_per_day', __('Per Capita Waste Generation (Kg/day)'), ['class' => 'col-sm-3 control-label']) !!}
@@ -32,3 +33,4 @@
     {!! Form::submit(__('Save'), ['class' => 'btn btn-info']) !!}
 </div>
 @endcan
+</div>

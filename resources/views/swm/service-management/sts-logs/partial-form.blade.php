@@ -53,64 +53,64 @@
     @if($isEdit)
         <div class="form-group row">
             <label class="col-sm-3 control-label">{{ __('STS Loading Log ID') }}</label>
-            <div class="col-sm-9">
-                <p class="form-control-plaintext">{{ $stsLog->id }}</p>
+            <div class="col-sm-3">
+                {!! Form::label(null, $stsLog->id, ['class' => 'form-control']) !!}
             </div>
         </div>
     @endif
 
     <div class="form-group row required">
         {!! Form::label('entry_at', __('Entry Date and Time'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
+        <div class="col-sm-3">
             <input type="datetime-local" name="entry_at" id="entry_at" class="form-control" value="{{ $entryVal }}" />
         </div>
     </div>
 
     <div class="form-group row required">
         {!! Form::label('operation_date', __('Operation Date'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
+        <div class="col-sm-3">
             <input type="date" name="operation_date" id="operation_date" class="form-control" value="{{ $opDateVal }}" />
         </div>
     </div>
 
     <div class="form-group row required">
         {!! Form::label('vehicle_id', __('Vehicle Number'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
+        <div class="col-sm-3">
             <select name="vehicle_id" id="vehicle_id" class="form-control" style="width:100%" data-placeholder="{{ __('Search vehicle by number') }}"></select>
         </div>
     </div>
 
     <div class="form-group row">
         {!! Form::label('vehicle_type_name', __('Vehicle Type'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
+        <div class="col-sm-3">
             {!! Form::text('vehicle_type_name', old('vehicle_type_name', $isEdit ? $stsLog->vehicle_type_name : null), ['class' => 'form-control', 'id' => 'vehicle_type_name', 'placeholder' => __('Vehicle Type'), 'autocomplete' => 'off']) !!}
         </div>
     </div>
 
     <div class="form-group row">
         {!! Form::label('driver_name', __('Driver Name'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
+        <div class="col-sm-3">
             {!! Form::text('driver_name', old('driver_name', $isEdit ? $stsLog->driver_name : null), ['class' => 'form-control', 'id' => 'driver_name', 'placeholder' => __('Driver Name'), 'autocomplete' => 'off']) !!}
         </div>
     </div>
 
     <div class="form-group row">
         {!! Form::label('sts_id', __('STS Name'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
+        <div class="col-sm-3">
             {!! Form::select('sts_id', ['' => __('Select STS')] + $stsList, old('sts_id', $isEdit ? $stsLog->sts_id : null), ['class' => 'form-control swm-sts-select2', 'id' => 'sts_id', 'style' => 'width:100%', 'data-placeholder' => __('Search or select STS')]) !!}
         </div>
     </div>
 
     <div class="form-group row">
-        {!! Form::label('waste_type_ids', __('Waste Types'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
+        {!! Form::label('waste_type_ids', __('Waste Type'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
             <select name="waste_type_ids[]" id="waste_type_ids" class="form-control" multiple style="width:100%" data-placeholder="{{ __('Search or select waste types') }}"></select>
         </div>
     </div>
 
     <div class="form-group row">
         {!! Form::label('quantity_ton', __('Quantity (Ton)'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
+        <div class="col-sm-3">
             <input type="number" name="quantity_ton" id="quantity_ton" class="form-control" step="0.001" min="0"
                 value="{{ old('quantity_ton', $isEdit && $stsLog->quantity_ton !== null ? $stsLog->quantity_ton : null) }}"
                 placeholder="{{ __('Quantity in tons') }}" />
@@ -119,15 +119,15 @@
 
     <div class="form-group row">
         {!! Form::label('source_wards', __('Source Wards'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
+        <div class="col-sm-3">
             {!! Form::select('source_wards[]', $wardOptions, $wardsArr, ['class' => 'form-control', 'id' => 'source_wards', 'multiple' => true, 'data-placeholder' => __('Source Wards')]) !!}
         </div>
     </div>
 
     <div class="form-group row">
         {!! Form::label('remarks', __('Remarks'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9">
-            {!! Form::textarea('remarks', old('remarks', $isEdit ? $stsLog->remarks : null), ['class' => 'form-control', 'rows' => 3, 'placeholder' => __('Remarks')]) !!}
+        <div class="col-sm-3">
+            {!! Form::textarea('remarks', old('remarks', $isEdit ? $stsLog->remarks : null), ['class' => 'form-control', 'rows' => 2, 'placeholder' => __('Remarks')]) !!}
         </div>
     </div>
 </div>

@@ -3,9 +3,12 @@
 @section('content')
 <div class="card card-info">
 	<div class="card-header bg-transparent">
-		<a href="{{ route('swm.landfills.index') }}" class="btn btn-info">{{__('Back to List')}}</a>
+		<a href="{{ route('swm.landfills.index') }}" class="btn btn-info">{{ __('Back to List') }}</a>
+		@can('Edit SW Landfill')
+		<a href="{{ route('swm.landfills.edit', $landfill->id) }}" class="btn btn-info">{{ __('Edit') }}</a>
+		@endcan
 	</div>
-	<div class="form-horizontal">
+	<div class="form-horizontal swm-landfill-form-mobile app-mobile-form">
 		<div class="card-body">
 		<div class="form-group row">
     {!! Form::label('landfill_id', __('Landfill ID'), ['class' => 'col-sm-3 control-label']) !!}

@@ -1,3 +1,4 @@
+<div class="swm-work-type-form-mobile app-mobile-form">
 <div class="card-body">
         <div class="form-group row required">
             {!! Form::label('name', __('Worker Type'), ['class' => 'col-sm-3 control-label']) !!}
@@ -15,4 +16,5 @@
 <div class="card-footer">
 	<a href="{{ route('swm.work-types.index') }}" class="btn btn-info">{{ __('Back to List')}}</a>
 	{!! Form::submit( __('Save'), ['class' => 'btn btn-info']) !!}
+</div>
 </div>

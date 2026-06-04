@@ -110,7 +110,7 @@
 
     <div class="form-group row required">
         <label class="col-sm-3 control-label" for="holding_select">{{ __('Holding') }}</label>
-        <div class="col-sm-9 bcp-payment-field-col">
+        <div class="col-sm-3 bcp-payment-field-col">
             <select class="form-control" id="holding_select" style="width:100%"></select>
             <small class="form-text text-muted">{{ __('Search by Holding Number (Min. 2 Characters).') }}</small>
         </div>
@@ -118,14 +118,14 @@
 
     <div class="form-group row required">
         <label class="col-sm-3 control-label" for="customer_site_select">{{ __('Household') }}</label>
-        <div class="col-sm-9 bcp-payment-field-col">
+        <div class="col-sm-3 bcp-payment-field-col">
             <select class="form-control" id="customer_site_select" style="width:100%" @if($initHolding === '') disabled @endif></select>
         </div>
     </div>
 
     <div id="bcp-household-info-wrap" class="form-group row @if(!$initialHouseholdDetail) d-none @endif">
         <label class="col-sm-3 control-label">{{ __('Household Details') }}</label>
-        <div class="col-sm-9 bcp-payment-field-col">
+        <div class="col-sm-3 bcp-payment-field-col">
             <div class="border rounded p-3 bg-light w-100" id="bcp-household-info-panel">
                 <div><strong>{{ __('Contact Number') }}:</strong> <span id="bcp-hi-contact">{{ $initialHouseholdDetail ? ($initialHouseholdDetail['contact_number'] ?? '—') : '—' }}</span></div>
                 <div><strong>{{ __('Sub Location') }}:</strong> <span id="bcp-hi-sub-location">{{ $initialHouseholdDetail ? ($initialHouseholdDetail['sub_location'] ?? '—') : '—' }}</span></div>
@@ -138,7 +138,7 @@
 
     <div class="form-group row required bcp-due-dependent-row">
         {!! Form::label('payment_for_month', __('Transaction Month'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9 bcp-payment-field-col">
+        <div class="col-sm-3 bcp-payment-field-col">
             <input type="hidden" name="payment_for_month" id="payment_for_month" value="{{ $defaultMonth }}" />
             <input type="text" class="form-control w-100" value="{{ \Carbon\Carbon::createFromFormat('Y-m', $defaultMonth)->format('F Y') }}" readonly />
             <small class="form-text text-muted">{{ __('Payment Month Is Auto-Selected as Current Month.') }}</small>
@@ -147,7 +147,7 @@
 
     <div class="form-group row bcp-due-dependent-row">
         <label class="col-sm-3 control-label">{{ __('Billing Summary') }}</label>
-        <div class="col-sm-9 bcp-payment-field-col">
+        <div class="col-sm-3 bcp-payment-field-col">
             <div class="border rounded p-3 bg-light w-100" id="balance-panel">
                 <div class="bcp-balance-loading-overlay" id="bcp-balance-loading" aria-live="polite" aria-busy="false">
                     <span><i class="fas fa-spinner fa-spin" aria-hidden="true"></i> {{ __('Loading…') }}</span>
@@ -177,14 +177,14 @@
 
     <div class="form-group row bcp-due-dependent-row">
         {!! Form::label('payment_time', __('Payment Time'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9 bcp-payment-field-col">
+        <div class="col-sm-3 bcp-payment-field-col">
             <input type="datetime-local" name="payment_time" id="payment_time" class="form-control w-100" value="{{ $defaultPaymentTime }}" />
         </div>
     </div>
 
     <div class="form-group row required bcp-due-dependent-row" id="bcp-current-amount-row">
         {!! Form::label('amount', __('Current Month Payment') . ' (' . __('Taka') . ')', ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9 bcp-payment-field-col">
+        <div class="col-sm-3 bcp-payment-field-col">
             <div id="bcp-current-amount-input-wrap">
                 {!! Form::number('amount', old('amount', $isEdit ? currency_input($payment->amount) : null), ['class' => 'form-control w-100', 'step' => '1', 'min' => '0', 'inputmode' => 'numeric']) !!}
             </div>
@@ -196,21 +196,21 @@
 
     <div class="form-group row bcp-due-dependent-row" id="bcp-due-paid-row">
         {!! Form::label('due_paid', __('Previous Due Payment') . ' (' . __('Taka') . ')', ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9 bcp-payment-field-col">
+        <div class="col-sm-3 bcp-payment-field-col">
             {!! Form::number('due_paid', old('due_paid', $isEdit ? currency_input($payment->due_paid ?? 0) : 0), ['class' => 'form-control w-100', 'step' => '1', 'min' => '0', 'inputmode' => 'numeric']) !!}
         </div>
     </div>
 
     <div class="form-group row required bcp-due-dependent-row">
         {!! Form::label('payment_method', __('Payment Method'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9 bcp-payment-field-col">
+        <div class="col-sm-3 bcp-payment-field-col">
             {!! Form::select('payment_method', $paymentMethods, old('payment_method', $isEdit ? $payment->payment_method : null), ['class' => 'form-control w-100', 'placeholder' => __('Select')]) !!}
         </div>
     </div>
 
     <div class="form-group row bcp-due-dependent-row">
         {!! Form::label('receipt_copy', __('Payment Receipt Copy'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9 bcp-payment-field-col">
+        <div class="col-sm-3 bcp-payment-field-col">
             <input type="file" name="receipt_copy" id="receipt_copy" class="form-control w-100" accept=".jpg,.jpeg,.png,.pdf" />
             <small class="form-text text-muted">{{ __('Allowed File Types: JPG, PNG, PDF. Max Size 10 MB.') }}</small>
             @if($isEdit && !empty($payment->receipt_copy_url))
@@ -221,14 +221,14 @@
 
     <div class="form-group row bcp-due-dependent-row">
         {!! Form::label('receipt_no', __('Receipt No.'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9 bcp-payment-field-col">
+        <div class="col-sm-3 bcp-payment-field-col">
             {!! Form::text('receipt_no', old('receipt_no', $isEdit ? $payment->receipt_no : null), ['class' => 'form-control w-100', 'maxlength' => 255]) !!}
         </div>
     </div>
 
     <div class="form-group row bcp-due-dependent-row">
         {!! Form::label('received_by_user_id', __('Payment Received by'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9 bcp-payment-field-col">
+        <div class="col-sm-3 bcp-payment-field-col">
             @if(!empty($canChooseReceivedBy))
                 {!! Form::select('received_by_user_id', $recvUsers, old('received_by_user_id', $isEdit ? $payment->received_by_user_id : ''), ['class' => 'form-control chosen-select w-100']) !!}
             @else

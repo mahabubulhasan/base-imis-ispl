@@ -3,9 +3,12 @@
 @section('content')
 <div class="card card-info">
     <div class="card-header bg-transparent">
-        <a href="{{ route('swm.primary-collection-sites.index') }}" class="btn btn-info">{{__('Back to List')}}</a>
+        <a href="{{ route('swm.primary-collection-sites.index') }}" class="btn btn-info">{{ __('Back to List') }}</a>
+        @can('Edit Household')
+        <a href="{{ route('swm.primary-collection-sites.edit', $primaryCollectionSite->id) }}" class="btn btn-info">{{ __('Edit') }}</a>
+        @endcan
     </div>
-    <div class="form-horizontal">
+    <div class="form-horizontal swm-primary-collection-site-form-mobile app-mobile-form">
         <div class="card-body">
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Customer ID') }}</label><div class="col-sm-3">{!! Form::label(null, $primaryCollectionSite->customer_id, ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Customer Name') }}</label><div class="col-sm-3">{!! Form::label(null, $primaryCollectionSite->customer_name, ['class' => 'form-control']) !!}</div></div>
@@ -23,7 +26,7 @@
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Using This Service Since') }}</label><div class="col-sm-3">{!! Form::label(null, $primaryCollectionSite->using_this_service_since, ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Total volume of the waste collected (daily average approx.)') }}</label><div class="col-sm-3">{!! Form::label(null, $primaryCollectionSite->daily_waste_volume, ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Remarks') }}</label><div class="col-sm-3">{!! Form::label(null, $primaryCollectionSite->remarks, ['class' => 'form-control']) !!}</div></div>
-            <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Survey Date') }}</label><div class="col-sm-3">{!! Form::label(null, $primaryCollectionSite->survey_date, ['class' => 'form-control']) !!}</div></div>
+            <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Survey Date') }}</label><div class="col-sm-3">{!! Form::label(null, optional($primaryCollectionSite->survey_date)->format('Y-m-d'), ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Van Puller') }}</label><div class="col-sm-3">{!! Form::label(null, $primaryCollectionSite->van_puller_name ?? $primaryCollectionSite->van_puller_id, ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('Owner') }} ({{ __('Yes') }}/{{ __('No') }})</label><div class="col-sm-3">{!! Form::label(null, $primaryCollectionSite->is_owner ? __('Yes') : __('No'), ['class' => 'form-control']) !!}</div></div>
             <div class="form-group row"><label class="col-sm-3 control-label">{{ __('LIC') }} ({{ __('Yes') }}/{{ __('No') }})</label><div class="col-sm-3">{!! Form::label(null, $primaryCollectionSite->is_lic ? __('Yes') : __('No'), ['class' => 'form-control']) !!}</div></div>

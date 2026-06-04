@@ -1,3 +1,4 @@
+<div class="swm-lic-form-mobile app-mobile-form">
 <div class="card-body">
     <div class="form-group row required">
         {!! Form::label('lic_id', __('LIC ID'), ['class' => 'col-sm-3 control-label']) !!}
@@ -33,4 +34,5 @@
 <div class="card-footer">
     <a href="{{ route('swm.lic.index') }}" class="btn btn-info">{{ __('Back to List')}}</a>
     {!! Form::submit( __('Save'), ['class' => 'btn btn-info']) !!}
+</div>
 </div>
