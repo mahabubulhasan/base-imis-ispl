@@ -204,7 +204,7 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
                 ],
                 [
                     'type' => 'kpis',
-                    'subsection' => __('KPI'),
+                    'subsection' => __('KEY PERFORMANCE INDICATORS'),
                     'items' => $this->wasteProcessingRateKpis($received, $streams),
                 ],
                 [

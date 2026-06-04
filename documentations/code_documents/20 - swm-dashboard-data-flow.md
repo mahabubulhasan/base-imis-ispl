@@ -317,7 +317,7 @@ Rendered by [`resources/views/swm/dashboard/components/submodule.blade.php`](../
 | `type` | Optional `subsection` | Renders |
 |--------|----------------------|---------|
 | `tiles` | No (usually) | Info boxes — `label`, `value`, `icon` |
-| `kpis` | Often “KPI” | KPI cards — `name`, `value`, `unit`, `hideUnit`; value on top, name and unit below; no per-card KPI badge |
+| `kpis` | Often “KEY PERFORMANCE INDICATORS” | KPI cards — `name`, `value`, `unit`, `hideUnit`; value on top, name and unit below; no per-card KPI badge |
 | `charts` | Often “Visualizations” | Grid of chart cards |
 | `table` | Optional title on block | Server-rendered HTML table — `columns[]`, `rows[]` |
 

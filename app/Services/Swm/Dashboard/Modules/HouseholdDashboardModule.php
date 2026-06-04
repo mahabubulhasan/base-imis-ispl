@@ -207,7 +207,7 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
                 ],
                 [
                     'type' => 'kpis',
-                    'subsection' => __('KPI'),
+                    'subsection' => __('KEY PERFORMANCE INDICATORS'),
                     'items' => [
                         ['name' => __('Total SW Generation'), 'value' => $this->formatter->decimal($dailyGenTon), 'unit' => __('Ton/day'), 'showFrequency' => false],
                         ['name' => __('Per Household SW Generation'), 'value' => $this->formatter->decimal($pTimesAvgFamily), 'unit' => __('Kg/day'), 'showFrequency' => true],
