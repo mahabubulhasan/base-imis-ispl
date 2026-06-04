@@ -13,10 +13,11 @@ return [
         'complaint_form' => 'Complaint Form',
         'survey' => 'Survey',
         'phone_call' => 'Phone Call',
+        'others' => 'Others',
     ],
     'complaint_statuses' => [
         'resolved' => 'Resolved',
         'pending' => 'Pending',
-        'others' => 'Others',
+        'others' => 'Other',
     ],
 ];

@@ -55,7 +55,7 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
     {
         return [
             'submodules' => [
-                $this->attendanceSubmodule($period),
+                // $this->attendanceSubmodule($period),
                 $this->stsLoadingSubmodule($period),
                 $this->landfillLoadingSubmodule($period),
                 $this->wasteProcessingSubmodule($period),

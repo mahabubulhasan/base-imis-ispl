@@ -2,13 +2,14 @@
     $isEdit = isset($payment) && $payment;
     $excludePaymentId = $isEdit ? $payment->id : null;
     $defaultMonth = now()->format('Y-m');
+    $dueThroughMonthLabel = \Carbon\Carbon::createFromFormat('Y-m', $defaultMonth)->subMonth()->format('F Y');
     $defaultPaymentTime = old(
         'payment_time',
         ($isEdit && $payment->payment_time)
             ? $payment->payment_time->format('Y-m-d\TH:i')
             : now()->format('Y-m-d\TH:i')
     );
-    $recvUsers = ['' => __('Default (logged-in user)')] + $users->all();
+    $recvUsers = ['' => __('Default (Logged-in User)')] + $users->all();
     $initHolding = old('holding_number', $isEdit ? ($payment->holding_number ?? '') : '');
     $initCustomerName = $isEdit ? optional($payment->primaryCollectionSite)->household_owner_name : null;
     $initFatherOrHusbandName = $isEdit ? optional($payment->primaryCollectionSite)->father_or_husband_name : null;
@@ -111,7 +112,7 @@
         <label class="col-sm-3 control-label" for="holding_select">{{ __('Holding') }}</label>
         <div class="col-sm-9 bcp-payment-field-col">
             <select class="form-control" id="holding_select" style="width:100%"></select>
-            <small class="form-text text-muted">{{ __('Search by holding number (min. 2 characters).') }}</small>
+            <small class="form-text text-muted">{{ __('Search by Holding Number (Min. 2 Characters).') }}</small>
         </div>
     </div>
 
@@ -140,12 +141,12 @@
         <div class="col-sm-9 bcp-payment-field-col">
             <input type="hidden" name="payment_for_month" id="payment_for_month" value="{{ $defaultMonth }}" />
             <input type="text" class="form-control w-100" value="{{ \Carbon\Carbon::createFromFormat('Y-m', $defaultMonth)->format('F Y') }}" readonly />
-            <small class="form-text text-muted">{{ __('Payment month is auto-selected as current month.') }}</small>
+            <small class="form-text text-muted">{{ __('Payment Month Is Auto-Selected as Current Month.') }}</small>
         </div>
     </div>
 
     <div class="form-group row bcp-due-dependent-row">
-        <label class="col-sm-3 control-label">{{ __('Billing summary') }}</label>
+        <label class="col-sm-3 control-label">{{ __('Billing Summary') }}</label>
         <div class="col-sm-9 bcp-payment-field-col">
             <div class="border rounded p-3 bg-light w-100" id="balance-panel">
                 <div class="bcp-balance-loading-overlay" id="bcp-balance-loading" aria-live="polite" aria-busy="false">
@@ -153,8 +154,8 @@
                 </div>
                 <div id="balance-panel-body">
                     <div><strong>{{ __('Waste Collection Fee') }} ({{ __('Taka') .' / '.  __('Month') }}):</strong> <span id="bcp-waste-charge">—</span></div>
-                    <div><strong><span id="bcp-due-label-prefix">{{ __('Total Amount to be Paid Through') }}</span> <span id="bcp-due-month-label">{{ __('selected month') }}</span>:</strong> <span id="bcp-due">N/A</span></div>
-                    <div class="small text-muted mt-2">{{ __('Due is based on billing from service start or survey date through the selected month, minus all payments recorded for months up to and including that month.') }}</div>
+                    <div><strong>{{ __('Total Amount to be Paid Through') }} <span id="bcp-due-month-label">{{ $dueThroughMonthLabel }}</span> ({{ __('Taka') }}):</strong> <span id="bcp-due">N/A</span></div>
+                    <div class="small text-muted mt-2">{{ __('Total Amount Payable from the Start of Service Through') }} <span id="bcp-due-summary-month">{{ $dueThroughMonthLabel }}</span>, {{ __('Excluding Any Payments Already Made.') }}</div>
                 </div>
             </div>
         </div>
@@ -162,8 +163,8 @@
 
     <div id="bcp-no-due-info" class="d-none">
         <div class="bcp-no-due-box">
-            <div class="bcp-no-due-title">{{ __('Payment not required') }}</div>
-            <div class="bcp-no-due-message">{{ __('All previous dues have been cleared for this household.') }}</div>
+            <div class="bcp-no-due-title">{{ __('Payment Not Required') }}</div>
+            <div class="bcp-no-due-message">{{ __('All Previous Dues Have Been Cleared for This Household.') }}</div>
             <ul class="bcp-no-due-meta">
                 <li><strong>{{ __('Holding') }}:</strong> <span id="bcp-no-due-holding">—</span></li>
                 <li><strong>{{ __('Household') }}:</strong> <span id="bcp-no-due-household">—</span></li>
@@ -175,7 +176,7 @@
     </div>
 
     <div class="form-group row bcp-due-dependent-row">
-        {!! Form::label('payment_time', __('Payment time'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('payment_time', __('Payment Time'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-9 bcp-payment-field-col">
             <input type="datetime-local" name="payment_time" id="payment_time" class="form-control w-100" value="{{ $defaultPaymentTime }}" />
         </div>
@@ -188,7 +189,7 @@
                 {!! Form::number('amount', old('amount', $isEdit ? currency_input($payment->amount) : null), ['class' => 'form-control w-100', 'step' => '1', 'min' => '0', 'inputmode' => 'numeric']) !!}
             </div>
             <small id="bcp-current-month-paid-note" class="form-text text-info d-none">
-                {{ __("The current month's waste collection fee has been paid. You may only pay previous dues.") }}
+                {{ __("The Current Month's Waste Collection Fee Has Been Paid. You May Only Pay Previous Dues.") }}
             </small>
         </div>
     </div>
@@ -201,21 +202,32 @@
     </div>
 
     <div class="form-group row required bcp-due-dependent-row">
-        {!! Form::label('payment_method', __('Payment method'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('payment_method', __('Payment Method'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-9 bcp-payment-field-col">
             {!! Form::select('payment_method', $paymentMethods, old('payment_method', $isEdit ? $payment->payment_method : null), ['class' => 'form-control w-100', 'placeholder' => __('Select')]) !!}
         </div>
     </div>
 
     <div class="form-group row bcp-due-dependent-row">
-        {!! Form::label('receipt_no', __('Receipt no'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('receipt_copy', __('Payment Receipt Copy'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-9 bcp-payment-field-col">
+            <input type="file" name="receipt_copy" id="receipt_copy" class="form-control w-100" accept=".jpg,.jpeg,.png,.pdf" />
+            <small class="form-text text-muted">{{ __('Allowed File Types: JPG, PNG, PDF. Max Size 10 MB.') }}</small>
+            @if($isEdit && !empty($payment->receipt_copy_url))
+                <a href="{{ $payment->receipt_copy_url }}" target="_blank" rel="noopener">{{ __('View Current Receipt') }}</a>
+            @endif
+        </div>
+    </div>
+
+    <div class="form-group row bcp-due-dependent-row">
+        {!! Form::label('receipt_no', __('Receipt No.'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-9 bcp-payment-field-col">
             {!! Form::text('receipt_no', old('receipt_no', $isEdit ? $payment->receipt_no : null), ['class' => 'form-control w-100', 'maxlength' => 255]) !!}
         </div>
     </div>
 
     <div class="form-group row bcp-due-dependent-row">
-        {!! Form::label('received_by_user_id', __('Payment received by'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('received_by_user_id', __('Payment Received by'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-9 bcp-payment-field-col">
             @if(!empty($canChooseReceivedBy))
                 {!! Form::select('received_by_user_id', $recvUsers, old('received_by_user_id', $isEdit ? $payment->received_by_user_id : ''), ['class' => 'form-control chosen-select w-100']) !!}
@@ -228,17 +240,6 @@
                 @endphp
                 <input type="hidden" name="received_by_user_id" value="{{ $lockedReceivedById }}" />
                 <input type="text" class="form-control w-100" readonly value="{{ $lockedReceivedByName }}" />
-            @endif
-        </div>
-    </div>
-
-    <div class="form-group row bcp-due-dependent-row">
-        {!! Form::label('receipt_copy', __('Payment receipt copy'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-9 bcp-payment-field-col">
-            <input type="file" name="receipt_copy" id="receipt_copy" class="form-control w-100" accept=".jpg,.jpeg,.png,.pdf" />
-            <small class="form-text text-muted">{{ __('Allowed file types: JPG, PNG, PDF. Max size 10 MB.') }}</small>
-            @if($isEdit && !empty($payment->receipt_copy_url))
-                <a href="{{ $payment->receipt_copy_url }}" target="_blank" rel="noopener">{{ __('View current receipt') }}</a>
             @endif
         </div>
     </div>
@@ -317,6 +318,29 @@
         return ym + '-01';
     }
 
+    function dueThroughMonthFirstDay(ym) {
+        if (!ym || ym.length < 7) return null;
+        var parts = ym.split('-');
+        if (parts.length < 2) return null;
+        var year = parseInt(parts[0], 10);
+        var month = parseInt(parts[1], 10);
+        if (!year || !month || month < 1 || month > 12) return null;
+        var dt = new Date(year, month - 2, 1);
+        var m = String(dt.getMonth() + 1).padStart(2, '0');
+        return dt.getFullYear() + '-' + m + '-01';
+    }
+
+    function dueThroughMonthLabel(ym) {
+        if (!ym || ym.length < 7) return '—';
+        var parts = ym.split('-');
+        if (parts.length < 2) return '—';
+        var year = parseInt(parts[0], 10);
+        var month = parseInt(parts[1], 10);
+        if (!year || !month || month < 1 || month > 12) return '—';
+        var dt = new Date(year, month - 2, 1);
+        return dt.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+    }
+
     function formatCurrencyDisplay(value) {
         return window.ImisFormat.currency('tk', value);
     }
@@ -346,50 +370,35 @@
         return dt.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
     }
 
-    function updateNoDueInfo(data) {
+    function updateNoDueInfo(currentData, dueData) {
         $('#bcp-no-due-holding').text($('#holding_number').val() || '—');
         $('#bcp-no-due-household').text(selectedHouseholdText || $('#household_code').val() || '—');
         $('#bcp-no-due-month').text(getSelectedPaymentMonthLabel());
         $('#bcp-no-due-waste-charge').text(
-            (data.waste_charge === null || data.waste_charge === undefined)
+            (currentData.waste_charge === null || currentData.waste_charge === undefined)
                 ? '—'
-                : formatCurrencyDisplay(data.waste_charge)
+                : formatCurrencyDisplay(currentData.waste_charge)
         );
         $('#bcp-no-due-total-due').text(
-            (data.due === null || data.due === undefined)
+            (dueData.due === null || dueData.due === undefined)
                 ? '0'
-                : formatCurrencyDisplay(data.due)
+                : formatCurrencyDisplay(dueData.due)
         );
     }
 
     function updateDueMonthLabel() {
-        var ym = $('#payment_for_month').val();
-        if (!ym || ym.length < 7) {
-            $('#bcp-due-month-label').text('{{ __('selected month') }}');
-            return;
-        }
-        var parts = ym.split('-');
-        if (parts.length < 2) {
-            $('#bcp-due-month-label').text('{{ __('selected month') }}');
-            return;
-        }
-        var year = parseInt(parts[0], 10);
-        var month = parseInt(parts[1], 10);
-        if (!year || !month || month < 1 || month > 12) {
-            $('#bcp-due-month-label').text('{{ __('selected month') }}');
-            return;
-        }
-        var dt = new Date(year, month - 1, 1);
-        var monthLabel = dt.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
-        $('#bcp-due-month-label').text(monthLabel);
+        var label = dueThroughMonthLabel($('#payment_for_month').val());
+        $('#bcp-due-month-label').text(label);
+        $('#bcp-due-summary-month').text(label);
     }
 
     function refreshBalance() {
         var siteId = $('#household_id').val();
         var ym = $('#payment_for_month').val();
         var pm = monthFirstDay(ym);
+        var duePm = dueThroughMonthFirstDay(ym);
         updateDueMonthLabel();
-        if (!siteId || !pm) {
+        if (!siteId || !pm || !duePm) {
             setBalanceLoading(false);
             $('#bcp-waste-charge').text('');
             $('#bcp-due').text('');
@@ -401,28 +410,36 @@
         }
         var seq = ++balanceRequestSeq;
         setBalanceLoading(true);
-        var url = balanceUrl + '?household_id=' + encodeURIComponent(siteId)
-            + '&payment_for_month=' + encodeURIComponent(pm);
-        if (excludePaymentId) {
-            url += '&exclude_payment_id=' + encodeURIComponent(excludePaymentId);
+        function balanceRequestUrl(paymentMonth) {
+            var url = balanceUrl + '?household_id=' + encodeURIComponent(siteId)
+                + '&payment_for_month=' + encodeURIComponent(paymentMonth);
+            if (excludePaymentId) {
+                url += '&exclude_payment_id=' + encodeURIComponent(excludePaymentId);
+            }
+            return url;
         }
-        $.getJSON(url).done(function(data) {
+        $.when(
+            $.getJSON(balanceRequestUrl(pm)),
+            $.getJSON(balanceRequestUrl(duePm))
+        ).done(function(currentRes, dueRes) {
             if (seq !== balanceRequestSeq) {
                 return;
             }
+            var data = currentRes[0];
+            var dueData = dueRes[0];
             if (data.waste_charge === null || data.waste_charge === undefined) {
-                $('#bcp-waste-charge').text('{{ __('Not set') }}');
+                $('#bcp-waste-charge').text('{{ __('Not Set') }}');
             } else {
                 $('#bcp-waste-charge').text(formatCurrencyDisplay(data.waste_charge));
             }
-            if (data.due === null || data.due === undefined) {
+            if (dueData.due === null || dueData.due === undefined) {
                 $('#bcp-due').text('—');
             } else {
-                $('#bcp-due').text(formatCurrencyDisplay(data.due));
+                $('#bcp-due').text(formatCurrencyDisplay(dueData.due));
             }
-            var dueNumeric = Number(data.due);
+            var dueNumeric = Number(dueData.due);
             var hasNoDue = isFinite(dueNumeric) && dueNumeric <= 0;
-            updateNoDueInfo(data);
+            updateNoDueInfo(data, dueData);
             setNoDueState(hasNoDue);
             if (hasNoDue) {
                 return;
@@ -461,7 +478,7 @@
     }
 
     $('#holding_select').select2({
-        placeholder: '{{ __('Search holding') }}',
+        placeholder: '{{ __('Search Holding') }}',
         allowClear: true,
         minimumInputLength: 2,
         ajax: {
@@ -479,7 +496,7 @@
     });
 
     $('#customer_site_select').select2({
-        placeholder: '{{ __('Select household') }}',
+        placeholder: '{{ __('Select Household') }}',
         allowClear: true,
         ajax: {
             url: customersUrl,

@@ -39,7 +39,15 @@
             </div>
             <div class="form-group row">
                 {!! Form::label('complaint_status', __('Complaint Status'), ['class' => 'col-sm-3 control-label']) !!}
-                <div class="col-sm-3">{!! Form::label(null, __(config('swm_complaints.complaint_statuses')[$complaint->complaint_status] ?? $complaint->complaint_status), ['class' => 'form-control']) !!}</div>
+                <div class="col-sm-3">
+                    @php
+                        $statusLabel = __(config('swm_complaints.complaint_statuses')[$complaint->complaint_status] ?? $complaint->complaint_status);
+                        if ($complaint->complaint_status === 'others' && ! empty($complaint->complaint_status_other)) {
+                            $statusLabel = $statusLabel.': '.$complaint->complaint_status_other;
+                        }
+                    @endphp
+                    {!! Form::label(null, $statusLabel, ['class' => 'form-control']) !!}
+                </div>
                 {!! Form::label('resolution_time_days', __('Resolution Time (Days)'), ['class' => 'col-sm-3 control-label']) !!}
                 <div class="col-sm-3">{!! Form::label(null, $complaint->resolution_time_days, ['class' => 'form-control']) !!}</div>
             </div>

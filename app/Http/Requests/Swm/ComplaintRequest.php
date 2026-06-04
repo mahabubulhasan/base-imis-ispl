@@ -61,6 +61,12 @@ class ComplaintRequest extends FormRequest
                 'string',
                 Rule::in(array_keys(config('swm_complaints.complaint_statuses', []))),
             ],
+            'complaint_status_other' => [
+                'nullable',
+                'string',
+                'max:255',
+                'required_if:complaint_status,others',
+            ],
             'resolution_time_days' => ['nullable', 'integer', 'min:0'],
             'photo_attachment' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
             'notes' => ['nullable', 'string'],
@@ -82,6 +88,9 @@ class ComplaintRequest extends FormRequest
             'priority_level' => $this->filled('priority_level') ? (int) $this->input('priority_level') : null,
             'duplicate_complaint' => filter_var($this->input('duplicate_complaint', false), FILTER_VALIDATE_BOOLEAN),
             'notes' => $this->filled('notes') ? trim((string) $this->input('notes')) : null,
+            'complaint_status_other' => $this->input('complaint_status') === 'others'
+                ? ($this->filled('complaint_status_other') ? trim((string) $this->input('complaint_status_other')) : null)
+                : null,
         ]);
     }
 }

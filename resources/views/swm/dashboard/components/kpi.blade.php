@@ -4,10 +4,9 @@
             <span class="kpi-value">{{ $value }}</span>
         </div>
         <div class="kpi-footer">
-            <span class="kpi-name">{{ $name }}</span>
-            @if(empty($hideUnit) && !empty($unit))
-                <span class="kpi-unit">{{ $unit }}</span>
-            @endif
+            <span class="kpi-name">
+                {{ $name }}@if(empty($hideUnit) && !empty($unit)) <span class="kpi-unit">({{ $unit }})</span>@endif
+            </span>
         </div>
     </div>
 </div>

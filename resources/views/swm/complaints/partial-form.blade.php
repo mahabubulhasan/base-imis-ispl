@@ -74,17 +74,6 @@
     </div>
 
     <div class="form-group row">
-        {!! Form::label('duplicate_complaint', __('Duplicate Complaint'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-3">
-            {!! Form::select('duplicate_complaint', $duplicateOptions, old('duplicate_complaint', $isEdit ? (int) ($complaint->duplicate_complaint ?? 0) : 0), ['class' => 'form-control']) !!}
-        </div>
-        {!! Form::label('duplicate_reference', __('Duplicate Complaint'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-3">
-            {!! Form::text('duplicate_reference', old('duplicate_reference', $isEdit ? $complaint->duplicate_reference : null), ['class' => 'form-control', 'placeholder' => __('Linked Complaint ID (Optional)')]) !!}
-        </div>
-    </div>
-
-    <div class="form-group row">
         {!! Form::label('priority_level', __('Priority Level (1-5)'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             {!! Form::select('priority_level', ['' => __('Select Priority')] + $priorityLevels, old('priority_level', $isEdit ? $complaint->priority_level : null), ['class' => 'form-control']) !!}
@@ -120,6 +109,17 @@
         {!! Form::label('notes', __('Notes'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-9">
             {!! Form::textarea('notes', old('notes', $isEdit ? $complaint->notes : null), ['class' => 'form-control', 'rows' => 3, 'placeholder' => __('Notes')]) !!}
+        </div>
+    </div>
+
+    <div class="form-group row">
+        {!! Form::label('duplicate_complaint', __('Duplicate Complaint'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::select('duplicate_complaint', $duplicateOptions, old('duplicate_complaint', $isEdit ? (int) ($complaint->duplicate_complaint ?? 0) : 0), ['class' => 'form-control']) !!}
+        </div>
+        {!! Form::label('duplicate_reference', __('Duplicate Complaint ID'), ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-3">
+            {!! Form::text('duplicate_reference', old('duplicate_reference', $isEdit ? $complaint->duplicate_reference : null), ['class' => 'form-control', 'placeholder' => __('Linked Complaint ID (Optional)')]) !!}
         </div>
     </div>
 </div>

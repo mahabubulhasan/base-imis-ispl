@@ -89,6 +89,9 @@ class ComplaintService
             })
             ->editColumn('complaint_status', function ($model) {
                 $map = config('swm_complaints.complaint_statuses', []);
+                if ($model->complaint_status === 'others' && ! empty($model->complaint_status_other)) {
+                    return ($map['others'] ?? __('Other')).': '.$model->complaint_status_other;
+                }
 
                 return $map[$model->complaint_status] ?? $model->complaint_status;
             })
@@ -171,6 +174,9 @@ class ComplaintService
             $complaint->assigned_to = $data['assigned_to'] ?? null;
             $complaint->submitted_through = $data['submitted_through'] ?? null;
             $complaint->complaint_status = $data['complaint_status'] ?? null;
+            $complaint->complaint_status_other = ($data['complaint_status'] ?? null) === 'others'
+                ? ($data['complaint_status_other'] ?? null)
+                : null;
             $complaint->resolution_time_days = $data['resolution_time_days'] ?? null;
             if ($newPhotoPath !== null) {
                 if (! empty($complaint->photo_attachment_path)) {
@@ -310,7 +316,9 @@ class ComplaintService
                     $row->duplicate_reference,
                     $row->priority_level,
                     $row->assigned_to,
-                    $statusMap[$row->complaint_status] ?? $row->complaint_status,
+                    ($row->complaint_status === 'others' && ! empty($row->complaint_status_other))
+                        ? (($statusMap['others'] ?? __('Other')).': '.$row->complaint_status_other)
+                        : ($statusMap[$row->complaint_status] ?? $row->complaint_status),
                     $row->resolution_time_days,
                     $row->photo_attachment_path,
                     $row->complaint_details,
