@@ -379,14 +379,6 @@
         return Math.round(pct) + '%';
     }
 
-    function truncateDoughnutLabel(text, maxLen) {
-        var s = String(text || '');
-        if (s.length <= maxLen) {
-            return s;
-        }
-        return s.slice(0, maxLen - 1) + '\u2026';
-    }
-
     function parseColorToRgb(color) {
         var raw = String(color || '').trim();
         var match = raw.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
@@ -415,11 +407,6 @@
         return { r: 108, g: 117, b: 125 };
     }
 
-    function opaqueColorString(color) {
-        var rgb = parseColorToRgb(color);
-        return 'rgb(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ')';
-    }
-
     function colorLuminance(r, g, b) {
         return 0.299 * r + 0.587 * g + 0.114 * b;
     }
@@ -427,28 +414,6 @@
     function labelTextColorForBackground(bgColor) {
         var rgb = parseColorToRgb(bgColor);
         return colorLuminance(rgb.r, rgb.g, rgb.b) < 140 ? '#ffffff' : '#2d3748';
-    }
-
-    function textAlignForAngle(angle) {
-        var cos = Math.cos(angle);
-        if (cos > 0.25) {
-            return 'left';
-        }
-        if (cos < -0.25) {
-            return 'right';
-        }
-        return 'center';
-    }
-
-    function textBaselineForAngle(angle) {
-        var sin = Math.sin(angle);
-        if (sin > 0.35) {
-            return 'top';
-        }
-        if (sin < -0.35) {
-            return 'bottom';
-        }
-        return 'middle';
     }
 
     function drawSwmDoughnutLabels(chart, meta) {
@@ -486,8 +451,6 @@
         var minArcSpan = (12 * Math.PI) / 180;
         var labelCount = labels.length;
         var positiveCount = countPositiveDoughnutSegments(data, decimalValues);
-        var outsideOffset = labelCount > 5 ? 28 : 22;
-        var leaderOffset = labelCount > 5 ? 46 : 40;
 
         chartMeta.data.forEach(function (arc, i) {
             if (!arc || arc.hidden) {
@@ -504,7 +467,10 @@
             var angle = (model.startAngle + model.endAngle) / 2;
             var arcSpan = model.endAngle - model.startAngle;
             var fullRing = isDoughnutFullRing(arcSpan, labelCount, positiveCount);
-            var useLeader = !fullRing && arcSpan < minArcSpan;
+            if (!fullRing && arcSpan < minArcSpan) {
+                return;
+            }
+
             var bgColor = dataset.backgroundColor[i] || palette.doughnut[i % palette.doughnut.length];
             var insideColor = labelTextColorForBackground(bgColor);
             var midRadius = (model.innerRadius + model.outerRadius) / 2;
@@ -517,48 +483,6 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillText(formatDoughnutPercent(pct, decimalValues || percentValues), insideX, insideY);
-            ctx.restore();
-
-            var segmentName = labels[i] || '';
-            var outsideLabel = truncateDoughnutLabel(segmentName, fullRing ? 36 : 28);
-            var labelX;
-            var labelY;
-            var textAlign;
-            var baseline;
-
-            if (fullRing) {
-                labelX = model.x + model.outerRadius + outsideOffset + 6;
-                labelY = model.y;
-                textAlign = 'left';
-                baseline = 'middle';
-            } else {
-                var outsideRadius = model.outerRadius + (useLeader ? leaderOffset : outsideOffset);
-                labelX = model.x + Math.cos(angle) * outsideRadius;
-                labelY = model.y + Math.sin(angle) * outsideRadius;
-                textAlign = textAlignForAngle(angle);
-                baseline = textBaselineForAngle(angle);
-
-                if (useLeader) {
-                    var edgeX = model.x + Math.cos(angle) * model.outerRadius;
-                    var edgeY = model.y + Math.sin(angle) * model.outerRadius;
-                    ctx.save();
-                    ctx.setLineDash([2, 2]);
-                    ctx.strokeStyle = '#6c757d';
-                    ctx.lineWidth = 1;
-                    ctx.beginPath();
-                    ctx.moveTo(edgeX, edgeY);
-                    ctx.lineTo(labelX, labelY);
-                    ctx.stroke();
-                    ctx.restore();
-                }
-            }
-
-            ctx.save();
-            ctx.fillStyle = opaqueColorString(bgColor);
-            ctx.textAlign = textAlign;
-            ctx.textBaseline = baseline;
-            ctx.font = '12px Tahoma, Verdana, sans-serif';
-            ctx.fillText(outsideLabel, labelX, labelY);
             ctx.restore();
         });
     }
@@ -600,21 +524,12 @@
             || (positiveCount === 1 && arcSpan >= Math.PI);
     }
 
-    function doughnutLayoutPadding(labelCount, fullRing) {
-        if (fullRing) {
-            return {
-                top: 24,
-                bottom: 24,
-                left: 36,
-                right: 96,
-            };
-        }
-        var base = labelCount > 5 ? 48 : 40;
+    function doughnutLayoutPadding() {
         return {
-            top: 36,
-            bottom: 44,
-            left: base,
-            right: base,
+            top: 20,
+            bottom: 20,
+            left: 20,
+            right: 12,
         };
     }
 
@@ -625,15 +540,6 @@
         var ds = (chart.datasets && chart.datasets[0]) ? chart.datasets[0] : { data: [] };
         var decimalValues = !!opts.decimalValues || !!opts.percentValues;
         var labels = chart.labels || [];
-        var labelCount = labels.length;
-        var dataValues = ds.data || [];
-        var positiveCount = countPositiveDoughnutSegments(dataValues, decimalValues);
-        var fullRing = labelCount === 1 || positiveCount === 1;
-        var wrap = canvas.closest('.chart-wrap--doughnut');
-        if (wrap) {
-            wrap.style.minHeight = fullRing ? '400px' : '';
-        }
-
         destroyChart(canvas.id);
         var instance = new ChartCtor(canvas.getContext('2d'), {
             type: 'doughnut',
@@ -654,9 +560,19 @@
                 maintainAspectRatio: false,
                 cutoutPercentage: 58,
                 layout: {
-                    padding: doughnutLayoutPadding(labelCount, fullRing),
+                    padding: doughnutLayoutPadding(),
                 },
-                legend: { display: false },
+                legend: {
+                    display: true,
+                    position: 'right',
+                    align: 'center',
+                    labels: {
+                        boxWidth: 12,
+                        padding: 10,
+                        fontFamily: 'Tahoma, Verdana, sans-serif',
+                        fontSize: 12,
+                    },
+                },
                 tooltips: {
                     enabled: false,
                 },
