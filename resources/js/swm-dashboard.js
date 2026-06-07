@@ -356,52 +356,6 @@
         });
     }
 
-    function isNumberOfEntityUnit(unit) {
-        return /^Number of\s+/i.test(String(unit || '').trim());
-    }
-
-    function doughnutTooltipUnit(opts, dataset) {
-        opts = opts || {};
-        if (opts.unit) {
-            return String(opts.unit);
-        }
-        if (opts.unitY && !isNumberOfEntityUnit(opts.unitY)) {
-            return String(opts.unitY);
-        }
-        if (opts.percentValues) {
-            return '%';
-        }
-        var dsLabel = dataset && dataset.label ? String(dataset.label).trim() : '';
-        if (dsLabel && dsLabel.toLowerCase() !== 'count') {
-            return dsLabel;
-        }
-        return '';
-    }
-
-    function formatDoughnutTooltipValue(value, decimalValues) {
-        var num = parseChartValue(value, decimalValues);
-        if (decimalValues) {
-            return num.toLocaleString(undefined, { maximumFractionDigits: 1 });
-        }
-        return num.toLocaleString();
-    }
-
-    function formatDoughnutOutsideDetail(formattedValue, meta) {
-        meta = meta || {};
-        if (meta.valueDescriptor && meta.valueUnit) {
-            return formattedValue + ' ' + meta.valueUnit + ' ' + meta.valueDescriptor;
-        }
-        var unit = String(meta.valueUnit || '').trim();
-        if (!unit) {
-            return formattedValue;
-        }
-        var parenMatch = unit.match(/^(.+?)\s*\(([^)]+)\)\s*$/);
-        if (parenMatch) {
-            return formattedValue + ' ' + parenMatch[2].trim() + ' ' + parenMatch[1].trim();
-        }
-        return formattedValue + ' ' + unit;
-    }
-
     var swmDoughnutPluginRegistered = false;
 
     function sumChartValues(data, decimalValues) {
@@ -459,6 +413,11 @@
             }
         }
         return { r: 108, g: 117, b: 125 };
+    }
+
+    function opaqueColorString(color) {
+        var rgb = parseColorToRgb(color);
+        return 'rgb(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ')';
     }
 
     function colorLuminance(r, g, b) {
@@ -562,39 +521,22 @@
 
             var segmentName = labels[i] || '';
             var outsideLabel = truncateDoughnutLabel(segmentName, fullRing ? 36 : 28);
-            var formattedValue = formatDoughnutTooltipValue(value, decimalValues);
-            var outsideDetail = formatDoughnutOutsideDetail(formattedValue, meta);
             var labelX;
             var labelY;
             var textAlign;
             var baseline;
-            var nameY;
-            var detailY;
-            var lineHeight = 14;
 
             if (fullRing) {
                 labelX = model.x + model.outerRadius + outsideOffset + 6;
                 labelY = model.y;
                 textAlign = 'left';
                 baseline = 'middle';
-                nameY = labelY - lineHeight / 2;
-                detailY = labelY + lineHeight / 2;
             } else {
                 var outsideRadius = model.outerRadius + (useLeader ? leaderOffset : outsideOffset);
                 labelX = model.x + Math.cos(angle) * outsideRadius;
                 labelY = model.y + Math.sin(angle) * outsideRadius;
                 textAlign = textAlignForAngle(angle);
                 baseline = textBaselineForAngle(angle);
-                nameY = labelY;
-                detailY = labelY;
-                if (baseline === 'middle') {
-                    nameY = labelY - lineHeight / 2;
-                    detailY = labelY + lineHeight / 2;
-                } else if (baseline === 'top') {
-                    detailY = labelY + lineHeight;
-                } else {
-                    detailY = labelY - lineHeight;
-                }
 
                 if (useLeader) {
                     var edgeX = model.x + Math.cos(angle) * model.outerRadius;
@@ -612,14 +554,11 @@
             }
 
             ctx.save();
-            ctx.fillStyle = '#2d3748';
+            ctx.fillStyle = opaqueColorString(bgColor);
             ctx.textAlign = textAlign;
             ctx.textBaseline = baseline;
             ctx.font = '12px Tahoma, Verdana, sans-serif';
-            ctx.fillText(outsideLabel, labelX, nameY);
-            ctx.font = '11px Tahoma, Verdana, sans-serif';
-            ctx.fillStyle = '#6c757d';
-            ctx.fillText(outsideDetail, labelX, detailY);
+            ctx.fillText(outsideLabel, labelX, labelY);
             ctx.restore();
         });
     }
@@ -664,10 +603,10 @@
     function doughnutLayoutPadding(labelCount, fullRing) {
         if (fullRing) {
             return {
-                top: 28,
-                bottom: 28,
+                top: 24,
+                bottom: 24,
                 left: 36,
-                right: 110,
+                right: 96,
             };
         }
         var base = labelCount > 5 ? 48 : 40;
@@ -684,7 +623,6 @@
 
         var opts = chart.options || {};
         var ds = (chart.datasets && chart.datasets[0]) ? chart.datasets[0] : { data: [] };
-        var valueUnit = doughnutTooltipUnit(opts, ds);
         var decimalValues = !!opts.decimalValues || !!opts.percentValues;
         var labels = chart.labels || [];
         var labelCount = labels.length;
@@ -725,8 +663,6 @@
                 swmDoughnutMeta: {
                     percentValues: !!opts.percentValues,
                     decimalValues: decimalValues,
-                    valueUnit: valueUnit,
-                    valueDescriptor: opts.valueDescriptor ? String(opts.valueDescriptor) : '',
                 },
             },
         });
