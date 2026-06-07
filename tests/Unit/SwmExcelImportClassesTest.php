@@ -30,6 +30,7 @@ class SwmExcelImportClassesTest extends TestCase
             [\App\Imports\Swm\WasteProcessingImport::class],
             [\App\Imports\Swm\ComplaintImport::class],
             [\App\Imports\Swm\BillCollectionPaymentImport::class],
+            [\App\Imports\BuildingInfo\HouseholdImport::class],
         ];
     }
 }

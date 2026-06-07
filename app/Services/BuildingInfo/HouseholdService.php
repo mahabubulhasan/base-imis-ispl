@@ -4,16 +4,16 @@ namespace App\Services\BuildingInfo;
 
 use App\Models\BuildingInfo\Building;
 use App\Models\BuildingInfo\Household;
+use App\Models\LayerInfo\Lic;
+use App\Models\LayerInfo\Ward;
 use App\Services\Formatting\Currency;
 use App\Services\Formatting\CurrencyFormatter;
 use App\Models\Swm\WasteBin;
 use App\Models\Swm\Worker;
 use App\Models\UtilityInfo\Roadline;
+use App\Support\Swm\SwmExcelExportWriter;
+use App\Support\Swm\SwmExcelTemplateWriter;
 use Illuminate\Database\Eloquent\Builder;
-use Box\Spout\Common\Type;
-use Box\Spout\Writer\Style\Color;
-use Box\Spout\Writer\Style\StyleBuilder;
-use Box\Spout\Writer\WriterFactory;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Auth;
 
@@ -183,34 +183,102 @@ class HouseholdService
 
         $query = Household::query()->whereNull('deleted_at')->orderBy('id');
         $this->applyHouseholdFilters($query, $data);
-        $style = (new StyleBuilder())->setFontBold()->setFontSize(13)->setBackgroundColor(Color::rgb(228, 228, 228))->build();
-        $writer = WriterFactory::create(Type::CSV);
-        $writer->openToBrowser('Households.csv')->addRowWithStyle($columns, $style);
-        $query->chunk(5000, function ($rows) use ($writer) {
-            foreach ($rows as $row) {
-                $writer->addRow([
-                    $row->household_id,
-                    $row->household_owner_name,
-                    $row->father_or_husband_name,
-                    Household::statusOptions()[$row->status] ?? (string) $row->status,
-                    $row->contact_number,
-                    $row->ward,
-                    $row->area_mohalla_name,
-                    $row->sub_location,
-                    $row->road_no,
-                    $row->road_name,
-                    $row->holding_number,
-                    $row->tax_id,
-                    $row->bin,
-                    $this->currencyFormatter->format(Currency::TK, $row->waste_charge),
-                    $row->is_owner ? __('Yes') : __('No'),
-                    $row->is_lic ? __('Yes') : __('No'),
-                    $row->lic_id,
-                    $row->survey_date?->format('Y-m-d'),
-                ]);
-            }
+
+        (new SwmExcelExportWriter())->download('Households.xlsx', $columns, function ($sheet, $colLetter) use ($query) {
+            $rowNum = 2;
+            $query->chunk(5000, function ($rows) use ($sheet, $colLetter, &$rowNum) {
+                foreach ($rows as $row) {
+                    $values = [
+                        $row->household_id,
+                        $row->household_owner_name,
+                        $row->father_or_husband_name,
+                        Household::statusOptions()[$row->status] ?? (string) $row->status,
+                        $row->contact_number,
+                        $row->ward,
+                        $row->area_mohalla_name,
+                        $row->sub_location,
+                        $row->road_no,
+                        $row->road_name,
+                        $row->holding_number,
+                        $row->tax_id,
+                        $row->bin,
+                        $this->currencyFormatter->format(Currency::TK, $row->waste_charge),
+                        $row->is_owner ? __('Yes') : __('No'),
+                        $row->is_lic ? __('Yes') : __('No'),
+                        $row->lic_id,
+                        $row->survey_date?->format('Y-m-d'),
+                    ];
+                    foreach ($values as $index => $value) {
+                        $sheet->setCellValue($colLetter($index + 1).$rowNum, $value);
+                    }
+                    $rowNum++;
+                }
+            });
         });
-        $writer->close();
+    }
+
+    public function downloadTemplate(): void
+    {
+        (new SwmExcelTemplateWriter())->download(
+            'households-import-template.xlsx',
+            $this->importTemplateColumns()
+        );
+    }
+
+    /** @return array<int, array{key: string, label?: string, required?: bool, dropdown?: array<int, string>}> */
+    public function importTemplateColumns(): array
+    {
+        $yesNo = [__('Yes'), __('No')];
+        $statusLabels = array_values(Household::statusOptions());
+        $wards = array_map('strval', array_keys(Ward::getInAscOrder()));
+
+        $bins = Building::query()
+            ->whereNull('deleted_at')
+            ->orderBy('bin')
+            ->pluck('bin')
+            ->all();
+
+        $licOptions = Lic::query()
+            ->whereNull('deleted_at')
+            ->orderBy('community_name')
+            ->get(['id', 'community_name'])
+            ->map(fn ($row) => "{$row->community_name} - {$row->id}")
+            ->all();
+
+        $vanPullers = Worker::query()
+            ->whereNull('deleted_at')
+            ->orderBy('name')
+            ->get(['id', 'name'])
+            ->map(fn ($row) => "{$row->name} - {$row->id}")
+            ->all();
+
+        return [
+            ['key' => 'household_id', 'required' => true],
+            ['key' => 'household_owner_name', 'required' => true],
+            ['key' => 'father_or_husband_name'],
+            ['key' => 'status', 'required' => true, 'dropdown' => $statusLabels],
+            ['key' => 'contact_number', 'required' => true],
+            ['key' => 'ward', 'required' => true, 'dropdown' => $wards],
+            ['key' => 'area_mohalla_name'],
+            ['key' => 'sub_location'],
+            ['key' => 'road_no'],
+            ['key' => 'road_name', 'required' => true],
+            ['key' => 'holding_number', 'required' => true],
+            ['key' => 'tax_id'],
+            ['key' => 'waste_charge'],
+            ['key' => 'bin', 'dropdown' => $bins],
+            ['key' => 'is_owner', 'dropdown' => $yesNo],
+            ['key' => 'is_lic', 'dropdown' => $yesNo],
+            ['key' => 'lic_id', 'dropdown' => $licOptions],
+            ['key' => 'number_of_family_members'],
+            ['key' => 'daily_waste_volume'],
+            ['key' => 'segregation_practiced', 'dropdown' => $yesNo],
+            ['key' => 'waste_bin_provided', 'dropdown' => $yesNo],
+            ['key' => 'using_this_service_since'],
+            ['key' => 'survey_date'],
+            ['key' => 'van_puller', 'dropdown' => $vanPullers],
+            ['key' => 'remarks'],
+        ];
     }
 
     private function applyHouseholdFilters(Builder $query, array $data): void

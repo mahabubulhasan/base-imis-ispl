@@ -1253,7 +1253,11 @@ class PermissionsSeeder extends Seeder
                     ],
                     [
                         "type" => "Export",
-                        "name" => "Export Households to CSV",
+                        "name" => "Export Households to Excel",
+                    ],
+                    [
+                        "type" => "Import",
+                        "name" => "Import Households From Excel",
                     ],
                 ],
             ],

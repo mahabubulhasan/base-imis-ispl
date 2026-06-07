@@ -8,7 +8,7 @@
 @endisset
 @isset($templateRoute)
 @can($exportPermission)
-<a href="{{ $templateRoute }}" class="btn btn-info">{{ __('Download Excel Template') }}</a>
+<a href="{{ $templateRoute }}" class="btn btn-info">{{ __('Download Import Template') }}</a>
 @endcan
 @endisset
 @can($exportPermission)

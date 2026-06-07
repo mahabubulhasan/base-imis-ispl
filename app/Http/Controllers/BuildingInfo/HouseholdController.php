@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\BuildingInfo;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Swm\Concerns\HandlesSwmExcelImport;
 use App\Http\Requests\BuildingInfo\HouseholdRequest;
+use App\Imports\BuildingInfo\HouseholdImport;
 use App\Models\BuildingInfo\Building;
 use App\Models\BuildingInfo\Household;
 use App\Models\LayerInfo\Lic;
@@ -15,6 +17,8 @@ use Illuminate\Http\Request;
 
 class HouseholdController extends Controller
 {
+    use HandlesSwmExcelImport;
+
     public function __construct(protected HouseholdService $householdService)
     {
         $this->middleware('auth');
@@ -23,7 +27,8 @@ class HouseholdController extends Controller
         $this->middleware('permission:Add Household', ['only' => ['create', 'store']]);
         $this->middleware('permission:Edit Household', ['only' => ['edit', 'update']]);
         $this->middleware('permission:Delete Household', ['only' => ['destroy']]);
-        $this->middleware('permission:Export Households to CSV', ['only' => ['export']]);
+        $this->middleware('permission:Export Households to Excel', ['only' => ['export', 'downloadTemplate']]);
+        $this->middleware('permission:Import Households From Excel', ['only' => ['importForm', 'importStore']]);
         $this->middleware('permission:View Household History', ['only' => ['history']]);
     }
 
@@ -168,5 +173,31 @@ class HouseholdController extends Controller
     public function export(Request $request)
     {
         return $this->householdService->download($request->all());
+    }
+
+    public function downloadTemplate()
+    {
+        $this->householdService->downloadTemplate();
+    }
+
+    public function importForm()
+    {
+        return $this->swmImportFormView(
+            __('Import Households'),
+            route('building-info.households.index'),
+            'building-info.households.import.store'
+        );
+    }
+
+    public function importStore(Request $request)
+    {
+        return $this->swmImportStore(
+            $request,
+            HouseholdImport::class,
+            ['household_id', 'household_owner_name', 'status', 'contact_number', 'ward', 'road_name', 'holding_number'],
+            'building-info.households.index',
+            'importswm',
+            'households'
+        );
     }
 }

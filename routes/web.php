@@ -110,6 +110,9 @@ Route::group([
     Route::get('households/building-snapshot', 'HouseholdController@getBuildingSnapshot')->name('building-info.households.building-snapshot');
     Route::get('households/data', 'HouseholdController@getData')->name('building-info.households.data');
     Route::get('households/export', 'HouseholdController@export')->name('building-info.households.export');
+    Route::get('households/template', 'HouseholdController@downloadTemplate')->name('building-info.households.template');
+    Route::get('households/import', 'HouseholdController@importForm')->name('building-info.households.import');
+    Route::post('households/import', 'HouseholdController@importStore')->name('building-info.households.import.store');
     Route::get('households/{household}/history', 'HouseholdController@history')->name('building-info.households.history');
     Route::resource('households', 'HouseholdController')->names([
         'index' => 'building-info.households.index',

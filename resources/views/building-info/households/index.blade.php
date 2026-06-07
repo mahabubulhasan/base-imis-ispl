@@ -8,16 +8,20 @@
 @endpush
 @section('title', $page_title)
 @section('content')
+@include('swm.partials.import-errors')
 @include('layouts.components.success-alert')
 @include('layouts.components.error-alert')
 <div class="card app-mobile-index">
     <div class="card-header">
-        @can('Add Household')
-        <a href="{{ action('BuildingInfo\HouseholdController@create') }}" class="btn btn-info">{{ __('Add Household') }}</a>
-        @endcan
-        @can('Export Households to CSV')
-        <a href="#" id="export" class="btn btn-info">{{ __('Export to CSV') }}</a>
-        @endcan
+        @include('swm.partials.excel-import-export-header', [
+            'addPermission' => 'Add Household',
+            'addRoute' => action('BuildingInfo\HouseholdController@create'),
+            'addLabel' => __('Add Household'),
+            'importRoute' => route('building-info.households.import'),
+            'importPermission' => 'Import Households From Excel',
+            'templateRoute' => route('building-info.households.template'),
+            'exportPermission' => 'Export Households to Excel',
+        ])
         <a href="#" class="btn btn-info float-right" id="headingOne" type="button" data-toggle="collapse"
             data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
             {{ __('Show Filter') }}
