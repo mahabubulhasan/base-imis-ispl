@@ -165,12 +165,14 @@ class BillingDashboardModule implements SwmDashboardModuleInterface
     protected function billCollectionByWardChart(DashboardReportingPeriod $period): array
     {
         $byWard = $this->metrics->billCollectionByWard($period->toMonth);
-        $aligned = $this->alignCountsToWardAxis($byWard);
+        $aligned = $this->alignCountsToWardAxis($byWard, appendUnknown: true);
 
         return [
             'id' => 'swmChartBillingCollectionByWard',
             'type' => 'bar',
-            'title' => __('Bill Collection by Ward'),
+            'title' => __('Bill Collection by Ward (through :month)', [
+                'month' => $period->toMonth->format('M Y'),
+            ]),
             'labels' => $aligned['labels'],
             'datasets' => [
                 ['label' => __('Bill Collected (Taka)'), 'data' => $aligned['values']],
@@ -205,6 +207,8 @@ class BillingDashboardModule implements SwmDashboardModuleInterface
             ],
             'options' => [
                 'unitX' => __('Payment Method'),
+                'unit' => __('Taka'),
+                'valueDescriptor' => __('Bill Collected'),
                 'decimalValues' => true,
             ],
         ];

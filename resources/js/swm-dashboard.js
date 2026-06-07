@@ -384,6 +384,22 @@
         return num.toLocaleString();
     }
 
+    function formatDoughnutOutsideDetail(formattedValue, meta) {
+        meta = meta || {};
+        if (meta.valueDescriptor && meta.valueUnit) {
+            return formattedValue + ' ' + meta.valueUnit + ' ' + meta.valueDescriptor;
+        }
+        var unit = String(meta.valueUnit || '').trim();
+        if (!unit) {
+            return formattedValue;
+        }
+        var parenMatch = unit.match(/^(.+?)\s*\(([^)]+)\)\s*$/);
+        if (parenMatch) {
+            return formattedValue + ' ' + parenMatch[2].trim() + ' ' + parenMatch[1].trim();
+        }
+        return formattedValue + ' ' + unit;
+    }
+
     var swmDoughnutPluginRegistered = false;
 
     function sumChartValues(data, decimalValues) {
@@ -545,8 +561,7 @@
             var segmentName = labels[i] || '';
             var outsideLabel = truncateDoughnutLabel(segmentName, fullRing ? 36 : 28);
             var formattedValue = formatDoughnutTooltipValue(value, decimalValues);
-            var valueSuffix = meta.valueUnit ? ' ' + meta.valueUnit : '';
-            var outsideDetail = formattedValue + valueSuffix;
+            var outsideDetail = formatDoughnutOutsideDetail(formattedValue, meta);
             var labelX;
             var labelY;
             var textAlign;
@@ -709,6 +724,7 @@
                     percentValues: !!opts.percentValues,
                     decimalValues: decimalValues,
                     valueUnit: valueUnit,
+                    valueDescriptor: opts.valueDescriptor ? String(opts.valueDescriptor) : '',
                 },
             },
         });

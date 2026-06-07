@@ -183,7 +183,8 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
     protected function wasteProcessingSubmodule(DashboardReportingPeriod $period): array
     {
         $received = $this->totalWasteReceivedForProcessingTon($period);
-        $streams = $this->wasteStreamTotalsLastMonth($period);
+        $streams = $this->wasteStreamTotalsThroughMonth($period);
+        $throughMonth = $period->toMonth->format('M Y');
 
         return [
             'key' => 'waste_processing',
@@ -677,7 +678,7 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
     protected function totalWasteReceivedForProcessingTon(DashboardReportingPeriod $period): float
     {
         return round((float) $this->wasteProcessingQuery($period)
-            ->whereDate('reporting_month', $this->reportingMonthDate($period))
+            ->whereDate('reporting_month', '<=', $this->reportingMonthDate($period))
             ->sum('waste_received_ton'), 2);
     }
 
@@ -695,12 +696,14 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
     }
 
     /**
+     * Stream tonnage totals cumulative through the selected reporting month.
+     *
      * @return array<string, float>
      */
-    protected function wasteStreamTotalsLastMonth(DashboardReportingPeriod $period): array
+    protected function wasteStreamTotalsThroughMonth(DashboardReportingPeriod $period): array
     {
         $row = $this->wasteProcessingQuery($period)
-            ->whereDate('reporting_month', $this->reportingMonthDate($period))
+            ->whereDate('reporting_month', '<=', $this->reportingMonthDate($period))
             ->selectRaw('
                 COALESCE(SUM(organic_waste_composted_ton), 0)::float as organic_waste_composted_ton,
                 COALESCE(SUM(inorganic_waste_recycled_ton), 0)::float as inorganic_waste_recycled_ton,

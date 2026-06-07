@@ -122,11 +122,20 @@ class ServiceManagementDashboardModuleTest extends TestCase
 
         $tileItems = $this->tileItemsFromSubmodule($result, 'waste_processing');
         $this->assertCount(3, $tileItems);
-        $this->assertSame(__('Average Monthly Waste Received for Processing (Ton)'), $tileItems[0]['label']);
+        $this->assertSame(
+            __('Average Monthly Waste Received for Processing (through :month) (Ton)', ['month' => 'Apr 2026']),
+            $tileItems[0]['label'],
+        );
         $this->assertSame('100.00', $tileItems[0]['value']);
-        $this->assertSame(__('Average Daily Waste Received for Processing (Ton)'), $tileItems[1]['label']);
+        $this->assertSame(
+            __('Average Daily Waste Received for Processing (through :month) (Ton)', ['month' => 'Apr 2026']),
+            $tileItems[1]['label'],
+        );
         $this->assertSame('3.33', $tileItems[1]['value']);
-        $this->assertSame(__('Total Waste Received for Processing (Ton)'), $tileItems[2]['label']);
+        $this->assertSame(
+            __('Total Waste Received for Processing (through :month) (Ton)', ['month' => 'Apr 2026']),
+            $tileItems[2]['label'],
+        );
         $this->assertSame('100.00', $tileItems[2]['value']);
 
         $kpis = $this->kpisFromSubmodule($result, 'waste_processing');
@@ -141,6 +150,35 @@ class ServiceManagementDashboardModuleTest extends TestCase
         $this->assertSame('doughnut', $charts['swmChartSmWasteDistribution']['type']);
         $this->assertSame('stackedBar', $charts['swmChartSmWasteTrend']['type']);
         $this->assertCount(12, $charts['swmChartSmWasteTrend']['labels']);
+    }
+
+    public function test_waste_processing_kpis_include_prior_months_through_selected_month(): void
+    {
+        $period = $this->mayTestPeriod();
+
+        WasteProcessingLog::query()->create([
+            'entry_at' => '2026-04-01 10:00:00',
+            'report_date' => '2026-04-15',
+            'reporting_month' => '2026-04-01',
+            'waste_received_ton' => 100,
+            'organic_waste_composted_ton' => 20,
+            'inorganic_waste_recycled_ton' => 10,
+            'waste_incinerated_ton' => 5,
+            'waste_burned_open_air_ton' => 5,
+            'residual_waste_landfilled_ton' => 60,
+        ]);
+
+        $result = $this->module->build($period);
+        $tiles = $this->tilesFromSubmodule($result, 'waste_processing');
+        $kpis = $this->kpisFromSubmodule($result, 'waste_processing');
+
+        $this->assertSame(
+            '100.00',
+            $tiles[__('Total Waste Received for Processing (through :month) (Ton)', ['month' => 'May 2026'])],
+        );
+        $this->assertSame('20.0', $kpis[__('Composting Rate')]['value']);
+        $this->assertSame('30.0', $kpis[__('Resource Recovery Rate')]['value']);
+        $this->assertSame('60.0', $kpis[__('Residual Waste Landfilling Rate')]['value']);
     }
 
     public function test_chart_types_for_attendance_and_sts(): void
@@ -258,6 +296,21 @@ class ServiceManagementDashboardModuleTest extends TestCase
 
         return new DashboardReportingPeriod(
             Carbon::parse('2026-04-01'),
+            $periodEnd,
+            [
+                DashboardReportingPeriod::SOURCE_HOUSEHOLD => ReportingWindow::empty($periodEnd),
+                DashboardReportingPeriod::SOURCE_LANDFILL => ReportingWindow::empty($periodEnd),
+                DashboardReportingPeriod::SOURCE_COMPLAINT => ReportingWindow::empty($periodEnd),
+            ],
+        );
+    }
+
+    private function mayTestPeriod(): DashboardReportingPeriod
+    {
+        $periodEnd = Carbon::parse('2026-05-31 23:59:59');
+
+        return new DashboardReportingPeriod(
+            Carbon::parse('2026-05-01'),
             $periodEnd,
             [
                 DashboardReportingPeriod::SOURCE_HOUSEHOLD => ReportingWindow::empty($periodEnd),

@@ -64,7 +64,7 @@ class BillingDashboardModuleTest extends TestCase
         $this->assertSame('100', $tiles[__('Total Due (Taka)']);
     }
 
-    public function test_bill_collection_by_ward_chart_sums_selected_month(): void
+    public function test_bill_collection_by_ward_chart_sums_cumulative_through_month(): void
     {
         $period = $this->testPeriod();
         $wardFive = $this->createHousehold(['ward' => '5']);
@@ -107,9 +107,37 @@ class BillingDashboardModuleTest extends TestCase
         $chart = $charts['swmChartBillingCollectionByWard'];
 
         $this->assertSame('bar', $chart['type']);
-        $this->assertSame(__('Bill Collection by Ward'), $chart['title']);
+        $this->assertSame(
+            __('Bill Collection by Ward (through :month)', ['month' => 'Apr 2026']),
+            $chart['title'],
+        );
         $this->assertSame(['5', '7'], $chart['labels']);
-        $this->assertSame([400.0, 200.0], $chart['datasets'][0]['data']);
+        $this->assertSame([450.0, 200.0], $chart['datasets'][0]['data']);
+    }
+
+    public function test_bill_collection_by_ward_chart_includes_unknown_ward_bucket(): void
+    {
+        $period = $this->testPeriod();
+        $unknownWard = $this->createHousehold(['ward' => null]);
+
+        BillCollectionPayment::query()->create([
+            'household_id' => $unknownWard->id,
+            'holding_number' => $unknownWard->holding_number,
+            'customer_id' => $unknownWard->household_id,
+            'amount' => 125,
+            'due_paid' => 25,
+            'payment_for_month' => '2026-04-01',
+            'payment_time' => '2026-04-15 10:00:00',
+            'payment_method' => 'cash',
+        ]);
+
+        $charts = $this->chartsFromResult($this->module->build($period));
+        $chart = $charts['swmChartBillingCollectionByWard'];
+
+        $this->assertContains(__('Unknown'), $chart['labels']);
+        $unknownIndex = array_search(__('Unknown'), $chart['labels'], true);
+        $this->assertNotFalse($unknownIndex);
+        $this->assertSame(150.0, $chart['datasets'][0]['data'][$unknownIndex]);
     }
 
     public function test_revenue_trend_chart_has_twelve_months(): void

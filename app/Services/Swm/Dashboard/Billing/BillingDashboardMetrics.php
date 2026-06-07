@@ -6,6 +6,7 @@ use App\Models\BuildingInfo\Household;
 use App\Models\Swm\BillCollectionPayment;
 use App\Services\Swm\BillCollectionPaymentService;
 use App\Services\Swm\Dashboard\DashboardReportingPeriod;
+use App\Services\Swm\Dashboard\SwmDashboardAxisKeys;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -160,18 +161,22 @@ final class BillingDashboardMetrics
     }
 
     /**
+     * Bill collected per ward, cumulative through the end of the given month.
+     *
      * @return array<string, float>
      */
-    public function billCollectionByWard(Carbon $monthStart): array
+    public function billCollectionByWard(Carbon $endMonth): array
     {
-        $monthDate = $monthStart->copy()->startOfMonth()->toDateString();
+        $monthDate = $endMonth->copy()->startOfMonth()->toDateString();
 
         $rows = BillCollectionPayment::query()
-            ->join('building_info.households as h', 'swm.bill_collection_payments.household_id', '=', 'h.id')
+            ->leftJoin('building_info.households as h', 'swm.bill_collection_payments.household_id', '=', 'h.id')
             ->whereNull('swm.bill_collection_payments.deleted_at')
-            ->whereNull('h.deleted_at')
-            ->whereDate('swm.bill_collection_payments.payment_for_month', $monthDate)
-            ->whereNotNull('h.ward')
+            ->where(function ($query) {
+                $query->whereNull('h.deleted_at')
+                    ->orWhereNull('h.id');
+            })
+            ->whereDate('swm.bill_collection_payments.payment_for_month', '<=', $monthDate)
             ->selectRaw('
                 h.ward as ward,
                 COALESCE(SUM(swm.bill_collection_payments.amount + COALESCE(swm.bill_collection_payments.due_paid, 0)), 0)::float as collected
@@ -183,9 +188,10 @@ final class BillingDashboardMetrics
         $out = [];
         foreach ($rows as $row) {
             $ward = $this->normalizeWard($row->ward);
-            if ($ward !== '') {
-                $out[$ward] = round((float) $row->collected, 2);
+            if ($ward === '') {
+                $ward = SwmDashboardAxisKeys::WARD_AXIS_UNKNOWN_KEY;
             }
+            $out[$ward] = round((float) $row->collected, 2);
         }
 
         return $out;
