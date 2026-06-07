@@ -102,6 +102,8 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
      */
     protected function stsLoadingSubmodule(DashboardReportingPeriod $period): array
     {
+        $throughMonth = $period->toMonth->format('M Y');
+
         return [
             'key' => 'sts_loading',
             'title' => __('STS Loading'),
@@ -139,6 +141,8 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
      */
     protected function landfillLoadingSubmodule(DashboardReportingPeriod $period): array
     {
+        $throughMonth = $period->toMonth->format('M Y');
+
         return [
             'key' => 'landfill_loading',
             'title' => __('Landfill Loading'),
@@ -279,15 +283,14 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
 
     protected function averageWorkingHoursPerDay(DashboardReportingPeriod $period): float
     {
-        $monthStart = $period->toMonth->copy()->startOfMonth();
-        $daysInMonth = max(1, $monthStart->daysInMonth);
-
-        $avgHours = (float) $this->attendanceQuery($period)
-            ->where('attendance_status', AttendanceLog::STATUS_PRESENT)
-            ->whereNotNull('check_in_at')
-            ->whereNotNull('check_out_at')
-            ->whereDate('entry_at', '>=', $monthStart->toDateString())
-            ->whereDate('entry_at', '<=', $period->periodEnd->toDateString())
+        $avgHours = (float) $this->whereThroughPeriodEnd(
+            $this->attendanceQuery($period)
+                ->where('attendance_status', AttendanceLog::STATUS_PRESENT)
+                ->whereNotNull('check_in_at')
+                ->whereNotNull('check_out_at'),
+            'entry_at',
+            $period,
+        )
             ->selectRaw('AVG(EXTRACT(EPOCH FROM (check_out_at - check_in_at)) / 3600.0) as avg_hours')
             ->value('avg_hours');
 
@@ -376,12 +379,11 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
 
     protected function totalStsLoadingTon(DashboardReportingPeriod $period): float
     {
-        $monthStart = $period->toMonth->copy()->startOfMonth();
-
-        return round((float) $this->stsLogQuery($period)
-            ->whereDate('operation_date', '>=', $monthStart->toDateString())
-            ->whereDate('operation_date', '<=', $period->periodEnd->toDateString())
-            ->sum('quantity_ton'), 2);
+        return round((float) $this->whereThroughPeriodEnd(
+            $this->stsLogQuery($period),
+            'operation_date',
+            $period,
+        )->sum('quantity_ton'), 2);
     }
 
     protected function dailyStsReceiptsAverage(DashboardReportingPeriod $period): float
@@ -414,10 +416,11 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
 
     protected function receiptsByStsChart(DashboardReportingPeriod $period): array
     {
-        $monthStart = $period->toMonth->copy()->startOfMonth();
-        $rows = $this->stsLogQuery($period)
-            ->whereDate('operation_date', '>=', $monthStart->toDateString())
-            ->whereDate('operation_date', '<=', $period->periodEnd->toDateString())
+        $rows = $this->whereThroughPeriodEnd(
+            $this->stsLogQuery($period),
+            'operation_date',
+            $period,
+        )
             ->selectRaw("COALESCE(NULLIF(TRIM(sts_name), ''), 'N/A') as label, SUM(COALESCE(quantity_ton, 0))::float as total")
             ->groupByRaw('1')
             ->get();
@@ -444,7 +447,6 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
 
     protected function sourceWardContributionToStsChart(DashboardReportingPeriod $period): array
     {
-        $monthStart = $period->toMonth->copy()->startOfMonth();
         $orgScope = $this->vehicleOrgScopeSql('l');
 
         $rows = collect(DB::select(
@@ -468,14 +470,13 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
                 ) AS elem
             ) AS ward_rows
             WHERE l.deleted_at IS NULL
-                AND l.operation_date >= ?
                 AND l.operation_date <= ?
                 {$orgScope['sql']}
             GROUP BY ward_rows.ward, series_name
             ORDER BY ward_rows.ward, series_name
             ",
             array_merge(
-                [$monthStart->toDateString(), $period->periodEnd->toDateString()],
+                [$period->periodEnd->toDateString()],
                 $orgScope['bindings'],
             ),
         ));
@@ -485,11 +486,11 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
 
     protected function totalLandfillLoadingTon(DashboardReportingPeriod $period): float
     {
-        $monthStart = $period->toMonth->copy()->startOfMonth();
-
-        return round((float) $this->landfillLogQuery($period)
-            ->whereDate('operation_date', '>=', $monthStart->toDateString())
-            ->whereDate('operation_date', '<=', $period->periodEnd->toDateString())
+        return round((float) $this->whereThroughPeriodEnd(
+            $this->landfillLogQuery($period),
+            'operation_date',
+            $period,
+        )
             ->selectRaw('SUM(COALESCE(quantity_ton, 0)) as total')
             ->value('total'), 2);
     }
@@ -544,7 +545,6 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
 
     protected function sourceWardContributionToLandfillsChart(DashboardReportingPeriod $period): array
     {
-        $monthStart = $period->toMonth->copy()->startOfMonth();
         $orgScope = $this->vehicleOrgScopeSql('l');
 
         $rows = collect(DB::select(
@@ -568,14 +568,13 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
                 ) AS elem
             ) AS ward_rows
             WHERE l.deleted_at IS NULL
-                AND l.operation_date >= ?
                 AND l.operation_date <= ?
                 {$orgScope['sql']}
             GROUP BY ward_rows.ward, series_name
             ORDER BY ward_rows.ward, series_name
             ",
             array_merge(
-                [$monthStart->toDateString(), $period->periodEnd->toDateString()],
+                [$period->periodEnd->toDateString()],
                 $orgScope['bindings'],
             ),
         ));
@@ -585,7 +584,6 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
 
     protected function sourceStsContributionToLandfillsChart(DashboardReportingPeriod $period): array
     {
-        $monthStart = $period->toMonth->copy()->startOfMonth();
         $orgScope = $this->vehicleOrgScopeSql('l');
 
         $rows = collect(DB::select(
@@ -610,7 +608,6 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
             ) AS sts_rows
             LEFT JOIN swm.sts s ON s.id = sts_rows.sts_id::bigint AND s.deleted_at IS NULL
             WHERE l.deleted_at IS NULL
-                AND l.operation_date >= ?
                 AND l.operation_date <= ?
                 AND sts_rows.sts_id <> '0'
                 {$orgScope['sql']}
@@ -618,7 +615,7 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
             ORDER BY s.name, series_name
             ",
             array_merge(
-                [$monthStart->toDateString(), $period->periodEnd->toDateString()],
+                [$period->periodEnd->toDateString()],
                 $orgScope['bindings'],
             ),
         ));

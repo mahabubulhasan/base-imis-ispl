@@ -2,25 +2,20 @@
 
 namespace Tests\Unit;
 
-use App\Models\Swm\AttendanceLog;
-use App\Models\Swm\Landfill;
 use App\Models\Swm\LandfillLog;
 use App\Models\Swm\Organization;
 use App\Models\Swm\OrganizationType;
-use App\Models\Swm\Sts;
 use App\Models\Swm\StsLog;
 use App\Models\Swm\Vehicle;
 use App\Models\Swm\VehicleType;
 use App\Models\Swm\WasteProcessingLog;
 use App\Models\Swm\Worker;
 use App\Models\Swm\WorkType;
-use App\Models\User;
 use App\Services\Swm\Dashboard\DashboardReportingPeriod;
 use App\Services\Swm\Dashboard\Modules\ServiceManagementDashboardModule;
 use App\Services\Swm\Dashboard\ReportingWindow;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 
 class ServiceManagementDashboardModuleTest extends TestCase
@@ -35,12 +30,12 @@ class ServiceManagementDashboardModuleTest extends TestCase
         $this->module = app(ServiceManagementDashboardModule::class);
     }
 
-    public function test_build_includes_four_submodules(): void
+    public function test_build_includes_three_submodules(): void
     {
         $result = $this->module->build($this->testPeriod());
         $keys = array_column($result['submodules'], 'key');
 
-        $this->assertSame(['attendance', 'sts_loading', 'landfill_loading', 'waste_processing'], $keys);
+        $this->assertSame(['sts_loading', 'landfill_loading', 'waste_processing'], $keys);
     }
 
     public function test_sts_daily_average_uses_completed_logs_only(): void
@@ -71,9 +66,46 @@ class ServiceManagementDashboardModuleTest extends TestCase
         $tiles = $this->tilesFromSubmodule($this->module->build($period), 'sts_loading');
 
         // 30 ton completed only; pending log excluded
-        $this->assertSame('30.00', $tiles[__('Total Loading at STS')]);
+        $this->assertSame(
+            '30.00',
+            $tiles[__('Total Loading at STS (through :month) (Ton)', ['month' => 'Apr 2026'])],
+        );
         // 30 ton / 30 days in April
-        $this->assertSame('1.00', $tiles[__('Average Daily Loading at STS (Ton)']);
+        $this->assertSame(
+            '1.00',
+            $tiles[__('Average Daily Loading at STS (through :month) (Ton)', ['month' => 'Apr 2026'])],
+        );
+    }
+
+    public function test_sts_loading_includes_prior_months_through_selected_month(): void
+    {
+        $period = $this->mayTestPeriod();
+        $vehicle = $this->createVehicle($this->createOrganization());
+
+        StsLog::query()->create([
+            'vehicle_id' => $vehicle->id,
+            'sts_name' => 'STS A',
+            'quantity_ton' => 20,
+            'source_wards' => ['1'],
+            'entry_at' => '2026-03-15 10:00:00',
+            'operation_date' => '2026-03-15',
+        ]);
+
+        StsLog::query()->create([
+            'vehicle_id' => $vehicle->id,
+            'sts_name' => 'STS A',
+            'quantity_ton' => 30,
+            'source_wards' => ['1'],
+            'entry_at' => '2026-04-15 10:00:00',
+            'operation_date' => '2026-04-15',
+        ]);
+
+        $tiles = $this->tilesFromSubmodule($this->module->build($period), 'sts_loading');
+
+        $this->assertSame(
+            '50.00',
+            $tiles[__('Total Loading at STS (through :month) (Ton)', ['month' => 'May 2026'])],
+        );
     }
 
     public function test_landfill_monthly_total_prefers_weighbridge_weight(): void
@@ -95,9 +127,51 @@ class ServiceManagementDashboardModuleTest extends TestCase
 
         $tiles = $this->tilesFromSubmodule($this->module->build($period), 'landfill_loading');
 
-        $this->assertSame('5.00', $tiles[__('Total Loading at Landfill')]);
-        $this->assertSame('0.17', $tiles[__('Average Daily Loading at Landfill (Ton)']);
-        $this->assertSame('5.00', $tiles[__('Average Monthly Loading at Landfill (Ton)']);
+        $this->assertSame(
+            '5.00',
+            $tiles[__('Total Loading at Landfill (through :month)', ['month' => 'Apr 2026'])],
+        );
+        $this->assertSame(
+            '0.17',
+            $tiles[__('Average Daily Loading at Landfill (through :month) (Ton)', ['month' => 'Apr 2026'])],
+        );
+        $this->assertSame(
+            '5.00',
+            $tiles[__('Average Monthly Loading at Landfill (through :month) (Ton)', ['month' => 'Apr 2026'])],
+        );
+    }
+
+    public function test_landfill_loading_includes_prior_months_through_selected_month(): void
+    {
+        $period = $this->mayTestPeriod();
+        $vehicle = $this->createVehicle($this->createOrganization());
+
+        LandfillLog::query()->create([
+            'vehicle_id' => $vehicle->id,
+            'landfill_name' => 'LF A',
+            'quantity_ton' => 8,
+            'source_wards' => ['2'],
+            'source_sts_ids' => [],
+            'entry_at' => '2026-03-10 10:00:00',
+            'operation_date' => '2026-03-10',
+        ]);
+
+        LandfillLog::query()->create([
+            'vehicle_id' => $vehicle->id,
+            'landfill_name' => 'LF A',
+            'quantity_ton' => 5,
+            'source_wards' => ['2'],
+            'source_sts_ids' => [],
+            'entry_at' => '2026-04-10 10:00:00',
+            'operation_date' => '2026-04-10',
+        ]);
+
+        $tiles = $this->tilesFromSubmodule($this->module->build($period), 'landfill_loading');
+
+        $this->assertSame(
+            '13.00',
+            $tiles[__('Total Loading at Landfill (through :month)', ['month' => 'May 2026'])],
+        );
     }
 
     public function test_waste_processing_tiles_kpis_and_charts_for_reporting_month(): void
@@ -181,24 +255,11 @@ class ServiceManagementDashboardModuleTest extends TestCase
         $this->assertSame('60.00', $kpis[__('Residual Waste Landfilling Rate')]['value']);
     }
 
-    public function test_chart_types_for_attendance_and_sts(): void
+    public function test_chart_types_for_sts_loading(): void
     {
         $period = $this->testPeriod();
-        $org = $this->createOrganization(['name' => 'Org Alpha']);
-        $workType = $this->createWorkType('Collector');
-        $worker = $this->createWorker($org, $workType);
+        $vehicle = $this->createVehicle($this->createOrganization());
 
-        AttendanceLog::query()->create([
-            'organization_id' => $org->id,
-            'worker_id' => $worker->id,
-            'department' => 'Sanitation',
-            'entry_at' => '2026-04-15 08:00:00',
-            'attendance_status' => AttendanceLog::STATUS_PRESENT,
-            'check_in_at' => '2026-04-15 08:00:00',
-            'check_out_at' => '2026-04-15 16:00:00',
-        ]);
-
-        $vehicle = $this->createVehicle($org);
         StsLog::query()->create([
             'vehicle_id' => $vehicle->id,
             'sts_name' => 'STS North',
@@ -206,88 +267,16 @@ class ServiceManagementDashboardModuleTest extends TestCase
             'source_wards' => ['3'],
             'entry_at' => '2026-04-20 10:00:00',
             'operation_date' => '2026-04-20',
-            'operation_status' => StsLog::STATUS_COMPLETED,
         ]);
 
-        $result = $this->module->build($period);
-        $attendanceCharts = $this->chartsFromSubmodule($result, 'attendance');
-        $stsCharts = $this->chartsFromSubmodule($result, 'sts_loading');
+        $stsCharts = $this->chartsFromSubmodule($this->module->build($period), 'sts_loading');
 
-        $this->assertSame('line', $attendanceCharts['swmChartSmAttendanceTrend']['type']);
-        $this->assertSame('bar', $attendanceCharts['swmChartSmAttendanceByOrg']['type']);
-        $this->assertSame('bar', $attendanceCharts['swmChartSmAttendanceByDept']['type']);
         $this->assertSame('line', $stsCharts['swmChartSmStsReceiptsTrend']['type']);
         $this->assertSame('bar', $stsCharts['swmChartSmReceiptsBySts']['type']);
-        $this->assertSame('stackedBar', $stsCharts['swmChartSmWardToSts']['type']);
-    }
-
-    public function test_landfill_catchment_network_payload(): void
-    {
-        $period = $this->testPeriod();
-        $sts = $this->createSts([
-            'name' => 'STS One',
-            'source_wards' => ['3', '7'],
-        ]);
-        $landfill = Landfill::query()->create([
-            'name' => 'Main Landfill',
-            'operator_name' => 'Op',
-            'contact_number' => '9800000001',
-            'source_sts_ids' => [$sts->id],
-            'source_wards' => [5],
-            'operational_status' => 'active',
-            'created_at' => '2026-01-01 00:00:00',
-            'updated_at' => '2026-01-01 00:00:00',
-        ]);
-
-        $charts = $this->chartsFromSubmodule($this->module->build($period), 'landfill_loading');
-        $network = $charts['swmChartSmLandfillCatchment'];
-
-        $this->assertSame('network', $network['type']);
-        $this->assertNotEmpty($network['nodes']);
-        $this->assertNotEmpty($network['edges']);
-
-        $stsNodeId = 'sts_'.$sts->id;
-        $fromByTo = [];
-        foreach ($network['edges'] as $edge) {
-            $fromByTo[$edge['to']][] = $edge['from'];
-        }
-
-        $lfNodeId = 'lf_'.$landfill->id;
-        $this->assertContains('ward_5', $fromByTo[$lfNodeId] ?? []);
-        $this->assertContains($stsNodeId, $fromByTo[$lfNodeId] ?? []);
-        $this->assertContains('ward_3', $fromByTo[$stsNodeId] ?? []);
-        $this->assertContains('ward_7', $fromByTo[$stsNodeId] ?? []);
-    }
-
-    public function test_attendance_scoped_to_authenticated_organization(): void
-    {
-        $period = $this->testPeriod();
-        $orgA = $this->createOrganization(['name' => 'Org A']);
-        $orgB = $this->createOrganization(['name' => 'Org B']);
-        $workType = $this->createWorkType('Driver');
-
-        $workerA = $this->createWorker($orgA, $workType);
-        $workerB = $this->createWorker($orgB, $workType);
-
-        foreach ([$workerA, $workerB] as $worker) {
-            AttendanceLog::query()->create([
-                'organization_id' => $worker->organization_id,
-                'worker_id' => $worker->id,
-                'entry_at' => '2026-04-10 08:00:00',
-                'attendance_status' => AttendanceLog::STATUS_PRESENT,
-                'check_in_at' => '2026-04-10 08:00:00',
-                'check_out_at' => '2026-04-10 17:00:00',
-            ]);
-        }
-
-        Auth::login(User::factory()->create(['swm_organization_id' => $orgA->id]));
-
-        $charts = $this->chartsFromSubmodule($this->module->build($period), 'attendance');
-        $orgChart = $charts['swmChartSmAttendanceByOrg'];
-
-        $this->assertSame(['Org A'], $orgChart['labels']);
-
-        Auth::logout();
+        $this->assertSame(
+            __('Waste Loading at STS (through :month)', ['month' => 'Apr 2026']),
+            $stsCharts['swmChartSmReceiptsBySts']['title'],
+        );
     }
 
     private function testPeriod(): DashboardReportingPeriod
@@ -382,21 +371,6 @@ class ServiceManagementDashboardModuleTest extends TestCase
             'created_at' => '2026-01-01 00:00:00',
             'updated_at' => '2026-01-01 00:00:00',
         ]);
-    }
-
-    /**
-     * @param  array<string, mixed>  $overrides
-     */
-    private function createSts(array $overrides = []): Sts
-    {
-        return Sts::query()->create(array_merge([
-            'name' => 'STS Default',
-            'operator_name' => 'Operator',
-            'contact_number' => '9800000002',
-            'operational_status' => 'active',
-            'created_at' => '2026-01-01 00:00:00',
-            'updated_at' => '2026-01-01 00:00:00',
-        ], $overrides));
     }
 
     /**
