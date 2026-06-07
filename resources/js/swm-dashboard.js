@@ -516,7 +516,7 @@
             }
             ctx.save();
             ctx.fillStyle = '#6c757d';
-            ctx.font = '600 14px Tahoma, Verdana, sans-serif';
+            ctx.font = '14px Tahoma, Verdana, sans-serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillText('No data', (area.left + area.right) / 2, (area.top + area.bottom) / 2);
@@ -554,7 +554,7 @@
 
             ctx.save();
             ctx.fillStyle = insideColor;
-            ctx.font = 'bold 13px Tahoma, Verdana, sans-serif';
+            ctx.font = '13px Tahoma, Verdana, sans-serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillText(formatDoughnutPercent(pct, decimalValues || percentValues), insideX, insideY);
@@ -615,7 +615,7 @@
             ctx.fillStyle = '#2d3748';
             ctx.textAlign = textAlign;
             ctx.textBaseline = baseline;
-            ctx.font = '600 12px Tahoma, Verdana, sans-serif';
+            ctx.font = '12px Tahoma, Verdana, sans-serif';
             ctx.fillText(outsideLabel, labelX, nameY);
             ctx.font = '11px Tahoma, Verdana, sans-serif';
             ctx.fillStyle = '#6c757d';
