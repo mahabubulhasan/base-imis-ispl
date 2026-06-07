@@ -173,7 +173,9 @@ trait AlignsChartsToStaticCategoryAxis
      */
     protected function masterStsCategoryKeys(bool $includeNa = true): array
     {
-        return $this->rememberCategoryMasterKeys('sts', function () use ($includeNa): array {
+        $cacheKey = $includeNa ? 'sts' : 'sts_without_na';
+
+        return $this->rememberCategoryMasterKeys($cacheKey, function () use ($includeNa): array {
             $keys = Sts::query()
                 ->whereNull('deleted_at')
                 ->orderBy('name')
@@ -279,7 +281,7 @@ trait AlignsChartsToStaticCategoryAxis
     protected function masterWasteBinTypeCategoryKeys(): array
     {
         return $this->rememberCategoryMasterKeys('waste_bin_type', function (): array {
-            $keys = WasteBinType::query()
+            return WasteBinType::query()
                 ->whereNull('deleted_at')
                 ->orderBy('name')
                 ->pluck('name')
@@ -287,10 +289,6 @@ trait AlignsChartsToStaticCategoryAxis
                 ->filter()
                 ->values()
                 ->all();
-
-            $keys[] = SwmDashboardAxisKeys::CATEGORY_AXIS_NA_KEY;
-
-            return $keys;
         });
     }
 

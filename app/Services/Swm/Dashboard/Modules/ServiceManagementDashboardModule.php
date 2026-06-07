@@ -421,7 +421,8 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
             'operation_date',
             $period,
         )
-            ->selectRaw("COALESCE(NULLIF(TRIM(sts_name), ''), 'N/A') as label, SUM(COALESCE(quantity_ton, 0))::float as total")
+            ->whereRaw("NULLIF(TRIM(sts_name), '') IS NOT NULL")
+            ->selectRaw("TRIM(sts_name) as label, SUM(COALESCE(quantity_ton, 0))::float as total")
             ->groupByRaw('1')
             ->get();
 
@@ -429,7 +430,7 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
         foreach ($rows as $row) {
             $bySts[$row->label] = round((float) $row->total, 2);
         }
-        $aligned = $this->alignCountsToCategoryAxis($bySts, $this->masterStsCategoryKeys());
+        $aligned = $this->alignCountsToCategoryAxis($bySts, $this->masterStsCategoryKeys(includeNa: false));
 
         return [
             'id' => 'swmChartSmReceiptsBySts',

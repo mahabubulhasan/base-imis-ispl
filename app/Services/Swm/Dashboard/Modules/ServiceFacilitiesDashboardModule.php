@@ -259,11 +259,9 @@ class ServiceFacilitiesDashboardModule implements SwmDashboardModuleInterface
     protected function wasteBinsByTypeChart(DashboardReportingPeriod $period): array
     {
         $rows = $this->wasteBinQuery($period)
-            ->leftJoin('swm.waste_bin_types as wbt', function ($join): void {
-                $join->on('swm.waste_bins.waste_bin_type_id', '=', 'wbt.id')
-                    ->whereNull('wbt.deleted_at');
-            })
-            ->selectRaw('COALESCE(wbt.name, ?) as label, COUNT(*) as total', [__('N/A')])
+            ->join('swm.waste_bin_types as wbt', 'swm.waste_bins.waste_bin_type_id', '=', 'wbt.id')
+            ->whereNull('wbt.deleted_at')
+            ->selectRaw('wbt.name as label, COUNT(*) as total')
             ->groupBy('wbt.id', 'wbt.name')
             ->orderByDesc('total')
             ->get();

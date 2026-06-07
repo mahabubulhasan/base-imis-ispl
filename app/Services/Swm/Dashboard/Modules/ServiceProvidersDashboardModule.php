@@ -452,13 +452,13 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
         foreach (self::EDUCATION_LEVEL_ORDER as $key) {
             $byEducation[$key] = (int) ($counts[$key] ?? 0);
         }
-        $byEducation[SwmDashboardAxisKeys::CATEGORY_AXIS_NA_KEY] = (int) $counts->filter(
+        $byEducation[SwmDashboardAxisKeys::WARD_AXIS_UNKNOWN_KEY] = (int) $counts->filter(
             fn ($_, $key) => $key === null || $key === '' || ! in_array($key, self::EDUCATION_LEVEL_ORDER, true),
         )->sum();
         $aligned = $this->alignCountsToCategoryAxis(
             $byEducation,
-            array_merge(self::EDUCATION_LEVEL_ORDER, [SwmDashboardAxisKeys::CATEGORY_AXIS_NA_KEY]),
-            fn (string $key) => $labels[$key] ?? __('N/A'),
+            array_merge(self::EDUCATION_LEVEL_ORDER, [SwmDashboardAxisKeys::WARD_AXIS_UNKNOWN_KEY]),
+            fn (string $key) => $labels[$key] ?? __('Unknown'),
         );
 
         return [
@@ -504,7 +504,7 @@ class ServiceProvidersDashboardModule implements SwmDashboardModuleInterface
             'hsc' => __('HSC'),
             'bachelor' => __('Bachelor'),
             'master' => __('Master'),
-            'others' => __('Others (specify)'),
+            'others' => __('Others'),
         ];
     }
 }
