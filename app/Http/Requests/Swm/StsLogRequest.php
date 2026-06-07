@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Swm;
 
+use App\Models\Swm\Sts;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -52,6 +53,14 @@ class StsLogRequest extends FormRequest
             )));
             $this->merge(['source_wards' => $clean]);
         }
+
+        $stsId = $this->input('sts_id');
+        if ($stsId && ! $this->filled('sts_name')) {
+            $sts = Sts::query()->whereNull('deleted_at')->find((int) $stsId);
+            if ($sts) {
+                $this->merge(['sts_name' => $sts->name]);
+            }
+        }
     }
 
     public function rules(): array
@@ -70,11 +79,11 @@ class StsLogRequest extends FormRequest
             'vehicle_type_name' => ['nullable', 'string', 'max:255'],
             'driver_name' => ['nullable', 'string', 'max:255'],
             'sts_id' => [
-                'nullable',
+                'required',
                 'integer',
                 Rule::exists('pgsql.swm.sts', 'id')->where(fn ($q) => $q->whereNull('deleted_at')),
             ],
-            'sts_name' => ['nullable', 'string', 'max:255'],
+            'sts_name' => ['required', 'string', 'max:255'],
             'waste_type_ids' => ['nullable', 'array'],
             'waste_type_ids.*' => [
                 'integer',

@@ -168,7 +168,7 @@ class StsLogController extends Controller
         return $this->swmImportStore(
             $request,
             StsLogImport::class,
-            ['vehicle_number', 'entry_at', 'operation_date'],
+            ['vehicle_number', 'entry_at', 'operation_date', 'sts_name'],
             'swm.sts-logs.index',
             'importswm',
             'sts-logs-import'

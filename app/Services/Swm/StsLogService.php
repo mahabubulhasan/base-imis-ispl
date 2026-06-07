@@ -130,14 +130,10 @@ class StsLogService
                 ? $data['driver_name']
                 : ($vehicle->driver?->name);
 
-            if (! empty($data['sts_id'])) {
-                $log->sts_id = (int) $data['sts_id'];
-                $sts = Sts::query()->whereNull('deleted_at')->find((int) $data['sts_id']);
-                $log->sts_name = ! empty($data['sts_name']) ? $data['sts_name'] : ($sts?->name);
-            } else {
-                $log->sts_id = $vehicle->dumping_sts_id;
-                $log->sts_name = ! empty($data['sts_name']) ? $data['sts_name'] : ($vehicle->dumpingSts?->name);
-            }
+            $log->sts_id = (int) $data['sts_id'];
+            $log->sts_name = ! empty($data['sts_name'])
+                ? $data['sts_name']
+                : (Sts::query()->whereNull('deleted_at')->find((int) $data['sts_id'])?->name);
 
             $wtIds = array_values(array_unique(array_filter(
                 array_map(static fn ($v) => (int) $v, $data['waste_type_ids'] ?? []),
@@ -231,7 +227,7 @@ class StsLogService
             [
                 'key' => 'sts_name',
                 'label' => 'sts_name',
-                'required' => false,
+                'required' => true,
                 'dropdown' => array_values(Sts::query()
                     ->whereNull('deleted_at')
                     ->orderBy('name')

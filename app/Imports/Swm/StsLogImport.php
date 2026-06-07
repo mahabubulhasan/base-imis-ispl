@@ -64,17 +64,17 @@ class StsLogImport implements ToCollection, WithHeadingRow
                     continue;
                 }
 
-                $stsId = null;
-                $stsName = null;
                 $stsLabel = trim((string) ($norm['sts_name'] ?? ''));
-                if ($stsLabel !== '') {
-                    $stsId = SwmImportRowHelper::resolveByLabel($stsLabel, $stsMap);
-                    if (! $stsId) {
-                        $this->errors[] = __('Row :n: invalid sts_name.', ['n' => $rowNum]);
-                        continue;
-                    }
-                    $stsName = $stsMap[$stsId] ?? $stsLabel;
+                if ($stsLabel === '') {
+                    $this->errors[] = __('Row :n: sts_name is required.', ['n' => $rowNum]);
+                    continue;
                 }
+                $stsId = SwmImportRowHelper::resolveByLabel($stsLabel, $stsMap);
+                if (! $stsId) {
+                    $this->errors[] = __('Row :n: invalid sts_name.', ['n' => $rowNum]);
+                    continue;
+                }
+                $stsName = $stsMap[$stsId] ?? $stsLabel;
 
                 $wasteTypeIds = $this->resolveWasteTypeIds($norm['waste_types'] ?? null);
                 $sourceWards = $this->parseSourceWards($norm['source_wards'] ?? null);
@@ -88,10 +88,8 @@ class StsLogImport implements ToCollection, WithHeadingRow
                     'remarks' => ($norm['remarks'] ?? '') !== '' ? (string) $norm['remarks'] : null,
                     'waste_type_ids' => $wasteTypeIds,
                 ];
-                if ($stsId) {
-                    $data['sts_id'] = $stsId;
-                    $data['sts_name'] = $stsName;
-                }
+                $data['sts_id'] = $stsId;
+                $data['sts_name'] = $stsName;
 
                 $saved = $service->storeOrUpdate(null, $data);
                 if ($saved) {
