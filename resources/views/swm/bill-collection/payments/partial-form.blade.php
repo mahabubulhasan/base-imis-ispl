@@ -141,7 +141,7 @@
         <div class="col-sm-3 bcp-payment-field-col">
             <input type="hidden" name="payment_for_month" id="payment_for_month" value="{{ $defaultMonth }}" />
             <input type="text" class="form-control w-100" value="{{ \Carbon\Carbon::createFromFormat('Y-m', $defaultMonth)->format('F Y') }}" readonly />
-            <small class="form-text text-muted">{{ __('Payment Month Is Auto-Selected as Current Month.') }}</small>
+            <small class="form-text text-muted">{{ __('Transaction Month Is Auto-Selected as Current Month.') }}</small>
         </div>
     </div>
 

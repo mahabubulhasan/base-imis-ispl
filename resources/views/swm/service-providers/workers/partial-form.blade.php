@@ -36,7 +36,7 @@
             {!! Form::label('department', __('Department'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
                 {!! Form::text('department', null, ['class' => 'form-control', 'id' => 'department', 'placeholder' => __('Department'), 'autocomplete' => 'off']) !!}
-                <small class="form-text text-muted">{{ __('Optional. Saved on this worker record.') }}</small>
+                {{-- <small class="form-text text-muted">{{ __('Optional. Saved on this worker record.') }}</small> --}}
             </div>
         </div>
         <div class="form-group row required">
@@ -109,7 +109,7 @@
                     'master' => __('Master'),
                     'others' => __('Others (specify)'),
                 ], null, ['class' => 'form-control chosen-select', 'placeholder' => __('Education Level'), 'id' => 'education_level']) !!}
-                <small class="form-text text-muted">{{ __('Primary, Secondary (Below SSC), SSC, HSC, Bachelor, Master, Others (specify)') }}</small>
+                {{-- <small class="form-text text-muted">{{ __('Primary, Secondary (Below SSC), SSC, HSC, Bachelor, Master, Others (specify)') }}</small> --}}
             </div>
         </div>
         <div class="form-group row" id="education_level_other_group" style="display: none;">

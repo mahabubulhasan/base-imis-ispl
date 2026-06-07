@@ -133,7 +133,7 @@
     <div class="form-group row">
         {!! Form::label('duplicate_reference', __('Duplicate Complaint ID'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::text('duplicate_reference', old('duplicate_reference', $isEdit ? $complaint->duplicate_reference : null), ['class' => 'form-control', 'placeholder' => __('Linked Complaint ID (Optional)')]) !!}
+            {!! Form::text('duplicate_reference', old('duplicate_reference', $isEdit ? $complaint->duplicate_reference : null), ['class' => 'form-control', 'placeholder' => __('Linked Complaint ID')]) !!}
         </div>
     </div>
 </div>
