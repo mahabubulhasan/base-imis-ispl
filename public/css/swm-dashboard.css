@@ -229,7 +229,8 @@
     padding: 11px 14px;
     display: flex;
     flex-direction: column;
-    min-height: 108px;
+    justify-content: center;
+    min-height: 88px;
     width: 100%;
 }
 
@@ -250,20 +251,14 @@
     align-items: baseline;
     flex-wrap: wrap;
     gap: 6px;
-    margin-top: auto;
-    padding-top: 6px;
+    padding-top: 2px;
 }
 
 .swm-dashboard .kpi-name {
     font-size: 12.5px;
-    color: var(--swm-navy);
+    color: var(--swm-muted);
     font-weight: 400;
     line-height: 1.3;
-}
-
-.swm-dashboard .kpi-unit {
-    font-size: 13px;
-    color: var(--swm-muted);
 }
 
 .swm-dashboard .swm-charts-row {

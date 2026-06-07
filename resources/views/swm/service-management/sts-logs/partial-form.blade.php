@@ -94,7 +94,7 @@
         </div>
     </div>
 
-    <div class="form-group row">
+    <div class="form-group row required">
         {!! Form::label('sts_id', __('STS Name'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             {!! Form::select('sts_id', ['' => __('Select STS')] + $stsList, old('sts_id', $isEdit ? $stsLog->sts_id : null), ['class' => 'form-control swm-sts-select2', 'id' => 'sts_id', 'style' => 'width:100%', 'data-placeholder' => __('Search or select STS')]) !!}
