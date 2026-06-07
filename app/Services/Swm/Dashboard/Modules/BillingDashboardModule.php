@@ -167,14 +167,12 @@ class BillingDashboardModule implements SwmDashboardModuleInterface
     protected function billCollectionByWardChart(DashboardReportingPeriod $period): array
     {
         $byWard = $this->metrics->billCollectionByWard($period->toMonth);
-        $aligned = $this->alignCountsToWardAxis($byWard, appendUnknown: true);
+        $aligned = $this->alignCountsToWardAxis($byWard);
 
         return [
             'id' => 'swmChartBillingCollectionByWard',
             'type' => 'bar',
-            'title' => __('Bill Collection by Ward (through :month)', [
-                'month' => $period->toMonth->format('M Y'),
-            ]),
+            'title' => __('Bill Collection by Ward'),
             'labels' => $aligned['labels'],
             'datasets' => [
                 ['label' => __('Bill Collected (Taka)'), 'data' => $aligned['values']],

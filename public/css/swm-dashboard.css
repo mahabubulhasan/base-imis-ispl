@@ -313,6 +313,19 @@
 .swm-dashboard .chart-wrap--doughnut {
     padding-top: 10px;
     padding-bottom: 12px;
+    overflow: visible;
+}
+
+.swm-dashboard .swm-chart-card--doughnut .card-body {
+    overflow: visible;
+}
+
+.swm-dashboard .swm-chart-card.swm-chart-card--doughnut {
+    overflow: visible;
+}
+
+.swm-dashboard .swm-charts-row > [class*="col-"]:has(.swm-chart-card--doughnut) {
+    overflow: visible;
 }
 
 .swm-dashboard .heatmap-wrap {

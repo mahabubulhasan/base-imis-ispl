@@ -407,13 +407,31 @@
         return { r: 108, g: 117, b: 125 };
     }
 
-    function colorLuminance(r, g, b) {
-        return 0.299 * r + 0.587 * g + 0.114 * b;
+    function opaqueColorString(color) {
+        var rgb = parseColorToRgb(color);
+        return 'rgb(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ')';
     }
 
-    function labelTextColorForBackground(bgColor) {
-        var rgb = parseColorToRgb(bgColor);
-        return colorLuminance(rgb.r, rgb.g, rgb.b) < 140 ? '#ffffff' : '#2d3748';
+    function textAlignForAngle(angle) {
+        var cos = Math.cos(angle);
+        if (cos > 0.25) {
+            return 'left';
+        }
+        if (cos < -0.25) {
+            return 'right';
+        }
+        return 'center';
+    }
+
+    function textBaselineForAngle(angle) {
+        var sin = Math.sin(angle);
+        if (sin > 0.35) {
+            return 'top';
+        }
+        if (sin < -0.35) {
+            return 'bottom';
+        }
+        return 'middle';
     }
 
     function drawSwmDoughnutLabels(chart, meta) {
@@ -451,6 +469,8 @@
         var minArcSpan = (12 * Math.PI) / 180;
         var labelCount = labels.length;
         var positiveCount = countPositiveDoughnutSegments(data, decimalValues);
+        var outsideOffset = labelCount > 5 ? 28 : 22;
+        var leaderOffset = labelCount > 5 ? 46 : 40;
 
         chartMeta.data.forEach(function (arc, i) {
             if (!arc || arc.hidden) {
@@ -467,22 +487,47 @@
             var angle = (model.startAngle + model.endAngle) / 2;
             var arcSpan = model.endAngle - model.startAngle;
             var fullRing = isDoughnutFullRing(arcSpan, labelCount, positiveCount);
-            if (!fullRing && arcSpan < minArcSpan) {
-                return;
+            var useLeader = !fullRing && arcSpan < minArcSpan;
+            var bgColor = dataset.backgroundColor[i] || palette.doughnut[i % palette.doughnut.length];
+            var legendColor = opaqueColorString(bgColor);
+            var labelX;
+            var labelY;
+            var textAlign;
+            var baseline;
+
+            if (fullRing) {
+                labelX = model.x + model.outerRadius + outsideOffset + 6;
+                labelY = model.y;
+                textAlign = 'left';
+                baseline = 'middle';
+            } else {
+                var outsideRadius = model.outerRadius + (useLeader ? leaderOffset : outsideOffset);
+                labelX = model.x + Math.cos(angle) * outsideRadius;
+                labelY = model.y + Math.sin(angle) * outsideRadius;
+                textAlign = textAlignForAngle(angle);
+                baseline = textBaselineForAngle(angle);
+
+                if (useLeader) {
+                    var edgeX = model.x + Math.cos(angle) * model.outerRadius;
+                    var edgeY = model.y + Math.sin(angle) * model.outerRadius;
+                    ctx.save();
+                    ctx.setLineDash([2, 2]);
+                    ctx.strokeStyle = legendColor;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(edgeX, edgeY);
+                    ctx.lineTo(labelX, labelY);
+                    ctx.stroke();
+                    ctx.restore();
+                }
             }
 
-            var bgColor = dataset.backgroundColor[i] || palette.doughnut[i % palette.doughnut.length];
-            var insideColor = labelTextColorForBackground(bgColor);
-            var midRadius = (model.innerRadius + model.outerRadius) / 2;
-            var insideX = fullRing ? model.x : model.x + Math.cos(angle) * midRadius;
-            var insideY = fullRing ? model.y : model.y + Math.sin(angle) * midRadius;
-
             ctx.save();
-            ctx.fillStyle = insideColor;
+            ctx.fillStyle = legendColor;
             ctx.font = '13px Tahoma, Verdana, sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(formatDoughnutPercent(pct, decimalValues || percentValues), insideX, insideY);
+            ctx.textAlign = textAlign;
+            ctx.textBaseline = baseline;
+            ctx.fillText(formatDoughnutPercent(pct, decimalValues || percentValues), labelX, labelY);
             ctx.restore();
         });
     }
@@ -524,11 +569,12 @@
             || (positiveCount === 1 && arcSpan >= Math.PI);
     }
 
-    function doughnutLayoutPadding() {
+    function doughnutLayoutPadding(labelCount) {
+        var base = labelCount > 5 ? 48 : 40;
         return {
-            top: 20,
-            bottom: 20,
-            left: 20,
+            top: 36,
+            bottom: 44,
+            left: base,
             right: 12,
         };
     }
@@ -540,6 +586,7 @@
         var ds = (chart.datasets && chart.datasets[0]) ? chart.datasets[0] : { data: [] };
         var decimalValues = !!opts.decimalValues || !!opts.percentValues;
         var labels = chart.labels || [];
+        var labelCount = labels.length;
         destroyChart(canvas.id);
         var instance = new ChartCtor(canvas.getContext('2d'), {
             type: 'doughnut',
@@ -560,7 +607,7 @@
                 maintainAspectRatio: false,
                 cutoutPercentage: 58,
                 layout: {
-                    padding: doughnutLayoutPadding(),
+                    padding: doughnutLayoutPadding(labelCount),
                 },
                 legend: {
                     display: true,
