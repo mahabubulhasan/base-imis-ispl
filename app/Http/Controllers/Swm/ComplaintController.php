@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Swm;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Swm\Concerns\HandlesSwmExcelImport;
 use App\Http\Requests\Swm\ComplaintRequest;
+use App\Imports\Swm\ComplaintImport;
 use App\Models\Swm\Complaint;
 use App\Services\Swm\BillCollectionPaymentService;
 use App\Services\Swm\ComplaintService;
@@ -11,6 +13,7 @@ use Illuminate\Http\Request;
 
 class ComplaintController extends Controller
 {
+    use HandlesSwmExcelImport;
     protected ComplaintService $complaintService;
 
     public function __construct(
@@ -23,7 +26,8 @@ class ComplaintController extends Controller
         $this->middleware('permission:Add SW Complaint', ['only' => ['create', 'store']]);
         $this->middleware('permission:Edit SW Complaint', ['only' => ['edit', 'update']]);
         $this->middleware('permission:Delete SW Complaint', ['only' => ['destroy']]);
-        $this->middleware('permission:Export SW Complaints to CSV', ['only' => ['export']]);
+        $this->middleware('permission:Export SW Complaints to Excel', ['only' => ['export', 'downloadTemplate']]);
+        $this->middleware('permission:Import SW Complaints From Excel', ['only' => ['importForm', 'importStore']]);
         $this->middleware('permission:View SW Complaint History', ['only' => ['history']]);
         $this->complaintService = $complaintService;
     }
@@ -141,6 +145,32 @@ class ComplaintController extends Controller
     public function export(Request $request)
     {
         return $this->complaintService->download($request->all());
+    }
+
+    public function downloadTemplate()
+    {
+        $this->complaintService->downloadTemplate();
+    }
+
+    public function importForm()
+    {
+        return $this->swmImportFormView(
+            __('Import Complaints'),
+            route('swm.complaints.index'),
+            'swm.complaints.import.store'
+        );
+    }
+
+    public function importStore(Request $request)
+    {
+        return $this->swmImportStore(
+            $request,
+            ComplaintImport::class,
+            ['name', 'contact_number', 'complaint_type', 'complaint_details', 'submitted_through', 'complaint_status'],
+            'swm.complaints.index',
+            'importswm',
+            'complaints'
+        );
     }
 
     public function holdingsSearch(Request $request)

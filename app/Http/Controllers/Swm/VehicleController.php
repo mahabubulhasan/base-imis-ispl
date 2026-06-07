@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Swm;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Swm\Concerns\HandlesSwmExcelImport;
 use App\Http\Requests\Swm\VehicleRequest;
+use App\Imports\Swm\VehicleImport;
 use App\Models\LayerInfo\Ward;
 use App\Models\Swm\Landfill;
 use App\Models\Swm\Organization;
@@ -18,6 +20,8 @@ use Illuminate\Validation\Rule;
 
 class VehicleController extends Controller
 {
+    use HandlesSwmExcelImport;
+
     protected VehicleService $vehicleService;
 
     public function __construct(VehicleService $vehicleService)
@@ -28,7 +32,8 @@ class VehicleController extends Controller
         $this->middleware('permission:Add SW Vehicle', ['only' => ['create', 'store']]);
         $this->middleware('permission:Edit SW Vehicle', ['only' => ['edit', 'update']]);
         $this->middleware('permission:Delete SW Vehicle', ['only' => ['destroy']]);
-        $this->middleware('permission:Export SW Vehicles to CSV', ['only' => ['export']]);
+        $this->middleware('permission:Export SW Vehicles to Excel', ['only' => ['export', 'downloadTemplate']]);
+        $this->middleware('permission:Import SW Vehicles From Excel', ['only' => ['importForm', 'importStore']]);
         $this->middleware('permission:View SW Vehicle History', ['only' => ['history']]);
         $this->vehicleService = $vehicleService;
     }
@@ -265,5 +270,36 @@ class VehicleController extends Controller
     public function export(Request $request)
     {
         return $this->vehicleService->download($request->all());
+    }
+
+    public function downloadTemplate()
+    {
+        $this->vehicleService->downloadTemplate();
+    }
+
+    public function importForm()
+    {
+        return $this->swmImportFormView(
+            __('Import Vehicles'),
+            route('swm.vehicles.index'),
+            'swm.vehicles.import.store'
+        );
+    }
+
+    public function importStore(Request $request)
+    {
+        $required = ['vehicle_number', 'vehicle_type', 'driver'];
+        if (! Auth::user()->swm_organization_id) {
+            $required[] = 'organization';
+        }
+
+        return $this->swmImportStore(
+            $request,
+            VehicleImport::class,
+            $required,
+            'swm.vehicles.index',
+            'importswm',
+            'vehicles'
+        );
     }
 }

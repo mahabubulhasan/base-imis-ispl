@@ -8,16 +8,20 @@
 @endpush
 @section('title', $page_title)
 @section('content')
+@include('swm.partials.import-errors')
 @include('layouts.components.success-alert')
 @include('layouts.components.error-alert')
 <div class="card app-mobile-index">
     <div class="card-header">
-        @can('Add SW Waste Processing')
-        <a href="{{ route('swm.waste-processing.create') }}" class="btn btn-info">{{ __('Add Waste Processing Log') }}</a>
-        @endcan
-        @can('Export SW Waste Processing to CSV')
-        <a href="#" id="export" class="btn btn-info">{{ __('Export to CSV') }}</a>
-        @endcan
+        @include('swm.partials.excel-import-export-header', [
+            'addPermission' => 'Add SW Waste Processing',
+            'addRoute' => route('swm.waste-processing.create'),
+            'addLabel' => __('Add Waste Processing Log'),
+            'importRoute' => route('swm.waste-processing.import'),
+            'importPermission' => 'Import SW Waste Processing From Excel',
+            'templateRoute' => route('swm.waste-processing.template'),
+            'exportPermission' => 'Export SW Waste Processing to Excel',
+        ])
         <a href="#" class="btn btn-info float-right" id="headingOne" type="button" data-toggle="collapse"
             data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
             {{ __('Show Filter') }}

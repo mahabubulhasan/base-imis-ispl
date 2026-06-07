@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Swm;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Swm\Concerns\HandlesSwmExcelImport;
 use App\Http\Requests\Swm\StsLogRequest;
+use App\Imports\Swm\StsLogImport;
 use App\Models\LayerInfo\Ward;
 use App\Models\Swm\Sts;
 use App\Models\Swm\StsLog;
@@ -15,6 +17,8 @@ use Illuminate\Support\Facades\Auth;
 
 class StsLogController extends Controller
 {
+    use HandlesSwmExcelImport;
+
     public function __construct(
         protected StsLogService $stsLogService
     ) {
@@ -32,7 +36,8 @@ class StsLogController extends Controller
             return $next($request);
         })->only(['suggestionsVehicles', 'suggestionsWasteTypes', 'vehicleContext', 'stsContext']);
         $this->middleware('permission:Delete SW STS Log', ['only' => ['destroy']]);
-        $this->middleware('permission:Export SW STS Logs to CSV', ['only' => ['export']]);
+        $this->middleware('permission:Export SW STS Logs to Excel', ['only' => ['export', 'downloadTemplate']]);
+        $this->middleware('permission:Import SW STS Logs From Excel', ['only' => ['importForm', 'importStore']]);
         $this->middleware('permission:View SW STS Log History', ['only' => ['history']]);
     }
 
@@ -142,6 +147,32 @@ class StsLogController extends Controller
     public function export(Request $request)
     {
         return $this->stsLogService->download($request->all());
+    }
+
+    public function downloadTemplate()
+    {
+        $this->stsLogService->downloadTemplate();
+    }
+
+    public function importForm()
+    {
+        return $this->swmImportFormView(
+            __('Import STS Logs from Excel'),
+            route('swm.sts-logs.index'),
+            'swm.sts-logs.import.store'
+        );
+    }
+
+    public function importStore(Request $request)
+    {
+        return $this->swmImportStore(
+            $request,
+            StsLogImport::class,
+            ['vehicle_number', 'entry_at', 'operation_date'],
+            'swm.sts-logs.index',
+            'importswm',
+            'sts-logs-import'
+        );
     }
 
     public function suggestionsVehicles(Request $request)

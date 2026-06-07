@@ -4,6 +4,8 @@ namespace App\Services\Swm;
 
 use App\Models\Swm\Organization;
 use App\Models\Swm\Worker;
+use App\Models\Swm\WorkType;
+use App\Support\Swm\SwmExcelTemplateWriter;
 use Auth;
 use Box\Spout\Common\Type;
 use Box\Spout\Writer\Style\Color;
@@ -272,8 +274,8 @@ class WorkerService
             ->setBackgroundColor(Color::rgb(228, 228, 228))
             ->build();
 
-        $writer = WriterFactory::create(Type::CSV);
-        $writer->openToBrowser('SW Workers.csv')
+        $writer = WriterFactory::create(Type::XLSX);
+        $writer->openToBrowser('SW Workers.xlsx')
             ->addRowWithStyle($columns, $style);
 
         $query->orderBy('swm.workers.id')->chunk(5000, function ($rows) use ($writer) {
@@ -294,5 +296,50 @@ class WorkerService
         });
 
         $writer->close();
+    }
+
+    public function downloadTemplate(): void
+    {
+        (new SwmExcelTemplateWriter())->download(
+            'SW Workers Import Template.xlsx',
+            $this->importTemplateColumns()
+        );
+    }
+
+    /** @return array<int, array{key: string, label: string, required?: bool, dropdown?: array<int, string>}> */
+    public function importTemplateColumns(): array
+    {
+        $scopedOrgId = Auth::user()?->swm_organization_id;
+        $columns = [];
+
+        if (! $scopedOrgId) {
+            $orgNames = Organization::query()
+                ->whereNull('deleted_at')
+                ->operational()
+                ->orderBy('name')
+                ->pluck('name')
+                ->all();
+            $columns[] = ['key' => 'organization', 'label' => __('Organization'), 'required' => true, 'dropdown' => $orgNames];
+        }
+
+        $workTypes = WorkType::query()
+            ->whereNull('deleted_at')
+            ->orderBy('name')
+            ->pluck('name')
+            ->all();
+
+        return array_merge($columns, [
+            ['key' => 'work_type', 'label' => __('Work Type'), 'required' => true, 'dropdown' => $workTypes],
+            ['key' => 'name', 'label' => __('Worker Name'), 'required' => true],
+            ['key' => 'mobile', 'label' => __('Mobile'), 'required' => true],
+            ['key' => 'email', 'label' => __('Email')],
+            ['key' => 'age', 'label' => __('Age')],
+            ['key' => 'gender', 'label' => __('Gender'), 'dropdown' => ['male', 'female', 'others']],
+            ['key' => 'service_wards', 'label' => __('Service Wards')],
+            ['key' => 'employment_type', 'label' => __('Employment Type'), 'dropdown' => ['permanent', 'daily', 'contract']],
+            ['key' => 'status', 'label' => __('Status'), 'dropdown' => ['active', 'inactive']],
+            ['key' => 'employee_id', 'label' => __('Employee ID')],
+            ['key' => 'national_id_no', 'label' => __('National ID')],
+        ]);
     }
 }

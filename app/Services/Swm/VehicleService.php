@@ -5,8 +5,10 @@ namespace App\Services\Swm;
 use App\Models\LayerInfo\Ward;
 use App\Models\Swm\Organization;
 use App\Models\Swm\Vehicle;
+use App\Models\Swm\VehicleType;
 use App\Models\Swm\Worker;
 use App\Models\Swm\WorkType;
+use App\Support\Swm\SwmExcelTemplateWriter;
 use Auth;
 use Box\Spout\Common\Type;
 use Box\Spout\Writer\Style\Color;
@@ -330,8 +332,8 @@ class VehicleService
             ->setBackgroundColor(Color::rgb(228, 228, 228))
             ->build();
 
-        $writer = WriterFactory::create(Type::CSV);
-        $writer->openToBrowser('SW Vehicles.csv')
+        $writer = WriterFactory::create(Type::XLSX);
+        $writer->openToBrowser('SW Vehicles.xlsx')
             ->addRowWithStyle($columns, $style);
         $wardLabels = Ward::getInAscOrder();
 
@@ -373,5 +375,54 @@ class VehicleService
         });
 
         $writer->close();
+    }
+
+    public function downloadTemplate(): void
+    {
+        (new SwmExcelTemplateWriter())->download(
+            'SW Vehicles Import Template.xlsx',
+            $this->importTemplateColumns()
+        );
+    }
+
+    /** @return array<int, array{key: string, label: string, required?: bool, dropdown?: array<int, string>}> */
+    public function importTemplateColumns(): array
+    {
+        $scopedOrgId = Auth::user()?->swm_organization_id;
+        $columns = [];
+
+        if (! $scopedOrgId) {
+            $orgNames = Organization::query()
+                ->whereNull('deleted_at')
+                ->operational()
+                ->orderBy('name')
+                ->pluck('name')
+                ->all();
+            $columns[] = ['key' => 'organization', 'label' => __('Organization'), 'required' => true, 'dropdown' => $orgNames];
+        }
+
+        $vehicleTypes = VehicleType::query()
+            ->whereNull('deleted_at')
+            ->orderBy('name')
+            ->pluck('name')
+            ->all();
+
+        $driverOrgId = $scopedOrgId ? (int) $scopedOrgId : null;
+        $driverNames = array_values($this->driverWorkersForOrganization($driverOrgId));
+
+        $operationalLabels = array_values(self::operationalTypeLabels());
+
+        return array_merge($columns, [
+            ['key' => 'vehicle_number', 'label' => __('Vehicle Number'), 'required' => true],
+            ['key' => 'vehicle_id_no', 'label' => __('Vehicle ID')],
+            ['key' => 'vehicle_type', 'label' => __('Vehicle Type'), 'required' => true, 'dropdown' => $vehicleTypes],
+            ['key' => 'driver', 'label' => __('Driver'), 'required' => true, 'dropdown' => $driverNames],
+            ['key' => 'chassis_no', 'label' => __('Chassis No.')],
+            ['key' => 'engine_no', 'label' => __('Engine No.')],
+            ['key' => 'capacity', 'label' => __('Capacity')],
+            ['key' => 'operational_type', 'label' => __('Operational Type'), 'dropdown' => $operationalLabels],
+            ['key' => 'service_wards', 'label' => __('Service Wards')],
+            ['key' => 'status', 'label' => __('Status'), 'dropdown' => ['active', 'inactive']],
+        ]);
     }
 }

@@ -8,14 +8,18 @@
 @endpush
 @section('title', $page_title)
 @section('content')
+@include('swm.partials.import-errors')
 <div class="card app-mobile-index">
     <div class="card-header">
-        @can('Add SW Vehicle')
-        <a href="{{ action('Swm\VehicleController@create') }}" class="btn btn-info">{{ __('Add Vehicle') }}</a>
-        @endcan
-        @can('Export SW Vehicles to CSV')
-        <a href="#" id="export" class="btn btn-info">{{ __('Export to CSV') }}</a>
-        @endcan
+        @include('swm.partials.excel-import-export-header', [
+            'addPermission' => 'Add SW Vehicle',
+            'addRoute' => action('Swm\VehicleController@create'),
+            'addLabel' => __('Add Vehicle'),
+            'importRoute' => route('swm.vehicles.import'),
+            'importPermission' => 'Import SW Vehicles From Excel',
+            'templateRoute' => route('swm.vehicles.template'),
+            'exportPermission' => 'Export SW Vehicles to Excel',
+        ])
         <a href="#" class="btn btn-info float-right" id="headingOne" type="button" data-toggle="collapse"
             data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
             {{ __('Show Filter') }}

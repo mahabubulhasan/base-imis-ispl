@@ -6,11 +6,9 @@ use App\Models\BuildingInfo\Household;
 use App\Models\Swm\BillCollectionPayment;
 use App\Services\Formatting\Currency;
 use App\Services\Formatting\CurrencyFormatter;
+use App\Support\Swm\SwmExcelExportWriter;
+use App\Support\Swm\SwmExcelTemplateWriter;
 use Auth;
-use Box\Spout\Common\Type;
-use Box\Spout\Writer\Style\Color;
-use Box\Spout\Writer\Style\StyleBuilder;
-use Box\Spout\Writer\WriterFactory;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -636,40 +634,50 @@ class BillCollectionPaymentService
             $query->whereDate('swm.bill_collection_payments.payment_for_month', Carbon::parse($paymentForMonth)->startOfMonth());
         }
 
-        $style = (new StyleBuilder())
-            ->setFontBold()
-            ->setFontSize(13)
-            ->setBackgroundColor(Color::rgb(228, 228, 228))
-            ->build();
-
-        $writer = WriterFactory::create(Type::CSV);
-        $writer->openToBrowser('SW Bill Collection Payments.csv')
-            ->addRowWithStyle($columns, $style);
-
-        $query->orderBy('swm.bill_collection_payments.id')->chunk(5000, function ($rows) use ($writer) {
-            foreach ($rows as $row) {
-                $methods = config('bill_collection.payment_methods', []);
-                $methodLabel = $methods[$row->payment_method] ?? $row->payment_method;
-                $writer->addRow([
-                    $row->holding_number,
-                    $row->customer_id,
-                    $row->site_household_owner_name,
-                    $row->site_father_or_husband_name ?? '',
-                    $row->household_ward ?? '',
-                    $row->household_sub_location ?? '',
-                    $row->household_contact_number ?? '',
-                    $row->receipt_no ?? '',
-                    $row->amount,
-                    $row->due_paid ?? 0,
-                    (float) ($row->amount ?? 0) + (float) ($row->due_paid ?? 0),
-                    $row->payment_for_month?->format('Y-m-d'),
-                    $row->payment_time?->format('Y-m-d H:i:s'),
-                    $methodLabel,
-                    $row->received_by_name,
-                ]);
-            }
+        (new SwmExcelExportWriter())->download('SW Bill Collection Payments.xlsx', $columns, function ($sheet, $colLetter) use ($query) {
+            $rowNum = 2;
+            $query->orderBy('swm.bill_collection_payments.id')->chunk(5000, function ($rows) use ($sheet, $colLetter, &$rowNum) {
+                foreach ($rows as $row) {
+                    $methods = config('bill_collection.payment_methods', []);
+                    $methodLabel = $methods[$row->payment_method] ?? $row->payment_method;
+                    $values = [
+                        $row->holding_number,
+                        $row->customer_id,
+                        $row->site_household_owner_name,
+                        $row->site_father_or_husband_name ?? '',
+                        $row->household_ward ?? '',
+                        $row->household_sub_location ?? '',
+                        $row->household_contact_number ?? '',
+                        $row->receipt_no ?? '',
+                        $row->amount,
+                        $row->due_paid ?? 0,
+                        (float) ($row->amount ?? 0) + (float) ($row->due_paid ?? 0),
+                        $row->payment_for_month?->format('Y-m-d'),
+                        $row->payment_time?->format('Y-m-d H:i:s'),
+                        $methodLabel,
+                        $row->received_by_name,
+                    ];
+                    foreach ($values as $index => $value) {
+                        $sheet->setCellValue($colLetter($index + 1).$rowNum, $value);
+                    }
+                    $rowNum++;
+                }
+            });
         });
+    }
 
-        $writer->close();
+    public function downloadTemplate(): void
+    {
+        (new SwmExcelTemplateWriter())->download('bill-collection-payments-import-template.xlsx', [
+            ['key' => 'household_id', 'required' => true],
+            ['key' => 'holding_number'],
+            ['key' => 'amount', 'required' => true],
+            ['key' => 'due_paid'],
+            ['key' => 'payment_for_month', 'required' => true],
+            ['key' => 'payment_method', 'required' => true, 'dropdown' => array_values(config('bill_collection.payment_methods', []))],
+            ['key' => 'payment_time'],
+            ['key' => 'received_by_user_id'],
+            ['key' => 'receipt_no'],
+        ]);
     }
 }

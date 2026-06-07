@@ -8,13 +8,21 @@
 @endpush
 @section('title', $page_title)
 @section('content')
+@include('swm.partials.import-errors')
 @include('layouts.components.success-alert')
 @include('layouts.components.error-alert')
 <div class="card app-mobile-index">
     <div class="card-header">
-        @can('Add SW Waste Bin')
-        <a href="{{ route('swm.waste-bins.create') }}" class="btn btn-info">{{ __('Add Waste Bin') }}</a>
-        @endcan
+        @include('swm.partials.excel-import-export-header', [
+            'addPermission' => 'Add SW Waste Bin',
+            'addRoute' => route('swm.waste-bins.create'),
+            'addLabel' => __('Add Waste Bin'),
+            'importRoute' => route('swm.waste-bins.import'),
+            'importPermission' => 'Import SW Waste Bins From Excel',
+            'templateRoute' => route('swm.waste-bins.template'),
+            'exportPermission' => 'Export SW Waste Bins to Excel',
+            'exportId' => 'export',
+        ])
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -53,7 +61,14 @@ $(function () {
             { data: 'total_capacity_kg', name: 'total_capacity_kg' },
             { data: 'action', name: 'action', orderable: false, searchable: false }
         ]
-    }).on('draw', function () {
+    });
+
+    $('#export').on('click', function (e) {
+        e.preventDefault();
+        window.location.href = "{!! route('swm.waste-bins.export') !!}";
+    });
+
+    $('#data-table').on('draw', function () {
         $('.delete').on('click', function (e) {
             var form = $(this).closest('form');
             e.preventDefault();

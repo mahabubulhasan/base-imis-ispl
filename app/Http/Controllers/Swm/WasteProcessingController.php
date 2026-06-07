@@ -3,13 +3,17 @@
 namespace App\Http\Controllers\Swm;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Swm\Concerns\HandlesSwmExcelImport;
 use App\Http\Requests\Swm\WasteProcessingRequest;
+use App\Imports\Swm\WasteProcessingImport;
 use App\Models\Swm\WasteProcessingLog;
 use App\Services\Swm\WasteProcessingService;
 use Illuminate\Http\Request;
 
 class WasteProcessingController extends Controller
 {
+    use HandlesSwmExcelImport;
+
     public function __construct(
         protected WasteProcessingService $wasteProcessingService
     ) {
@@ -19,7 +23,8 @@ class WasteProcessingController extends Controller
         $this->middleware('permission:Add SW Waste Processing', ['only' => ['create', 'store']]);
         $this->middleware('permission:Edit SW Waste Processing', ['only' => ['edit', 'update']]);
         $this->middleware('permission:Delete SW Waste Processing', ['only' => ['destroy']]);
-        $this->middleware('permission:Export SW Waste Processing to CSV', ['only' => ['export']]);
+        $this->middleware('permission:Export SW Waste Processing to Excel', ['only' => ['export', 'downloadTemplate']]);
+        $this->middleware('permission:Import SW Waste Processing From Excel', ['only' => ['importForm', 'importStore']]);
         $this->middleware('permission:View SW Waste Processing History', ['only' => ['history']]);
     }
 
@@ -103,5 +108,31 @@ class WasteProcessingController extends Controller
     public function export(Request $request)
     {
         return $this->wasteProcessingService->download($request->all());
+    }
+
+    public function downloadTemplate()
+    {
+        $this->wasteProcessingService->downloadTemplate();
+    }
+
+    public function importForm()
+    {
+        return $this->swmImportFormView(
+            __('Import Waste Processing from Excel'),
+            route('swm.waste-processing.index'),
+            'swm.waste-processing.import.store'
+        );
+    }
+
+    public function importStore(Request $request)
+    {
+        return $this->swmImportStore(
+            $request,
+            WasteProcessingImport::class,
+            ['entry_at', 'report_date', 'reporting_month'],
+            'swm.waste-processing.index',
+            'importswm',
+            'waste-processing-import'
+        );
     }
 }

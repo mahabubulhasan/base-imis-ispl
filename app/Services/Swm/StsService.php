@@ -2,13 +2,12 @@
 
 namespace App\Services\Swm;
 
+use App\Models\LayerInfo\Ward;
+use App\Models\Swm\Landfill;
 use App\Models\Swm\Sts;
 use App\Models\Swm\WasteType;
+use App\Support\Swm\SwmExcelTemplateWriter;
 use Auth;
-use Box\Spout\Common\Type;
-use Box\Spout\Writer\Style\Color;
-use Box\Spout\Writer\Style\StyleBuilder;
-use Box\Spout\Writer\WriterFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Yajra\DataTables\DataTables;
 
@@ -150,28 +149,99 @@ class StsService
 
     public function download(array $data): void
     {
-        $columns = [
-            __('STS ID'),
-            __('Name'),
-            __('Location'),
-            __('Ward No.'),
-            __('Road No.'),
-            __('Road Name'),
-            __('Latitude'),
-            __('Longitude'),
-            __('Operator Name'),
-            __('Contact Number'),
-            __('Capacity').' ('.__('Ton').')',
-            __('Area'),
-            __('Source Wards'),
-            __('Segregation Practiced'),
-            __('Waste Type'),
-            __('Destination Landfill'),
-            __('Operational Status'),
+        $headers = [
+            'sts_id',
+            'name',
+            'location',
+            'ward_no',
+            'road_id',
+            'road_name',
+            'latitude',
+            'longitude',
+            'operator_name',
+            'contact_number',
+            'capacity',
+            'area',
+            'source_wards',
+            'segregation_practiced',
+            'waste_types',
+            'destination_landfill',
+            'operational_status',
         ];
 
         $query = $this->baseQuery();
+        $this->applyExportFilters($query, $data);
 
+        $wasteTypeMap = WasteType::query()->whereNull('deleted_at')->pluck('name', 'id')->all();
+        $rows = [];
+
+        $query->orderBy('swm.sts.id')->chunk(5000, function ($chunk) use (&$rows, $wasteTypeMap) {
+            foreach ($chunk as $row) {
+                $wasteIds = $row->waste_type_ids ?? [];
+                $wasteNames = [];
+                foreach ($wasteIds as $wid) {
+                    if (isset($wasteTypeMap[$wid])) {
+                        $wasteNames[] = $wasteTypeMap[$wid];
+                    }
+                }
+
+                $rows[] = [
+                    $row->sts_id,
+                    $row->name,
+                    $row->location,
+                    $row->ward_no,
+                    $row->road_id,
+                    $row->road_name,
+                    $row->latitude,
+                    $row->longitude,
+                    $row->operator_name,
+                    $row->contact_number,
+                    $row->capacity,
+                    $row->area,
+                    implode(', ', $row->source_wards ?? []),
+                    $row->segregation_practiced ? __('Yes') : __('No'),
+                    implode(', ', $wasteNames),
+                    $row->destination_landfill_name,
+                    $row->operational_status,
+                ];
+            }
+        });
+
+        (new SwmExcelTemplateWriter())->downloadData('SW STS.xlsx', $headers, $rows);
+    }
+
+    public function downloadTemplate(): void
+    {
+        $wards = array_map('strval', array_keys(Ward::getInAscOrder()));
+        $landfills = Landfill::query()
+            ->whereNull('deleted_at')
+            ->orderBy('name')
+            ->get()
+            ->map(fn (Landfill $lf) => trim(($lf->landfill_id ? $lf->landfill_id.' - ' : '').$lf->name))
+            ->all();
+
+        (new SwmExcelTemplateWriter())->download('SW STS Import Template.xlsx', [
+            ['key' => 'name', 'label' => 'name', 'required' => true],
+            ['key' => 'location', 'label' => 'location'],
+            ['key' => 'ward_no', 'label' => 'ward_no', 'required' => true, 'dropdown' => $wards],
+            ['key' => 'road_id', 'label' => 'road_id'],
+            ['key' => 'road_name', 'label' => 'road_name'],
+            ['key' => 'latitude', 'label' => 'latitude'],
+            ['key' => 'longitude', 'label' => 'longitude'],
+            ['key' => 'operator_name', 'label' => 'operator_name', 'required' => true],
+            ['key' => 'contact_number', 'label' => 'contact_number', 'required' => true],
+            ['key' => 'capacity', 'label' => 'capacity'],
+            ['key' => 'area', 'label' => 'area'],
+            ['key' => 'source_wards', 'label' => 'source_wards'],
+            ['key' => 'segregation_practiced', 'label' => 'segregation_practiced', 'dropdown' => [__('Yes'), __('No')]],
+            ['key' => 'waste_types', 'label' => 'waste_types'],
+            ['key' => 'destination_landfill', 'label' => 'destination_landfill', 'dropdown' => $landfills],
+            ['key' => 'operational_status', 'label' => 'operational_status', 'required' => true, 'dropdown' => ['active', 'inactive']],
+        ]);
+    }
+
+    protected function applyExportFilters(Builder $query, array $data): void
+    {
         if (! empty($data['name'] ?? null)) {
             $query->where('swm.sts.name', 'ILIKE', '%'.trim((string) $data['name']).'%');
         }
@@ -199,53 +269,5 @@ class StsService
         if (! empty($data['waste_type_id'] ?? null)) {
             $query->whereJsonContains('swm.sts.waste_type_ids', (int) $data['waste_type_id']);
         }
-
-        $wasteTypeMap = WasteType::query()->whereNull('deleted_at')->pluck('name', 'id')->all();
-
-        $style = (new StyleBuilder())
-            ->setFontBold()
-            ->setFontSize(13)
-            ->setBackgroundColor(Color::rgb(228, 228, 228))
-            ->build();
-
-        $writer = WriterFactory::create(Type::CSV);
-        $writer->openToBrowser('SW STS.csv')
-            ->addRowWithStyle($columns, $style);
-
-        $query->orderBy('swm.sts.id')->chunk(5000, function ($rows) use ($writer, $wasteTypeMap) {
-            foreach ($rows as $row) {
-                $wasteIds = $row->waste_type_ids ?? [];
-                $wasteNames = [];
-                foreach ($wasteIds as $wid) {
-                    if (isset($wasteTypeMap[$wid])) {
-                        $wasteNames[] = $wasteTypeMap[$wid];
-                    }
-                }
-
-                $sourceWards = $row->source_wards ?? [];
-
-                $writer->addRow([
-                    $row->sts_id,
-                    $row->name,
-                    $row->location,
-                    $row->ward_no,
-                    $row->road_id,
-                    $row->road_name,
-                    $row->latitude,
-                    $row->longitude,
-                    $row->operator_name,
-                    $row->contact_number,
-                    $row->capacity,
-                    $row->area,
-                    implode(', ', $sourceWards),
-                    $row->segregation_practiced ? __('Yes') : __('No'),
-                    implode(', ', $wasteNames),
-                    $row->destination_landfill_name,
-                    $row->operational_status,
-                ]);
-            }
-        });
-
-        $writer->close();
     }
 }

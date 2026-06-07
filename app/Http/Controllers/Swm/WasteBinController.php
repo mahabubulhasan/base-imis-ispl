@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Swm;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Swm\Concerns\HandlesSwmExcelImport;
 use App\Http\Requests\Swm\WasteBinRequest;
+use App\Imports\WasteBinImport;
 use App\Models\BuildingInfo\Building;
 use App\Models\LayerInfo\Ward;
 use App\Models\UtilityInfo\Roadline;
@@ -15,9 +17,13 @@ use Illuminate\Http\Request;
 
 class WasteBinController extends Controller
 {
+    use HandlesSwmExcelImport;
+
     public function __construct(protected WasteBinService $wasteBinService)
     {
         $this->middleware('auth');
+        $this->middleware('permission:Export SW Waste Bins to Excel', ['only' => ['export', 'downloadTemplate']]);
+        $this->middleware('permission:Import SW Waste Bins From Excel', ['only' => ['importForm', 'importStore']]);
     }
 
     public function index()
@@ -120,5 +126,36 @@ class WasteBinController extends Controller
         $wasteBin->delete();
 
         return redirect()->route('swm.waste-bins.index')->with('success', __('Waste bin deleted successfully.'));
+    }
+
+    public function export(Request $request)
+    {
+        $this->wasteBinService->download($request->all());
+    }
+
+    public function downloadTemplate()
+    {
+        $this->wasteBinService->downloadTemplate();
+    }
+
+    public function importForm()
+    {
+        return $this->swmImportFormView(
+            __('Import Waste Bins'),
+            route('swm.waste-bins.index'),
+            'swm.waste-bins.import.store'
+        );
+    }
+
+    public function importStore(Request $request)
+    {
+        return $this->swmImportStore(
+            $request,
+            WasteBinImport::class,
+            ['waste_bin_type', 'total_capacity_kg'],
+            'swm.waste-bins.index',
+            'importswm',
+            'waste-bins'
+        );
     }
 }

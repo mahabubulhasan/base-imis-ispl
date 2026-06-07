@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Imports;
+namespace App\Imports\Swm;
 
 use App\Models\BuildingInfo\Household;
 use App\Services\Swm\BillCollectionPaymentService;
+use App\Support\Swm\SwmImportRowHelper;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
@@ -24,18 +25,15 @@ class BillCollectionPaymentImport implements ToCollection, WithHeadingRow
     public function collection(Collection $rows): void
     {
         $service = app(BillCollectionPaymentService::class);
-        $methodKeys = array_keys(config('bill_collection.payment_methods', []));
+        $paymentMethods = config('bill_collection.payment_methods', []);
 
         foreach ($rows as $idx => $row) {
             $rowNum = $idx + 2;
-            $raw = $row->toArray();
-            $norm = [];
-            foreach ($raw as $k => $v) {
-                $norm[strtolower(trim((string) $k))] = $v;
-            }
-            if ($this->rowIsEmpty($norm)) {
+            $norm = SwmImportRowHelper::normalizeRow($row->toArray());
+            if (SwmImportRowHelper::rowIsEmpty($norm)) {
                 continue;
             }
+
             try {
                 $site = $this->resolveSite($norm);
                 if (! $site) {
@@ -69,13 +67,16 @@ class BillCollectionPaymentImport implements ToCollection, WithHeadingRow
                     continue;
                 }
 
-                $methodKey = $this->resolveMethodKey(trim((string) ($norm['payment_method'] ?? '')), $methodKeys);
+                $methodKey = SwmImportRowHelper::resolveConfigKey(
+                    trim((string) ($norm['payment_method'] ?? '')),
+                    $paymentMethods
+                );
                 if ($methodKey === null) {
                     $this->errors[] = __('Row :n: invalid payment_method.', ['n' => $rowNum]);
                     continue;
                 }
 
-                $paymentTime = $this->parseDateTime($norm['payment_time'] ?? null) ?? now();
+                $paymentTime = SwmImportRowHelper::parseDate($norm['payment_time'] ?? null) ?? now();
                 $recv = $norm['received_by_user_id'] ?? null;
                 $recvId = ($recv !== null && $recv !== '') ? (int) $recv : $this->defaultReceivedByUserId;
 
@@ -102,17 +103,6 @@ class BillCollectionPaymentImport implements ToCollection, WithHeadingRow
                 $this->errors[] = __('Row :n: :msg', ['n' => $rowNum, 'msg' => $e->getMessage()]);
             }
         }
-    }
-
-    protected function rowIsEmpty(array $norm): bool
-    {
-        foreach ($norm as $v) {
-            if ($v !== null && $v !== '') {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     protected function resolveSite(array $norm): ?Household
@@ -146,53 +136,9 @@ class BillCollectionPaymentImport implements ToCollection, WithHeadingRow
             try {
                 return Carbon::instance(Date::excelToDateTimeObject((float) $value))->startOfMonth();
             } catch (\Throwable $e) {
-                // fall through
-            }
-        }
-        try {
-            return Carbon::parse($value)->startOfMonth();
-        } catch (\Throwable $e) {
-            return null;
-        }
-    }
-
-    protected function parseDateTime($value): ?Carbon
-    {
-        if ($value === null || $value === '') {
-            return null;
-        }
-        if (is_numeric($value) && (float) $value > 1) {
-            try {
-                return Carbon::instance(Date::excelToDateTimeObject((float) $value));
-            } catch (\Throwable $e) {
-            }
-        }
-        try {
-            return Carbon::parse($value);
-        } catch (\Throwable $e) {
-            return null;
-        }
-    }
-
-    /**
-     * @param  array<int, string>  $methodKeys
-     */
-    protected function resolveMethodKey(string $input, array $methodKeys): ?string
-    {
-        if ($input === '') {
-            return null;
-        }
-        $key = strtolower($input);
-        if (in_array($key, $methodKeys, true)) {
-            return $key;
-        }
-        $labels = config('bill_collection.payment_methods', []);
-        foreach ($labels as $k => $label) {
-            if (strcasecmp($input, (string) $label) === 0) {
-                return $k;
             }
         }
 
-        return null;
+        return SwmImportRowHelper::parseMonth($value);
     }
 }

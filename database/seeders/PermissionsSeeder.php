@@ -837,7 +837,11 @@ class PermissionsSeeder extends Seeder
                     ],
                     [
                         "type" => "Export",
-                        "name" => "Export SW Organizations to CSV",
+                        "name" => "Export SW Organizations to Excel",
+                    ],
+                    [
+                        "type" => "Import",
+                        "name" => "Import SW Organizations From Excel",
                     ],
                 ],
             ],
@@ -936,7 +940,11 @@ class PermissionsSeeder extends Seeder
                     ],
                     [
                         "type" => "Export",
-                        "name" => "Export SW Workers to CSV",
+                        "name" => "Export SW Workers to Excel",
+                    ],
+                    [
+                        "type" => "Import",
+                        "name" => "Import SW Workers From Excel",
                     ],
                 ],
             ],
@@ -1101,7 +1109,11 @@ class PermissionsSeeder extends Seeder
                     ],
                     [
                         "type" => "Export",
-                        "name" => "Export SW Vehicles to CSV",
+                        "name" => "Export SW Vehicles to Excel",
+                    ],
+                    [
+                        "type" => "Import",
+                        "name" => "Import SW Vehicles From Excel",
                     ],
                 ],
             ],
@@ -1134,7 +1146,11 @@ class PermissionsSeeder extends Seeder
                     ],
                     [
                         "type" => "Export",
-                        "name" => "Export SW Landfills to CSV",
+                        "name" => "Export SW Landfills to Excel",
+                    ],
+                    [
+                        "type" => "Import",
+                        "name" => "Import SW Landfills From Excel",
                     ],
                 ],
             ],
@@ -1167,7 +1183,11 @@ class PermissionsSeeder extends Seeder
                     ],
                     [
                         "type" => "Export",
-                        "name" => "Export SW STS to CSV",
+                        "name" => "Export SW STS to Excel",
+                    ],
+                    [
+                        "type" => "Import",
+                        "name" => "Import SW STS From Excel",
                     ],
                 ],
             ],
@@ -1260,6 +1280,14 @@ class PermissionsSeeder extends Seeder
                         "type" => "Delete",
                         "name" => "Delete SW Waste Bin",
                     ],
+                    [
+                        "type" => "Export",
+                        "name" => "Export SW Waste Bins to Excel",
+                    ],
+                    [
+                        "type" => "Import",
+                        "name" => "Import SW Waste Bins From Excel",
+                    ],
                 ],
             ],
             [
@@ -1291,11 +1319,11 @@ class PermissionsSeeder extends Seeder
                     ],
                     [
                         "type" => "Export",
-                        "name" => "Export SW Bill Collection Payments to CSV",
+                        "name" => "Export SW Bill Collection Payments to Excel",
                     ],
                     [
                         "type" => "Import",
-                        "name" => "Import SW Bill Collection Payments From CSV",
+                        "name" => "Import SW Bill Collection Payments From Excel",
                     ],
                 ],
             ],
@@ -1365,7 +1393,11 @@ class PermissionsSeeder extends Seeder
                     ],
                     [
                         "type" => "Export",
-                        "name" => "Export SW Complaints to CSV",
+                        "name" => "Export SW Complaints to Excel",
+                    ],
+                    [
+                        "type" => "Import",
+                        "name" => "Import SW Complaints From Excel",
                     ],
                 ],
             ],
@@ -1398,7 +1430,11 @@ class PermissionsSeeder extends Seeder
                     ],
                     [
                         "type" => "Export",
-                        "name" => "Export SW Attendance Logs to CSV",
+                        "name" => "Export SW Attendance Logs to Excel",
+                    ],
+                    [
+                        "type" => "Import",
+                        "name" => "Import SW Attendance Logs From Excel",
                     ],
                 ],
             ],
@@ -1431,7 +1467,11 @@ class PermissionsSeeder extends Seeder
                     ],
                     [
                         "type" => "Export",
-                        "name" => "Export SW STS Logs to CSV",
+                        "name" => "Export SW STS Logs to Excel",
+                    ],
+                    [
+                        "type" => "Import",
+                        "name" => "Import SW STS Logs From Excel",
                     ],
                 ],
             ],
@@ -1464,7 +1504,11 @@ class PermissionsSeeder extends Seeder
                     ],
                     [
                         "type" => "Export",
-                        "name" => "Export SW Landfill Logs to CSV",
+                        "name" => "Export SW Landfill Logs to Excel",
+                    ],
+                    [
+                        "type" => "Import",
+                        "name" => "Import SW Landfill Logs From Excel",
                     ],
                 ],
             ],
@@ -1497,7 +1541,11 @@ class PermissionsSeeder extends Seeder
                     ],
                     [
                         "type" => "Export",
-                        "name" => "Export SW Waste Processing to CSV",
+                        "name" => "Export SW Waste Processing to Excel",
+                    ],
+                    [
+                        "type" => "Import",
+                        "name" => "Import SW Waste Processing From Excel",
                     ],
                 ],
             ],

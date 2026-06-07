@@ -3,6 +3,7 @@
 namespace App\Services\Swm;
 
 use App\Models\Swm\WasteProcessingLog;
+use App\Support\Swm\SwmExcelTemplateWriter;
 use Auth;
 use Box\Spout\Common\Type;
 use Box\Spout\Writer\Style\Color;
@@ -115,8 +116,8 @@ class WasteProcessingService
             ->setBackgroundColor(Color::rgb(228, 228, 228))
             ->build();
 
-        $writer = WriterFactory::create(Type::CSV);
-        $writer->openToBrowser('SW Waste Processing.csv')
+        $writer = WriterFactory::create(Type::XLSX);
+        $writer->openToBrowser('SW Waste Processing.xlsx')
             ->addRowWithStyle($columns, $style);
 
         $query->orderBy('id')->chunk(5000, function ($rows) use ($writer) {
@@ -139,6 +140,32 @@ class WasteProcessingService
         });
 
         $writer->close();
+    }
+
+    public function downloadTemplate(): void
+    {
+        app(SwmExcelTemplateWriter::class)->download(
+            'SW Waste Processing Import Template.xlsx',
+            $this->importTemplateColumns()
+        );
+    }
+
+    /** @return array<int, array{key: string, label: string, required?: bool, dropdown?: array<int, string>}> */
+    protected function importTemplateColumns(): array
+    {
+        return [
+            ['key' => 'entry_at', 'label' => 'entry_at', 'required' => true],
+            ['key' => 'report_date', 'label' => 'report_date', 'required' => true],
+            ['key' => 'reporting_month', 'label' => 'reporting_month', 'required' => true],
+            ['key' => 'waste_processing_site_name', 'label' => 'waste_processing_site_name', 'required' => false],
+            ['key' => 'waste_received_ton', 'label' => 'waste_received_ton', 'required' => false],
+            ['key' => 'organic_waste_composted_ton', 'label' => 'organic_waste_composted_ton', 'required' => false],
+            ['key' => 'inorganic_waste_recycled_ton', 'label' => 'inorganic_waste_recycled_ton', 'required' => false],
+            ['key' => 'waste_incinerated_ton', 'label' => 'waste_incinerated_ton', 'required' => false],
+            ['key' => 'waste_burned_open_air_ton', 'label' => 'waste_burned_open_air_ton', 'required' => false],
+            ['key' => 'residual_waste_landfilled_ton', 'label' => 'residual_waste_landfilled_ton', 'required' => false],
+            ['key' => 'remarks', 'label' => 'remarks', 'required' => false],
+        ];
     }
 
     protected function applyFilters($query, array $data): void

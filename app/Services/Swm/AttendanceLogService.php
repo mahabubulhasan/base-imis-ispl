@@ -3,7 +3,9 @@
 namespace App\Services\Swm;
 
 use App\Models\Swm\AttendanceLog;
+use App\Models\Swm\Organization;
 use App\Models\Swm\Worker;
+use App\Support\Swm\SwmExcelTemplateWriter;
 use Auth;
 use Box\Spout\Common\Type;
 use Box\Spout\Writer\Style\Color;
@@ -206,8 +208,8 @@ class AttendanceLogService
             ->setBackgroundColor(Color::rgb(228, 228, 228))
             ->build();
 
-        $writer = WriterFactory::create(Type::CSV);
-        $writer->openToBrowser('SW Attendance Logs.csv')
+        $writer = WriterFactory::create(Type::XLSX);
+        $writer->openToBrowser('SW Attendance Logs.xlsx')
             ->addRowWithStyle($columns, $style);
 
         $statusLabels = AttendanceLog::statusOptions();
@@ -234,5 +236,57 @@ class AttendanceLogService
         });
 
         $writer->close();
+    }
+
+    public function downloadTemplate(): void
+    {
+        app(SwmExcelTemplateWriter::class)->download(
+            'SW Attendance Logs Import Template.xlsx',
+            $this->importTemplateColumns()
+        );
+    }
+
+    /** @return array<int, array{key: string, label: string, required?: bool, dropdown?: array<int, string>}> */
+    protected function importTemplateColumns(): array
+    {
+        $columns = [];
+        $orgId = Auth::user()?->swm_organization_id;
+
+        if (! $orgId) {
+            $columns[] = [
+                'key' => 'organization',
+                'label' => 'organization',
+                'required' => true,
+                'dropdown' => array_values(Organization::query()
+                    ->whereNull('deleted_at')
+                    ->operational()
+                    ->orderBy('name')
+                    ->pluck('name')
+                    ->all()),
+            ];
+        }
+
+        $workerQuery = Worker::query()->whereNull('deleted_at');
+        if ($orgId) {
+            $workerQuery->where('organization_id', (int) $orgId);
+        }
+        $workerLabels = $workerQuery->orderBy('name')->get(['name', 'worker_id_no'])
+            ->map(fn (Worker $w) => $w->name.($w->worker_id_no ? ' — '.$w->worker_id_no : ''))
+            ->values()
+            ->all();
+
+        $statusLabels = array_values(AttendanceLog::statusOptions());
+
+        $columns = array_merge($columns, [
+            ['key' => 'worker', 'label' => 'worker', 'required' => true, 'dropdown' => $workerLabels],
+            ['key' => 'department', 'label' => 'department', 'required' => false],
+            ['key' => 'entry_at', 'label' => 'entry_at', 'required' => true],
+            ['key' => 'attendance_status', 'label' => 'attendance_status', 'required' => true, 'dropdown' => $statusLabels],
+            ['key' => 'check_in_at', 'label' => 'check_in_at', 'required' => false],
+            ['key' => 'check_out_at', 'label' => 'check_out_at', 'required' => false],
+            ['key' => 'remarks', 'label' => 'remarks', 'required' => false],
+        ]);
+
+        return $columns;
     }
 }

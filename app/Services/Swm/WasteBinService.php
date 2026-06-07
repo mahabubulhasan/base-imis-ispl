@@ -2,7 +2,10 @@
 
 namespace App\Services\Swm;
 
+use App\Models\LayerInfo\Ward;
 use App\Models\Swm\WasteBin;
+use App\Models\Swm\WasteBinType;
+use App\Support\Swm\SwmExcelTemplateWriter;
 use Auth;
 use Yajra\DataTables\DataTables;
 
@@ -51,5 +54,57 @@ class WasteBinService
         $wasteBin->save();
 
         return $wasteBin;
+    }
+
+    public function download(array $data): void
+    {
+        $headers = [
+            'waste_bin_id',
+            'waste_bin_type_name',
+            'placed_at_buildings',
+            'bin',
+            'ward_no',
+            'total_capacity_kg',
+        ];
+
+        $rows = [];
+        WasteBin::query()
+            ->with(['wasteBinType'])
+            ->whereNull('deleted_at')
+            ->orderBy('id')
+            ->chunk(5000, function ($chunk) use (&$rows) {
+                foreach ($chunk as $row) {
+                    $rows[] = [
+                        $row->waste_bin_id,
+                        optional($row->wasteBinType)->name,
+                        $row->placed_at_buildings ? __('Yes') : __('No'),
+                        $row->bin,
+                        $row->ward_no,
+                        $row->total_capacity_kg,
+                    ];
+                }
+            });
+
+        (new SwmExcelTemplateWriter())->downloadData('SW Waste Bins.xlsx', $headers, $rows);
+    }
+
+    public function downloadTemplate(): void
+    {
+        $wasteBinTypes = WasteBinType::query()->whereNull('deleted_at')->orderBy('name')->pluck('name')->all();
+        $wards = array_map('strval', array_keys(Ward::getInAscOrder()));
+
+        (new SwmExcelTemplateWriter())->download('SW Waste Bins Import Template.xlsx', [
+            ['key' => 'waste_bin_type', 'label' => 'waste_bin_type', 'required' => true, 'dropdown' => $wasteBinTypes],
+            ['key' => 'placed_at_buildings', 'label' => 'placed_at_buildings', 'dropdown' => [__('Yes'), __('No')]],
+            ['key' => 'household_id', 'label' => 'household_id'],
+            ['key' => 'bin', 'label' => 'bin'],
+            ['key' => 'ward_no', 'label' => 'ward_no', 'dropdown' => $wards],
+            ['key' => 'sub_location', 'label' => 'sub_location'],
+            ['key' => 'road_no', 'label' => 'road_no'],
+            ['key' => 'road_name', 'label' => 'road_name'],
+            ['key' => 'latitude', 'label' => 'latitude'],
+            ['key' => 'longitude', 'label' => 'longitude'],
+            ['key' => 'total_capacity_kg', 'label' => 'total_capacity_kg', 'required' => true],
+        ]);
     }
 }

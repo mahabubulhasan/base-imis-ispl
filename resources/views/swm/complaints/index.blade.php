@@ -8,16 +8,21 @@
 @endpush
 @section('title', $page_title)
 @section('content')
+@include('swm.partials.import-errors')
 @include('layouts.components.success-alert')
 @include('layouts.components.error-alert')
 <div class="card app-mobile-index">
     <div class="card-header">
-        @can('Add SW Complaint')
-        <a href="{{ route('swm.complaints.create') }}" class="btn btn-info">{{ __('Add Complaint') }}</a>
-        @endcan
-        @can('Export SW Complaints to CSV')
-        <a href="#" id="export" class="btn btn-info">{{ __('Export to CSV') }}</a>
-        @endcan
+        @include('swm.partials.excel-import-export-header', [
+            'addPermission' => 'Add SW Complaint',
+            'addRoute' => route('swm.complaints.create'),
+            'addLabel' => __('Add Complaint'),
+            'importRoute' => route('swm.complaints.import'),
+            'importPermission' => 'Import SW Complaints From Excel',
+            'templateRoute' => route('swm.complaints.template'),
+            'exportPermission' => 'Export SW Complaints to Excel',
+            'exportId' => 'export',
+        ])
         <a href="#" class="btn btn-info float-right" id="headingOne" type="button" data-toggle="collapse"
             data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
             {{ __('Show Filter') }}

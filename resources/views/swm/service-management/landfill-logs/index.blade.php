@@ -8,16 +8,20 @@
 @endpush
 @section('title', $page_title)
 @section('content')
+@include('swm.partials.import-errors')
 @include('layouts.components.success-alert')
 @include('layouts.components.error-alert')
 <div class="card app-mobile-index">
     <div class="card-header">
-        @can('Add SW Landfill Log')
-        <a href="{{ route('swm.landfill-logs.create') }}" class="btn btn-info">{{ __('Add Landfill Loading Log') }}</a>
-        @endcan
-        @can('Export SW Landfill Logs to CSV')
-        <a href="#" id="export" class="btn btn-info">{{ __('Export to CSV') }}</a>
-        @endcan
+        @include('swm.partials.excel-import-export-header', [
+            'addPermission' => 'Add SW Landfill Log',
+            'addRoute' => route('swm.landfill-logs.create'),
+            'addLabel' => __('Add Landfill Loading Log'),
+            'importRoute' => route('swm.landfill-logs.import'),
+            'importPermission' => 'Import SW Landfill Logs From Excel',
+            'templateRoute' => route('swm.landfill-logs.template'),
+            'exportPermission' => 'Export SW Landfill Logs to Excel',
+        ])
         <a href="#" class="btn btn-info float-right" id="headingOne" type="button" data-toggle="collapse"
             data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
             {{ __('Show Filter') }}

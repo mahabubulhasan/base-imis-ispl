@@ -3,11 +3,9 @@
 namespace App\Services\Swm;
 
 use App\Models\Swm\Complaint;
+use App\Support\Swm\SwmExcelExportWriter;
+use App\Support\Swm\SwmExcelTemplateWriter;
 use Auth;
-use Box\Spout\Common\Type;
-use Box\Spout\Writer\Style\Color;
-use Box\Spout\Writer\Style\StyleBuilder;
-use Box\Spout\Writer\WriterFactory;
 use Carbon\Carbon;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
@@ -289,44 +287,63 @@ class ComplaintService
         $throughMap = config('swm_complaints.submitted_through', []);
         $statusMap = config('swm_complaints.complaint_statuses', []);
 
-        $style = (new StyleBuilder())
-            ->setFontBold()
-            ->setFontSize(13)
-            ->setBackgroundColor(Color::rgb(228, 228, 228))
-            ->build();
-
-        $writer = WriterFactory::create(Type::CSV);
-        $writer->openToBrowser('SW Complaints.csv')
-            ->addRowWithStyle($columns, $style);
-
-        $query->orderBy('id')->chunk(5000, function ($rows) use ($writer, $typeMap, $throughMap, $statusMap) {
-            foreach ($rows as $row) {
-                $writer->addRow([
-                    $row->complaint_id,
-                    $row->date_time?->format('Y-m-d H:i:s'),
-                    $row->incident_date?->format('Y-m-d'),
-                    $row->holding_number,
-                    $row->customer_id,
-                    $row->name,
-                    $row->contact_number,
-                    $row->ward_no,
-                    $typeMap[$row->complaint_type] ?? $row->complaint_type,
-                    $throughMap[$row->submitted_through] ?? $row->submitted_through,
-                    $row->duplicate_complaint ? __('Yes') : __('No'),
-                    $row->duplicate_reference,
-                    $row->priority_level,
-                    $row->assigned_to,
-                    ($row->complaint_status === 'others' && ! empty($row->complaint_status_other))
-                        ? (($statusMap['others'] ?? __('Other')).': '.$row->complaint_status_other)
-                        : ($statusMap[$row->complaint_status] ?? $row->complaint_status),
-                    $row->resolution_time_days,
-                    $row->photo_attachment_path,
-                    $row->complaint_details,
-                    $row->notes,
-                ]);
-            }
+        (new SwmExcelExportWriter())->download('SW Complaints.xlsx', $columns, function ($sheet, $colLetter) use ($query, $typeMap, $throughMap, $statusMap) {
+            $rowNum = 2;
+            $query->orderBy('id')->chunk(5000, function ($rows) use ($sheet, $colLetter, &$rowNum, $typeMap, $throughMap, $statusMap) {
+                foreach ($rows as $row) {
+                    $values = [
+                        $row->complaint_id,
+                        $row->date_time?->format('Y-m-d H:i:s'),
+                        $row->incident_date?->format('Y-m-d'),
+                        $row->holding_number,
+                        $row->customer_id,
+                        $row->name,
+                        $row->contact_number,
+                        $row->ward_no,
+                        $typeMap[$row->complaint_type] ?? $row->complaint_type,
+                        $throughMap[$row->submitted_through] ?? $row->submitted_through,
+                        $row->duplicate_complaint ? __('Yes') : __('No'),
+                        $row->duplicate_reference,
+                        $row->priority_level,
+                        $row->assigned_to,
+                        ($row->complaint_status === 'others' && ! empty($row->complaint_status_other))
+                            ? (($statusMap['others'] ?? __('Other')).': '.$row->complaint_status_other)
+                            : ($statusMap[$row->complaint_status] ?? $row->complaint_status),
+                        $row->resolution_time_days,
+                        $row->photo_attachment_path,
+                        $row->complaint_details,
+                        $row->notes,
+                    ];
+                    foreach ($values as $index => $value) {
+                        $sheet->setCellValue($colLetter($index + 1).$rowNum, $value);
+                    }
+                    $rowNum++;
+                }
+            });
         });
+    }
 
-        $writer->close();
+    public function downloadTemplate(): void
+    {
+        (new SwmExcelTemplateWriter())->download('sw-complaints-import-template.xlsx', [
+            ['key' => 'date_time'],
+            ['key' => 'holding_number'],
+            ['key' => 'household_id'],
+            ['key' => 'name', 'required' => true],
+            ['key' => 'contact_number', 'required' => true],
+            ['key' => 'ward_no'],
+            ['key' => 'incident_date'],
+            ['key' => 'complaint_type', 'required' => true, 'dropdown' => array_values(config('swm_complaints.complaint_types', []))],
+            ['key' => 'complaint_details', 'required' => true],
+            ['key' => 'duplicate_complaint'],
+            ['key' => 'duplicate_reference'],
+            ['key' => 'priority_level'],
+            ['key' => 'assigned_to'],
+            ['key' => 'submitted_through', 'required' => true, 'dropdown' => array_values(config('swm_complaints.submitted_through', []))],
+            ['key' => 'complaint_status', 'required' => true, 'dropdown' => array_values(config('swm_complaints.complaint_statuses', []))],
+            ['key' => 'complaint_status_other'],
+            ['key' => 'resolution_time_days'],
+            ['key' => 'notes'],
+        ]);
     }
 }

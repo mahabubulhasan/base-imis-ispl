@@ -221,6 +221,9 @@ Route::group([
     Route::prefix('service-providers')->group(function () {
         Route::get('organizations/data', 'OrganizationController@getData')->name('swm.organizations.data');
         Route::get('organizations/export', 'OrganizationController@export')->name('swm.organizations.export');
+        Route::get('organizations/template', 'OrganizationController@downloadTemplate')->name('swm.organizations.template');
+        Route::get('organizations/import', 'OrganizationController@importForm')->name('swm.organizations.import');
+        Route::post('organizations/import', 'OrganizationController@importStore')->name('swm.organizations.import.store');
         Route::get('organizations/{organization}/history', 'OrganizationController@history')->name('swm.organizations.history');
         Route::resource('organizations', 'OrganizationController')->names([
             'index' => 'swm.organizations.index',
@@ -260,6 +263,9 @@ Route::group([
 
         Route::get('workers/data', 'WorkerController@getData')->name('swm.workers.data');
         Route::get('workers/export', 'WorkerController@export')->name('swm.workers.export');
+        Route::get('workers/template', 'WorkerController@downloadTemplate')->name('swm.workers.template');
+        Route::get('workers/import', 'WorkerController@importForm')->name('swm.workers.import');
+        Route::post('workers/import', 'WorkerController@importStore')->name('swm.workers.import.store');
         Route::get('workers/next-worker-id', 'WorkerController@nextWorkerId')->name('swm.workers.next_worker_id');
         Route::get('workers/{worker}/history', 'WorkerController@history')->name('swm.workers.history');
         Route::resource('workers', 'WorkerController')->names([
@@ -327,6 +333,9 @@ Route::group([
         Route::get('vehicles/drivers-for-organization', 'VehicleController@driversForOrganization')->name('swm.vehicles.drivers-for-organization');
         Route::get('vehicles/data', 'VehicleController@getData')->name('swm.vehicles.data');
         Route::get('vehicles/export', 'VehicleController@export')->name('swm.vehicles.export');
+        Route::get('vehicles/template', 'VehicleController@downloadTemplate')->name('swm.vehicles.template');
+        Route::get('vehicles/import', 'VehicleController@importForm')->name('swm.vehicles.import');
+        Route::post('vehicles/import', 'VehicleController@importStore')->name('swm.vehicles.import.store');
         Route::get('vehicles/{vehicle}/history', 'VehicleController@history')->name('swm.vehicles.history');
         Route::resource('vehicles', 'VehicleController')->names([
             'index' => 'swm.vehicles.index',
@@ -344,6 +353,9 @@ Route::group([
         Route::get('customers-search', 'ComplaintController@customersSearch')->name('swm.complaints.customers-search');
         Route::get('data', 'ComplaintController@getData')->name('swm.complaints.data');
         Route::get('export', 'ComplaintController@export')->name('swm.complaints.export');
+        Route::get('template', 'ComplaintController@downloadTemplate')->name('swm.complaints.template');
+        Route::get('import', 'ComplaintController@importForm')->name('swm.complaints.import');
+        Route::post('import', 'ComplaintController@importStore')->name('swm.complaints.import.store');
         Route::get('/', 'ComplaintController@index')->name('swm.complaints.index');
         Route::get('create', 'ComplaintController@create')->name('swm.complaints.create');
         Route::post('/', 'ComplaintController@store')->name('swm.complaints.store');
@@ -357,6 +369,9 @@ Route::group([
     Route::prefix('service-management')->group(function () {
         Route::get('attendance-logs/data', 'AttendanceLogController@getData')->name('swm.attendance-logs.data');
         Route::get('attendance-logs/export', 'AttendanceLogController@export')->name('swm.attendance-logs.export');
+        Route::get('attendance-logs/template', 'AttendanceLogController@downloadTemplate')->name('swm.attendance-logs.template');
+        Route::get('attendance-logs/import', 'AttendanceLogController@importForm')->name('swm.attendance-logs.import');
+        Route::post('attendance-logs/import', 'AttendanceLogController@importStore')->name('swm.attendance-logs.import.store');
         Route::get('attendance-logs/suggestions/workers', 'AttendanceLogController@suggestionsWorkers')->name('swm.attendance-logs.suggestions.workers');
         Route::get('attendance-logs/worker-context', 'AttendanceLogController@workerContext')->name('swm.attendance-logs.worker-context');
         Route::get('attendance-logs/{attendance_log}/history', 'AttendanceLogController@history')->name('swm.attendance-logs.history');
@@ -374,6 +389,9 @@ Route::group([
 
         Route::get('sts-logs/data', 'StsLogController@getData')->name('swm.sts-logs.data');
         Route::get('sts-logs/export', 'StsLogController@export')->name('swm.sts-logs.export');
+        Route::get('sts-logs/template', 'StsLogController@downloadTemplate')->name('swm.sts-logs.template');
+        Route::get('sts-logs/import', 'StsLogController@importForm')->name('swm.sts-logs.import');
+        Route::post('sts-logs/import', 'StsLogController@importStore')->name('swm.sts-logs.import.store');
         Route::get('sts-logs/suggestions/vehicles', 'StsLogController@suggestionsVehicles')->name('swm.sts-logs.suggestions.vehicles');
         Route::get('sts-logs/suggestions/waste-types', 'StsLogController@suggestionsWasteTypes')->name('swm.sts-logs.suggestions.waste-types');
         Route::get('sts-logs/vehicle-context', 'StsLogController@vehicleContext')->name('swm.sts-logs.vehicle-context');
@@ -393,6 +411,9 @@ Route::group([
 
         Route::get('landfill-logs/data', 'LandfillLogController@getData')->name('swm.landfill-logs.data');
         Route::get('landfill-logs/export', 'LandfillLogController@export')->name('swm.landfill-logs.export');
+        Route::get('landfill-logs/template', 'LandfillLogController@downloadTemplate')->name('swm.landfill-logs.template');
+        Route::get('landfill-logs/import', 'LandfillLogController@importForm')->name('swm.landfill-logs.import');
+        Route::post('landfill-logs/import', 'LandfillLogController@importStore')->name('swm.landfill-logs.import.store');
         Route::get('landfill-logs/suggestions/vehicles', 'LandfillLogController@suggestionsVehicles')->name('swm.landfill-logs.suggestions.vehicles');
         Route::get('landfill-logs/suggestions/waste-types', 'LandfillLogController@suggestionsWasteTypes')->name('swm.landfill-logs.suggestions.waste-types');
         Route::get('landfill-logs/vehicle-context', 'LandfillLogController@vehicleContext')->name('swm.landfill-logs.vehicle-context');
@@ -412,6 +433,9 @@ Route::group([
 
         Route::get('waste-processing/data', 'WasteProcessingController@getData')->name('swm.waste-processing.data');
         Route::get('waste-processing/export', 'WasteProcessingController@export')->name('swm.waste-processing.export');
+        Route::get('waste-processing/template', 'WasteProcessingController@downloadTemplate')->name('swm.waste-processing.template');
+        Route::get('waste-processing/import', 'WasteProcessingController@importForm')->name('swm.waste-processing.import');
+        Route::post('waste-processing/import', 'WasteProcessingController@importStore')->name('swm.waste-processing.import.store');
         Route::get('waste-processing/{waste_processing}/history', 'WasteProcessingController@history')->name('swm.waste-processing.history');
         Route::resource('waste-processing', 'WasteProcessingController')->parameters([
             'waste-processing' => 'waste_processing',
@@ -429,6 +453,9 @@ Route::group([
     Route::prefix('service-facilities')->group(function () {
         Route::get('landfills/data', 'LandfillController@getData')->name('swm.landfills.data');
         Route::get('landfills/export', 'LandfillController@export')->name('swm.landfills.export');
+        Route::get('landfills/template', 'LandfillController@downloadTemplate')->name('swm.landfills.template');
+        Route::get('landfills/import', 'LandfillController@importForm')->name('swm.landfills.import');
+        Route::post('landfills/import', 'LandfillController@importStore')->name('swm.landfills.import.store');
         Route::get('landfills/wards-for-sts', 'LandfillController@wardsForSts')->name('swm.landfills.wards-for-sts');
         Route::get('landfills/{landfill}/history', 'LandfillController@history')->name('swm.landfills.history');
         Route::resource('landfills', 'LandfillController')->names([
@@ -443,6 +470,9 @@ Route::group([
 
         Route::get('sts/data', 'StsController@getData')->name('swm.sts.data');
         Route::get('sts/export', 'StsController@export')->name('swm.sts.export');
+        Route::get('sts/template', 'StsController@downloadTemplate')->name('swm.sts.template');
+        Route::get('sts/import', 'StsController@importForm')->name('swm.sts.import');
+        Route::post('sts/import', 'StsController@importStore')->name('swm.sts.import.store');
         Route::get('sts/{sts}/history', 'StsController@history')->name('swm.sts.history');
         Route::resource('sts', 'StsController')->parameters([
             'sts' => 'sts',
@@ -457,6 +487,10 @@ Route::group([
         ]);
 
         Route::get('waste-bins/data', 'WasteBinController@getData')->name('swm.waste-bins.data');
+        Route::get('waste-bins/export', 'WasteBinController@export')->name('swm.waste-bins.export');
+        Route::get('waste-bins/template', 'WasteBinController@downloadTemplate')->name('swm.waste-bins.template');
+        Route::get('waste-bins/import', 'WasteBinController@importForm')->name('swm.waste-bins.import');
+        Route::post('waste-bins/import', 'WasteBinController@importStore')->name('swm.waste-bins.import.store');
         Route::get('waste-bins/building-snapshot', 'WasteBinController@buildingSnapshot')->name('swm.waste-bins.building-snapshot');
         Route::resource('waste-bins', 'WasteBinController')->names([
             'index' => 'swm.waste-bins.index',
@@ -495,6 +529,7 @@ Route::group([
 
             Route::get('payments/data', 'BillCollectionPaymentController@getData')->name('swm.bill-collection-payments.data');
             Route::get('payments/export', 'BillCollectionPaymentController@export')->name('swm.bill-collection-payments.export');
+            Route::get('payments/template', 'BillCollectionPaymentController@downloadTemplate')->name('swm.bill-collection-payments.template');
             Route::get('payments/balance-through-month', 'BillCollectionPaymentController@balanceThroughMonth')->name('swm.bill-collection-payments.balance-through-month');
             Route::get('payments/import', 'BillCollectionPaymentController@importForm')->name('swm.bill-collection-payments.import');
             Route::post('payments/import', 'BillCollectionPaymentController@importStore')->name('swm.bill-collection-payments.import.store');

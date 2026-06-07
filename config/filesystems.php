@@ -62,6 +62,11 @@ return [
             'root' => env('FILE_SYSTEM_IMPORT_BILL_COLLECTION_PAYMENTS', 'storage/bill-collection-payments-import'),
         ],
 
+        'importswm' => [
+            'driver' => 'local',
+            'root' => env('FILE_SYSTEM_IMPORT_SWM_MODULES', 'storage/swm-import'),
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

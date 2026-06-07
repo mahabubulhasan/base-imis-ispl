@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Swm;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Swm\Concerns\HandlesSwmExcelImport;
 use App\Http\Requests\Swm\BillCollectionPaymentRequest;
-use App\Imports\BillCollectionPaymentImport;
+use App\Imports\Swm\BillCollectionPaymentImport;
 use App\Models\Swm\BillCollectionPayment;
 use App\Models\BuildingInfo\Household;
 use App\Models\User;
@@ -13,12 +14,10 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
-use Maatwebsite\Excel\Facades\Excel;
-use Maatwebsite\Excel\HeadingRowImport;
 
 class BillCollectionPaymentController extends Controller
 {
+    use HandlesSwmExcelImport;
     public function __construct(protected BillCollectionPaymentService $billCollectionPaymentService)
     {
         $this->middleware('auth');
@@ -30,9 +29,9 @@ class BillCollectionPaymentController extends Controller
         $this->middleware('permission:Add SW Bill Collection Payment', ['only' => ['create', 'store']]);
         $this->middleware('permission:Edit SW Bill Collection Payment', ['only' => ['edit', 'update']]);
         $this->middleware('permission:Delete SW Bill Collection Payment', ['only' => ['destroy']]);
-        $this->middleware('permission:Export SW Bill Collection Payments to CSV', ['only' => ['export']]);
+        $this->middleware('permission:Export SW Bill Collection Payments to Excel', ['only' => ['export', 'downloadTemplate']]);
         $this->middleware('permission:View SW Bill Collection Payment History', ['only' => ['history']]);
-        $this->middleware('permission:Import SW Bill Collection Payments From CSV', ['only' => ['importForm', 'importStore']]);
+        $this->middleware('permission:Import SW Bill Collection Payments From Excel', ['only' => ['importForm', 'importStore']]);
     }
 
     public function index()
@@ -226,62 +225,30 @@ class BillCollectionPaymentController extends Controller
         return view('swm.bill-collection.payments.history', compact('page_title', 'payment'));
     }
 
+    public function downloadTemplate()
+    {
+        $this->billCollectionPaymentService->downloadTemplate();
+    }
+
     public function importForm()
     {
-        $page_title = __('Import Bill Collection Payments');
-
-        return view('swm.bill-collection.payments.import', compact('page_title'));
+        return $this->swmImportFormView(
+            __('Import Bill Collection Payments'),
+            route('swm.bill-collection-payments.index'),
+            'swm.bill-collection-payments.import.store'
+        );
     }
 
     public function importStore(Request $request)
     {
-        Validator::extend('bill_collection_import_ext', function ($attribute, $value, $parameters, $validator) {
-            $ext = strtolower((string) $value->getClientOriginalExtension());
-
-            return in_array($ext, ['csv', 'xlsx'], true);
-        }, __('File must be CSV or XLSX format.'));
-
-        $this->validate($request, [
-            'import_file' => 'required|file|bill_collection_import_ext',
-        ], [
-            'import_file.required' => __('The import file is required.'),
-        ]);
-
-        $extension = strtolower((string) $request->file('import_file')->getClientOriginalExtension());
-        $filename = 'bill-collection-payments.'.$extension;
-        if (Storage::disk('importbillcollectionpayments')->exists($filename)) {
-            Storage::disk('importbillcollectionpayments')->delete($filename);
-        }
-        $stored = $request->file('import_file')->storeAs('/', $filename, 'importbillcollectionpayments');
-        if (! $stored) {
-            return redirect()->route('swm.bill-collection-payments.import')->with('error', __('Could not store the uploaded file.'));
-        }
-        $fullPath = Storage::disk('importbillcollectionpayments')->path($filename);
-
-        $headings = (new HeadingRowImport)->toArray($fullPath);
-        $headingRow = isset($headings[0][0]) ? array_map('strtolower', array_map('strval', $headings[0][0])) : [];
-        $headingErrors = [];
-        $required = ['household_id', 'amount', 'payment_for_month', 'payment_method'];
-        foreach ($required as $col) {
-            if (! in_array($col, $headingRow, true)) {
-                $headingErrors[$col] = __('Heading row is missing required column: :col', ['col' => $col]);
-            }
-        }
-        if (count($headingErrors) > 0) {
-            return back()->withErrors($headingErrors);
-        }
-
-        $import = new BillCollectionPaymentImport((int) Auth::id());
-        Excel::import($import, $fullPath);
-
-        $message = __('Imported :n bill payment(s).', ['n' => $import->successCount]);
-        if (count($import->errors) > 0) {
-            return redirect()->route('swm.bill-collection-payments.index')
-                ->with('success', $message)
-                ->with('import_errors', $import->errors);
-        }
-
-        return redirect()->route('swm.bill-collection-payments.index')->with('success', $message);
+        return $this->swmImportStore(
+            $request,
+            BillCollectionPaymentImport::class,
+            ['household_id', 'amount', 'payment_for_month', 'payment_method'],
+            'swm.bill-collection-payments.index',
+            'importbillcollectionpayments',
+            'bill-collection-payments'
+        );
     }
 
     protected function validateCollectedAmountWithinDue(BillCollectionPaymentRequest $request, ?int $excludeId): ?string

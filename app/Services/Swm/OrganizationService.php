@@ -4,6 +4,8 @@ namespace App\Services\Swm;
 
 use App\Enums\SwmOrganizationStatus;
 use App\Models\Swm\Organization;
+use App\Models\Swm\OrganizationType;
+use App\Support\Swm\SwmExcelTemplateWriter;
 use Auth;
 use Box\Spout\Common\Type;
 use Box\Spout\Writer\Style\Color;
@@ -158,8 +160,8 @@ class OrganizationService
             ->setBackgroundColor(Color::rgb(228, 228, 228))
             ->build();
 
-        $writer = WriterFactory::create(Type::CSV);
-        $writer->openToBrowser('SW Organizations.csv')
+        $writer = WriterFactory::create(Type::XLSX);
+        $writer->openToBrowser('SW Organizations.xlsx')
             ->addRowWithStyle($columns, $style);
 
         $query->chunk(5000, function ($rows) use ($writer) {
@@ -179,5 +181,38 @@ class OrganizationService
         });
 
         $writer->close();
+    }
+
+    public function downloadTemplate(): void
+    {
+        (new SwmExcelTemplateWriter())->download(
+            'SW Organizations Import Template.xlsx',
+            $this->importTemplateColumns()
+        );
+    }
+
+    /** @return array<int, array{key: string, label: string, required?: bool, dropdown?: array<int, string>}> */
+    public function importTemplateColumns(): array
+    {
+        $orgTypes = OrganizationType::query()
+            ->whereNull('deleted_at')
+            ->orderBy('name')
+            ->pluck('name')
+            ->all();
+
+        return [
+            ['key' => 'name', 'label' => __('Organization Name'), 'required' => true],
+            ['key' => 'email', 'label' => __('Email'), 'required' => true],
+            ['key' => 'address', 'label' => __('Address'), 'required' => true],
+            ['key' => 'contact_person_name', 'label' => __('Contact Person Name'), 'required' => true],
+            ['key' => 'contact_number', 'label' => __('Contact Number'), 'required' => true],
+            ['key' => 'organization_type', 'label' => __('Organization Type'), 'required' => true, 'dropdown' => $orgTypes],
+            ['key' => 'service_wards', 'label' => __('Service Wards')],
+            ['key' => 'remarks', 'label' => __('Remarks')],
+            ['key' => 'status', 'label' => __('Status'), 'required' => true, 'dropdown' => [
+                SwmOrganizationStatus::getDescription(true),
+                SwmOrganizationStatus::getDescription(false),
+            ]],
+        ];
     }
 }

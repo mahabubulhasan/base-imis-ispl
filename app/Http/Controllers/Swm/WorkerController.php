@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Swm;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Swm\Concerns\HandlesSwmExcelImport;
 use App\Http\Requests\Swm\WorkerRequest;
+use App\Imports\Swm\WorkerImport;
 use App\Models\LayerInfo\Ward;
 use App\Models\Swm\Organization;
 use App\Models\Swm\WorkType;
@@ -15,6 +17,8 @@ use Illuminate\Validation\Rule;
 
 class WorkerController extends Controller
 {
+    use HandlesSwmExcelImport;
+
     protected WorkerService $workerService;
 
     public function __construct(WorkerService $workerService)
@@ -25,7 +29,8 @@ class WorkerController extends Controller
         $this->middleware('permission:Add SW Worker', ['only' => ['create', 'store', 'nextWorkerId']]);
         $this->middleware('permission:Edit SW Worker', ['only' => ['edit', 'update']]);
         $this->middleware('permission:Delete SW Worker', ['only' => ['destroy']]);
-        $this->middleware('permission:Export SW Workers to CSV', ['only' => ['export']]);
+        $this->middleware('permission:Export SW Workers to Excel', ['only' => ['export', 'downloadTemplate']]);
+        $this->middleware('permission:Import SW Workers From Excel', ['only' => ['importForm', 'importStore']]);
         $this->middleware('permission:View SW Worker History', ['only' => ['history']]);
         $this->workerService = $workerService;
     }
@@ -191,5 +196,36 @@ class WorkerController extends Controller
     public function export(Request $request)
     {
         return $this->workerService->download($request->all());
+    }
+
+    public function downloadTemplate()
+    {
+        $this->workerService->downloadTemplate();
+    }
+
+    public function importForm()
+    {
+        return $this->swmImportFormView(
+            __('Import Workers'),
+            route('swm.workers.index'),
+            'swm.workers.import.store'
+        );
+    }
+
+    public function importStore(Request $request)
+    {
+        $required = ['work_type', 'name', 'mobile'];
+        if (! Auth::user()->swm_organization_id) {
+            $required[] = 'organization';
+        }
+
+        return $this->swmImportStore(
+            $request,
+            WorkerImport::class,
+            $required,
+            'swm.workers.index',
+            'importswm',
+            'workers'
+        );
     }
 }

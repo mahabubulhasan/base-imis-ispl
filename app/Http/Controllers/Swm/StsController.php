@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Swm;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Swm\Concerns\HandlesSwmExcelImport;
 use App\Http\Requests\Swm\StsRequest;
+use App\Imports\StsImport;
 use App\Models\LayerInfo\Ward;
 use App\Models\Swm\Landfill;
 use App\Models\Swm\Sts;
@@ -14,6 +16,8 @@ use Illuminate\Http\Request;
 
 class StsController extends Controller
 {
+    use HandlesSwmExcelImport;
+
     protected StsService $stsService;
 
     public function __construct(StsService $stsService)
@@ -24,7 +28,8 @@ class StsController extends Controller
         $this->middleware('permission:Add SW STS', ['only' => ['create', 'store']]);
         $this->middleware('permission:Edit SW STS', ['only' => ['edit', 'update']]);
         $this->middleware('permission:Delete SW STS', ['only' => ['destroy']]);
-        $this->middleware('permission:Export SW STS to CSV', ['only' => ['export']]);
+        $this->middleware('permission:Export SW STS to Excel', ['only' => ['export', 'downloadTemplate']]);
+        $this->middleware('permission:Import SW STS From Excel', ['only' => ['importForm', 'importStore']]);
         $this->middleware('permission:View SW STS History', ['only' => ['history']]);
         $this->stsService = $stsService;
     }
@@ -132,5 +137,31 @@ class StsController extends Controller
     public function export(Request $request)
     {
         return $this->stsService->download($request->all());
+    }
+
+    public function downloadTemplate()
+    {
+        $this->stsService->downloadTemplate();
+    }
+
+    public function importForm()
+    {
+        return $this->swmImportFormView(
+            __('Import STS'),
+            route('swm.sts.index'),
+            'swm.sts.import.store'
+        );
+    }
+
+    public function importStore(Request $request)
+    {
+        return $this->swmImportStore(
+            $request,
+            StsImport::class,
+            ['name', 'ward_no', 'operator_name', 'contact_number', 'operational_status'],
+            'swm.sts.index',
+            'importswm',
+            'sts'
+        );
     }
 }

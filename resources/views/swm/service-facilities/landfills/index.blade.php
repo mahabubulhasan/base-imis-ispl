@@ -8,12 +8,16 @@
 @include('layouts.components.error-alert')
 <div class="card app-mobile-index">
     <div class="card-header">
-        @can('Add SW Landfill')
-        <a href="{{ action('Swm\LandfillController@create') }}" class="btn btn-info">{{ __('Add Landfill') }}</a>
-        @endcan
-        @can('Export SW Landfills to CSV')
-        <a href="#" id="export" class="btn btn-info">{{ __('Export to CSV') }}</a>
-        @endcan
+        @include('swm.partials.excel-import-export-header', [
+            'addPermission' => 'Add SW Landfill',
+            'addRoute' => action('Swm\LandfillController@create'),
+            'addLabel' => __('Add Landfill'),
+            'importRoute' => route('swm.landfills.import'),
+            'importPermission' => 'Import SW Landfills From Excel',
+            'templateRoute' => route('swm.landfills.template'),
+            'exportPermission' => 'Export SW Landfills to Excel',
+            'exportId' => 'export',
+        ])
         <a href="#" class="btn btn-info float-right" data-toggle="collapse" data-target="#lf-collapse">{{ __('Show Filter') }}</a>
     </div>
     <div class="card-body"><div id="lf-collapse" class="collapse">

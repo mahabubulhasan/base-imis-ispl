@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Swm;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Swm\Concerns\HandlesSwmExcelImport;
 use App\Http\Requests\Swm\LandfillRequest;
+use App\Imports\LandfillImport;
 use App\Models\LayerInfo\Ward;
 use App\Models\Swm\Landfill;
 use App\Models\Swm\LandfillType;
@@ -15,6 +17,8 @@ use Illuminate\Http\Request;
 
 class LandfillController extends Controller
 {
+    use HandlesSwmExcelImport;
+
     protected LandfillService $landfillService;
 
     public function __construct(LandfillService $landfillService)
@@ -25,7 +29,8 @@ class LandfillController extends Controller
         $this->middleware('permission:Add SW Landfill', ['only' => ['create', 'store']]);
         $this->middleware('permission:Edit SW Landfill', ['only' => ['edit', 'update']]);
         $this->middleware('permission:Delete SW Landfill', ['only' => ['destroy']]);
-        $this->middleware('permission:Export SW Landfills to CSV', ['only' => ['export']]);
+        $this->middleware('permission:Export SW Landfills to Excel', ['only' => ['export', 'downloadTemplate']]);
+        $this->middleware('permission:Import SW Landfills From Excel', ['only' => ['importForm', 'importStore']]);
         $this->middleware('permission:View SW Landfill History', ['only' => ['history']]);
         $this->landfillService = $landfillService;
     }
@@ -246,5 +251,31 @@ class LandfillController extends Controller
     public function export(Request $request)
     {
         return $this->landfillService->download($request->all());
+    }
+
+    public function downloadTemplate()
+    {
+        $this->landfillService->downloadTemplate();
+    }
+
+    public function importForm()
+    {
+        return $this->swmImportFormView(
+            __('Import Landfills'),
+            route('swm.landfills.index'),
+            'swm.landfills.import.store'
+        );
+    }
+
+    public function importStore(Request $request)
+    {
+        return $this->swmImportStore(
+            $request,
+            LandfillImport::class,
+            ['name', 'operator_name', 'contact_number', 'operational_status'],
+            'swm.landfills.index',
+            'importswm',
+            'landfills'
+        );
     }
 }

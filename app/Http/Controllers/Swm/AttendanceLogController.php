@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Swm;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Swm\Concerns\HandlesSwmExcelImport;
 use App\Http\Requests\Swm\AttendanceLogRequest;
+use App\Imports\Swm\AttendanceLogImport;
 use App\Models\Swm\AttendanceLog;
 use App\Models\Swm\Organization;
 use App\Models\Swm\Worker;
@@ -13,6 +15,8 @@ use Illuminate\Support\Facades\Auth;
 
 class AttendanceLogController extends Controller
 {
+    use HandlesSwmExcelImport;
+
     public function __construct(
         protected AttendanceLogService $attendanceLogService
     ) {
@@ -30,7 +34,8 @@ class AttendanceLogController extends Controller
             return $next($request);
         })->only(['suggestionsWorkers', 'workerContext']);
         $this->middleware('permission:Delete SW Attendance Log', ['only' => ['destroy']]);
-        $this->middleware('permission:Export SW Attendance Logs to CSV', ['only' => ['export']]);
+        $this->middleware('permission:Export SW Attendance Logs to Excel', ['only' => ['export', 'downloadTemplate']]);
+        $this->middleware('permission:Import SW Attendance Logs From Excel', ['only' => ['importForm', 'importStore']]);
         $this->middleware('permission:View SW Attendance Log History', ['only' => ['history']]);
     }
 
@@ -173,6 +178,37 @@ class AttendanceLogController extends Controller
     public function export(Request $request)
     {
         return $this->attendanceLogService->download($request->all());
+    }
+
+    public function downloadTemplate()
+    {
+        $this->attendanceLogService->downloadTemplate();
+    }
+
+    public function importForm()
+    {
+        return $this->swmImportFormView(
+            __('Import Attendance Logs from Excel'),
+            route('swm.attendance-logs.index'),
+            'swm.attendance-logs.import.store'
+        );
+    }
+
+    public function importStore(Request $request)
+    {
+        $requiredHeaders = ['worker', 'entry_at', 'attendance_status'];
+        if (! Auth::user()->swm_organization_id) {
+            array_unshift($requiredHeaders, 'organization');
+        }
+
+        return $this->swmImportStore(
+            $request,
+            AttendanceLogImport::class,
+            $requiredHeaders,
+            'swm.attendance-logs.index',
+            'importswm',
+            'attendance-logs-import'
+        );
     }
 
     public function suggestionsWorkers(Request $request)

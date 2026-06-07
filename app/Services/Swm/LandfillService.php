@@ -6,11 +6,8 @@ use App\Models\Swm\Landfill;
 use App\Models\Swm\LandfillType;
 use App\Models\Swm\Sts;
 use App\Models\Swm\WasteType;
+use App\Support\Swm\SwmExcelTemplateWriter;
 use Auth;
-use Box\Spout\Common\Type;
-use Box\Spout\Writer\Style\Color;
-use Box\Spout\Writer\Style\StyleBuilder;
-use Box\Spout\Writer\WriterFactory;
 use Yajra\DataTables\DataTables;
 
 class LandfillService
@@ -226,30 +223,32 @@ class LandfillService
 
     public function download(array $data): void
     {
-        $columns = [
-            __('Landfill ID'),
-            __('Landfill Name'),
-            __('Location'),
-            __('Operator Name'),
-            __('Contact Number'),
-            __('Capacity'),
-            __('Area'),
-            __('Landfill Type'),
-            __('Source STS'),
-            __('Source Wards'),
-            __('Segregation Practiced'),
-            __('Waste Type'),
-            __('Weighbridge Facility Available'),
-            __('Boundary Wall Around Landfill Area Available'),
-            __('Lighting Arrangement at Landfill Site Available'),
-            __('Number of Manpower Deployed'),
-            __('Adequate Covering Arrangement at Landfill Site Available'),
-            __('System for Gas Control from Filled Landfill Available'),
-            __('Leachate Collection System Available'),
-            __('Operational Status'),
+        $headers = [
+            'landfill_id',
+            'name',
+            'location',
+            'operator_name',
+            'contact_number',
+            'capacity',
+            'area',
+            'landfill_type',
+            'source_sts',
+            'source_wards',
+            'segregation_practiced',
+            'waste_types',
+            'weighbridge_facility_available',
+            'boundary_wall_available',
+            'lighting_arrangement_available',
+            'manpower_deployed',
+            'adequate_covering_arrangement_available',
+            'gas_control_system_available',
+            'leachate_collection_system_available',
+            'operational_status',
         ];
 
         $query = Landfill::query()->whereNull('deleted_at');
+        $this->applyExportFilters($query, $data);
+
         $landfillTypeMap = LandfillType::query()->whereNull('deleted_at')->pluck('name', 'id')->all();
         $wasteTypeMap = WasteType::query()->whereNull('deleted_at')->pluck('name', 'id')->all();
         $stsLabelMap = Sts::query()
@@ -263,6 +262,80 @@ class LandfillService
             })
             ->all();
 
+        $rows = [];
+        $query->orderBy('id')->chunk(5000, function ($chunk) use (&$rows, $stsLabelMap, $wasteTypeMap, $landfillTypeMap) {
+            foreach ($chunk as $row) {
+                $sourceSts = [];
+                foreach (($row->source_sts_ids ?? []) as $sid) {
+                    if (isset($stsLabelMap[$sid])) {
+                        $sourceSts[] = $stsLabelMap[$sid];
+                    }
+                }
+                $wasteTypes = [];
+                foreach (($row->waste_type_ids ?? []) as $wid) {
+                    if (isset($wasteTypeMap[$wid])) {
+                        $wasteTypes[] = $wasteTypeMap[$wid];
+                    }
+                }
+
+                $rows[] = [
+                    $row->landfill_id,
+                    $row->name,
+                    $row->location,
+                    $row->operator_name,
+                    $row->contact_number,
+                    $row->capacity,
+                    $row->area,
+                    $landfillTypeMap[$row->landfill_type_id] ?? '',
+                    implode(', ', $sourceSts),
+                    implode(', ', $row->source_wards ?? []),
+                    is_null($row->segregation_practiced) ? '' : ($row->segregation_practiced ? __('Yes') : __('No')),
+                    implode(', ', $wasteTypes),
+                    is_null($row->weighbridge_facility_available) ? '' : ($row->weighbridge_facility_available ? __('Yes') : __('No')),
+                    is_null($row->boundary_wall_available) ? '' : ($row->boundary_wall_available ? __('Yes') : __('No')),
+                    is_null($row->lighting_arrangement_available) ? '' : ($row->lighting_arrangement_available ? __('Yes') : __('No')),
+                    $row->manpower_deployed,
+                    is_null($row->adequate_covering_arrangement_available) ? '' : ($row->adequate_covering_arrangement_available ? __('Yes') : __('No')),
+                    is_null($row->gas_control_system_available) ? '' : ($row->gas_control_system_available ? __('Yes') : __('No')),
+                    is_null($row->leachate_collection_system_available) ? '' : ($row->leachate_collection_system_available ? __('Yes') : __('No')),
+                    $row->operational_status,
+                ];
+            }
+        });
+
+        (new SwmExcelTemplateWriter())->downloadData('SW Landfills.xlsx', $headers, $rows);
+    }
+
+    public function downloadTemplate(): void
+    {
+        $landfillTypes = LandfillType::query()->whereNull('deleted_at')->orderBy('name')->pluck('name')->all();
+        $yesNo = [__('Yes'), __('No')];
+
+        (new SwmExcelTemplateWriter())->download('SW Landfills Import Template.xlsx', [
+            ['key' => 'name', 'label' => 'name', 'required' => true],
+            ['key' => 'location', 'label' => 'location'],
+            ['key' => 'operator_name', 'label' => 'operator_name', 'required' => true],
+            ['key' => 'contact_number', 'label' => 'contact_number', 'required' => true],
+            ['key' => 'capacity', 'label' => 'capacity'],
+            ['key' => 'area', 'label' => 'area'],
+            ['key' => 'landfill_type', 'label' => 'landfill_type', 'dropdown' => $landfillTypes],
+            ['key' => 'source_sts', 'label' => 'source_sts'],
+            ['key' => 'source_wards', 'label' => 'source_wards'],
+            ['key' => 'segregation_practiced', 'label' => 'segregation_practiced', 'dropdown' => $yesNo],
+            ['key' => 'waste_types', 'label' => 'waste_types'],
+            ['key' => 'weighbridge_facility_available', 'label' => 'weighbridge_facility_available', 'dropdown' => $yesNo],
+            ['key' => 'boundary_wall_available', 'label' => 'boundary_wall_available', 'dropdown' => $yesNo],
+            ['key' => 'lighting_arrangement_available', 'label' => 'lighting_arrangement_available', 'dropdown' => $yesNo],
+            ['key' => 'manpower_deployed', 'label' => 'manpower_deployed'],
+            ['key' => 'adequate_covering_arrangement_available', 'label' => 'adequate_covering_arrangement_available', 'dropdown' => $yesNo],
+            ['key' => 'gas_control_system_available', 'label' => 'gas_control_system_available', 'dropdown' => $yesNo],
+            ['key' => 'leachate_collection_system_available', 'label' => 'leachate_collection_system_available', 'dropdown' => $yesNo],
+            ['key' => 'operational_status', 'label' => 'operational_status', 'required' => true, 'dropdown' => ['active', 'inactive']],
+        ]);
+    }
+
+    protected function applyExportFilters($query, array $data): void
+    {
         if (! empty($data['landfill_id'] ?? null)) {
             $query->where('landfill_id', 'ILIKE', '%'.trim((string) $data['landfill_id']).'%');
         }
@@ -308,57 +381,5 @@ class LandfillService
         if (array_key_exists('leachate_collection_system_available', $data) && $data['leachate_collection_system_available'] !== '' && $data['leachate_collection_system_available'] !== null) {
             $query->where('leachate_collection_system_available', filter_var($data['leachate_collection_system_available'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? $data['leachate_collection_system_available']);
         }
-
-        $style = (new StyleBuilder())
-            ->setFontBold()
-            ->setFontSize(13)
-            ->setBackgroundColor(Color::rgb(228, 228, 228))
-            ->build();
-
-        $writer = WriterFactory::create(Type::CSV);
-        $writer->openToBrowser('SW Landfills.csv')
-            ->addRowWithStyle($columns, $style);
-
-        $query->orderBy('id')->chunk(5000, function ($rows) use ($writer, $stsLabelMap, $wasteTypeMap, $landfillTypeMap) {
-            foreach ($rows as $row) {
-                $sourceSts = [];
-                foreach (($row->source_sts_ids ?? []) as $sid) {
-                    if (isset($stsLabelMap[$sid])) {
-                        $sourceSts[] = $stsLabelMap[$sid];
-                    }
-                }
-                $wasteTypes = [];
-                foreach (($row->waste_type_ids ?? []) as $wid) {
-                    if (isset($wasteTypeMap[$wid])) {
-                        $wasteTypes[] = $wasteTypeMap[$wid];
-                    }
-                }
-
-                $writer->addRow([
-                    $row->landfill_id,
-                    $row->name,
-                    $row->location,
-                    $row->operator_name,
-                    $row->contact_number,
-                    $row->capacity,
-                    $row->area,
-                    $landfillTypeMap[$row->landfill_type_id] ?? '',
-                    implode(', ', $sourceSts),
-                    implode(', ', $row->source_wards ?? []),
-                    is_null($row->segregation_practiced) ? '' : ($row->segregation_practiced ? __('Yes') : __('No')),
-                    implode(', ', $wasteTypes),
-                    is_null($row->weighbridge_facility_available) ? '' : ($row->weighbridge_facility_available ? __('Yes') : __('No')),
-                    is_null($row->boundary_wall_available) ? '' : ($row->boundary_wall_available ? __('Yes') : __('No')),
-                    is_null($row->lighting_arrangement_available) ? '' : ($row->lighting_arrangement_available ? __('Yes') : __('No')),
-                    $row->manpower_deployed,
-                    is_null($row->adequate_covering_arrangement_available) ? '' : ($row->adequate_covering_arrangement_available ? __('Yes') : __('No')),
-                    is_null($row->gas_control_system_available) ? '' : ($row->gas_control_system_available ? __('Yes') : __('No')),
-                    is_null($row->leachate_collection_system_available) ? '' : ($row->leachate_collection_system_available ? __('Yes') : __('No')),
-                    ucfirst((string) $row->operational_status),
-                ]);
-            }
-        });
-
-        $writer->close();
     }
 }

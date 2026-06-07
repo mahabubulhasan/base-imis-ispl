@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Swm;
 use App\Enums\SwmOrganizationStatus;
 use App\Enums\UserStatus;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Swm\Concerns\HandlesSwmExcelImport;
 use App\Http\Requests\Swm\OrganizationRequest;
+use App\Imports\Swm\OrganizationImport;
 use App\Models\LayerInfo\Ward;
 use App\Models\Swm\Organization;
 use App\Models\Swm\OrganizationType;
@@ -15,6 +17,8 @@ use Illuminate\Http\Request;
 
 class OrganizationController extends Controller
 {
+    use HandlesSwmExcelImport;
+
     protected OrganizationService $organizationService;
 
     protected UserService $userService;
@@ -27,7 +31,8 @@ class OrganizationController extends Controller
         $this->middleware('permission:Add SW Organization', ['only' => ['create', 'store']]);
         $this->middleware('permission:Edit SW Organization', ['only' => ['edit', 'update']]);
         $this->middleware('permission:Delete SW Organization', ['only' => ['destroy']]);
-        $this->middleware('permission:Export SW Organizations to CSV', ['only' => ['export']]);
+        $this->middleware('permission:Export SW Organizations to Excel', ['only' => ['export', 'downloadTemplate']]);
+        $this->middleware('permission:Import SW Organizations From Excel', ['only' => ['importForm', 'importStore']]);
         $this->middleware('permission:View SW Organization History', ['only' => ['history']]);
         $this->organizationService = $organizationService;
         $this->userService = $userService;
@@ -167,5 +172,31 @@ class OrganizationController extends Controller
     public function export(Request $request)
     {
         return $this->organizationService->download($request->all());
+    }
+
+    public function downloadTemplate()
+    {
+        $this->organizationService->downloadTemplate();
+    }
+
+    public function importForm()
+    {
+        return $this->swmImportFormView(
+            __('Import Organizations'),
+            route('swm.organizations.index'),
+            'swm.organizations.import.store'
+        );
+    }
+
+    public function importStore(Request $request)
+    {
+        return $this->swmImportStore(
+            $request,
+            OrganizationImport::class,
+            ['name', 'email', 'address', 'contact_person_name', 'contact_number', 'organization_type', 'status'],
+            'swm.organizations.index',
+            'importswm',
+            'organizations'
+        );
     }
 }

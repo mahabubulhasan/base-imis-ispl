@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Swm;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Swm\Concerns\HandlesSwmExcelImport;
 use App\Http\Requests\Swm\LandfillLogRequest;
+use App\Imports\Swm\LandfillLogImport;
 use App\Models\LayerInfo\Ward;
 use App\Models\Swm\Landfill;
 use App\Models\Swm\LandfillLog;
@@ -16,6 +18,8 @@ use Illuminate\Support\Facades\Auth;
 
 class LandfillLogController extends Controller
 {
+    use HandlesSwmExcelImport;
+
     public function __construct(
         protected LandfillLogService $landfillLogService
     ) {
@@ -33,7 +37,8 @@ class LandfillLogController extends Controller
             return $next($request);
         })->only(['suggestionsVehicles', 'suggestionsWasteTypes', 'vehicleContext', 'landfillContext']);
         $this->middleware('permission:Delete SW Landfill Log', ['only' => ['destroy']]);
-        $this->middleware('permission:Export SW Landfill Logs to CSV', ['only' => ['export']]);
+        $this->middleware('permission:Export SW Landfill Logs to Excel', ['only' => ['export', 'downloadTemplate']]);
+        $this->middleware('permission:Import SW Landfill Logs From Excel', ['only' => ['importForm', 'importStore']]);
         $this->middleware('permission:View SW Landfill Log History', ['only' => ['history']]);
     }
 
@@ -245,6 +250,32 @@ class LandfillLogController extends Controller
     public function export(Request $request)
     {
         return $this->landfillLogService->download($request->all());
+    }
+
+    public function downloadTemplate()
+    {
+        $this->landfillLogService->downloadTemplate();
+    }
+
+    public function importForm()
+    {
+        return $this->swmImportFormView(
+            __('Import Landfill Logs from Excel'),
+            route('swm.landfill-logs.index'),
+            'swm.landfill-logs.import.store'
+        );
+    }
+
+    public function importStore(Request $request)
+    {
+        return $this->swmImportStore(
+            $request,
+            LandfillLogImport::class,
+            ['vehicle_number', 'entry_at', 'operation_date'],
+            'swm.landfill-logs.index',
+            'importswm',
+            'landfill-logs-import'
+        );
     }
 
     public function suggestionsVehicles(Request $request)

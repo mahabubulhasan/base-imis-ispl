@@ -8,16 +8,20 @@
 @endpush
 @section('title', $page_title)
 @section('content')
+@include('swm.partials.import-errors')
 @include('layouts.components.success-alert')
 @include('layouts.components.error-alert')
 <div class="card app-mobile-index">
     <div class="card-header">
-        @can('Add SW Attendance Log')
-        <a href="{{ route('swm.attendance-logs.create') }}" class="btn btn-info">{{ __('Add Attendance Log') }}</a>
-        @endcan
-        @can('Export SW Attendance Logs to CSV')
-        <a href="#" id="export" class="btn btn-info">{{ __('Export to CSV') }}</a>
-        @endcan
+        @include('swm.partials.excel-import-export-header', [
+            'addPermission' => 'Add SW Attendance Log',
+            'addRoute' => route('swm.attendance-logs.create'),
+            'addLabel' => __('Add Attendance Log'),
+            'importRoute' => route('swm.attendance-logs.import'),
+            'importPermission' => 'Import SW Attendance Logs From Excel',
+            'templateRoute' => route('swm.attendance-logs.template'),
+            'exportPermission' => 'Export SW Attendance Logs to Excel',
+        ])
         <a href="#" class="btn btn-info float-right" id="headingOne" type="button" data-toggle="collapse"
             data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
             {{ __('Show Filter') }}

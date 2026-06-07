@@ -8,34 +8,24 @@
 @endpush
 @section('title', $page_title)
 @section('content')
+@include('swm.partials.import-errors')
 @include('layouts.components.success-alert')
 @include('layouts.components.error-alert')
-@if(session('import_errors'))
-<div class="alert alert-warning">
-    <ul class="mb-0">
-        @foreach(session('import_errors') as $err)
-        <li>{{ $err }}</li>
-        @endforeach
-    </ul>
-</div>
-@endif
 @if(session('warning'))
 <div class="alert alert-warning">{{ session('warning') }}</div>
 @endif
 <div class="card app-mobile-index">
     <div class="card-header">
-        @can('Add Payment')
-        <a href="{{ route('swm.bill-collection-payments.create') }}" class="btn btn-info">{{ __('Add Payment') }}</a>
-        @endcan
-        @can('Import Payments From CSV')
-        <a href="{{ route('swm.bill-collection-payments.import') }}" class="btn btn-info">{{ __('Import from CSV') }}</a>
-        @endcan
-        @can('Export Payments to CSV')
-        <a href="/templates/bill-collection-payments-import-template.csv" download="bill-collection-payments-import-template.csv" class="btn btn-info">{{ __('Download CSV Template') }}</a>
-        @endcan
-        @can('Export Payments to CSV')
-        <a href="#" id="export" class="btn btn-info">{{ __('Export to CSV') }}</a>
-        @endcan
+        @include('swm.partials.excel-import-export-header', [
+            'addPermission' => 'Add SW Bill Collection Payment',
+            'addRoute' => route('swm.bill-collection-payments.create'),
+            'addLabel' => __('Add Payment'),
+            'importRoute' => route('swm.bill-collection-payments.import'),
+            'importPermission' => 'Import SW Bill Collection Payments From Excel',
+            'templateRoute' => route('swm.bill-collection-payments.template'),
+            'exportPermission' => 'Export SW Bill Collection Payments to Excel',
+            'exportId' => 'export',
+        ])
         <a href="#" class="btn btn-info float-right" id="headingOne" type="button" data-toggle="collapse"
             data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
             {{ __('Show Filter') }}
