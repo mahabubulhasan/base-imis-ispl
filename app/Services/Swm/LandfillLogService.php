@@ -4,6 +4,7 @@ namespace App\Services\Swm;
 
 use App\Models\Swm\Landfill;
 use App\Models\Swm\LandfillLog;
+use App\Models\Swm\Sts;
 use App\Models\Swm\Vehicle;
 use App\Models\Swm\WasteType;
 use App\Support\Swm\SwmExcelTemplateWriter;
@@ -56,8 +57,13 @@ class LandfillLogService
 
                 return implode(', ', $names);
             })
-            ->addColumn('source_wards_label', function (LandfillLog $model) {
+            ->addColumn('other_source_wards_label', function (LandfillLog $model) {
                 return is_array($model->source_wards) ? implode(', ', $model->source_wards) : '';
+            })
+            ->addColumn('sts_source_wards_label', function (LandfillLog $model) {
+                $ids = is_array($model->source_sts_ids) ? $model->source_sts_ids : [];
+
+                return implode(', ', $this->unionWardsForStsIds($ids));
             })
             ->editColumn('entry_at', function (LandfillLog $model) {
                 return $model->entry_at?->format('Y-m-d H:i') ?? '';
@@ -340,5 +346,67 @@ class LandfillLogService
         if (! empty($data['date_to'] ?? null)) {
             $query->whereDate('operation_date', '<=', Carbon::parse($data['date_to'])->toDateString());
         }
+    }
+
+    /**
+     * @param  list<int>  $ids
+     * @return list<string>
+     */
+    protected function unionWardsForStsIds(array $ids): array
+    {
+        if ($ids === []) {
+            return [];
+        }
+
+        $wardSet = [];
+        Sts::query()
+            ->whereIn('id', $ids)
+            ->whereNull('deleted_at')
+            ->get(['id', 'source_wards', 'ward_no'])
+            ->each(function (Sts $sts) use (&$wardSet) {
+                foreach ($this->wardsForStsRecord($sts) as $ward) {
+                    $wardSet[$ward] = true;
+                }
+            });
+
+        $wards = array_keys($wardSet);
+        sort($wards, SORT_NATURAL);
+
+        return array_values($wards);
+    }
+
+    /**
+     * @return list<string>
+     */
+    protected function wardsForStsRecord(Sts $sts): array
+    {
+        $wardSet = [];
+        foreach ($sts->source_wards ?? [] as $ward) {
+            $normalized = $this->normalizeWardKey($ward);
+            if ($normalized !== null) {
+                $wardSet[$normalized] = true;
+            }
+        }
+        if ($wardSet === [] && $sts->ward_no !== null) {
+            $fallback = $this->normalizeWardKey($sts->ward_no);
+            if ($fallback !== null) {
+                $wardSet[$fallback] = true;
+            }
+        }
+
+        $wards = array_keys($wardSet);
+        sort($wards, SORT_NATURAL);
+
+        return array_values($wards);
+    }
+
+    protected function normalizeWardKey(mixed $ward): ?string
+    {
+        $value = trim((string) $ward);
+        if ($value === '' || ! is_numeric($value)) {
+            return null;
+        }
+
+        return (string) (int) $value;
     }
 }

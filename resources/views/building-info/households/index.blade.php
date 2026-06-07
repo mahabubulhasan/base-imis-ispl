@@ -79,17 +79,19 @@
                 <thead>
                     <tr>
                         <th>{{ __('Household ID') }}</th>
-                        <th>{{ __('Holding Number') }}</th>
                         <th>{{ __('Household Owner Name') }}</th>
                         <th>{{ __("Father's/Husband's Name") }}</th>
                         <th>{{ __('Contact Number') }}</th>
                         <th>{{ __('BIN') }}</th>
+                        <th>{{ __('Holding Number') }}</th>
                         <th>{{ __('Ward No.') }}</th>
                         <th>{{ __('Sub Location') }}</th>
                         <th>{{ __('Road No.') }}</th>
                         <th>{{ __('Road Name') }}</th>
-                        <th>{{ __('LIC') }}</th>
+                        <th>{{ __('Waste Collection Fee (Taka/Month)') }}</th>
+                        <th>{{ __('Van Puller') }}</th>
                         <th>{{ __('LIC ID') }}</th>
+                        <th>{{ __('Segregation Practiced?') }}</th>
                         <th>{{ __('Survey Date') }}</th>
                         <th>{{ __('Household Status') }}</th>
                         <th>{{ __('Actions') }}</th>
@@ -125,17 +127,19 @@ $(function() {
         },
         columns: [
             { data: 'household_id', name: 'household_id' },
-            { data: 'holding_number', name: 'holding_number' },
             { data: 'household_owner_name', name: 'household_owner_name' },
             { data: 'father_or_husband_name', name: 'father_or_husband_name' },
             { data: 'contact_number', name: 'contact_number' },
             { data: 'bin', name: 'bin' },
+            { data: 'holding_number', name: 'holding_number' },
             { data: 'ward', name: 'ward' },
             { data: 'area_mohalla_name', name: 'area_mohalla_name' },
             { data: 'road_no', name: 'road_no' },
             { data: 'road_name', name: 'road_name' },
-            { data: 'is_lic', name: 'is_lic' },
+            { data: 'waste_charge', name: 'waste_charge' },
+            { data: 'van_puller_name', name: 'van_puller_name' },
             { data: 'lic_id', name: 'lic_id' },
+            { data: 'segregation_practiced', name: 'segregation_practiced' },
             { data: 'survey_date', name: 'survey_date' },
             { data: 'status', name: 'status' },
             { data: 'action', name: 'action', orderable: false, searchable: false }

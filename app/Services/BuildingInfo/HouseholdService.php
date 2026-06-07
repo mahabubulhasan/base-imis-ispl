@@ -32,6 +32,10 @@ class HouseholdService
             ->filter(fn ($q) => $this->applyHouseholdFilters($q, $data))
             ->editColumn('is_owner', fn ($m) => $m->is_owner ? __('Yes') : __('No'))
             ->editColumn('is_lic', fn ($m) => $m->is_lic ? __('Yes') : __('No'))
+            ->editColumn('waste_charge', fn ($m) => $m->waste_charge !== null
+                ? $this->currencyFormatter->format(Currency::TK, $m->waste_charge)
+                : '')
+            ->editColumn('segregation_practiced', fn ($m) => $m->segregation_practiced ? __('Yes') : __('No'))
             ->editColumn('survey_date', fn ($m) => $m->survey_date?->format('Y-m-d') ?? '')
             ->editColumn('status', fn ($m) => Household::statusOptions()[$m->status] ?? (string) $m->status)
             ->addColumn('action', function ($model) {

@@ -30,11 +30,13 @@
                 <thead>
                     <tr>
                         <th>{{ __('Waste Bin ID') }}</th>
-                        <th>{{ __('Type of Waste Bin') }}</th>
-                        <th>{{ __('Placed at Buildings') }}</th>
+                        <th>{{ __('Waste Bin Type') }}</th>
+                        <th>{{ __('Capacity (kg)') }}</th>
+                        <th>{{ __('Placed at Buildings?') }}</th>
                         <th>{{ __('BIN') }}</th>
                         <th>{{ __('Ward No.') }}</th>
-                        <th>{{ __('Capacity (kg)') }}</th>
+                        <th>{{ __('Road No.') }}</th>
+                        <th>{{ __('Road Name') }}</th>
                         <th>{{ __('Actions') }}</th>
                     </tr>
                 </thead>
@@ -55,10 +57,12 @@ $(function () {
         columns: [
             { data: 'waste_bin_id', name: 'waste_bin_id' },
             { data: 'waste_bin_type_name', name: 'waste_bin_type_name', orderable: false, searchable: false },
+            { data: 'total_capacity_kg', name: 'total_capacity_kg' },
             { data: 'placed_at_buildings_label', name: 'placed_at_buildings_label', orderable: false, searchable: false },
             { data: 'bin', name: 'bin' },
             { data: 'ward_no', name: 'ward_no' },
-            { data: 'total_capacity_kg', name: 'total_capacity_kg' },
+            { data: 'road_no', name: 'road_no' },
+            { data: 'road_name', name: 'road_name' },
             { data: 'action', name: 'action', orderable: false, searchable: false }
         ]
     });

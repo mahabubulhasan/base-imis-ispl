@@ -125,10 +125,11 @@
                 <th>{{ __('Location') }}</th>
                 <th>{{ __('Operator Name') }}</th>
                 <th>{{ __('Operator\'s Contact Number') }}</th>
-                <th>{{ __('Capacity') }} ({{ __('Ton') }})</th>
+                <th>{{ __('Capacity (Ton)') }}</th>
+                <th>{{ __('Area (Decimal)') }}</th>
                 <th>{{ __('Source Wards') }}</th>
-                <th>{{ __('Segregation Practiced') }}</th>
                 <th>{{ __('Waste Type') }}</th>
+                <th>{{ __('Segregation Practiced?') }}</th>
                 <th>{{ __('Destination Landfill') }}</th>
                 <th>{{ __('Operational Status') }}</th>
                 <th>{{ __('Actions') }}</th>
@@ -170,9 +171,10 @@ $(function() {
             { data: 'operator_name', name: 'swm.sts.operator_name' },
             { data: 'contact_number', name: 'swm.sts.contact_number' },
             { data: 'capacity', name: 'swm.sts.capacity' },
+            { data: 'area', name: 'swm.sts.area' },
             { data: 'source_wards_text', name: 'source_wards_text', orderable: false, searchable: false },
-            { data: 'segregation_practiced', name: 'swm.sts.segregation_practiced' },
             { data: 'waste_types', name: 'waste_types', orderable: false, searchable: false },
+            { data: 'segregation_practiced', name: 'swm.sts.segregation_practiced' },
             { data: 'destination_landfill_name', name: 'destination_landfill_name' },
             { data: 'operational_status', name: 'swm.sts.operational_status' },
             { data: 'action', name: 'action', orderable: false, searchable: false }

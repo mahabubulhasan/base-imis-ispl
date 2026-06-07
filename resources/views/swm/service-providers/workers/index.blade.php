@@ -118,15 +118,14 @@
         <table id="data-table" class="table table-bordered table-striped" width="100%">
             <thead>
                 <tr>
-                <th>{{ __('Worker Name') }}</th>
                 <th>{{ __('Worker ID') }}</th>
+                <th>{{ __('Worker Name') }}</th>
                 <th>{{ __('Organization') }}</th>
-                <th>{{ __('Work Type') }}</th>
-                <th>{{ __('Mobile') }}</th>
-                <!-- <th>{{ __('Email') }}</th> -->
-                <th>{{ __('Employee ID') }}</th>
-                <th>{{ __('National ID') }}</th>
+                <th>{{ __('Worker Type') }}</th>
                 <th>{{ __('Employment Type') }}</th>
+                <th>{{ __('Contact') }}</th>
+                <th>{{ __("Supervisor's Name") }}</th>
+                <th>{{ __('Employee ID') }}</th>
                 <th>{{ __('Status') }}</th>
                 <th>{{ __('Actions') }}</th>
                 </tr>
@@ -163,12 +162,12 @@ $(function() {
             }
         },
         columns: [{
-                data: 'name',
-                name: 'swm.workers.name'
-            },
-            {
                 data: 'worker_id_no',
                 name: 'swm.workers.worker_id_no'
+            },
+            {
+                data: 'name',
+                name: 'swm.workers.name'
             },
             {
                 data: 'organization_name',
@@ -179,24 +178,20 @@ $(function() {
                 name: 'work_type_name'
             },
             {
+                data: 'employment_type',
+                name: 'swm.workers.employment_type'
+            },
+            {
                 data: 'mobile',
                 name: 'swm.workers.mobile'
             },
-            // {
-            //     data: 'email',
-            //     name: 'swm.workers.email'
-            // },
+            {
+                data: 'supervisor_name',
+                name: 'swm.workers.supervisor_name'
+            },
             {
                 data: 'employee_id',
                 name: 'swm.workers.employee_id'
-            },
-            {
-                data: 'national_id_no',
-                name: 'swm.workers.national_id_no'
-            },
-            {
-                data: 'employment_type',
-                name: 'swm.workers.employment_type'
             },
             {
                 data: 'status',

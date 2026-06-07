@@ -50,8 +50,8 @@
     <div class="card-body"><div class="table-responsive">
         <table id="data-table" class="table table-bordered table-striped" width="100%">
             <thead><tr>
-                <th>{{ __('Landfill ID') }}</th><th>{{ __('Landfill Name') }}</th><th>{{ __('Location') }}</th><th>{{ __('Operator Name') }}</th><th>{{ __('Contact Number') }}</th><th>{{ __('Capacity') }} ({{ __('Ton') }})</th><th>{{ __('Area') }}</th>
-                <th>{{ __('Landfill Type') }}</th><th>{{ __('Source STS') }}</th><th>{{ __('Other Source Wards') }}</th><th>{{ __('Segregation Practiced') }}</th><th>{{ __('Waste Type') }}</th><th>{{ __('Weighbridge Facility Available') }}</th><th>{{ __('Boundary Wall Available') }}</th><th>{{ __('Lighting Arrangement Available') }}</th><th>{{ __('Manpower Deployed') }}</th><th>{{ __('Adequate Covering Arrangement Available') }}</th><th>{{ __('Gas Control System Available') }}</th><th>{{ __('Leachate Collection System Available') }}</th><th>{{ __('Operational Status') }}</th><th>{{ __('Actions') }}</th>
+                <th>{{ __('Landfill ID') }}</th><th>{{ __('Landfill Name') }}</th><th>{{ __('Location') }}</th><th>{{ __('Landfill Type') }}</th><th>{{ __('Operator Name') }}</th><th>{{ __("Operator's Contact Number") }}</th><th>{{ __('Capacity (Ton)') }}</th><th>{{ __('Area (Acre)') }}</th>
+                <th>{{ __('Source STSs') }}</th><th>{{ __('Other Source Wards') }}</th><th>{{ __('Waste Type') }}</th><th>{{ __('Segregation Practiced?') }}</th><th>{{ __('Manpower Deployed') }}</th><th>{{ __('Operational Status') }}</th><th>{{ __('Actions') }}</th>
             </tr></thead>
         </table>
     </div></div>
@@ -67,9 +67,8 @@ d.source_sts_id=$('#source_sts_id').val();d.waste_type_id=$('#waste_type_id').va
 d.segregation_practiced=$('#segregation_practiced').val();d.landfill_type_id=$('#landfill_type_id').val();
 }},
 columns:[
-{data:'landfill_id',name:'landfill_id'},{data:'name',name:'name'},{data:'location',name:'location'},{data:'operator_name',name:'operator_name'},{data:'contact_number',name:'contact_number'},{data:'capacity',name:'capacity'},{data:'area',name:'area'},
-{data:'landfill_type_name',name:'landfill_type_id',orderable:false,searchable:false},{data:'source_sts_text',name:'source_sts_text',orderable:false,searchable:false},{data:'source_wards_text',name:'source_wards_text',orderable:false,searchable:false},
-{data:'segregation_practiced',name:'segregation_practiced'},{data:'waste_types',name:'waste_types',orderable:false,searchable:false},{data:'weighbridge_facility_available_text',name:'weighbridge_facility_available'},{data:'boundary_wall_available_text',name:'boundary_wall_available'},{data:'lighting_arrangement_available_text',name:'lighting_arrangement_available'},{data:'manpower_deployed',name:'manpower_deployed'},{data:'adequate_covering_arrangement_available_text',name:'adequate_covering_arrangement_available'},{data:'gas_control_system_available_text',name:'gas_control_system_available'},{data:'leachate_collection_system_available_text',name:'leachate_collection_system_available'},{data:'operational_status',name:'operational_status'},
+{data:'landfill_id',name:'landfill_id'},{data:'name',name:'name'},{data:'location',name:'location'},{data:'landfill_type_name',name:'landfill_type_id',orderable:false,searchable:false},{data:'operator_name',name:'operator_name'},{data:'contact_number',name:'contact_number'},{data:'capacity',name:'capacity'},{data:'area',name:'area'},
+{data:'source_sts_text',name:'source_sts_text',orderable:false,searchable:false},{data:'source_wards_text',name:'source_wards_text',orderable:false,searchable:false},{data:'waste_types',name:'waste_types',orderable:false,searchable:false},{data:'segregation_practiced',name:'segregation_practiced'},{data:'manpower_deployed',name:'manpower_deployed'},{data:'operational_status',name:'operational_status'},
 {data:'action',name:'action',orderable:false,searchable:false}
 ],
 order:[[0,'asc']]

@@ -3,6 +3,7 @@
 namespace App\Services\Swm;
 
 use App\Enums\SwmOrganizationStatus;
+use App\Models\LayerInfo\Ward;
 use App\Models\Swm\Organization;
 use App\Models\Swm\OrganizationType;
 use App\Support\Swm\SwmExcelTemplateWriter;
@@ -44,6 +45,13 @@ class OrganizationService
             })
             ->editColumn('organization_type', function ($model) {
                 return $model->organization_type_label;
+            })
+            ->addColumn('service_wards_text', function ($model) {
+                $wardLabels = Ward::getInAscOrder();
+
+                return collect($model->service_wards ?? [])
+                    ->map(fn ($wardId) => $wardLabels[$wardId] ?? $wardId)
+                    ->implode(', ');
             })
             ->addColumn('action', function ($model) {
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['swm.organizations.destroy', $model->id]]);

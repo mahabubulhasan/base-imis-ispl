@@ -89,11 +89,11 @@
             <thead>
                 <tr>
                 <th>{{ __('Organization Name') }}</th>
-                <th>{{ __('Email') }}</th>
-                <th>{{ __('Address') }}</th>
+                <th>{{ __('Organization Type') }}</th>
                 <th>{{ __('Contact Person Name') }}</th>
                 <th>{{ __('Contact Number') }}</th>
-                <th>{{ __('Organization Type') }}</th>
+                <th>{{ __('Email') }}</th>
+                <th>{{ __('Service Wards') }}</th>
                 <th>{{ __('Status') }}</th>
                 <th>{{ __('Actions') }}</th>
                 </tr>
@@ -128,12 +128,8 @@ $(function() {
                 name: 'name'
             },
             {
-                data: 'email',
-                name: 'email'
-            },
-            {
-                data: 'address',
-                name: 'address'
+                data: 'organization_type',
+                name: 'organization_type_id'
             },
             {
                 data: 'contact_person_name',
@@ -144,8 +140,14 @@ $(function() {
                 name: 'contact_number'
             },
             {
-                data: 'organization_type',
-                name: 'organization_type_id'
+                data: 'email',
+                name: 'email'
+            },
+            {
+                data: 'service_wards_text',
+                name: 'service_wards_text',
+                orderable: false,
+                searchable: false
             },
             {
                 data: 'status',

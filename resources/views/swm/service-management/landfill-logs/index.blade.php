@@ -66,6 +66,9 @@
                         <th>{{ __('Operation Date') }}</th>
                         <th>{{ __('Vehicle Number') }}</th>
                         <th>{{ __('Landfill Name') }}</th>
+                        <th>{{ __('Source STSs') }}</th>
+                        <th>{{ __('STS Source Wards') }}</th>
+                        <th>{{ __('Other Source Wards') }}</th>
                         <th>{{ __('Waste Type') }}</th>
                         <th>{{ __('Quantity (Ton)') }}</th>
                         <th>{{ __('Actions') }}</th>
@@ -100,6 +103,9 @@ $(function() {
             { data: 'operation_date', name: 'operation_date' },
             { data: 'vehicle_number', name: 'vehicle_number', orderable: true, searchable: false },
             { data: 'landfill_label', name: 'landfill_name' },
+            { data: 'source_sts_label', name: 'source_sts_label', orderable: false, searchable: false },
+            { data: 'sts_source_wards_label', name: 'sts_source_wards_label', orderable: false, searchable: false },
+            { data: 'other_source_wards_label', name: 'other_source_wards_label', orderable: false, searchable: false },
             { data: 'waste_type_label', name: 'waste_type_name' },
             { data: 'quantity_ton', name: 'quantity_ton' },
             { data: 'action', name: 'action', orderable: false, searchable: false }

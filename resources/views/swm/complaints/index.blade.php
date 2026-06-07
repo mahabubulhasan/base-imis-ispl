@@ -119,19 +119,20 @@
                 <thead>
                     <tr>
                         <th>{{ __('Complaint ID') }}</th>
-                        <th>{{ __('Date and Time') }}</th>
-                        <th>{{ __('Incident Date') }}</th>
+                        <th>{{ __('Entry Date and Time') }}</th>
                         <th>{{ __('Holding Number') }}</th>
                         <th>{{ __('Household ID') }}</th>
                         <th>{{ __('Name') }}</th>
                         <th>{{ __('Contact Number') }}</th>
                         <th>{{ __('Ward No.') }}</th>
+                        <th>{{ __('Incident Date') }}</th>
                         <th>{{ __('Complaint Type') }}</th>
                         <th>{{ __('Complaint Submitted Through') }}</th>
-                        <th>{{ __('Priority') }}</th>
+                        <th>{{ __('Priority Level') }}</th>
                         <th>{{ __('Assigned To') }}</th>
-                        <th>{{ __('Duplicate') }}</th>
                         <th>{{ __('Complaint Status') }}</th>
+                        <th>{{ __('Duplicate Complaint') }}</th>
+                        <th>{{ __('Duplicate Complaint ID') }}</th>
                         <th>{{ __('Actions') }}</th>
                     </tr>
                 </thead>
@@ -231,18 +232,19 @@ $(function() {
         columns: [
             { data: 'complaint_id', name: 'complaint_id' },
             { data: 'date_time', name: 'date_time' },
-            { data: 'incident_date', name: 'incident_date' },
             { data: 'holding_number', name: 'holding_number' },
             { data: 'household_id', name: 'customer_id' },
             { data: 'name', name: 'name' },
             { data: 'contact_number', name: 'contact_number' },
             { data: 'ward_no', name: 'ward_no' },
+            { data: 'incident_date', name: 'incident_date' },
             { data: 'complaint_type', name: 'complaint_type' },
             { data: 'submitted_through', name: 'submitted_through' },
             { data: 'priority_level', name: 'priority_level' },
             { data: 'assigned_to', name: 'assigned_to' },
-            { data: 'duplicate_complaint_text', name: 'duplicate_complaint' },
             { data: 'complaint_status', name: 'complaint_status' },
+            { data: 'duplicate_complaint_text', name: 'duplicate_complaint' },
+            { data: 'duplicate_complaint_id', name: 'duplicate_reference' },
             { data: 'action', name: 'action', orderable: false, searchable: false }
         ],
         order: [[1, 'desc']]

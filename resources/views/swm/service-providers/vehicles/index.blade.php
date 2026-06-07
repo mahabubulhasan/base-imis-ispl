@@ -98,12 +98,13 @@
                 <tr>
                 <th>{{ __('Vehicle ID') }}</th>
                 <th>{{ __('Vehicle Number') }}</th>
-                <th>{{ __('Chassis No.') }}</th>
-                <th>{{ __('Organization') }}</th>
                 <th>{{ __('Vehicle Type') }}</th>
-                <th>{{ __('Capacity') }} ({{ __('Ton') }})</th>
+                <th>{{ __('Capacity (Ton)') }}</th>
+                <th>{{ __('Organization') }}</th>
                 <th>{{ __('Driver') }}</th>
                 <th>{{ __('Dumping Place') }}</th>
+                <th>{{ __('Operational Type') }}</th>
+                <th>{{ __('Status') }}</th>
                 <th>{{ __('Actions') }}</th>
                 </tr>
             </thead>
@@ -143,20 +144,16 @@ $(function() {
                 name: 'swm.vehicles.vehicle_number'
             },
             {
-                data: 'chassis_no',
-                name: 'swm.vehicles.chassis_no'
-            },
-            {
-                data: 'organization_name',
-                name: 'organization_name'
-            },
-            {
                 data: 'vehicle_type_name',
                 name: 'vehicle_type_name'
             },
             {
                 data: 'capacity',
                 name: 'swm.vehicles.capacity'
+            },
+            {
+                data: 'organization_name',
+                name: 'organization_name'
             },
             {
                 data: 'driver_name',
@@ -167,6 +164,16 @@ $(function() {
                 name: 'dumping_place',
                 orderable: false,
                 searchable: false
+            },
+            {
+                data: 'operational_type_label',
+                name: 'operational_type_label',
+                orderable: false,
+                searchable: false
+            },
+            {
+                data: 'status',
+                name: 'swm.vehicles.status'
             },
             {
                 data: 'action',

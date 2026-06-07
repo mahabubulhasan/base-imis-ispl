@@ -96,6 +96,9 @@ class ComplaintService
             ->addColumn('duplicate_complaint_text', function ($model) {
                 return $model->duplicate_complaint ? __('Yes') : __('No');
             })
+            ->addColumn('duplicate_complaint_id', function ($model) {
+                return (string) ($model->duplicate_reference ?? '');
+            })
             ->addColumn('household_id', function ($model) {
                 return $model->customer_id;
             })

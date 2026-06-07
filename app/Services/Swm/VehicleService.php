@@ -126,6 +126,20 @@ class VehicleService
                     default => '',
                 };
             })
+            ->addColumn('operational_type_label', function ($model) {
+                $labels = self::operationalTypeLabels();
+
+                return $model->operational_type
+                    ? ($labels[$model->operational_type] ?? $model->operational_type)
+                    : '';
+            })
+            ->editColumn('status', function ($model) {
+                return match ($model->status) {
+                    'active' => __('Active'),
+                    'inactive' => __('Inactive'),
+                    default => (string) ($model->status ?? ''),
+                };
+            })
             ->addColumn('action', function ($model) {
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['swm.vehicles.destroy', $model->id]]);
 

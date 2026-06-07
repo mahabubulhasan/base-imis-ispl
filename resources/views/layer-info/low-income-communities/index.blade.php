@@ -60,12 +60,15 @@
                 <table id="data-table" class="table table-bordered table-striped dtr-inline" width="100%">
                     <thead>
                         <tr>
-                            <th>{{ __('ID') }}</th>
+                            <th>{{ __('LIC ID') }}</th>
                             <th>{{ __('LIC Name') }}</th>
                             <th>{{ __('Ward No.') }}</th>
+                            <th>{{ __("Representative's Name") }}</th>
+                            <th>{{ __("Representative's Contact No.") }}</th>
                             <th>{{ __('No. of Buildings') }}</th>
                             <th>{{ __('No. of Households') }}</th>
-                            <th>{{ __('Population') }}</th>
+                            <th>{{ __('Total Population') }}</th>
+                            <th>{{ __('Area (Decimal)') }}</th>
                             <th>{{ __('Actions') }}</th>
                         </tr>
                     </thead>
@@ -101,6 +104,14 @@
                             name: 'ward'
                         },
                         {
+                            data: 'representative_name',
+                            name: 'representative_name'
+                        },
+                        {
+                            data: 'representative_contact_no',
+                            name: 'representative_contact_no'
+                        },
+                        {
                             data: 'no_of_buildings',
                             name: 'no_of_buildings'
                         },
@@ -111,6 +122,10 @@
                         {
                             data: 'population_total',
                             name: 'population_total'
+                        },
+                        {
+                            data: 'area_decima',
+                            name: 'area_decima'
                         },
                         {
                             data: 'action',
