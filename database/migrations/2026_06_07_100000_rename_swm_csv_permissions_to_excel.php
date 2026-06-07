@@ -2,11 +2,23 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    protected function permissionsTable(): string
+    {
+        return config('permission.table_names.permissions', 'auth.permissions');
+    }
+
     public function up(): void
     {
+        $table = $this->permissionsTable();
+
+        if (! Schema::hasTable($table)) {
+            return;
+        }
+
         $renames = [
             'Export SW Organizations to CSV' => 'Export SW Organizations to Excel',
             'Export SW Workers to CSV' => 'Export SW Workers to Excel',
@@ -23,7 +35,7 @@ return new class extends Migration
         ];
 
         foreach ($renames as $old => $new) {
-            DB::table('permissions')->where('name', $old)->update(['name' => $new]);
+            DB::table($table)->where('name', $old)->update(['name' => $new]);
         }
 
         $newPermissions = [
@@ -32,8 +44,8 @@ return new class extends Migration
             ['group' => 'SW Service Provider Vehicles', 'type' => 'Import', 'name' => 'Import SW Vehicles From Excel'],
             ['group' => 'SW Waste Bins', 'type' => 'Export', 'name' => 'Export SW Waste Bins to Excel'],
             ['group' => 'SW Waste Bins', 'type' => 'Import', 'name' => 'Import SW Waste Bins From Excel'],
-            ['group' => 'SW STS', 'type' => 'Import', 'name' => 'Import SW STS From Excel'],
-            ['group' => 'SW Landfills', 'type' => 'Import', 'name' => 'Import SW Landfills From Excel'],
+            ['group' => 'SW Service Facility STS', 'type' => 'Import', 'name' => 'Import SW STS From Excel'],
+            ['group' => 'SW Service Facility Landfills', 'type' => 'Import', 'name' => 'Import SW Landfills From Excel'],
             ['group' => 'SW Attendance Logs', 'type' => 'Import', 'name' => 'Import SW Attendance Logs From Excel'],
             ['group' => 'SW STS Logs', 'type' => 'Import', 'name' => 'Import SW STS Logs From Excel'],
             ['group' => 'SW Landfill Logs', 'type' => 'Import', 'name' => 'Import SW Landfill Logs From Excel'],
@@ -42,10 +54,10 @@ return new class extends Migration
         ];
 
         foreach ($newPermissions as $perm) {
-            if (DB::table('permissions')->where('name', $perm['name'])->exists()) {
+            if (DB::table($table)->where('name', $perm['name'])->exists()) {
                 continue;
             }
-            DB::table('permissions')->insert([
+            DB::table($table)->insert([
                 'name' => $perm['name'],
                 'guard_name' => 'web',
                 'group' => $perm['group'],
@@ -54,10 +66,18 @@ return new class extends Migration
                 'updated_at' => now(),
             ]);
         }
+
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
     }
 
     public function down(): void
     {
+        $table = $this->permissionsTable();
+
+        if (! Schema::hasTable($table)) {
+            return;
+        }
+
         $renames = array_flip([
             'Export SW Organizations to CSV' => 'Export SW Organizations to Excel',
             'Export SW Workers to CSV' => 'Export SW Workers to Excel',
@@ -74,10 +94,10 @@ return new class extends Migration
         ]);
 
         foreach ($renames as $old => $new) {
-            DB::table('permissions')->where('name', $old)->update(['name' => $new]);
+            DB::table($table)->where('name', $old)->update(['name' => $new]);
         }
 
-        DB::table('permissions')->whereIn('name', [
+        DB::table($table)->whereIn('name', [
             'Import SW Organizations From Excel',
             'Import SW Workers From Excel',
             'Import SW Vehicles From Excel',
@@ -91,5 +111,7 @@ return new class extends Migration
             'Import SW Waste Processing From Excel',
             'Import SW Complaints From Excel',
         ])->delete();
+
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
     }
 };
