@@ -23,6 +23,60 @@
             'exportPermission' => 'Export SW Waste Bins to Excel',
             'exportId' => 'export',
         ])
+        <a href="#" class="btn btn-info float-right" id="headingOne" type="button" data-toggle="collapse"
+            data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+            {{ __('Show Filter') }}
+        </a>
+    </div>
+    <div class="card-body">
+        <div id="collapseOne" class="collapse">
+            <form class="form-horizontal" id="filter-form">
+                <div class="form-group row">
+                    <label for="waste_bin_id" class="col-md-2 col-form-label">{{ __('Waste Bin ID') }}</label>
+                    <div class="col-md-2"><input type="text" class="form-control" id="waste_bin_id" /></div>
+                    <label for="waste_bin_type_id" class="col-md-2 col-form-label">{{ __('Waste Bin Type') }}</label>
+                    <div class="col-md-2">
+                        <select class="form-control" id="waste_bin_type_id">
+                            <option value="">{{ __('All') }}</option>
+                            @foreach($wasteBinTypes as $typeId => $typeName)
+                            <option value="{{ $typeId }}">{{ $typeName }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <label for="bin" class="col-md-2 col-form-label">{{ __('BIN') }}</label>
+                    <div class="col-md-2"><input type="text" class="form-control" id="bin" /></div>
+                </div>
+                <div class="form-group row">
+                    <label for="ward_no" class="col-md-2 col-form-label">{{ __('Ward No.') }}</label>
+                    <div class="col-md-2">
+                        <select class="form-control" id="ward_no">
+                            <option value="">{{ __('All') }}</option>
+                            @foreach($wards as $ward)
+                            <option value="{{ $ward }}">{{ $ward }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <label for="placed_at_buildings" class="col-md-2 col-form-label">{{ __('Placed at Buildings?') }}</label>
+                    <div class="col-md-2">
+                        <select class="form-control" id="placed_at_buildings">
+                            <option value="">{{ __('All') }}</option>
+                            <option value="true">{{ __('Yes') }}</option>
+                            <option value="false">{{ __('No') }}</option>
+                        </select>
+                    </div>
+                    <label for="road_no" class="col-md-2 col-form-label">{{ __('Road No.') }}</label>
+                    <div class="col-md-2"><input type="text" class="form-control" id="road_no" /></div>
+                </div>
+                <div class="form-group row">
+                    <label for="road_name" class="col-md-2 col-form-label">{{ __('Road Name') }}</label>
+                    <div class="col-md-2"><input type="text" class="form-control" id="road_name" /></div>
+                </div>
+                <div class="card-footer text-right">
+                    <button type="submit" class="btn btn-info">{{ __('Filter') }}</button>
+                    <button type="reset" id="reset-filter" class="btn btn-info">{{ __('Reset') }}</button>
+                </div>
+            </form>
+        </div>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -48,12 +102,23 @@
 @push('scripts')
 <script>
 $(function () {
-    $('#data-table').DataTable({
+    var dataTable = $('#data-table').DataTable({
         bFilter: false,
         processing: true,
         serverSide: true,
         scrollCollapse: true,
-        ajax: '{!! route("swm.waste-bins.data") !!}',
+        ajax: {
+            url: '{!! route("swm.waste-bins.data") !!}',
+            data: function (d) {
+                d.waste_bin_id = $('#waste_bin_id').val();
+                d.waste_bin_type_id = $('#waste_bin_type_id').val();
+                d.bin = $('#bin').val();
+                d.ward_no = $('#ward_no').val();
+                d.placed_at_buildings = $('#placed_at_buildings').val();
+                d.road_no = $('#road_no').val();
+                d.road_name = $('#road_name').val();
+            }
+        },
         columns: [
             { data: 'waste_bin_id', name: 'waste_bin_id' },
             { data: 'waste_bin_type_name', name: 'waste_bin_type_name', orderable: false, searchable: false },
@@ -65,14 +130,7 @@ $(function () {
             { data: 'road_name', name: 'road_name' },
             { data: 'action', name: 'action', orderable: false, searchable: false }
         ]
-    });
-
-    $('#export').on('click', function (e) {
-        e.preventDefault();
-        window.location.href = "{!! route('swm.waste-bins.export') !!}";
-    });
-
-    $('#data-table').on('draw', function () {
+    }).on('draw', function () {
         $('.delete').on('click', function (e) {
             var form = $(this).closest('form');
             e.preventDefault();
@@ -91,6 +149,25 @@ $(function () {
                 }
             });
         });
+    });
+
+    resetDataTable(dataTable);
+
+    $('#filter-form').on('submit', function (e) {
+        e.preventDefault();
+        dataTable.draw();
+    });
+
+    $('#export').on('click', function (e) {
+        e.preventDefault();
+        window.location.href = "{!! route('swm.waste-bins.export') !!}?" +
+            "waste_bin_id=" + encodeURIComponent($('#waste_bin_id').val() || '') +
+            "&waste_bin_type_id=" + encodeURIComponent($('#waste_bin_type_id').val() || '') +
+            "&bin=" + encodeURIComponent($('#bin').val() || '') +
+            "&ward_no=" + encodeURIComponent($('#ward_no').val() || '') +
+            "&placed_at_buildings=" + encodeURIComponent($('#placed_at_buildings').val() || '') +
+            "&road_no=" + encodeURIComponent($('#road_no').val() || '') +
+            "&road_name=" + encodeURIComponent($('#road_name').val() || '');
     });
 });
 </script>

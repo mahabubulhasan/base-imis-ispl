@@ -29,8 +29,10 @@ class WasteBinController extends Controller
     public function index()
     {
         $page_title = __('Waste Bins');
+        $wards = Ward::getInAscOrder();
+        $wasteBinTypes = WasteBinType::query()->whereNull('deleted_at')->orderBy('name')->pluck('name', 'id');
 
-        return view('swm.service-facilities.waste-bins.index', compact('page_title'));
+        return view('swm.service-facilities.waste-bins.index', compact('page_title', 'wards', 'wasteBinTypes'));
     }
 
     public function getData(Request $request)

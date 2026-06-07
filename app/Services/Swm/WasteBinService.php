@@ -16,6 +16,7 @@ class WasteBinService
         $query = WasteBin::query()->with(['wasteBinType'])->whereNull('deleted_at');
 
         return DataTables::of($query)
+            ->filter(fn ($q) => $this->applyFilters($q, $data))
             ->editColumn('waste_bin_id', fn ($row) => $row->waste_bin_id ?? '')
             ->addColumn('waste_bin_type_name', fn ($row) => optional($row->wasteBinType)->name)
             ->addColumn('placed_at_buildings_label', fn ($row) => $row->placed_at_buildings ? __('Yes') : __('No'))
@@ -68,10 +69,11 @@ class WasteBinService
         ];
 
         $rows = [];
-        WasteBin::query()
+        $query = WasteBin::query()
             ->with(['wasteBinType'])
-            ->whereNull('deleted_at')
-            ->orderBy('id')
+            ->whereNull('deleted_at');
+        $this->applyFilters($query, $data);
+        $query->orderBy('id')
             ->chunk(5000, function ($chunk) use (&$rows) {
                 foreach ($chunk as $row) {
                     $rows[] = [
@@ -86,6 +88,31 @@ class WasteBinService
             });
 
         (new SwmExcelTemplateWriter())->downloadData('SW Waste Bins.xlsx', $headers, $rows);
+    }
+
+    protected function applyFilters($query, array $data): void
+    {
+        if (! empty($data['waste_bin_id'] ?? null)) {
+            $query->where('waste_bin_id', 'ILIKE', '%'.trim((string) $data['waste_bin_id']).'%');
+        }
+        if (! empty($data['waste_bin_type_id'] ?? null)) {
+            $query->where('waste_bin_type_id', (int) $data['waste_bin_type_id']);
+        }
+        if (! empty($data['bin'] ?? null)) {
+            $query->where('bin', 'ILIKE', '%'.trim((string) $data['bin']).'%');
+        }
+        if (! empty($data['ward_no'] ?? null)) {
+            $query->where('ward_no', (int) $data['ward_no']);
+        }
+        if (array_key_exists('placed_at_buildings', $data) && $data['placed_at_buildings'] !== '' && $data['placed_at_buildings'] !== null) {
+            $query->where('placed_at_buildings', filter_var($data['placed_at_buildings'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? $data['placed_at_buildings']);
+        }
+        if (! empty($data['road_no'] ?? null)) {
+            $query->where('road_no', 'ILIKE', '%'.trim((string) $data['road_no']).'%');
+        }
+        if (! empty($data['road_name'] ?? null)) {
+            $query->where('road_name', 'ILIKE', '%'.trim((string) $data['road_name']).'%');
+        }
     }
 
     public function downloadTemplate(): void
