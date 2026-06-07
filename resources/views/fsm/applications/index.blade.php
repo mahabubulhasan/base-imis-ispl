@@ -12,9 +12,9 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 @section('content')
     <div class="card">
         <div class="card-header">
-            @if (!empty($createBtnLink) && !empty($createBtnTitle))
+            {{-- @if (!empty($createBtnLink) && !empty($createBtnTitle))
                 <a href="{{ $createBtnLink }}" class="btn btn-info">{{ $createBtnTitle }}</a>
-            @endif
+            @endif --}}
             @if (!empty($exportBtnLink))
                 <a href="{{ $exportBtnLink }}" class="btn btn-info" id="export" onclick="exportToCsv(event)" >{{ __('Export to CSV') }}</a>
             @endif
@@ -296,7 +296,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                         data: 'road_code',
                         name: 'road_code'
                     },
-                
+
                     {
                         data: 'emptying_status',
                         name: 'emptying_status'
@@ -361,7 +361,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
             $('#filter-form').on('submit', function(e) {
                 var date_from = $('#date_from').val();
                 var date_to = $('#date_to').val();
-             
+
 
                 if ((date_from !== '') && (date_to === '')) {
 
@@ -423,7 +423,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
             setTimeout(function() {
                 localStorage.clear();
             }, 60 * 60 * 1000); ///for 1 hour
-            
+
             $('#road_code').prepend('<option selected=""></option>').select2({
                 ajax: {
                     url: "{{ route('roadlines.get-road-names') }}",
