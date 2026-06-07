@@ -269,16 +269,24 @@
 .swm-dashboard .swm-charts-row {
     margin-left: calc(var(--swm-gutter) * -1);
     margin-right: calc(var(--swm-gutter) * -1);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
 }
 
 .swm-dashboard .swm-charts-row > [class*="col-"] {
     padding-left: var(--swm-gutter);
     padding-right: var(--swm-gutter);
+    display: flex;
 }
 
 .swm-dashboard .swm-chart-card {
     border-top: 2px solid var(--swm-primary);
     margin-bottom: 0;
+    flex: 1 1 auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .swm-dashboard .swm-chart-card .card-header {
@@ -287,6 +295,9 @@
 
 .swm-dashboard .swm-chart-card .card-body {
     padding: 12px 15px 16px;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .swm-dashboard .chart-wrap {
@@ -294,6 +305,7 @@
     width: 100%;
     min-height: 0;
     padding-top: 6px;
+    flex: 1 1 auto;
 }
 
 .swm-dashboard .swm-chart-card--doughnut .card-title {

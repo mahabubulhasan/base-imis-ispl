@@ -179,6 +179,8 @@
         } else if (opts.integerYTicks || !unitY) {
             yTicks.precision = 0;
             yTicks.stepSize = 1;
+        } else if (opts.decimalValues) {
+            yTicks.precision = 2;
         }
         var yAxis = { ticks: yTicks };
         if (unitY) {

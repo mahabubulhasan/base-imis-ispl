@@ -148,7 +148,7 @@ final class BillingDashboardMetrics
             'total_billed_amount' => $totalBilledAmount,
             'due_for_this_month' => $dueForThisMonth,
             'total_due' => $totalDue,
-            'total_revenue_collected' => $this->sumRevenueForMonth($monthDate),
+            'total_revenue_collected' => $this->sumRevenueThroughMonth($monthDate),
             'total_payable' => $totalPayable,
             'total_paid' => $totalPaid,
             'total_previous_due' => $totalPreviousDue,
@@ -309,6 +309,16 @@ final class BillingDashboardMetrics
         $sum = BillCollectionPayment::query()
             ->whereNull('deleted_at')
             ->whereDate('payment_for_month', $monthDate)
+            ->sum(DB::raw('amount + COALESCE(due_paid, 0)'));
+
+        return number_format((float) $sum, 2, '.', '');
+    }
+
+    protected function sumRevenueThroughMonth(string $monthDate): string
+    {
+        $sum = BillCollectionPayment::query()
+            ->whereNull('deleted_at')
+            ->whereDate('payment_for_month', '<=', $monthDate)
             ->sum(DB::raw('amount + COALESCE(due_paid, 0)'));
 
         return number_format((float) $sum, 2, '.', '');

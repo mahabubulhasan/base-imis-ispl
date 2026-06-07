@@ -156,6 +156,7 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
                                 $this->countChartAxisY(__('Households')),
                                 ['integerYTicks' => true],
                             ),
+                            'height' => 320,
                         ],
                         [
                             'id' => 'swmChartWasteBinPresence',
@@ -166,6 +167,7 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
                                 ['label' => __('Count'), 'data' => array_map(static fn ($v) => (int) $v, $binAligned['values'])],
                             ],
                             'options' => [],
+                            'height' => 320,
                         ],
                     ],
                 ],
@@ -222,12 +224,12 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
                         ['name' => __('Total SW Generation'), 'value' => $this->formatter->decimal($dailyGenTon), 'unit' => __('Ton/day'), 'showFrequency' => false],
                         ['name' => __('Per Household SW Generation'), 'value' => $this->formatter->decimal($pTimesAvgFamily), 'unit' => __('Kg/day'), 'showFrequency' => true],
                         ['name' => __('SW Collected by Formal System'), 'value' => $this->formatter->decimal($collectedDailyTon), 'unit' => __('Ton/day'), 'showFrequency' => true],
-                        ['name' => __('Percent of SW Collected from Total Generated'), 'value' => $this->formatter->percentValue($pctCollected), 'unit' => '%', 'showFrequency' => true],
+                        ['name' => __('Percent of SW Collected from Total Generated'), 'value' => $this->formatter->percentValue($pctCollected, 2), 'unit' => '%', 'showFrequency' => true],
                         ['name' => __('SW Disposed at Designated Site'), 'value' => $this->formatter->decimal($disposedDesignatedDaily), 'unit' => __('Ton/day'), 'showFrequency' => true],
                         ['name' => __('SW Disposed at Non-Designated Sites'), 'value' => $this->formatter->decimal($nonDesignated), 'unit' => __('Ton/day'), 'showFrequency' => true],
                         ['name' => __('Uncollected SW'), 'value' => $this->formatter->decimal($uncollected), 'unit' => __('Ton/day'), 'showFrequency' => true],
                         ['name' => __('Households Practicing Waste Segregation'), 'value' => $this->formatter->integer($agg->segregation_yes), 'unit' => __('Number'), 'showFrequency' => true, 'hideUnit' => true],
-                        ['name' => __('Percent of Households Practicing Waste Segregation'), 'value' => $this->formatter->percentValue($pctSeg), 'unit' => '%', 'showFrequency' => true],
+                        ['name' => __('Percent of Households Practicing Waste Segregation'), 'value' => $this->formatter->percentValue($pctSeg, 2), 'unit' => '%', 'showFrequency' => true],
                     ],
                 ],
                 [
@@ -464,7 +466,7 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
         $byWard = [];
         foreach ($rows as $row) {
             $byWard[$row->ward] = (int) $row->total > 0
-                ? round(((int) $row->yes_count / (int) $row->total) * 100, 1)
+                ? round(((int) $row->yes_count / (int) $row->total) * 100, 2)
                 : 0;
         }
 

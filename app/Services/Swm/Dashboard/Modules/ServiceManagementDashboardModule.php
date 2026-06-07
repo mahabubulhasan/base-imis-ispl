@@ -236,31 +236,31 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
         return [
             [
                 'name' => __('Composting Rate'),
-                'value' => $this->formatter->safePercent($streams['organic_waste_composted_ton'], $received),
+                'value' => $this->formatter->safePercent($streams['organic_waste_composted_ton'], $received, 2),
                 'unit' => '%',
                 'showFrequency' => true,
             ],
             [
                 'name' => __('Recycling Rate'),
-                'value' => $this->formatter->safePercent($streams['inorganic_waste_recycled_ton'], $received),
+                'value' => $this->formatter->safePercent($streams['inorganic_waste_recycled_ton'], $received, 2),
                 'unit' => '%',
                 'showFrequency' => true,
             ],
             [
                 'name' => __('Incineration Rate'),
-                'value' => $this->formatter->safePercent($streams['waste_incinerated_ton'], $received),
+                'value' => $this->formatter->safePercent($streams['waste_incinerated_ton'], $received, 2),
                 'unit' => '%',
                 'showFrequency' => true,
             ],
             [
                 'name' => __('Open Burning Rate'),
-                'value' => $this->formatter->safePercent($streams['waste_burned_open_air_ton'], $received),
+                'value' => $this->formatter->safePercent($streams['waste_burned_open_air_ton'], $received, 2),
                 'unit' => '%',
                 'showFrequency' => true,
             ],
             [
                 'name' => __('Residual Waste Landfilling Rate'),
-                'value' => $this->formatter->safePercent($streams['residual_waste_landfilled_ton'], $received),
+                'value' => $this->formatter->safePercent($streams['residual_waste_landfilled_ton'], $received, 2),
                 'unit' => '%',
                 'showFrequency' => true,
             ],
@@ -269,6 +269,7 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
                 'value' => $this->formatter->safePercent(
                     $streams['organic_waste_composted_ton'] + $streams['inorganic_waste_recycled_ton'],
                     $received,
+                    2,
                 ),
                 'unit' => '%',
                 'showFrequency' => true,
@@ -303,7 +304,7 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
         for ($date = $start->copy(); $date->lte($end); $date->addDay()) {
             $key = $date->toDateString();
             $labels[] = $date->format('M j');
-            $values[] = round((float) ($ratesByDate[$key] ?? 0), 1);
+            $values[] = round((float) ($ratesByDate[$key] ?? 0), 2);
         }
 
         return [
@@ -329,7 +330,7 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
         $rows = $this->averageDailyAttendanceRatesGrouped($start, $end, $period, 'organization');
         $byOrg = [];
         foreach ($rows as $row) {
-            $byOrg[$row['label']] = round((float) $row['rate'], 1);
+            $byOrg[$row['label']] = round((float) $row['rate'], 2);
         }
         $aligned = $this->alignCountsToCategoryAxis($byOrg, $this->masterOrganizationCategoryKeys());
 
@@ -354,7 +355,7 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
         $rows = $this->averageDailyAttendanceRatesGrouped($start, $end, $period, 'department');
         $byDept = [];
         foreach ($rows as $row) {
-            $byDept[$row['label']] = round((float) $row['rate'], 1);
+            $byDept[$row['label']] = round((float) $row['rate'], 2);
         }
         $aligned = $this->alignCountsToCategoryAxis($byDept, $this->masterAttendanceDepartmentCategoryKeys());
 
@@ -737,7 +738,7 @@ class ServiceManagementDashboardModule implements SwmDashboardModuleInterface
                 continue;
             }
             $labels[] = __($labelKey);
-            $values[] = round(($ton / $received) * 100, 1);
+            $values[] = round(($ton / $received) * 100, 2);
         }
 
         return [

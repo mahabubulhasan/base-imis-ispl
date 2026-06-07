@@ -56,7 +56,7 @@ class BillingDashboardModule implements SwmDashboardModuleInterface
             'blocks' => [
                 [
                     'type' => 'tiles',
-                    'items' => $this->tileItems($agg),
+                    'items' => $this->tileItems($agg, $period),
                 ],
                 [
                     'type' => 'charts',
@@ -83,7 +83,7 @@ class BillingDashboardModule implements SwmDashboardModuleInterface
      * @param  array<string, mixed>  $agg
      * @return list<array<string, string>>
      */
-    protected function tileItems(array $agg): array
+    protected function tileItems(array $agg, DashboardReportingPeriod $period): array
     {
         $billed = (int) ($agg['billed_household_count'] ?? 0);
         $defaultCount = (int) ($agg['default_count'] ?? 0);
@@ -103,7 +103,9 @@ class BillingDashboardModule implements SwmDashboardModuleInterface
             //     'icon' => 'fa-calendar-alt',
             // ],
             [
-                'label' => __('Total Bill Collected (Taka)'),
+                'label' => __('Total Bill Collected (through :month) (Taka)', [
+                    'month' => $period->toMonth->format('M Y'),
+                ]),
                 'value' => $this->formatter->integer($agg['total_revenue_collected']),
                 'icon' => 'fa-coins',
             ],

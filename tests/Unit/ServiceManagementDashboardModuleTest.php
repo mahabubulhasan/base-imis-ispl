@@ -140,11 +140,11 @@ class ServiceManagementDashboardModuleTest extends TestCase
 
         $kpis = $this->kpisFromSubmodule($result, 'waste_processing');
         $this->assertCount(6, $kpis);
-        $this->assertSame('20.0', $kpis[__('Composting Rate')]['value']);
+        $this->assertSame('20.00', $kpis[__('Composting Rate')]['value']);
         $this->assertSame('%', $kpis[__('Composting Rate')]['unit']);
         $this->assertTrue($kpis[__('Composting Rate')]['showFrequency']);
-        $this->assertSame('30.0', $kpis[__('Resource Recovery Rate')]['value']);
-        $this->assertSame('60.0', $kpis[__('Residual Waste Landfilling Rate')]['value']);
+        $this->assertSame('30.00', $kpis[__('Resource Recovery Rate')]['value']);
+        $this->assertSame('60.00', $kpis[__('Residual Waste Landfilling Rate')]['value']);
 
         $charts = $this->chartsFromSubmodule($result, 'waste_processing');
         $this->assertSame('doughnut', $charts['swmChartSmWasteDistribution']['type']);
@@ -176,9 +176,9 @@ class ServiceManagementDashboardModuleTest extends TestCase
             '100.00',
             $tiles[__('Total Waste Received for Processing (through :month) (Ton)', ['month' => 'May 2026'])],
         );
-        $this->assertSame('20.0', $kpis[__('Composting Rate')]['value']);
-        $this->assertSame('30.0', $kpis[__('Resource Recovery Rate')]['value']);
-        $this->assertSame('60.0', $kpis[__('Residual Waste Landfilling Rate')]['value']);
+        $this->assertSame('20.00', $kpis[__('Composting Rate')]['value']);
+        $this->assertSame('30.00', $kpis[__('Resource Recovery Rate')]['value']);
+        $this->assertSame('60.00', $kpis[__('Residual Waste Landfilling Rate')]['value']);
     }
 
     public function test_chart_types_for_attendance_and_sts(): void

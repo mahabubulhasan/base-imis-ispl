@@ -59,9 +59,39 @@ class BillingDashboardModuleTest extends TestCase
         $tiles = $this->tilesFromResult($this->module->build($period));
 
         $this->assertSame('500', $tiles[__('Total Billed Amount (Taka)')]);
-        $this->assertSame('100', $tiles[__('Due for This Month (Taka)')]);
-        $this->assertSame('400', $tiles[__('Total Bill Collected (Taka)']);
+        $this->assertSame(
+            '400',
+            $tiles[__('Total Bill Collected (through :month) (Taka)', ['month' => 'Apr 2026'])],
+        );
         $this->assertSame('100', $tiles[__('Total Due (Taka)']);
+    }
+
+    public function test_total_bill_collected_tile_includes_prior_months_through_selected_month(): void
+    {
+        $period = $this->mayTestPeriod();
+        $site = $this->createHousehold([
+            'waste_charge' => 500,
+            'using_this_service_since' => '2026-04-01',
+            'ward' => '5',
+        ]);
+
+        BillCollectionPayment::query()->create([
+            'household_id' => $site->id,
+            'holding_number' => $site->holding_number,
+            'customer_id' => $site->household_id,
+            'amount' => 300,
+            'due_paid' => 100,
+            'payment_for_month' => '2026-04-01',
+            'payment_time' => '2026-04-15 10:00:00',
+            'payment_method' => 'cash',
+        ]);
+
+        $tiles = $this->tilesFromResult($this->module->build($period));
+
+        $this->assertSame(
+            '400',
+            $tiles[__('Total Bill Collected (through :month) (Taka)', ['month' => 'May 2026'])],
+        );
     }
 
     public function test_bill_collection_by_ward_chart_sums_cumulative_through_month(): void
@@ -223,6 +253,21 @@ class BillingDashboardModuleTest extends TestCase
 
         return new DashboardReportingPeriod(
             Carbon::parse('2026-04-01'),
+            $periodEnd,
+            [
+                DashboardReportingPeriod::SOURCE_HOUSEHOLD => ReportingWindow::empty($periodEnd),
+                DashboardReportingPeriod::SOURCE_LANDFILL => ReportingWindow::empty($periodEnd),
+                DashboardReportingPeriod::SOURCE_COMPLAINT => ReportingWindow::empty($periodEnd),
+            ],
+        );
+    }
+
+    private function mayTestPeriod(): DashboardReportingPeriod
+    {
+        $periodEnd = Carbon::parse('2026-05-31 23:59:59');
+
+        return new DashboardReportingPeriod(
+            Carbon::parse('2026-05-01'),
             $periodEnd,
             [
                 DashboardReportingPeriod::SOURCE_HOUSEHOLD => ReportingWindow::empty($periodEnd),
