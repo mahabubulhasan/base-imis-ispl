@@ -1864,7 +1864,7 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
 @push('scripts')
 <!--    <script src="{{ asset ('/old/js/html2canvas.min.js') }}"></script>
     <script src="{{ asset ('/old/js/html2canvas.js') }}"></script>-->
-
+    <script src="{{ asset ('/js/tabs.js') }}"></script>
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -10256,46 +10256,7 @@ $.ajax({
                                         html += '<td><strong>' + vv + '</strong>@can('Edit Building Structure')<br>Click <a href="{{ url("building-info/buildings") }}/'+vv+'/edit">here</a> to edit building info @endcan</td>';
                                     }
                                 else if (k == 'house_image' && layer == 'buildings_layer') {
-                                        let vv = data.features[0].properties.bin;
-                                        let basePath = "{{ asset('') }}";
-
-                                        let imagePathJpg = basePath + 'storage/emptyings/houses/' + vv + '.jpg';
-                                        let imagePathJpeg = basePath + 'storage/emptyings/houses/' + vv + '.jpeg';
-                                        // let defaultImage ="{{ asset('emptyings/houses/default_img.jpg') }}";
-
-
-                                        checkImageExistence(imagePathJpg)
-                                                .done(function (data, textStatus, jqXHR) {
-                                                    if (jqXHR.status === 200) {
-                                                        html += `<div class="row">`;
-                                                        html += `<div class="col-sm-3"><strong>${kk}</strong></div>`;
-                                                        html += `<div class="col-sm-8"><img src="${imagePathJpg}" alt="House Image" style="max-width: 300px; max-height: 300px;" /></div>`;
-                                                        html += `</div>`;
-
-                                                        $('#feature_information').html(html);
-                                                    }
-                                                })
-                                                .fail(function () {
-                                                    checkImageExistence(imagePathJpeg)
-                                                        .done(function (data, textStatus, jqXHR) {
-                                                            if (jqXHR.status === 200) {
-                                                                html += `<div class="row">`;
-                                                                html += `<div class="col-sm-3"><strong>${kk}</strong></div>`;
-                                                                html += `<div class="col-sm-8"><img src="${imagePathJpeg}" alt="House Image" style="max-width: 300px; max-height: 300px;" /></div>`;
-                                                                html += `</div>`;
-
-                                                                $('#feature_information').html(html);
-                                                            }
-                                                        })
-                                                        .fail(function () {
-                                                            html += `<div class="row">`;
-                                                                html += `<div class="col-sm-6">${kk}</div>`;
-                                                                html += `<div class="col-sm-5"><strong>No House Image</strong></div>`;
-                                                                html += `</div>`;
-                                                            $('#feature_information').html(html);
-                                                        });
-                                                });
-
+                                        // Skip in loop - will be handled after table is built
                                     }
                                     else{
                                     html += '<td>' + kk + '</td>';
@@ -10303,9 +10264,72 @@ $.ajax({
                                 }
                                     html += '</tr>';
                                 });
-                                html += '</tbody></table>';
-                                $('#feature_information').html(html);
-                                removeAjaxLoader();
+                                html += '</tbody></table></div>';
+
+                                // Handle image check after table is built (async, non-blocking)
+                                (async function() {
+                                    if (layer === 'buildings_layer' && data.features[0].properties.house_image !== undefined) {
+                                        const bin = data.features[0].properties.bin;
+                                        const basePath = "{{ asset('') }}";
+                                        const imagePathJpg = basePath + 'storage/emptyings/houses/' + bin + '.jpg';
+                                        const imagePathJpeg = basePath + 'storage/emptyings/houses/' + bin + '.jpeg';
+
+                                        try {
+                                            // Check JPG first
+                                            await $.ajax({
+                                                url: imagePathJpg,
+                                                type: 'HEAD',
+                                                timeout: 2000 // 2 second timeout for performance
+                                            });
+
+                                            html += `<div class="row" style="margin-top: 15px;">
+                                                <div class="col-sm-3"><strong>House Image</strong></div>
+                                                <div class="col-sm-8"><img src="${imagePathJpg}" alt="House Image" style="max-width: 300px; max-height: 300px;" /></div>
+                                            </div>`;
+                                        } catch (jpgError) {
+                                            try {
+                                                // Try JPEG if JPG fails
+                                                await $.ajax({
+                                                    url: imagePathJpeg,
+                                                    type: 'HEAD',
+                                                    timeout: 2000
+                                                });
+
+                                                html += `<div class="row" style="margin-top: 15px;">
+                                                    <div class="col-sm-3"><strong>House Image</strong></div>
+                                                    <div class="col-sm-8"><img src="${imagePathJpeg}" alt="House Image" style="max-width: 300px; max-height: 300px;" /></div>
+                                                </div>`;
+                                            } catch (jpegError) {
+                                                // No image found
+                                                html += `<div class="row" style="margin-top: 15px;">
+                                                    <div class="col-sm-6"><strong>House Image</strong></div>
+                                                    <div class="col-sm-5"><strong>No House Image</strong></div>
+                                                </div>`;
+                                            }
+                                        }
+                                    }
+
+                                    // Render tabs after image check (or immediately if not buildings layer)
+                                    renderTabs();
+                                })();
+
+                                function renderTabs() {
+                                    const tabs = `
+                                    <tab-container>
+                                        <tab-navigation slot="navigation">
+                                            <tab-button target="building" active="">Building</tab-button>
+                                            <tab-button target="household">Household</tab-button>
+                                        </tab-navigation>
+                                        <tab-content slot="content">
+                                            <tab-panel id="building" active="">${html}</tab-panel>
+                                            <tab-panel id="household">House Hold info coming soon...</tab-panel>
+                                        </tab-content>
+                                    </tab-container>
+                                    `;
+
+                                    $('#feature_information').html(tabs);
+                                    removeAjaxLoader();
+                                }
                             } else {
                                 $('#feature_information').html('');
                                 $('#feature-info-popup-closer').click();
