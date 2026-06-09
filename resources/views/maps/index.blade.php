@@ -489,8 +489,8 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                 <a href="#" id="popup-marker-closer" class="ol-popup-closer"></a>
                 <div id="popup-marker-content"></div>
             </div>
-            <div id="feature-info-popup" class="ol-popup" style="display: none; position: fixed; top: 100px; left: 100px; max-height: 300px; min-width: 450px; max-width: 500px; border: 1px solid #ddd; background-color: #fff; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
-    <a href="#" id="feature-info-popup-closer" class="ol-popup-closer" style="text-decoration: none; font-size: 16px; position: absolute; top: 10px; right: 10px;"></a>
+            <div id="feature-info-popup" class="ol-popup" style="display: none; max-height: 300px; min-width: 450px; max-width: 500px;">
+    <a href="#" id="feature-info-popup-closer" class="ol-popup-closer"></a>
     <div id="feature_information" style="max-height: 250px; min-width: 450px; overflow-y: auto; padding: 10px;">
         <!-- Content goes here -->
     </div>
@@ -9592,6 +9592,7 @@ $.ajax({
                 element: featureInfoPopupContainer,
                 autoPan: true,
                 stopEvent: true,
+                offset: [0, -60],
                 autoPanAnimation: {
                     duration: 250
                 }
