@@ -83,10 +83,10 @@
                                         </select>
                                     </div>
                                     @endif
-                                    <label for="work_type_id" class="col-md-2 col-form-label">{{ __('Work Type') }}</label>
+                                    <label for="work_type_id" class="col-md-2 col-form-label">{{ __('Worker Type') }}</label>
                                     <div class="col-md-2">
                                         <select class="form-control chosen-select" id="work_type_id" name="work_type_id">
-                                            <option value="">{{ __('Work Type') }}</option>
+                                            <option value="">{{ __('Worker Type') }}</option>
                                             @foreach($workTypes as $wid => $wname)
                                             <option value="{{ $wid }}">{{ $wname }}</option>
                                             @endforeach
