@@ -160,7 +160,7 @@ class LandfillLogController extends Controller
 
     public function create()
     {
-        $page_title = __('Add Landfill Loading Loading');
+        $page_title = __('Add Landfill Loading');
         $landfillLog = null;
         $landfillList = $this->landfillOptionsForForms();
         $stsList = $this->stsOptionsForForms();
@@ -205,7 +205,7 @@ class LandfillLogController extends Controller
 
     public function edit(LandfillLog $landfill_log)
     {
-        $page_title = __('Edit Landfill Loading Loading');
+        $page_title = __('Edit Landfill Loading');
         $landfillLog = $landfill_log->load(['vehicle', 'vehicleType', 'driver', 'landfill', 'wasteType']);
         $landfillList = $this->landfillOptionsForForms();
         $stsList = $this->stsOptionsForForms();
