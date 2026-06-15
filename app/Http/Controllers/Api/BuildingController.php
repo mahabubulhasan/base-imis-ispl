@@ -25,10 +25,26 @@ class BuildingController extends Controller
         $this->buildingFormDataService = $buildingFormDataService;
     }
 
+    public function formMetadata(): JsonResponse
+    {
+        try {
+            return response()->json([
+                'status' => 200,
+                'message' => __('Building form metadata fetched successfully.'),
+                'data' => $this->buildingFormDataService->getFormMetadata(),
+            ])->header('Cache-Control', 'private, max-age=3600');
+        } catch (Throwable $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
     public function editData($bin): JsonResponse
     {
         try {
-            $editData = $this->buildingFormDataService->getEditFormData($bin);
+            $editData = $this->buildingFormDataService->getApiEditData($bin);
 
             if (!$editData) {
                 return response()->json([
@@ -58,7 +74,9 @@ class BuildingController extends Controller
                 'status' => 200,
                 'message' => __('Building create form data fetched successfully.'),
                 'data' => $this->buildingFormDataService->getCreateFormData(),
-            ]);
+            ])
+                ->header('Deprecation', 'true')
+                ->header('Link', '</api/building-info/buildings/form-metadata>; rel="successor-version"');
         } catch (Throwable $e) {
             return response()->json([
                 'status' => 500,

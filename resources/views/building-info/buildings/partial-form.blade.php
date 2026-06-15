@@ -130,7 +130,7 @@
     {!! Form::label('tax_code', __('Tax Code/Holding ID'), ['class' => 'col-sm-3 control-label ']) !!}
     <div class="col-sm-5">
         {{-- Hidden input that will contain the final comma-separated values for submission --}}
-        {!! Form::hidden('tax_code', old('tax_code', isset($building) ? $building->tax_code : null), ['id' => 'tax_code_hidden']) !!}
+        {!! Form::hidden('tax_code', old('tax_code', isset($building) ? $building->tax_code : (isset($buildingSurvey) ? $buildingSurvey->tax_code : null)), ['id' => 'tax_code_hidden']) !!}
 
         {{-- Visible tag input UI --}}
         <div id="tax-code-tag-input" class="form-control col-sm-10" style="min-height:42px;padding:6px;display:flex;align-items:center;flex-wrap:wrap;cursor:text;">
@@ -162,10 +162,10 @@
                 'autocomplete' => 'off',
                 'id' => 'surveyed_date',
                 'max' => now()->format('Y-m-d'),
-                'onclick' => 'this.showPicker();', // Trigger date picker when clicked
+                'onclick' => 'this.showPicker();',
             ]) !!}
         @else
-            {!! Form::date('surveyed_date', $buildingSurvey->collected_date, [
+            {!! Form::date('surveyed_date', null, [
                 'class' => 'form-control date col-sm-10',
                 'autocomplete' => 'off',
                 'id' => 'surveyed_date',
@@ -622,14 +622,24 @@
 <div class="form-group row">
     {!! Form::label('house_image', __('House Image'), ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-5">
-        {!! Form::file('house_image', null, [ 'class' => 'form-control col-sm-10']) !!}
+        {!! Form::file('house_image', null, ['class' => 'form-control col-sm-10']) !!}
         <small class="form-text" id="fileSizeHintImg">(Image (JPG,JPEG) size should not be more than 5MB)</small>
+        @if (!empty($buildingSurvey) && !empty($buildingSurvey->payload_json['house_image']))
+            <div class="mt-2">
+                <a href="{{ asset('storage/' . str_replace('public/', '', $buildingSurvey->payload_json['house_image'])) }}"
+                    target="_blank">{{ __('View uploaded house image') }}</a>
+            </div>
+        @endif
     </div>
 </div>
 </div><!-- /.card-body -->
 
 <div class="card-footer">
-    <a href="{{ action('BuildingInfo\BuildingController@index') }}" class="btn btn-info">Back to List</a>
+    @if (!empty($buildingSurvey))
+        <a href="{{ url('building-info/building-surveys') }}" class="btn btn-info">{{ __('Back to List') }}</a>
+    @else
+        <a href="{{ action('BuildingInfo\BuildingController@index') }}" class="btn btn-info">{{ __('Back to List') }}</a>
+    @endif
     {!! Form::submit('Save', [
         'class' => 'btn btn-info prevent-multiple-submits',
         'id' => 'prevent-multiple-submits',
@@ -836,7 +846,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 
         // prepopulate from existing hidden value (model binding or old input)
         function preload() {
-            const val = hidden.value || '{{ old("tax_code") ?? (isset($building) ? $building->tax_code : "") }}';
+            const val = hidden.value || '{{ old("tax_code") ?? (isset($building) ? $building->tax_code : (isset($buildingSurvey) ? $buildingSurvey->tax_code : "")) }}';
             if (!val) return;
             // if server provided comma-separated or single value, split
             const items = val.split(',').map(s => s.trim()).filter(Boolean);
