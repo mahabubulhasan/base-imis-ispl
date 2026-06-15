@@ -26,7 +26,7 @@ class AuthController extends Controller
                  'email' => 'required|email',
                  'password' => 'required'
              ]);
-     
+
              if ($validateUser->fails()) {
                  return response()->json([
                      'status' => false,
@@ -34,13 +34,13 @@ class AuthController extends Controller
                      'errors' => $validateUser->errors()
                  ], 401);
              }
-     
+
              // Normalize email to lowercase
              $credentials = [
                  'email' => strtolower($request->input('email')),
                  'password' => $request->input('password')
              ];
-     
+
              // Attempt authentication
              if (!Auth::attempt($credentials)) {
                  return response()->json([
@@ -48,19 +48,20 @@ class AuthController extends Controller
                      'message' => __('Email & Password do not match our records.'),
                  ], 401);
              }
-     
+
              // Get the authenticated user
              $user = Auth::user();
-     
+
              // Define the roles to check
              $allowedRoles = [
                  'Super Admin',
                  'Municipality - Super Admin',
                  'Municipality - Building Surveyor',
                  'Municipality - Infrastructure Department',
-                 'Service Provider - Emptying Operator'
+                 'Service Provider - Emptying Operator',
+                 'Treatment Plant - Admin'
              ];
-     
+
              // Check if the user has any of the allowed roles
              if (!$user->hasAnyRole($allowedRoles)) {
                  return response()->json([
@@ -68,7 +69,7 @@ class AuthController extends Controller
                      'message' => __('Unauthorized: You do not have the required role to log in.'),
                  ], 403);
              }
-     
+
              // Generate the token and return success response
              return response()->json([
                  'status' => true,
@@ -82,8 +83,9 @@ class AuthController extends Controller
                      "service_provider" => $user->service_provider->company_name ?? null,
                      "permissions" => [
                          "building-survey" => (bool)$user->can('Access Building Survey API'),
-                         "save-emptying-service" => (bool)$user->can('Access Emptying Service API'),
-                         "sewer-connection" => (bool)$user->can('Access Sewer Connection API')
+                         "save-emptying-service" => (bool)$user->can('Add Emptying'),
+                         "sewer-connection" => (bool)$user->can('Access Sewer Connection API'),
+                         "sludge-collection" => (bool)$user->can('Add Sludge Collection'),
                      ],
                  ]
              ]);
@@ -94,7 +96,7 @@ class AuthController extends Controller
              ], 500);
          }
      }
-     
+
 
     public function logout()
     {

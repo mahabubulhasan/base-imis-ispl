@@ -1,4 +1,7 @@
 <?php
+// Last Modified: 2026-05-11
+// Developed By: Streams Tech Ltd.
+// Description: Language administration controller for managing languages and translations.
 
 namespace App\Http\Controllers\Language;
 
@@ -17,10 +20,6 @@ use Box\Spout\Writer\Style\Color;
 use Box\Spout\Writer\Style\StyleBuilder;
 use Box\Spout\Writer\WriterFactory;
 use Box\Spout\Common\Type;
-use Maatwebsite\Excel\Facades\Excel;
-use Maatwebsite\Excel\HeadingRowImport;
-use Illuminate\Support\Facades\Validator;
-use App\Imports\TranslateImport;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Exception;
 class LanguageController extends Controller
@@ -37,7 +36,7 @@ class LanguageController extends Controller
         $this->middleware('permission:View Language', ['only' => ['history']]);
         $this->middleware('permission:Generate Translation', ['only' => ['generate_translate']]);
         $this->middleware('permission:Export Translation CSV', ['only' => ['export_csv_format']]);
-        $this->middleware('permission:Add Language', ['only' => ['create', 'store','import_translates']]);
+        $this->middleware('permission:Add Language', ['only' => ['create', 'store', 'import_translates']]);
 
 
     }
@@ -91,7 +90,7 @@ class LanguageController extends Controller
                 return redirect('language/setup')->with('error', __(('Unable to generate language file. Please request system administrator to check file permission of your /lang folder.')));
             }
         } else {
-            return redirect('language/setup')->with('error',__('Sorry! Unable find the language'));
+            return redirect('language/setup')->with('error', __('Sorry! Unable find the language'));
         }
         return $result;
     }
@@ -137,7 +136,7 @@ class LanguageController extends Controller
                 $result = ['status' => true];
             }
         }
-        return (object)$result;
+        return (object) $result;
     }
     // function that is called when the language is changed
     // sets app_language cookie as the selected language
@@ -167,7 +166,7 @@ class LanguageController extends Controller
         return Datatables::of($languages)
             ->filter(function ($query) use ($request) {})
             ->addColumn('action', function ($model) {
-                if ($model->code =="en") {
+                if ($model->code == "en") {
                     return '';
                 }
 
@@ -175,36 +174,36 @@ class LanguageController extends Controller
 
                 // Edit Button
                 if (Auth::user()->can('Edit Language')) {
-                    $content .= '<a title="'.__("Edit").'" href="' . action("Language\LanguageController@edit", [$model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-edit"></i></a> ';
+                    $content .= '<a title="' . __("Edit") . '" href="' . action("Language\LanguageController@edit", [$model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-edit"></i></a> ';
                 }
 
                 // Detail Button
                 if (Auth::user()->can('View Language')) {
-                    $content .= '<a title="'.__("Detail").'" href="'. action("Language\LanguageController@show", [$model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-list"></i></a> ';
+                    $content .= '<a title="' . __("Detail") . '" href="' . action("Language\LanguageController@show", [$model->id]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-list"></i></a> ';
                 }
 
                 // Add Translations Button
                 if (Auth::user()->can('Add Translation')) {
 
-                    $content .= '<a title= "'.__("Add/Edit Translations").'" href="' . action("Language\LanguageController@add_translation", [$model->code]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-language" aria-hidden="true"></i></a> ';
+                    $content .= '<a title= "' . __("Add/Edit Translations") . '" href="' . action("Language\LanguageController@add_translation", [$model->code]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-language" aria-hidden="true"></i></a> ';
                 }
 
                 // Import Translations Button
                 if (Auth::user()->can('Add Translation')) {
-                    $content .= '<a title="'.__("Import Translations").'" href="' . action("Language\LanguageController@create_import", [$model->code]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-upload"></i></a> ';
+                    $content .= '<a title="' . __("Import Translations") . '" href="' . action("Language\LanguageController@create_import", [$model->code]) . '" class="btn btn-info btn-sm mb-1"><i class="fa fa-upload"></i></a> ';
                 }
 
                 // Generate Language Button (Form Submission)
                 if (Auth::user()->can('Generate Translation')) {
                     $content .= \Form::open(['method' => 'POST', 'route' => ['lang.generate', $model->code], 'class' => 'd-inline']);
-                    $content .= '<button type="submit" class="btn btn-info btn-sm mb-1 mr-1" title="'.__("Generate Language").'"><i class="fa fa-cogs"></i></button>';
+                    $content .= '<button type="submit" class="btn btn-info btn-sm mb-1 mr-1" title="' . __("Generate Language") . '"><i class="fa fa-cogs"></i></button>';
                     $content .= \Form::close();
                 }
 
                 // Delete Button (Last)
                 if (Auth::user()->can('Delete Language')) {
                     $content .= \Form::open(['method' => 'DELETE', 'route' => ['setup.destroy', $model->id], 'class' => 'd-inline']);
-                    $content .= '<button type="submit" class="btn btn-danger btn-sm mb-1 delete" title="'.__("Delete").'"><i class="fa fa-trash"></i></button>';
+                    $content .= '<button type="submit" class="btn btn-danger btn-sm mb-1 delete" title="' . __("Delete") . '"><i class="fa fa-trash"></i></button>';
                     $content .= \Form::close();
                 }
 
@@ -257,13 +256,13 @@ class LanguageController extends Controller
             // Insert new translations
             foreach ($existingTranslates as $translate) {
                 Translate::create([
-                    'key'      => $translate->key,
-                    'name'     => $data['code'] ?? null,
-                    'text'     => $translate->text,
-                    'pages'    => $translate->pages,
-                    'group'    => $translate->group,
+                    'key' => $translate->key,
+                    'name' => $data['code'] ?? null,
+                    'text' => $translate->text,
+                    'pages' => $translate->pages,
+                    'group' => $translate->group,
                     'platform' => $translate->platform,
-                    'load'     => $translate->load,
+                    'load' => $translate->load,
                 ]);
             }
 
@@ -343,7 +342,7 @@ class LanguageController extends Controller
         $language = Language::find($id);
         if ($language) {
             $page_title = __("Language Details");
-            return view('language.show', compact('page_title',  'language'));
+            return view('language.show', compact('page_title', 'language'));
         } else {
             abort(404);
         }
@@ -357,7 +356,7 @@ class LanguageController extends Controller
      */
     public function edit($id)
     {
-        $page_title =__("Edit Language");
+        $page_title = __("Edit Language");
         $language = Language::find($id);
         return view('language.edit', compact('page_title', 'language'));
     }
@@ -423,20 +422,20 @@ class LanguageController extends Controller
 
 
     public function add_translation($languageId)
-{
-    $pageTitle = __('Add Translations');
+    {
+        $pageTitle = __('Add Translations');
 
-    // Fetch and group source translations
-    $sourceTranslations = DB::table('language.translates')
-        ->where('name', 'en')
-        ->select('key', 'text', 'pages','group')
-        ->distinct('key')
-        ->get()
-        ->sortBy('pages')
-        ->groupBy('pages')
-        ->map(function ($group) {
-            return collect($group)->sortBy('text');
-        });
+        // Fetch and group source translations
+        $sourceTranslations = DB::table('language.translates')
+            ->where('name', 'en')
+            ->select('key', 'text', 'pages', 'group')
+            ->distinct('key')
+            ->get()
+            ->sortBy('pages')
+            ->groupBy('pages')
+            ->map(function ($group) {
+                return collect($group)->sortBy('text');
+            });
 
     // Define custom names for pages
     $customNames = [
@@ -504,20 +503,20 @@ class LanguageController extends Controller
     ];
 
 
-    // Get existing translations for the target language
-    $existingTranslations = DB::table('language.translates')
-        ->where('name', $languageId)
-        ->pluck('text', 'key')
-        ->toArray();
+        // Get existing translations for the target language
+        $existingTranslations = DB::table('language.translates')
+            ->where('name', $languageId)
+            ->pluck('text', 'key')
+            ->toArray();
 
-    return view('language.add_translation', compact(
-        'pageTitle',
-        'languageId',
-        'sourceTranslations',
-        'existingTranslations',
-        'customNames'
-    ));
-}
+        return view('language.add_translation', compact(
+            'pageTitle',
+            'languageId',
+            'sourceTranslations',
+            'existingTranslations',
+            'customNames'
+        ));
+    }
     public function saveStepTranslation(Request $request, $languageId)
     {
         try {
@@ -619,91 +618,156 @@ class LanguageController extends Controller
         return $parts[0] ?? 'general';
     }
 
-      // function that handles CSV import of translations
-      public function import_translates($id,Request $request)
-      {
-          ini_set('max_execution_time', 600);
-          ini_set('memory_limit', '512M');
+    // function that handles CSV import of translations
+    public function import_translates($id, Request $request)
+    {
+        ini_set('max_execution_time', 600);
+        ini_set('memory_limit', '512M');
 
-          // CSV format and required validation
-          Validator::extend('file_extension', function ($attribute, $value, $parameters, $validator) {
-              // Check if the file's extension matches the allowed extensions
-              return in_array($value->getClientOriginalExtension(), $parameters);
-          }, __('File must be CSV format'));
-          // Validate the request with custom messages
-          $this->validate($request, [
-              'csvfile' => 'required|file_extension:csv', // The custom file extension validation rule
-          ], [
-              'required' => __('The CSV file is required.'),
-              'file_extension' => __('File must be CSV format'),  // Error message for the custom validation rule
-          ]);
+        $this->validate($request, [
+            'csvfile' => 'required|file|mimes:csv,txt',
+        ], [
+            'required' => __('The CSV file is required.'),
+            'file' => __('The uploaded value must be a file.'),
+            'mimes' => __('File must be CSV format'),
+        ]);
 
-          if ($request->hasFile('csvfile')) {
-              $data = Excel::toArray(new TranslateImport, $request->file('csvfile'));
-              //checking csv file has all heading row keys
-              $headings = (new HeadingRowImport)->toArray($request->file('csvfile'));
-              $heading_row_errors = array();
-              if (!in_array("key", $headings[0][0])) {
-                  $heading_row_errors['key'] = __("Heading row : key is required");
-              }
-              if (!in_array("text", $headings[0][0])) {
-                  $heading_row_errors['text'] = __("Heading row : text is required");
-              }
-              if (!in_array("translated_text", $headings[0][0])) {
-                  $heading_row_errors['translated_text'] = __("Heading row : translated_text is required");
-              }
-              if (count($heading_row_errors) > 0) {
-                  return back()->withErrors($heading_row_errors);
-              }
-              $updates = [];
-              // Extract the headers from the first row
-              $headers = $headings[0][0];
+        DB::beginTransaction();
 
-              // Map the columns dynamically based on the header names
-              if ($data[0]) {
-                  foreach ($data[0] as $row) {
-                      // Extract values based on column names
-                      $key = $row[array_search("key", $headers)];
-                      $text = $row[array_search("text", $headers)];
-                      $translatedText = $row[array_search("translated_text", $headers)];
+        try {
+            if (!$request->hasFile('csvfile')) {
+                throw new Exception(__('The CSV file is required.'));
+            }
 
-                      // Find the translate record for the given name and key
-                      $translate = Translate::where('name', $id)
-                          ->where('key', $key)
-                          ->first();
+            $file = $request->file('csvfile');
+            $handle = fopen($file->getRealPath(), 'r');
 
-                      // Prepare the update data if the translate record exists and the text has changed
-                      // check if translated text exists, and the imported value is not null and does not match existing stored value
-                      if ($translate && !empty($translatedText) && $translatedText != $translate->text) {
-                          $translate->text = $translatedText;
-                          $updates[] = [
-                              'id' => $translate->id,
-                              'text' => $translate->text
-                          ];
-                      }
-                  }
-              }
-              if (!empty($updates))
-              {
-                  // update values in chunks
-                  foreach (array_chunk($updates, 500) as $chunk) {
-                      foreach ($chunk as $update) {
-                          Translate::where('id', $update['id'])->update(['text' => $update['text']]);
-                      }
-                  }
-              }
+            if ($handle === false) {
+                throw new Exception(__('Unable to read the CSV file.'));
+            }
 
-          }
-          DB::commit();
-          return redirect('language/setup')->with('success', __("Translations have been imported successfully. Generate the translation file to reflect changes."));
-      }
+            $rawHeaders = fgetcsv($handle);
+
+            if ($rawHeaders === false) {
+                fclose($handle);
+                throw new Exception(__('The CSV file must contain a heading row.'));
+            }
+
+            $headers = array_map(function ($header) {
+                $header = preg_replace('/^\xEF\xBB\xBF/', '', (string) $header);
+                return strtolower(trim($header));
+            }, $rawHeaders);
+
+            $requiredHeaders = ['key', 'text', 'translated_text'];
+            $headingRowErrors = [];
+
+            foreach ($requiredHeaders as $requiredHeader) {
+                if (!in_array($requiredHeader, $headers, true)) {
+                    $headingRowErrors[$requiredHeader] = __('Heading row : :heading is required', ['heading' => $requiredHeader]);
+                }
+            }
+
+            if (!empty($headingRowErrors)) {
+                fclose($handle);
+                DB::rollBack();
+                return back()->withErrors($headingRowErrors);
+            }
+
+            $keyIndex = array_search('key', $headers, true);
+            $textIndex = array_search('text', $headers, true);
+            $translatedTextIndex = array_search('translated_text', $headers, true);
+
+            $updates = [];
+            $insertions = [];
+
+            while (($row = fgetcsv($handle)) !== false) {
+                if ($row === [null]) {
+                    continue;
+                }
+
+                $key = isset($row[$keyIndex]) ? trim((string) $row[$keyIndex]) : '';
+                $text = array_key_exists($textIndex, $row) ? trim((string) $row[$textIndex]) : null;
+                $translatedText = array_key_exists($translatedTextIndex, $row) ? trim((string) $row[$translatedTextIndex]) : null;
+
+                if ($key === '') {
+                    continue;
+                }
+
+                $translateRows = Translate::where(function($query) use ($id) {
+                        $query->where('name', 'en')->orWhere('name', $id);
+                    })
+                    ->where('key', $key)
+                    ->get();
+
+                $translateEn = $translateRows->where('name', 'en')->first() ?? null;
+                if ($translateEn && $text !== null) {
+                    if ($text !== $translateEn->text) {
+                        $updates[] = [
+                            'id' => $translateEn->id,
+                            'text' => $text,
+                        ];
+                    }
+                } elseif ($text !== null) {
+                    $insertions[] = [
+                        'key' => $key,
+                        'name' => 'en',
+                        'text' => $text,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+
+
+                $translate = $translateRows->where('name', $id)->first() ?? null;
+
+                if ($translate) {
+                    if ($translatedText !== null && $translatedText !== $translate->text) {
+                        $updates[] = [
+                            'id' => $translate->id,
+                            'text' => $translatedText,
+                        ];
+                    }
+                } elseif($translatedText !== null) {
+                    $insertions[] = [
+                        'key' => $key,
+                        'name' => $id,
+                        'text' => $translatedText,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+            }
+
+            fclose($handle);
+
+            if (!empty($updates)) {
+                foreach (array_chunk($updates, 500) as $chunk) {
+                    foreach ($chunk as $update) {
+                        Translate::where('id', $update['id'])->update(['text' => $update['text']]);
+                    }
+                }
+            }
+
+            if (!empty($insertions)) {
+                foreach (array_chunk($insertions, 500) as $chunk) {
+                    Translate::insert($chunk);
+                }
+            }
+
+            DB::commit();
+            return redirect('language/setup')->with('success', __("Translations have been imported successfully. Generate the translation file to reflect changes."));
+        } catch (Exception $e) {
+            DB::rollBack();
+            return back()->with('error', $e->getMessage());
+        }
+    }
 
     // export csv template for import with the key values pre-filled
     public function export_csv_format()
     {
-        $columns = ['key','text', 'translated_text'];
+        $columns = ['key', 'text', 'translated_text'];
 
-        $query = Translate::select('key', 'text')->where('name','en');
+        $query = Translate::select('key', 'text')->where('name', 'en');
 
         $style = (new StyleBuilder())
             ->setFontBold()

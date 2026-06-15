@@ -57,8 +57,8 @@ class BuildingFormDataService
         }
         $building->ctpt_name = $building->sharedToilets->pluck('id') ?? null;
 
-        $drain_status = false;
-        $sewer_status = false;
+        $drain_status = 0;
+        $sewer_status = 0;
         if ($building->containments()->exists()) {
             foreach ($building->containments as $connectedContainment) {
                 if (KeywordMatcher::matchKeywords($connectedContainment->containmentType->type, ["drain"])) {
