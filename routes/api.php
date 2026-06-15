@@ -124,6 +124,12 @@ Route::group([
         Route::post('/save-containment',[BuildingSurveyController::class,'saveContainment']);
     });
     Route::group(['name' => 'buildingInfo', 'prefix' => 'building-info'],function (){
+        Route::get('/lics/search', [ApiBuildingController::class, 'searchLics']);
+        Route::get('/roads/search', [ApiBuildingController::class, 'searchRoads']);
+        Route::get('/sewers/search', [ApiBuildingController::class, 'searchSewers']);
+        Route::get('/drains/search', [ApiBuildingController::class, 'searchDrains']);
+        Route::get('/water-supplies/search', [ApiBuildingController::class, 'searchWaterSupplies']);
+        Route::get('/buildings/bins/search', [ApiBuildingController::class, 'searchBins']);
         Route::get('/buildings/form-metadata', [ApiBuildingController::class, 'formMetadata']);
         Route::get('/buildings/create-data', [ApiBuildingController::class, 'createData']);
         Route::post('/buildings', [ApiBuildingController::class, 'store']);

@@ -11,20 +11,13 @@ class BuildingFormMetadataTest extends TestCase
 {
     private const FORM_METADATA_KEYS = [
         'ward',
-        'road_code',
         'structure_type',
         'functional_use',
         'usecatgs_json',
         'water_source',
         'toilet_connection',
         'defecation_place',
-        'lic_names',
         'ctpt',
-        'sewer_code',
-        'drain_code',
-        'building_bin',
-        'preconnected_bin',
-        'water_supply',
     ];
 
     private const LEGACY_METADATA_KEYS = [

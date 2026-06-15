@@ -3,7 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BuildingInfo\BinSearchRequest;
 use App\Http\Requests\BuildingInfo\BuildingRequest;
+use App\Http\Requests\BuildingInfo\DrainSearchRequest;
+use App\Http\Requests\BuildingInfo\LicSearchRequest;
+use App\Http\Requests\BuildingInfo\RoadSearchRequest;
+use App\Http\Requests\BuildingInfo\SewerSearchRequest;
+use App\Http\Requests\BuildingInfo\WaterSupplySearchRequest;
 use App\Services\BuildingInfo\BuildingFormDataService;
 use App\Services\BuildingInfo\BuildingStructureService;
 use Illuminate\Http\JsonResponse;
@@ -33,6 +39,139 @@ class BuildingController extends Controller
                 'message' => __('Building form metadata fetched successfully.'),
                 'data' => $this->buildingFormDataService->getFormMetadata(),
             ])->header('Cache-Control', 'private, max-age=3600');
+        } catch (Throwable $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function searchBins(BinSearchRequest $request): JsonResponse
+    {
+        try {
+            $limit = (int) ($request->input('limit', 20));
+
+            return response()->json([
+                'status' => 200,
+                'message' => __('BIN search results fetched successfully.'),
+                'data' => $this->buildingFormDataService->searchBins(
+                    $request->input('q'),
+                    $request->input('type'),
+                    $limit
+                ),
+            ]);
+        } catch (Throwable $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function searchRoads(RoadSearchRequest $request): JsonResponse
+    {
+        try {
+            $query = $request->input('q');
+            $limit = (int) ($request->input('limit', $query ? 50 : 100));
+
+            return response()->json([
+                'status' => 200,
+                'message' => __('Road search results fetched successfully.'),
+                'data' => $this->buildingFormDataService->searchRoads(
+                    $request->input('ward'),
+                    $query,
+                    $limit
+                ),
+            ]);
+        } catch (Throwable $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function searchSewers(SewerSearchRequest $request): JsonResponse
+    {
+        try {
+            $query = $request->input('q');
+            $limit = (int) ($request->input('limit', $query ? 50 : 100));
+
+            return response()->json([
+                'status' => 200,
+                'message' => __('Sewer search results fetched successfully.'),
+                'data' => $this->buildingFormDataService->searchSewers(
+                    $request->input('road_code'),
+                    $query,
+                    $limit
+                ),
+            ]);
+        } catch (Throwable $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function searchDrains(DrainSearchRequest $request): JsonResponse
+    {
+        try {
+            $query = $request->input('q');
+            $limit = (int) ($request->input('limit', $query ? 50 : 100));
+
+            return response()->json([
+                'status' => 200,
+                'message' => __('Drain search results fetched successfully.'),
+                'data' => $this->buildingFormDataService->searchDrains(
+                    $request->input('road_code'),
+                    $query,
+                    $limit
+                ),
+            ]);
+        } catch (Throwable $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function searchLics(LicSearchRequest $request): JsonResponse
+    {
+        try {
+            $query = $request->input('q');
+            $limit = (int) ($request->input('limit', $query ? 50 : 500));
+
+            return response()->json([
+                'status' => 200,
+                'message' => __('LIC search results fetched successfully.'),
+                'data' => $this->buildingFormDataService->searchLics($query, $limit),
+            ]);
+        } catch (Throwable $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function searchWaterSupplies(WaterSupplySearchRequest $request): JsonResponse
+    {
+        try {
+            $query = $request->input('q');
+            $limit = (int) ($request->input('limit', $query ? 50 : 100));
+
+            return response()->json([
+                'status' => 200,
+                'message' => __('Water supply search results fetched successfully.'),
+                'data' => $this->buildingFormDataService->searchWaterSupplies(
+                    $request->input('road_code'),
+                    $query,
+                    $limit
+                ),
+            ]);
         } catch (Throwable $e) {
             return response()->json([
                 'status' => 500,
