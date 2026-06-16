@@ -226,6 +226,7 @@ class RoleController extends Controller
         $swm_landfill_logs = Permission::where('group', 'SW Landfill Logs')->orderBy('type')->get();
         $swm_waste_processing = Permission::where('group', 'SW Waste Processing')->orderBy('type')->get();
         $swm_dashboard_and_kpis = Permission::where('group', 'SW Dashboard and KPIs')->orderBy('type')->get();
+        $swm_module_settings = Permission::where('group', 'SW Module Settings')->orderBy('type')->get();
         $swm_service_facility_landfills = Permission::where('group', 'SW Service Facility Landfills')->orderBy('type')->get();
         $swm_service_facility_sts = Permission::where('group', 'SW Service Facility STS')->orderBy('type')->get();
         $property_tax_collection_iss = Permission::where('group','Property Tax Collection ISS')->orderBy('type')->get();
@@ -288,6 +289,7 @@ class RoleController extends Controller
             'SW Landfill Logs' => $swm_landfill_logs,
             'SW Waste Processing' => $swm_waste_processing,
             'SW Dashboard and KPIs' => $swm_dashboard_and_kpis,
+            'SW Module Settings' => $swm_module_settings,
             'SW Service Facility Landfills' => $swm_service_facility_landfills,
             'SW Service Facility STS' => $swm_service_facility_sts,
             'Property Tax Collection ISS' => $property_tax_collection_iss,
