@@ -1,8 +1,10 @@
 <?php
 use App\Helpers\LanguageSwitcher;
+
+$greeting = __('Hi') . ', ' . config('constants.SITE_NAME') . ', ' . implode(', ', get_current_user_roles());
 ?>
 <nav class="main-header navbar-expand navbar-white navbar-light">
-    <ul class="navbar-nav">
+    <ul class="navbar-nav w-100 flex-nowrap">
         @if (request()->is('maps'))
             <a href="{{ url('/') }}" class="" >
                 <span class="">
@@ -28,15 +30,12 @@ use App\Helpers\LanguageSwitcher;
 
         <!-- Language Dropdown -->
         {!! LanguageSwitcher::language_switcher() !!}
-        <!-- This div is used for aligning the user name and roles to the right -->
-        <div style="flex-grow: 1;"></div> <!-- This pushes content to the right -->
 
-        <!-- Display the user's name and roles on the right side -->
-        <div style="display: flex; justify-content: flex-end; margin-top: 0.5%;">
-            <small>{{__('Hi')}}, {{ config('constants.SITE_NAME') }}, {{ implode(', ', get_current_user_roles()) }}</small>
-        </div>
+        <li class="nav-item header-greeting-item flex-grow-1 min-w-0">
+            <small class="header-greeting text-truncate d-block" title="{{ $greeting }}">{{ $greeting }}</small>
+        </li>
 
-        <li class="nav-item ml-auto">
+        <li class="nav-item">
             <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
                 <i class="fas fa-th-large"></i>
             </a>
