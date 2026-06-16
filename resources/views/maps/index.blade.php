@@ -2278,8 +2278,8 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
             // Authentication Keys
             var authkey = '<?php echo Config::get("constants.AUTH_KEY"); ?>';
             // BBOX Values
-            var bboxstring = @json($bboxstring) || '90.70,22.80,91.00,23.05';
-;
+            var bboxstring = @json($bboxstring) || '88.01,24.41,88.50,24.96'; // chapai
+
             // URL of GeoServer Legends
             var gurl_legend = gurl_wms + "?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&BBOX="+@json($bboxstring)+"&LAYER=";
 
