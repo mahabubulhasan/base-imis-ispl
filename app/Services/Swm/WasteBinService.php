@@ -2,10 +2,12 @@
 
 namespace App\Services\Swm;
 
-use App\Models\LayerInfo\Ward;
 use App\Models\Swm\WasteBin;
 use App\Models\Swm\WasteBinType;
+use App\Support\Swm\SwmExcelColumns;
+use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
+use App\Support\Swm\SwmImportTemplateOptions;
 use Auth;
 use Yajra\DataTables\DataTables;
 
@@ -29,6 +31,10 @@ class WasteBinService
 
                 if (Auth::user()->can('View SW Waste Bin')) {
                     $content .= '<a title="'.__('Detail').'" href="'.action('Swm\WasteBinController@show', [$model->id]).'" class="btn btn-info btn-sm mb-1"><i class="fa fa-list"></i></a> ';
+                }
+
+                if (Auth::user()->can('View SW Waste Bin History')) {
+                    $content .= '<a title="'.__('History').'" href="'.action('Swm\WasteBinController@history', [$model->id]).'" class="btn btn-info btn-sm mb-1"><i class="fa fa-history"></i></a> ';
                 }
 
                 if (Auth::user()->can('Delete SW Waste Bin')) {
@@ -59,14 +65,7 @@ class WasteBinService
 
     public function download(array $data): void
     {
-        $headers = [
-            'waste_bin_id',
-            'waste_bin_type_name',
-            'placed_at_buildings',
-            'bin',
-            'ward_no',
-            'total_capacity_kg',
-        ];
+        $headers = SwmExcelColumns::exportHeaders($this->excelColumnDefinitions());
 
         $rows = [];
         $query = WasteBin::query()
@@ -87,7 +86,7 @@ class WasteBinService
                 }
             });
 
-        (new SwmExcelTemplateWriter())->downloadData('SW Waste Bins.xlsx', $headers, $rows);
+        (new SwmExcelTemplateWriter())->downloadData(SwmExcelFilename::export('waste_bins'), $headers, $rows);
     }
 
     protected function applyFilters($query, array $data): void
@@ -117,21 +116,31 @@ class WasteBinService
 
     public function downloadTemplate(): void
     {
-        $wasteBinTypes = WasteBinType::query()->whereNull('deleted_at')->orderBy('name')->pluck('name')->all();
-        $wards = array_map('strval', array_keys(Ward::getInAscOrder()));
+        (new SwmExcelTemplateWriter())->download(
+            SwmExcelFilename::importTemplate('waste_bins'),
+            SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions())
+        );
+    }
 
-        (new SwmExcelTemplateWriter())->download('SW Waste Bins Import Template.xlsx', [
-            ['key' => 'waste_bin_type', 'label' => 'waste_bin_type', 'required' => true, 'dropdown' => $wasteBinTypes],
-            ['key' => 'placed_at_buildings', 'label' => 'placed_at_buildings', 'dropdown' => [__('Yes'), __('No')]],
-            ['key' => 'household_id', 'label' => 'household_id'],
-            ['key' => 'bin', 'label' => 'bin'],
-            ['key' => 'ward_no', 'label' => 'ward_no', 'dropdown' => $wards],
-            ['key' => 'sub_location', 'label' => 'sub_location'],
-            ['key' => 'road_no', 'label' => 'road_no'],
-            ['key' => 'road_name', 'label' => 'road_name'],
-            ['key' => 'latitude', 'label' => 'latitude'],
-            ['key' => 'longitude', 'label' => 'longitude'],
-            ['key' => 'total_capacity_kg', 'label' => 'total_capacity_kg', 'required' => true],
-        ]);
+    /** @return array<int, array{key: string, label: string, export?: bool, import?: bool, required?: bool, dropdown?: array<int, string>, multiselect?: bool, reference_key?: string}> */
+    protected function excelColumnDefinitions(): array
+    {
+        $wasteBinTypes = WasteBinType::query()->whereNull('deleted_at')->orderBy('name')->pluck('name')->all();
+
+        return [
+            ['key' => 'waste_bin_id', 'label' => __('Waste Bin ID'), 'import' => false],
+            ['key' => 'waste_bin_type_name', 'label' => __('Waste Bin Type'), 'import' => false],
+            ['key' => 'waste_bin_type', 'label' => __('Waste Bin Type'), 'required' => true, 'dropdown' => $wasteBinTypes, 'export' => false],
+            ['key' => 'placed_at_buildings', 'label' => __('Placed at Buildings?'), 'dropdown' => SwmImportTemplateOptions::yesNo()],
+            ['key' => 'household_id', 'label' => __('Household ID'), 'dropdown' => SwmImportTemplateOptions::activeHouseholdDbIds(), 'export' => false],
+            ['key' => 'bin', 'label' => __('BIN')],
+            ['key' => 'ward_no', 'label' => __('Ward No.'), 'dropdown' => SwmImportTemplateOptions::wardNumberStrings()],
+            ['key' => 'sub_location', 'label' => __('Sub Location'), 'export' => false],
+            ['key' => 'road_no', 'label' => __('Road No.'), 'export' => false],
+            ['key' => 'road_name', 'label' => __('Road Name'), 'export' => false],
+            ['key' => 'latitude', 'label' => __('Latitude'), 'export' => false],
+            ['key' => 'longitude', 'label' => __('Longitude'), 'export' => false],
+            ['key' => 'total_capacity_kg', 'label' => __('Capacity (kg)'), 'required' => true],
+        ];
     }
 }

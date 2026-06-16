@@ -3,8 +3,11 @@
 namespace App\Services\Swm;
 
 use App\Models\Swm\Complaint;
+use App\Support\Swm\SwmExcelColumns;
 use App\Support\Swm\SwmExcelExportWriter;
+use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
+use App\Support\Swm\SwmImportTemplateOptions;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Http\UploadedFile;
@@ -264,33 +267,13 @@ class ComplaintService
             $query->whereDate('incident_date', '<=', Carbon::parse($data['incident_date_to'])->toDateString());
         }
 
-        $columns = [
-            __('Complaint ID'),
-            __('Date and Time'),
-            __('Incident Date'),
-            __('Holding Number'),
-            __('Household ID'),
-            __('Name'),
-            __('Contact Number'),
-            __('Ward No'),
-            __('Complaint Type'),
-            __('Complaint Submitted through'),
-            __('Duplicate Complaint'),
-            __('Duplicate Reference'),
-            __('Priority Level'),
-            __('Assigned To'),
-            __('Complaint Status'),
-            __('Resolution Time (days)'),
-            __('Photo Attachment Path'),
-            __('Complaint Details'),
-            __('Notes'),
-        ];
+        $columns = SwmExcelColumns::exportHeaders($this->excelColumnDefinitions());
 
         $typeMap = config('swm_complaints.complaint_types', []);
         $throughMap = config('swm_complaints.submitted_through', []);
         $statusMap = config('swm_complaints.complaint_statuses', []);
 
-        (new SwmExcelExportWriter())->download('SW Complaints.xlsx', $columns, function ($sheet, $colLetter) use ($query, $typeMap, $throughMap, $statusMap) {
+        (new SwmExcelExportWriter())->download(SwmExcelFilename::export('complaints'), $columns, function ($sheet, $colLetter) use ($query, $typeMap, $throughMap, $statusMap) {
             $rowNum = 2;
             $query->orderBy('id')->chunk(5000, function ($rows) use ($sheet, $colLetter, &$rowNum, $typeMap, $throughMap, $statusMap) {
                 foreach ($rows as $row) {
@@ -328,25 +311,36 @@ class ComplaintService
 
     public function downloadTemplate(): void
     {
-        (new SwmExcelTemplateWriter())->download('sw-complaints-import-template.xlsx', [
-            ['key' => 'date_time'],
-            ['key' => 'holding_number'],
-            ['key' => 'household_id'],
-            ['key' => 'name', 'required' => true],
-            ['key' => 'contact_number', 'required' => true],
-            ['key' => 'ward_no'],
-            ['key' => 'incident_date'],
-            ['key' => 'complaint_type', 'required' => true, 'dropdown' => array_values(config('swm_complaints.complaint_types', []))],
-            ['key' => 'complaint_details', 'required' => true],
-            ['key' => 'duplicate_complaint'],
-            ['key' => 'duplicate_reference'],
-            ['key' => 'priority_level'],
-            ['key' => 'assigned_to'],
-            ['key' => 'submitted_through', 'required' => true, 'dropdown' => array_values(config('swm_complaints.submitted_through', []))],
-            ['key' => 'complaint_status', 'required' => true, 'dropdown' => array_values(config('swm_complaints.complaint_statuses', []))],
-            ['key' => 'complaint_status_other'],
-            ['key' => 'resolution_time_days'],
-            ['key' => 'notes'],
-        ]);
+        (new SwmExcelTemplateWriter())->download(
+            SwmExcelFilename::importTemplate('complaints'),
+            SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions())
+        );
+    }
+
+    /** @return array<int, array{key: string, label: string, export?: bool, import?: bool, required?: bool, dropdown?: array<int, string>}> */
+    protected function excelColumnDefinitions(): array
+    {
+        return [
+            ['key' => 'complaint_id', 'label' => __('Complaint ID'), 'import' => false],
+            ['key' => 'date_time', 'label' => __('Date and Time'), 'import' => true],
+            ['key' => 'incident_date', 'label' => __('Incident Date')],
+            ['key' => 'holding_number', 'label' => __('Holding Number')],
+            ['key' => 'household_id', 'label' => __('Household ID')],
+            ['key' => 'name', 'label' => __('Name'), 'required' => true],
+            ['key' => 'contact_number', 'label' => __('Contact Number'), 'required' => true],
+            ['key' => 'ward_no', 'label' => __('Ward No.'), 'dropdown' => SwmImportTemplateOptions::wardNumberStrings()],
+            ['key' => 'complaint_type', 'label' => __('Complaint Type'), 'required' => true, 'dropdown' => array_values(config('swm_complaints.complaint_types', []))],
+            ['key' => 'submitted_through', 'label' => __('Complaint Submitted Through'), 'required' => true, 'dropdown' => array_values(config('swm_complaints.submitted_through', []))],
+            ['key' => 'duplicate_complaint', 'label' => __('Duplicate Complaint'), 'dropdown' => SwmImportTemplateOptions::yesNo()],
+            ['key' => 'duplicate_reference', 'label' => __('Duplicate Complaint ID')],
+            ['key' => 'priority_level', 'label' => __('Priority Level (1-5)'), 'dropdown' => SwmImportTemplateOptions::priorityLevels()],
+            ['key' => 'assigned_to', 'label' => __('Assigned To')],
+            ['key' => 'complaint_status', 'label' => __('Complaint Status'), 'required' => true, 'dropdown' => array_values(config('swm_complaints.complaint_statuses', []))],
+            ['key' => 'complaint_status_other', 'label' => __('Complaint Status Other'), 'export' => false],
+            ['key' => 'resolution_time_days', 'label' => __('Resolution Time (Days)')],
+            ['key' => 'photo_attachment_path', 'label' => __('Photo Attachment'), 'import' => false],
+            ['key' => 'complaint_details', 'label' => __('Complaint Details'), 'required' => true],
+            ['key' => 'notes', 'label' => __('Notes')],
+        ];
     }
 }

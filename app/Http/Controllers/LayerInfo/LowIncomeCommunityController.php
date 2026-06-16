@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\LayerInfo;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Swm\Concerns\HandlesSwmExcelImport;
+use App\Imports\LayerInfo\LowIncomeCommunityImport;
 use Illuminate\Http\Request;
 use App\Models\LayerInfo\LowIncomeCommunity;
 use App\Models\LayerInfo\Ward;
@@ -14,6 +16,8 @@ use DB;
 
 class LowIncomeCommunityController extends Controller
 {
+    use HandlesSwmExcelImport;
+
     /**
      * Display a listing of the resource.
      *
@@ -28,7 +32,8 @@ class LowIncomeCommunityController extends Controller
         $this->middleware('permission:Add Low Income Community', ['only' => ['create', 'store']]);
         $this->middleware('permission:Edit Low Income Community', ['only' => ['edit', 'update']]);
         $this->middleware('permission:Delete Low Income Community', ['only' => ['destroy']]);
-        $this->middleware('permission:Export Low Income Communities', ['only' => ['export']]);
+        $this->middleware('permission:Export Low Income Communities', ['only' => ['export', 'downloadTemplate']]);
+        $this->middleware('permission:Import Low Income Communities From Excel', ['only' => ['importForm', 'importStore']]);
         $this->lowIncomeCommunityServiceClass = $lowIncomeCommunityServiceClass;
 
     }
@@ -162,5 +167,32 @@ class LowIncomeCommunityController extends Controller
     public function export(Request $request)
     {     $data = $request->all();
         return $this->lowIncomeCommunityServiceClass->exportData($data);
+    }
+
+    public function downloadTemplate()
+    {
+        $this->lowIncomeCommunityServiceClass->downloadTemplate();
+    }
+
+    public function importForm()
+    {
+        return $this->swmImportFormView(
+            __('Import Low Income Communities'),
+            route('low-income-communities.index'),
+            'layer-info.low-income-communities.import.store'
+        );
+    }
+
+    public function importStore(Request $request)
+    {
+        return $this->swmImportStore(
+            $request,
+            LowIncomeCommunityImport::class,
+            ['community_name', 'no_of_buildings', 'population_total', 'number_of_households', 'water_connection_status', 'sanitation_status'],
+            'low-income-communities.index',
+            'importlic',
+            'low-income-communities',
+            __('Low Income Communities')
+        );
     }
 }

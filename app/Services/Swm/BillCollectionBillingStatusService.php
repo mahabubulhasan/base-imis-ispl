@@ -22,11 +22,12 @@ class BillCollectionBillingStatusService
     /**
      * Global summary cards (not affected by table filters).
      *
+     * - bill_collected_this_month: sum of payments for the current calendar month only.
      * - due_for_this_month: sum of marginal due for the current calendar month only (per site).
      * - total_due: sum of cumulative outstanding through the current calendar month (balanceThroughMonth).
      * - total_revenue_collected: sum of payments in current calendar year (payment_for_month year = now).
      *
-     * @return array{due_for_this_month: string, total_due: string, total_revenue_collected: string}
+     * @return array{bill_collected_this_month: string, due_for_this_month: string, total_due: string, total_revenue_collected: string}
      */
     public function summary(): array
     {
@@ -53,6 +54,11 @@ class BillCollectionBillingStatusService
                 }
             });
 
+        $sumThisMonth = BillCollectionPayment::query()
+            ->whereNull('deleted_at')
+            ->whereDate('payment_for_month', $currentMonthStart->toDateString())
+            ->sum(DB::raw('amount + COALESCE(due_paid, 0)'));
+
         /** Summary card: calendar year-to-date on payment_for_month (switch here if product wants all-time). */
         $sum = BillCollectionPayment::query()
             ->whereNull('deleted_at')
@@ -61,6 +67,7 @@ class BillCollectionBillingStatusService
         $revenue = $this->currencyFormatter->format(Currency::TK, (string) $sum);
 
         return [
+            'bill_collected_this_month' => $this->currencyFormatter->format(Currency::TK, (string) $sumThisMonth),
             'due_for_this_month' => $this->currencyFormatter->format(Currency::TK, $dueThisMonthMarginal),
             'total_due' => $this->currencyFormatter->format(Currency::TK, $totalDueCumulative),
             'total_revenue_collected' => $revenue,

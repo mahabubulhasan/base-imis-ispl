@@ -132,7 +132,8 @@ class WasteProcessingController extends Controller
             ['entry_at', 'report_date', 'reporting_month'],
             'swm.waste-processing.index',
             'importswm',
-            'waste-processing-import'
+            'waste-processing-import',
+            __('Waste Processing')
         );
     }
 }

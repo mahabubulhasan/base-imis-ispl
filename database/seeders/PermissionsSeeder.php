@@ -1285,6 +1285,10 @@ class PermissionsSeeder extends Seeder
                         "name" => "Delete SW Waste Bin",
                     ],
                     [
+                        "type" => "History",
+                        "name" => "View SW Waste Bin History",
+                    ],
+                    [
                         "type" => "Export",
                         "name" => "Export SW Waste Bins to Excel",
                     ],
@@ -2434,6 +2438,10 @@ class PermissionsSeeder extends Seeder
                     [
                         "type" => "Export",
                         "name" => "Export Low Income Communities"
+                    ],
+                    [
+                        "type" => "Import",
+                        "name" => "Import Low Income Communities From Excel"
                     ],
                     [
                         "type" => "History",

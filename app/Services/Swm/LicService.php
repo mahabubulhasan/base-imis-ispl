@@ -4,6 +4,7 @@ namespace App\Services\Swm;
 
 use App\Models\Swm\Lic;
 use Auth;
+use App\Support\Swm\SwmExcelColumns;
 use Box\Spout\Common\Type;
 use Box\Spout\Writer\Style\Color;
 use Box\Spout\Writer\Style\StyleBuilder;
@@ -84,13 +85,7 @@ class LicService
 
     public function download(array $data): void
     {
-        $columns = [
-            __('LIC ID'),
-            __("LIC Representative's Name"),
-            __('Contact No.'),
-            __('Number of HHs'),
-            __('Total Population'),
-        ];
+        $columns = SwmExcelColumns::exportHeaders($this->exportColumnDefinitions());
 
         $query = Lic::query()->whereNull('deleted_at');
 
@@ -133,5 +128,17 @@ class LicService
         });
 
         $writer->close();
+    }
+
+    /** @return array<int, array{key: string, label: string}> */
+    protected function exportColumnDefinitions(): array
+    {
+        return [
+            ['key' => 'lic_id', 'label' => __('LIC ID')],
+            ['key' => 'representative_name', 'label' => __("LIC Representative's Name")],
+            ['key' => 'contact_no', 'label' => __('Contact No.')],
+            ['key' => 'number_of_hhs', 'label' => __('Number of HHs')],
+            ['key' => 'total_population', 'label' => __('Total Population')],
+        ];
     }
 }

@@ -171,7 +171,8 @@ class StsLogController extends Controller
             ['vehicle_number', 'entry_at', 'operation_date', 'sts_name'],
             'swm.sts-logs.index',
             'importswm',
-            'sts-logs-import'
+            'sts-logs-import',
+            __('STS Logs')
         );
     }
 

@@ -11,7 +11,9 @@ use App\Services\Formatting\CurrencyFormatter;
 use App\Models\Swm\WasteBin;
 use App\Models\Swm\Worker;
 use App\Models\UtilityInfo\Roadline;
+use App\Support\Swm\SwmExcelColumns;
 use App\Support\Swm\SwmExcelExportWriter;
+use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
 use Illuminate\Database\Eloquent\Builder;
 use Yajra\DataTables\DataTables;
@@ -177,18 +179,12 @@ class HouseholdService
 
     public function download(array $data): void
     {
-        $columns = [
-            __('Household ID'), __('Household Owner Name'), __("Father's/Husband's Name"), __('Status'), __('Contact Number'), __('Ward'),
-            __('Area / Mohalla Name'), __('Sub Location'), __('Road No.'), __('Road Name'), __('Holding Number'),
-            __('Tax ID'), __('BIN'), __('Waste collection fee (BDT/Month)'),
-            __('Building owner (Yes/No)'), __('LIC'),
-            __('LIC ID'), __('Survey Date'),
-        ];
+        $columns = SwmExcelColumns::exportHeaders($this->exportColumnDefinitions());
 
         $query = Household::query()->whereNull('deleted_at')->orderBy('id');
         $this->applyHouseholdFilters($query, $data);
 
-        (new SwmExcelExportWriter())->download('Households.xlsx', $columns, function ($sheet, $colLetter) use ($query) {
+        (new SwmExcelExportWriter())->download(SwmExcelFilename::export('households'), $columns, function ($sheet, $colLetter) use ($query) {
             $rowNum = 2;
             $query->chunk(5000, function ($rows) use ($sheet, $colLetter, &$rowNum) {
                 foreach ($rows as $row) {
@@ -224,9 +220,34 @@ class HouseholdService
     public function downloadTemplate(): void
     {
         (new SwmExcelTemplateWriter())->download(
-            'households-import-template.xlsx',
+            SwmExcelFilename::importTemplate('households'),
             $this->importTemplateColumns()
         );
+    }
+
+    /** @return array<int, array{key: string, label: string}> */
+    protected function exportColumnDefinitions(): array
+    {
+        return [
+            ['key' => 'household_id', 'label' => __('Household ID')],
+            ['key' => 'household_owner_name', 'label' => __('Household Owner Name')],
+            ['key' => 'father_or_husband_name', 'label' => __("Father's/Husband's Name")],
+            ['key' => 'status', 'label' => __('Household Status')],
+            ['key' => 'contact_number', 'label' => __('Contact Number')],
+            ['key' => 'ward', 'label' => __('Ward No.')],
+            ['key' => 'area_mohalla_name', 'label' => __('Sub Location')],
+            ['key' => 'sub_location', 'label' => __('Sub Location')],
+            ['key' => 'road_no', 'label' => __('Road No.')],
+            ['key' => 'road_name', 'label' => __('Road Name')],
+            ['key' => 'holding_number', 'label' => __('Holding Number')],
+            ['key' => 'tax_id', 'label' => __('Tax ID')],
+            ['key' => 'bin', 'label' => __('BIN')],
+            ['key' => 'waste_charge', 'label' => __('Waste Collection Fee').' ('.__('Taka').'/'.__('Month').')'],
+            ['key' => 'is_owner', 'label' => __('Building Owner?')],
+            ['key' => 'is_lic', 'label' => __('LIC?')],
+            ['key' => 'lic_id', 'label' => __('LIC ID')],
+            ['key' => 'survey_date', 'label' => __('Survey Date')],
+        ];
     }
 
     /** @return array<int, array{key: string, label?: string, required?: bool, dropdown?: array<int, string>}> */
@@ -257,31 +278,31 @@ class HouseholdService
             ->all();
 
         return [
-            ['key' => 'household_id', 'required' => true],
-            ['key' => 'household_owner_name', 'required' => true],
-            ['key' => 'father_or_husband_name'],
-            ['key' => 'status', 'required' => true, 'dropdown' => $statusLabels],
-            ['key' => 'contact_number', 'required' => true],
-            ['key' => 'ward', 'required' => true, 'dropdown' => $wards],
-            ['key' => 'area_mohalla_name'],
-            ['key' => 'sub_location'],
-            ['key' => 'road_no'],
-            ['key' => 'road_name', 'required' => true],
-            ['key' => 'holding_number', 'required' => true],
-            ['key' => 'tax_id'],
-            ['key' => 'waste_charge'],
-            ['key' => 'bin', 'dropdown' => $bins],
-            ['key' => 'is_owner', 'dropdown' => $yesNo],
-            ['key' => 'is_lic', 'dropdown' => $yesNo],
-            ['key' => 'lic_id', 'dropdown' => $licOptions],
-            ['key' => 'number_of_family_members'],
-            ['key' => 'daily_waste_volume'],
-            ['key' => 'segregation_practiced', 'dropdown' => $yesNo],
-            ['key' => 'waste_bin_provided', 'dropdown' => $yesNo],
-            ['key' => 'using_this_service_since'],
-            ['key' => 'survey_date'],
-            ['key' => 'van_puller', 'dropdown' => $vanPullers],
-            ['key' => 'remarks'],
+            ['key' => 'household_id', 'label' => __('Household ID'), 'required' => true],
+            ['key' => 'household_owner_name', 'label' => __('Household Owner Name'), 'required' => true],
+            ['key' => 'father_or_husband_name', 'label' => __("Father's/Husband's Name")],
+            ['key' => 'status', 'label' => __('Household Status'), 'required' => true, 'dropdown' => $statusLabels],
+            ['key' => 'contact_number', 'label' => __('Contact Number'), 'required' => true],
+            ['key' => 'ward', 'label' => __('Ward No.'), 'required' => true, 'dropdown' => $wards],
+            ['key' => 'area_mohalla_name', 'label' => __('Sub Location')],
+            ['key' => 'sub_location', 'label' => __('Sub Location')],
+            ['key' => 'road_no', 'label' => __('Road No.')],
+            ['key' => 'road_name', 'label' => __('Road Name'), 'required' => true],
+            ['key' => 'holding_number', 'label' => __('Holding Number'), 'required' => true],
+            ['key' => 'tax_id', 'label' => __('Tax ID')],
+            ['key' => 'waste_charge', 'label' => __('Waste Collection Fee').' ('.__('Taka').'/'.__('Month').')'],
+            ['key' => 'bin', 'label' => __('BIN'), 'dropdown' => $bins],
+            ['key' => 'is_owner', 'label' => __('Building Owner?'), 'dropdown' => $yesNo],
+            ['key' => 'is_lic', 'label' => __('LIC?'), 'dropdown' => $yesNo],
+            ['key' => 'lic_id', 'label' => __('LIC ID'), 'dropdown' => $licOptions],
+            ['key' => 'number_of_family_members', 'label' => __('Number of Family Members')],
+            ['key' => 'daily_waste_volume', 'label' => __('Average Waste Collected').' ('.__('Kg').'/'.__('Day').')'],
+            ['key' => 'segregation_practiced', 'label' => __('Segregation Practiced?'), 'dropdown' => $yesNo],
+            ['key' => 'waste_bin_provided', 'label' => __('Waste Bin Provided?'), 'dropdown' => $yesNo],
+            ['key' => 'using_this_service_since', 'label' => __('Using This Service Since')],
+            ['key' => 'survey_date', 'label' => __('Survey Date')],
+            ['key' => 'van_puller', 'label' => __('Van Puller'), 'dropdown' => $vanPullers],
+            ['key' => 'remarks', 'label' => __('Remarks')],
         ];
     }
 

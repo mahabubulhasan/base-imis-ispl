@@ -26,10 +26,15 @@ class StsLogImport implements ToCollection, WithHeadingRow
             ->orderBy('vehicle_number')
             ->pluck('vehicle_number', 'id')
             ->all();
-        $stsMap = Sts::query()
+        $stsLabelMap = Sts::query()
             ->whereNull('deleted_at')
             ->orderBy('name')
-            ->pluck('name', 'id')
+            ->get()
+            ->mapWithKeys(function (Sts $sts) {
+                $label = trim(($sts->sts_id ? $sts->sts_id.' - ' : '').$sts->name);
+
+                return [$sts->id => $label];
+            })
             ->all();
 
         foreach ($rows as $idx => $row) {
@@ -69,12 +74,13 @@ class StsLogImport implements ToCollection, WithHeadingRow
                     $this->errors[] = __('Row :n: sts_name is required.', ['n' => $rowNum]);
                     continue;
                 }
-                $stsId = SwmImportRowHelper::resolveByLabel($stsLabel, $stsMap);
+                $stsId = $this->resolveStsId($stsLabel, $stsLabelMap);
                 if (! $stsId) {
                     $this->errors[] = __('Row :n: invalid sts_name.', ['n' => $rowNum]);
                     continue;
                 }
-                $stsName = $stsMap[$stsId] ?? $stsLabel;
+                $sts = Sts::query()->whereKey($stsId)->first();
+                $stsName = $sts?->name ?? $stsLabel;
 
                 $wasteTypeIds = $this->resolveWasteTypeIds($norm['waste_types'] ?? null);
                 $sourceWards = $this->parseSourceWards($norm['source_wards'] ?? null);
@@ -101,6 +107,21 @@ class StsLogImport implements ToCollection, WithHeadingRow
                 $this->errors[] = __('Row :n: :msg', ['n' => $rowNum, 'msg' => $e->getMessage()]);
             }
         }
+    }
+
+    protected function resolveStsId(string $label, array $labelMap): ?int
+    {
+        $id = SwmImportRowHelper::resolveByLabel($label, $labelMap);
+        if ($id) {
+            return (int) $id;
+        }
+
+        $sts = Sts::query()
+            ->whereNull('deleted_at')
+            ->whereRaw('LOWER(name) = ?', [strtolower($label)])
+            ->first();
+
+        return $sts ? (int) $sts->id : null;
     }
 
     protected function resolveVehicleIdByNumber(string $number): ?int

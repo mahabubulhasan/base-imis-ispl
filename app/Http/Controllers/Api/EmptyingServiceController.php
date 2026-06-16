@@ -257,10 +257,26 @@ class EmptyingServiceController extends Controller
      * Save an emptying service record along with related data.
      *
      * @param  EmptyingApiRequest  $request
-     * @return array
+     * @return \Illuminate\Http\JsonResponse | array
      */
     public function save(EmptyingApiRequest $request)
     {
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => __('Unauthenticated.')
+            ], 401);
+        }
+
+        if (!$user->can('Add Emptying')) {
+            return response()->json([
+                'status' => false,
+                'message' => __('Unauthorized: You do not have permission to add emptying data.')
+            ], 403);
+        }
+
         ini_set('memory_limit', '256M');
         ini_set('max_execution_time', 300);
 

@@ -8,7 +8,10 @@ use App\Models\Swm\Vehicle;
 use App\Models\Swm\VehicleType;
 use App\Models\Swm\Worker;
 use App\Models\Swm\WorkType;
+use App\Support\Swm\SwmExcelColumns;
+use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
+use App\Support\Swm\SwmImportTemplateOptions;
 use Auth;
 use Box\Spout\Common\Type;
 use Box\Spout\Writer\Style\Color;
@@ -300,24 +303,7 @@ class VehicleService
         $vehicleTypeId = $data['vehicle_type_id'] ?? null;
         $driverWorkerId = $data['driver_worker_id'] ?? null;
 
-        $columns = [
-            __('Vehicle ID'),
-            __('Vehicle Number'),
-            __('Chassis No.'),
-            __('Organization'),
-            __('Vehicle Type'),
-            __('Capacity'),
-            __('Driver'),
-            __('Service Wards'),
-            __('Fuel Type'),
-            __('Operational Type'),
-            __('Specify Operational Type'),
-            __('Engine No.'),
-            __('Status'),
-            __('Last Maintenance Year'),
-            __('Remarks'),
-            __('Dumping Place'),
-        ];
+        $columns = SwmExcelColumns::exportHeaders($this->exportColumnDefinitions());
 
         $query = $this->baseQuery();
 
@@ -347,7 +333,7 @@ class VehicleService
             ->build();
 
         $writer = WriterFactory::create(Type::XLSX);
-        $writer->openToBrowser('SW Vehicles.xlsx')
+        $writer->openToBrowser(SwmExcelFilename::export('vehicles'))
             ->addRowWithStyle($columns, $style);
         $wardLabels = Ward::getInAscOrder();
 
@@ -394,9 +380,32 @@ class VehicleService
     public function downloadTemplate(): void
     {
         (new SwmExcelTemplateWriter())->download(
-            'SW Vehicles Import Template.xlsx',
+            SwmExcelFilename::importTemplate('vehicles'),
             $this->importTemplateColumns()
         );
+    }
+
+    /** @return array<int, array{key: string, label: string}> */
+    protected function exportColumnDefinitions(): array
+    {
+        return [
+            ['key' => 'vehicle_id_no', 'label' => __('Vehicle ID')],
+            ['key' => 'vehicle_number', 'label' => __('Vehicle Number')],
+            ['key' => 'chassis_no', 'label' => __('Chassis No.')],
+            ['key' => 'organization_name', 'label' => __('Organization')],
+            ['key' => 'vehicle_type_name', 'label' => __('Vehicle Type')],
+            ['key' => 'capacity', 'label' => __('Capacity').' ('.__('Ton').')'],
+            ['key' => 'driver_name', 'label' => __('Driver Name')],
+            ['key' => 'service_wards', 'label' => __('Service Wards')],
+            ['key' => 'fuel_type', 'label' => __('Fuel Type')],
+            ['key' => 'operational_type', 'label' => __('Operational Type')],
+            ['key' => 'operational_type_other', 'label' => __('Specify Operational Type')],
+            ['key' => 'engine_no', 'label' => __('Engine No.')],
+            ['key' => 'status', 'label' => __('Status')],
+            ['key' => 'last_maintenance_year', 'label' => __('Last Maintenance Year')],
+            ['key' => 'remarks', 'label' => __('Remarks')],
+            ['key' => 'dumping_place', 'label' => __('Dumping Place Name')],
+        ];
     }
 
     /** @return array<int, array{key: string, label: string, required?: bool, dropdown?: array<int, string>}> */
@@ -430,12 +439,18 @@ class VehicleService
             ['key' => 'vehicle_number', 'label' => __('Vehicle Number'), 'required' => true],
             ['key' => 'vehicle_id_no', 'label' => __('Vehicle ID')],
             ['key' => 'vehicle_type', 'label' => __('Vehicle Type'), 'required' => true, 'dropdown' => $vehicleTypes],
-            ['key' => 'driver', 'label' => __('Driver'), 'required' => true, 'dropdown' => $driverNames],
+            ['key' => 'driver', 'label' => __('Driver Name'), 'required' => true, 'dropdown' => $driverNames],
             ['key' => 'chassis_no', 'label' => __('Chassis No.')],
             ['key' => 'engine_no', 'label' => __('Engine No.')],
-            ['key' => 'capacity', 'label' => __('Capacity')],
+            ['key' => 'capacity', 'label' => __('Capacity').' ('.__('Ton').')'],
             ['key' => 'operational_type', 'label' => __('Operational Type'), 'dropdown' => $operationalLabels],
-            ['key' => 'service_wards', 'label' => __('Service Wards')],
+            [
+                'key' => 'service_wards',
+                'label' => __('Service Wards'),
+                'multiselect' => true,
+                'dropdown' => SwmImportTemplateOptions::wardNumberStrings(),
+                'reference_key' => 'service_wards',
+            ],
             ['key' => 'status', 'label' => __('Status'), 'dropdown' => ['active', 'inactive']],
         ]);
     }

@@ -7,7 +7,10 @@ use App\Models\Swm\LandfillLog;
 use App\Models\Swm\Sts;
 use App\Models\Swm\Vehicle;
 use App\Models\Swm\WasteType;
+use App\Support\Swm\SwmExcelColumns;
+use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
+use App\Support\Swm\SwmImportTemplateOptions;
 use Auth;
 use Box\Spout\Common\Type;
 use Box\Spout\Writer\Style\Color;
@@ -192,20 +195,7 @@ class LandfillLogService
         $query = $this->landfillLogQuery();
         $this->applyFilters($query, $data);
 
-        $columns = [
-            __('Landfill Log ID'),
-            __('Entry Date and Time'),
-            __('Operation Date'),
-            __('Vehicle Number'),
-            __('Vehicle Type'),
-            __('Driver Name'),
-            __('Landfill Name'),
-            __('Waste Type'),
-            __('Quantity (Ton)'),
-            __('Source STSs'),
-            __('Source Wards'),
-            __('Remarks'),
-        ];
+        $columns = SwmExcelColumns::exportHeaders($this->excelColumnDefinitions());
 
         $style = (new StyleBuilder())
             ->setFontBold()
@@ -214,7 +204,7 @@ class LandfillLogService
             ->build();
 
         $writer = WriterFactory::create(Type::XLSX);
-        $writer->openToBrowser('SW Landfill Logs.xlsx')
+        $writer->openToBrowser(SwmExcelFilename::export('landfill_logs'))
             ->addRowWithStyle($columns, $style);
 
         $query->orderBy('id')->chunk(5000, function ($rows) use ($writer) {
@@ -250,18 +240,21 @@ class LandfillLogService
     public function downloadTemplate(): void
     {
         app(SwmExcelTemplateWriter::class)->download(
-            'SW Landfill Logs Import Template.xlsx',
-            $this->importTemplateColumns()
+            SwmExcelFilename::importTemplate('landfill_logs'),
+            SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions())
         );
     }
 
-    /** @return array<int, array{key: string, label: string, required?: bool, dropdown?: array<int, string>}> */
-    protected function importTemplateColumns(): array
+    /** @return array<int, array{key: string, label: string, export?: bool, import?: bool, required?: bool, dropdown?: array<int, string>, multiselect?: bool, reference_key?: string}> */
+    protected function excelColumnDefinitions(): array
     {
         return [
+            ['key' => 'id', 'label' => __('Landfill Log ID'), 'import' => false],
+            ['key' => 'entry_at', 'label' => __('Entry Date and Time'), 'required' => true],
+            ['key' => 'operation_date', 'label' => __('Operation Date'), 'required' => true],
             [
                 'key' => 'vehicle_number',
-                'label' => 'vehicle_number',
+                'label' => __('Vehicle Number'),
                 'required' => true,
                 'dropdown' => array_values(Vehicle::query()
                     ->whereNull('deleted_at')
@@ -270,23 +263,37 @@ class LandfillLogService
                     ->pluck('vehicle_number')
                     ->all()),
             ],
-            ['key' => 'entry_at', 'label' => 'entry_at', 'required' => true],
-            ['key' => 'operation_date', 'label' => 'operation_date', 'required' => true],
+            ['key' => 'vehicle_type_name', 'label' => __('Vehicle Type'), 'import' => false],
+            ['key' => 'driver_name', 'label' => __('Driver Name'), 'import' => false],
             [
                 'key' => 'landfill_name',
-                'label' => 'landfill_name',
-                'required' => false,
-                'dropdown' => array_values(Landfill::query()
-                    ->whereNull('deleted_at')
-                    ->orderBy('name')
-                    ->pluck('name')
-                    ->all()),
+                'label' => __('Landfill Name'),
+                'dropdown' => SwmImportTemplateOptions::landfillLabels(),
             ],
-            ['key' => 'waste_types', 'label' => 'waste_types', 'required' => false],
-            ['key' => 'quantity_ton', 'label' => 'quantity_ton', 'required' => false],
-            ['key' => 'source_wards', 'label' => 'source_wards', 'required' => false],
-            ['key' => 'remarks', 'label' => 'remarks', 'required' => false],
+            [
+                'key' => 'waste_types',
+                'label' => __('Waste Types'),
+                'multiselect' => true,
+                'dropdown' => SwmImportTemplateOptions::wasteTypeNames(),
+                'reference_key' => 'waste_types',
+            ],
+            ['key' => 'quantity_ton', 'label' => __('Quantity (Ton)')],
+            ['key' => 'source_sts', 'label' => __('Source STSs'), 'import' => false],
+            [
+                'key' => 'source_wards',
+                'label' => __('Other Source Wards'),
+                'multiselect' => true,
+                'dropdown' => SwmImportTemplateOptions::wardNumberStrings(),
+                'reference_key' => 'source_wards',
+            ],
+            ['key' => 'remarks', 'label' => __('Remarks')],
         ];
+    }
+
+    /** @return array<int, array{key: string, label: string, required?: bool, dropdown?: array<int, string>}> */
+    protected function importTemplateColumns(): array
+    {
+        return SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions());
     }
 
     protected function wasteTypesDisplayLabel(LandfillLog $model): string

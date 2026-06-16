@@ -39,7 +39,7 @@
             </div>
         </div>
         <div class="form-group row">
-            {!! Form::label('area', __('Area') . ' (' . __('Acres') . ')', ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('area', __('Area') . ' (' . __('Acre') . ')', ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
                 {!! Form::number('area', null, ['class' => 'form-control', 'placeholder' => __('Area'), 'min' => 0, 'step' => '0.01', 'inputmode' => 'decimal']) !!}
             </div>

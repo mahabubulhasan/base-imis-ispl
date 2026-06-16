@@ -5,6 +5,8 @@ namespace App\Services\Swm;
 use App\Models\Swm\AttendanceLog;
 use App\Models\Swm\Organization;
 use App\Models\Swm\Worker;
+use App\Support\Swm\SwmExcelColumns;
+use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
 use Auth;
 use Box\Spout\Common\Type;
@@ -188,19 +190,7 @@ class AttendanceLogService
             $query->whereDate('entry_at', '<=', Carbon::parse($data['date_to'])->toDateString());
         }
 
-        $columns = [
-            __('ID'),
-            __('Entry Date and Time'),
-            __('Organization'),
-            __('Department'),
-            __('Worker Name-ID'),
-            __('Worker Type'),
-            __('Supervisor Name'),
-            __('Attendance Status'),
-            __('Check-in Time'),
-            __('Check-out Time'),
-            __('Remarks'),
-        ];
+        $columns = SwmExcelColumns::exportHeaders($this->excelColumnDefinitions());
 
         $style = (new StyleBuilder())
             ->setFontBold()
@@ -209,7 +199,7 @@ class AttendanceLogService
             ->build();
 
         $writer = WriterFactory::create(Type::XLSX);
-        $writer->openToBrowser('SW Attendance Logs.xlsx')
+        $writer->openToBrowser(SwmExcelFilename::export('attendance_logs'))
             ->addRowWithStyle($columns, $style);
 
         $statusLabels = AttendanceLog::statusOptions();
@@ -241,13 +231,13 @@ class AttendanceLogService
     public function downloadTemplate(): void
     {
         app(SwmExcelTemplateWriter::class)->download(
-            'SW Attendance Logs Import Template.xlsx',
-            $this->importTemplateColumns()
+            SwmExcelFilename::importTemplate('attendance_logs'),
+            SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions())
         );
     }
 
-    /** @return array<int, array{key: string, label: string, required?: bool, dropdown?: array<int, string>}> */
-    protected function importTemplateColumns(): array
+    /** @return array<int, array{key: string, label: string, export?: bool, import?: bool, required?: bool, dropdown?: array<int, string>}> */
+    protected function excelColumnDefinitions(): array
     {
         $columns = [];
         $orgId = Auth::user()?->swm_organization_id;
@@ -255,7 +245,8 @@ class AttendanceLogService
         if (! $orgId) {
             $columns[] = [
                 'key' => 'organization',
-                'label' => 'organization',
+                'label' => __('Organization'),
+                'export' => false,
                 'required' => true,
                 'dropdown' => array_values(Organization::query()
                     ->whereNull('deleted_at')
@@ -277,16 +268,24 @@ class AttendanceLogService
 
         $statusLabels = array_values(AttendanceLog::statusOptions());
 
-        $columns = array_merge($columns, [
-            ['key' => 'worker', 'label' => 'worker', 'required' => true, 'dropdown' => $workerLabels],
-            ['key' => 'department', 'label' => 'department', 'required' => false],
-            ['key' => 'entry_at', 'label' => 'entry_at', 'required' => true],
-            ['key' => 'attendance_status', 'label' => 'attendance_status', 'required' => true, 'dropdown' => $statusLabels],
-            ['key' => 'check_in_at', 'label' => 'check_in_at', 'required' => false],
-            ['key' => 'check_out_at', 'label' => 'check_out_at', 'required' => false],
-            ['key' => 'remarks', 'label' => 'remarks', 'required' => false],
+        return array_merge($columns, [
+            ['key' => 'id', 'label' => __('ID'), 'import' => false],
+            ['key' => 'entry_at', 'label' => __('Entry Date and Time'), 'required' => true],
+            ['key' => 'organization_name', 'label' => __('Organization'), 'import' => false],
+            ['key' => 'department', 'label' => __('Department')],
+            ['key' => 'worker', 'label' => __('Worker Name-ID'), 'required' => true, 'dropdown' => $workerLabels],
+            ['key' => 'work_type_name', 'label' => __('Worker Type'), 'import' => false],
+            ['key' => 'supervisor_name', 'label' => __('Supervisor Name'), 'import' => false],
+            ['key' => 'attendance_status', 'label' => __('Attendance Status'), 'required' => true, 'dropdown' => $statusLabels],
+            ['key' => 'check_in_at', 'label' => __('Check-in Time')],
+            ['key' => 'check_out_at', 'label' => __('Check-out Time')],
+            ['key' => 'remarks', 'label' => __('Remarks')],
         ]);
+    }
 
-        return $columns;
+    /** @return array<int, array{key: string, label: string, required?: bool, dropdown?: array<int, string>}> */
+    protected function importTemplateColumns(): array
+    {
+        return SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions());
     }
 }

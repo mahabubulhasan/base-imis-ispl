@@ -169,7 +169,8 @@ class ComplaintController extends Controller
             ['name', 'contact_number', 'complaint_type', 'complaint_details', 'submitted_through', 'complaint_status'],
             'swm.complaints.index',
             'importswm',
-            'complaints'
+            'complaints',
+            __('Complaints')
         );
     }
 

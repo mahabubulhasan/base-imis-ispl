@@ -5,6 +5,8 @@
     $serviceWards = collect($worker->service_wards ?? [])
         ->map(fn ($wardId) => $wards[$wardId] ?? $wardId)
         ->implode(', ');
+    $employmentTypeLabel = \App\Models\Swm\Worker::employmentTypeLabel($worker->employment_type);
+    $statusLabel = \App\Models\Swm\Worker::statusLabel($worker->status);
 @endphp
 <div class="card card-info">
 	<div class="card-header bg-transparent">
@@ -60,7 +62,7 @@
 		<div class="form-group row">
 			{!! Form::label('employment_type', __('Employment Type'), ['class' => 'col-sm-3 control-label']) !!}
 			<div class="col-sm-3">
-				{!! Form::label(null, $worker->employment_type, ['class' => 'form-control']) !!}
+				{!! Form::label(null, $employmentTypeLabel, ['class' => 'form-control']) !!}
 			</div>
 		</div>
 		<div class="form-group row">
@@ -120,7 +122,7 @@
 		<div class="form-group row">
 			{!! Form::label('status', __('Status'), ['class' => 'col-sm-3 control-label']) !!}
 			<div class="col-sm-3">
-				{!! Form::label(null, $worker->status, ['class' => 'form-control']) !!}
+				{!! Form::label(null, $statusLabel, ['class' => 'form-control']) !!}
 			</div>
 		</div>
 		</div>

@@ -14,7 +14,7 @@
         <a href="{{ action('Swm\OrganizationTypeController@create') }}" class="btn btn-info">{{ __('Add SW Organization Type') }}</a>
         @endcan
         @can('Export SW Organization Types to CSV')
-        <a href="#" id="export" class="btn btn-info">{{ __('Export to CSV') }}</a>
+        <a href="#" id="export" class="btn btn-info">{{ __('Export to Excel') }}</a>
         @endcan
         <a href="#" class="btn btn-info float-right" id="headingOne" type="button" data-toggle="collapse"
             data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">

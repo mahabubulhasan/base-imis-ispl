@@ -6,7 +6,10 @@ use App\Models\Swm\Landfill;
 use App\Models\Swm\LandfillType;
 use App\Models\Swm\Sts;
 use App\Models\Swm\WasteType;
+use App\Support\Swm\SwmExcelColumns;
+use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
+use App\Support\Swm\SwmImportTemplateOptions;
 use Auth;
 use Yajra\DataTables\DataTables;
 
@@ -223,28 +226,7 @@ class LandfillService
 
     public function download(array $data): void
     {
-        $headers = [
-            'landfill_id',
-            'name',
-            'location',
-            'operator_name',
-            'contact_number',
-            'capacity',
-            'area',
-            'landfill_type',
-            'source_sts',
-            'source_wards',
-            'segregation_practiced',
-            'waste_types',
-            'weighbridge_facility_available',
-            'boundary_wall_available',
-            'lighting_arrangement_available',
-            'manpower_deployed',
-            'adequate_covering_arrangement_available',
-            'gas_control_system_available',
-            'leachate_collection_system_available',
-            'operational_status',
-        ];
+        $headers = SwmExcelColumns::exportHeaders($this->excelColumnDefinitions());
 
         $query = Landfill::query()->whereNull('deleted_at');
         $this->applyExportFilters($query, $data);
@@ -303,35 +285,63 @@ class LandfillService
             }
         });
 
-        (new SwmExcelTemplateWriter())->downloadData('SW Landfills.xlsx', $headers, $rows);
+        (new SwmExcelTemplateWriter())->downloadData(SwmExcelFilename::export('landfills'), $headers, $rows);
     }
 
     public function downloadTemplate(): void
     {
-        $landfillTypes = LandfillType::query()->whereNull('deleted_at')->orderBy('name')->pluck('name')->all();
-        $yesNo = [__('Yes'), __('No')];
+        (new SwmExcelTemplateWriter())->download(
+            SwmExcelFilename::importTemplate('landfills'),
+            SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions())
+        );
+    }
 
-        (new SwmExcelTemplateWriter())->download('SW Landfills Import Template.xlsx', [
-            ['key' => 'name', 'label' => 'name', 'required' => true],
-            ['key' => 'location', 'label' => 'location'],
-            ['key' => 'operator_name', 'label' => 'operator_name', 'required' => true],
-            ['key' => 'contact_number', 'label' => 'contact_number', 'required' => true],
-            ['key' => 'capacity', 'label' => 'capacity'],
-            ['key' => 'area', 'label' => 'area'],
-            ['key' => 'landfill_type', 'label' => 'landfill_type', 'dropdown' => $landfillTypes],
-            ['key' => 'source_sts', 'label' => 'source_sts'],
-            ['key' => 'source_wards', 'label' => 'source_wards'],
-            ['key' => 'segregation_practiced', 'label' => 'segregation_practiced', 'dropdown' => $yesNo],
-            ['key' => 'waste_types', 'label' => 'waste_types'],
-            ['key' => 'weighbridge_facility_available', 'label' => 'weighbridge_facility_available', 'dropdown' => $yesNo],
-            ['key' => 'boundary_wall_available', 'label' => 'boundary_wall_available', 'dropdown' => $yesNo],
-            ['key' => 'lighting_arrangement_available', 'label' => 'lighting_arrangement_available', 'dropdown' => $yesNo],
-            ['key' => 'manpower_deployed', 'label' => 'manpower_deployed'],
-            ['key' => 'adequate_covering_arrangement_available', 'label' => 'adequate_covering_arrangement_available', 'dropdown' => $yesNo],
-            ['key' => 'gas_control_system_available', 'label' => 'gas_control_system_available', 'dropdown' => $yesNo],
-            ['key' => 'leachate_collection_system_available', 'label' => 'leachate_collection_system_available', 'dropdown' => $yesNo],
-            ['key' => 'operational_status', 'label' => 'operational_status', 'required' => true, 'dropdown' => ['active', 'inactive']],
-        ]);
+    /** @return array<int, array{key: string, label: string, export?: bool, import?: bool, required?: bool, dropdown?: array<int, string>, multiselect?: bool, reference_key?: string}> */
+    protected function excelColumnDefinitions(): array
+    {
+        $landfillTypes = LandfillType::query()->whereNull('deleted_at')->orderBy('name')->pluck('name')->all();
+        $yesNo = SwmImportTemplateOptions::yesNo();
+
+        return [
+            ['key' => 'landfill_id', 'label' => __('Landfill ID'), 'import' => false],
+            ['key' => 'name', 'label' => __('Landfill Name'), 'required' => true],
+            ['key' => 'location', 'label' => __('Location')],
+            ['key' => 'operator_name', 'label' => __('Operator Name'), 'required' => true],
+            ['key' => 'contact_number', 'label' => __("Operator's Contact Number"), 'required' => true],
+            ['key' => 'capacity', 'label' => __('Capacity').' ('.__('Ton').')'],
+            ['key' => 'area', 'label' => __('Area').' ('.__('Acre').')'],
+            ['key' => 'landfill_type', 'label' => __('Landfill Type'), 'dropdown' => $landfillTypes],
+            [
+                'key' => 'source_sts',
+                'label' => __('Source STSs'),
+                'multiselect' => true,
+                'dropdown' => SwmImportTemplateOptions::stsLabels(),
+                'reference_key' => 'source_sts',
+            ],
+            [
+                'key' => 'source_wards',
+                'label' => __('Other Source Wards'),
+                'multiselect' => true,
+                'dropdown' => SwmImportTemplateOptions::wardNumberStrings(),
+                'reference_key' => 'source_wards',
+            ],
+            ['key' => 'segregation_practiced', 'label' => __('Segregation Practiced?'), 'dropdown' => $yesNo],
+            [
+                'key' => 'waste_types',
+                'label' => __('Waste Type'),
+                'multiselect' => true,
+                'dropdown' => SwmImportTemplateOptions::wasteTypeNames(),
+                'reference_key' => 'waste_types',
+            ],
+            ['key' => 'weighbridge_facility_available', 'label' => __('Weighbridge Facility Available?'), 'dropdown' => $yesNo],
+            ['key' => 'boundary_wall_available', 'label' => __('Boundary Wall Around the Landfill Area Available?'), 'dropdown' => $yesNo],
+            ['key' => 'lighting_arrangement_available', 'label' => __('Lighting Arrangement at the Landfill Site Available?'), 'dropdown' => $yesNo],
+            ['key' => 'manpower_deployed', 'label' => __('Number of Manpower Deployed at the Landfill Site')],
+            ['key' => 'adequate_covering_arrangement_available', 'label' => __('Adequate Covering Arrangement at the Landfill Site Available?'), 'dropdown' => $yesNo],
+            ['key' => 'gas_control_system_available', 'label' => __('System for Gas Control from the Filled Landfill Available?'), 'dropdown' => $yesNo],
+            ['key' => 'leachate_collection_system_available', 'label' => __('Leachate Collection System Available?'), 'dropdown' => $yesNo],
+            ['key' => 'operational_status', 'label' => __('Operational Status'), 'required' => true, 'dropdown' => ['active', 'inactive']],
+        ];
     }
 
     protected function applyExportFilters($query, array $data): void

@@ -5,7 +5,10 @@ namespace App\Services\Swm;
 use App\Models\Swm\Organization;
 use App\Models\Swm\Worker;
 use App\Models\Swm\WorkType;
+use App\Support\Swm\SwmExcelColumns;
+use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
+use App\Support\Swm\SwmImportTemplateOptions;
 use Auth;
 use Box\Spout\Common\Type;
 use Box\Spout\Writer\Style\Color;
@@ -141,6 +144,8 @@ class WorkerService
             ->orderColumn('work_type_name', 'swm_wt.name $1')
             ->orderColumn('worker_id_no', 'swm.workers.worker_id_no $1')
             ->editColumn('worker_id_no', fn ($model) => $model->getAttribute('worker_id_no'))
+            ->editColumn('employment_type', fn ($model) => Worker::employmentTypeLabel($model->employment_type))
+            ->editColumn('status', fn ($model) => Worker::statusLabel($model->status))
             ->addColumn('action', function ($model) {
                 $content = \Form::open(['method' => 'DELETE', 'route' => ['swm.workers.destroy', $model->id]]);
 
@@ -222,18 +227,7 @@ class WorkerService
         $organizationId = $data['organization_id'] ?? null;
         $workTypeId = $data['work_type_id'] ?? null;
 
-        $columns = [
-            __('Worker Name'),
-            __('Worker ID'),
-            __('Organization'),
-            __('Work Type'),
-            __('Mobile'),
-            __('Email'),
-            __('Employee ID'),
-            __('National ID'),
-            __('Employment Type'),
-            __('Status'),
-        ];
+        $columns = SwmExcelColumns::exportHeaders($this->exportColumnDefinitions());
 
         $query = $this->baseQuery();
 
@@ -275,7 +269,7 @@ class WorkerService
             ->build();
 
         $writer = WriterFactory::create(Type::XLSX);
-        $writer->openToBrowser('SW Workers.xlsx')
+        $writer->openToBrowser(SwmExcelFilename::export('workers'))
             ->addRowWithStyle($columns, $style);
 
         $query->orderBy('swm.workers.id')->chunk(5000, function ($rows) use ($writer) {
@@ -289,8 +283,8 @@ class WorkerService
                     // $row->email,
                     $row->employee_id,
                     $row->national_id_no,
-                    $row->employment_type,
-                    $row->status,
+                    Worker::employmentTypeLabel($row->employment_type),
+                    Worker::statusLabel($row->status),
                 ]);
             }
         });
@@ -301,12 +295,29 @@ class WorkerService
     public function downloadTemplate(): void
     {
         (new SwmExcelTemplateWriter())->download(
-            'SW Workers Import Template.xlsx',
+            SwmExcelFilename::importTemplate('workers'),
             $this->importTemplateColumns()
         );
     }
 
-    /** @return array<int, array{key: string, label: string, required?: bool, dropdown?: array<int, string>}> */
+    /** @return array<int, array{key: string, label: string}> */
+    protected function exportColumnDefinitions(): array
+    {
+        return [
+            ['key' => 'name', 'label' => __('Name')],
+            ['key' => 'worker_id_no', 'label' => __('ID')],
+            ['key' => 'organization_name', 'label' => __('Organization')],
+            ['key' => 'work_type_name', 'label' => __('Worker Type')],
+            ['key' => 'mobile', 'label' => __('Contact')],
+            ['key' => 'email', 'label' => __('Email')],
+            ['key' => 'employee_id', 'label' => __('Employee ID (Current Organization)')],
+            ['key' => 'national_id_no', 'label' => __('National ID')],
+            ['key' => 'employment_type', 'label' => __('Employment Type')],
+            ['key' => 'status', 'label' => __('Status')],
+        ];
+    }
+
+    /** @return array<int, array{key: string, label: string, required?: bool, dropdown?: array<int, string>, multiselect?: bool, reference_key?: string}> */
     public function importTemplateColumns(): array
     {
         $scopedOrgId = Auth::user()?->swm_organization_id;
@@ -329,16 +340,22 @@ class WorkerService
             ->all();
 
         return array_merge($columns, [
-            ['key' => 'work_type', 'label' => __('Work Type'), 'required' => true, 'dropdown' => $workTypes],
-            ['key' => 'name', 'label' => __('Worker Name'), 'required' => true],
-            ['key' => 'mobile', 'label' => __('Mobile'), 'required' => true],
+            ['key' => 'work_type', 'label' => __('Worker Type'), 'required' => true, 'dropdown' => $workTypes],
+            ['key' => 'name', 'label' => __('Name'), 'required' => true],
+            ['key' => 'mobile', 'label' => __('Contact'), 'required' => true],
             ['key' => 'email', 'label' => __('Email')],
-            ['key' => 'age', 'label' => __('Age')],
+            ['key' => 'age', 'label' => __('Age (Years)')],
             ['key' => 'gender', 'label' => __('Gender'), 'dropdown' => ['male', 'female', 'others']],
-            ['key' => 'service_wards', 'label' => __('Service Wards')],
+            [
+                'key' => 'service_wards',
+                'label' => __('Service Wards'),
+                'multiselect' => true,
+                'dropdown' => SwmImportTemplateOptions::wardNumberStrings(),
+                'reference_key' => 'service_wards',
+            ],
             ['key' => 'employment_type', 'label' => __('Employment Type'), 'dropdown' => ['permanent', 'daily', 'contract']],
             ['key' => 'status', 'label' => __('Status'), 'dropdown' => ['active', 'inactive']],
-            ['key' => 'employee_id', 'label' => __('Employee ID')],
+            ['key' => 'employee_id', 'label' => __('Employee ID (Current Organization)')],
             ['key' => 'national_id_no', 'label' => __('National ID')],
         ]);
     }

@@ -137,7 +137,10 @@ Route::group([
         * Low Income Community
         */
         Route::get('low-income-communities/data', 'LowIncomeCommunityController@getData');
-        Route::get('low-income-communities/export', 'LowIncomeCommunityController@export');
+        Route::get('low-income-communities/export', 'LowIncomeCommunityController@export')->name('layer-info.low-income-communities.export');
+        Route::get('low-income-communities/template', 'LowIncomeCommunityController@downloadTemplate')->name('layer-info.low-income-communities.template');
+        Route::get('low-income-communities/import', 'LowIncomeCommunityController@importForm')->name('layer-info.low-income-communities.import');
+        Route::post('low-income-communities/import', 'LowIncomeCommunityController@importStore')->name('layer-info.low-income-communities.import.store');
         Route::get('low-income-communities/{id}/history', 'LowIncomeCommunityController@history');
         Route::resource('low-income-communities', 'LowIncomeCommunityController');
     });
@@ -495,6 +498,7 @@ Route::group([
         Route::get('waste-bins/import', 'WasteBinController@importForm')->name('swm.waste-bins.import');
         Route::post('waste-bins/import', 'WasteBinController@importStore')->name('swm.waste-bins.import.store');
         Route::get('waste-bins/building-snapshot', 'WasteBinController@buildingSnapshot')->name('swm.waste-bins.building-snapshot');
+        Route::get('waste-bins/{waste_bin}/history', 'WasteBinController@history')->name('swm.waste-bins.history');
         Route::resource('waste-bins', 'WasteBinController')->names([
             'index' => 'swm.waste-bins.index',
             'create' => 'swm.waste-bins.create',

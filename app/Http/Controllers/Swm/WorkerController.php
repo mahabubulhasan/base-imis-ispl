@@ -225,7 +225,8 @@ class WorkerController extends Controller
             $required,
             'swm.workers.index',
             'importswm',
-            'workers'
+            'workers',
+            __('Workers')
         );
     }
 }

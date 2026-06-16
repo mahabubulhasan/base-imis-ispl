@@ -1284,6 +1284,77 @@ body.layout-fixed .main-sidebar .sidebar {
   }
 }
 
+/* Header: greeting ellipsis on narrow viewports */
+.main-header > .navbar-nav {
+  flex-wrap: nowrap;
+  width: 100%;
+  align-items: center;
+}
+
+.main-header .header-greeting-item {
+  min-width: 0;
+  max-width: 100%;
+  text-align: right;
+  padding: 0 0.25rem;
+}
+
+.main-header .header-greeting {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 767.98px) {
+  .main-header .header-greeting-item {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}
+
+/* Footer: partner branding logos */
+.footer-branding {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.footer-branding__group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.footer-branding__logo img {
+  height: 70px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+@media (max-width: 767.98px) {
+  .footer-branding {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .footer-branding__group {
+    display: contents;
+  }
+
+  .footer-branding__logo {
+    flex: 0 0 calc(50% - 6px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .footer-branding__logo img {
+    height: 56px;
+  }
+}
+
 /* AdminLTE: mobile / tablet sidebar — keep drawer off-canvas unless opened */
 @media (max-width: 1199.98px) {
   body.layout-fixed .wrapper .content-wrapper,

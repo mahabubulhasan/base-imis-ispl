@@ -207,7 +207,8 @@ class AttendanceLogController extends Controller
             $requiredHeaders,
             'swm.attendance-logs.index',
             'importswm',
-            'attendance-logs-import'
+            'attendance-logs-import',
+            __('Attendance Logs')
         );
     }
 

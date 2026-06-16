@@ -197,7 +197,8 @@ class HouseholdController extends Controller
             ['household_id', 'household_owner_name', 'status', 'contact_number', 'ward', 'road_name', 'holding_number'],
             'building-info.households.index',
             'importswm',
-            'households'
+            'households',
+            __('Households')
         );
     }
 }
