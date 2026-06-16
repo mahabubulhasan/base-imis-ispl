@@ -2,11 +2,13 @@
 
 namespace App\Services\Swm;
 
-use App\Models\LayerInfo\Ward;
 use App\Models\Swm\Landfill;
 use App\Models\Swm\Sts;
 use App\Models\Swm\WasteType;
+use App\Support\Swm\SwmExcelColumns;
+use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
+use App\Support\Swm\SwmImportTemplateOptions;
 use Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Yajra\DataTables\DataTables;
@@ -63,6 +65,7 @@ class StsService
             })
             ->orderColumn('destination_landfill_name', 'swm_lf.name $1')
             ->editColumn('segregation_practiced', fn ($m) => $m->segregation_practiced ? __('Yes') : __('No'))
+            ->editColumn('operational_status', fn ($m) => ucfirst((string) $m->operational_status))
             ->addColumn('waste_types', function ($m) use ($wasteTypeMap) {
                 $ids = $m->waste_type_ids ?? [];
                 if (empty($ids)) {
@@ -149,25 +152,7 @@ class StsService
 
     public function download(array $data): void
     {
-        $headers = [
-            'sts_id',
-            'name',
-            'location',
-            'ward_no',
-            'road_id',
-            'road_name',
-            'latitude',
-            'longitude',
-            'operator_name',
-            'contact_number',
-            'capacity',
-            'area',
-            'source_wards',
-            'segregation_practiced',
-            'waste_types',
-            'destination_landfill',
-            'operational_status',
-        ];
+        $headers = SwmExcelColumns::exportHeaders($this->excelColumnDefinitions());
 
         $query = $this->baseQuery();
         $this->applyExportFilters($query, $data);
@@ -207,37 +192,53 @@ class StsService
             }
         });
 
-        (new SwmExcelTemplateWriter())->downloadData('SW STS.xlsx', $headers, $rows);
+        (new SwmExcelTemplateWriter())->downloadData(SwmExcelFilename::export('sts'), $headers, $rows);
     }
 
     public function downloadTemplate(): void
     {
-        $wards = array_map('strval', array_keys(Ward::getInAscOrder()));
-        $landfills = Landfill::query()
-            ->whereNull('deleted_at')
-            ->orderBy('name')
-            ->get()
-            ->map(fn (Landfill $lf) => trim(($lf->landfill_id ? $lf->landfill_id.' - ' : '').$lf->name))
-            ->all();
+        (new SwmExcelTemplateWriter())->download(
+            SwmExcelFilename::importTemplate('sts'),
+            SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions())
+        );
+    }
 
-        (new SwmExcelTemplateWriter())->download('SW STS Import Template.xlsx', [
-            ['key' => 'name', 'label' => 'name', 'required' => true],
-            ['key' => 'location', 'label' => 'location'],
-            ['key' => 'ward_no', 'label' => 'ward_no', 'required' => true, 'dropdown' => $wards],
-            ['key' => 'road_id', 'label' => 'road_id'],
-            ['key' => 'road_name', 'label' => 'road_name'],
-            ['key' => 'latitude', 'label' => 'latitude'],
-            ['key' => 'longitude', 'label' => 'longitude'],
-            ['key' => 'operator_name', 'label' => 'operator_name', 'required' => true],
-            ['key' => 'contact_number', 'label' => 'contact_number', 'required' => true],
-            ['key' => 'capacity', 'label' => 'capacity'],
-            ['key' => 'area', 'label' => 'area'],
-            ['key' => 'source_wards', 'label' => 'source_wards'],
-            ['key' => 'segregation_practiced', 'label' => 'segregation_practiced', 'dropdown' => [__('Yes'), __('No')]],
-            ['key' => 'waste_types', 'label' => 'waste_types'],
-            ['key' => 'destination_landfill', 'label' => 'destination_landfill', 'dropdown' => $landfills],
-            ['key' => 'operational_status', 'label' => 'operational_status', 'required' => true, 'dropdown' => ['active', 'inactive']],
-        ]);
+    /** @return array<int, array{key: string, label: string, export?: bool, import?: bool, required?: bool, dropdown?: array<int, string>, multiselect?: bool, reference_key?: string}> */
+    protected function excelColumnDefinitions(): array
+    {
+        $yesNo = SwmImportTemplateOptions::yesNo();
+
+        return [
+            ['key' => 'sts_id', 'label' => __('STS ID'), 'import' => false],
+            ['key' => 'name', 'label' => __('STS Name'), 'required' => true],
+            ['key' => 'location', 'label' => __('Location')],
+            ['key' => 'ward_no', 'label' => __('Ward No.'), 'required' => true, 'dropdown' => SwmImportTemplateOptions::wardNumberStrings()],
+            ['key' => 'road_id', 'label' => __('Road No.')],
+            ['key' => 'road_name', 'label' => __('Road Name')],
+            ['key' => 'latitude', 'label' => __('Latitude')],
+            ['key' => 'longitude', 'label' => __('Longitude')],
+            ['key' => 'operator_name', 'label' => __('Operator Name'), 'required' => true],
+            ['key' => 'contact_number', 'label' => __("Operator's Contact Number"), 'required' => true],
+            ['key' => 'capacity', 'label' => __('Capacity').' ('.__('Ton').')'],
+            ['key' => 'area', 'label' => __('Area').' ('.__('Decimal').')'],
+            [
+                'key' => 'source_wards',
+                'label' => __('Source Wards'),
+                'multiselect' => true,
+                'dropdown' => SwmImportTemplateOptions::wardNumberStrings(),
+                'reference_key' => 'source_wards',
+            ],
+            ['key' => 'segregation_practiced', 'label' => __('Segregation Practiced?'), 'dropdown' => $yesNo],
+            [
+                'key' => 'waste_types',
+                'label' => __('Waste Type'),
+                'multiselect' => true,
+                'dropdown' => SwmImportTemplateOptions::wasteTypeNames(),
+                'reference_key' => 'waste_types',
+            ],
+            ['key' => 'destination_landfill', 'label' => __('Destination Landfill'), 'dropdown' => SwmImportTemplateOptions::landfillLabels()],
+            ['key' => 'operational_status', 'label' => __('Operational Status'), 'required' => true, 'dropdown' => ['active', 'inactive']],
+        ];
     }
 
     protected function applyExportFilters(Builder $query, array $data): void

@@ -24,6 +24,7 @@ class WasteBinController extends Controller
         $this->middleware('auth');
         $this->middleware('permission:Export SW Waste Bins to Excel', ['only' => ['export', 'downloadTemplate']]);
         $this->middleware('permission:Import SW Waste Bins From Excel', ['only' => ['importForm', 'importStore']]);
+        $this->middleware('permission:View SW Waste Bin History', ['only' => ['history']]);
     }
 
     public function index()
@@ -130,6 +131,13 @@ class WasteBinController extends Controller
         return redirect()->route('swm.waste-bins.index')->with('success', __('Waste bin deleted successfully.'));
     }
 
+    public function history(WasteBin $wasteBin)
+    {
+        $page_title = __('Waste Bin History');
+
+        return view('swm.service-facilities.waste-bins.history', compact('page_title', 'wasteBin'));
+    }
+
     public function export(Request $request)
     {
         $this->wasteBinService->download($request->all());
@@ -157,7 +165,8 @@ class WasteBinController extends Controller
             ['waste_bin_type', 'total_capacity_kg'],
             'swm.waste-bins.index',
             'importswm',
-            'waste-bins'
+            'waste-bins',
+            __('Waste Bins')
         );
     }
 }

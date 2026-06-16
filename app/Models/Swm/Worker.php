@@ -47,6 +47,41 @@ class Worker extends Model
         'organization_work_experience_years' => 'decimal:2',
     ];
 
+    public static function employmentTypeOptions(): array
+    {
+        return [
+            'permanent' => __('Permanent'),
+            'daily' => __('Daily'),
+            'contract' => __('Contract'),
+        ];
+    }
+
+    public static function employmentTypeLabel(?string $value): string
+    {
+        if ($value === null || $value === '') {
+            return '';
+        }
+
+        return self::employmentTypeOptions()[$value] ?? ucfirst($value);
+    }
+
+    public static function statusOptions(): array
+    {
+        return [
+            'active' => __('Active'),
+            'inactive' => __('Inactive'),
+        ];
+    }
+
+    public static function statusLabel(?string $value): string
+    {
+        if ($value === null || $value === '') {
+            return '';
+        }
+
+        return self::statusOptions()[$value] ?? ucfirst($value);
+    }
+
     public function organization()
     {
         return $this->belongsTo(Organization::class, 'organization_id');

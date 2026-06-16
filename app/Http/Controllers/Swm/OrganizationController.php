@@ -196,7 +196,8 @@ class OrganizationController extends Controller
             ['name', 'email', 'address', 'contact_person_name', 'contact_number', 'organization_type', 'status'],
             'swm.organizations.index',
             'importswm',
-            'organizations'
+            'organizations',
+            __('Organizations')
         );
     }
 }

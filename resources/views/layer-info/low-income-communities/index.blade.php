@@ -10,14 +10,20 @@
 @endpush
 @section('title', $page_title)
 @section('content')
+@include('swm.partials.import-errors')
+@include('layouts.components.success-alert')
+@include('layouts.components.error-alert')
     <div class="card app-mobile-index">
         <div class="card-header">
-            @can('Add Low Income Community')
-                <a href="{{ action('LayerInfo\LowIncomeCommunityController@create') }}" class="btn btn-info">{{ __("Add Low Income Community") }}</a>
-            @endcan
-            @can('Export Low Income Communities')
-                <a href="#" id="export" class="btn btn-info">{{ __('Export to CSV') }}</a>
-            @endcan
+            @include('swm.partials.excel-import-export-header', [
+                'addPermission' => 'Add Low Income Community',
+                'addRoute' => action('LayerInfo\LowIncomeCommunityController@create'),
+                'addLabel' => __('Add Low Income Community'),
+                'importRoute' => route('layer-info.low-income-communities.import'),
+                'importPermission' => 'Import Low Income Communities From Excel',
+                'templateRoute' => route('layer-info.low-income-communities.template'),
+                'exportPermission' => 'Export Low Income Communities',
+            ])
             @can('Export Low Income Communities')
                 <a href="#" id="export-shp" class="btn btn-info">{{ __('Export to Shape File') }}</a>
             @endcan
@@ -174,8 +180,8 @@
                     e.preventDefault();
                     var searchData = $('input[type=search]').val();
                     var community_name = $('#community_name').val();
-                    window.location.href = "{!! url('layer-info/low-income-communities/export?searchData=') !!}" + searchData +
-                        "&community_name=" + community_name;
+                    window.location.href = "{!! route('layer-info.low-income-communities.export') !!}?searchData=" + encodeURIComponent(searchData) +
+                        "&community_name=" + encodeURIComponent(community_name);
 
                 })
 

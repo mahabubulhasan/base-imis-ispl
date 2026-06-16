@@ -41,13 +41,8 @@ class BillCollectionPaymentImport implements ToCollection, WithHeadingRow
                     continue;
                 }
                 $holding = isset($norm['holding_number']) ? trim((string) $norm['holding_number']) : '';
-                $cid = trim((string) ($norm['household_id'] ?? ''));
                 if ($holding !== '' && ($site->holding_number ?? '') !== $holding) {
                     $this->errors[] = __('Row :n: holding_number does not match site.', ['n' => $rowNum]);
-                    continue;
-                }
-                if ($cid !== '' && (string) $site->household_id !== $cid) {
-                    $this->errors[] = __('Row :n: household_id does not match site.', ['n' => $rowNum]);
                     continue;
                 }
 
@@ -77,8 +72,7 @@ class BillCollectionPaymentImport implements ToCollection, WithHeadingRow
                 }
 
                 $paymentTime = SwmImportRowHelper::parseDate($norm['payment_time'] ?? null) ?? now();
-                $recv = $norm['received_by_user_id'] ?? null;
-                $recvId = ($recv !== null && $recv !== '') ? (int) $recv : $this->defaultReceivedByUserId;
+                $recvId = $this->resolveReceivedByUserId($norm['received_by_user_id'] ?? null);
 
                 $data = [
                     'household_id' => $site->id,
@@ -107,9 +101,13 @@ class BillCollectionPaymentImport implements ToCollection, WithHeadingRow
 
     protected function resolveSite(array $norm): ?Household
     {
-        $siteId = $norm['household_id'] ?? null;
-        if ($siteId !== null && $siteId !== '') {
-            $id = (int) $siteId;
+        $input = trim((string) ($norm['household_id'] ?? ''));
+        if ($input === '') {
+            return null;
+        }
+
+        if (preg_match('/ - (\d+)$/', $input, $matches)) {
+            $id = (int) $matches[1];
             if ($id > 0) {
                 return Household::query()
                     ->whereKey($id)
@@ -118,13 +116,41 @@ class BillCollectionPaymentImport implements ToCollection, WithHeadingRow
                     ->first();
             }
         }
-        $customerId = trim((string) ($norm['household_id'] ?? ''));
+
+        if (is_numeric($input)) {
+            $id = (int) $input;
+            if ($id > 0) {
+                return Household::query()
+                    ->whereKey($id)
+                    ->whereNull('deleted_at')
+                    ->activeStatus()
+                    ->first();
+            }
+        }
 
         return Household::query()
-            ->where('household_id', $customerId)
+            ->where('household_id', $input)
             ->whereNull('deleted_at')
             ->activeStatus()
             ->first();
+    }
+
+    protected function resolveReceivedByUserId(mixed $value): int
+    {
+        if ($value === null || $value === '') {
+            return $this->defaultReceivedByUserId;
+        }
+
+        $input = trim((string) $value);
+        if (preg_match('/ - (\d+)$/', $input, $matches)) {
+            return (int) $matches[1];
+        }
+
+        if (is_numeric($input)) {
+            return (int) $input;
+        }
+
+        return $this->defaultReceivedByUserId;
     }
 
     protected function parseMonth($value): ?Carbon

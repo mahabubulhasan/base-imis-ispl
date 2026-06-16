@@ -3,14 +3,16 @@
 namespace App\Services\LayerInfo;
 
 use Illuminate\Http\Request;
-use Box\Spout\Common\Type;
-use Box\Spout\Writer\Style\Color;
-use Box\Spout\Writer\Style\StyleBuilder;
-use Box\Spout\Writer\WriterFactory;
 use Auth;
 use DataTables;
 use DB;
 use App\Models\LayerInfo\LowIncomeCommunity;
+use App\Models\LayerInfo\Ward;
+use App\Support\Swm\SwmExcelColumns;
+use App\Support\Swm\SwmExcelExportWriter;
+use App\Support\Swm\SwmExcelFilename;
+use App\Support\Swm\SwmExcelTemplateWriter;
+use App\Support\Swm\SwmImportRowHelper;
 
 class LowIncomeCommunityServiceClass
 {
@@ -232,43 +234,15 @@ class LowIncomeCommunityServiceClass
     }
 
     /**
-     * Export Low income community data to a CSV file.
+     * Export Low income community data to an Excel file.
      *
      * @param  array  $data The data containing search criteria
      * @return void
      */
     public function exportData($data)
     {
-
-        $searchData = $data['searchData'] ? $data['searchData'] : null;
         $community_name = $data['community_name'] ?? null;
-        $columns = [
-            __('ID'),
-            __('Community Name'),
-            __('Sub Location'),
-            __('Ward No.'),
-            __('Road No.'),
-            __('Road Name'),
-            __('Area (Decima)'),
-            __("Representative's Name"),
-            __("Representative's Contact No."),
-            __('No. of Buildings'),
-            __('Population'),
-            __('No. of Households'),
-            __('Male Population'),
-            __('Female Population'),
-            __('Other Population'),
-            __('Water Connection Status (Yes/No)'),
-            __('No. of Wate Points'),
-            __('Sanitation Status (Yes/No)'),
-            __('No. of Septic Tanks'),
-            __('No. of Holding Tanks'),
-            __('No. of Pits'),
-            __('No. of Sewer Connections'),
-            __('No. of Community Toilets'),
-            __('Remarks'),
-
-        ];
+        $columns = SwmExcelColumns::exportHeaders($this->exportColumnDefinitions());
         $query = LowIncomeCommunity::select(
             'id',
             'community_name',
@@ -295,49 +269,241 @@ class LowIncomeCommunityServiceClass
             'no_of_community_toilets',
             'remarks'
         )->whereNull('deleted_at');
-        if (!empty($community_name)) {
-            $query->whereRaw('LOWER(community_name) LIKE ?', ['%' . strtolower($community_name) . '%']);
+        if (! empty($community_name)) {
+            $query->whereRaw('LOWER(community_name) LIKE ?', ['%'.strtolower($community_name).'%']);
         }
 
-        $style = (new StyleBuilder())
-            ->setFontBold()
-            ->setFontSize(13)
-            ->setBackgroundColor(Color::rgb(228, 228, 228))
-            ->build();
-        $writer = WriterFactory::create(Type::CSV);
-        $writer->openToBrowser('Low Income Community.csv')
-            ->addRowWithStyle($columns, $style);
-        $query->chunk(5000, function ($lics) use ($writer) {
-            foreach ($lics as $lic) {
-                $values = [];
-                $values[] = $lic->id;
-                $values[] = $lic->community_name;
-                $values[] = $lic->sub_location;
-                $values[] = $lic->ward;
-                $values[] = $lic->road_no;
-                $values[] = $lic->road_name;
-                $values[] = $lic->area_decima;
-                $values[] = $lic->representative_name;
-                $values[] = $lic->representative_contact_no;
-                $values[] = $lic->no_of_buildings;
-                $values[] = $lic->population_total;
-                $values[] = $lic->number_of_households;
-                $values[] = $lic->population_male;
-                $values[] = $lic->population_female;
-                $values[] = $lic->population_others;
-                $values[] = $lic->water_connection_status === null ? '' : ($lic->water_connection_status ? __('Yes') : __('No'));
-                $values[] = $lic->no_of_wate_points;
-                $values[] = $lic->sanitation_status === null ? '' : ($lic->sanitation_status ? __('Yes') : __('No'));
-                $values[] = $lic->no_of_septic_tank;
-                $values[] = $lic->no_of_holding_tank;
-                $values[] = $lic->no_of_pit;
-                $values[] = $lic->no_of_sewer_connection;
-                $values[] = $lic->no_of_community_toilets;
-                $values[] = $lic->remarks;
-
-                $writer->addRow($values);
-            }
+        (new SwmExcelExportWriter())->download(SwmExcelFilename::export('low_income_communities'), $columns, function ($sheet, $colLetter) use ($query) {
+            $rowNum = 2;
+            $query->orderBy('id')->chunk(5000, function ($lics) use ($sheet, $colLetter, &$rowNum) {
+                foreach ($lics as $lic) {
+                    $values = [
+                        $lic->id,
+                        $lic->community_name,
+                        $lic->sub_location,
+                        $lic->ward,
+                        $lic->road_no,
+                        $lic->road_name,
+                        $lic->area_decima,
+                        $lic->representative_name,
+                        $lic->representative_contact_no,
+                        $lic->no_of_buildings,
+                        $lic->population_total,
+                        $lic->number_of_households,
+                        $lic->population_male,
+                        $lic->population_female,
+                        $lic->population_others,
+                        $lic->water_connection_status === null ? '' : ($lic->water_connection_status ? __('Yes') : __('No')),
+                        $lic->no_of_wate_points,
+                        $lic->sanitation_status === null ? '' : ($lic->sanitation_status ? __('Yes') : __('No')),
+                        $lic->no_of_septic_tank,
+                        $lic->no_of_holding_tank,
+                        $lic->no_of_pit,
+                        $lic->no_of_sewer_connection,
+                        $lic->no_of_community_toilets,
+                        $lic->remarks,
+                    ];
+                    foreach ($values as $index => $value) {
+                        $sheet->setCellValue($colLetter($index + 1).$rowNum, $value);
+                    }
+                    $rowNum++;
+                }
+            });
         });
-        $writer->close();
+    }
+
+    public function downloadTemplate(): void
+    {
+        (new SwmExcelTemplateWriter())->download(
+            SwmExcelFilename::importTemplate('low_income_communities'),
+            $this->importTemplateColumns()
+        );
+    }
+
+    /** @return array<int, array{key: string, label: string}> */
+    protected function exportColumnDefinitions(): array
+    {
+        return [
+            ['key' => 'id', 'label' => __('ID')],
+            ['key' => 'community_name', 'label' => __('LIC Name')],
+            ['key' => 'sub_location', 'label' => __('Sub Location')],
+            ['key' => 'ward', 'label' => __('Ward No.')],
+            ['key' => 'road_no', 'label' => __('Road No.')],
+            ['key' => 'road_name', 'label' => __('Road Name')],
+            ['key' => 'area_decima', 'label' => __('Area (Decimal)')],
+            ['key' => 'representative_name', 'label' => __("Representative's Name")],
+            ['key' => 'representative_contact_no', 'label' => __("Representative's Contact No.")],
+            ['key' => 'no_of_buildings', 'label' => __('No. of Buildings')],
+            ['key' => 'population_total', 'label' => __('Total Population')],
+            ['key' => 'number_of_households', 'label' => __('No. of Households')],
+            ['key' => 'population_male', 'label' => __('Male Population')],
+            ['key' => 'population_female', 'label' => __('Female Population')],
+            ['key' => 'population_others', 'label' => __('Other Population')],
+            ['key' => 'water_connection_status', 'label' => __('Water Connection Status')],
+            ['key' => 'no_of_wate_points', 'label' => __('No. of Wate Points')],
+            ['key' => 'sanitation_status', 'label' => __('Sanitation Status')],
+            ['key' => 'no_of_septic_tank', 'label' => __('No. of Septic Tanks')],
+            ['key' => 'no_of_holding_tank', 'label' => __('No. of Holding Tanks')],
+            ['key' => 'no_of_pit', 'label' => __('No. of Pits')],
+            ['key' => 'no_of_sewer_connection', 'label' => __('No. of Sewer Connections')],
+            ['key' => 'no_of_community_toilets', 'label' => __('No. of Community Toilets')],
+            ['key' => 'remarks', 'label' => __('Remarks')],
+        ];
+    }
+
+    /** @return array<int, array{key: string, label?: string, required?: bool, dropdown?: array<int, string>}> */
+    public function importTemplateColumns(): array
+    {
+        $yesNo = [__('Yes'), __('No')];
+        $wards = array_map('strval', array_keys(Ward::getInAscOrder()));
+
+        return [
+            ['key' => 'community_name', 'label' => __('LIC Name'), 'required' => true],
+            ['key' => 'sub_location', 'label' => __('Sub Location')],
+            ['key' => 'ward', 'label' => __('Ward No.'), 'dropdown' => $wards],
+            ['key' => 'road_no', 'label' => __('Road No.')],
+            ['key' => 'road_name', 'label' => __('Road Name')],
+            ['key' => 'holding_number', 'label' => __('Holding Number')],
+            ['key' => 'area_decima', 'label' => __('Area (Decimal)')],
+            ['key' => 'representative_name', 'label' => __("Representative's Name")],
+            ['key' => 'representative_contact_no', 'label' => __("Representative's Contact No.")],
+            ['key' => 'no_of_buildings', 'label' => __('No. of Buildings'), 'required' => true],
+            ['key' => 'population_total', 'label' => __('Total Population'), 'required' => true],
+            ['key' => 'number_of_households', 'label' => __('No. of Households'), 'required' => true],
+            ['key' => 'population_male', 'label' => __('Male Population')],
+            ['key' => 'population_female', 'label' => __('Female Population')],
+            ['key' => 'population_others', 'label' => __('Other Population')],
+            ['key' => 'water_connection_status', 'label' => __('Water Connection Status'), 'required' => true, 'dropdown' => $yesNo],
+            ['key' => 'no_of_wate_points', 'label' => __('No. of Wate Points')],
+            ['key' => 'sanitation_status', 'label' => __('Sanitation Status'), 'required' => true, 'dropdown' => $yesNo],
+            ['key' => 'no_of_septic_tank', 'label' => __('No. of Septic Tanks')],
+            ['key' => 'no_of_holding_tank', 'label' => __('No. of Holding Tanks')],
+            ['key' => 'no_of_pit', 'label' => __('No. of Pits')],
+            ['key' => 'no_of_sewer_connection', 'label' => __('No. of Sewer Connections')],
+            ['key' => 'no_of_community_toilets', 'label' => __('No. of Community Toilets')],
+            ['key' => 'remarks', 'label' => __('Remarks')],
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $row
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function storeFromImportRow(array $row, int $userId): void
+    {
+        $communityName = trim((string) ($row['community_name'] ?? ''));
+        if ($communityName === '') {
+            throw new \InvalidArgumentException(__('community_name is required.'));
+        }
+
+        $noOfBuildings = $this->parseRequiredNonNegativeInt($row['no_of_buildings'] ?? null, 'no_of_buildings');
+        $populationTotal = $this->parseRequiredNonNegativeInt($row['population_total'] ?? null, 'population_total');
+        $numberOfHouseholds = $this->parseRequiredNonNegativeInt($row['number_of_households'] ?? null, 'number_of_households');
+
+        $waterConnectionStatus = SwmImportRowHelper::parseBoolean($row['water_connection_status'] ?? null);
+        if ($waterConnectionStatus === null) {
+            throw new \InvalidArgumentException(__('water_connection_status is required.'));
+        }
+
+        $sanitationStatus = SwmImportRowHelper::parseBoolean($row['sanitation_status'] ?? null);
+        if ($sanitationStatus === null) {
+            throw new \InvalidArgumentException(__('sanitation_status is required.'));
+        }
+
+        $noOfWaterPoints = null;
+        if ($waterConnectionStatus) {
+            $noOfWaterPoints = $this->parseRequiredNonNegativeInt($row['no_of_wate_points'] ?? null, 'no_of_wate_points');
+        }
+
+        $noOfCommunityToilets = null;
+        if ($sanitationStatus) {
+            $noOfCommunityToilets = $this->parseRequiredNonNegativeInt($row['no_of_community_toilets'] ?? null, 'no_of_community_toilets');
+        }
+
+        $lic = new LowIncomeCommunity();
+        $lic->community_name = $communityName;
+        $lic->sub_location = $this->nullableString($row['sub_location'] ?? null);
+        $lic->ward = $this->parseOptionalPositiveInt($row['ward'] ?? null);
+        $lic->road_no = $this->nullableString($row['road_no'] ?? null);
+        $lic->road_name = $this->nullableString($row['road_name'] ?? null);
+        $lic->holding_number = $this->nullableString($row['holding_number'] ?? null);
+        $lic->area_decima = $this->parseOptionalDecimal($row['area_decima'] ?? null);
+        $lic->representative_name = $this->nullableString($row['representative_name'] ?? null);
+        $lic->representative_contact_no = $this->nullableString($row['representative_contact_no'] ?? null);
+        $lic->no_of_buildings = $noOfBuildings;
+        $lic->population_total = $populationTotal;
+        $lic->number_of_households = $numberOfHouseholds;
+        $lic->population_male = $this->parseOptionalNonNegativeInt($row['population_male'] ?? null);
+        $lic->population_female = $this->parseOptionalNonNegativeInt($row['population_female'] ?? null);
+        $lic->population_others = $this->parseOptionalNonNegativeInt($row['population_others'] ?? null);
+        $lic->water_connection_status = $waterConnectionStatus;
+        $lic->no_of_wate_points = $noOfWaterPoints;
+        $lic->sanitation_status = $sanitationStatus;
+        $lic->no_of_septic_tank = $this->parseOptionalNonNegativeInt($row['no_of_septic_tank'] ?? null);
+        $lic->no_of_holding_tank = $this->parseOptionalNonNegativeInt($row['no_of_holding_tank'] ?? null);
+        $lic->no_of_pit = $this->parseOptionalNonNegativeInt($row['no_of_pit'] ?? null);
+        $lic->no_of_sewer_connection = $this->parseOptionalNonNegativeInt($row['no_of_sewer_connection'] ?? null);
+        $lic->no_of_community_toilets = $noOfCommunityToilets;
+        $lic->remarks = $this->nullableString($row['remarks'] ?? null);
+        $lic->user_id = $userId;
+        $lic->save();
+    }
+
+    private function nullableString($value): ?string
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        return trim((string) $value);
+    }
+
+    private function parseRequiredNonNegativeInt($value, string $field): int
+    {
+        if ($value === null || $value === '') {
+            throw new \InvalidArgumentException(__(':field is required.', ['field' => $field]));
+        }
+        if (! is_numeric($value) || (int) $value < 0) {
+            throw new \InvalidArgumentException(__(':field must be a non-negative integer.', ['field' => $field]));
+        }
+
+        return (int) $value;
+    }
+
+    private function parseOptionalNonNegativeInt($value): ?int
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+        if (! is_numeric($value) || (int) $value < 0) {
+            throw new \InvalidArgumentException(__('Value must be a non-negative integer.'));
+        }
+
+        return (int) $value;
+    }
+
+    private function parseOptionalPositiveInt($value): ?int
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+        if (! is_numeric($value) || (int) $value < 1) {
+            throw new \InvalidArgumentException(__('ward must be a positive integer.'));
+        }
+
+        return (int) $value;
+    }
+
+    private function parseOptionalDecimal($value): ?float
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+        if (! is_numeric($value) || (float) $value < 0) {
+            throw new \InvalidArgumentException(__('area_decima must be a non-negative number.'));
+        }
+
+        return (float) $value;
     }
 }

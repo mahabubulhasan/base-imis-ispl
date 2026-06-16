@@ -26,10 +26,15 @@ class LandfillLogImport implements ToCollection, WithHeadingRow
             ->orderBy('vehicle_number')
             ->pluck('vehicle_number', 'id')
             ->all();
-        $landfillMap = Landfill::query()
+        $landfillLabelMap = Landfill::query()
             ->whereNull('deleted_at')
             ->orderBy('name')
-            ->pluck('name', 'id')
+            ->get()
+            ->mapWithKeys(function (Landfill $landfill) {
+                $label = trim(($landfill->landfill_id ? $landfill->landfill_id.' - ' : '').$landfill->name);
+
+                return [$landfill->id => $label];
+            })
             ->all();
 
         foreach ($rows as $idx => $row) {
@@ -68,12 +73,13 @@ class LandfillLogImport implements ToCollection, WithHeadingRow
                 $landfillName = null;
                 $landfillLabel = trim((string) ($norm['landfill_name'] ?? ''));
                 if ($landfillLabel !== '') {
-                    $landfillId = SwmImportRowHelper::resolveByLabel($landfillLabel, $landfillMap);
+                    $landfillId = $this->resolveLandfillId($landfillLabel, $landfillLabelMap);
                     if (! $landfillId) {
                         $this->errors[] = __('Row :n: invalid landfill_name.', ['n' => $rowNum]);
                         continue;
                     }
-                    $landfillName = $landfillMap[$landfillId] ?? $landfillLabel;
+                    $landfill = Landfill::query()->whereKey($landfillId)->first();
+                    $landfillName = $landfill?->name ?? $landfillLabel;
                 }
 
                 $wasteTypeIds = $this->resolveWasteTypeIds($norm['waste_types'] ?? null);
@@ -103,6 +109,21 @@ class LandfillLogImport implements ToCollection, WithHeadingRow
                 $this->errors[] = __('Row :n: :msg', ['n' => $rowNum, 'msg' => $e->getMessage()]);
             }
         }
+    }
+
+    protected function resolveLandfillId(string $label, array $labelMap): ?int
+    {
+        $id = SwmImportRowHelper::resolveByLabel($label, $labelMap);
+        if ($id) {
+            return (int) $id;
+        }
+
+        $landfill = Landfill::query()
+            ->whereNull('deleted_at')
+            ->whereRaw('LOWER(name) = ?', [strtolower($label)])
+            ->first();
+
+        return $landfill ? (int) $landfill->id : null;
     }
 
     protected function resolveVehicleIdByNumber(string $number): ?int

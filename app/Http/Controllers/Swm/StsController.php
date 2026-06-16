@@ -94,7 +94,7 @@ class StsController extends Controller
     public function show(Sts $sts)
     {
         $sts->load('landfill');
-        $page_title = __('SW STS Details');
+        $page_title = __('STS Details');
         $wasteTypes = $sts->wasteTypes();
 
         return view('swm.service-facilities.sts.show', compact('page_title', 'sts', 'wasteTypes'));
@@ -129,7 +129,7 @@ class StsController extends Controller
 
     public function history(Sts $sts)
     {
-        $page_title = __('STSs History');
+        $page_title = __('STS History');
 
         return view('swm.service-facilities.sts.history', compact('page_title', 'sts'));
     }
@@ -161,7 +161,8 @@ class StsController extends Controller
             ['name', 'ward_no', 'operator_name', 'contact_number', 'operational_status'],
             'swm.sts.index',
             'importswm',
-            'sts'
+            'sts',
+            __('STS')
         );
     }
 }

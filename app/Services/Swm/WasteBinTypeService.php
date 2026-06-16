@@ -71,7 +71,7 @@ class WasteBinTypeService
         $name = $data['name'] ?? null;
 
         $columns = [
-            __('Waste Bin Type Name'),
+            __('Waste Bin Type'),
         ];
 
         $query = WasteBinType::query()

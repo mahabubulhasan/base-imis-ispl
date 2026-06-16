@@ -72,7 +72,7 @@ class OrganizationTypeService
         $name = $data['name'] ?? null;
 
         $columns = [
-            __('Organization Type Name'),
+            __('Organization Type'),
             __('Description'),
         ];
 

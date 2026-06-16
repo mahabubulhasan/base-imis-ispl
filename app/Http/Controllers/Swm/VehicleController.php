@@ -299,7 +299,8 @@ class VehicleController extends Controller
             $required,
             'swm.vehicles.index',
             'importswm',
-            'vehicles'
+            'vehicles',
+            __('Vehicles')
         );
     }
 }

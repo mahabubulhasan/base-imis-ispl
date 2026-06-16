@@ -71,7 +71,7 @@ class WorkTypeService
         $name = $data['name'] ?? null;
 
         $columns = [
-            __('Work Type Name'),
+            __('Worker Type'),
         ];
 
         $query = WorkType::query()

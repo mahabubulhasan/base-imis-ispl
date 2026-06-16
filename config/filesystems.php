@@ -67,6 +67,11 @@ return [
             'root' => env('FILE_SYSTEM_IMPORT_SWM_MODULES', 'storage/swm-import'),
         ],
 
+        'importlic' => [
+            'driver' => 'local',
+            'root' => env('FILE_SYSTEM_IMPORT_LIC', 'storage/lic-import'),
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

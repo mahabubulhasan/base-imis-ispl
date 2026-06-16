@@ -54,30 +54,39 @@
 @endphp
 
 <div class="row">
-    <div class="col-md-4 col-sm-6 col-12">
+    <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+        <div class="info-box">
+            <span class="info-box-icon bg-info"><i class="fas fa-hand-holding-usd"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text" title="{{ __('Bill Collected This Month (Taka)') }}">{{ __('Bill Collected This Month (Taka)') }}</span>
+                <span class="info-box-number" id="summary-bill-collected-this-month">—</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+        <div class="info-box">
+            <span class="info-box-icon bg-info"><i class="fas fa-coins"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text" title="{{ __('Total Bill Collected (Taka)') }}">{{ __('Total Bill Collected (Taka)') }}</span>
+                <span class="info-box-number" id="summary-revenue-ytd">—</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-6 col-12">
         <div class="info-box">
             <span class="info-box-icon bg-info"><i class="fas fa-calendar-alt"></i></span>
             <div class="info-box-content">
-                <span class="info-box-text">{{ __('Due for this month') }}</span>
+                <span class="info-box-text" title="{{ __('Due This Month (Taka)') }}">{{ __('Due This Month (Taka)') }}</span>
                 <span class="info-box-number" id="summary-due-this-month">—</span>
             </div>
         </div>
     </div>
-    <div class="col-md-4 col-sm-6 col-12">
+    <div class="col-lg-3 col-md-6 col-sm-6 col-12">
         <div class="info-box">
             <span class="info-box-icon bg-info"><i class="fas fa-file-invoice-dollar"></i></span>
             <div class="info-box-content">
-                <span class="info-box-text">{{ __('Total due') }} ({{ __('Taka') }})</span>
+                <span class="info-box-text" title="{{ __('Total Due (Taka)') }}">{{ __('Total Due (Taka)') }}</span>
                 <span class="info-box-number" id="summary-total-due">—</span>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4 col-sm-6 col-12">
-        <div class="info-box">
-            <span class="info-box-icon bg-info"><i class="fas fa-coins"></i></span>
-            <div class="info-box-content">
-                <span class="info-box-text">{{ __('Total Bill Collected') }} ({{ __('Taka') }})</span>
-                <span class="info-box-number" id="summary-revenue-ytd">—</span>
             </div>
         </div>
     </div>
@@ -180,14 +189,16 @@ $(function() {
     function loadSummary() {
         $.getJSON('{!! route("swm.billing-status.summary") !!}')
             .done(function(data) {
+                $('#summary-bill-collected-this-month').text(data.bill_collected_this_month);
+                $('#summary-revenue-ytd').text(data.total_revenue_collected);
                 $('#summary-due-this-month').text(data.due_for_this_month);
                 $('#summary-total-due').text(data.total_due);
-                $('#summary-revenue-ytd').text(data.total_revenue_collected);
             })
             .fail(function() {
+                $('#summary-bill-collected-this-month').text('—');
+                $('#summary-revenue-ytd').text('—');
                 $('#summary-due-this-month').text('—');
                 $('#summary-total-due').text('—');
-                $('#summary-revenue-ytd').text('—');
             });
     }
 

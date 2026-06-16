@@ -247,7 +247,8 @@ class BillCollectionPaymentController extends Controller
             ['household_id', 'amount', 'payment_for_month', 'payment_method'],
             'swm.bill-collection-payments.index',
             'importbillcollectionpayments',
-            'bill-collection-payments'
+            'bill-collection-payments',
+            __('Bill Collection')
         );
     }
 

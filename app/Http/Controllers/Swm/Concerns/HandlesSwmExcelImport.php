@@ -30,7 +30,8 @@ trait HandlesSwmExcelImport
         array $requiredHeaders,
         string $indexRoute,
         string $disk,
-        string $filenamePrefix
+        string $filenamePrefix,
+        string $entityName
     ) {
         Validator::extend('swm_excel_import_ext', function ($attribute, $value) {
             return strtolower((string) $value->getClientOriginalExtension()) === 'xlsx';
@@ -69,7 +70,10 @@ trait HandlesSwmExcelImport
         $import = new $importClass((int) Auth::id());
         Excel::import($import, $fullPath);
 
-        $message = __('Imported :n record(s).', ['n' => $import->successCount]);
+        $message = __('Successfully :n Records Imported For :entity From Excel.', [
+            'n' => $import->successCount,
+            'entity' => $entityName,
+        ]);
         if (count($import->errors) > 0) {
             return redirect()->route($indexRoute)
                 ->with('success', $message)

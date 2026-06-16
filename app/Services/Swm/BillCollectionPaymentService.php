@@ -6,8 +6,11 @@ use App\Models\BuildingInfo\Household;
 use App\Models\Swm\BillCollectionPayment;
 use App\Services\Formatting\Currency;
 use App\Services\Formatting\CurrencyFormatter;
+use App\Support\Swm\SwmExcelColumns;
 use App\Support\Swm\SwmExcelExportWriter;
+use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
+use App\Support\Swm\SwmImportTemplateOptions;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -604,23 +607,7 @@ class BillCollectionPaymentService
         $householdId = $data['household_id'] ?? null;
         $paymentForMonth = $data['payment_for_month'] ?? null;
 
-        $columns = [
-            __('Holding Number'),
-            __('Customer ID'),
-            __('Customer Name'),
-            __("Father's/Husband's Name"),
-            __('Ward'),
-            __('Sub-location'),
-            __('Contact Number'),
-            __('Receipt No'),
-            __('Current Month Paid'),
-            __('Previous Due Paid'),
-            __('Total Collected'),
-            __('Payment For Month'),
-            __('Payment Time'),
-            __('Payment Method'),
-            __('Received By'),
-        ];
+        $columns = SwmExcelColumns::exportHeaders($this->exportColumnDefinitions());
 
         $query = $this->baseQuery();
 
@@ -634,7 +621,7 @@ class BillCollectionPaymentService
             $query->whereDate('swm.bill_collection_payments.payment_for_month', Carbon::parse($paymentForMonth)->startOfMonth());
         }
 
-        (new SwmExcelExportWriter())->download('SW Bill Collection Payments.xlsx', $columns, function ($sheet, $colLetter) use ($query) {
+        (new SwmExcelExportWriter())->download(SwmExcelFilename::export('bill_collection'), $columns, function ($sheet, $colLetter) use ($query) {
             $rowNum = 2;
             $query->orderBy('swm.bill_collection_payments.id')->chunk(5000, function ($rows) use ($sheet, $colLetter, &$rowNum) {
                 foreach ($rows as $row) {
@@ -668,16 +655,47 @@ class BillCollectionPaymentService
 
     public function downloadTemplate(): void
     {
-        (new SwmExcelTemplateWriter())->download('bill-collection-payments-import-template.xlsx', [
-            ['key' => 'household_id', 'required' => true],
-            ['key' => 'holding_number'],
-            ['key' => 'amount', 'required' => true],
-            ['key' => 'due_paid'],
-            ['key' => 'payment_for_month', 'required' => true],
-            ['key' => 'payment_method', 'required' => true, 'dropdown' => array_values(config('bill_collection.payment_methods', []))],
-            ['key' => 'payment_time'],
-            ['key' => 'received_by_user_id'],
-            ['key' => 'receipt_no'],
-        ]);
+        (new SwmExcelTemplateWriter())->download(
+            SwmExcelFilename::importTemplate('bill_collection'),
+            $this->importTemplateColumns()
+        );
+    }
+
+    /** @return array<int, array{key: string, label: string}> */
+    protected function exportColumnDefinitions(): array
+    {
+        return [
+            ['key' => 'holding_number', 'label' => __('Holding Number')],
+            ['key' => 'customer_id', 'label' => __('Household ID')],
+            ['key' => 'household_owner_name', 'label' => __('Household Owner Name')],
+            ['key' => 'father_or_husband_name', 'label' => __("Father's/Husband's Name")],
+            ['key' => 'ward', 'label' => __('Ward No.')],
+            ['key' => 'sub_location', 'label' => __('Sub Location')],
+            ['key' => 'contact_number', 'label' => __('Contact Number')],
+            ['key' => 'receipt_no', 'label' => __('Receipt No.')],
+            ['key' => 'amount', 'label' => __('Current Month Payment').' ('.__('Taka').')'],
+            ['key' => 'due_paid', 'label' => __('Previous Due Payment').' ('.__('Taka').')'],
+            ['key' => 'total_collected', 'label' => __('Total Payment').' ('.__('Taka').')'],
+            ['key' => 'payment_for_month', 'label' => __('Transaction Month')],
+            ['key' => 'payment_time', 'label' => __('Payment Time')],
+            ['key' => 'payment_method', 'label' => __('Payment Method')],
+            ['key' => 'received_by_name', 'label' => __('Payment Received by')],
+        ];
+    }
+
+    /** @return array<int, array{key: string, label: string, required?: bool, dropdown?: array<int, string>}> */
+    protected function importTemplateColumns(): array
+    {
+        return [
+            ['key' => 'household_id', 'label' => __('Household ID'), 'required' => true, 'dropdown' => SwmImportTemplateOptions::householdCustomerLabels()],
+            ['key' => 'holding_number', 'label' => __('Holding Number')],
+            ['key' => 'amount', 'label' => __('Current Month Payment').' ('.__('Taka').')', 'required' => true],
+            ['key' => 'due_paid', 'label' => __('Previous Due Payment').' ('.__('Taka').')'],
+            ['key' => 'payment_for_month', 'label' => __('Transaction Month'), 'required' => true],
+            ['key' => 'payment_method', 'label' => __('Payment Method'), 'required' => true, 'dropdown' => array_values(config('bill_collection.payment_methods', []))],
+            ['key' => 'payment_time', 'label' => __('Payment Time')],
+            ['key' => 'received_by_user_id', 'label' => __('Payment Received by'), 'dropdown' => SwmImportTemplateOptions::userLabels()],
+            ['key' => 'receipt_no', 'label' => __('Receipt No.')],
+        ];
     }
 }

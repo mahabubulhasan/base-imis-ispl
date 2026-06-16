@@ -274,7 +274,8 @@ class LandfillLogController extends Controller
             ['vehicle_number', 'entry_at', 'operation_date'],
             'swm.landfill-logs.index',
             'importswm',
-            'landfill-logs-import'
+            'landfill-logs-import',
+            __('Landfill Logs')
         );
     }
 

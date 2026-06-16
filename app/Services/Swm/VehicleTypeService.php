@@ -72,7 +72,7 @@ class VehicleTypeService
         $name = $data['name'] ?? null;
 
         $columns = [
-            __('Vehicle Type Name'),
+            __('Vehicle Type'),
         ];
 
         $query = VehicleType::query()

@@ -72,7 +72,7 @@ class LandfillTypeService
         $name = $data['name'] ?? null;
 
         $columns = [
-            __('Landfill Type Name'),
+            __('Landfill Type'),
         ];
 
         $query = LandfillType::query()

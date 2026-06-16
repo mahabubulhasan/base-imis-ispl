@@ -6,7 +6,10 @@ use App\Enums\SwmOrganizationStatus;
 use App\Models\LayerInfo\Ward;
 use App\Models\Swm\Organization;
 use App\Models\Swm\OrganizationType;
+use App\Support\Swm\SwmExcelColumns;
+use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
+use App\Support\Swm\SwmImportTemplateOptions;
 use Auth;
 use Box\Spout\Common\Type;
 use Box\Spout\Writer\Style\Color;
@@ -116,17 +119,7 @@ class OrganizationService
         $organizationTypeId = $data['organization_type_id'] ?? null;
         $status = $data['status'] ?? null;
 
-        $columns = [
-            __('Organization Name'),
-            __('Email'),
-            __('Address'),
-            __('Contact Person Name'),
-            __('Contact Number'),
-            __('Organization Type'),
-            __('Service Wards'),
-            __('Remarks'),
-            __('Status'),
-        ];
+        $columns = SwmExcelColumns::exportHeaders($this->excelColumnDefinitions());
 
         $query = Organization::query()
             ->with('organizationType')
@@ -169,7 +162,7 @@ class OrganizationService
             ->build();
 
         $writer = WriterFactory::create(Type::XLSX);
-        $writer->openToBrowser('SW Organizations.xlsx')
+        $writer->openToBrowser(SwmExcelFilename::export('organizations'))
             ->addRowWithStyle($columns, $style);
 
         $query->chunk(5000, function ($rows) use ($writer) {
@@ -194,13 +187,13 @@ class OrganizationService
     public function downloadTemplate(): void
     {
         (new SwmExcelTemplateWriter())->download(
-            'SW Organizations Import Template.xlsx',
-            $this->importTemplateColumns()
+            SwmExcelFilename::importTemplate('organizations'),
+            SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions())
         );
     }
 
-    /** @return array<int, array{key: string, label: string, required?: bool, dropdown?: array<int, string>}> */
-    public function importTemplateColumns(): array
+    /** @return array<int, array{key: string, label: string, export?: bool, import?: bool, required?: bool, dropdown?: array<int, string>, multiselect?: bool, reference_key?: string}> */
+    protected function excelColumnDefinitions(): array
     {
         $orgTypes = OrganizationType::query()
             ->whereNull('deleted_at')
@@ -214,13 +207,26 @@ class OrganizationService
             ['key' => 'address', 'label' => __('Address'), 'required' => true],
             ['key' => 'contact_person_name', 'label' => __('Contact Person Name'), 'required' => true],
             ['key' => 'contact_number', 'label' => __('Contact Number'), 'required' => true],
-            ['key' => 'organization_type', 'label' => __('Organization Type'), 'required' => true, 'dropdown' => $orgTypes],
-            ['key' => 'service_wards', 'label' => __('Service Wards')],
+            ['key' => 'organization_type', 'label' => __('Organization Type'), 'required' => true, 'dropdown' => $orgTypes, 'export' => false],
+            ['key' => 'organization_type_label', 'label' => __('Organization Type'), 'import' => false],
+            [
+                'key' => 'service_wards',
+                'label' => __('Service Wards'),
+                'multiselect' => true,
+                'dropdown' => SwmImportTemplateOptions::wardNumberStrings(),
+                'reference_key' => 'service_wards',
+            ],
             ['key' => 'remarks', 'label' => __('Remarks')],
             ['key' => 'status', 'label' => __('Status'), 'required' => true, 'dropdown' => [
                 SwmOrganizationStatus::getDescription(true),
                 SwmOrganizationStatus::getDescription(false),
             ]],
         ];
+    }
+
+    /** @return array<int, array{key: string, label: string, required?: bool, dropdown?: array<int, string>}> */
+    public function importTemplateColumns(): array
+    {
+        return SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions());
     }
 }

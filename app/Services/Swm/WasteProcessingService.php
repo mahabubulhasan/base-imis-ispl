@@ -3,6 +3,8 @@
 namespace App\Services\Swm;
 
 use App\Models\Swm\WasteProcessingLog;
+use App\Support\Swm\SwmExcelColumns;
+use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
 use Auth;
 use Box\Spout\Common\Type;
@@ -95,20 +97,7 @@ class WasteProcessingService
         $query = $this->query();
         $this->applyFilters($query, $data);
 
-        $columns = [
-            __('Waste Processing Log ID'),
-            __('Entry Date and Time'),
-            __('Report Date'),
-            __('Reporting Month'),
-            __('Waste Processing Site Name'),
-            __('Quantity of Waste Received (Ton)'),
-            __('Organic Waste Composted (Ton)'),
-            __('Inorganic Non-biodegradable Waste Recycled (Ton)'),
-            __('Waste Incinerated (Ton)'),
-            __('Waste Burned in Open Air (Ton)'),
-            __('Residual Waste Landfilled (Ton)'),
-            __('Remarks'),
-        ];
+        $columns = SwmExcelColumns::exportHeaders($this->excelColumnDefinitions());
 
         $style = (new StyleBuilder())
             ->setFontBold()
@@ -117,7 +106,7 @@ class WasteProcessingService
             ->build();
 
         $writer = WriterFactory::create(Type::XLSX);
-        $writer->openToBrowser('SW Waste Processing.xlsx')
+        $writer->openToBrowser(SwmExcelFilename::export('waste_processing'))
             ->addRowWithStyle($columns, $style);
 
         $query->orderBy('id')->chunk(5000, function ($rows) use ($writer) {
@@ -145,27 +134,34 @@ class WasteProcessingService
     public function downloadTemplate(): void
     {
         app(SwmExcelTemplateWriter::class)->download(
-            'SW Waste Processing Import Template.xlsx',
-            $this->importTemplateColumns()
+            SwmExcelFilename::importTemplate('waste_processing'),
+            SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions())
         );
     }
 
-    /** @return array<int, array{key: string, label: string, required?: bool, dropdown?: array<int, string>}> */
-    protected function importTemplateColumns(): array
+    /** @return array<int, array{key: string, label: string, export?: bool, import?: bool, required?: bool}> */
+    protected function excelColumnDefinitions(): array
     {
         return [
-            ['key' => 'entry_at', 'label' => 'entry_at', 'required' => true],
-            ['key' => 'report_date', 'label' => 'report_date', 'required' => true],
-            ['key' => 'reporting_month', 'label' => 'reporting_month', 'required' => true],
-            ['key' => 'waste_processing_site_name', 'label' => 'waste_processing_site_name', 'required' => false],
-            ['key' => 'waste_received_ton', 'label' => 'waste_received_ton', 'required' => false],
-            ['key' => 'organic_waste_composted_ton', 'label' => 'organic_waste_composted_ton', 'required' => false],
-            ['key' => 'inorganic_waste_recycled_ton', 'label' => 'inorganic_waste_recycled_ton', 'required' => false],
-            ['key' => 'waste_incinerated_ton', 'label' => 'waste_incinerated_ton', 'required' => false],
-            ['key' => 'waste_burned_open_air_ton', 'label' => 'waste_burned_open_air_ton', 'required' => false],
-            ['key' => 'residual_waste_landfilled_ton', 'label' => 'residual_waste_landfilled_ton', 'required' => false],
-            ['key' => 'remarks', 'label' => 'remarks', 'required' => false],
+            ['key' => 'id', 'label' => __('Waste Processing Log ID'), 'import' => false],
+            ['key' => 'entry_at', 'label' => __('Entry Date and Time'), 'required' => true],
+            ['key' => 'report_date', 'label' => __('Report Date'), 'required' => true],
+            ['key' => 'reporting_month', 'label' => __('Reporting Month'), 'required' => true],
+            ['key' => 'waste_processing_site_name', 'label' => __('Waste Processing Site Name')],
+            ['key' => 'waste_received_ton', 'label' => __('Quantity of Waste Received (Ton)')],
+            ['key' => 'organic_waste_composted_ton', 'label' => __('Organic Waste Composted (Ton)')],
+            ['key' => 'inorganic_waste_recycled_ton', 'label' => __('Inorganic Non-biodegradable Waste Recycled (Ton)')],
+            ['key' => 'waste_incinerated_ton', 'label' => __('Waste Incinerated (Ton)')],
+            ['key' => 'waste_burned_open_air_ton', 'label' => __('Waste Burned in Open Air (Ton)')],
+            ['key' => 'residual_waste_landfilled_ton', 'label' => __('Residual Waste Landfilled (Ton)')],
+            ['key' => 'remarks', 'label' => __('Remarks')],
         ];
+    }
+
+    /** @return array<int, array{key: string, label: string, required?: bool}> */
+    protected function importTemplateColumns(): array
+    {
+        return SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions());
     }
 
     protected function applyFilters($query, array $data): void
