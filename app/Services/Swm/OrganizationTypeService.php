@@ -3,6 +3,7 @@
 namespace App\Services\Swm;
 
 use App\Models\Swm\OrganizationType;
+use App\Support\Swm\SwmExcelFilename;
 use Auth;
 use Box\Spout\Common\Type;
 use Box\Spout\Writer\Style\Color;
@@ -90,8 +91,8 @@ class OrganizationTypeService
             ->setBackgroundColor(Color::rgb(228, 228, 228))
             ->build();
 
-        $writer = WriterFactory::create(Type::CSV);
-        $writer->openToBrowser('SW Organization Types.csv')
+        $writer = WriterFactory::create(Type::XLSX);
+        $writer->openToBrowser(SwmExcelFilename::export('organization_types'))
             ->addRowWithStyle($columns, $style);
 
         $query->chunk(5000, function ($rows) use ($writer) {

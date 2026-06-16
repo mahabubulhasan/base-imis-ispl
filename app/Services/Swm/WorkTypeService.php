@@ -3,6 +3,7 @@
 namespace App\Services\Swm;
 
 use App\Models\Swm\WorkType;
+use App\Support\Swm\SwmExcelFilename;
 use Auth;
 use Box\Spout\Common\Type;
 use Box\Spout\Writer\Style\Color;
@@ -72,10 +73,11 @@ class WorkTypeService
 
         $columns = [
             __('Worker Type'),
+            __('Description'),
         ];
 
         $query = WorkType::query()
-            ->select('name')
+            ->select('name', 'description')
             ->whereNull('deleted_at');
 
         if (! empty($name)) {
@@ -88,13 +90,16 @@ class WorkTypeService
             ->setBackgroundColor(Color::rgb(228, 228, 228))
             ->build();
 
-        $writer = WriterFactory::create(Type::CSV);
-        $writer->openToBrowser('SW Work Types.csv')
+        $writer = WriterFactory::create(Type::XLSX);
+        $writer->openToBrowser(SwmExcelFilename::export('work_types'))
             ->addRowWithStyle($columns, $style);
 
         $query->chunk(5000, function ($rows) use ($writer) {
             foreach ($rows as $row) {
-                $writer->addRow([$row->name]);
+                $writer->addRow([
+                    $row->name,
+                    $row->description,
+                ]);
             }
         });
 

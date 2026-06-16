@@ -3,6 +3,7 @@
 namespace App\Services\Swm;
 
 use App\Models\Swm\WasteBinType;
+use App\Support\Swm\SwmExcelFilename;
 use Auth;
 use Box\Spout\Common\Type;
 use Box\Spout\Writer\Style\Color;
@@ -72,10 +73,11 @@ class WasteBinTypeService
 
         $columns = [
             __('Waste Bin Type'),
+            __('Description'),
         ];
 
         $query = WasteBinType::query()
-            ->select('name')
+            ->select('name', 'description')
             ->whereNull('deleted_at');
 
         if (! empty($name)) {
@@ -88,13 +90,16 @@ class WasteBinTypeService
             ->setBackgroundColor(Color::rgb(228, 228, 228))
             ->build();
 
-        $writer = WriterFactory::create(Type::CSV);
-        $writer->openToBrowser('SW Waste Bin Types.csv')
+        $writer = WriterFactory::create(Type::XLSX);
+        $writer->openToBrowser(SwmExcelFilename::export('waste_bin_types'))
             ->addRowWithStyle($columns, $style);
 
         $query->chunk(5000, function ($rows) use ($writer) {
             foreach ($rows as $row) {
-                $writer->addRow([$row->name]);
+                $writer->addRow([
+                    $row->name,
+                    $row->description,
+                ]);
             }
         });
 
