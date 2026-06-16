@@ -1314,10 +1314,15 @@ body.layout-fixed .main-sidebar .sidebar {
 /* Footer: partner branding logos */
 .footer-branding {
   display: flex;
-  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   gap: 10px;
+}
+
+.footer-branding__group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 .footer-branding__logo img {
@@ -1329,8 +1334,13 @@ body.layout-fixed .main-sidebar .sidebar {
 
 @media (max-width: 767.98px) {
   .footer-branding {
+    flex-wrap: wrap;
     justify-content: center;
     gap: 12px;
+  }
+
+  .footer-branding__group {
+    display: contents;
   }
 
   .footer-branding__logo {
