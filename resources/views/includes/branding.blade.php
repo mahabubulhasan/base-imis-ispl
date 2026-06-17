@@ -12,7 +12,7 @@ Description: Footer branding logos layout for partner and implementer organizati
     </div>
     <div class="footer-branding__group">
         <div class="footer-branding__logo">
-            <img src="{{ asset('img/stl/SNV_logo.svg') }}" alt="SNV">
+            <img src="{{ asset('img/stl/SNV_logo.png') }}" alt="SNV">
         </div>
         <div class="footer-branding__logo">
             <img src="{{ asset('img/stl/STL.png') }}" alt="STL">
