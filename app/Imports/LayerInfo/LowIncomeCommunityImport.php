@@ -38,9 +38,9 @@ class LowIncomeCommunityImport implements ToCollection, WithHeadingRow
                 $service->storeFromImportRow($norm, $this->userId);
                 $this->successCount++;
             } catch (\InvalidArgumentException $e) {
-                $this->errors[] = __('Row :n: :msg', ['n' => $rowNum, 'msg' => $e->getMessage()]);
+                $this->errors[] = SwmImportRowHelper::importCatchMessage($rowNum, $e);
             } catch (\Throwable $e) {
-                $this->errors[] = __('Row :n: :msg', ['n' => $rowNum, 'msg' => $e->getMessage()]);
+                $this->errors[] = SwmImportRowHelper::importCatchMessage($rowNum, $e);
             }
         }
     }

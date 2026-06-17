@@ -59,40 +59,40 @@ class HouseholdImport implements ToCollection, WithHeadingRow
                 $holdingNumber = trim((string) ($norm['holding_number'] ?? ''));
 
                 if ($householdId === '') {
-                    $this->errors[] = __('Row :n: household_id is required.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'household_id', $columnDefinitions);
                     continue;
                 }
                 if ($ownerName === '') {
-                    $this->errors[] = __('Row :n: household_owner_name is required.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'household_owner_name', $columnDefinitions);
                     continue;
                 }
                 if ($contactNumber === '') {
-                    $this->errors[] = __('Row :n: contact_number is required.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'contact_number', $columnDefinitions);
                     continue;
                 }
                 if ($roadName === '') {
-                    $this->errors[] = __('Row :n: road_name is required.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'road_name', $columnDefinitions);
                     continue;
                 }
                 if ($holdingNumber === '') {
-                    $this->errors[] = __('Row :n: holding_number is required.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'holding_number', $columnDefinitions);
                     continue;
                 }
 
                 $status = $this->resolveStatus($norm['status'] ?? null);
                 if ($status === null) {
-                    $this->errors[] = __('Row :n: status is required.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'status', $columnDefinitions);
                     continue;
                 }
 
                 $wardRaw = $norm['ward'] ?? null;
                 if ($wardRaw === null || $wardRaw === '') {
-                    $this->errors[] = __('Row :n: ward is required.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'ward', $columnDefinitions);
                     continue;
                 }
                 $ward = (int) $wardRaw;
                 if ($ward < 1) {
-                    $this->errors[] = __('Row :n: invalid ward.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'ward', $columnDefinitions);
                     continue;
                 }
 
@@ -100,7 +100,7 @@ class HouseholdImport implements ToCollection, WithHeadingRow
                     ? trim((string) $norm['bin'])
                     : null;
                 if ($bin !== null && ! Building::query()->whereNull('deleted_at')->where('bin', $bin)->exists()) {
-                    $this->errors[] = __('Row :n: invalid bin.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'bin', $columnDefinitions);
                     continue;
                 }
 
@@ -109,12 +109,18 @@ class HouseholdImport implements ToCollection, WithHeadingRow
                 if ($isLic) {
                     $licInput = trim((string) ($norm['lic_id'] ?? ''));
                     if ($licInput === '') {
-                        $this->errors[] = __('Row :n: lic_id is required when is_lic is Yes.', ['n' => $rowNum]);
+                        $this->errors[] = SwmImportRowHelper::rowRequiredWhen(
+                            $rowNum,
+                            'lic_id',
+                            $columnDefinitions,
+                            'is_lic',
+                            (string) __('Yes')
+                        );
                         continue;
                     }
                     $licId = SwmImportRowHelper::resolveByLabel($licInput, $licMap);
                     if (! $licId) {
-                        $this->errors[] = __('Row :n: invalid lic_id.', ['n' => $rowNum]);
+                        $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'lic_id', $columnDefinitions);
                         continue;
                     }
                 }
@@ -124,7 +130,7 @@ class HouseholdImport implements ToCollection, WithHeadingRow
                 if ($vanPullerInput !== '') {
                     $vanPullerId = SwmImportRowHelper::resolveByLabel($vanPullerInput, $workerMap);
                     if (! $vanPullerId) {
-                        $this->errors[] = __('Row :n: invalid van_puller.', ['n' => $rowNum]);
+                        $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'van_puller', $columnDefinitions);
                         continue;
                     }
                 }
@@ -177,10 +183,10 @@ class HouseholdImport implements ToCollection, WithHeadingRow
                 if ($saved) {
                     $this->successCount++;
                 } else {
-                    $this->errors[] = __('Row :n: could not save.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowMessage($rowNum, __('could not save.'));
                 }
             } catch (\Throwable $e) {
-                $this->errors[] = __('Row :n: :msg', ['n' => $rowNum, 'msg' => $e->getMessage()]);
+                $this->errors[] = SwmImportRowHelper::importCatchMessage($rowNum, $e);
             }
         }
     }

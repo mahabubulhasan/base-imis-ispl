@@ -2,14 +2,18 @@
 
 namespace App\Http\Requests\Swm;
 
+use App\Http\Requests\Concerns\MapsValidationAttributes;
 use App\Models\BuildingInfo\Household;
 use App\Models\Swm\BillCollectionPayment;
+use App\Services\Swm\BillCollectionPaymentService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class BillCollectionPaymentRequest extends FormRequest
 {
+    use MapsValidationAttributes;
+
     public function authorize(): bool
     {
         return true;
@@ -168,5 +172,11 @@ class BillCollectionPaymentRequest extends FormRequest
                 }
             }
         });
+    }
+
+    /** @return array<string, string> */
+    protected function validationAttributeLabels(): array
+    {
+        return app(BillCollectionPaymentService::class)->validationAttributeLabels();
     }
 }

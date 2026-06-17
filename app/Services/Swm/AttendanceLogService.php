@@ -5,6 +5,7 @@ namespace App\Services\Swm;
 use App\Models\Swm\AttendanceLog;
 use App\Models\Swm\Organization;
 use App\Models\Swm\Worker;
+use App\Services\Swm\Concerns\HasExcelColumnValidationLabels;
 use App\Support\Swm\SwmExcelColumns;
 use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
@@ -20,6 +21,8 @@ use Yajra\DataTables\DataTables;
 
 class AttendanceLogService
 {
+    use HasExcelColumnValidationLabels;
+
     public function attendanceQuery(): Builder
     {
         $query = AttendanceLog::query()
@@ -313,5 +316,14 @@ class AttendanceLogService
     public function importColumnDefinitions(): array
     {
         return SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions());
+    }
+
+    /** @return array<string, string> */
+    protected function formOnlyValidationLabels(): array
+    {
+        return [
+            'organization_id' => __('Organization'),
+            'worker_id' => __('Worker Name-ID'),
+        ];
     }
 }

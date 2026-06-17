@@ -40,46 +40,55 @@ class ComplaintImport implements ToCollection, WithHeadingRow
             try {
                 $name = trim((string) ($norm['name'] ?? ''));
                 if ($name === '') {
-                    $this->errors[] = __('Row :n: name is required.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'name', $columnDefinitions);
                     continue;
                 }
 
                 $contactNumber = trim((string) ($norm['contact_number'] ?? ''));
                 if ($contactNumber === '') {
-                    $this->errors[] = __('Row :n: contact_number is required.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'contact_number', $columnDefinitions);
                     continue;
                 }
 
+                $complaintTypeInput = trim((string) ($norm['complaint_type'] ?? ''));
                 $complaintType = SwmImportRowHelper::resolveConfigKey(
-                    trim((string) ($norm['complaint_type'] ?? '')),
+                    $complaintTypeInput,
                     $complaintTypes
                 );
                 if ($complaintType === null) {
-                    $this->errors[] = __('Row :n: complaint_type is required or invalid.', ['n' => $rowNum]);
+                    $this->errors[] = $complaintTypeInput === ''
+                        ? SwmImportRowHelper::rowRequired($rowNum, 'complaint_type', $columnDefinitions)
+                        : SwmImportRowHelper::rowInvalid($rowNum, 'complaint_type', $columnDefinitions);
                     continue;
                 }
 
                 $complaintDetails = trim((string) ($norm['complaint_details'] ?? ''));
                 if ($complaintDetails === '') {
-                    $this->errors[] = __('Row :n: complaint_details is required.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'complaint_details', $columnDefinitions);
                     continue;
                 }
 
+                $submittedThroughInput = trim((string) ($norm['submitted_through'] ?? ''));
                 $submittedThroughKey = SwmImportRowHelper::resolveConfigKey(
-                    trim((string) ($norm['submitted_through'] ?? '')),
+                    $submittedThroughInput,
                     $submittedThrough
                 );
                 if ($submittedThroughKey === null) {
-                    $this->errors[] = __('Row :n: submitted_through is required or invalid.', ['n' => $rowNum]);
+                    $this->errors[] = $submittedThroughInput === ''
+                        ? SwmImportRowHelper::rowRequired($rowNum, 'submitted_through', $columnDefinitions)
+                        : SwmImportRowHelper::rowInvalid($rowNum, 'submitted_through', $columnDefinitions);
                     continue;
                 }
 
+                $complaintStatusInput = trim((string) ($norm['complaint_status'] ?? ''));
                 $complaintStatus = SwmImportRowHelper::resolveConfigKey(
-                    trim((string) ($norm['complaint_status'] ?? '')),
+                    $complaintStatusInput,
                     $complaintStatuses
                 );
                 if ($complaintStatus === null) {
-                    $this->errors[] = __('Row :n: complaint_status is required or invalid.', ['n' => $rowNum]);
+                    $this->errors[] = $complaintStatusInput === ''
+                        ? SwmImportRowHelper::rowRequired($rowNum, 'complaint_status', $columnDefinitions)
+                        : SwmImportRowHelper::rowInvalid($rowNum, 'complaint_status', $columnDefinitions);
                     continue;
                 }
 
@@ -87,7 +96,13 @@ class ComplaintImport implements ToCollection, WithHeadingRow
                 if ($complaintStatus === 'others') {
                     $complaintStatusOther = trim((string) ($norm['complaint_status_other'] ?? ''));
                     if ($complaintStatusOther === '') {
-                        $this->errors[] = __('Row :n: complaint_status_other is required when complaint_status is others.', ['n' => $rowNum]);
+                        $this->errors[] = SwmImportRowHelper::rowRequiredWhen(
+                            $rowNum,
+                            'complaint_status_other',
+                            $columnDefinitions,
+                            'complaint_status',
+                            (string) ($complaintStatuses['others'] ?? __('others'))
+                        );
                         continue;
                     }
                 }
@@ -142,10 +157,10 @@ class ComplaintImport implements ToCollection, WithHeadingRow
                 if ($saved) {
                     $this->successCount++;
                 } else {
-                    $this->errors[] = __('Row :n: could not save.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowMessage($rowNum, __('could not save.'));
                 }
             } catch (\Throwable $e) {
-                $this->errors[] = __('Row :n: :msg', ['n' => $rowNum, 'msg' => $e->getMessage()]);
+                $this->errors[] = SwmImportRowHelper::importCatchMessage($rowNum, $e);
             }
         }
     }

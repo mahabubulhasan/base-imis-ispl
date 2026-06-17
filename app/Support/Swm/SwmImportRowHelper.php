@@ -203,4 +203,59 @@ class SwmImportRowHelper
 
         return array_values(array_map('intval', $parts));
     }
+
+    /**
+     * @param  array<int, array{key: string, label?: string}>  $columnDefinitions
+     */
+    public static function rowRequired(int $row, string $key, array $columnDefinitions): string
+    {
+        return __('Row :n: :label is required.', [
+            'n' => $row,
+            'label' => SwmExcelColumns::labelFor($columnDefinitions, $key),
+        ]);
+    }
+
+    /**
+     * @param  array<int, array{key: string, label?: string}>  $columnDefinitions
+     */
+    public static function rowInvalid(int $row, string $key, array $columnDefinitions, ?string $detail = null): string
+    {
+        $label = SwmExcelColumns::labelFor($columnDefinitions, $key);
+        if ($detail !== null && $detail !== '') {
+            return __('Row :n: :label is invalid (:detail).', ['n' => $row, 'label' => $label, 'detail' => $detail]);
+        }
+
+        return __('Row :n: :label is invalid.', ['n' => $row, 'label' => $label]);
+    }
+
+    public static function rowMessage(int $row, string $message): string
+    {
+        return __('Row :n: :msg', ['n' => $row, 'msg' => $message]);
+    }
+
+    /**
+     * @param  array<int, array{key: string, label?: string}>  $columnDefinitions
+     */
+    public static function rowRequiredWhen(int $row, string $key, array $columnDefinitions, string $otherKey, string $value, array $otherColumnDefinitions = []): string
+    {
+        $otherLabel = $otherColumnDefinitions !== []
+            ? SwmExcelColumns::labelFor($otherColumnDefinitions, $otherKey)
+            : SwmExcelColumns::labelFor($columnDefinitions, $otherKey);
+
+        return __('Row :n: :label is required when :other is :value.', [
+            'n' => $row,
+            'label' => SwmExcelColumns::labelFor($columnDefinitions, $key),
+            'other' => $otherLabel,
+            'value' => $value,
+        ]);
+    }
+
+    public static function importCatchMessage(int $row, \Throwable $e): string
+    {
+        if ($e instanceof \InvalidArgumentException) {
+            return self::rowMessage($row, $e->getMessage());
+        }
+
+        return __('Row :n: could not save.', ['n' => $row]);
+    }
 }

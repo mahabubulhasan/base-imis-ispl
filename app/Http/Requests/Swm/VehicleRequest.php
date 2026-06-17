@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Swm;
 
+use App\Http\Requests\Concerns\MapsValidationAttributes;
 use App\Models\Swm\Worker;
 use App\Services\Swm\VehicleService;
 use Illuminate\Foundation\Http\FormRequest;
@@ -10,6 +11,8 @@ use Illuminate\Validation\Rule;
 
 class VehicleRequest extends FormRequest
 {
+    use MapsValidationAttributes;
+
     public function authorize(): bool
     {
         return true;
@@ -219,14 +222,16 @@ class VehicleRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'vehicle_type_id.required' => __('The vehicle type is required.'),
-            'vehicle_number.required' => __('The vehicle number is required.'),
-            'driver_worker_id.required' => __('The driver is required.'),
             'service_wards.array' => __('Service wards must be a list.'),
             'service_wards.*.integer' => __('Each service ward must be a valid ward number.'),
             'service_wards.*.exists' => __('One or more selected service wards are invalid.'),
-            'dumping_place_kind.required' => __('The dumping place type is required.'),
             'operational_type_other.required_if' => __('Please specify operational type when selecting Others (specify).'),
         ];
+    }
+
+    /** @return array<string, string> */
+    protected function validationAttributeLabels(): array
+    {
+        return app(VehicleService::class)->validationAttributeLabels();
     }
 }

@@ -2,11 +2,15 @@
 
 namespace App\Http\Requests\Swm;
 
+use App\Http\Requests\Concerns\MapsValidationAttributes;
+use App\Services\Swm\LandfillService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class LandfillRequest extends FormRequest
 {
+    use MapsValidationAttributes;
+
     public function authorize(): bool
     {
         return true;
@@ -142,5 +146,11 @@ class LandfillRequest extends FormRequest
         }
 
         return filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+    }
+
+    /** @return array<string, string> */
+    protected function validationAttributeLabels(): array
+    {
+        return app(LandfillService::class)->validationAttributeLabels();
     }
 }

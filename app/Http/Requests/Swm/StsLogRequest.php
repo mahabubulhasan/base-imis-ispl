@@ -2,12 +2,16 @@
 
 namespace App\Http\Requests\Swm;
 
+use App\Http\Requests\Concerns\MapsValidationAttributes;
 use App\Models\Swm\Sts;
+use App\Services\Swm\StsLogService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class StsLogRequest extends FormRequest
 {
+    use MapsValidationAttributes;
+
     public function authorize(): bool
     {
         return true;
@@ -101,5 +105,11 @@ class StsLogRequest extends FormRequest
             'operation_date' => ['required', 'date'],
             'remarks' => ['nullable', 'string'],
         ];
+    }
+
+    /** @return array<string, string> */
+    protected function validationAttributeLabels(): array
+    {
+        return app(StsLogService::class)->validationAttributeLabels();
     }
 }

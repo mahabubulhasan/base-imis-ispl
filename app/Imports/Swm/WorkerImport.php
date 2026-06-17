@@ -60,7 +60,7 @@ class WorkerImport implements ToCollection, WithHeadingRow
                         $orgMap
                     );
                     if (! $orgId) {
-                        $this->errors[] = __('Row :n: organization is required.', ['n' => $rowNum]);
+                        $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'organization', $columnDefinitions);
                         continue;
                     }
                 }
@@ -70,18 +70,18 @@ class WorkerImport implements ToCollection, WithHeadingRow
                     $workTypeMap
                 );
                 if (! $workTypeId) {
-                    $this->errors[] = __('Row :n: work_type is required.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'work_type', $columnDefinitions);
                     continue;
                 }
 
                 $name = trim((string) ($norm['name'] ?? ''));
                 $mobile = trim((string) ($norm['mobile'] ?? ''));
                 if ($name === '') {
-                    $this->errors[] = __('Row :n: name is required.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'name', $columnDefinitions);
                     continue;
                 }
                 if ($mobile === '') {
-                    $this->errors[] = __('Row :n: mobile is required.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'mobile', $columnDefinitions);
                     continue;
                 }
 
@@ -117,10 +117,10 @@ class WorkerImport implements ToCollection, WithHeadingRow
                 if ($saved) {
                     $this->successCount++;
                 } else {
-                    $this->errors[] = __('Row :n: could not save.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowMessage($rowNum, __('could not save.'));
                 }
             } catch (\Throwable $e) {
-                $this->errors[] = __('Row :n: :msg', ['n' => $rowNum, 'msg' => $e->getMessage()]);
+                $this->errors[] = SwmImportRowHelper::importCatchMessage($rowNum, $e);
             }
         }
     }

@@ -2,11 +2,15 @@
 
 namespace App\Http\Requests\Swm;
 
+use App\Http\Requests\Concerns\MapsValidationAttributes;
+use App\Services\Swm\LandfillLogService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class LandfillLogRequest extends FormRequest
 {
+    use MapsValidationAttributes;
+
     public function authorize(): bool
     {
         return true;
@@ -109,5 +113,11 @@ class LandfillLogRequest extends FormRequest
             'operation_date' => ['required', 'date'],
             'remarks' => ['nullable', 'string'],
         ];
+    }
+
+    /** @return array<string, string> */
+    protected function validationAttributeLabels(): array
+    {
+        return app(LandfillLogService::class)->validationAttributeLabels();
     }
 }

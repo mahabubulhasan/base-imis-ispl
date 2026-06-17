@@ -106,4 +106,13 @@ class VehicleTypeService
 
         $writer->close();
     }
+
+    /** @return array<string, string> */
+    public function validationAttributeLabels(): array
+    {
+        return [
+            'name' => __('Vehicle Type'),
+            'description' => __('Description'),
+        ];
+    }
 }

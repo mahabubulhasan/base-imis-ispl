@@ -56,30 +56,30 @@ class AttendanceLogImport implements ToCollection, WithHeadingRow
                 if (! $orgId) {
                     $orgLabel = trim((string) ($norm['organization'] ?? ''));
                     if ($orgLabel === '') {
-                        $this->errors[] = __('Row :n: organization is required.', ['n' => $rowNum]);
+                        $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'organization', $columnDefinitions);
                         continue;
                     }
                     $orgId = SwmImportRowHelper::resolveByLabel($orgLabel, $orgMap);
                     if (! $orgId) {
-                        $this->errors[] = __('Row :n: invalid organization.', ['n' => $rowNum]);
+                        $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'organization', $columnDefinitions);
                         continue;
                     }
                 }
 
                 $workerLabel = trim((string) ($norm['worker'] ?? ''));
                 if ($workerLabel === '') {
-                    $this->errors[] = __('Row :n: worker is required.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'worker', $columnDefinitions);
                     continue;
                 }
                 $workerId = $this->resolveWorkerId($workerLabel, $orgId);
                 if (! $workerId) {
-                    $this->errors[] = __('Row :n: invalid worker.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'worker', $columnDefinitions);
                     continue;
                 }
 
                 $entryAt = SwmImportRowHelper::parseDate($norm['entry_at'] ?? null);
                 if (! $entryAt) {
-                    $this->errors[] = __('Row :n: entry_at is invalid.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'entry_at', $columnDefinitions);
                     continue;
                 }
 
@@ -94,7 +94,7 @@ class AttendanceLogImport implements ToCollection, WithHeadingRow
                     }
                 }
                 if (! $status) {
-                    $this->errors[] = __('Row :n: invalid attendance_status.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'attendance_status', $columnDefinitions);
                     continue;
                 }
 
@@ -102,11 +102,20 @@ class AttendanceLogImport implements ToCollection, WithHeadingRow
                 $checkOut = SwmImportRowHelper::parseDate($norm['check_out_at'] ?? null);
 
                 if ($status === AttendanceLog::STATUS_PRESENT && ! $checkIn) {
-                    $this->errors[] = __('Row :n: check_in_at is required when present.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequiredWhen(
+                        $rowNum,
+                        'check_in_at',
+                        $columnDefinitions,
+                        'attendance_status',
+                        (string) (AttendanceLog::statusOptions()[AttendanceLog::STATUS_PRESENT] ?? __('present'))
+                    );
                     continue;
                 }
                 if ($checkIn && $checkOut && $checkOut->lt($checkIn)) {
-                    $this->errors[] = __('Row :n: check_out_at must be on or after check_in_at.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowMessage(
+                        $rowNum,
+                        __('check-out time must be on or after check-in time.')
+                    );
                     continue;
                 }
 
@@ -125,10 +134,10 @@ class AttendanceLogImport implements ToCollection, WithHeadingRow
                 if ($saved) {
                     $this->successCount++;
                 } else {
-                    $this->errors[] = __('Row :n: could not save.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowMessage($rowNum, __('could not save.'));
                 }
             } catch (\Throwable $e) {
-                $this->errors[] = __('Row :n: :msg', ['n' => $rowNum, 'msg' => $e->getMessage()]);
+                $this->errors[] = SwmImportRowHelper::importCatchMessage($rowNum, $e);
             }
         }
     }

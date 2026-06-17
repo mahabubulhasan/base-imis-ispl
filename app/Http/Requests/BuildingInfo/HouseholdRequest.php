@@ -2,11 +2,16 @@
 
 namespace App\Http\Requests\BuildingInfo;
 
+use App\Http\Requests\Concerns\MapsValidationAttributes;
 use App\Models\BuildingInfo\Household;
+use App\Services\BuildingInfo\HouseholdService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+
 class HouseholdRequest extends FormRequest
 {
+    use MapsValidationAttributes;
+
     public function authorize(): bool
     {
         return true;
@@ -136,5 +141,11 @@ class HouseholdRequest extends FormRequest
         unset($row);
 
         $this->merge(['waste_bins' => $bins]);
+    }
+
+    /** @return array<string, string> */
+    protected function validationAttributeLabels(): array
+    {
+        return app(HouseholdService::class)->validationAttributeLabels();
     }
 }

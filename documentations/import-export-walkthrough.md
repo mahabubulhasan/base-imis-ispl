@@ -390,3 +390,71 @@ Common structure:
    - shared trait/helpers/writers for plumbing
    - service/import class for domain rules
 
+---
+
+## 8) User-Friendly Validation Labels
+
+Form and import validation errors should show the same labels users see on forms and Excel templates—not raw database column names.
+
+### 8.1 Label source of truth
+
+Each module's `excelColumnDefinitions()` (in the module Service) defines `{ key, label }` pairs used for:
+- Export headers and import templates
+- Required header checks (`SwmExcelColumns::requiredImportLabels()`)
+- Form validation attribute names
+- Import row error messages
+
+Form-only fields (not in Excel) are added via `formOnlyValidationLabels()` on the Service.
+
+### 8.2 Shared helpers
+
+| Class | Role |
+|-------|------|
+| `SwmExcelColumns::labelMap()` / `labelFor()` | Resolve `key` → friendly `label` from column definitions |
+| `SwmImportRowHelper::rowRequired()` / `rowInvalid()` / `rowRequiredWhen()` | Build `Row N: {label} is required/invalid.` messages |
+| `SwmImportRowHelper::importCatchMessage()` | Sanitize catch-block errors (`InvalidArgumentException` passes through; others → "could not save") |
+| `HasExcelColumnValidationLabels` (Service trait) | Merges excel + form-only labels into `validationAttributeLabels()` |
+| `MapsValidationAttributes` (FormRequest trait) | Exposes labels via Laravel `attributes()` |
+
+### 8.3 Form validation pattern
+
+```php
+// Service
+use HasExcelColumnValidationLabels;
+
+protected function formOnlyValidationLabels(): array
+{
+    return ['organization_type_id' => __('Organization Type')];
+}
+
+// FormRequest
+use MapsValidationAttributes;
+
+protected function validationAttributeLabels(): array
+{
+    return app(OrganizationService::class)->validationAttributeLabels();
+}
+```
+
+Laravel default messages (`The :attribute field is required.`) then use the friendly label automatically.
+
+Keep custom `messages()` only for business rules that `attributes()` cannot express (password breach, cross-field checks, unique constraints with custom wording).
+
+### 8.4 Import validation pattern
+
+```php
+$columnDefinitions = $service->importColumnDefinitions();
+
+if ($name === '') {
+    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'name', $columnDefinitions);
+}
+
+// catch block
+$this->errors[] = SwmImportRowHelper::importCatchMessage($rowNum, $e);
+```
+
+### 8.5 Error display (unchanged)
+
+- **Form errors:** `resources/views/layouts/components/error-list.blade.php` (`$errors->all()`)
+- **Import row errors:** `resources/views/swm/partials/import-errors.blade.php` (`session('import_errors')`)
+

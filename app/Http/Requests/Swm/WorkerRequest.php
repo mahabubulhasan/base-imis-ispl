@@ -2,12 +2,16 @@
 
 namespace App\Http\Requests\Swm;
 
+use App\Http\Requests\Concerns\MapsValidationAttributes;
+use App\Services\Swm\WorkerService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class WorkerRequest extends FormRequest
 {
+    use MapsValidationAttributes;
+
     public function authorize(): bool
     {
         return true;
@@ -104,10 +108,6 @@ class WorkerRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'organization_id.required' => __('The organization is required.'),
-            'work_type_id.required' => __('The work type is required.'),
-            'name.required' => __('The worker name is required.'),
-            'mobile.required' => __('The mobile number is required.'),
             'mobile.regex' => __('The mobile number may only contain digits.'),
             'employee_id.unique' => __('The employee ID must be unique.'),
             'service_wards.array' => __('Service wards must be a list.'),
@@ -116,5 +116,11 @@ class WorkerRequest extends FormRequest
             'employment_type.in' => __('The employment type must be permanent, daily, or contract.'),
             'education_level_other.required_if' => __('Please specify education details when selecting others.'),
         ];
+    }
+
+    /** @return array<string, string> */
+    protected function validationAttributeLabels(): array
+    {
+        return app(WorkerService::class)->validationAttributeLabels();
     }
 }

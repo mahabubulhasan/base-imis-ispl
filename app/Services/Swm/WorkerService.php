@@ -5,6 +5,7 @@ namespace App\Services\Swm;
 use App\Models\Swm\Organization;
 use App\Models\Swm\Worker;
 use App\Models\Swm\WorkType;
+use App\Services\Swm\Concerns\HasExcelColumnValidationLabels;
 use App\Support\Swm\SwmExcelColumns;
 use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
@@ -20,6 +21,8 @@ use Yajra\DataTables\DataTables;
 
 class WorkerService
 {
+    use HasExcelColumnValidationLabels;
+
     protected function baseQuery(): Builder
     {
         $query = Worker::query()
@@ -378,5 +381,14 @@ class WorkerService
             'status' => Worker::statusLabel($row->status),
             default => '',
         };
+    }
+
+    /** @return array<string, string> */
+    protected function formOnlyValidationLabels(): array
+    {
+        return [
+            'organization_id' => __('Organization'),
+            'work_type_id' => __('Worker Type'),
+        ];
     }
 }

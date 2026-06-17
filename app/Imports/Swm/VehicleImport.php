@@ -84,7 +84,7 @@ class VehicleImport implements ToCollection, WithHeadingRow
                         $orgMap
                     );
                     if (! $orgId) {
-                        $this->errors[] = __('Row :n: organization is required.', ['n' => $rowNum]);
+                        $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'organization', $columnDefinitions);
                         continue;
                     }
                 }
@@ -94,13 +94,13 @@ class VehicleImport implements ToCollection, WithHeadingRow
                     $vehicleTypeMap
                 );
                 if (! $vehicleTypeId) {
-                    $this->errors[] = __('Row :n: vehicle_type is required.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'vehicle_type', $columnDefinitions);
                     continue;
                 }
 
                 $vehicleNumber = trim((string) ($norm['vehicle_number'] ?? ''));
                 if ($vehicleNumber === '') {
-                    $this->errors[] = __('Row :n: vehicle_number is required.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'vehicle_number', $columnDefinitions);
                     continue;
                 }
 
@@ -109,7 +109,7 @@ class VehicleImport implements ToCollection, WithHeadingRow
                     $orgId
                 );
                 if (! $driverWorkerId) {
-                    $this->errors[] = __('Row :n: driver is required.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'driver', $columnDefinitions);
                     continue;
                 }
 
@@ -130,7 +130,7 @@ class VehicleImport implements ToCollection, WithHeadingRow
                 $status = $this->resolveVehicleStatus($norm['status'] ?? null);
                 $dumpingKind = $this->resolveDumpingKind($norm['dumping_place_kind'] ?? null);
                 if (! $dumpingKind) {
-                    $this->errors[] = __('Row :n: dumping_place_kind is required.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'dumping_place_kind', $columnDefinitions);
                     continue;
                 }
 
@@ -141,7 +141,13 @@ class VehicleImport implements ToCollection, WithHeadingRow
                 if ($dumpingKind === 'sts') {
                     $dumpingStsId = $this->resolveByLabelOrId(trim((string) ($norm['dumping_sts_id'] ?? '')), $stsMap);
                     if (! $dumpingStsId) {
-                        $this->errors[] = __('Row :n: dumping_sts_id is required for STS dumping type.', ['n' => $rowNum]);
+                        $this->errors[] = SwmImportRowHelper::rowRequiredWhen(
+                            $rowNum,
+                            'dumping_sts_id',
+                            $columnDefinitions,
+                            'dumping_place_kind',
+                            (string) __('STS')
+                        );
                         continue;
                     }
                 }
@@ -149,13 +155,25 @@ class VehicleImport implements ToCollection, WithHeadingRow
                 if ($dumpingKind === 'landfill') {
                     $dumpingLandfillId = $this->resolveByLabelOrId(trim((string) ($norm['dumping_landfill_id'] ?? '')), $landfillMap);
                     if (! $dumpingLandfillId) {
-                        $this->errors[] = __('Row :n: dumping_landfill_id is required for landfill dumping type.', ['n' => $rowNum]);
+                        $this->errors[] = SwmImportRowHelper::rowRequiredWhen(
+                            $rowNum,
+                            'dumping_landfill_id',
+                            $columnDefinitions,
+                            'dumping_place_kind',
+                            (string) __('Landfill')
+                        );
                         continue;
                     }
                 }
 
                 if ($dumpingKind === 'other' && ($dumpingOther === null || $dumpingOther === '')) {
-                    $this->errors[] = __('Row :n: dumping_place_other is required for other dumping type.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequiredWhen(
+                        $rowNum,
+                        'dumping_place_other',
+                        $columnDefinitions,
+                        'dumping_place_kind',
+                        (string) __('Others (specify)')
+                    );
                     continue;
                 }
 
@@ -187,10 +205,10 @@ class VehicleImport implements ToCollection, WithHeadingRow
                 if ($saved) {
                     $this->successCount++;
                 } else {
-                    $this->errors[] = __('Row :n: could not save.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowMessage($rowNum, __('could not save.'));
                 }
             } catch (\Throwable $e) {
-                $this->errors[] = __('Row :n: :msg', ['n' => $rowNum, 'msg' => $e->getMessage()]);
+                $this->errors[] = SwmImportRowHelper::importCatchMessage($rowNum, $e);
             }
         }
     }

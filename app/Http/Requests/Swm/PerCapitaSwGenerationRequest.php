@@ -2,10 +2,14 @@
 
 namespace App\Http\Requests\Swm;
 
+use App\Http\Requests\Concerns\MapsValidationAttributes;
+use App\Services\Swm\SwmModuleSettingsService;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PerCapitaSwGenerationRequest extends FormRequest
 {
+    use MapsValidationAttributes;
+
     public function authorize(): bool
     {
         return $this->user()?->can('Edit SW Per Capita Generation Setting') ?? false;
@@ -26,5 +30,11 @@ class PerCapitaSwGenerationRequest extends FormRequest
                 'max:1000',
             ],
         ];
+    }
+
+    /** @return array<string, string> */
+    protected function validationAttributeLabels(): array
+    {
+        return app(SwmModuleSettingsService::class)->validationAttributeLabels();
     }
 }

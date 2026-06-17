@@ -141,4 +141,16 @@ class LicService
             ['key' => 'total_population', 'label' => __('Total Population')],
         ];
     }
+
+    /** @return array<string, string> */
+    public function validationAttributeLabels(): array
+    {
+        return [
+            'lic_id' => __('LIC ID'),
+            'representative_name' => __("LIC Representative's Name"),
+            'contact_no' => __('Contact No.'),
+            'number_of_hhs' => __('Number of HHs'),
+            'total_population' => __('Total Population'),
+        ];
+    }
 }

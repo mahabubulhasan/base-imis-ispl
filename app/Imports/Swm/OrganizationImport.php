@@ -49,23 +49,23 @@ class OrganizationImport implements ToCollection, WithHeadingRow
                 $contactNumber = trim((string) ($norm['contact_number'] ?? ''));
 
                 if ($name === '') {
-                    $this->errors[] = __('Row :n: name is required.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'name', $columnDefinitions);
                     continue;
                 }
                 if ($email === '') {
-                    $this->errors[] = __('Row :n: email is required.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'email', $columnDefinitions);
                     continue;
                 }
                 if ($address === '') {
-                    $this->errors[] = __('Row :n: address is required.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'address', $columnDefinitions);
                     continue;
                 }
                 if ($contactPersonName === '') {
-                    $this->errors[] = __('Row :n: contact_person_name is required.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'contact_person_name', $columnDefinitions);
                     continue;
                 }
                 if ($contactNumber === '') {
-                    $this->errors[] = __('Row :n: contact_number is required.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'contact_number', $columnDefinitions);
                     continue;
                 }
 
@@ -74,13 +74,13 @@ class OrganizationImport implements ToCollection, WithHeadingRow
                     $orgTypeMap
                 );
                 if (! $orgTypeId) {
-                    $this->errors[] = __('Row :n: invalid organization_type.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'organization_type', $columnDefinitions);
                     continue;
                 }
 
                 $status = $this->resolveOrganizationStatus($norm['status'] ?? null);
                 if ($status === null) {
-                    $this->errors[] = __('Row :n: status is required.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'status', $columnDefinitions);
                     continue;
                 }
 
@@ -102,10 +102,10 @@ class OrganizationImport implements ToCollection, WithHeadingRow
                 if ($saved) {
                     $this->successCount++;
                 } else {
-                    $this->errors[] = __('Row :n: could not save.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowMessage($rowNum, __('could not save.'));
                 }
             } catch (\Throwable $e) {
-                $this->errors[] = __('Row :n: :msg', ['n' => $rowNum, 'msg' => $e->getMessage()]);
+                $this->errors[] = SwmImportRowHelper::importCatchMessage($rowNum, $e);
             }
         }
     }

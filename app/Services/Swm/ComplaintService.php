@@ -3,6 +3,7 @@
 namespace App\Services\Swm;
 
 use App\Models\Swm\Complaint;
+use App\Services\Swm\Concerns\HasExcelColumnValidationLabels;
 use App\Support\Swm\SwmExcelColumns;
 use App\Support\Swm\SwmExcelExportWriter;
 use App\Support\Swm\SwmExcelFilename;
@@ -17,6 +18,8 @@ use Yajra\DataTables\DataTables;
 
 class ComplaintService
 {
+    use HasExcelColumnValidationLabels;
+
     public function getAllComplaints(array $data)
     {
         $query = Complaint::query()->whereNull('deleted_at');
@@ -367,5 +370,13 @@ class ComplaintService
     public function requiredImportLabels(): array
     {
         return SwmExcelColumns::requiredImportLabels($this->excelColumnDefinitions());
+    }
+
+    /** @return array<string, string> */
+    protected function formOnlyValidationLabels(): array
+    {
+        return [
+            'photo_attachment' => __('Photo Attachment'),
+        ];
     }
 }

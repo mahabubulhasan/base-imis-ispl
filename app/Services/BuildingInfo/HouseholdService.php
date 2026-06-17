@@ -8,6 +8,7 @@ use App\Models\LayerInfo\Lic;
 use App\Models\LayerInfo\Ward;
 use App\Services\Formatting\Currency;
 use App\Services\Formatting\CurrencyFormatter;
+use App\Services\Swm\Concerns\HasExcelColumnValidationLabels;
 use App\Models\Swm\WasteBin;
 use App\Models\Swm\Worker;
 use App\Models\UtilityInfo\Roadline;
@@ -21,6 +22,8 @@ use Illuminate\Support\Facades\Auth;
 
 class HouseholdService
 {
+    use HasExcelColumnValidationLabels;
+
     public function __construct(
         protected CurrencyFormatter $currencyFormatter,
     ) {
@@ -343,5 +346,16 @@ class HouseholdService
         if (! empty($data['status'] ?? null)) {
             $query->where('status', $data['status']);
         }
+    }
+
+    /** @return array<string, string> */
+    protected function formOnlyValidationLabels(): array
+    {
+        return [
+            'van_puller_id' => __('Van Puller'),
+            'waste_bins' => __('Waste Bins'),
+            'waste_bins.*.waste_bin_type_id' => __('Waste Bin Type'),
+            'waste_bins.*.total_capacity_kg' => __('Capacity (kg)'),
+        ];
     }
 }

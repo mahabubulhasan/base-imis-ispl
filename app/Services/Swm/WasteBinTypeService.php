@@ -105,4 +105,13 @@ class WasteBinTypeService
 
         $writer->close();
     }
+
+    /** @return array<string, string> */
+    public function validationAttributeLabels(): array
+    {
+        return [
+            'name' => __('Waste Bin Type'),
+            'description' => __('Description'),
+        ];
+    }
 }

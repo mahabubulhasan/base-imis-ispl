@@ -2,11 +2,15 @@
 
 namespace App\Http\Requests\Swm;
 
+use App\Http\Requests\Concerns\MapsValidationAttributes;
+use App\Services\Swm\ComplaintService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class ComplaintRequest extends FormRequest
 {
+    use MapsValidationAttributes;
+
     public function authorize(): bool
     {
         return true;
@@ -92,5 +96,11 @@ class ComplaintRequest extends FormRequest
                 ? ($this->filled('complaint_status_other') ? trim((string) $this->input('complaint_status_other')) : null)
                 : null,
         ]);
+    }
+
+    /** @return array<string, string> */
+    protected function validationAttributeLabels(): array
+    {
+        return app(ComplaintService::class)->validationAttributeLabels();
     }
 }

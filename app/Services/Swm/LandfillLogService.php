@@ -7,6 +7,7 @@ use App\Models\Swm\LandfillLog;
 use App\Models\Swm\Sts;
 use App\Models\Swm\Vehicle;
 use App\Models\Swm\WasteType;
+use App\Services\Swm\Concerns\HasExcelColumnValidationLabels;
 use App\Support\Swm\SwmExcelColumns;
 use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
@@ -23,6 +24,8 @@ use Yajra\DataTables\DataTables;
 
 class LandfillLogService
 {
+    use HasExcelColumnValidationLabels;
+
     public function landfillLogQuery(): Builder
     {
         return LandfillLog::query()
@@ -443,5 +446,16 @@ class LandfillLogService
     public function importColumnDefinitions(): array
     {
         return SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions());
+    }
+
+    /** @return array<string, string> */
+    protected function formOnlyValidationLabels(): array
+    {
+        return [
+            'vehicle_id' => __('Vehicle Number'),
+            'landfill_id' => __('Landfill Name'),
+            'waste_type_ids' => __('Waste Types'),
+            'source_sts_ids' => __('Source STSs'),
+        ];
     }
 }

@@ -39,18 +39,18 @@ class WasteBinImport implements ToCollection, WithHeadingRow
             try {
                 $typeName = trim((string) ($norm['waste_bin_type'] ?? ''));
                 if ($typeName === '') {
-                    $this->errors[] = __('Row :n: waste_bin_type is required.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'waste_bin_type', $columnDefinitions);
                     continue;
                 }
                 $wasteBinTypeId = SwmImportRowHelper::resolveByLabel($typeName, $wasteBinTypeMap);
                 if (! $wasteBinTypeId) {
-                    $this->errors[] = __('Row :n: unknown waste_bin_type.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'waste_bin_type', $columnDefinitions);
                     continue;
                 }
 
                 $capacity = $norm['total_capacity_kg'] ?? null;
                 if ($capacity === null || $capacity === '') {
-                    $this->errors[] = __('Row :n: total_capacity_kg is required.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'total_capacity_kg', $columnDefinitions);
                     continue;
                 }
 
@@ -60,7 +60,12 @@ class WasteBinImport implements ToCollection, WithHeadingRow
                 $wardRaw = trim((string) ($norm['ward_no'] ?? ''));
                 if ($wardRaw !== '') {
                     if (! is_numeric($wardRaw)) {
-                        $this->errors[] = __('Row :n: ward_no must be numeric.', ['n' => $rowNum]);
+                        $this->errors[] = SwmImportRowHelper::rowInvalid(
+                            $rowNum,
+                            'ward_no',
+                            $columnDefinitions,
+                            (string) __('must be numeric')
+                        );
                         continue;
                     }
                     $wardNo = (int) $wardRaw;
@@ -83,7 +88,7 @@ class WasteBinImport implements ToCollection, WithHeadingRow
                 $service->storeOrUpdate(null, $data);
                 $this->successCount++;
             } catch (\Throwable $e) {
-                $this->errors[] = __('Row :n: :msg', ['n' => $rowNum, 'msg' => $e->getMessage()]);
+                $this->errors[] = SwmImportRowHelper::importCatchMessage($rowNum, $e);
             }
         }
     }

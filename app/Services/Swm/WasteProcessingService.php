@@ -3,6 +3,7 @@
 namespace App\Services\Swm;
 
 use App\Models\Swm\WasteProcessingLog;
+use App\Services\Swm\Concerns\HasExcelColumnValidationLabels;
 use App\Support\Swm\SwmExcelColumns;
 use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
@@ -18,6 +19,8 @@ use Yajra\DataTables\DataTables;
 
 class WasteProcessingService
 {
+    use HasExcelColumnValidationLabels;
+
     public function query(): Builder
     {
         return WasteProcessingLog::query()

@@ -51,4 +51,13 @@ class SwmModuleSettingsService
 
         return $setting;
     }
+
+    /** @return array<string, string> */
+    public function validationAttributeLabels(): array
+    {
+        return [
+            'per_capita_sw_generation_kg_per_day' => __('Per Capita Waste Generation (Kg/day)'),
+            'description' => __('Description'),
+        ];
+    }
 }

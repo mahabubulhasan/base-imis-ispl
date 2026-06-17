@@ -33,19 +33,19 @@ class WasteProcessingImport implements ToCollection, WithHeadingRow
             try {
                 $entryAt = SwmImportRowHelper::parseDate($norm['entry_at'] ?? null);
                 if (! $entryAt) {
-                    $this->errors[] = __('Row :n: entry_at is invalid.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'entry_at', $columnDefinitions);
                     continue;
                 }
 
                 $reportDate = SwmImportRowHelper::parseDate($norm['report_date'] ?? null);
                 if (! $reportDate) {
-                    $this->errors[] = __('Row :n: report_date is invalid.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'report_date', $columnDefinitions);
                     continue;
                 }
 
                 $reportingMonth = SwmImportRowHelper::parseMonth($norm['reporting_month'] ?? null);
                 if (! $reportingMonth) {
-                    $this->errors[] = __('Row :n: reporting_month is invalid.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'reporting_month', $columnDefinitions);
                     continue;
                 }
 
@@ -69,10 +69,10 @@ class WasteProcessingImport implements ToCollection, WithHeadingRow
                 if ($saved) {
                     $this->successCount++;
                 } else {
-                    $this->errors[] = __('Row :n: could not save.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowMessage($rowNum, __('could not save.'));
                 }
             } catch (\Throwable $e) {
-                $this->errors[] = __('Row :n: :msg', ['n' => $rowNum, 'msg' => $e->getMessage()]);
+                $this->errors[] = SwmImportRowHelper::importCatchMessage($rowNum, $e);
             }
         }
     }

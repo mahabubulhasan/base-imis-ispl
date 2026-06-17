@@ -5,6 +5,7 @@ namespace App\Services\Swm;
 use App\Models\Swm\Landfill;
 use App\Models\Swm\Sts;
 use App\Models\Swm\WasteType;
+use App\Services\Swm\Concerns\HasExcelColumnValidationLabels;
 use App\Support\Swm\SwmExcelColumns;
 use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
@@ -15,6 +16,8 @@ use Yajra\DataTables\DataTables;
 
 class StsService
 {
+    use HasExcelColumnValidationLabels;
+
     protected function baseQuery(): Builder
     {
         return Sts::query()
@@ -289,5 +292,14 @@ class StsService
     public function requiredImportLabels(): array
     {
         return SwmExcelColumns::requiredImportLabels($this->excelColumnDefinitions());
+    }
+
+    /** @return array<string, string> */
+    protected function formOnlyValidationLabels(): array
+    {
+        return [
+            'waste_type_ids' => __('Waste Type'),
+            'destination_landfill_id' => __('Destination Landfill'),
+        ];
     }
 }

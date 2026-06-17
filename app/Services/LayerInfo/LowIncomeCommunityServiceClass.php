@@ -8,6 +8,7 @@ use DataTables;
 use DB;
 use App\Models\LayerInfo\LowIncomeCommunity;
 use App\Models\LayerInfo\Ward;
+use App\Services\Swm\Concerns\HasExcelColumnValidationLabels;
 use App\Support\Swm\SwmExcelColumns;
 use App\Support\Swm\SwmExcelExportWriter;
 use App\Support\Swm\SwmExcelFilename;
@@ -16,6 +17,8 @@ use App\Support\Swm\SwmImportRowHelper;
 
 class LowIncomeCommunityServiceClass
 {
+    use HasExcelColumnValidationLabels;
+
     private function isTrueValue($value): bool
     {
         return in_array($value, [true, 1, '1', 'true'], true);
@@ -360,7 +363,9 @@ class LowIncomeCommunityServiceClass
     {
         $communityName = trim((string) ($row['community_name'] ?? ''));
         if ($communityName === '') {
-            throw new \InvalidArgumentException(__('community_name is required.'));
+            throw new \InvalidArgumentException(__(':label is required.', [
+                'label' => $this->importLabel('community_name'),
+            ]));
         }
 
         $noOfBuildings = $this->parseRequiredNonNegativeInt($row['no_of_buildings'] ?? null, 'no_of_buildings');
@@ -369,12 +374,16 @@ class LowIncomeCommunityServiceClass
 
         $waterConnectionStatus = SwmImportRowHelper::parseBoolean($row['water_connection_status'] ?? null);
         if ($waterConnectionStatus === null) {
-            throw new \InvalidArgumentException(__('water_connection_status is required.'));
+            throw new \InvalidArgumentException(__(':label is required.', [
+                'label' => $this->importLabel('water_connection_status'),
+            ]);
         }
 
         $sanitationStatus = SwmImportRowHelper::parseBoolean($row['sanitation_status'] ?? null);
         if ($sanitationStatus === null) {
-            throw new \InvalidArgumentException(__('sanitation_status is required.'));
+            throw new \InvalidArgumentException(__(':label is required.', [
+                'label' => $this->importLabel('sanitation_status'),
+            ]));
         }
 
         $noOfWaterPoints = null;
@@ -426,11 +435,12 @@ class LowIncomeCommunityServiceClass
 
     private function parseRequiredNonNegativeInt($value, string $field): int
     {
+        $label = $this->importLabel($field);
         if ($value === null || $value === '') {
-            throw new \InvalidArgumentException(__(':field is required.', ['field' => $field]));
+            throw new \InvalidArgumentException(__(':label is required.', ['label' => $label]));
         }
         if (! is_numeric($value) || (int) $value < 0) {
-            throw new \InvalidArgumentException(__(':field must be a non-negative integer.', ['field' => $field]));
+            throw new \InvalidArgumentException(__(':label must be a non-negative integer.', ['label' => $label]));
         }
 
         return (int) $value;
@@ -454,7 +464,9 @@ class LowIncomeCommunityServiceClass
             return null;
         }
         if (! is_numeric($value) || (int) $value < 1) {
-            throw new \InvalidArgumentException(__('ward must be a positive integer.'));
+            throw new \InvalidArgumentException(__(':label must be a positive integer.', [
+                'label' => $this->importLabel('ward'),
+            ]));
         }
 
         return (int) $value;
@@ -466,9 +478,24 @@ class LowIncomeCommunityServiceClass
             return null;
         }
         if (! is_numeric($value) || (float) $value < 0) {
-            throw new \InvalidArgumentException(__('area_decima must be a non-negative number.'));
+            throw new \InvalidArgumentException(__(':label must be a non-negative number.', [
+                'label' => $this->importLabel('area_decima'),
+            ]));
         }
 
         return (float) $value;
+    }
+
+    /** @return array<string, string> */
+    protected function formOnlyValidationLabels(): array
+    {
+        return [
+            'geom' => __('Draw LIC Area on Map'),
+        ];
+    }
+
+    private function importLabel(string $key): string
+    {
+        return SwmExcelColumns::labelFor($this->excelColumnDefinitions(), $key);
     }
 }

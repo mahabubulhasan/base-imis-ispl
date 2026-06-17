@@ -2,10 +2,14 @@
 
 namespace App\Http\Requests\Swm;
 
+use App\Http\Requests\Concerns\MapsValidationAttributes;
+use App\Services\Swm\WasteProcessingService;
 use Illuminate\Foundation\Http\FormRequest;
 
 class WasteProcessingRequest extends FormRequest
 {
+    use MapsValidationAttributes;
+
     public function authorize(): bool
     {
         return true;
@@ -39,5 +43,11 @@ class WasteProcessingRequest extends FormRequest
             'residual_waste_landfilled_ton' => ['nullable', 'numeric', 'min:0'],
             'remarks' => ['nullable', 'string'],
         ];
+    }
+
+    /** @return array<string, string> */
+    protected function validationAttributeLabels(): array
+    {
+        return app(WasteProcessingService::class)->validationAttributeLabels();
     }
 }

@@ -52,19 +52,28 @@ class LandfillImport implements ToCollection, WithHeadingRow
             try {
                 $name = trim((string) ($norm['name'] ?? ''));
                 if ($name === '') {
-                    $this->errors[] = __('Row :n: name is required.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'name', $columnDefinitions);
                     continue;
                 }
 
                 $operatorName = trim((string) ($norm['operator_name'] ?? ''));
                 if ($operatorName === '') {
-                    $this->errors[] = __('Row :n: operator_name is required.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'operator_name', $columnDefinitions);
                     continue;
                 }
 
                 $contactNumber = trim((string) ($norm['contact_number'] ?? ''));
-                if ($contactNumber === '' || ! preg_match('/^[0-9]+$/', $contactNumber)) {
-                    $this->errors[] = __('Row :n: contact_number is required and must be numeric.', ['n' => $rowNum]);
+                if ($contactNumber === '') {
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'contact_number', $columnDefinitions);
+                    continue;
+                }
+                if (! preg_match('/^[0-9]+$/', $contactNumber)) {
+                    $this->errors[] = SwmImportRowHelper::rowInvalid(
+                        $rowNum,
+                        'contact_number',
+                        $columnDefinitions,
+                        (string) __('must be numeric')
+                    );
                     continue;
                 }
 
@@ -73,7 +82,7 @@ class LandfillImport implements ToCollection, WithHeadingRow
                     ['active', 'inactive']
                 );
                 if (! $operationalStatus) {
-                    $this->errors[] = __('Row :n: invalid operational_status.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'operational_status', $columnDefinitions);
                     continue;
                 }
 
@@ -82,7 +91,7 @@ class LandfillImport implements ToCollection, WithHeadingRow
                 if ($typeName !== '') {
                     $landfillTypeId = SwmImportRowHelper::resolveByLabel($typeName, $landfillTypeMap);
                     if (! $landfillTypeId) {
-                        $this->errors[] = __('Row :n: unknown landfill_type.', ['n' => $rowNum]);
+                        $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'landfill_type', $columnDefinitions);
                         continue;
                     }
                 }
@@ -127,10 +136,10 @@ class LandfillImport implements ToCollection, WithHeadingRow
                 if ($saved) {
                     $this->successCount++;
                 } else {
-                    $this->errors[] = __('Row :n: could not save.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowMessage($rowNum, __('could not save.'));
                 }
             } catch (\Throwable $e) {
-                $this->errors[] = __('Row :n: :msg', ['n' => $rowNum, 'msg' => $e->getMessage()]);
+                $this->errors[] = SwmImportRowHelper::importCatchMessage($rowNum, $e);
             }
         }
     }
@@ -154,7 +163,10 @@ class LandfillImport implements ToCollection, WithHeadingRow
         foreach ($labels as $label) {
             $id = SwmImportRowHelper::resolveByLabel($label, $stsLabelMap);
             if (! $id) {
-                $this->errors[] = __('Row :n: unknown source STS ":sts".', ['n' => $rowNum, 'sts' => $label]);
+                $this->errors[] = SwmImportRowHelper::rowMessage(
+                    $rowNum,
+                    __('unknown source STS ":sts".', ['sts' => $label])
+                );
 
                 return false;
             }
@@ -183,7 +195,10 @@ class LandfillImport implements ToCollection, WithHeadingRow
         foreach ($names as $name) {
             $id = SwmImportRowHelper::resolveByLabel($name, $wasteTypeMap);
             if (! $id) {
-                $this->errors[] = __('Row :n: unknown waste type ":type".', ['n' => $rowNum, 'type' => $name]);
+                $this->errors[] = SwmImportRowHelper::rowMessage(
+                    $rowNum,
+                    __('unknown waste type ":type".', ['type' => $name])
+                );
 
                 return false;
             }

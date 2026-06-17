@@ -6,6 +6,7 @@ use App\Models\Swm\Landfill;
 use App\Models\Swm\LandfillType;
 use App\Models\Swm\Sts;
 use App\Models\Swm\WasteType;
+use App\Services\Swm\Concerns\HasExcelColumnValidationLabels;
 use App\Support\Swm\SwmExcelColumns;
 use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
@@ -15,6 +16,8 @@ use Yajra\DataTables\DataTables;
 
 class LandfillService
 {
+    use HasExcelColumnValidationLabels;
+
     public function getAllLandfills(array $data)
     {
         $query = Landfill::query();
@@ -446,5 +449,15 @@ class LandfillService
         sort($wards, SORT_NATURAL);
 
         return array_values($wards);
+    }
+
+    /** @return array<string, string> */
+    protected function formOnlyValidationLabels(): array
+    {
+        return [
+            'landfill_type_id' => __('Landfill Type'),
+            'source_sts_ids' => __('Source STSs'),
+            'waste_type_ids' => __('Waste Type'),
+        ];
     }
 }

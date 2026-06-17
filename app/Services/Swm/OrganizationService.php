@@ -6,6 +6,7 @@ use App\Enums\SwmOrganizationStatus;
 use App\Models\LayerInfo\Ward;
 use App\Models\Swm\Organization;
 use App\Models\Swm\OrganizationType;
+use App\Services\Swm\Concerns\HasExcelColumnValidationLabels;
 use App\Support\Swm\SwmExcelColumns;
 use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
@@ -19,6 +20,8 @@ use Yajra\DataTables\DataTables;
 
 class OrganizationService
 {
+    use HasExcelColumnValidationLabels;
+
     public function getAllOrganizations(array $data)
     {
         $query = Organization::query()
@@ -235,6 +238,17 @@ class OrganizationService
     public function requiredImportLabels(): array
     {
         return SwmExcelColumns::requiredImportLabels($this->excelColumnDefinitions());
+    }
+
+    /** @return array<string, string> */
+    protected function formOnlyValidationLabels(): array
+    {
+        return [
+            'organization_type_id' => __('Organization Type'),
+            'password' => __('Password'),
+            'password_confirmation' => __('Confirm Password'),
+            'create_user' => __('Create User'),
+        ];
     }
 
     protected function formatOrganizationExportValue(string $key, $row): mixed

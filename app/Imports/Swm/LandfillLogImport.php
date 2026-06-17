@@ -62,25 +62,25 @@ class LandfillLogImport implements ToCollection, WithHeadingRow
             try {
                 $vehicleLabel = trim((string) ($norm['vehicle_number'] ?? ''));
                 if ($vehicleLabel === '') {
-                    $this->errors[] = __('Row :n: vehicle_number is required.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'vehicle_number', $columnDefinitions);
                     continue;
                 }
                 $vehicleId = SwmImportRowHelper::resolveByLabel($vehicleLabel, $vehicleMap)
                     ?? $this->resolveVehicleIdByNumber($vehicleLabel);
                 if (! $vehicleId) {
-                    $this->errors[] = __('Row :n: invalid vehicle_number.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'vehicle_number', $columnDefinitions);
                     continue;
                 }
 
                 $entryAt = SwmImportRowHelper::parseDate($norm['entry_at'] ?? null);
                 if (! $entryAt) {
-                    $this->errors[] = __('Row :n: entry_at is invalid.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'entry_at', $columnDefinitions);
                     continue;
                 }
 
                 $operationDate = SwmImportRowHelper::parseDate($norm['operation_date'] ?? null);
                 if (! $operationDate) {
-                    $this->errors[] = __('Row :n: operation_date is invalid.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'operation_date', $columnDefinitions);
                     continue;
                 }
 
@@ -90,7 +90,7 @@ class LandfillLogImport implements ToCollection, WithHeadingRow
                 if ($landfillLabel !== '') {
                     $landfillId = $this->resolveLandfillId($landfillLabel, $landfillLabelMap);
                     if (! $landfillId) {
-                        $this->errors[] = __('Row :n: invalid landfill_name.', ['n' => $rowNum]);
+                        $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'landfill_name', $columnDefinitions);
                         continue;
                     }
                     $landfill = Landfill::query()->whereKey($landfillId)->first();
@@ -123,10 +123,10 @@ class LandfillLogImport implements ToCollection, WithHeadingRow
                 if ($saved) {
                     $this->successCount++;
                 } else {
-                    $this->errors[] = __('Row :n: could not save.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowMessage($rowNum, __('could not save.'));
                 }
             } catch (\Throwable $e) {
-                $this->errors[] = __('Row :n: :msg', ['n' => $rowNum, 'msg' => $e->getMessage()]);
+                $this->errors[] = SwmImportRowHelper::importCatchMessage($rowNum, $e);
             }
         }
     }
@@ -218,7 +218,10 @@ class LandfillLogImport implements ToCollection, WithHeadingRow
                 $id = $sts ? (int) $sts->id : null;
             }
             if (! $id) {
-                $this->errors[] = __('Row :n: unknown source STS ":sts".', ['n' => $rowNum, 'sts' => $label]);
+                $this->errors[] = SwmImportRowHelper::rowMessage(
+                    $rowNum,
+                    __('unknown source STS ":sts".', ['sts' => $label])
+                );
 
                 return false;
             }

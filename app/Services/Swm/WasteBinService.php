@@ -4,6 +4,7 @@ namespace App\Services\Swm;
 
 use App\Models\Swm\WasteBin;
 use App\Models\Swm\WasteBinType;
+use App\Services\Swm\Concerns\HasExcelColumnValidationLabels;
 use App\Support\Swm\SwmExcelColumns;
 use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
@@ -13,6 +14,8 @@ use Yajra\DataTables\DataTables;
 
 class WasteBinService
 {
+    use HasExcelColumnValidationLabels;
+
     public function getAll(array $data)
     {
         $query = WasteBin::query()->with(['wasteBinType'])->whereNull('deleted_at');
@@ -170,5 +173,13 @@ class WasteBinService
     public function requiredImportLabels(): array
     {
         return SwmExcelColumns::requiredImportLabels($this->excelColumnDefinitions());
+    }
+
+    /** @return array<string, string> */
+    protected function formOnlyValidationLabels(): array
+    {
+        return [
+            'waste_bin_type_id' => __('Waste Bin Type'),
+        ];
     }
 }

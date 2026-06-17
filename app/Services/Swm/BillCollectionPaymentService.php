@@ -5,6 +5,7 @@ namespace App\Services\Swm;
 use App\Models\BuildingInfo\Household;
 use App\Models\Swm\BillCollectionPayment;
 use App\Services\Formatting\Currency;
+use App\Services\Swm\Concerns\HasExcelColumnValidationLabels;
 use App\Services\Formatting\CurrencyFormatter;
 use App\Support\Swm\SwmExcelColumns;
 use App\Support\Swm\SwmExcelExportWriter;
@@ -19,6 +20,8 @@ use Yajra\DataTables\DataTables;
 
 class BillCollectionPaymentService
 {
+    use HasExcelColumnValidationLabels;
+
     public function __construct(
         protected CurrencyFormatter $currencyFormatter,
     ) {
@@ -720,5 +723,14 @@ class BillCollectionPaymentService
     public function requiredImportLabels(): array
     {
         return SwmExcelColumns::requiredImportLabels($this->excelColumnDefinitions());
+    }
+
+    /** @return array<string, string> */
+    protected function formOnlyValidationLabels(): array
+    {
+        return [
+            'household_id' => __('Household'),
+            'receipt_copy' => __('Payment Receipt Copy'),
+        ];
     }
 }

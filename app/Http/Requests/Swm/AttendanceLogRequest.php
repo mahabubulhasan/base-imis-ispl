@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Swm;
 
+use App\Http\Requests\Concerns\MapsValidationAttributes;
 use App\Models\Swm\AttendanceLog;
+use App\Services\Swm\AttendanceLogService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -10,6 +12,8 @@ use Illuminate\Validation\Validator;
 
 class AttendanceLogRequest extends FormRequest
 {
+    use MapsValidationAttributes;
+
     public function authorize(): bool
     {
         return true;
@@ -88,5 +92,11 @@ class AttendanceLogRequest extends FormRequest
             'check_out_at' => ['nullable', 'date'],
             'remarks' => ['nullable', 'string'],
         ];
+    }
+
+    /** @return array<string, string> */
+    protected function validationAttributeLabels(): array
+    {
+        return app(AttendanceLogService::class)->validationAttributeLabels();
     }
 }

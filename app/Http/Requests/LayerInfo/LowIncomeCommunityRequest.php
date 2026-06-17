@@ -2,10 +2,14 @@
 
 namespace App\Http\Requests\LayerInfo;
 
+use App\Http\Requests\Concerns\MapsValidationAttributes;
+use App\Services\LayerInfo\LowIncomeCommunityServiceClass;
 use Illuminate\Foundation\Http\FormRequest;
 
 class LowIncomeCommunityRequest extends FormRequest
 {
+    use MapsValidationAttributes;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -149,6 +153,12 @@ class LowIncomeCommunityRequest extends FormRequest
             'geom' => 'required',
 
         ];
+    }
+
+    /** @return array<string, string> */
+    protected function validationAttributeLabels(): array
+    {
+        return app(LowIncomeCommunityServiceClass::class)->validationAttributeLabels();
     }
 
 }

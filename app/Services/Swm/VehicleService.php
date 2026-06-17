@@ -8,6 +8,7 @@ use App\Models\Swm\Vehicle;
 use App\Models\Swm\VehicleType;
 use App\Models\Swm\Worker;
 use App\Models\Swm\WorkType;
+use App\Services\Swm\Concerns\HasExcelColumnValidationLabels;
 use App\Support\Swm\SwmExcelColumns;
 use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
@@ -23,6 +24,8 @@ use Yajra\DataTables\DataTables;
 
 class VehicleService
 {
+    use HasExcelColumnValidationLabels;
+
     /**
      * @return array<string, string>
      */
@@ -487,5 +490,15 @@ class VehicleService
     public function requiredImportLabels(): array
     {
         return SwmExcelColumns::requiredImportLabels($this->importTemplateColumns());
+    }
+
+    /** @return array<string, string> */
+    protected function formOnlyValidationLabels(): array
+    {
+        return [
+            'vehicle_type_id' => __('Vehicle Type'),
+            'organization_id' => __('Organization'),
+            'driver_worker_id' => __('Driver Name'),
+        ];
     }
 }

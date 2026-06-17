@@ -41,18 +41,18 @@ class BillCollectionPaymentImport implements ToCollection, WithHeadingRow
             try {
                 $site = $this->resolveSite($norm);
                 if (! $site) {
-                    $this->errors[] = __('Row :n: could not resolve household.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowMessage($rowNum, __('could not resolve household.'));
                     continue;
                 }
                 $holding = isset($norm['holding_number']) ? trim((string) $norm['holding_number']) : '';
                 if ($holding !== '' && ($site->holding_number ?? '') !== $holding) {
-                    $this->errors[] = __('Row :n: holding_number does not match site.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowMessage($rowNum, __('holding number does not match site.'));
                     continue;
                 }
 
                 $amount = $norm['amount'] ?? null;
                 if ($amount === null || $amount === '') {
-                    $this->errors[] = __('Row :n: amount is required.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'amount', $columnDefinitions);
                     continue;
                 }
                 $duePaid = $norm['due_paid'] ?? 0;
@@ -62,7 +62,7 @@ class BillCollectionPaymentImport implements ToCollection, WithHeadingRow
 
                 $month = $this->parseMonth($norm['payment_for_month'] ?? null);
                 if (! $month) {
-                    $this->errors[] = __('Row :n: payment_for_month is invalid.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'payment_for_month', $columnDefinitions);
                     continue;
                 }
 
@@ -71,7 +71,7 @@ class BillCollectionPaymentImport implements ToCollection, WithHeadingRow
                     $paymentMethods
                 );
                 if ($methodKey === null) {
-                    $this->errors[] = __('Row :n: invalid payment_method.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'payment_method', $columnDefinitions);
                     continue;
                 }
 
@@ -95,10 +95,10 @@ class BillCollectionPaymentImport implements ToCollection, WithHeadingRow
                 if ($saved) {
                     $this->successCount++;
                 } else {
-                    $this->errors[] = __('Row :n: could not save.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowMessage($rowNum, __('could not save.'));
                 }
             } catch (\Throwable $e) {
-                $this->errors[] = __('Row :n: :msg', ['n' => $rowNum, 'msg' => $e->getMessage()]);
+                $this->errors[] = SwmImportRowHelper::importCatchMessage($rowNum, $e);
             }
         }
     }

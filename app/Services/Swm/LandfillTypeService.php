@@ -106,4 +106,13 @@ class LandfillTypeService
 
         $writer->close();
     }
+
+    /** @return array<string, string> */
+    public function validationAttributeLabels(): array
+    {
+        return [
+            'name' => __('Landfill Type'),
+            'description' => __('Description'),
+        ];
+    }
 }

@@ -2,11 +2,15 @@
 
 namespace App\Http\Requests\Swm;
 
+use App\Http\Requests\Concerns\MapsValidationAttributes;
+use App\Services\Swm\WorkTypeService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class WorkTypeRequest extends FormRequest
 {
+    use MapsValidationAttributes;
+
     public function authorize(): bool
     {
         return true;
@@ -64,8 +68,13 @@ class WorkTypeRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => __('The work type name is required.'),
             'name.unique' => __('The work type name has already been taken.'),
         ];
+    }
+
+    /** @return array<string, string> */
+    protected function validationAttributeLabels(): array
+    {
+        return app(WorkTypeService::class)->validationAttributeLabels();
     }
 }

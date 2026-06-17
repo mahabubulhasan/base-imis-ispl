@@ -134,6 +134,30 @@ class SwmExcelColumns
     }
 
     /**
+     * @param  array<int, array{key: string, label?: string}>  $columns
+     * @return array<string, string>
+     */
+    public static function labelMap(array $columns): array
+    {
+        $map = [];
+        foreach (self::excelColumns($columns) as $column) {
+            $map[$column['key']] = (string) ($column['label'] ?? $column['key']);
+        }
+
+        return $map;
+    }
+
+    /**
+     * @param  array<int, array{key: string, label?: string}>  $columns
+     */
+    public static function labelFor(array $columns, string $key, ?string $fallback = null): string
+    {
+        $map = self::labelMap($columns);
+
+        return $map[$key] ?? $fallback ?? $key;
+    }
+
+    /**
      * @param  array<int, array{key: string, label: string, export?: bool}>  $columns
      * @return array<int, array{key: string, label: string}>
      */

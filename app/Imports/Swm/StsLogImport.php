@@ -51,36 +51,36 @@ class StsLogImport implements ToCollection, WithHeadingRow
             try {
                 $vehicleLabel = trim((string) ($norm['vehicle_number'] ?? ''));
                 if ($vehicleLabel === '') {
-                    $this->errors[] = __('Row :n: vehicle_number is required.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'vehicle_number', $columnDefinitions);
                     continue;
                 }
                 $vehicleId = SwmImportRowHelper::resolveByLabel($vehicleLabel, $vehicleMap)
                     ?? $this->resolveVehicleIdByNumber($vehicleLabel);
                 if (! $vehicleId) {
-                    $this->errors[] = __('Row :n: invalid vehicle_number.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'vehicle_number', $columnDefinitions);
                     continue;
                 }
 
                 $entryAt = SwmImportRowHelper::parseDate($norm['entry_at'] ?? null);
                 if (! $entryAt) {
-                    $this->errors[] = __('Row :n: entry_at is invalid.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'entry_at', $columnDefinitions);
                     continue;
                 }
 
                 $operationDate = SwmImportRowHelper::parseDate($norm['operation_date'] ?? null);
                 if (! $operationDate) {
-                    $this->errors[] = __('Row :n: operation_date is invalid.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'operation_date', $columnDefinitions);
                     continue;
                 }
 
                 $stsInput = trim((string) ($norm['sts_id'] ?? $norm['sts_name'] ?? ''));
                 if ($stsInput === '') {
-                    $this->errors[] = __('Row :n: STS Name is required.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'sts_id', $columnDefinitions);
                     continue;
                 }
                 $stsId = $this->resolveStsId($stsInput, $stsLabelMap);
                 if (! $stsId) {
-                    $this->errors[] = __('Row :n: invalid STS Name.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'sts_id', $columnDefinitions);
                     continue;
                 }
                 $sts = Sts::query()->whereKey($stsId)->first();
@@ -105,10 +105,10 @@ class StsLogImport implements ToCollection, WithHeadingRow
                 if ($saved) {
                     $this->successCount++;
                 } else {
-                    $this->errors[] = __('Row :n: could not save.', ['n' => $rowNum]);
+                    $this->errors[] = SwmImportRowHelper::rowMessage($rowNum, __('could not save.'));
                 }
             } catch (\Throwable $e) {
-                $this->errors[] = __('Row :n: :msg', ['n' => $rowNum, 'msg' => $e->getMessage()]);
+                $this->errors[] = SwmImportRowHelper::importCatchMessage($rowNum, $e);
             }
         }
     }

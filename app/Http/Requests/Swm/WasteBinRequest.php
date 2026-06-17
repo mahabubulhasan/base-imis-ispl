@@ -2,11 +2,15 @@
 
 namespace App\Http\Requests\Swm;
 
+use App\Http\Requests\Concerns\MapsValidationAttributes;
+use App\Services\Swm\WasteBinService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class WasteBinRequest extends FormRequest
 {
+    use MapsValidationAttributes;
+
     public function authorize(): bool
     {
         return true;
@@ -48,5 +52,11 @@ class WasteBinRequest extends FormRequest
             'placed_at_buildings' => $placed,
             ...(! $placed ? ['bin' => null] : []),
         ]);
+    }
+
+    /** @return array<string, string> */
+    protected function validationAttributeLabels(): array
+    {
+        return app(WasteBinService::class)->validationAttributeLabels();
     }
 }
