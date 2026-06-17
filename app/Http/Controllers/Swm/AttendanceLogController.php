@@ -196,19 +196,14 @@ class AttendanceLogController extends Controller
 
     public function importStore(Request $request)
     {
-        $requiredHeaders = ['worker', 'entry_at', 'attendance_status'];
-        if (! Auth::user()->swm_organization_id) {
-            array_unshift($requiredHeaders, 'organization');
-        }
-
         return $this->swmImportStore(
-            $request,
-            AttendanceLogImport::class,
-            $requiredHeaders,
-            'swm.attendance-logs.index',
-            'importswm',
-            'attendance-logs-import',
-            __('Attendance Logs')
+            request: $request,
+            importClass: AttendanceLogImport::class,
+            requiredHeaders: $this->attendanceLogService->requiredImportLabels(),
+            indexRoute: 'swm.attendance-logs.index',
+            disk: 'importswm',
+            filenamePrefix: 'attendance-logs-import',
+            entityName: __('Attendance Logs'),
         );
     }
 

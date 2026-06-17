@@ -26,6 +26,16 @@ class AttendanceLogImport implements ToCollection, WithHeadingRow
     public function collection(Collection $rows): void
     {
         $service = app(AttendanceLogService::class);
+        $columnDefinitions = [
+            ['key' => 'organization', 'label' => __('Organization')],
+            ['key' => 'entry_at', 'label' => __('Entry Date and Time')],
+            ['key' => 'department', 'label' => __('Department')],
+            ['key' => 'worker', 'label' => __('Worker Name-ID')],
+            ['key' => 'attendance_status', 'label' => __('Attendance Status')],
+            ['key' => 'check_in_at', 'label' => __('Check-in Time')],
+            ['key' => 'check_out_at', 'label' => __('Check-out Time')],
+            ['key' => 'remarks', 'label' => __('Remarks')],
+        ];
         $user = User::query()->find($this->userId);
         $scopedOrgId = $user?->swm_organization_id ? (int) $user->swm_organization_id : null;
         $orgMap = Organization::query()
@@ -42,7 +52,10 @@ class AttendanceLogImport implements ToCollection, WithHeadingRow
 
         foreach ($rows as $idx => $row) {
             $rowNum = $idx + 2;
-            $norm = SwmImportRowHelper::normalizeRow($row->toArray());
+            $norm = SwmImportRowHelper::mapRowToKeys(
+                SwmImportRowHelper::normalizeRow($row->toArray()),
+                $columnDefinitions
+            );
             if (SwmImportRowHelper::rowIsEmpty($norm)) {
                 continue;
             }

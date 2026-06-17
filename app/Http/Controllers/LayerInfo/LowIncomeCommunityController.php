@@ -186,13 +186,13 @@ class LowIncomeCommunityController extends Controller
     public function importStore(Request $request)
     {
         return $this->swmImportStore(
-            $request,
-            LowIncomeCommunityImport::class,
-            ['community_name', 'no_of_buildings', 'population_total', 'number_of_households', 'water_connection_status', 'sanitation_status'],
-            'low-income-communities.index',
-            'importlic',
-            'low-income-communities',
-            __('Low Income Communities')
+            request: $request,
+            importClass: LowIncomeCommunityImport::class,
+            requiredHeaders: app(LowIncomeCommunityServiceClass::class)->requiredImportLabels(),
+            indexRoute: 'low-income-communities.index',
+            disk: 'importlic',
+            filenamePrefix: 'low-income-communities',
+            entityName: __('Low Income Communities'),
         );
     }
 }

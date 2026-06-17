@@ -242,13 +242,13 @@ class BillCollectionPaymentController extends Controller
     public function importStore(Request $request)
     {
         return $this->swmImportStore(
-            $request,
-            BillCollectionPaymentImport::class,
-            ['household_id', 'amount', 'payment_for_month', 'payment_method'],
-            'swm.bill-collection-payments.index',
-            'importbillcollectionpayments',
-            'bill-collection-payments',
-            __('Bill Collection')
+            request: $request,
+            importClass: BillCollectionPaymentImport::class,
+            requiredHeaders: $this->billCollectionPaymentService->requiredImportLabels(),
+            indexRoute: 'swm.bill-collection-payments.index',
+            disk: 'importbillcollectionpayments',
+            filenamePrefix: 'bill-collection-payments',
+            entityName: __('Bill Collection'),
         );
     }
 

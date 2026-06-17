@@ -166,13 +166,13 @@ class StsLogController extends Controller
     public function importStore(Request $request)
     {
         return $this->swmImportStore(
-            $request,
-            StsLogImport::class,
-            ['vehicle_number', 'entry_at', 'operation_date', 'sts_name'],
-            'swm.sts-logs.index',
-            'importswm',
-            'sts-logs-import',
-            __('STS Logs')
+            request: $request,
+            importClass: StsLogImport::class,
+            requiredHeaders: $this->stsLogService->requiredImportLabels(),
+            indexRoute: 'swm.sts-logs.index',
+            disk: 'importswm',
+            filenamePrefix: 'sts-logs-import',
+            entityName: __('STS Logs'),
         );
     }
 

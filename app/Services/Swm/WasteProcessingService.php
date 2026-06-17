@@ -176,4 +176,10 @@ class WasteProcessingService
             $query->whereDate('reporting_month', Carbon::parse($data['reporting_month'])->startOfMonth()->toDateString());
         }
     }
+
+    /** @return array<int, string> */
+    public function requiredImportLabels(): array
+    {
+        return SwmExcelColumns::requiredImportLabels($this->excelColumnDefinitions());
+    }
 }

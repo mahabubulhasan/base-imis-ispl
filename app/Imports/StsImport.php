@@ -24,6 +24,24 @@ class StsImport implements ToCollection, WithHeadingRow
     public function collection(Collection $rows): void
     {
         $service = app(StsService::class);
+        $columnDefinitions = [
+            ['key' => 'name', 'label' => __('STS Name')],
+            ['key' => 'location', 'label' => __('Location')],
+            ['key' => 'ward_no', 'label' => __('Ward No.')],
+            ['key' => 'road_id', 'label' => __('Road No.')],
+            ['key' => 'road_name', 'label' => __('Road Name')],
+            ['key' => 'latitude', 'label' => __('Latitude')],
+            ['key' => 'longitude', 'label' => __('Longitude')],
+            ['key' => 'operator_name', 'label' => __('Operator Name')],
+            ['key' => 'contact_number', 'label' => __("Operator's Contact Number")],
+            ['key' => 'capacity', 'label' => __('Capacity').' ('.__('Ton').')'],
+            ['key' => 'area', 'label' => __('Area').' ('.__('Decimal').')'],
+            ['key' => 'source_wards', 'label' => __('Source Wards')],
+            ['key' => 'segregation_practiced', 'label' => __('Segregation Practiced?')],
+            ['key' => 'waste_types', 'label' => __('Waste Type')],
+            ['key' => 'destination_landfill', 'label' => __('Destination Landfill')],
+            ['key' => 'operational_status', 'label' => __('Operational Status')],
+        ];
         $wasteTypeMap = WasteType::query()->whereNull('deleted_at')->pluck('name', 'id')->all();
         $landfillMap = Landfill::query()
             ->whereNull('deleted_at')
@@ -38,7 +56,10 @@ class StsImport implements ToCollection, WithHeadingRow
 
         foreach ($rows as $idx => $row) {
             $rowNum = $idx + 2;
-            $norm = SwmImportRowHelper::normalizeRow($row->toArray());
+            $norm = SwmImportRowHelper::mapRowToKeys(
+                SwmImportRowHelper::normalizeRow($row->toArray()),
+                $columnDefinitions
+            );
             if (SwmImportRowHelper::rowIsEmpty($norm)) {
                 continue;
             }

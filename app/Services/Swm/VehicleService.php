@@ -454,4 +454,10 @@ class VehicleService
             ['key' => 'status', 'label' => __('Status'), 'dropdown' => ['active', 'inactive']],
         ]);
     }
+
+    /** @return array<int, string> */
+    public function requiredImportLabels(): array
+    {
+        return SwmExcelColumns::requiredImportLabels($this->importTemplateColumns());
+    }
 }

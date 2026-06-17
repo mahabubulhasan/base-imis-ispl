@@ -51,4 +51,23 @@ class SwmImportRowHelperTest extends TestCase
         $this->assertSame([1, 2, 3], SwmImportRowHelper::parseCommaSeparatedInts('1, 2,3'));
         $this->assertNull(SwmImportRowHelper::parseCommaSeparatedInts(''));
     }
+
+    public function test_map_row_to_keys_resolves_label_based_headers(): void
+    {
+        $norm = SwmImportRowHelper::normalizeRow([
+            'Worker Name-ID' => 'Rahim — WKR-1',
+            'Entry Date and Time' => '2026-01-01 10:00:00',
+            'Attendance Status' => 'Present',
+        ]);
+
+        $mapped = SwmImportRowHelper::mapRowToKeys($norm, [
+            ['key' => 'worker', 'label' => 'Worker Name-ID'],
+            ['key' => 'entry_at', 'label' => 'Entry Date and Time'],
+            ['key' => 'attendance_status', 'label' => 'Attendance Status'],
+        ]);
+
+        $this->assertSame('Rahim — WKR-1', $mapped['worker']);
+        $this->assertSame('2026-01-01 10:00:00', $mapped['entry_at']);
+        $this->assertSame('Present', $mapped['attendance_status']);
+    }
 }

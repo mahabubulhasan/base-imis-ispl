@@ -191,13 +191,13 @@ class OrganizationController extends Controller
     public function importStore(Request $request)
     {
         return $this->swmImportStore(
-            $request,
-            OrganizationImport::class,
-            ['name', 'email', 'address', 'contact_person_name', 'contact_number', 'organization_type', 'status'],
-            'swm.organizations.index',
-            'importswm',
-            'organizations',
-            __('Organizations')
+            request: $request,
+            importClass: OrganizationImport::class,
+            requiredHeaders: $this->organizationService->requiredImportLabels(),
+            indexRoute: 'swm.organizations.index',
+            disk: 'importswm',
+            filenamePrefix: 'organizations',
+            entityName: __('Organizations'),
         );
     }
 }

@@ -392,4 +392,10 @@ class LandfillService
             $query->where('leachate_collection_system_available', filter_var($data['leachate_collection_system_available'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? $data['leachate_collection_system_available']);
         }
     }
+
+    /** @return array<int, string> */
+    public function requiredImportLabels(): array
+    {
+        return SwmExcelColumns::requiredImportLabels($this->excelColumnDefinitions());
+    }
 }

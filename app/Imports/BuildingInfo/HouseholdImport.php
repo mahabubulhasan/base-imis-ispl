@@ -26,6 +26,7 @@ class HouseholdImport implements ToCollection, WithHeadingRow
     public function collection(Collection $rows): void
     {
         $service = app(HouseholdService::class);
+        $columnDefinitions = $service->excelColumnDefinitions();
         $licMap = Lic::query()
             ->whereNull('deleted_at')
             ->orderBy('community_name')
@@ -42,7 +43,10 @@ class HouseholdImport implements ToCollection, WithHeadingRow
 
         foreach ($rows as $idx => $row) {
             $rowNum = $idx + 2;
-            $norm = SwmImportRowHelper::normalizeRow($row->toArray());
+            $norm = SwmImportRowHelper::mapRowToKeys(
+                SwmImportRowHelper::normalizeRow($row->toArray()),
+                $columnDefinitions
+            );
             if (SwmImportRowHelper::rowIsEmpty($norm)) {
                 continue;
             }
@@ -136,9 +140,6 @@ class HouseholdImport implements ToCollection, WithHeadingRow
                     'ward' => $ward,
                     'area_mohalla_name' => ($norm['area_mohalla_name'] ?? '') !== ''
                         ? trim((string) $norm['area_mohalla_name'])
-                        : null,
-                    'sub_location' => ($norm['sub_location'] ?? '') !== ''
-                        ? trim((string) $norm['sub_location'])
                         : null,
                     'road_no' => ($norm['road_no'] ?? '') !== ''
                         ? trim((string) $norm['road_no'])

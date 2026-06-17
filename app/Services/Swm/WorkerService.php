@@ -227,7 +227,7 @@ class WorkerService
         $organizationId = $data['organization_id'] ?? null;
         $workTypeId = $data['work_type_id'] ?? null;
 
-        $columns = SwmExcelColumns::exportHeaders($this->exportColumnDefinitions());
+        $columns = SwmExcelColumns::exportHeaders($this->excelColumnDefinitions());
 
         $query = $this->baseQuery();
 
@@ -272,20 +272,10 @@ class WorkerService
         $writer->openToBrowser(SwmExcelFilename::export('workers'))
             ->addRowWithStyle($columns, $style);
 
-        $query->orderBy('swm.workers.id')->chunk(5000, function ($rows) use ($writer) {
+        $query->orderBy('swm.workers.id')->chunk(5000, function ($rows) use ($writer, $columns) {
+            $columnDefinitions = $this->excelColumnDefinitions();
             foreach ($rows as $row) {
-                $writer->addRow([
-                    $row->name,
-                    $row->worker_id_no,
-                    $row->organization_name,
-                    $row->work_type_name,
-                    $row->mobile,
-                    // $row->email,
-                    $row->employee_id,
-                    $row->national_id_no,
-                    Worker::employmentTypeLabel($row->employment_type),
-                    Worker::statusLabel($row->status),
-                ]);
+                $writer->addRow(SwmExcelColumns::buildExportRow($columnDefinitions, $row, fn (string $key, $model) => $this->formatWorkerExportValue($key, $model)));
             }
         });
 
@@ -300,52 +290,35 @@ class WorkerService
         );
     }
 
-    /** @return array<int, array{key: string, label: string}> */
-    protected function exportColumnDefinitions(): array
+    /** @return array<int, string> */
+    public function requiredImportLabels(): array
     {
-        return [
-            ['key' => 'name', 'label' => __('Name')],
-            ['key' => 'worker_id_no', 'label' => __('ID')],
-            ['key' => 'organization_name', 'label' => __('Organization')],
-            ['key' => 'work_type_name', 'label' => __('Worker Type')],
-            ['key' => 'mobile', 'label' => __('Contact')],
-            ['key' => 'email', 'label' => __('Email')],
-            ['key' => 'employee_id', 'label' => __('Employee ID (Current Organization)')],
-            ['key' => 'national_id_no', 'label' => __('National ID')],
-            ['key' => 'employment_type', 'label' => __('Employment Type')],
-            ['key' => 'status', 'label' => __('Status')],
-        ];
+        return SwmExcelColumns::requiredImportLabels($this->excelColumnDefinitions());
     }
 
-    /** @return array<int, array{key: string, label: string, required?: bool, dropdown?: array<int, string>, multiselect?: bool, reference_key?: string}> */
+    /** @return array<int, array{key: string, label?: string, required?: bool, dropdown?: array<int, string>, multiselect?: bool, reference_key?: string}> */
     public function importTemplateColumns(): array
     {
-        $scopedOrgId = Auth::user()?->swm_organization_id;
-        $columns = [];
+        return SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions());
+    }
 
-        if (! $scopedOrgId) {
-            $orgNames = Organization::query()
+    /** @return array<int, array{key: string, label: string, required?: bool, import?: bool, export?: bool, dropdown?: array<int, string>, multiselect?: bool, reference_key?: string}> */
+    public function excelColumnDefinitions(): array
+    {
+        $scopedOrgId = Auth::user()?->swm_organization_id;
+        $columns = [
+            ['key' => 'worker_id_no', 'label' => __('ID'), 'import' => false],
+            ['key' => 'name', 'label' => __('Name'), 'required' => true],
+            ['key' => 'age', 'label' => __('Age (Years)')],
+            ['key' => 'gender', 'label' => __('Gender'), 'dropdown' => [__('Male'), __('Female'), __('Others')]],
+            ['key' => 'mobile', 'label' => __('Contact'), 'required' => true],
+            ['key' => 'department', 'label' => __('Department')],
+            ['key' => 'work_type', 'label' => __('Worker Type'), 'required' => true, 'dropdown' => WorkType::query()
                 ->whereNull('deleted_at')
-                ->operational()
                 ->orderBy('name')
                 ->pluck('name')
-                ->all();
-            $columns[] = ['key' => 'organization', 'label' => __('Organization'), 'required' => true, 'dropdown' => $orgNames];
-        }
-
-        $workTypes = WorkType::query()
-            ->whereNull('deleted_at')
-            ->orderBy('name')
-            ->pluck('name')
-            ->all();
-
-        return array_merge($columns, [
-            ['key' => 'work_type', 'label' => __('Worker Type'), 'required' => true, 'dropdown' => $workTypes],
-            ['key' => 'name', 'label' => __('Name'), 'required' => true],
-            ['key' => 'mobile', 'label' => __('Contact'), 'required' => true],
-            ['key' => 'email', 'label' => __('Email')],
-            ['key' => 'age', 'label' => __('Age (Years)')],
-            ['key' => 'gender', 'label' => __('Gender'), 'dropdown' => ['male', 'female', 'others']],
+                ->all(), 'export' => false],
+            ['key' => 'work_type_name', 'label' => __('Worker Type'), 'import' => false],
             [
                 'key' => 'service_wards',
                 'label' => __('Service Wards'),
@@ -353,10 +326,63 @@ class WorkerService
                 'dropdown' => SwmImportTemplateOptions::wardNumberStrings(),
                 'reference_key' => 'service_wards',
             ],
-            ['key' => 'employment_type', 'label' => __('Employment Type'), 'dropdown' => ['permanent', 'daily', 'contract']],
-            ['key' => 'status', 'label' => __('Status'), 'dropdown' => ['active', 'inactive']],
+            ['key' => 'employment_type', 'label' => __('Employment Type'), 'dropdown' => [__('Permanent'), __('Daily'), __('Contract')]],
+        ];
+
+        if (! $scopedOrgId) {
+            $columns[] = ['key' => 'organization', 'label' => __('Organization'), 'required' => true, 'dropdown' => Organization::query()
+                ->whereNull('deleted_at')
+                ->operational()
+                ->orderBy('name')
+                ->pluck('name')
+                ->all(), 'export' => false];
+        }
+        $columns[] = ['key' => 'organization_name', 'label' => __('Organization'), 'import' => false];
+
+        $columns = array_merge($columns, [
+            ['key' => 'supervisor_name', 'label' => __('Supervisor\'s Name')],
+            ['key' => 'total_work_experience_years', 'label' => __('Total Work Experience (Years)')],
+            ['key' => 'organization_work_experience_years', 'label' => __('Work Experience in This Organization (Years)')],
+            ['key' => 'education_level', 'label' => __('Education Level'), 'dropdown' => [
+                __('Primary'),
+                __('Secondary (Below SSC)'),
+                __('SSC'),
+                __('HSC'),
+                __('Bachelor'),
+                __('Master'),
+                __('Others (specify)'),
+            ]],
+            ['key' => 'education_level_other', 'label' => __('Education')],
             ['key' => 'employee_id', 'label' => __('Employee ID (Current Organization)')],
             ['key' => 'national_id_no', 'label' => __('National ID')],
+            ['key' => 'status', 'label' => __('Status'), 'dropdown' => [__('Active'), __('Inactive')]],
         ]);
+
+        return $columns;
+    }
+
+    protected function formatWorkerExportValue(string $key, $row): mixed
+    {
+        return match ($key) {
+            'worker_id_no' => $row->worker_id_no,
+            'name' => $row->name,
+            'age' => $row->age,
+            'gender' => $row->gender ? __(ucfirst($row->gender)) : '',
+            'mobile' => $row->mobile,
+            'department' => $row->department,
+            'work_type_name' => $row->work_type_name,
+            'service_wards' => is_array($row->service_wards) ? implode(', ', $row->service_wards) : ($row->service_wards ?? ''),
+            'employment_type' => Worker::employmentTypeLabel($row->employment_type),
+            'organization_name' => $row->organization_name,
+            'supervisor_name' => $row->supervisor_name,
+            'total_work_experience_years' => $row->total_work_experience_years,
+            'organization_work_experience_years' => $row->organization_work_experience_years,
+            'education_level' => $row->education_level ? __(ucfirst($row->education_level)) : '',
+            'education_level_other' => $row->education_level_other,
+            'employee_id' => $row->employee_id,
+            'national_id_no' => $row->national_id_no,
+            'status' => Worker::statusLabel($row->status),
+            default => '',
+        };
     }
 }

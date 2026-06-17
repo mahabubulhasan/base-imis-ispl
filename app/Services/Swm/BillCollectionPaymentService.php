@@ -698,4 +698,10 @@ class BillCollectionPaymentService
             ['key' => 'receipt_no', 'label' => __('Receipt No.')],
         ];
     }
+
+    /** @return array<int, string> */
+    public function requiredImportLabels(): array
+    {
+        return SwmExcelColumns::requiredImportLabels($this->importTemplateColumns());
+    }
 }

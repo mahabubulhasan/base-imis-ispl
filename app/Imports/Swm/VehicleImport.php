@@ -29,6 +29,19 @@ class VehicleImport implements ToCollection, WithHeadingRow
             ? (int) Auth::user()->swm_organization_id
             : null;
         $service = app(VehicleService::class);
+        $columnDefinitions = [
+            ['key' => 'organization', 'label' => __('Organization')],
+            ['key' => 'vehicle_type', 'label' => __('Vehicle Type')],
+            ['key' => 'vehicle_number', 'label' => __('Vehicle Number')],
+            ['key' => 'vehicle_id_no', 'label' => __('Vehicle ID')],
+            ['key' => 'driver', 'label' => __('Driver Name')],
+            ['key' => 'chassis_no', 'label' => __('Chassis No.')],
+            ['key' => 'engine_no', 'label' => __('Engine No.')],
+            ['key' => 'capacity', 'label' => __('Capacity').' ('.__('Ton').')'],
+            ['key' => 'operational_type', 'label' => __('Operational Type')],
+            ['key' => 'service_wards', 'label' => __('Service Wards')],
+            ['key' => 'status', 'label' => __('Status')],
+        ];
         $orgMap = Organization::query()
             ->whereNull('deleted_at')
             ->operational()
@@ -44,7 +57,10 @@ class VehicleImport implements ToCollection, WithHeadingRow
 
         foreach ($rows as $idx => $row) {
             $rowNum = $idx + 2;
-            $norm = SwmImportRowHelper::normalizeRow($row->toArray());
+            $norm = SwmImportRowHelper::mapRowToKeys(
+                SwmImportRowHelper::normalizeRow($row->toArray()),
+                $columnDefinitions
+            );
             if (SwmImportRowHelper::rowIsEmpty($norm)) {
                 continue;
             }

@@ -179,35 +179,20 @@ class HouseholdService
 
     public function download(array $data): void
     {
-        $columns = SwmExcelColumns::exportHeaders($this->exportColumnDefinitions());
+        $columns = $this->excelColumnDefinitions();
+        $headers = SwmExcelColumns::exportHeaders($columns);
 
-        $query = Household::query()->whereNull('deleted_at')->orderBy('id');
+        $query = Household::query()
+            ->with(['lic:id,community_name', 'vanPuller:id,name'])
+            ->whereNull('deleted_at')
+            ->orderBy('id');
         $this->applyHouseholdFilters($query, $data);
 
-        (new SwmExcelExportWriter())->download(SwmExcelFilename::export('households'), $columns, function ($sheet, $colLetter) use ($query) {
+        (new SwmExcelExportWriter())->download(SwmExcelFilename::export('households'), $headers, function ($sheet, $colLetter) use ($query, $columns) {
             $rowNum = 2;
-            $query->chunk(5000, function ($rows) use ($sheet, $colLetter, &$rowNum) {
+            $query->chunk(5000, function ($rows) use ($sheet, $colLetter, $columns, &$rowNum) {
                 foreach ($rows as $row) {
-                    $values = [
-                        $row->household_id,
-                        $row->household_owner_name,
-                        $row->father_or_husband_name,
-                        Household::statusOptions()[$row->status] ?? (string) $row->status,
-                        $row->contact_number,
-                        $row->ward,
-                        $row->area_mohalla_name,
-                        $row->sub_location,
-                        $row->road_no,
-                        $row->road_name,
-                        $row->holding_number,
-                        $row->tax_id,
-                        $row->bin,
-                        $this->currencyFormatter->format(Currency::TK, $row->waste_charge),
-                        $row->is_owner ? __('Yes') : __('No'),
-                        $row->is_lic ? __('Yes') : __('No'),
-                        $row->lic_id,
-                        $row->survey_date?->format('Y-m-d'),
-                    ];
+                    $values = SwmExcelColumns::buildExportRow($columns, $row, fn (string $key, $model) => $this->formatHouseholdExportValue($key, $model));
                     foreach ($values as $index => $value) {
                         $sheet->setCellValue($colLetter($index + 1).$rowNum, $value);
                     }
@@ -225,33 +210,20 @@ class HouseholdService
         );
     }
 
-    /** @return array<int, array{key: string, label: string}> */
-    protected function exportColumnDefinitions(): array
+    /** @return array<int, string> */
+    public function requiredImportLabels(): array
     {
-        return [
-            ['key' => 'household_id', 'label' => __('Household ID')],
-            ['key' => 'household_owner_name', 'label' => __('Household Owner Name')],
-            ['key' => 'father_or_husband_name', 'label' => __("Father's/Husband's Name")],
-            ['key' => 'status', 'label' => __('Household Status')],
-            ['key' => 'contact_number', 'label' => __('Contact Number')],
-            ['key' => 'ward', 'label' => __('Ward No.')],
-            ['key' => 'area_mohalla_name', 'label' => __('Sub Location')],
-            ['key' => 'sub_location', 'label' => __('Sub Location')],
-            ['key' => 'road_no', 'label' => __('Road No.')],
-            ['key' => 'road_name', 'label' => __('Road Name')],
-            ['key' => 'holding_number', 'label' => __('Holding Number')],
-            ['key' => 'tax_id', 'label' => __('Tax ID')],
-            ['key' => 'bin', 'label' => __('BIN')],
-            ['key' => 'waste_charge', 'label' => __('Waste Collection Fee').' ('.__('Taka').'/'.__('Month').')'],
-            ['key' => 'is_owner', 'label' => __('Building Owner?')],
-            ['key' => 'is_lic', 'label' => __('LIC?')],
-            ['key' => 'lic_id', 'label' => __('LIC ID')],
-            ['key' => 'survey_date', 'label' => __('Survey Date')],
-        ];
+        return SwmExcelColumns::requiredImportLabels($this->excelColumnDefinitions());
     }
 
     /** @return array<int, array{key: string, label?: string, required?: bool, dropdown?: array<int, string>}> */
     public function importTemplateColumns(): array
+    {
+        return SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions());
+    }
+
+    /** @return array<int, array{key: string, label: string, required?: bool, dropdown?: array<int, string>}> */
+    public function excelColumnDefinitions(): array
     {
         $yesNo = [__('Yes'), __('No')];
         $statusLabels = array_values(Household::statusOptions());
@@ -281,29 +253,65 @@ class HouseholdService
             ['key' => 'household_id', 'label' => __('Household ID'), 'required' => true],
             ['key' => 'household_owner_name', 'label' => __('Household Owner Name'), 'required' => true],
             ['key' => 'father_or_husband_name', 'label' => __("Father's/Husband's Name")],
-            ['key' => 'status', 'label' => __('Household Status'), 'required' => true, 'dropdown' => $statusLabels],
             ['key' => 'contact_number', 'label' => __('Contact Number'), 'required' => true],
-            ['key' => 'ward', 'label' => __('Ward No.'), 'required' => true, 'dropdown' => $wards],
+            ['key' => 'bin', 'label' => __('BIN'), 'dropdown' => $bins],
             ['key' => 'area_mohalla_name', 'label' => __('Sub Location')],
-            ['key' => 'sub_location', 'label' => __('Sub Location')],
+            ['key' => 'ward', 'label' => __('Ward No.'), 'required' => true, 'dropdown' => $wards],
             ['key' => 'road_no', 'label' => __('Road No.')],
             ['key' => 'road_name', 'label' => __('Road Name'), 'required' => true],
             ['key' => 'holding_number', 'label' => __('Holding Number'), 'required' => true],
             ['key' => 'tax_id', 'label' => __('Tax ID')],
             ['key' => 'waste_charge', 'label' => __('Waste Collection Fee').' ('.__('Taka').'/'.__('Month').')'],
-            ['key' => 'bin', 'label' => __('BIN'), 'dropdown' => $bins],
+            ['key' => 'number_of_family_members', 'label' => __('Number of Family Members')],
+            ['key' => 'using_this_service_since', 'label' => __('Using This Service Since')],
+            ['key' => 'daily_waste_volume', 'label' => __('Average Waste Collected').' ('.__('Kg').'/'.__('Day').')'],
+            ['key' => 'van_puller', 'label' => __('Van Puller'), 'dropdown' => $vanPullers],
             ['key' => 'is_owner', 'label' => __('Building Owner?'), 'dropdown' => $yesNo],
+            ['key' => 'waste_bin_provided', 'label' => __('Waste Bin Provided?'), 'dropdown' => $yesNo],
             ['key' => 'is_lic', 'label' => __('LIC?'), 'dropdown' => $yesNo],
             ['key' => 'lic_id', 'label' => __('LIC ID'), 'dropdown' => $licOptions],
-            ['key' => 'number_of_family_members', 'label' => __('Number of Family Members')],
-            ['key' => 'daily_waste_volume', 'label' => __('Average Waste Collected').' ('.__('Kg').'/'.__('Day').')'],
             ['key' => 'segregation_practiced', 'label' => __('Segregation Practiced?'), 'dropdown' => $yesNo],
-            ['key' => 'waste_bin_provided', 'label' => __('Waste Bin Provided?'), 'dropdown' => $yesNo],
-            ['key' => 'using_this_service_since', 'label' => __('Using This Service Since')],
-            ['key' => 'survey_date', 'label' => __('Survey Date')],
-            ['key' => 'van_puller', 'label' => __('Van Puller'), 'dropdown' => $vanPullers],
+            ['key' => 'status', 'label' => __('Household Status'), 'required' => true, 'dropdown' => $statusLabels],
             ['key' => 'remarks', 'label' => __('Remarks')],
+            ['key' => 'survey_date', 'label' => __('Survey Date')],
         ];
+    }
+
+    protected function formatHouseholdExportValue(string $key, Household $row): mixed
+    {
+        return match ($key) {
+            'household_id' => $row->household_id,
+            'household_owner_name' => $row->household_owner_name,
+            'father_or_husband_name' => $row->father_or_husband_name,
+            'contact_number' => $row->contact_number,
+            'bin' => $row->bin,
+            'area_mohalla_name' => $row->area_mohalla_name,
+            'ward' => $row->ward,
+            'road_no' => $row->road_no,
+            'road_name' => $row->road_name,
+            'holding_number' => $row->holding_number,
+            'tax_id' => $row->tax_id,
+            'waste_charge' => $row->waste_charge !== null
+                ? $this->currencyFormatter->format(Currency::TK, $row->waste_charge)
+                : '',
+            'number_of_family_members' => $row->number_of_family_members,
+            'using_this_service_since' => $row->using_this_service_since?->format('Y-m-d') ?? '',
+            'daily_waste_volume' => $row->daily_waste_volume,
+            'van_puller' => $row->vanPuller
+                ? "{$row->vanPuller->name} - {$row->vanPuller->id}"
+                : '',
+            'is_owner' => $row->is_owner ? __('Yes') : __('No'),
+            'waste_bin_provided' => $row->waste_bin_provided ? __('Yes') : __('No'),
+            'is_lic' => $row->is_lic ? __('Yes') : __('No'),
+            'lic_id' => $row->lic
+                ? "{$row->lic->community_name} - {$row->lic->id}"
+                : '',
+            'segregation_practiced' => $row->segregation_practiced ? __('Yes') : __('No'),
+            'status' => Household::statusOptions()[$row->status] ?? (string) $row->status,
+            'remarks' => $row->remarks,
+            'survey_date' => $row->survey_date?->format('Y-m-d') ?? '',
+            default => '',
+        };
     }
 
     private function applyHouseholdFilters(Builder $query, array $data): void

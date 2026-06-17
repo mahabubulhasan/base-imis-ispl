@@ -164,13 +164,13 @@ class ComplaintController extends Controller
     public function importStore(Request $request)
     {
         return $this->swmImportStore(
-            $request,
-            ComplaintImport::class,
-            ['name', 'contact_number', 'complaint_type', 'complaint_details', 'submitted_through', 'complaint_status'],
-            'swm.complaints.index',
-            'importswm',
-            'complaints',
-            __('Complaints')
+            request: $request,
+            importClass: ComplaintImport::class,
+            requiredHeaders: $this->complaintService->requiredImportLabels(),
+            indexRoute: 'swm.complaints.index',
+            disk: 'importswm',
+            filenamePrefix: 'complaints',
+            entityName: __('Complaints'),
         );
     }
 

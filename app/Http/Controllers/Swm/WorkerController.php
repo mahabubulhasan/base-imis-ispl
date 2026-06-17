@@ -214,19 +214,14 @@ class WorkerController extends Controller
 
     public function importStore(Request $request)
     {
-        $required = ['work_type', 'name', 'mobile'];
-        if (! Auth::user()->swm_organization_id) {
-            $required[] = 'organization';
-        }
-
         return $this->swmImportStore(
-            $request,
-            WorkerImport::class,
-            $required,
-            'swm.workers.index',
-            'importswm',
-            'workers',
-            __('Workers')
+            request: $request,
+            importClass: WorkerImport::class,
+            requiredHeaders: $this->workerService->requiredImportLabels(),
+            indexRoute: 'swm.workers.index',
+            disk: 'importswm',
+            filenamePrefix: 'workers',
+            entityName: __('Workers'),
         );
     }
 }

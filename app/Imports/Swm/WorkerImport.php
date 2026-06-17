@@ -28,6 +28,7 @@ class WorkerImport implements ToCollection, WithHeadingRow
             ? (int) Auth::user()->swm_organization_id
             : null;
         $service = app(WorkerService::class);
+        $columnDefinitions = $service->excelColumnDefinitions();
         $orgMap = Organization::query()
             ->whereNull('deleted_at')
             ->operational()
@@ -42,7 +43,10 @@ class WorkerImport implements ToCollection, WithHeadingRow
 
         foreach ($rows as $idx => $row) {
             $rowNum = $idx + 2;
-            $norm = SwmImportRowHelper::normalizeRow($row->toArray());
+            $norm = SwmImportRowHelper::mapRowToKeys(
+                SwmImportRowHelper::normalizeRow($row->toArray()),
+                $columnDefinitions
+            );
             if (SwmImportRowHelper::rowIsEmpty($norm)) {
                 continue;
             }

@@ -3,19 +3,75 @@
 namespace App\Support\Swm;
 
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 class SwmImportRowHelper
 {
+    public static function slugifyHeader(string $header): string
+    {
+        return Str::slug(trim($header), '_');
+    }
+
     public static function normalizeRow(array $raw): array
     {
         $norm = [];
         foreach ($raw as $k => $v) {
-            $key = strtolower(trim(preg_replace('/\s+/', '_', (string) $k)));
+            $key = self::slugifyHeader((string) $k);
             $norm[$key] = is_string($v) ? trim($v) : $v;
         }
 
         return $norm;
+    }
+
+    /**
+     * @param  array<string, mixed>  $norm
+     * @param  array<int, array{key: string, label?: string, import?: bool}>  $columnDefinitions
+     * @return array<string, mixed>
+     */
+    public static function mapRowToKeys(array $norm, array $columnDefinitions): array
+    {
+        $mapped = [];
+
+        foreach ($columnDefinitions as $column) {
+            if (($column['import'] ?? true) === false) {
+                continue;
+            }
+
+            $key = $column['key'];
+            $label = (string) ($column['label'] ?? $key);
+            $aliases = array_unique(array_filter([
+                $key,
+                strtolower($key),
+                self::slugifyHeader($key),
+                self::slugifyHeader($label),
+            ]));
+
+            $value = null;
+            foreach ($aliases as $alias) {
+                if (array_key_exists($alias, $norm)) {
+                    $value = $norm[$alias];
+                    break;
+                }
+            }
+
+            if ($value === null) {
+                foreach ($norm as $normKey => $normValue) {
+                    if (self::resolveConfigKey((string) $normKey, [$key => $label]) === $key) {
+                        $value = $normValue;
+                        break;
+                    }
+                }
+            }
+
+            if ($value !== null && $value !== '') {
+                $mapped[$key] = $value;
+            } elseif (array_key_exists($key, $norm)) {
+                $mapped[$key] = $norm[$key];
+            }
+        }
+
+        return $mapped;
     }
 
     public static function rowIsEmpty(array $norm): bool

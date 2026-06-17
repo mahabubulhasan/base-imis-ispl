@@ -192,13 +192,13 @@ class HouseholdController extends Controller
     public function importStore(Request $request)
     {
         return $this->swmImportStore(
-            $request,
-            HouseholdImport::class,
-            ['household_id', 'household_owner_name', 'status', 'contact_number', 'ward', 'road_name', 'holding_number'],
-            'building-info.households.index',
-            'importswm',
-            'households',
-            __('Households')
+            request: $request,
+            importClass: HouseholdImport::class,
+            requiredHeaders: $this->householdService->requiredImportLabels(),
+            indexRoute: 'building-info.households.index',
+            disk: 'importswm',
+            filenamePrefix: 'households',
+            entityName: __('Households'),
         );
     }
 }

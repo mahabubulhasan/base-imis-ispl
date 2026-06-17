@@ -269,13 +269,13 @@ class LandfillLogController extends Controller
     public function importStore(Request $request)
     {
         return $this->swmImportStore(
-            $request,
-            LandfillLogImport::class,
-            ['vehicle_number', 'entry_at', 'operation_date'],
-            'swm.landfill-logs.index',
-            'importswm',
-            'landfill-logs-import',
-            __('Landfill Logs')
+            request: $request,
+            importClass: LandfillLogImport::class,
+            requiredHeaders: $this->landfillLogService->requiredImportLabels(),
+            indexRoute: 'swm.landfill-logs.index',
+            disk: 'importswm',
+            filenamePrefix: 'landfill-logs-import',
+            entityName: __('Landfill Logs'),
         );
     }
 

@@ -127,13 +127,13 @@ class WasteProcessingController extends Controller
     public function importStore(Request $request)
     {
         return $this->swmImportStore(
-            $request,
-            WasteProcessingImport::class,
-            ['entry_at', 'report_date', 'reporting_month'],
-            'swm.waste-processing.index',
-            'importswm',
-            'waste-processing-import',
-            __('Waste Processing')
+            request: $request,
+            importClass: WasteProcessingImport::class,
+            requiredHeaders: $this->wasteProcessingService->requiredImportLabels(),
+            indexRoute: 'swm.waste-processing.index',
+            disk: 'importswm',
+            filenamePrefix: 'waste-processing-import',
+            entityName: __('Waste Processing'),
         );
     }
 }

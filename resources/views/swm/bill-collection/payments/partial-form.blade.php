@@ -186,7 +186,7 @@
         {!! Form::label('amount', __('Current Month Payment') . ' (' . __('Taka') . ')', ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3 bcp-payment-field-col">
             <div id="bcp-current-amount-input-wrap">
-                {!! Form::number('amount', old('amount', $isEdit ? currency_input($payment->amount) : null), ['class' => 'form-control w-100', 'step' => '1', 'min' => '0', 'inputmode' => 'numeric']) !!}
+                {!! Form::number('amount', old('amount', $isEdit ? $payment->amount : null), ['class' => 'form-control w-100', 'step' => '1', 'min' => '0', 'inputmode' => 'numeric']) !!}
             </div>
             <small id="bcp-current-month-paid-note" class="form-text text-info d-none">
                 {{ __("The Current Month's Waste Collection Fee Has Been Paid. You May Only Pay Previous Dues.") }}
@@ -197,7 +197,7 @@
     <div class="form-group row bcp-due-dependent-row" id="bcp-due-paid-row">
         {!! Form::label('due_paid', __('Previous Due Payment') . ' (' . __('Taka') . ')', ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3 bcp-payment-field-col">
-            {!! Form::number('due_paid', old('due_paid', $isEdit ? currency_input($payment->due_paid ?? 0) : 0), ['class' => 'form-control w-100', 'step' => '1', 'min' => '0', 'inputmode' => 'numeric']) !!}
+            {!! Form::number('due_paid', old('due_paid', $isEdit ? ($payment->due_paid ?? 0) : 0), ['class' => 'form-control w-100', 'step' => '1', 'min' => '0', 'inputmode' => 'numeric']) !!}
         </div>
     </div>
 

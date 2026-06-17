@@ -288,19 +288,14 @@ class VehicleController extends Controller
 
     public function importStore(Request $request)
     {
-        $required = ['vehicle_number', 'vehicle_type', 'driver'];
-        if (! Auth::user()->swm_organization_id) {
-            $required[] = 'organization';
-        }
-
         return $this->swmImportStore(
-            $request,
-            VehicleImport::class,
-            $required,
-            'swm.vehicles.index',
-            'importswm',
-            'vehicles',
-            __('Vehicles')
+            request: $request,
+            importClass: VehicleImport::class,
+            requiredHeaders: $this->vehicleService->requiredImportLabels(),
+            indexRoute: 'swm.vehicles.index',
+            disk: 'importswm',
+            filenamePrefix: 'vehicles',
+            entityName: __('Vehicles'),
         );
     }
 }

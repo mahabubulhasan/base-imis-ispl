@@ -24,11 +24,27 @@ class WasteBinImport implements ToCollection, WithHeadingRow
     public function collection(Collection $rows): void
     {
         $service = app(WasteBinService::class);
+        $columnDefinitions = [
+            ['key' => 'waste_bin_type', 'label' => __('Waste Bin Type')],
+            ['key' => 'placed_at_buildings', 'label' => __('Placed at Buildings?')],
+            ['key' => 'household_id', 'label' => __('Household ID')],
+            ['key' => 'bin', 'label' => __('BIN')],
+            ['key' => 'ward_no', 'label' => __('Ward No.')],
+            ['key' => 'sub_location', 'label' => __('Sub Location')],
+            ['key' => 'road_no', 'label' => __('Road No.')],
+            ['key' => 'road_name', 'label' => __('Road Name')],
+            ['key' => 'latitude', 'label' => __('Latitude')],
+            ['key' => 'longitude', 'label' => __('Longitude')],
+            ['key' => 'total_capacity_kg', 'label' => __('Capacity (kg)')],
+        ];
         $wasteBinTypeMap = WasteBinType::query()->whereNull('deleted_at')->pluck('name', 'id')->all();
 
         foreach ($rows as $idx => $row) {
             $rowNum = $idx + 2;
-            $norm = SwmImportRowHelper::normalizeRow($row->toArray());
+            $norm = SwmImportRowHelper::mapRowToKeys(
+                SwmImportRowHelper::normalizeRow($row->toArray()),
+                $columnDefinitions
+            );
             if (SwmImportRowHelper::rowIsEmpty($norm)) {
                 continue;
             }

@@ -156,13 +156,13 @@ class StsController extends Controller
     public function importStore(Request $request)
     {
         return $this->swmImportStore(
-            $request,
-            StsImport::class,
-            ['name', 'ward_no', 'operator_name', 'contact_number', 'operational_status'],
-            'swm.sts.index',
-            'importswm',
-            'sts',
-            __('STS')
+            request: $request,
+            importClass: StsImport::class,
+            requiredHeaders: $this->stsService->requiredImportLabels(),
+            indexRoute: 'swm.sts.index',
+            disk: 'importswm',
+            filenamePrefix: 'sts',
+            entityName: __('STS'),
         );
     }
 }

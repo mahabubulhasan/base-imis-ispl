@@ -270,13 +270,13 @@ class LandfillController extends Controller
     public function importStore(Request $request)
     {
         return $this->swmImportStore(
-            $request,
-            LandfillImport::class,
-            ['name', 'operator_name', 'contact_number', 'operational_status'],
-            'swm.landfills.index',
-            'importswm',
-            'landfills',
-            __('Landfills')
+            request: $request,
+            importClass: LandfillImport::class,
+            requiredHeaders: $this->landfillService->requiredImportLabels(),
+            indexRoute: 'swm.landfills.index',
+            disk: 'importswm',
+            filenamePrefix: 'landfills',
+            entityName: __('Landfills'),
         );
     }
 }

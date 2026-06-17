@@ -271,4 +271,10 @@ class StsService
             $query->whereJsonContains('swm.sts.waste_type_ids', (int) $data['waste_type_id']);
         }
     }
+
+    /** @return array<int, string> */
+    public function requiredImportLabels(): array
+    {
+        return SwmExcelColumns::requiredImportLabels($this->excelColumnDefinitions());
+    }
 }

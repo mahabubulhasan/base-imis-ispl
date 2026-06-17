@@ -143,4 +143,10 @@ class WasteBinService
             ['key' => 'total_capacity_kg', 'label' => __('Capacity (kg)'), 'required' => true],
         ];
     }
+
+    /** @return array<int, string> */
+    public function requiredImportLabels(): array
+    {
+        return SwmExcelColumns::requiredImportLabels($this->excelColumnDefinitions());
+    }
 }

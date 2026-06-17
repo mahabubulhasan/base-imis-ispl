@@ -416,4 +416,10 @@ class LandfillLogService
 
         return (string) (int) $value;
     }
+
+    /** @return array<int, string> */
+    public function requiredImportLabels(): array
+    {
+        return SwmExcelColumns::requiredImportLabels($this->excelColumnDefinitions());
+    }
 }

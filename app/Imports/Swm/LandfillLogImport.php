@@ -21,6 +21,17 @@ class LandfillLogImport implements ToCollection, WithHeadingRow
     public function collection(Collection $rows): void
     {
         $service = app(LandfillLogService::class);
+        $columnDefinitions = [
+            ['key' => 'entry_at', 'label' => __('Entry Date and Time')],
+            ['key' => 'operation_date', 'label' => __('Operation Date')],
+            ['key' => 'vehicle_number', 'label' => __('Vehicle Number')],
+            ['key' => 'landfill_name', 'label' => __('Landfill Name')],
+            ['key' => 'waste_types', 'label' => __('Waste Types')],
+            ['key' => 'quantity_ton', 'label' => __('Quantity (Ton)')],
+            ['key' => 'source_sts', 'label' => __('Source STSs')],
+            ['key' => 'source_wards', 'label' => __('Other Source Wards')],
+            ['key' => 'remarks', 'label' => __('Remarks')],
+        ];
         $vehicleMap = Vehicle::query()
             ->whereNull('deleted_at')
             ->orderBy('vehicle_number')
@@ -39,7 +50,10 @@ class LandfillLogImport implements ToCollection, WithHeadingRow
 
         foreach ($rows as $idx => $row) {
             $rowNum = $idx + 2;
-            $norm = SwmImportRowHelper::normalizeRow($row->toArray());
+            $norm = SwmImportRowHelper::mapRowToKeys(
+                SwmImportRowHelper::normalizeRow($row->toArray()),
+                $columnDefinitions
+            );
             if (SwmImportRowHelper::rowIsEmpty($norm)) {
                 continue;
             }

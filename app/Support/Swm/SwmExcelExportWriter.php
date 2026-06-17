@@ -8,6 +8,8 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class SwmExcelExportWriter
 {
+    use ResolvesExcelColumnLetters;
+
     /** @param  array<int, string>  $headers */
     public function download(string $filename, array $headers, callable $writeRows): void
     {
@@ -33,17 +35,5 @@ class SwmExcelExportWriter
 
         (new Xlsx($spreadsheet))->save('php://output');
         exit;
-    }
-
-    protected function columnLetter(int $index): string
-    {
-        $letter = '';
-        while ($index > 0) {
-            $index--;
-            $letter = chr(65 + ($index % 26)).$letter;
-            $index = intdiv($index, 26);
-        }
-
-        return $letter;
     }
 }

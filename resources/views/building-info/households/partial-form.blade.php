@@ -20,7 +20,7 @@
 <div class="card-body">
     @php
         $yesNoOptions = [0 => __('No'), 1 => __('Yes')];
-        $wasteChargeInput = old('waste_charge', currency_input(isset($household) ? $household->waste_charge : null));
+        $wasteChargeInput = old('waste_charge', isset($household) ? $household->waste_charge : null);
     @endphp
     <div class="form-group row required">
         {!! Form::label('household_id', __('Household ID'), ['class' => 'col-sm-3 control-label']) !!}

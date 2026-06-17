@@ -242,67 +242,18 @@ class LowIncomeCommunityServiceClass
     public function exportData($data)
     {
         $community_name = $data['community_name'] ?? null;
-        $columns = SwmExcelColumns::exportHeaders($this->exportColumnDefinitions());
-        $query = LowIncomeCommunity::select(
-            'id',
-            'community_name',
-            'sub_location',
-            'ward',
-            'road_no',
-            'road_name',
-            'area_decima',
-            'representative_name',
-            'representative_contact_no',
-            'no_of_buildings',
-            'population_total',
-            'number_of_households',
-            'population_male',
-            'population_female',
-            'population_others',
-            'water_connection_status',
-            'no_of_wate_points',
-            'sanitation_status',
-            'no_of_septic_tank',
-            'no_of_holding_tank',
-            'no_of_pit',
-            'no_of_sewer_connection',
-            'no_of_community_toilets',
-            'remarks'
-        )->whereNull('deleted_at');
+        $columns = $this->excelColumnDefinitions();
+        $headers = SwmExcelColumns::exportHeaders($columns);
+        $query = LowIncomeCommunity::query()->whereNull('deleted_at');
         if (! empty($community_name)) {
             $query->whereRaw('LOWER(community_name) LIKE ?', ['%'.strtolower($community_name).'%']);
         }
 
-        (new SwmExcelExportWriter())->download(SwmExcelFilename::export('low_income_communities'), $columns, function ($sheet, $colLetter) use ($query) {
+        (new SwmExcelExportWriter())->download(SwmExcelFilename::export('low_income_communities'), $headers, function ($sheet, $colLetter) use ($query, $columns) {
             $rowNum = 2;
-            $query->orderBy('id')->chunk(5000, function ($lics) use ($sheet, $colLetter, &$rowNum) {
+            $query->orderBy('id')->chunk(5000, function ($lics) use ($sheet, $colLetter, $columns, &$rowNum) {
                 foreach ($lics as $lic) {
-                    $values = [
-                        $lic->id,
-                        $lic->community_name,
-                        $lic->sub_location,
-                        $lic->ward,
-                        $lic->road_no,
-                        $lic->road_name,
-                        $lic->area_decima,
-                        $lic->representative_name,
-                        $lic->representative_contact_no,
-                        $lic->no_of_buildings,
-                        $lic->population_total,
-                        $lic->number_of_households,
-                        $lic->population_male,
-                        $lic->population_female,
-                        $lic->population_others,
-                        $lic->water_connection_status === null ? '' : ($lic->water_connection_status ? __('Yes') : __('No')),
-                        $lic->no_of_wate_points,
-                        $lic->sanitation_status === null ? '' : ($lic->sanitation_status ? __('Yes') : __('No')),
-                        $lic->no_of_septic_tank,
-                        $lic->no_of_holding_tank,
-                        $lic->no_of_pit,
-                        $lic->no_of_sewer_connection,
-                        $lic->no_of_community_toilets,
-                        $lic->remarks,
-                    ];
+                    $values = SwmExcelColumns::buildExportRow($columns, $lic, fn (string $key, $model) => $this->formatLicExportValue($key, $model));
                     foreach ($values as $index => $value) {
                         $sheet->setCellValue($colLetter($index + 1).$rowNum, $value);
                     }
@@ -320,69 +271,81 @@ class LowIncomeCommunityServiceClass
         );
     }
 
-    /** @return array<int, array{key: string, label: string}> */
-    protected function exportColumnDefinitions(): array
+    /** @return array<int, string> */
+    public function requiredImportLabels(): array
     {
-        return [
-            ['key' => 'id', 'label' => __('ID')],
-            ['key' => 'community_name', 'label' => __('LIC Name')],
-            ['key' => 'sub_location', 'label' => __('Sub Location')],
-            ['key' => 'ward', 'label' => __('Ward No.')],
-            ['key' => 'road_no', 'label' => __('Road No.')],
-            ['key' => 'road_name', 'label' => __('Road Name')],
-            ['key' => 'area_decima', 'label' => __('Area (Decimal)')],
-            ['key' => 'representative_name', 'label' => __("Representative's Name")],
-            ['key' => 'representative_contact_no', 'label' => __("Representative's Contact No.")],
-            ['key' => 'no_of_buildings', 'label' => __('No. of Buildings')],
-            ['key' => 'population_total', 'label' => __('Total Population')],
-            ['key' => 'number_of_households', 'label' => __('No. of Households')],
-            ['key' => 'population_male', 'label' => __('Male Population')],
-            ['key' => 'population_female', 'label' => __('Female Population')],
-            ['key' => 'population_others', 'label' => __('Other Population')],
-            ['key' => 'water_connection_status', 'label' => __('Water Connection Status')],
-            ['key' => 'no_of_wate_points', 'label' => __('No. of Wate Points')],
-            ['key' => 'sanitation_status', 'label' => __('Sanitation Status')],
-            ['key' => 'no_of_septic_tank', 'label' => __('No. of Septic Tanks')],
-            ['key' => 'no_of_holding_tank', 'label' => __('No. of Holding Tanks')],
-            ['key' => 'no_of_pit', 'label' => __('No. of Pits')],
-            ['key' => 'no_of_sewer_connection', 'label' => __('No. of Sewer Connections')],
-            ['key' => 'no_of_community_toilets', 'label' => __('No. of Community Toilets')],
-            ['key' => 'remarks', 'label' => __('Remarks')],
-        ];
+        return SwmExcelColumns::requiredImportLabels($this->excelColumnDefinitions());
     }
 
     /** @return array<int, array{key: string, label?: string, required?: bool, dropdown?: array<int, string>}> */
     public function importTemplateColumns(): array
     {
+        return SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions());
+    }
+
+    /** @return array<int, array{key: string, label: string, required?: bool, import?: bool, export?: bool, dropdown?: array<int, string>}> */
+    public function excelColumnDefinitions(): array
+    {
         $yesNo = [__('Yes'), __('No')];
         $wards = array_map('strval', array_keys(Ward::getInAscOrder()));
 
         return [
+            ['key' => 'id', 'label' => __('ID'), 'import' => false],
             ['key' => 'community_name', 'label' => __('LIC Name'), 'required' => true],
+            ['key' => 'representative_name', 'label' => __("Representative's Name")],
+            ['key' => 'representative_contact_no', 'label' => __("Representative's Contact No.")],
             ['key' => 'sub_location', 'label' => __('Sub Location')],
             ['key' => 'ward', 'label' => __('Ward No.'), 'dropdown' => $wards],
             ['key' => 'road_no', 'label' => __('Road No.')],
             ['key' => 'road_name', 'label' => __('Road Name')],
-            ['key' => 'holding_number', 'label' => __('Holding Number')],
-            ['key' => 'area_decima', 'label' => __('Area (Decimal)')],
-            ['key' => 'representative_name', 'label' => __("Representative's Name")],
-            ['key' => 'representative_contact_no', 'label' => __("Representative's Contact No.")],
             ['key' => 'no_of_buildings', 'label' => __('No. of Buildings'), 'required' => true],
-            ['key' => 'population_total', 'label' => __('Total Population'), 'required' => true],
             ['key' => 'number_of_households', 'label' => __('No. of Households'), 'required' => true],
+            ['key' => 'population_total', 'label' => __('Total Population'), 'required' => true],
             ['key' => 'population_male', 'label' => __('Male Population')],
             ['key' => 'population_female', 'label' => __('Female Population')],
             ['key' => 'population_others', 'label' => __('Other Population')],
             ['key' => 'water_connection_status', 'label' => __('Water Connection Status'), 'required' => true, 'dropdown' => $yesNo],
             ['key' => 'no_of_wate_points', 'label' => __('No. of Wate Points')],
             ['key' => 'sanitation_status', 'label' => __('Sanitation Status'), 'required' => true, 'dropdown' => $yesNo],
+            ['key' => 'no_of_community_toilets', 'label' => __('No. of Community Toilets')],
             ['key' => 'no_of_septic_tank', 'label' => __('No. of Septic Tanks')],
             ['key' => 'no_of_holding_tank', 'label' => __('No. of Holding Tanks')],
             ['key' => 'no_of_pit', 'label' => __('No. of Pits')],
             ['key' => 'no_of_sewer_connection', 'label' => __('No. of Sewer Connections')],
-            ['key' => 'no_of_community_toilets', 'label' => __('No. of Community Toilets')],
+            ['key' => 'area_decima', 'label' => __('Area (Decimal)')],
             ['key' => 'remarks', 'label' => __('Remarks')],
         ];
+    }
+
+    protected function formatLicExportValue(string $key, LowIncomeCommunity $lic): mixed
+    {
+        return match ($key) {
+            'id' => $lic->id,
+            'community_name' => $lic->community_name,
+            'representative_name' => $lic->representative_name,
+            'representative_contact_no' => $lic->representative_contact_no,
+            'sub_location' => $lic->sub_location,
+            'ward' => $lic->ward,
+            'road_no' => $lic->road_no,
+            'road_name' => $lic->road_name,
+            'no_of_buildings' => $lic->no_of_buildings,
+            'number_of_households' => $lic->number_of_households,
+            'population_total' => $lic->population_total,
+            'population_male' => $lic->population_male,
+            'population_female' => $lic->population_female,
+            'population_others' => $lic->population_others,
+            'water_connection_status' => $lic->water_connection_status === null ? '' : ($lic->water_connection_status ? __('Yes') : __('No')),
+            'no_of_wate_points' => $lic->no_of_wate_points,
+            'sanitation_status' => $lic->sanitation_status === null ? '' : ($lic->sanitation_status ? __('Yes') : __('No')),
+            'no_of_community_toilets' => $lic->no_of_community_toilets,
+            'no_of_septic_tank' => $lic->no_of_septic_tank,
+            'no_of_holding_tank' => $lic->no_of_holding_tank,
+            'no_of_pit' => $lic->no_of_pit,
+            'no_of_sewer_connection' => $lic->no_of_sewer_connection,
+            'area_decima' => $lic->area_decima,
+            'remarks' => $lic->remarks,
+            default => '',
+        };
     }
 
     /**
@@ -427,7 +390,6 @@ class LowIncomeCommunityServiceClass
         $lic->ward = $this->parseOptionalPositiveInt($row['ward'] ?? null);
         $lic->road_no = $this->nullableString($row['road_no'] ?? null);
         $lic->road_name = $this->nullableString($row['road_name'] ?? null);
-        $lic->holding_number = $this->nullableString($row['holding_number'] ?? null);
         $lic->area_decima = $this->parseOptionalDecimal($row['area_decima'] ?? null);
         $lic->representative_name = $this->nullableString($row['representative_name'] ?? null);
         $lic->representative_contact_no = $this->nullableString($row['representative_contact_no'] ?? null);

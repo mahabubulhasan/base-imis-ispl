@@ -229,4 +229,10 @@ class OrganizationService
     {
         return SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions());
     }
+
+    /** @return array<int, string> */
+    public function requiredImportLabels(): array
+    {
+        return SwmExcelColumns::requiredImportLabels($this->excelColumnDefinitions());
+    }
 }

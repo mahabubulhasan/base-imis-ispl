@@ -343,4 +343,10 @@ class ComplaintService
             ['key' => 'notes', 'label' => __('Notes')],
         ];
     }
+
+    /** @return array<int, string> */
+    public function requiredImportLabels(): array
+    {
+        return SwmExcelColumns::requiredImportLabels($this->excelColumnDefinitions());
+    }
 }

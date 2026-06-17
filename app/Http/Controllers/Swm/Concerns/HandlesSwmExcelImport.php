@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Swm\Concerns;
 
+use App\Support\Swm\SwmImportRowHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -55,11 +56,12 @@ trait HandlesSwmExcelImport
 
         $headings = (new HeadingRowImport)->toArray($fullPath);
         $headingRow = isset($headings[0][0])
-            ? array_map(fn ($h) => strtolower(trim(preg_replace('/\s+/', '_', (string) $h))), $headings[0][0])
+            ? array_map(fn ($h) => SwmImportRowHelper::slugifyHeader((string) $h), $headings[0][0])
             : [];
         $headingErrors = [];
         foreach ($requiredHeaders as $col) {
-            if (! in_array(strtolower($col), $headingRow, true)) {
+            $slug = SwmImportRowHelper::slugifyHeader($col);
+            if (! in_array($slug, $headingRow, true)) {
                 $headingErrors[$col] = __('Heading row is missing required column: :col', ['col' => $col]);
             }
         }

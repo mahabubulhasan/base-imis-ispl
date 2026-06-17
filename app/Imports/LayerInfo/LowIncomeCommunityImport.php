@@ -22,10 +22,14 @@ class LowIncomeCommunityImport implements ToCollection, WithHeadingRow
     public function collection(Collection $rows): void
     {
         $service = app(LowIncomeCommunityServiceClass::class);
+        $columnDefinitions = $service->excelColumnDefinitions();
 
         foreach ($rows as $idx => $row) {
             $rowNum = $idx + 2;
-            $norm = SwmImportRowHelper::normalizeRow($row->toArray());
+            $norm = SwmImportRowHelper::mapRowToKeys(
+                SwmImportRowHelper::normalizeRow($row->toArray()),
+                $columnDefinitions
+            );
             if (SwmImportRowHelper::rowIsEmpty($norm)) {
                 continue;
             }

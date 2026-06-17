@@ -25,11 +25,25 @@ class BillCollectionPaymentImport implements ToCollection, WithHeadingRow
     public function collection(Collection $rows): void
     {
         $service = app(BillCollectionPaymentService::class);
+        $columnDefinitions = [
+            ['key' => 'household_id', 'label' => __('Household ID')],
+            ['key' => 'holding_number', 'label' => __('Holding Number')],
+            ['key' => 'amount', 'label' => __('Current Month Payment').' ('.__('Taka').')'],
+            ['key' => 'due_paid', 'label' => __('Previous Due Payment').' ('.__('Taka').')'],
+            ['key' => 'payment_for_month', 'label' => __('Transaction Month')],
+            ['key' => 'payment_method', 'label' => __('Payment Method')],
+            ['key' => 'payment_time', 'label' => __('Payment Time')],
+            ['key' => 'received_by_user_id', 'label' => __('Payment Received by')],
+            ['key' => 'receipt_no', 'label' => __('Receipt No.')],
+        ];
         $paymentMethods = config('bill_collection.payment_methods', []);
 
         foreach ($rows as $idx => $row) {
             $rowNum = $idx + 2;
-            $norm = SwmImportRowHelper::normalizeRow($row->toArray());
+            $norm = SwmImportRowHelper::mapRowToKeys(
+                SwmImportRowHelper::normalizeRow($row->toArray()),
+                $columnDefinitions
+            );
             if (SwmImportRowHelper::rowIsEmpty($norm)) {
                 continue;
             }

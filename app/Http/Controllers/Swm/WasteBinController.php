@@ -160,13 +160,13 @@ class WasteBinController extends Controller
     public function importStore(Request $request)
     {
         return $this->swmImportStore(
-            $request,
-            WasteBinImport::class,
-            ['waste_bin_type', 'total_capacity_kg'],
-            'swm.waste-bins.index',
-            'importswm',
-            'waste-bins',
-            __('Waste Bins')
+            request: $request,
+            importClass: WasteBinImport::class,
+            requiredHeaders: $this->wasteBinService->requiredImportLabels(),
+            indexRoute: 'swm.waste-bins.index',
+            disk: 'importswm',
+            filenamePrefix: 'waste-bins',
+            entityName: __('Waste Bins'),
         );
     }
 }

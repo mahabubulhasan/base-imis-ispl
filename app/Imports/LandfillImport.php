@@ -25,6 +25,27 @@ class LandfillImport implements ToCollection, WithHeadingRow
     public function collection(Collection $rows): void
     {
         $service = app(LandfillService::class);
+        $columnDefinitions = [
+            ['key' => 'name', 'label' => __('Landfill Name')],
+            ['key' => 'location', 'label' => __('Location')],
+            ['key' => 'operator_name', 'label' => __('Operator Name')],
+            ['key' => 'contact_number', 'label' => __("Operator's Contact Number")],
+            ['key' => 'capacity', 'label' => __('Capacity').' ('.__('Ton').')'],
+            ['key' => 'area', 'label' => __('Area').' ('.__('Acre').')'],
+            ['key' => 'landfill_type', 'label' => __('Landfill Type')],
+            ['key' => 'source_sts', 'label' => __('Source STSs')],
+            ['key' => 'source_wards', 'label' => __('Other Source Wards')],
+            ['key' => 'segregation_practiced', 'label' => __('Segregation Practiced?')],
+            ['key' => 'waste_types', 'label' => __('Waste Type')],
+            ['key' => 'weighbridge_facility_available', 'label' => __('Weighbridge Facility Available?')],
+            ['key' => 'boundary_wall_available', 'label' => __('Boundary Wall Around the Landfill Area Available?')],
+            ['key' => 'lighting_arrangement_available', 'label' => __('Lighting Arrangement at the Landfill Site Available?')],
+            ['key' => 'manpower_deployed', 'label' => __('Number of Manpower Deployed at the Landfill Site')],
+            ['key' => 'adequate_covering_arrangement_available', 'label' => __('Adequate Covering Arrangement at the Landfill Site Available?')],
+            ['key' => 'gas_control_system_available', 'label' => __('System for Gas Control from the Filled Landfill Available?')],
+            ['key' => 'leachate_collection_system_available', 'label' => __('Leachate Collection System Available?')],
+            ['key' => 'operational_status', 'label' => __('Operational Status')],
+        ];
         $landfillTypeMap = LandfillType::query()->whereNull('deleted_at')->pluck('name', 'id')->all();
         $wasteTypeMap = WasteType::query()->whereNull('deleted_at')->pluck('name', 'id')->all();
         $stsLabelMap = Sts::query()
@@ -40,7 +61,10 @@ class LandfillImport implements ToCollection, WithHeadingRow
 
         foreach ($rows as $idx => $row) {
             $rowNum = $idx + 2;
-            $norm = SwmImportRowHelper::normalizeRow($row->toArray());
+            $norm = SwmImportRowHelper::mapRowToKeys(
+                SwmImportRowHelper::normalizeRow($row->toArray()),
+                $columnDefinitions
+            );
             if (SwmImportRowHelper::rowIsEmpty($norm)) {
                 continue;
             }

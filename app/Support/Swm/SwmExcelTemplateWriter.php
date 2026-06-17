@@ -10,6 +10,8 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class SwmExcelTemplateWriter
 {
+    use ResolvesExcelColumnLetters;
+
     /**
      * @param  array<int, array{key: string, label?: string, required?: bool, dropdown?: array<int, string>, multiselect?: bool, reference_key?: string}>  $columns
      */
@@ -191,17 +193,5 @@ class SwmExcelTemplateWriter
 
         (new Xlsx($spreadsheet))->save('php://output');
         exit;
-    }
-
-    protected function columnLetter(int $index): string
-    {
-        $letter = '';
-        while ($index > 0) {
-            $index--;
-            $letter = chr(65 + ($index % 26)).$letter;
-            $index = intdiv($index, 26);
-        }
-
-        return $letter;
     }
 }

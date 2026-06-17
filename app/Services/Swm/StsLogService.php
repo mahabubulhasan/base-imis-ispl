@@ -310,4 +310,10 @@ class StsLogService
             $query->whereDate('operation_date', '<=', Carbon::parse($data['date_to'])->toDateString());
         }
     }
+
+    /** @return array<int, string> */
+    public function requiredImportLabels(): array
+    {
+        return SwmExcelColumns::requiredImportLabels($this->excelColumnDefinitions());
+    }
 }

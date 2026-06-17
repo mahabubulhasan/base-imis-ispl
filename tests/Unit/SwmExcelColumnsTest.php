@@ -38,4 +38,16 @@ class SwmExcelColumnsTest extends TestCase
         $this->assertSame('source_wards', $columns[1]['reference_key']);
         $this->assertTrue($columns[1]['multiselect']);
     }
+
+    public function test_required_import_labels_uses_labels_for_required_import_columns(): void
+    {
+        $labels = SwmExcelColumns::requiredImportLabels([
+            ['key' => 'organization', 'label' => 'Organization', 'required' => true],
+            ['key' => 'name', 'label' => 'Worker Name', 'required' => true],
+            ['key' => 'worker_id_no', 'label' => 'Worker ID', 'import' => false, 'required' => true],
+            ['key' => 'remarks', 'label' => 'Remarks'],
+        ]);
+
+        $this->assertSame(['Organization', 'Worker Name'], $labels);
+    }
 }
