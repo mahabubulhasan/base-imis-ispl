@@ -17,6 +17,44 @@ class SwmExcelColumns
     }
 
     /**
+     * @param  array<int, array{key: string, label: string, export?: bool, import?: bool, template?: bool, required?: bool, dropdown?: array<int, string>, multiselect?: bool, reference_key?: string, derived?: bool}>  $columns
+     * @return array<int, array{key: string, label?: string, required?: bool, dropdown?: array<int, string>, multiselect?: bool, reference_key?: string}>
+     */
+    public static function templateColumns(array $columns): array
+    {
+        return array_values(array_map(
+            function (array $column): array {
+                $templateColumn = [
+                    'key' => $column['key'],
+                    'label' => $column['label'] ?? $column['key'],
+                ];
+
+                if (array_key_exists('required', $column)) {
+                    $templateColumn['required'] = $column['required'];
+                }
+                if (isset($column['dropdown'])) {
+                    $templateColumn['dropdown'] = $column['dropdown'];
+                }
+                if (array_key_exists('multiselect', $column)) {
+                    $templateColumn['multiselect'] = $column['multiselect'];
+                }
+                if (isset($column['reference_key'])) {
+                    $templateColumn['reference_key'] = $column['reference_key'];
+                }
+                if (($column['derived'] ?? false) === true) {
+                    $templateColumn['derived'] = true;
+                }
+
+                return $templateColumn;
+            },
+            array_filter(
+                $columns,
+                fn (array $column) => ($column['import'] ?? true) === true || ($column['template'] ?? false) === true
+            )
+        ));
+    }
+
+    /**
      * @param  array<int, array{key: string, label: string, export?: bool, import?: bool, required?: bool, dropdown?: array<int, string>, multiselect?: bool, reference_key?: string}>  $columns
      * @return array<int, array{key: string, label?: string, required?: bool, dropdown?: array<int, string>, multiselect?: bool, reference_key?: string}>
      */

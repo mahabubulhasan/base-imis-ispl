@@ -84,7 +84,6 @@ class WorkerService
         $worker->work_type_id = $data['work_type_id'] ?? null;
         $worker->name = $data['name'] ?? null;
         $worker->mobile = $data['mobile'] ?? null;
-        $worker->email = $data['email'] ?? null;
         $worker->age = $data['age'] ?? null;
         $worker->gender = $data['gender'] ?? null;
         if (array_key_exists('service_area', $data)) {
@@ -114,9 +113,6 @@ class WorkerService
                 }
                 if (! empty($data['mobile'] ?? null)) {
                     $q->where('swm.workers.mobile', 'ILIKE', '%'.trim((string) $data['mobile']).'%');
-                }
-                if (! empty($data['email'] ?? null)) {
-                    $q->where('swm.workers.email', 'ILIKE', '%'.trim((string) $data['email']).'%');
                 }
                 if (! empty($data['worker_id_no'] ?? null)) {
                     $q->where('swm.workers.worker_id_no', 'ILIKE', '%'.trim((string) $data['worker_id_no']).'%');
@@ -218,7 +214,6 @@ class WorkerService
     {
         $name = $data['name'] ?? null;
         $mobile = $data['mobile'] ?? null;
-        $email = $data['email'] ?? null;
         $workerIdNo = $data['worker_id_no'] ?? null;
         $employeeId = $data['employee_id'] ?? null;
         $nationalIdNo = $data['national_id_no'] ?? null;
@@ -237,9 +232,6 @@ class WorkerService
         if (! empty($mobile)) {
             $query->where('swm.workers.mobile', 'ILIKE', '%'.trim((string) $mobile).'%');
         }
-        // if (! empty($email)) {
-        //     $query->where('swm.workers.email', 'ILIKE', '%'.trim((string) $email).'%');
-        // }
         if (! empty($workerIdNo)) {
             $query->where('swm.workers.worker_id_no', 'ILIKE', '%'.trim((string) $workerIdNo).'%');
         }
@@ -286,7 +278,7 @@ class WorkerService
     {
         (new SwmExcelTemplateWriter())->download(
             SwmExcelFilename::importTemplate('workers'),
-            $this->importTemplateColumns()
+            SwmExcelColumns::templateColumns($this->excelColumnDefinitions())
         );
     }
 
@@ -307,7 +299,7 @@ class WorkerService
     {
         $scopedOrgId = Auth::user()?->swm_organization_id;
         $columns = [
-            ['key' => 'worker_id_no', 'label' => __('ID'), 'import' => false],
+            ['key' => 'worker_id_no', 'label' => __('ID'), 'import' => false, 'template' => true, 'derived' => true],
             ['key' => 'name', 'label' => __('Name'), 'required' => true],
             ['key' => 'age', 'label' => __('Age (Years)')],
             ['key' => 'gender', 'label' => __('Gender'), 'dropdown' => [__('Male'), __('Female'), __('Others')]],
@@ -336,8 +328,10 @@ class WorkerService
                 ->orderBy('name')
                 ->pluck('name')
                 ->all(), 'export' => false];
+            $columns[] = ['key' => 'organization_name', 'label' => __('Organization'), 'import' => false];
+        } else {
+            $columns[] = ['key' => 'organization_name', 'label' => __('Organization'), 'import' => false, 'template' => true, 'derived' => true];
         }
-        $columns[] = ['key' => 'organization_name', 'label' => __('Organization'), 'import' => false];
 
         $columns = array_merge($columns, [
             ['key' => 'supervisor_name', 'label' => __('Supervisor\'s Name')],
@@ -352,10 +346,10 @@ class WorkerService
                 __('Master'),
                 __('Others (specify)'),
             ]],
-            ['key' => 'education_level_other', 'label' => __('Education')],
+            ['key' => 'education_level_other', 'label' => __('Education (Other)')],
             ['key' => 'employee_id', 'label' => __('Employee ID (Current Organization)')],
             ['key' => 'national_id_no', 'label' => __('National ID')],
-            ['key' => 'status', 'label' => __('Status'), 'dropdown' => [__('Active'), __('Inactive')]],
+            ['key' => 'status', 'label' => __('Status'), 'dropdown' => [__('Active'), __('Inactive')]]
         ]);
 
         return $columns;

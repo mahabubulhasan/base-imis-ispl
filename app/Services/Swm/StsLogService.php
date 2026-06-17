@@ -155,7 +155,8 @@ class StsLogService
         $query = $this->stsLogQuery();
         $this->applyFilters($query, $data);
 
-        $columns = SwmExcelColumns::exportHeaders($this->excelColumnDefinitions());
+        $columnDefs = $this->excelColumnDefinitions();
+        $columns = SwmExcelColumns::exportHeaders($columnDefs);
 
         $style = (new StyleBuilder())
             ->setFontBold()
@@ -167,23 +168,13 @@ class StsLogService
         $writer->openToBrowser(SwmExcelFilename::export('sts_logs'))
             ->addRowWithStyle($columns, $style);
 
-        $query->orderBy('id')->chunk(5000, function ($rows) use ($writer) {
+        $query->orderBy('id')->chunk(5000, function ($rows) use ($writer, $columnDefs) {
             foreach ($rows as $row) {
-                $wards = is_array($row->source_wards) ? implode(', ', $row->source_wards) : '';
-
-                $writer->addRow([
-                    $row->id,
-                    $row->entry_at?->format('Y-m-d H:i:s'),
-                    $row->operation_date?->format('Y-m-d'),
-                    $row->vehicle?->vehicle_number,
-                    $row->vehicle_type_name,
-                    $row->driver_name,
-                    $row->sts_name ?: $row->sts?->name,
-                    $this->wasteTypesDisplayLabel($row),
-                    $row->quantity_ton,
-                    $wards,
-                    $row->remarks,
-                ]);
+                $writer->addRow(SwmExcelColumns::buildExportRow(
+                    $columnDefs,
+                    $row,
+                    fn (string $key, StsLog $model) => $this->formatStsLogExportValue($key, $model)
+                ));
             }
         });
 
@@ -194,7 +185,7 @@ class StsLogService
     {
         app(SwmExcelTemplateWriter::class)->download(
             SwmExcelFilename::importTemplate('sts_logs'),
-            SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions())
+            SwmExcelColumns::templateColumns($this->excelColumnDefinitions())
         );
     }
 
@@ -202,7 +193,7 @@ class StsLogService
     protected function excelColumnDefinitions(): array
     {
         return [
-            ['key' => 'id', 'label' => __('STS Log ID'), 'import' => false],
+            ['key' => 'id', 'label' => __('STS Log ID'), 'import' => false, 'template' => true, 'derived' => true],
             ['key' => 'entry_at', 'label' => __('Entry Date and Time'), 'required' => true],
             ['key' => 'operation_date', 'label' => __('Operation Date'), 'required' => true],
             [
@@ -216,14 +207,16 @@ class StsLogService
                     ->pluck('vehicle_number')
                     ->all()),
             ],
-            ['key' => 'vehicle_type_name', 'label' => __('Vehicle Type'), 'import' => false],
-            ['key' => 'driver_name', 'label' => __('Driver Name'), 'import' => false],
+            ['key' => 'vehicle_type_name', 'label' => __('Vehicle Type'), 'import' => false, 'template' => true, 'derived' => true],
+            ['key' => 'driver_name', 'label' => __('Driver Name'), 'import' => false, 'template' => true, 'derived' => true],
             [
-                'key' => 'sts_name',
+                'key' => 'sts_id',
                 'label' => __('STS Name'),
                 'required' => true,
                 'dropdown' => SwmImportTemplateOptions::stsLabels(),
+                'export' => false,
             ],
+            ['key' => 'sts_name', 'label' => __('STS Name'), 'import' => false],
             [
                 'key' => 'waste_types',
                 'label' => __('Waste Type'),
@@ -265,6 +258,24 @@ class StsLogService
         }
 
         return $model->wasteType?->name ?? '';
+    }
+
+    protected function formatStsLogExportValue(string $key, StsLog $row): mixed
+    {
+        return match ($key) {
+            'id' => $row->id,
+            'entry_at' => $row->entry_at?->format('Y-m-d H:i:s'),
+            'operation_date' => $row->operation_date?->format('Y-m-d'),
+            'vehicle_number' => $row->vehicle?->vehicle_number,
+            'vehicle_type_name' => $row->vehicle_type_name,
+            'driver_name' => $row->driver_name,
+            'sts_name' => $row->sts_name ?: $row->sts?->name,
+            'waste_types' => $this->wasteTypesDisplayLabel($row),
+            'quantity_ton' => $row->quantity_ton,
+            'source_wards' => is_array($row->source_wards) ? implode(', ', $row->source_wards) : '',
+            'remarks' => $row->remarks,
+            default => '',
+        };
     }
 
     /**
@@ -315,5 +326,11 @@ class StsLogService
     public function requiredImportLabels(): array
     {
         return SwmExcelColumns::requiredImportLabels($this->excelColumnDefinitions());
+    }
+
+    /** @return array<int, array{key: string, label: string, required?: bool, dropdown?: array<int, string>, multiselect?: bool, reference_key?: string}> */
+    public function importColumnDefinitions(): array
+    {
+        return SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions());
     }
 }

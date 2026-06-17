@@ -2,7 +2,6 @@
 
 namespace App\Imports;
 
-use App\Models\BuildingInfo\Household;
 use App\Models\Swm\WasteBinType;
 use App\Services\Swm\WasteBinService;
 use App\Support\Swm\SwmImportRowHelper;
@@ -24,19 +23,7 @@ class WasteBinImport implements ToCollection, WithHeadingRow
     public function collection(Collection $rows): void
     {
         $service = app(WasteBinService::class);
-        $columnDefinitions = [
-            ['key' => 'waste_bin_type', 'label' => __('Waste Bin Type')],
-            ['key' => 'placed_at_buildings', 'label' => __('Placed at Buildings?')],
-            ['key' => 'household_id', 'label' => __('Household ID')],
-            ['key' => 'bin', 'label' => __('BIN')],
-            ['key' => 'ward_no', 'label' => __('Ward No.')],
-            ['key' => 'sub_location', 'label' => __('Sub Location')],
-            ['key' => 'road_no', 'label' => __('Road No.')],
-            ['key' => 'road_name', 'label' => __('Road Name')],
-            ['key' => 'latitude', 'label' => __('Latitude')],
-            ['key' => 'longitude', 'label' => __('Longitude')],
-            ['key' => 'total_capacity_kg', 'label' => __('Capacity (kg)')],
-        ];
+        $columnDefinitions = $service->importColumnDefinitions();
         $wasteBinTypeMap = WasteBinType::query()->whereNull('deleted_at')->pluck('name', 'id')->all();
 
         foreach ($rows as $idx => $row) {
@@ -69,25 +56,6 @@ class WasteBinImport implements ToCollection, WithHeadingRow
 
                 $placed = SwmImportRowHelper::parseBoolean($norm['placed_at_buildings'] ?? null) ?? false;
 
-                $householdId = null;
-                $householdRaw = trim((string) ($norm['household_id'] ?? ''));
-                if ($householdRaw !== '') {
-                    if (is_numeric($householdRaw)) {
-                        $household = Household::query()
-                            ->whereKey((int) $householdRaw)
-                            ->whereNull('deleted_at')
-                            ->first();
-                        if (! $household) {
-                            $this->errors[] = __('Row :n: household_id not found.', ['n' => $rowNum]);
-                            continue;
-                        }
-                        $householdId = (int) $household->id;
-                    } else {
-                        $this->errors[] = __('Row :n: household_id must be numeric.', ['n' => $rowNum]);
-                        continue;
-                    }
-                }
-
                 $wardNo = null;
                 $wardRaw = trim((string) ($norm['ward_no'] ?? ''));
                 if ($wardRaw !== '') {
@@ -101,7 +69,7 @@ class WasteBinImport implements ToCollection, WithHeadingRow
                 $data = [
                     'waste_bin_type_id' => $wasteBinTypeId,
                     'placed_at_buildings' => $placed,
-                    'household_id' => $householdId,
+                    'household_id' => null,
                     'bin' => $placed ? (trim((string) ($norm['bin'] ?? '')) ?: null) : null,
                     'ward_no' => $wardNo,
                     'sub_location' => trim((string) ($norm['sub_location'] ?? '')) ?: null,

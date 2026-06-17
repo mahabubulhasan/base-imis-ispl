@@ -24,17 +24,7 @@ class OrganizationImport implements ToCollection, WithHeadingRow
     public function collection(Collection $rows): void
     {
         $service = app(OrganizationService::class);
-        $columnDefinitions = [
-            ['key' => 'name', 'label' => __('Organization Name')],
-            ['key' => 'email', 'label' => __('Email')],
-            ['key' => 'address', 'label' => __('Address')],
-            ['key' => 'contact_person_name', 'label' => __('Contact Person Name')],
-            ['key' => 'contact_number', 'label' => __('Contact Number')],
-            ['key' => 'organization_type', 'label' => __('Organization Type')],
-            ['key' => 'service_wards', 'label' => __('Service Wards')],
-            ['key' => 'remarks', 'label' => __('Remarks')],
-            ['key' => 'status', 'label' => __('Status')],
-        ];
+        $columnDefinitions = $service->importColumnDefinitions();
         $orgTypeMap = OrganizationType::query()
             ->whereNull('deleted_at')
             ->orderBy('name')

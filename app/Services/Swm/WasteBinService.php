@@ -65,24 +65,23 @@ class WasteBinService
 
     public function download(array $data): void
     {
-        $headers = SwmExcelColumns::exportHeaders($this->excelColumnDefinitions());
+        $columns = $this->excelColumnDefinitions();
+        $headers = SwmExcelColumns::exportHeaders($columns);
 
-        $rows = [];
         $query = WasteBin::query()
             ->with(['wasteBinType'])
             ->whereNull('deleted_at');
         $this->applyFilters($query, $data);
+
+        $rows = [];
         $query->orderBy('id')
-            ->chunk(5000, function ($chunk) use (&$rows) {
+            ->chunk(5000, function ($chunk) use (&$rows, $columns) {
                 foreach ($chunk as $row) {
-                    $rows[] = [
-                        $row->waste_bin_id,
-                        optional($row->wasteBinType)->name,
-                        $row->placed_at_buildings ? __('Yes') : __('No'),
-                        $row->bin,
-                        $row->ward_no,
-                        $row->total_capacity_kg,
-                    ];
+                    $rows[] = SwmExcelColumns::buildExportRow(
+                        $columns,
+                        $row,
+                        fn (string $key, $model) => $this->formatWasteBinExportValue($key, $model)
+                    );
                 }
             });
 
@@ -118,7 +117,7 @@ class WasteBinService
     {
         (new SwmExcelTemplateWriter())->download(
             SwmExcelFilename::importTemplate('waste_bins'),
-            SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions())
+            SwmExcelColumns::templateColumns($this->excelColumnDefinitions())
         );
     }
 
@@ -128,20 +127,43 @@ class WasteBinService
         $wasteBinTypes = WasteBinType::query()->whereNull('deleted_at')->orderBy('name')->pluck('name')->all();
 
         return [
-            ['key' => 'waste_bin_id', 'label' => __('Waste Bin ID'), 'import' => false],
-            ['key' => 'waste_bin_type_name', 'label' => __('Waste Bin Type'), 'import' => false],
+            ['key' => 'waste_bin_id', 'label' => __('Waste Bin ID'), 'import' => false, 'template' => true, 'derived' => true],
             ['key' => 'waste_bin_type', 'label' => __('Waste Bin Type'), 'required' => true, 'dropdown' => $wasteBinTypes, 'export' => false],
-            ['key' => 'placed_at_buildings', 'label' => __('Placed at Buildings?'), 'dropdown' => SwmImportTemplateOptions::yesNo()],
-            ['key' => 'household_id', 'label' => __('Household ID'), 'dropdown' => SwmImportTemplateOptions::activeHouseholdDbIds(), 'export' => false],
-            ['key' => 'bin', 'label' => __('BIN')],
-            ['key' => 'ward_no', 'label' => __('Ward No.'), 'dropdown' => SwmImportTemplateOptions::wardNumberStrings()],
-            ['key' => 'sub_location', 'label' => __('Sub Location'), 'export' => false],
-            ['key' => 'road_no', 'label' => __('Road No.'), 'export' => false],
-            ['key' => 'road_name', 'label' => __('Road Name'), 'export' => false],
-            ['key' => 'latitude', 'label' => __('Latitude'), 'export' => false],
-            ['key' => 'longitude', 'label' => __('Longitude'), 'export' => false],
+            ['key' => 'waste_bin_type_name', 'label' => __('Waste Bin Type'), 'import' => false],
             ['key' => 'total_capacity_kg', 'label' => __('Capacity (kg)'), 'required' => true],
+            ['key' => 'placed_at_buildings', 'label' => __('Placed at Buildings?'), 'dropdown' => SwmImportTemplateOptions::yesNo()],
+            ['key' => 'bin', 'label' => __('BIN')],
+            ['key' => 'sub_location', 'label' => __('Sub Location')],
+            ['key' => 'ward_no', 'label' => __('Ward No.'), 'dropdown' => SwmImportTemplateOptions::wardNumberStrings()],
+            ['key' => 'road_no', 'label' => __('Road No.')],
+            ['key' => 'road_name', 'label' => __('Road Name')],
+            ['key' => 'latitude', 'label' => __('Latitude')],
+            ['key' => 'longitude', 'label' => __('Longitude')],
         ];
+    }
+
+    protected function formatWasteBinExportValue(string $key, WasteBin $row): mixed
+    {
+        return match ($key) {
+            'waste_bin_id' => $row->waste_bin_id,
+            'waste_bin_type_name' => optional($row->wasteBinType)->name,
+            'total_capacity_kg' => $row->total_capacity_kg,
+            'placed_at_buildings' => $row->placed_at_buildings ? __('Yes') : __('No'),
+            'bin' => $row->bin,
+            'sub_location' => $row->sub_location,
+            'ward_no' => $row->ward_no,
+            'road_no' => $row->road_no,
+            'road_name' => $row->road_name,
+            'latitude' => $row->latitude,
+            'longitude' => $row->longitude,
+            default => '',
+        };
+    }
+
+    /** @return array<int, array{key: string, label: string, required?: bool, dropdown?: array<int, string>}> */
+    public function importColumnDefinitions(): array
+    {
+        return SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions());
     }
 
     /** @return array<int, string> */

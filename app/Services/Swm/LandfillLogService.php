@@ -195,7 +195,8 @@ class LandfillLogService
         $query = $this->landfillLogQuery();
         $this->applyFilters($query, $data);
 
-        $columns = SwmExcelColumns::exportHeaders($this->excelColumnDefinitions());
+        $columnDefs = $this->excelColumnDefinitions();
+        $columns = SwmExcelColumns::exportHeaders($columnDefs);
 
         $style = (new StyleBuilder())
             ->setFontBold()
@@ -207,30 +208,13 @@ class LandfillLogService
         $writer->openToBrowser(SwmExcelFilename::export('landfill_logs'))
             ->addRowWithStyle($columns, $style);
 
-        $query->orderBy('id')->chunk(5000, function ($rows) use ($writer) {
+        $query->orderBy('id')->chunk(5000, function ($rows) use ($writer, $columnDefs) {
             foreach ($rows as $row) {
-                $wards = is_array($row->source_wards) ? implode(', ', $row->source_wards) : '';
-                $stsNames = \App\Models\Swm\Sts::query()
-                    ->whereIn('id', is_array($row->source_sts_ids) ? $row->source_sts_ids : [])
-                    ->whereNull('deleted_at')
-                    ->orderBy('name')
-                    ->pluck('name')
-                    ->all();
-                $sourceSts = implode(', ', $stsNames);
-                $writer->addRow([
-                    $row->id,
-                    $row->entry_at?->format('Y-m-d H:i:s'),
-                    $row->operation_date?->format('Y-m-d'),
-                    $row->vehicle?->vehicle_number,
-                    $row->vehicle_type_name,
-                    $row->driver_name,
-                    $row->landfill_name ?: $row->landfill?->name,
-                    $this->wasteTypesDisplayLabel($row),
-                    $row->quantity_ton,
-                    $sourceSts,
-                    $wards,
-                    $row->remarks,
-                ]);
+                $writer->addRow(SwmExcelColumns::buildExportRow(
+                    $columnDefs,
+                    $row,
+                    fn (string $key, LandfillLog $model) => $this->formatLandfillLogExportValue($key, $model)
+                ));
             }
         });
 
@@ -241,7 +225,7 @@ class LandfillLogService
     {
         app(SwmExcelTemplateWriter::class)->download(
             SwmExcelFilename::importTemplate('landfill_logs'),
-            SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions())
+            SwmExcelColumns::templateColumns($this->excelColumnDefinitions())
         );
     }
 
@@ -249,7 +233,7 @@ class LandfillLogService
     protected function excelColumnDefinitions(): array
     {
         return [
-            ['key' => 'id', 'label' => __('Landfill Log ID'), 'import' => false],
+            ['key' => 'id', 'label' => __('Landfill Log ID'), 'import' => false, 'template' => true, 'derived' => true],
             ['key' => 'entry_at', 'label' => __('Entry Date and Time'), 'required' => true],
             ['key' => 'operation_date', 'label' => __('Operation Date'), 'required' => true],
             [
@@ -263,8 +247,8 @@ class LandfillLogService
                     ->pluck('vehicle_number')
                     ->all()),
             ],
-            ['key' => 'vehicle_type_name', 'label' => __('Vehicle Type'), 'import' => false],
-            ['key' => 'driver_name', 'label' => __('Driver Name'), 'import' => false],
+            ['key' => 'vehicle_type_name', 'label' => __('Vehicle Type'), 'import' => false, 'template' => true, 'derived' => true],
+            ['key' => 'driver_name', 'label' => __('Driver Name'), 'import' => false, 'template' => true, 'derived' => true],
             [
                 'key' => 'landfill_name',
                 'label' => __('Landfill Name'),
@@ -278,7 +262,14 @@ class LandfillLogService
                 'reference_key' => 'waste_types',
             ],
             ['key' => 'quantity_ton', 'label' => __('Quantity (Ton)')],
-            ['key' => 'source_sts', 'label' => __('Source STSs'), 'import' => false],
+            [
+                'key' => 'source_sts',
+                'label' => __('Source STSs'),
+                'multiselect' => true,
+                'dropdown' => SwmImportTemplateOptions::stsLabels(),
+                'reference_key' => 'source_sts',
+            ],
+            ['key' => 'sts_source_wards', 'label' => __('STS Source Wards'), 'import' => false, 'template' => true, 'derived' => true],
             [
                 'key' => 'source_wards',
                 'label' => __('Other Source Wards'),
@@ -312,6 +303,31 @@ class LandfillLogService
         }
 
         return $model->wasteType?->name ?? '';
+    }
+
+    protected function formatLandfillLogExportValue(string $key, LandfillLog $row): mixed
+    {
+        return match ($key) {
+            'id' => $row->id,
+            'entry_at' => $row->entry_at?->format('Y-m-d H:i:s'),
+            'operation_date' => $row->operation_date?->format('Y-m-d'),
+            'vehicle_number' => $row->vehicle?->vehicle_number,
+            'vehicle_type_name' => $row->vehicle_type_name,
+            'driver_name' => $row->driver_name,
+            'landfill_name' => $row->landfill_name ?: $row->landfill?->name,
+            'waste_types' => $this->wasteTypesDisplayLabel($row),
+            'quantity_ton' => $row->quantity_ton,
+            'source_sts' => Sts::query()
+                ->whereIn('id', is_array($row->source_sts_ids) ? $row->source_sts_ids : [])
+                ->whereNull('deleted_at')
+                ->orderBy('name')
+                ->pluck('name')
+                ->implode(', '),
+            'sts_source_wards' => implode(', ', $this->unionWardsForStsIds(is_array($row->source_sts_ids) ? $row->source_sts_ids : [])),
+            'source_wards' => is_array($row->source_wards) ? implode(', ', $row->source_wards) : '',
+            'remarks' => $row->remarks,
+            default => '',
+        };
     }
 
     protected function applyWasteTypeIdsToLandfillLog(LandfillLog $log, array $candidateIds): void
@@ -421,5 +437,11 @@ class LandfillLogService
     public function requiredImportLabels(): array
     {
         return SwmExcelColumns::requiredImportLabels($this->excelColumnDefinitions());
+    }
+
+    /** @return array<int, array{key: string, label: string, required?: bool, dropdown?: array<int, string>, multiselect?: bool, reference_key?: string}> */
+    public function importColumnDefinitions(): array
+    {
+        return SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions());
     }
 }

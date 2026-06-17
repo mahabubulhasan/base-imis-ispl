@@ -18,19 +18,7 @@ class WasteProcessingImport implements ToCollection, WithHeadingRow
     public function collection(Collection $rows): void
     {
         $service = app(WasteProcessingService::class);
-        $columnDefinitions = [
-            ['key' => 'entry_at', 'label' => __('Entry Date and Time')],
-            ['key' => 'report_date', 'label' => __('Report Date')],
-            ['key' => 'reporting_month', 'label' => __('Reporting Month')],
-            ['key' => 'waste_processing_site_name', 'label' => __('Waste Processing Site Name')],
-            ['key' => 'waste_received_ton', 'label' => __('Quantity of Waste Received (Ton)')],
-            ['key' => 'organic_waste_composted_ton', 'label' => __('Organic Waste Composted (Ton)')],
-            ['key' => 'inorganic_waste_recycled_ton', 'label' => __('Inorganic Non-biodegradable Waste Recycled (Ton)')],
-            ['key' => 'waste_incinerated_ton', 'label' => __('Waste Incinerated (Ton)')],
-            ['key' => 'waste_burned_open_air_ton', 'label' => __('Waste Burned in Open Air (Ton)')],
-            ['key' => 'residual_waste_landfilled_ton', 'label' => __('Residual Waste Landfilled (Ton)')],
-            ['key' => 'remarks', 'label' => __('Remarks')],
-        ];
+        $columnDefinitions = $service->importColumnDefinitions();
 
         foreach ($rows as $idx => $row) {
             $rowNum = $idx + 2;

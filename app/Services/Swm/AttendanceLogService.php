@@ -190,7 +190,9 @@ class AttendanceLogService
             $query->whereDate('entry_at', '<=', Carbon::parse($data['date_to'])->toDateString());
         }
 
-        $columns = SwmExcelColumns::exportHeaders($this->excelColumnDefinitions());
+        $columnDefs = $this->excelColumnDefinitions();
+        $columns = SwmExcelColumns::exportHeaders($columnDefs);
+        $statusLabels = AttendanceLog::statusOptions();
 
         $style = (new StyleBuilder())
             ->setFontBold()
@@ -202,26 +204,13 @@ class AttendanceLogService
         $writer->openToBrowser(SwmExcelFilename::export('attendance_logs'))
             ->addRowWithStyle($columns, $style);
 
-        $statusLabels = AttendanceLog::statusOptions();
-
-        $query->orderBy('id')->chunk(5000, function ($rows) use ($writer, $statusLabels) {
+        $query->orderBy('id')->chunk(5000, function ($rows) use ($writer, $columnDefs, $statusLabels) {
             foreach ($rows as $row) {
-                $worker = $row->worker;
-                $workerLabel = $worker ? ($worker->name.($worker->worker_id_no ? ' — '.$worker->worker_id_no : '')) : '';
-
-                $writer->addRow([
-                    $row->id,
-                    $row->entry_at?->format('Y-m-d H:i:s'),
-                    $row->organization?->name,
-                    $row->department,
-                    $workerLabel,
-                    $row->work_type_name,
-                    $row->supervisor_name,
-                    $statusLabels[$row->attendance_status] ?? $row->attendance_status,
-                    $row->check_in_at?->format('Y-m-d H:i:s'),
-                    $row->check_out_at?->format('Y-m-d H:i:s'),
-                    $row->remarks,
-                ]);
+                $writer->addRow(SwmExcelColumns::buildExportRow(
+                    $columnDefs,
+                    $row,
+                    fn (string $key, AttendanceLog $model) => $this->formatAttendanceExportValue($key, $model, $statusLabels)
+                ));
             }
         });
 
@@ -232,15 +221,29 @@ class AttendanceLogService
     {
         app(SwmExcelTemplateWriter::class)->download(
             SwmExcelFilename::importTemplate('attendance_logs'),
-            SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions())
+            SwmExcelColumns::templateColumns($this->excelColumnDefinitions())
         );
     }
 
-    /** @return array<int, array{key: string, label: string, export?: bool, import?: bool, required?: bool, dropdown?: array<int, string>}> */
+    /** @return array<int, array{key: string, label: string, export?: bool, import?: bool, template?: bool, derived?: bool, required?: bool, dropdown?: array<int, string>}> */
     protected function excelColumnDefinitions(): array
     {
-        $columns = [];
         $orgId = Auth::user()?->swm_organization_id;
+        $workerQuery = Worker::query()->whereNull('deleted_at');
+        if ($orgId) {
+            $workerQuery->where('organization_id', (int) $orgId);
+        }
+        $workerLabels = $workerQuery->orderBy('name')->get(['name', 'worker_id_no'])
+            ->map(fn (Worker $w) => $w->name.($w->worker_id_no ? ' — '.$w->worker_id_no : ''))
+            ->values()
+            ->all();
+
+        $statusLabels = array_values(AttendanceLog::statusOptions());
+
+        $columns = [
+            ['key' => 'id', 'label' => __('Attendance Log ID'), 'import' => false, 'template' => true, 'derived' => true],
+            ['key' => 'entry_at', 'label' => __('Entry Date and Time'), 'required' => true],
+        ];
 
         if (! $orgId) {
             $columns[] = [
@@ -255,32 +258,43 @@ class AttendanceLogService
                     ->pluck('name')
                     ->all()),
             ];
+            $columns[] = ['key' => 'organization_name', 'label' => __('Organization'), 'import' => false];
+        } else {
+            $columns[] = ['key' => 'organization_name', 'label' => __('Organization'), 'import' => false, 'template' => true, 'derived' => true];
         }
-
-        $workerQuery = Worker::query()->whereNull('deleted_at');
-        if ($orgId) {
-            $workerQuery->where('organization_id', (int) $orgId);
-        }
-        $workerLabels = $workerQuery->orderBy('name')->get(['name', 'worker_id_no'])
-            ->map(fn (Worker $w) => $w->name.($w->worker_id_no ? ' — '.$w->worker_id_no : ''))
-            ->values()
-            ->all();
-
-        $statusLabels = array_values(AttendanceLog::statusOptions());
 
         return array_merge($columns, [
-            ['key' => 'id', 'label' => __('ID'), 'import' => false],
-            ['key' => 'entry_at', 'label' => __('Entry Date and Time'), 'required' => true],
-            ['key' => 'organization_name', 'label' => __('Organization'), 'import' => false],
-            ['key' => 'department', 'label' => __('Department')],
             ['key' => 'worker', 'label' => __('Worker Name-ID'), 'required' => true, 'dropdown' => $workerLabels],
-            ['key' => 'work_type_name', 'label' => __('Worker Type'), 'import' => false],
-            ['key' => 'supervisor_name', 'label' => __('Supervisor Name'), 'import' => false],
+            ['key' => 'department', 'label' => __('Department')],
+            ['key' => 'work_type_name', 'label' => __('Worker Type'), 'import' => false, 'template' => true, 'derived' => true],
+            ['key' => 'supervisor_name', 'label' => __("Supervisor's Name"), 'import' => false, 'template' => true, 'derived' => true],
             ['key' => 'attendance_status', 'label' => __('Attendance Status'), 'required' => true, 'dropdown' => $statusLabels],
             ['key' => 'check_in_at', 'label' => __('Check-in Time')],
             ['key' => 'check_out_at', 'label' => __('Check-out Time')],
             ['key' => 'remarks', 'label' => __('Remarks')],
         ]);
+    }
+
+    /** @param  array<string, string>  $statusLabels */
+    protected function formatAttendanceExportValue(string $key, AttendanceLog $row, array $statusLabels): mixed
+    {
+        $worker = $row->worker;
+        $workerLabel = $worker ? ($worker->name.($worker->worker_id_no ? ' — '.$worker->worker_id_no : '')) : '';
+
+        return match ($key) {
+            'id' => $row->id,
+            'entry_at' => $row->entry_at?->format('Y-m-d H:i:s'),
+            'organization_name' => $row->organization?->name,
+            'worker' => $workerLabel,
+            'department' => $row->department,
+            'work_type_name' => $row->work_type_name,
+            'supervisor_name' => $row->supervisor_name,
+            'attendance_status' => $statusLabels[$row->attendance_status] ?? $row->attendance_status,
+            'check_in_at' => $row->check_in_at?->format('Y-m-d H:i:s'),
+            'check_out_at' => $row->check_out_at?->format('Y-m-d H:i:s'),
+            'remarks' => $row->remarks,
+            default => '',
+        };
     }
 
     /** @return array<int, array{key: string, label: string, required?: bool, dropdown?: array<int, string>}> */
@@ -293,5 +307,11 @@ class AttendanceLogService
     public function requiredImportLabels(): array
     {
         return SwmExcelColumns::requiredImportLabels($this->excelColumnDefinitions());
+    }
+
+    /** @return array<int, array{key: string, label: string, required?: bool, dropdown?: array<int, string>}> */
+    public function importColumnDefinitions(): array
+    {
+        return SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions());
     }
 }

@@ -22,26 +22,7 @@ class ComplaintImport implements ToCollection, WithHeadingRow
     public function collection(Collection $rows): void
     {
         $service = app(ComplaintService::class);
-        $columnDefinitions = [
-            ['key' => 'date_time', 'label' => __('Date and Time')],
-            ['key' => 'incident_date', 'label' => __('Incident Date')],
-            ['key' => 'holding_number', 'label' => __('Holding Number')],
-            ['key' => 'household_id', 'label' => __('Household ID')],
-            ['key' => 'name', 'label' => __('Name')],
-            ['key' => 'contact_number', 'label' => __('Contact Number')],
-            ['key' => 'ward_no', 'label' => __('Ward No.')],
-            ['key' => 'complaint_type', 'label' => __('Complaint Type')],
-            ['key' => 'submitted_through', 'label' => __('Complaint Submitted Through')],
-            ['key' => 'duplicate_complaint', 'label' => __('Duplicate Complaint')],
-            ['key' => 'duplicate_reference', 'label' => __('Duplicate Complaint ID')],
-            ['key' => 'priority_level', 'label' => __('Priority Level (1-5)')],
-            ['key' => 'assigned_to', 'label' => __('Assigned To')],
-            ['key' => 'complaint_status', 'label' => __('Complaint Status')],
-            ['key' => 'complaint_status_other', 'label' => __('Complaint Status Other')],
-            ['key' => 'resolution_time_days', 'label' => __('Resolution Time (Days)')],
-            ['key' => 'complaint_details', 'label' => __('Complaint Details')],
-            ['key' => 'notes', 'label' => __('Notes')],
-        ];
+        $columnDefinitions = $service->importColumnDefinitions();
         $complaintTypes = config('swm_complaints.complaint_types', []);
         $submittedThrough = config('swm_complaints.submitted_through', []);
         $complaintStatuses = config('swm_complaints.complaint_statuses', []);

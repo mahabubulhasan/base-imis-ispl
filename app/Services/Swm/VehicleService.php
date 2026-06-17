@@ -303,7 +303,8 @@ class VehicleService
         $vehicleTypeId = $data['vehicle_type_id'] ?? null;
         $driverWorkerId = $data['driver_worker_id'] ?? null;
 
-        $columns = SwmExcelColumns::exportHeaders($this->exportColumnDefinitions());
+        $columns = $this->excelColumnDefinitions();
+        $headers = SwmExcelColumns::exportHeaders($columns);
 
         $query = $this->baseQuery();
 
@@ -334,43 +335,19 @@ class VehicleService
 
         $writer = WriterFactory::create(Type::XLSX);
         $writer->openToBrowser(SwmExcelFilename::export('vehicles'))
-            ->addRowWithStyle($columns, $style);
+            ->addRowWithStyle($headers, $style);
         $wardLabels = Ward::getInAscOrder();
 
         $operationalTypeLabels = self::operationalTypeLabels();
 
-        $query->orderBy('swm.vehicles.id')->chunk(5000, function ($rows) use ($writer, $wardLabels, $operationalTypeLabels) {
+        $query->orderBy('swm.vehicles.id')->chunk(5000, function ($rows) use ($writer, $columns, $wardLabels, $operationalTypeLabels) {
             foreach ($rows as $row) {
-                $dumping = match ($row->dumping_place_kind) {
-                    'sts' => (string) ($row->dumping_sts_name ?? ''),
-                    'landfill' => (string) ($row->dumping_landfill_name ?? ''),
-                    'other' => (string) ($row->dumping_place_other ?? ''),
-                    default => '',
-                };
-                $serviceWards = collect($row->service_wards ?? [])
-                    ->map(fn ($wardId) => $wardLabels[$wardId] ?? $wardId)
-                    ->implode(', ');
-                $operationalType = $row->operational_type
-                    ? ($operationalTypeLabels[$row->operational_type] ?? $row->operational_type)
-                    : '';
-                $writer->addRow([
-                    $row->vehicle_id_no,
-                    $row->vehicle_number,
-                    $row->chassis_no,
-                    $row->organization_name,
-                    $row->vehicle_type_name,
-                    $row->capacity,
-                    $row->driver_name,
-                    $serviceWards,
-                    $row->fuel_type,
-                    $operationalType,
-                    $row->operational_type_other,
-                    $row->engine_no,
-                    $row->status,
-                    $row->last_maintenance_year,
-                    $row->remarks,
-                    $dumping,
-                ]);
+                $values = SwmExcelColumns::buildExportRow(
+                    $columns,
+                    $row,
+                    fn (string $key, $model) => $this->formatVehicleExportValue($key, $model, $wardLabels, $operationalTypeLabels)
+                );
+                $writer->addRow($values);
             }
         });
 
@@ -381,38 +358,15 @@ class VehicleService
     {
         (new SwmExcelTemplateWriter())->download(
             SwmExcelFilename::importTemplate('vehicles'),
-            $this->importTemplateColumns()
+            SwmExcelColumns::templateColumns($this->excelColumnDefinitions())
         );
     }
 
-    /** @return array<int, array{key: string, label: string}> */
-    protected function exportColumnDefinitions(): array
-    {
-        return [
-            ['key' => 'vehicle_id_no', 'label' => __('Vehicle ID')],
-            ['key' => 'vehicle_number', 'label' => __('Vehicle Number')],
-            ['key' => 'chassis_no', 'label' => __('Chassis No.')],
-            ['key' => 'organization_name', 'label' => __('Organization')],
-            ['key' => 'vehicle_type_name', 'label' => __('Vehicle Type')],
-            ['key' => 'capacity', 'label' => __('Capacity').' ('.__('Ton').')'],
-            ['key' => 'driver_name', 'label' => __('Driver Name')],
-            ['key' => 'service_wards', 'label' => __('Service Wards')],
-            ['key' => 'fuel_type', 'label' => __('Fuel Type')],
-            ['key' => 'operational_type', 'label' => __('Operational Type')],
-            ['key' => 'operational_type_other', 'label' => __('Specify Operational Type')],
-            ['key' => 'engine_no', 'label' => __('Engine No.')],
-            ['key' => 'status', 'label' => __('Status')],
-            ['key' => 'last_maintenance_year', 'label' => __('Last Maintenance Year')],
-            ['key' => 'remarks', 'label' => __('Remarks')],
-            ['key' => 'dumping_place', 'label' => __('Dumping Place Name')],
-        ];
-    }
-
-    /** @return array<int, array{key: string, label: string, required?: bool, dropdown?: array<int, string>}> */
-    public function importTemplateColumns(): array
+    /** @return array<int, array{key: string, label: string, required?: bool, dropdown?: array<int, string>, import?: bool, export?: bool, multiselect?: bool, reference_key?: string}> */
+    public function excelColumnDefinitions(): array
     {
         $scopedOrgId = Auth::user()?->swm_organization_id;
-        $columns = [];
+        $organizationColumn = null;
 
         if (! $scopedOrgId) {
             $orgNames = Organization::query()
@@ -421,7 +375,7 @@ class VehicleService
                 ->orderBy('name')
                 ->pluck('name')
                 ->all();
-            $columns[] = ['key' => 'organization', 'label' => __('Organization'), 'required' => true, 'dropdown' => $orgNames];
+            $organizationColumn = ['key' => 'organization', 'label' => __('Organization'), 'required' => true, 'dropdown' => $orgNames];
         }
 
         $vehicleTypes = VehicleType::query()
@@ -434,16 +388,31 @@ class VehicleService
         $driverNames = array_values($this->driverWorkersForOrganization($driverOrgId));
 
         $operationalLabels = array_values(self::operationalTypeLabels());
+        $dumpingKinds = [__('STS'), __('Landfill'), __('Others (specify)')];
+        $stsLabels = SwmImportTemplateOptions::stsLabels();
+        $landfillLabels = SwmImportTemplateOptions::landfillLabels();
+
+        $columns = [
+            ['key' => 'vehicle_id_no', 'label' => __('Vehicle ID'), 'import' => false, 'template' => true, 'derived' => true],
+            ['key' => 'vehicle_type', 'label' => __('Vehicle Type'), 'required' => true, 'dropdown' => $vehicleTypes],
+            ['key' => 'vehicle_number', 'label' => __('Vehicle Number'), 'required' => true],
+            ['key' => 'capacity', 'label' => __('Capacity').' ('.__('Ton').')'],
+        ];
+
+        if ($organizationColumn !== null) {
+            $columns[] = $organizationColumn;
+        } elseif ($scopedOrgId) {
+            $columns[] = [
+                'key' => 'organization_name',
+                'label' => __('Organization'),
+                'import' => false,
+                'template' => true,
+                'derived' => true,
+            ];
+        }
 
         return array_merge($columns, [
-            ['key' => 'vehicle_number', 'label' => __('Vehicle Number'), 'required' => true],
-            ['key' => 'vehicle_id_no', 'label' => __('Vehicle ID')],
-            ['key' => 'vehicle_type', 'label' => __('Vehicle Type'), 'required' => true, 'dropdown' => $vehicleTypes],
             ['key' => 'driver', 'label' => __('Driver Name'), 'required' => true, 'dropdown' => $driverNames],
-            ['key' => 'chassis_no', 'label' => __('Chassis No.')],
-            ['key' => 'engine_no', 'label' => __('Engine No.')],
-            ['key' => 'capacity', 'label' => __('Capacity').' ('.__('Ton').')'],
-            ['key' => 'operational_type', 'label' => __('Operational Type'), 'dropdown' => $operationalLabels],
             [
                 'key' => 'service_wards',
                 'label' => __('Service Wards'),
@@ -451,8 +420,67 @@ class VehicleService
                 'dropdown' => SwmImportTemplateOptions::wardNumberStrings(),
                 'reference_key' => 'service_wards',
             ],
+            ['key' => 'dumping_place_kind', 'label' => __('Dumping Place Type'), 'required' => true, 'dropdown' => $dumpingKinds],
+            ['key' => 'dumping_sts_id', 'label' => __('Dumping Place Name'), 'dropdown' => $stsLabels],
+            ['key' => 'dumping_landfill_id', 'label' => __('Dumping Place Name'), 'dropdown' => $landfillLabels],
+            ['key' => 'dumping_place_other', 'label' => __('Specify Dumping Place')],
+            ['key' => 'fuel_type', 'label' => __('Fuel Type')],
+            ['key' => 'operational_type', 'label' => __('Operational Type'), 'dropdown' => $operationalLabels],
+            ['key' => 'operational_type_other', 'label' => __('Specify Operational Type')],
+            ['key' => 'engine_no', 'label' => __('Engine No.')],
+            ['key' => 'chassis_no', 'label' => __('Chassis No.')],
             ['key' => 'status', 'label' => __('Status'), 'dropdown' => ['active', 'inactive']],
+            ['key' => 'last_maintenance_year', 'label' => __('Last Maintenance Year')],
+            ['key' => 'remarks', 'label' => __('Remarks')],
         ]);
+    }
+
+    /** @return array<int, array{key: string, label: string, required?: bool, dropdown?: array<int, string>, multiselect?: bool, reference_key?: string}> */
+    public function importTemplateColumns(): array
+    {
+        return SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions());
+    }
+
+    /** @return array<int, array{key: string, label: string, required?: bool, dropdown?: array<int, string>, multiselect?: bool, reference_key?: string}> */
+    public function importColumnDefinitions(): array
+    {
+        return $this->importTemplateColumns();
+    }
+
+    protected function formatVehicleExportValue(string $key, Vehicle $row, array $wardLabels, array $operationalTypeLabels): mixed
+    {
+        return match ($key) {
+            'organization' => $row->organization_name,
+            'organization_name' => $row->organization_name,
+            'vehicle_type' => $row->vehicle_type_name,
+            'vehicle_id_no' => $row->vehicle_id_no,
+            'vehicle_number' => $row->vehicle_number,
+            'capacity' => $row->capacity,
+            'driver' => $row->driver_name,
+            'service_wards' => collect($row->service_wards ?? [])
+                ->map(fn ($wardId) => $wardLabels[$wardId] ?? $wardId)
+                ->implode(', '),
+            'dumping_place_kind' => match ($row->dumping_place_kind) {
+                'sts' => __('STS'),
+                'landfill' => __('Landfill'),
+                'other' => __('Others (specify)'),
+                default => '',
+            },
+            'dumping_sts_id' => $row->dumping_sts_name,
+            'dumping_landfill_id' => $row->dumping_landfill_name,
+            'dumping_place_other' => $row->dumping_place_other,
+            'fuel_type' => $row->fuel_type,
+            'operational_type' => $row->operational_type
+                ? ($operationalTypeLabels[$row->operational_type] ?? $row->operational_type)
+                : '',
+            'operational_type_other' => $row->operational_type_other,
+            'engine_no' => $row->engine_no,
+            'chassis_no' => $row->chassis_no,
+            'status' => $row->status,
+            'last_maintenance_year' => $row->last_maintenance_year,
+            'remarks' => $row->remarks,
+            default => '',
+        };
     }
 
     /** @return array<int, string> */

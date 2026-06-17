@@ -657,8 +657,29 @@ class BillCollectionPaymentService
     {
         (new SwmExcelTemplateWriter())->download(
             SwmExcelFilename::importTemplate('bill_collection'),
-            $this->importTemplateColumns()
+            SwmExcelColumns::templateColumns($this->excelColumnDefinitions())
         );
+    }
+
+    /** @return array<int, array{key: string, label: string, export?: bool, import?: bool, template?: bool, derived?: bool, required?: bool, dropdown?: array<int, string>}> */
+    protected function excelColumnDefinitions(): array
+    {
+        return [
+            ['key' => 'household_id', 'label' => __('Household ID'), 'required' => true, 'dropdown' => SwmImportTemplateOptions::householdCustomerLabels()],
+            ['key' => 'holding_number', 'label' => __('Holding Number')],
+            ['key' => 'contact_number', 'label' => __('Contact Number'), 'import' => false, 'template' => true, 'derived' => true],
+            ['key' => 'sub_location', 'label' => __('Sub Location'), 'import' => false, 'template' => true, 'derived' => true],
+            ['key' => 'ward', 'label' => __('Ward'), 'import' => false, 'template' => true, 'derived' => true],
+            ['key' => 'road_no', 'label' => __('Road No.'), 'import' => false, 'template' => true, 'derived' => true],
+            ['key' => 'road_name', 'label' => __('Road Name'), 'import' => false, 'template' => true, 'derived' => true],
+            ['key' => 'payment_for_month', 'label' => __('Transaction Month'), 'required' => true],
+            ['key' => 'amount', 'label' => __('Current Month Payment').' ('.__('Taka').')', 'required' => true],
+            ['key' => 'due_paid', 'label' => __('Previous Due Payment').' ('.__('Taka').')'],
+            ['key' => 'payment_method', 'label' => __('Payment Method'), 'required' => true, 'dropdown' => array_values(config('bill_collection.payment_methods', []))],
+            ['key' => 'payment_time', 'label' => __('Payment Time')],
+            ['key' => 'received_by_user_id', 'label' => __('Payment Received by'), 'dropdown' => SwmImportTemplateOptions::userLabels()],
+            ['key' => 'receipt_no', 'label' => __('Receipt No.')],
+        ];
     }
 
     /** @return array<int, array{key: string, label: string}> */
@@ -686,22 +707,18 @@ class BillCollectionPaymentService
     /** @return array<int, array{key: string, label: string, required?: bool, dropdown?: array<int, string>}> */
     protected function importTemplateColumns(): array
     {
-        return [
-            ['key' => 'household_id', 'label' => __('Household ID'), 'required' => true, 'dropdown' => SwmImportTemplateOptions::householdCustomerLabels()],
-            ['key' => 'holding_number', 'label' => __('Holding Number')],
-            ['key' => 'amount', 'label' => __('Current Month Payment').' ('.__('Taka').')', 'required' => true],
-            ['key' => 'due_paid', 'label' => __('Previous Due Payment').' ('.__('Taka').')'],
-            ['key' => 'payment_for_month', 'label' => __('Transaction Month'), 'required' => true],
-            ['key' => 'payment_method', 'label' => __('Payment Method'), 'required' => true, 'dropdown' => array_values(config('bill_collection.payment_methods', []))],
-            ['key' => 'payment_time', 'label' => __('Payment Time')],
-            ['key' => 'received_by_user_id', 'label' => __('Payment Received by'), 'dropdown' => SwmImportTemplateOptions::userLabels()],
-            ['key' => 'receipt_no', 'label' => __('Receipt No.')],
-        ];
+        return SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions());
+    }
+
+    /** @return array<int, array{key: string, label: string, required?: bool, dropdown?: array<int, string>}> */
+    public function importColumnDefinitions(): array
+    {
+        return $this->importTemplateColumns();
     }
 
     /** @return array<int, string> */
     public function requiredImportLabels(): array
     {
-        return SwmExcelColumns::requiredImportLabels($this->importTemplateColumns());
+        return SwmExcelColumns::requiredImportLabels($this->excelColumnDefinitions());
     }
 }

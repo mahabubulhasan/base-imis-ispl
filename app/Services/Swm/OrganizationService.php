@@ -119,7 +119,8 @@ class OrganizationService
         $organizationTypeId = $data['organization_type_id'] ?? null;
         $status = $data['status'] ?? null;
 
-        $columns = SwmExcelColumns::exportHeaders($this->excelColumnDefinitions());
+        $columnDefs = $this->excelColumnDefinitions();
+        $columns = SwmExcelColumns::exportHeaders($columnDefs);
 
         $query = Organization::query()
             ->with('organizationType')
@@ -165,19 +166,13 @@ class OrganizationService
         $writer->openToBrowser(SwmExcelFilename::export('organizations'))
             ->addRowWithStyle($columns, $style);
 
-        $query->chunk(5000, function ($rows) use ($writer) {
+        $query->chunk(5000, function ($rows) use ($writer, $columnDefs) {
             foreach ($rows as $row) {
-                $writer->addRow([
-                    $row->name,
-                    $row->email,
-                    $row->address,
-                    $row->contact_person_name,
-                    $row->contact_number,
-                    $row->organization_type_label,
-                    is_array($row->service_wards) ? implode(', ', $row->service_wards) : '',
-                    $row->remarks,
-                    SwmOrganizationStatus::getDescription($row->status),
-                ]);
+                $writer->addRow(SwmExcelColumns::buildExportRow(
+                    $columnDefs,
+                    $row,
+                    fn (string $key, $model) => $this->formatOrganizationExportValue($key, $model)
+                ));
             }
         });
 
@@ -188,7 +183,7 @@ class OrganizationService
     {
         (new SwmExcelTemplateWriter())->download(
             SwmExcelFilename::importTemplate('organizations'),
-            SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions())
+            SwmExcelColumns::templateColumns($this->excelColumnDefinitions())
         );
     }
 
@@ -208,7 +203,7 @@ class OrganizationService
             ['key' => 'contact_person_name', 'label' => __('Contact Person Name'), 'required' => true],
             ['key' => 'contact_number', 'label' => __('Contact Number'), 'required' => true],
             ['key' => 'organization_type', 'label' => __('Organization Type'), 'required' => true, 'dropdown' => $orgTypes, 'export' => false],
-            ['key' => 'organization_type_label', 'label' => __('Organization Type'), 'import' => false],
+            ['key' => 'organization_type_label', 'label' => __('Organization Type'), 'import' => false, 'template' => true, 'derived' => true],
             [
                 'key' => 'service_wards',
                 'label' => __('Service Wards'),
@@ -224,6 +219,12 @@ class OrganizationService
         ];
     }
 
+    /** @return array<int, array{key: string, label?: string, required?: bool, dropdown?: array<int, string>}> */
+    public function importColumnDefinitions(): array
+    {
+        return $this->importTemplateColumns();
+    }
+
     /** @return array<int, array{key: string, label: string, required?: bool, dropdown?: array<int, string>}> */
     public function importTemplateColumns(): array
     {
@@ -234,5 +235,21 @@ class OrganizationService
     public function requiredImportLabels(): array
     {
         return SwmExcelColumns::requiredImportLabels($this->excelColumnDefinitions());
+    }
+
+    protected function formatOrganizationExportValue(string $key, $row): mixed
+    {
+        return match ($key) {
+            'name' => $row->name,
+            'email' => $row->email,
+            'address' => $row->address,
+            'contact_person_name' => $row->contact_person_name,
+            'contact_number' => $row->contact_number,
+            'organization_type_label' => $row->organization_type_label,
+            'service_wards' => is_array($row->service_wards) ? implode(', ', $row->service_wards) : '',
+            'remarks' => $row->remarks,
+            'status' => SwmOrganizationStatus::getDescription($row->status),
+            default => '',
+        };
     }
 }

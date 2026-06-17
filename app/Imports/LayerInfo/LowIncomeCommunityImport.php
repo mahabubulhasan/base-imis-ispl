@@ -22,7 +22,7 @@ class LowIncomeCommunityImport implements ToCollection, WithHeadingRow
     public function collection(Collection $rows): void
     {
         $service = app(LowIncomeCommunityServiceClass::class);
-        $columnDefinitions = $service->excelColumnDefinitions();
+        $columnDefinitions = $service->importColumnDefinitions();
 
         foreach ($rows as $idx => $row) {
             $rowNum = $idx + 2;

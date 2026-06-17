@@ -50,4 +50,18 @@ class SwmExcelColumnsTest extends TestCase
 
         $this->assertSame(['Organization', 'Worker Name'], $labels);
     }
+
+    public function test_template_columns_includes_importable_and_template_only_columns(): void
+    {
+        $columns = SwmExcelColumns::templateColumns([
+            ['key' => 'id', 'label' => 'Log ID', 'import' => false, 'template' => true, 'derived' => true],
+            ['key' => 'name', 'label' => 'Name', 'required' => true],
+            ['key' => 'internal', 'label' => 'Internal', 'import' => false, 'export' => false],
+        ]);
+
+        $this->assertCount(2, $columns);
+        $this->assertSame('Log ID', $columns[0]['label']);
+        $this->assertTrue($columns[0]['derived']);
+        $this->assertSame('Name', $columns[1]['label']);
+    }
 }

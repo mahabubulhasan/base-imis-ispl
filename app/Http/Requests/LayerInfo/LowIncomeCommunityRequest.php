@@ -23,23 +23,23 @@ class LowIncomeCommunityRequest extends FormRequest
     public function messages()
 {
     return [
-        'community_name.required' => __('The Community Name is required.'),
+        'community_name.required' => __('The LIC Name is required.'),
         'sub_location.max' => __('The Sub Location may not be greater than 255 characters.'),
         'ward.integer' => __('The Ward No. must be an integer.'),
         'ward.min' => __('The Ward No. must be at least 1.'),
         'road_no.max' => __('The Road No. may not be greater than 100 characters.'),
         'road_name.max' => __('The Road Name may not be greater than 255 characters.'),
-        'area_decima.numeric' => __('The Area (Decima) must be a number.'),
-        'area_decima.min' => __('The Area (Decima) must be at least 0.'),
+        'area_decima.numeric' => __('The Area (Decimal) must be a number.'),
+        'area_decima.min' => __('The Area (Decimal) must be at least 0.'),
         'representative_name.max' => __('The Representative\'s Name may not be greater than 255 characters.'),
         'representative_contact_no.max' => __('The Representative\'s Contact No. may not be greater than 50 characters.'),
         'no_of_buildings.required' => __('The No. of Buildings is required.'),
         'no_of_buildings.integer' => __('The No. of Buildings must be an integer.'),
         'no_of_buildings.min' => __('The No. of Buildings must be at least 0.'),
 
-        'population_total.required' => __('The Population is required.'),
-        'population_total.integer' => __('The Population must be an integer.'),
-        'population_total.min' => __('The Population must be at least 0.'),
+        'population_total.required' => __('The Total Population is required.'),
+        'population_total.integer' => __('The Total Population must be an integer.'),
+        'population_total.min' => __('The Total Population must be at least 0.'),
 
         'number_of_households.required' => __('The No. of Households is required.'),
         'number_of_households.integer' => __('The No. of Households must be an integer.'),
@@ -56,9 +56,9 @@ class LowIncomeCommunityRequest extends FormRequest
 
         'water_connection_status.required' => __('The Water Connection Status is required.'),
         'water_connection_status.boolean' => __('The Water Connection Status must be Yes or No.'),
-        'no_of_wate_points.required_if' => __('No. of Water Points is required when Water Connection Status is Yes.'),
-        'no_of_wate_points.integer' => __('No. of Water Points must be an integer.'),
-        'no_of_wate_points.min' => __('No. of Water Points must be at least 0.'),
+        'no_of_wate_points.required_if' => __('No. of Wate Points is required when Water Connection Status is Yes.'),
+        'no_of_wate_points.integer' => __('No. of Wate Points must be an integer.'),
+        'no_of_wate_points.min' => __('No. of Wate Points must be at least 0.'),
         'sanitation_status.required' => __('The Sanitation Status is required.'),
         'sanitation_status.boolean' => __('The Sanitation Status must be Yes or No.'),
 
@@ -96,7 +96,6 @@ class LowIncomeCommunityRequest extends FormRequest
             'ward' => 'nullable|integer|min:1',
             'road_no' => 'nullable|string|max:100',
             'road_name' => 'nullable|string|max:255',
-            'holding_number' => 'nullable|string|max:100',
             'area_decima' => 'nullable|numeric|min:0',
             'representative_name' => 'nullable|string|max:255',
             'representative_contact_no' => 'nullable|string|max:50',
@@ -129,7 +128,6 @@ class LowIncomeCommunityRequest extends FormRequest
             'ward' => 'nullable|integer|min:1',
             'road_no' => 'nullable|string|max:100',
             'road_name' => 'nullable|string|max:255',
-            'holding_number' => 'nullable|string|max:100',
             'area_decima' => 'nullable|numeric|min:0',
             'representative_name' => 'nullable|string|max:255',
             'representative_contact_no' => 'nullable|string|max:50',

@@ -97,7 +97,8 @@ class WasteProcessingService
         $query = $this->query();
         $this->applyFilters($query, $data);
 
-        $columns = SwmExcelColumns::exportHeaders($this->excelColumnDefinitions());
+        $columnDefs = $this->excelColumnDefinitions();
+        $columns = SwmExcelColumns::exportHeaders($columnDefs);
 
         $style = (new StyleBuilder())
             ->setFontBold()
@@ -109,22 +110,13 @@ class WasteProcessingService
         $writer->openToBrowser(SwmExcelFilename::export('waste_processing'))
             ->addRowWithStyle($columns, $style);
 
-        $query->orderBy('id')->chunk(5000, function ($rows) use ($writer) {
+        $query->orderBy('id')->chunk(5000, function ($rows) use ($writer, $columnDefs) {
             foreach ($rows as $row) {
-                $writer->addRow([
-                    $row->id,
-                    $row->entry_at?->format('Y-m-d H:i:s'),
-                    $row->report_date?->format('Y-m-d'),
-                    $row->reporting_month?->format('M Y'),
-                    $row->waste_processing_site_name,
-                    $row->waste_received_ton,
-                    $row->organic_waste_composted_ton,
-                    $row->inorganic_waste_recycled_ton,
-                    $row->waste_incinerated_ton,
-                    $row->waste_burned_open_air_ton,
-                    $row->residual_waste_landfilled_ton,
-                    $row->remarks,
-                ]);
+                $writer->addRow(SwmExcelColumns::buildExportRow(
+                    $columnDefs,
+                    $row,
+                    fn (string $key, $model) => $this->formatWasteProcessingExportValue($key, $model)
+                ));
             }
         });
 
@@ -135,7 +127,7 @@ class WasteProcessingService
     {
         app(SwmExcelTemplateWriter::class)->download(
             SwmExcelFilename::importTemplate('waste_processing'),
-            SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions())
+            SwmExcelColumns::templateColumns($this->excelColumnDefinitions())
         );
     }
 
@@ -143,7 +135,7 @@ class WasteProcessingService
     protected function excelColumnDefinitions(): array
     {
         return [
-            ['key' => 'id', 'label' => __('Waste Processing Log ID'), 'import' => false],
+            ['key' => 'id', 'label' => __('Waste Processing Log ID'), 'import' => false, 'template' => true, 'derived' => true],
             ['key' => 'entry_at', 'label' => __('Entry Date and Time'), 'required' => true],
             ['key' => 'report_date', 'label' => __('Report Date'), 'required' => true],
             ['key' => 'reporting_month', 'label' => __('Reporting Month'), 'required' => true],
@@ -164,6 +156,25 @@ class WasteProcessingService
         return SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions());
     }
 
+    protected function formatWasteProcessingExportValue(string $key, $row): mixed
+    {
+        return match ($key) {
+            'id' => $row->id,
+            'entry_at' => $row->entry_at?->format('Y-m-d H:i:s'),
+            'report_date' => $row->report_date?->format('Y-m-d'),
+            'reporting_month' => $row->reporting_month?->format('M Y'),
+            'waste_processing_site_name' => $row->waste_processing_site_name,
+            'waste_received_ton' => $row->waste_received_ton,
+            'organic_waste_composted_ton' => $row->organic_waste_composted_ton,
+            'inorganic_waste_recycled_ton' => $row->inorganic_waste_recycled_ton,
+            'waste_incinerated_ton' => $row->waste_incinerated_ton,
+            'waste_burned_open_air_ton' => $row->waste_burned_open_air_ton,
+            'residual_waste_landfilled_ton' => $row->residual_waste_landfilled_ton,
+            'remarks' => $row->remarks,
+            default => '',
+        };
+    }
+
     protected function applyFilters($query, array $data): void
     {
         if (! empty($data['date_from'] ?? null)) {
@@ -181,5 +192,11 @@ class WasteProcessingService
     public function requiredImportLabels(): array
     {
         return SwmExcelColumns::requiredImportLabels($this->excelColumnDefinitions());
+    }
+
+    /** @return array<int, array{key: string, label: string, required?: bool}> */
+    public function importColumnDefinitions(): array
+    {
+        return SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions());
     }
 }

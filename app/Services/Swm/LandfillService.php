@@ -226,7 +226,8 @@ class LandfillService
 
     public function download(array $data): void
     {
-        $headers = SwmExcelColumns::exportHeaders($this->excelColumnDefinitions());
+        $columnDefs = $this->excelColumnDefinitions();
+        $headers = SwmExcelColumns::exportHeaders($columnDefs);
 
         $query = Landfill::query()->whereNull('deleted_at');
         $this->applyExportFilters($query, $data);
@@ -245,43 +246,13 @@ class LandfillService
             ->all();
 
         $rows = [];
-        $query->orderBy('id')->chunk(5000, function ($chunk) use (&$rows, $stsLabelMap, $wasteTypeMap, $landfillTypeMap) {
+        $query->orderBy('id')->chunk(5000, function ($chunk) use (&$rows, $columnDefs, $stsLabelMap, $wasteTypeMap, $landfillTypeMap) {
             foreach ($chunk as $row) {
-                $sourceSts = [];
-                foreach (($row->source_sts_ids ?? []) as $sid) {
-                    if (isset($stsLabelMap[$sid])) {
-                        $sourceSts[] = $stsLabelMap[$sid];
-                    }
-                }
-                $wasteTypes = [];
-                foreach (($row->waste_type_ids ?? []) as $wid) {
-                    if (isset($wasteTypeMap[$wid])) {
-                        $wasteTypes[] = $wasteTypeMap[$wid];
-                    }
-                }
-
-                $rows[] = [
-                    $row->landfill_id,
-                    $row->name,
-                    $row->location,
-                    $row->operator_name,
-                    $row->contact_number,
-                    $row->capacity,
-                    $row->area,
-                    $landfillTypeMap[$row->landfill_type_id] ?? '',
-                    implode(', ', $sourceSts),
-                    implode(', ', $row->source_wards ?? []),
-                    is_null($row->segregation_practiced) ? '' : ($row->segregation_practiced ? __('Yes') : __('No')),
-                    implode(', ', $wasteTypes),
-                    is_null($row->weighbridge_facility_available) ? '' : ($row->weighbridge_facility_available ? __('Yes') : __('No')),
-                    is_null($row->boundary_wall_available) ? '' : ($row->boundary_wall_available ? __('Yes') : __('No')),
-                    is_null($row->lighting_arrangement_available) ? '' : ($row->lighting_arrangement_available ? __('Yes') : __('No')),
-                    $row->manpower_deployed,
-                    is_null($row->adequate_covering_arrangement_available) ? '' : ($row->adequate_covering_arrangement_available ? __('Yes') : __('No')),
-                    is_null($row->gas_control_system_available) ? '' : ($row->gas_control_system_available ? __('Yes') : __('No')),
-                    is_null($row->leachate_collection_system_available) ? '' : ($row->leachate_collection_system_available ? __('Yes') : __('No')),
-                    $row->operational_status,
-                ];
+                $rows[] = SwmExcelColumns::buildExportRow(
+                    $columnDefs,
+                    $row,
+                    fn (string $key, Landfill $model) => $this->formatLandfillExportValue($key, $model, $stsLabelMap, $wasteTypeMap, $landfillTypeMap)
+                );
             }
         });
 
@@ -292,7 +263,7 @@ class LandfillService
     {
         (new SwmExcelTemplateWriter())->download(
             SwmExcelFilename::importTemplate('landfills'),
-            SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions())
+            SwmExcelColumns::templateColumns($this->excelColumnDefinitions())
         );
     }
 
@@ -303,7 +274,7 @@ class LandfillService
         $yesNo = SwmImportTemplateOptions::yesNo();
 
         return [
-            ['key' => 'landfill_id', 'label' => __('Landfill ID'), 'import' => false],
+            ['key' => 'landfill_id', 'label' => __('Landfill ID'), 'import' => false, 'template' => true, 'derived' => true],
             ['key' => 'name', 'label' => __('Landfill Name'), 'required' => true],
             ['key' => 'location', 'label' => __('Location')],
             ['key' => 'operator_name', 'label' => __('Operator Name'), 'required' => true],
@@ -318,6 +289,7 @@ class LandfillService
                 'dropdown' => SwmImportTemplateOptions::stsLabels(),
                 'reference_key' => 'source_sts',
             ],
+            ['key' => 'sts_source_wards', 'label' => __('STS Source Wards'), 'import' => false, 'template' => true, 'derived' => true],
             [
                 'key' => 'source_wards',
                 'label' => __('Other Source Wards'),
@@ -325,7 +297,6 @@ class LandfillService
                 'dropdown' => SwmImportTemplateOptions::wardNumberStrings(),
                 'reference_key' => 'source_wards',
             ],
-            ['key' => 'segregation_practiced', 'label' => __('Segregation Practiced?'), 'dropdown' => $yesNo],
             [
                 'key' => 'waste_types',
                 'label' => __('Waste Type'),
@@ -333,6 +304,7 @@ class LandfillService
                 'dropdown' => SwmImportTemplateOptions::wasteTypeNames(),
                 'reference_key' => 'waste_types',
             ],
+            ['key' => 'segregation_practiced', 'label' => __('Segregation Practiced?'), 'dropdown' => $yesNo],
             ['key' => 'weighbridge_facility_available', 'label' => __('Weighbridge Facility Available?'), 'dropdown' => $yesNo],
             ['key' => 'boundary_wall_available', 'label' => __('Boundary Wall Around the Landfill Area Available?'), 'dropdown' => $yesNo],
             ['key' => 'lighting_arrangement_available', 'label' => __('Lighting Arrangement at the Landfill Site Available?'), 'dropdown' => $yesNo],
@@ -397,5 +369,82 @@ class LandfillService
     public function requiredImportLabels(): array
     {
         return SwmExcelColumns::requiredImportLabels($this->excelColumnDefinitions());
+    }
+
+    /** @return array<int, array{key: string, label: string, required?: bool, dropdown?: array<int, string>, multiselect?: bool, reference_key?: string}> */
+    public function importColumnDefinitions(): array
+    {
+        return SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions());
+    }
+
+    /**
+     * @param  array<int|string, string>  $stsLabelMap
+     * @param  array<int|string, string>  $wasteTypeMap
+     * @param  array<int|string, string>  $landfillTypeMap
+     */
+    protected function formatLandfillExportValue(string $key, Landfill $row, array $stsLabelMap, array $wasteTypeMap, array $landfillTypeMap): mixed
+    {
+        $yesNo = static fn (?bool $value) => is_null($value) ? '' : ($value ? __('Yes') : __('No'));
+
+        return match ($key) {
+            'landfill_id' => $row->landfill_id,
+            'name' => $row->name,
+            'location' => $row->location,
+            'operator_name' => $row->operator_name,
+            'contact_number' => $row->contact_number,
+            'capacity' => $row->capacity,
+            'area' => $row->area,
+            'landfill_type' => $landfillTypeMap[$row->landfill_type_id] ?? '',
+            'source_sts' => implode(', ', array_values(array_filter(array_map(
+                fn ($sid) => $stsLabelMap[$sid] ?? null,
+                $row->source_sts_ids ?? []
+            )))),
+            'sts_source_wards' => implode(', ', $this->unionWardsForSourceStsIds($row->source_sts_ids ?? [])),
+            'source_wards' => implode(', ', $row->source_wards ?? []),
+            'waste_types' => implode(', ', array_values(array_filter(array_map(
+                fn ($wid) => $wasteTypeMap[$wid] ?? null,
+                $row->waste_type_ids ?? []
+            )))),
+            'segregation_practiced' => $yesNo($row->segregation_practiced),
+            'weighbridge_facility_available' => $yesNo($row->weighbridge_facility_available),
+            'boundary_wall_available' => $yesNo($row->boundary_wall_available),
+            'lighting_arrangement_available' => $yesNo($row->lighting_arrangement_available),
+            'manpower_deployed' => $row->manpower_deployed,
+            'adequate_covering_arrangement_available' => $yesNo($row->adequate_covering_arrangement_available),
+            'gas_control_system_available' => $yesNo($row->gas_control_system_available),
+            'leachate_collection_system_available' => $yesNo($row->leachate_collection_system_available),
+            'operational_status' => $row->operational_status,
+            default => '',
+        };
+    }
+
+    /**
+     * @param  array<int, int>|null  $stsIds
+     * @return list<string>
+     */
+    protected function unionWardsForSourceStsIds(?array $stsIds): array
+    {
+        if (empty($stsIds)) {
+            return [];
+        }
+
+        $wardSet = [];
+        Sts::query()
+            ->whereIn('id', $stsIds)
+            ->whereNull('deleted_at')
+            ->get(['source_wards', 'ward_no'])
+            ->each(function (Sts $sts) use (&$wardSet) {
+                foreach ($sts->source_wards ?? [] as $ward) {
+                    $wardSet[(string) $ward] = true;
+                }
+                if ($sts->ward_no) {
+                    $wardSet[(string) $sts->ward_no] = true;
+                }
+            });
+
+        $wards = array_keys($wardSet);
+        sort($wards, SORT_NATURAL);
+
+        return array_values($wards);
     }
 }

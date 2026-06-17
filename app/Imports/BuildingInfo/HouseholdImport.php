@@ -26,7 +26,7 @@ class HouseholdImport implements ToCollection, WithHeadingRow
     public function collection(Collection $rows): void
     {
         $service = app(HouseholdService::class);
-        $columnDefinitions = $service->excelColumnDefinitions();
+        $columnDefinitions = $service->importColumnDefinitions();
         $licMap = Lic::query()
             ->whereNull('deleted_at')
             ->orderBy('community_name')
@@ -129,6 +129,13 @@ class HouseholdImport implements ToCollection, WithHeadingRow
                     }
                 }
 
+                $isOwner = SwmImportRowHelper::parseBoolean($norm['is_owner'] ?? null) ?? false;
+                $wasteBinProvided = SwmImportRowHelper::parseBoolean($norm['waste_bin_provided'] ?? null) ?? false;
+                // Waste bin row details are not imported via Excel; only parent-level fields are supported.
+                if (! $isOwner || $wasteBinProvided) {
+                    $wasteBinProvided = false;
+                }
+
                 $data = [
                     'household_id' => $householdId,
                     'household_owner_name' => $ownerName,
@@ -149,7 +156,7 @@ class HouseholdImport implements ToCollection, WithHeadingRow
                     'tax_id' => ($norm['tax_id'] ?? '') !== '' ? trim((string) $norm['tax_id']) : null,
                     'waste_charge' => ($norm['waste_charge'] ?? '') !== '' ? $norm['waste_charge'] : null,
                     'bin' => $bin,
-                    'is_owner' => SwmImportRowHelper::parseBoolean($norm['is_owner'] ?? null) ?? false,
+                    'is_owner' => $isOwner,
                     'is_lic' => $isLic,
                     'lic_id' => $licId,
                     'number_of_family_members' => ($norm['number_of_family_members'] ?? '') !== ''
@@ -159,7 +166,7 @@ class HouseholdImport implements ToCollection, WithHeadingRow
                         ? $norm['daily_waste_volume']
                         : null,
                     'segregation_practiced' => SwmImportRowHelper::parseBoolean($norm['segregation_practiced'] ?? null) ?? false,
-                    'waste_bin_provided' => SwmImportRowHelper::parseBoolean($norm['waste_bin_provided'] ?? null) ?? false,
+                    'waste_bin_provided' => $wasteBinProvided,
                     'using_this_service_since' => SwmImportRowHelper::parseDate($norm['using_this_service_since'] ?? null)?->format('Y-m-d'),
                     'survey_date' => SwmImportRowHelper::parseDate($norm['survey_date'] ?? null)?->format('Y-m-d'),
                     'van_puller_id' => $vanPullerId,

@@ -3,6 +3,8 @@
 namespace App\Imports\Swm;
 
 use App\Models\Swm\Organization;
+use App\Models\Swm\Landfill;
+use App\Models\Swm\Sts;
 use App\Models\Swm\VehicleType;
 use App\Models\Swm\Worker;
 use App\Services\Swm\VehicleService;
@@ -29,19 +31,7 @@ class VehicleImport implements ToCollection, WithHeadingRow
             ? (int) Auth::user()->swm_organization_id
             : null;
         $service = app(VehicleService::class);
-        $columnDefinitions = [
-            ['key' => 'organization', 'label' => __('Organization')],
-            ['key' => 'vehicle_type', 'label' => __('Vehicle Type')],
-            ['key' => 'vehicle_number', 'label' => __('Vehicle Number')],
-            ['key' => 'vehicle_id_no', 'label' => __('Vehicle ID')],
-            ['key' => 'driver', 'label' => __('Driver Name')],
-            ['key' => 'chassis_no', 'label' => __('Chassis No.')],
-            ['key' => 'engine_no', 'label' => __('Engine No.')],
-            ['key' => 'capacity', 'label' => __('Capacity').' ('.__('Ton').')'],
-            ['key' => 'operational_type', 'label' => __('Operational Type')],
-            ['key' => 'service_wards', 'label' => __('Service Wards')],
-            ['key' => 'status', 'label' => __('Status')],
-        ];
+        $columnDefinitions = $service->importColumnDefinitions();
         $orgMap = Organization::query()
             ->whereNull('deleted_at')
             ->operational()
@@ -54,6 +44,26 @@ class VehicleImport implements ToCollection, WithHeadingRow
             ->pluck('name', 'id')
             ->all();
         $operationalKeys = array_keys(VehicleService::operationalTypeLabels());
+        $stsMap = Sts::query()
+            ->whereNull('deleted_at')
+            ->orderBy('name')
+            ->get()
+            ->mapWithKeys(function (Sts $sts) {
+                $label = trim(($sts->sts_id ? $sts->sts_id.' - ' : '').$sts->name);
+
+                return [$sts->id => $label];
+            })
+            ->all();
+        $landfillMap = Landfill::query()
+            ->whereNull('deleted_at')
+            ->orderBy('name')
+            ->get()
+            ->mapWithKeys(function (Landfill $landfill) {
+                $label = trim(($landfill->landfill_id ? $landfill->landfill_id.' - ' : '').$landfill->name);
+
+                return [$landfill->id => $label];
+            })
+            ->all();
 
         foreach ($rows as $idx => $row) {
             $rowNum = $idx + 2;
@@ -118,6 +128,36 @@ class VehicleImport implements ToCollection, WithHeadingRow
                 }
 
                 $status = $this->resolveVehicleStatus($norm['status'] ?? null);
+                $dumpingKind = $this->resolveDumpingKind($norm['dumping_place_kind'] ?? null);
+                if (! $dumpingKind) {
+                    $this->errors[] = __('Row :n: dumping_place_kind is required.', ['n' => $rowNum]);
+                    continue;
+                }
+
+                $dumpingStsId = null;
+                $dumpingLandfillId = null;
+                $dumpingOther = ($norm['dumping_place_other'] ?? '') !== '' ? trim((string) $norm['dumping_place_other']) : null;
+
+                if ($dumpingKind === 'sts') {
+                    $dumpingStsId = $this->resolveByLabelOrId(trim((string) ($norm['dumping_sts_id'] ?? '')), $stsMap);
+                    if (! $dumpingStsId) {
+                        $this->errors[] = __('Row :n: dumping_sts_id is required for STS dumping type.', ['n' => $rowNum]);
+                        continue;
+                    }
+                }
+
+                if ($dumpingKind === 'landfill') {
+                    $dumpingLandfillId = $this->resolveByLabelOrId(trim((string) ($norm['dumping_landfill_id'] ?? '')), $landfillMap);
+                    if (! $dumpingLandfillId) {
+                        $this->errors[] = __('Row :n: dumping_landfill_id is required for landfill dumping type.', ['n' => $rowNum]);
+                        continue;
+                    }
+                }
+
+                if ($dumpingKind === 'other' && ($dumpingOther === null || $dumpingOther === '')) {
+                    $this->errors[] = __('Row :n: dumping_place_other is required for other dumping type.', ['n' => $rowNum]);
+                    continue;
+                }
 
                 $data = [
                     'organization_id' => $orgId,
@@ -129,10 +169,18 @@ class VehicleImport implements ToCollection, WithHeadingRow
                     'engine_no' => ($norm['engine_no'] ?? '') !== '' ? trim((string) $norm['engine_no']) : null,
                     'capacity' => ($norm['capacity'] ?? '') !== '' ? trim((string) $norm['capacity']) : null,
                     'operational_type' => $operationalType,
+                    'operational_type_other' => ($norm['operational_type_other'] ?? '') !== '' ? trim((string) $norm['operational_type_other']) : null,
                     'service_wards' => SwmImportRowHelper::parseCommaSeparatedInts(
                         isset($norm['service_wards']) ? (string) $norm['service_wards'] : null
                     ),
+                    'dumping_place_kind' => $dumpingKind,
+                    'dumping_sts_id' => $dumpingStsId,
+                    'dumping_landfill_id' => $dumpingLandfillId,
+                    'dumping_place_other' => $dumpingOther,
+                    'fuel_type' => ($norm['fuel_type'] ?? '') !== '' ? trim((string) $norm['fuel_type']) : null,
                     'status' => $status ?? 'active',
+                    'last_maintenance_year' => ($norm['last_maintenance_year'] ?? '') !== '' ? (int) $norm['last_maintenance_year'] : null,
+                    'remarks' => ($norm['remarks'] ?? '') !== '' ? trim((string) $norm['remarks']) : null,
                 ];
 
                 $saved = $service->storeOrUpdate(null, $data);
@@ -188,5 +236,40 @@ class VehicleImport implements ToCollection, WithHeadingRow
         }
 
         return SwmImportRowHelper::parseBoolean($value) === false ? 'inactive' : 'active';
+    }
+
+    protected function resolveDumpingKind(mixed $value): ?string
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        $resolved = SwmImportRowHelper::resolveEnumKey((string) $value, ['sts', 'landfill', 'other']);
+        if ($resolved) {
+            return $resolved;
+        }
+
+        $normalized = mb_strtolower(trim((string) $value));
+
+        return match ($normalized) {
+            mb_strtolower((string) __('STS')) => 'sts',
+            mb_strtolower((string) __('Landfill')) => 'landfill',
+            mb_strtolower((string) __('Others (specify)')) => 'other',
+            default => null,
+        };
+    }
+
+    protected function resolveByLabelOrId(string $value, array $map): ?int
+    {
+        if ($value === '') {
+            return null;
+        }
+        if (is_numeric($value)) {
+            return (int) $value;
+        }
+
+        $resolved = SwmImportRowHelper::resolveByLabel($value, $map);
+
+        return $resolved ? (int) $resolved : null;
     }
 }

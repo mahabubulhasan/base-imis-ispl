@@ -84,7 +84,6 @@ class LowIncomeCommunityServiceClass
     $lic->ward = $request->ward;
     $lic->road_no = $request->road_no;
     $lic->road_name = $request->road_name;
-    $lic->holding_number = $request->holding_number;
     $lic->area_decima = $request->area_decima;
     $lic->representative_name = $request->representative_name;
     $lic->representative_contact_no = $request->representative_contact_no;
@@ -267,7 +266,7 @@ class LowIncomeCommunityServiceClass
     {
         (new SwmExcelTemplateWriter())->download(
             SwmExcelFilename::importTemplate('low_income_communities'),
-            $this->importTemplateColumns()
+            SwmExcelColumns::templateColumns($this->excelColumnDefinitions())
         );
     }
 
@@ -283,6 +282,12 @@ class LowIncomeCommunityServiceClass
         return SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions());
     }
 
+    /** @return array<int, array{key: string, label?: string, required?: bool, dropdown?: array<int, string>}> */
+    public function importColumnDefinitions(): array
+    {
+        return $this->importTemplateColumns();
+    }
+
     /** @return array<int, array{key: string, label: string, required?: bool, import?: bool, export?: bool, dropdown?: array<int, string>}> */
     public function excelColumnDefinitions(): array
     {
@@ -290,7 +295,6 @@ class LowIncomeCommunityServiceClass
         $wards = array_map('strval', array_keys(Ward::getInAscOrder()));
 
         return [
-            ['key' => 'id', 'label' => __('ID'), 'import' => false],
             ['key' => 'community_name', 'label' => __('LIC Name'), 'required' => true],
             ['key' => 'representative_name', 'label' => __("Representative's Name")],
             ['key' => 'representative_contact_no', 'label' => __("Representative's Contact No.")],
@@ -320,7 +324,6 @@ class LowIncomeCommunityServiceClass
     protected function formatLicExportValue(string $key, LowIncomeCommunity $lic): mixed
     {
         return match ($key) {
-            'id' => $lic->id,
             'community_name' => $lic->community_name,
             'representative_name' => $lic->representative_name,
             'representative_contact_no' => $lic->representative_contact_no,

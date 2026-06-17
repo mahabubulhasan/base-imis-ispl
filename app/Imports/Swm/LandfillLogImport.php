@@ -3,6 +3,7 @@
 namespace App\Imports\Swm;
 
 use App\Models\Swm\Landfill;
+use App\Models\Swm\Sts;
 use App\Models\Swm\Vehicle;
 use App\Models\Swm\WasteType;
 use App\Services\Swm\LandfillLogService;
@@ -21,17 +22,7 @@ class LandfillLogImport implements ToCollection, WithHeadingRow
     public function collection(Collection $rows): void
     {
         $service = app(LandfillLogService::class);
-        $columnDefinitions = [
-            ['key' => 'entry_at', 'label' => __('Entry Date and Time')],
-            ['key' => 'operation_date', 'label' => __('Operation Date')],
-            ['key' => 'vehicle_number', 'label' => __('Vehicle Number')],
-            ['key' => 'landfill_name', 'label' => __('Landfill Name')],
-            ['key' => 'waste_types', 'label' => __('Waste Types')],
-            ['key' => 'quantity_ton', 'label' => __('Quantity (Ton)')],
-            ['key' => 'source_sts', 'label' => __('Source STSs')],
-            ['key' => 'source_wards', 'label' => __('Other Source Wards')],
-            ['key' => 'remarks', 'label' => __('Remarks')],
-        ];
+        $columnDefinitions = $service->importColumnDefinitions();
         $vehicleMap = Vehicle::query()
             ->whereNull('deleted_at')
             ->orderBy('vehicle_number')
@@ -45,6 +36,16 @@ class LandfillLogImport implements ToCollection, WithHeadingRow
                 $label = trim(($landfill->landfill_id ? $landfill->landfill_id.' - ' : '').$landfill->name);
 
                 return [$landfill->id => $label];
+            })
+            ->all();
+        $stsLabelMap = Sts::query()
+            ->whereNull('deleted_at')
+            ->orderBy('name')
+            ->get()
+            ->mapWithKeys(function (Sts $sts) {
+                $label = trim(($sts->sts_id ? $sts->sts_id.' - ' : '').$sts->name);
+
+                return [$sts->id => $label];
             })
             ->all();
 
@@ -97,6 +98,10 @@ class LandfillLogImport implements ToCollection, WithHeadingRow
                 }
 
                 $wasteTypeIds = $this->resolveWasteTypeIds($norm['waste_types'] ?? null);
+                $sourceStsIds = $this->resolveSourceStsIds($norm['source_sts'] ?? null, $stsLabelMap, $rowNum);
+                if ($sourceStsIds === false) {
+                    continue;
+                }
                 $sourceWards = $this->parseSourceWards($norm['source_wards'] ?? null);
 
                 $data = [
@@ -104,6 +109,7 @@ class LandfillLogImport implements ToCollection, WithHeadingRow
                     'entry_at' => $entryAt->format('Y-m-d H:i:s'),
                     'operation_date' => $operationDate->format('Y-m-d'),
                     'quantity_ton' => ($norm['quantity_ton'] ?? '') !== '' ? $norm['quantity_ton'] : null,
+                    'source_sts_ids' => $sourceStsIds,
                     'source_wards' => $sourceWards,
                     'remarks' => ($norm['remarks'] ?? '') !== '' ? (string) $norm['remarks'] : null,
                     'waste_type_ids' => $wasteTypeIds,
@@ -127,6 +133,13 @@ class LandfillLogImport implements ToCollection, WithHeadingRow
 
     protected function resolveLandfillId(string $label, array $labelMap): ?int
     {
+        if (is_numeric($label)) {
+            $numericId = (int) $label;
+            if (Landfill::query()->whereNull('deleted_at')->whereKey($numericId)->exists()) {
+                return $numericId;
+            }
+        }
+
         $id = SwmImportRowHelper::resolveByLabel($label, $labelMap);
         if ($id) {
             return (int) $id;
@@ -167,6 +180,49 @@ class LandfillLogImport implements ToCollection, WithHeadingRow
             if ($type) {
                 $ids[] = (int) $type->id;
             }
+        }
+
+        return array_values(array_unique($ids));
+    }
+
+    /** @return array<int>|null|false */
+    protected function resolveSourceStsIds(mixed $input, array $stsLabelMap, int $rowNum): array|null|false
+    {
+        if ($input === null || trim((string) $input) === '') {
+            return null;
+        }
+
+        $labels = array_filter(array_map('trim', explode(',', (string) $input)), fn ($v) => $v !== '');
+        if (empty($labels)) {
+            return null;
+        }
+
+        $ids = [];
+        foreach ($labels as $label) {
+            $id = null;
+            if (is_numeric($label)) {
+                $numericId = (int) $label;
+                if (Sts::query()->whereNull('deleted_at')->whereKey($numericId)->exists()) {
+                    $id = $numericId;
+                }
+            }
+            if (! $id) {
+                $resolved = SwmImportRowHelper::resolveByLabel($label, $stsLabelMap);
+                $id = $resolved ? (int) $resolved : null;
+            }
+            if (! $id) {
+                $sts = Sts::query()
+                    ->whereNull('deleted_at')
+                    ->whereRaw('LOWER(name) = ?', [strtolower($label)])
+                    ->first();
+                $id = $sts ? (int) $sts->id : null;
+            }
+            if (! $id) {
+                $this->errors[] = __('Row :n: unknown source STS ":sts".', ['n' => $rowNum, 'sts' => $label]);
+
+                return false;
+            }
+            $ids[] = $id;
         }
 
         return array_values(array_unique($ids));

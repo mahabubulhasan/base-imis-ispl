@@ -119,7 +119,18 @@ class SwmExcelTemplateWriter
         $sheet->setCellValue('A4', __('Columns marked with a dropdown allow one value selected from the list.'));
         $sheet->setCellValue('A5', __('Required columns must have a value in each row you import.'));
 
-        $row = 7;
+        $hasDerived = false;
+        foreach ($columns as $column) {
+            if ($column['derived'] ?? false) {
+                $hasDerived = true;
+                break;
+            }
+        }
+        if ($hasDerived) {
+            $sheet->setCellValue('A6', __('Read-only or derived columns are filled automatically on save; leave them blank when importing.'));
+        }
+
+        $row = $hasDerived ? 8 : 7;
         $hasMultiselect = false;
         foreach ($columns as $column) {
             if (! ($column['multiselect'] ?? false)) {

@@ -21,16 +21,7 @@ class StsLogImport implements ToCollection, WithHeadingRow
     public function collection(Collection $rows): void
     {
         $service = app(StsLogService::class);
-        $columnDefinitions = [
-            ['key' => 'entry_at', 'label' => __('Entry Date and Time')],
-            ['key' => 'operation_date', 'label' => __('Operation Date')],
-            ['key' => 'vehicle_number', 'label' => __('Vehicle Number')],
-            ['key' => 'sts_name', 'label' => __('STS Name')],
-            ['key' => 'waste_types', 'label' => __('Waste Type')],
-            ['key' => 'quantity_ton', 'label' => __('Quantity (Ton)')],
-            ['key' => 'source_wards', 'label' => __('Source Wards')],
-            ['key' => 'remarks', 'label' => __('Remarks')],
-        ];
+        $columnDefinitions = $service->importColumnDefinitions();
         $vehicleMap = Vehicle::query()
             ->whereNull('deleted_at')
             ->orderBy('vehicle_number')
@@ -82,18 +73,18 @@ class StsLogImport implements ToCollection, WithHeadingRow
                     continue;
                 }
 
-                $stsLabel = trim((string) ($norm['sts_name'] ?? ''));
-                if ($stsLabel === '') {
-                    $this->errors[] = __('Row :n: sts_name is required.', ['n' => $rowNum]);
+                $stsInput = trim((string) ($norm['sts_id'] ?? $norm['sts_name'] ?? ''));
+                if ($stsInput === '') {
+                    $this->errors[] = __('Row :n: STS Name is required.', ['n' => $rowNum]);
                     continue;
                 }
-                $stsId = $this->resolveStsId($stsLabel, $stsLabelMap);
+                $stsId = $this->resolveStsId($stsInput, $stsLabelMap);
                 if (! $stsId) {
-                    $this->errors[] = __('Row :n: invalid sts_name.', ['n' => $rowNum]);
+                    $this->errors[] = __('Row :n: invalid STS Name.', ['n' => $rowNum]);
                     continue;
                 }
                 $sts = Sts::query()->whereKey($stsId)->first();
-                $stsName = $sts?->name ?? $stsLabel;
+                $stsName = $sts?->name ?? $stsInput;
 
                 $wasteTypeIds = $this->resolveWasteTypeIds($norm['waste_types'] ?? null);
                 $sourceWards = $this->parseSourceWards($norm['source_wards'] ?? null);
@@ -124,6 +115,13 @@ class StsLogImport implements ToCollection, WithHeadingRow
 
     protected function resolveStsId(string $label, array $labelMap): ?int
     {
+        if (is_numeric($label)) {
+            $numericId = (int) $label;
+            if (Sts::query()->whereNull('deleted_at')->whereKey($numericId)->exists()) {
+                return $numericId;
+            }
+        }
+
         $id = SwmImportRowHelper::resolveByLabel($label, $labelMap);
         if ($id) {
             return (int) $id;

@@ -206,7 +206,7 @@ class HouseholdService
     {
         (new SwmExcelTemplateWriter())->download(
             SwmExcelFilename::importTemplate('households'),
-            $this->importTemplateColumns()
+            SwmExcelColumns::templateColumns($this->excelColumnDefinitions())
         );
     }
 
@@ -217,6 +217,11 @@ class HouseholdService
     }
 
     /** @return array<int, array{key: string, label?: string, required?: bool, dropdown?: array<int, string>}> */
+    public function importColumnDefinitions(): array
+    {
+        return $this->importTemplateColumns();
+    }
+
     public function importTemplateColumns(): array
     {
         return SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions());
@@ -261,6 +266,7 @@ class HouseholdService
             ['key' => 'daily_waste_volume', 'label' => __('Average Waste Collected').' ('.__('Kg').'/'.__('Day').')'],
             ['key' => 'van_puller', 'label' => __('Van Puller'), 'dropdown' => $vanPullers],
             ['key' => 'is_owner', 'label' => __('Building Owner?'), 'dropdown' => $yesNo],
+            // Parent-level flag only; nested waste_bins[*] rows are managed in the form, not via Excel.
             ['key' => 'waste_bin_provided', 'label' => __('Waste Bin Provided?'), 'dropdown' => $yesNo],
             ['key' => 'is_lic', 'label' => __('LIC?'), 'dropdown' => $yesNo],
             ['key' => 'lic_id', 'label' => __('LIC ID'), 'dropdown' => $licOptions],

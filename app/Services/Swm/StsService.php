@@ -152,7 +152,8 @@ class StsService
 
     public function download(array $data): void
     {
-        $headers = SwmExcelColumns::exportHeaders($this->excelColumnDefinitions());
+        $columnDefs = $this->excelColumnDefinitions();
+        $headers = SwmExcelColumns::exportHeaders($columnDefs);
 
         $query = $this->baseQuery();
         $this->applyExportFilters($query, $data);
@@ -160,35 +161,13 @@ class StsService
         $wasteTypeMap = WasteType::query()->whereNull('deleted_at')->pluck('name', 'id')->all();
         $rows = [];
 
-        $query->orderBy('swm.sts.id')->chunk(5000, function ($chunk) use (&$rows, $wasteTypeMap) {
+        $query->orderBy('swm.sts.id')->chunk(5000, function ($chunk) use (&$rows, $columnDefs, $wasteTypeMap) {
             foreach ($chunk as $row) {
-                $wasteIds = $row->waste_type_ids ?? [];
-                $wasteNames = [];
-                foreach ($wasteIds as $wid) {
-                    if (isset($wasteTypeMap[$wid])) {
-                        $wasteNames[] = $wasteTypeMap[$wid];
-                    }
-                }
-
-                $rows[] = [
-                    $row->sts_id,
-                    $row->name,
-                    $row->location,
-                    $row->ward_no,
-                    $row->road_id,
-                    $row->road_name,
-                    $row->latitude,
-                    $row->longitude,
-                    $row->operator_name,
-                    $row->contact_number,
-                    $row->capacity,
-                    $row->area,
-                    implode(', ', $row->source_wards ?? []),
-                    $row->segregation_practiced ? __('Yes') : __('No'),
-                    implode(', ', $wasteNames),
-                    $row->destination_landfill_name,
-                    $row->operational_status,
-                ];
+                $rows[] = SwmExcelColumns::buildExportRow(
+                    $columnDefs,
+                    $row,
+                    fn (string $key, $model) => $this->formatStsExportValue($key, $model, $wasteTypeMap)
+                );
             }
         });
 
@@ -199,7 +178,7 @@ class StsService
     {
         (new SwmExcelTemplateWriter())->download(
             SwmExcelFilename::importTemplate('sts'),
-            SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions())
+            SwmExcelColumns::templateColumns($this->excelColumnDefinitions())
         );
     }
 
@@ -209,7 +188,7 @@ class StsService
         $yesNo = SwmImportTemplateOptions::yesNo();
 
         return [
-            ['key' => 'sts_id', 'label' => __('STS ID'), 'import' => false],
+            ['key' => 'sts_id', 'label' => __('STS ID'), 'import' => false, 'template' => true, 'derived' => true],
             ['key' => 'name', 'label' => __('STS Name'), 'required' => true],
             ['key' => 'location', 'label' => __('Location')],
             ['key' => 'ward_no', 'label' => __('Ward No.'), 'required' => true, 'dropdown' => SwmImportTemplateOptions::wardNumberStrings()],
@@ -228,7 +207,6 @@ class StsService
                 'dropdown' => SwmImportTemplateOptions::wardNumberStrings(),
                 'reference_key' => 'source_wards',
             ],
-            ['key' => 'segregation_practiced', 'label' => __('Segregation Practiced?'), 'dropdown' => $yesNo],
             [
                 'key' => 'waste_types',
                 'label' => __('Waste Type'),
@@ -236,9 +214,44 @@ class StsService
                 'dropdown' => SwmImportTemplateOptions::wasteTypeNames(),
                 'reference_key' => 'waste_types',
             ],
+            ['key' => 'segregation_practiced', 'label' => __('Segregation Practiced?'), 'dropdown' => $yesNo],
             ['key' => 'destination_landfill', 'label' => __('Destination Landfill'), 'dropdown' => SwmImportTemplateOptions::landfillLabels()],
             ['key' => 'operational_status', 'label' => __('Operational Status'), 'required' => true, 'dropdown' => ['active', 'inactive']],
         ];
+    }
+
+    /** @return array<int, array{key: string, label: string, required?: bool, dropdown?: array<int, string>, multiselect?: bool, reference_key?: string}> */
+    public function importColumnDefinitions(): array
+    {
+        return SwmExcelColumns::importTemplateColumns($this->excelColumnDefinitions());
+    }
+
+    /** @param  array<int|string, string>  $wasteTypeMap */
+    protected function formatStsExportValue(string $key, $row, array $wasteTypeMap): mixed
+    {
+        return match ($key) {
+            'sts_id' => $row->sts_id,
+            'name' => $row->name,
+            'location' => $row->location,
+            'ward_no' => $row->ward_no,
+            'road_id' => $row->road_id,
+            'road_name' => $row->road_name,
+            'latitude' => $row->latitude,
+            'longitude' => $row->longitude,
+            'operator_name' => $row->operator_name,
+            'contact_number' => $row->contact_number,
+            'capacity' => $row->capacity,
+            'area' => $row->area,
+            'source_wards' => implode(', ', $row->source_wards ?? []),
+            'waste_types' => implode(', ', array_values(array_filter(array_map(
+                fn ($wid) => $wasteTypeMap[$wid] ?? null,
+                $row->waste_type_ids ?? []
+            )))),
+            'segregation_practiced' => $row->segregation_practiced ? __('Yes') : __('No'),
+            'destination_landfill' => $row->destination_landfill_name,
+            'operational_status' => $row->operational_status,
+            default => '',
+        };
     }
 
     protected function applyExportFilters(Builder $query, array $data): void
