@@ -322,7 +322,6 @@ class ComplaintService
             ['key' => 'duplicate_complaint', 'label' => __('Duplicate Complaint'), 'dropdown' => SwmImportTemplateOptions::yesNo()],
             ['key' => 'duplicate_reference', 'label' => __('Duplicate Complaint ID')],
             ['key' => 'date_time', 'label' => __('Date and Time')],
-            ['key' => 'photo_attachment_path', 'label' => __('Photo Attachment'), 'import' => false],
         ];
     }
 
@@ -354,7 +353,6 @@ class ComplaintService
             'duplicate_complaint' => $row->duplicate_complaint ? __('Yes') : __('No'),
             'duplicate_reference' => $row->duplicate_reference,
             'date_time' => $row->date_time?->format('Y-m-d H:i:s'),
-            'photo_attachment_path' => $row->photo_attachment_path,
             default => '',
         };
     }

@@ -4,15 +4,47 @@ namespace App\Support\Swm;
 
 class SwmExcelColumns
 {
+    /** @var array<int, string> */
+    private const FILE_COLUMN_KEYS = [
+        'photo_attachment',
+        'photo_attachment_path',
+        'receipt_copy',
+        'receipt_copy_path',
+    ];
+
     /**
-     * @param  array<int, array{key: string, label: string, export?: bool, import?: bool, required?: bool, dropdown?: array<int, string>, multiselect?: bool, reference_key?: string}>  $columns
+     * @param  array{key: string, file?: bool}  $column
+     */
+    public static function isFileColumn(array $column): bool
+    {
+        if (($column['file'] ?? false) === true) {
+            return true;
+        }
+
+        return in_array($column['key'] ?? '', self::FILE_COLUMN_KEYS, true);
+    }
+
+    /**
+     * @param  array<int, array{key: string, label: string, export?: bool, import?: bool, file?: bool, required?: bool, dropdown?: array<int, string>, multiselect?: bool, reference_key?: string}>  $columns
+     * @return array<int, array{key: string, label: string, export?: bool, import?: bool, file?: bool, required?: bool, dropdown?: array<int, string>, multiselect?: bool, reference_key?: string}>
+     */
+    public static function excelColumns(array $columns): array
+    {
+        return array_values(array_filter(
+            $columns,
+            fn (array $column) => ! self::isFileColumn($column)
+        ));
+    }
+
+    /**
+     * @param  array<int, array{key: string, label: string, export?: bool, import?: bool, file?: bool, required?: bool, dropdown?: array<int, string>, multiselect?: bool, reference_key?: string}>  $columns
      * @return array<int, string>
      */
     public static function exportHeaders(array $columns): array
     {
         return array_values(array_map(
             fn (array $column) => $column['label'],
-            array_filter($columns, fn (array $column) => ($column['export'] ?? true) === true)
+            array_filter(self::excelColumns($columns), fn (array $column) => ($column['export'] ?? true) === true)
         ));
     }
 
@@ -48,7 +80,7 @@ class SwmExcelColumns
                 return $templateColumn;
             },
             array_filter(
-                $columns,
+                self::excelColumns($columns),
                 fn (array $column) => ($column['import'] ?? true) === true || ($column['template'] ?? false) === true
             )
         ));
@@ -82,7 +114,7 @@ class SwmExcelColumns
 
                 return $importColumn;
             },
-            array_filter($columns, fn (array $column) => ($column['import'] ?? true) === true)
+            array_filter(self::excelColumns($columns), fn (array $column) => ($column['import'] ?? true) === true)
         ));
     }
 
@@ -95,7 +127,7 @@ class SwmExcelColumns
         return array_values(array_map(
             fn (array $column) => (string) ($column['label'] ?? $column['key']),
             array_filter(
-                $columns,
+                self::excelColumns($columns),
                 fn (array $column) => ($column['import'] ?? true) === true && ($column['required'] ?? false) === true
             )
         ));
@@ -108,7 +140,7 @@ class SwmExcelColumns
     public static function exportableColumns(array $columns): array
     {
         return array_values(array_filter(
-            $columns,
+            self::excelColumns($columns),
             fn (array $column) => ($column['export'] ?? true) === true
         ));
     }
