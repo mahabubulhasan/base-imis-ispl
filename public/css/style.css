@@ -1139,17 +1139,6 @@ a.nav-link:hover .sidebar-icon {
 
 }
 
-<<<<<<< Updated upstream
-.dashboard-count .a {
-      fill: #ffffff;
-     
-      
-    }
-    
-.tooltip-inner {
-    text-align: left;
-}
-=======
 /* Added CSS*/
 #sidebar-icon {
     fill: none;
@@ -1163,4 +1152,3 @@ a.nav-link:hover .sidebar-icon {
 
 
   }
->>>>>>> Stashed changes
