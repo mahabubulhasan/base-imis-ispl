@@ -71,11 +71,12 @@ class OrganizationController extends Controller
     {
         $page_title = __('Add Organization');
         $organization = null;
+        $canCreateUserOnEdit = false;
         $organizationStatus = SwmOrganizationStatus::asSelectArray();
         $organizationTypes = $this->organizationTypeOptions();
         $wards = $this->wardOptions();
 
-        return view('swm.service-providers.organizations.create', compact('page_title', 'organization', 'organizationStatus', 'organizationTypes', 'wards'));
+        return view('swm.service-providers.organizations.create', compact('page_title', 'organization', 'canCreateUserOnEdit', 'organizationStatus', 'organizationTypes', 'wards'));
     }
 
     public function store(OrganizationRequest $request)
@@ -120,8 +121,9 @@ class OrganizationController extends Controller
         $wards = $this->wardOptions();
         if ($organization) {
             $page_title = __('Edit Organization');
+            $canCreateUserOnEdit = ! $organization->users()->exists();
 
-            return view('swm.service-providers.organizations.edit', compact('page_title', 'organization', 'organizationStatus', 'organizationTypes', 'wards'));
+            return view('swm.service-providers.organizations.edit', compact('page_title', 'organization', 'canCreateUserOnEdit', 'organizationStatus', 'organizationTypes', 'wards'));
         }
 
         abort(404);
@@ -131,7 +133,24 @@ class OrganizationController extends Controller
     {
         $organization = Organization::find($id);
         if ($organization) {
-            $this->organizationService->storeOrUpdate((int) $organization->id, $request->all());
+            $data = $request->all();
+            $this->organizationService->storeOrUpdate((int) $organization->id, $data);
+
+            $createdUserOnEdit = false;
+            if ($request->boolean('create_user') && ! $organization->users()->exists()) {
+                $data['swm_organization_id'] = $organization->id;
+                $data['user_type'] = 'SW Organization';
+                $data['roles'] = 'SW Organization - Admin';
+                $data['gender'] = 'Male';
+                $data['username'] = explode('@', (string) $request->email)[0];
+                $data['status'] = UserStatus::Active;
+                $this->userService->storeOrUpdate(null, $data);
+                $createdUserOnEdit = true;
+            }
+
+            if ($createdUserOnEdit) {
+                return redirect()->route('swm.organizations.index')->with('success', __('Organization updated and organization admin user created successfully.'));
+            }
 
             return redirect()->route('swm.organizations.index')->with('success', __('Organization updated successfully.'));
         }

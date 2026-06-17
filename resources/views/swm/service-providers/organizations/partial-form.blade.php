@@ -63,7 +63,10 @@
             </div>
         </div>
 
-	@if(!$organization)
+    @php
+        $showCreateUserFields = ! $organization || ($canCreateUserOnEdit ?? false);
+    @endphp
+	@if($showCreateUserFields)
 	@php
 		$createUserOptions = ['' => __('Select'), '1' => __('Yes'), '0' => __('No')];
 	@endphp

@@ -22,6 +22,17 @@ class OrganizationRequest extends FormRequest
     public function rules(): array
     {
         $id = $this->organizationId();
+        $passwordRules = [
+            'required_if:create_user,1',
+            'nullable',
+            Password::min(8)
+                ->letters()
+                ->mixedCase()
+                ->numbers()
+                ->symbols()
+                ->uncompromised(),
+            'confirmed',
+        ];
 
         switch ($this->method()) {
             case 'GET':
@@ -61,17 +72,7 @@ class OrganizationRequest extends FormRequest
                     ],
                     'remarks' => ['nullable', 'string', 'max:2000'],
                     'status' => 'required|boolean',
-                    'password' => [
-                        'required_if:create_user,1',
-                        'nullable',
-                        Password::min(8)
-                            ->letters()
-                            ->mixedCase()
-                            ->numbers()
-                            ->symbols()
-                            ->uncompromised(),
-                        'confirmed',
-                    ],
+                    'password' => $passwordRules,
                 ];
             case 'PUT':
             case 'PATCH':
@@ -108,6 +109,7 @@ class OrganizationRequest extends FormRequest
                     ],
                     'remarks' => ['nullable', 'string', 'max:2000'],
                     'status' => 'required|boolean',
+                    'password' => $passwordRules,
                 ];
             default:
                 return [];
