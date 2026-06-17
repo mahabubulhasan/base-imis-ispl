@@ -7,6 +7,7 @@ use App\Services\Swm\OrganizationService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
+
 class OrganizationRequest extends FormRequest
 {
     use MapsValidationAttributes;
@@ -26,17 +27,6 @@ class OrganizationRequest extends FormRequest
     public function rules(): array
     {
         $id = $this->organizationId();
-        $passwordRules = [
-            'required_if:create_user,1',
-            'nullable',
-            Password::min(8)
-                ->letters()
-                ->mixedCase()
-                ->numbers()
-                ->symbols()
-                ->uncompromised(),
-            'confirmed',
-        ];
 
         switch ($this->method()) {
             case 'GET':
@@ -55,7 +45,7 @@ class OrganizationRequest extends FormRequest
                     $emailRules[] = Rule::unique('pgsql.auth.users', 'email');
                 }
 
-                return [
+                return $this->withPasswordRules([
                     'name' => [
                         'required',
                         'string',
@@ -76,11 +66,10 @@ class OrganizationRequest extends FormRequest
                     ],
                     'remarks' => ['nullable', 'string', 'max:2000'],
                     'status' => 'required|boolean',
-                    'password' => $passwordRules,
-                ];
+                ]);
             case 'PUT':
             case 'PATCH':
-                return [
+                return $this->withPasswordRules([
                     'name' => [
                         'required',
                         'string',
@@ -113,8 +102,7 @@ class OrganizationRequest extends FormRequest
                     ],
                     'remarks' => ['nullable', 'string', 'max:2000'],
                     'status' => 'required|boolean',
-                    'password' => $passwordRules,
-                ];
+                ]);
             default:
                 return [];
         }
@@ -124,8 +112,8 @@ class OrganizationRequest extends FormRequest
     {
         return [
             'email.unique' => __('The email has already been taken.'),
-            'password.required_if' => __('The Password is required when create user is on.'),
-            'password.confirmed' => __('The Confirm Password does not match the Password.'),
+            'password.required' => __('The Password is required when create user is enabled.'),
+            'password.confirmed' => __('The Confirm Password does not match the Password when create user is enabled.'),
             'password.uncompromised' => __('The given password has appeared in a data leak. Please choose a different password.'),
             'service_wards.array' => __('Service wards must be a list.'),
             'service_wards.*.integer' => __('Each service ward must be a valid ward number.'),
@@ -158,5 +146,33 @@ class OrganizationRequest extends FormRequest
         $this->merge([
             'service_wards' => $serviceWards,
         ]);
+
+        if (! $this->boolean('create_user')) {
+            $this->merge([
+                'password' => null,
+                'password_confirmation' => null,
+            ]);
+        }
+    }
+
+    /** @param  array<string, mixed>  $rules
+     * @return array<string, mixed>
+     */
+    protected function withPasswordRules(array $rules): array
+    {
+        if ($this->boolean('create_user')) {
+            $rules['password'] = [
+                'required',
+                Password::min(8)
+                    ->letters()
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols()
+                    ->uncompromised(),
+                'confirmed',
+            ];
+        }
+
+        return $rules;
     }
 }
