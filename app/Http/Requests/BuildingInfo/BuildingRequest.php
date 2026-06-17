@@ -188,7 +188,7 @@ class BuildingRequest extends FormRequest
             'lic_id' => 'required_if:lic_status,1',
             //water source Information
             'water_source_id' => 'required',
-            'watersupply_pipe_code' => 'required_if:water_source_id,1',
+            'watersupply_pipe_code' => 'required_if:water_source_id,5',
             //sanitation system Information
             'toilet_status' => ['required',
              function ($attribute, $value, $fail) use ($use_cat) {
