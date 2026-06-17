@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BuildingInfo\BuildingSurveyRequest;
+use App\Services\BuildingInfo\BuildingFormDataService;
 use App\Http\Requests\Fsm\ContainmentSurveyRequest;
 use App\Http\Requests\UtilityInfo\CreateSewerConnectionRequest;
 
@@ -26,6 +27,11 @@ use Illuminate\Validation\ValidationException;
 
 class BuildingSurveyController extends Controller
 {
+    public function __construct(
+        private readonly BuildingFormDataService $buildingFormDataService
+    ) {
+    }
+
     public function getBuildingWms(){
         return $this->getWmsLink("buildings");
     }
@@ -113,24 +119,10 @@ class BuildingSurveyController extends Controller
         $buildingSurvey = null;
         try {
             if ($request->validated()){
-                $knownFields = [
-                    'temp_building_code',
-                    'tax_code',
-                    'collected_date',
-                    'ward',
-                    'road_code',
-                    'house_number',
-                    'functional_use_id',
-                    'use_category_id',
-                    'water_source_id',
-                    'sanitation_system_id',
-                    'sewer_code',
-                    'drain_code',
-                ];
-
-                $data = $request->only($knownFields);
-                $payloadData = collect($request->except(array_merge($knownFields, ['kml', 'house_image'])))->toArray();
-                $data['payload_json'] = $payloadData;
+                $split = $this->buildingFormDataService->splitSurveyRequestData($request->all());
+                $data = $split['columns'];
+                $data['payload_json'] = $split['payload_json'];
+                $data['is_enabled'] = true;
                 $buildingSurvey = BuildingSurvey::create($data);
                 
                 $buildingSurvey->user_id= Auth::id();
