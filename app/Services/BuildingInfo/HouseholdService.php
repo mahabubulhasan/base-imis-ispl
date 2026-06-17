@@ -229,12 +229,6 @@ class HouseholdService
         $statusLabels = array_values(Household::statusOptions());
         $wards = array_map('strval', array_keys(Ward::getInAscOrder()));
 
-        $bins = Building::query()
-            ->whereNull('deleted_at')
-            ->orderBy('bin')
-            ->pluck('bin')
-            ->all();
-
         $licOptions = Lic::query()
             ->whereNull('deleted_at')
             ->orderBy('community_name')
@@ -254,7 +248,7 @@ class HouseholdService
             ['key' => 'household_owner_name', 'label' => __('Household Owner Name'), 'required' => true],
             ['key' => 'father_or_husband_name', 'label' => __("Father's/Husband's Name")],
             ['key' => 'contact_number', 'label' => __('Contact Number'), 'required' => true],
-            ['key' => 'bin', 'label' => __('BIN'), 'dropdown' => $bins],
+            ['key' => 'bin', 'label' => __('BIN')],
             ['key' => 'area_mohalla_name', 'label' => __('Sub Location')],
             ['key' => 'ward', 'label' => __('Ward No.'), 'required' => true, 'dropdown' => $wards],
             ['key' => 'road_no', 'label' => __('Road No.')],
