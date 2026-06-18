@@ -15,118 +15,213 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
     #add-road-form .ms-choice {
         border: none;
     }
+
+    /* Responsive toolbar styles */
+    .map-toolbar ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 3px;
+    }
+
+    .map-toolbar .btn-default {
+        padding: 6px 10px;
+        font-size: 14px;
+    }
+
+    .controls-div {
+        max-width: 100%;
+    }
+
+    /* Mobile responsive adjustments */
+    @media (max-width: 576px) {
+        .map-toolbar {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            padding: 6px 8px !important;
+        }
+
+        .map-toolbar>div {
+            width: 100%;
+        }
+
+        .controls-div {
+            width: 100%;
+            max-height: 80px;
+            overflow-y: auto;
+        }
+
+        .map-toolbar .btn-default {
+            padding: 5px 8px;
+            font-size: 12px;
+        }
+
+        .map-toolbar .form-control {
+            font-size: 12px;
+            padding: 4px 6px;
+        }
+
+        .map-toolbar form.form-inline {
+            width: 100%;
+            gap: 5px !important;
+        }
+
+        .map-toolbar input[type="text"] {
+            min-width: 60px !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .controls-div {
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        .map-toolbar {
+            gap: 8px !important;
+        }
+    }
 </style>
 
-    <div class="content-wrapper map-container">
-        <div class="map-toolbar clearfix">
-            <div style="display: flex;flex-grow: 1;justify-content: space-between;" >
-                <div class="controls-div" style="display: flex;">
-                    <ul>
-                        <a href="#" id="zoomin_control" class="btn btn-default map-control" data-toggle="tooltip"
-                           data-placement="bottom" title="{{ __('Zoom In') }}"><i class="fa fa-search-plus fa-fw"></i></a>
-                        <a href="#" id="zoomout_control" class="btn btn-default map-control" data-toggle="tooltip"
-                           data-placement="bottom" title="{{ __('Zoom Out') }}"><i class="fa fa-search-minus fa-fw"></i></a>
-                        <a href="#" id="zoomfull_control" class="btn btn-default map-control" data-toggle="tooltip"
-                           data-placement="bottom" title="{{ __('Municipality') }}"><i class="fa fa-globe fa-fw"></i></a>
-                        @can('Info Map Tools')
-                         <a href="#" id="identify_control" class="btn btn-default map-control" data-toggle="tooltip"
-                           data-placement="bottom" title="{{ __('Info') }}"><i class="fa fa-info-circle fa-fw"></i></a>
-                        @endcan
+<div class="content-wrapper map-container d-flex flex-column" style="height:calc(100vh - 41px);">
+    <div class="map-toolbar clearfix flex-shrink-0 d-flex flex-wrap align-items-center justify-content-between bg-white"
+        style="gap: 10px; padding: 8px 10px;">
+        <div class="d-flex flex-wrap" style="gap: 5px;">
+            <div class="controls-div" style="display: flex; flex-wrap: wrap; gap: 3px; overflow-x: auto;">
+                <ul>
+                    <a href="#" id="zoomin_control" class="btn btn-default map-control" data-toggle="tooltip"
+                        data-placement="bottom" title="{{ __('Zoom In') }}"><i class="fa fa-search-plus fa-fw"></i></a>
+                    <a href="#" id="zoomout_control" class="btn btn-default map-control" data-toggle="tooltip"
+                        data-placement="bottom" title="{{ __('Zoom Out') }}"><i
+                            class="fa fa-search-minus fa-fw"></i></a>
+                    <a href="#" id="zoomfull_control" class="btn btn-default map-control" data-toggle="tooltip"
+                        data-placement="bottom" title="{{ __('Municipality') }}"><i class="fa fa-globe fa-fw"></i></a>
+                    @can('Info Map Tools')
+                    <a href="#" id="identify_control" class="btn btn-default map-control" data-toggle="tooltip"
+                        data-placement="bottom" title="{{ __('Info') }}"><i class="fa fa-info-circle fa-fw"></i></a>
+                    @endcan
 
-                        <a href="#" id="coordinate_control" class="btn btn-default map-control"
-                           style="padding:6px 14px!important;" data-toggle="tooltip" data-placement="bottom"
-                           title="{{ __('Coordinate Information') }}"><i class="fa fa-map-pin fa-fw"></i></a>
-                        <a href="#" id="getpointbycoordinates_control" class="btn btn-default map-control"
-                           data-toggle="tooltip" data-placement="bottom" title="{{ __('Locate Point by Coordinate') }}"><i
-                                    class="fa fa-location-arrow" aria-hidden="true"></i></a>
-                        <a href="#" id="linemeasure_control" class="btn btn-default map-control"
-                           data-toggle="tooltip" data-placement="bottom"
-                           title="{{ __('Measure Distance') }}"><i class="fa-solid fa-ruler"></i></a>
-                        <a href="#" id="polymeasure_control" class="btn btn-default map-control"
-                           data-toggle="tooltip" data-placement="bottom"
-                           title="{{ __('Measure Area') }}"><i class="fas fa-draw-polygon"></i></a>
-                        <a href="#" id="print_control" class="btn btn-default map-control" data-toggle="tooltip"
-                           data-placement="bottom" title="{{ __('Print') }}"><i class="fa fa-print fa-fw"></i></a>
-                        <a target="_blank" href="{{ asset('pdf/tools-help.pdf') }}" class="btn btn-default map-control"
-                           data-toggle="tooltip" data-placement="bottom" title="{{ __('Help') }}"><i class="fa-solid fa-file"></i></a>
-                        <a href="#" id="nearestroad_control" class="btn btn-default map-control" data-toggle="tooltip"
-                           data-placement="bottom" title="{{ __('Find Nearest Road') }}"> <img src="{{ asset('img/svg/imis-icons/nearestroad.svg')}}" style="height:24px;" alt="Nearest Road Icon"></a>
-                        <a href="#" id="containmentbuilding_control" class="btn btn-default map-control"
-                           data-toggle="tooltip" data-placement="bottom" title="{{ __('Find Buildings Connected to Containment') }}"><img src="{{ asset('img/svg/imis-icons/building_to_containment.svg')}}" style="height:24px;" alt="Buildings Connected to Containment Icon"></a>
-                        <a href="#" id="buildingcontainment_control" class="btn btn-default map-control"
-                           data-toggle="tooltip" data-placement="bottom" title="{{ __('Find Containments Connected to Building') }}"> <img src="{{ asset('img/svg/imis-icons/containment_to_building.svg')}}" style="height:24px;"alt="Containment to Buildings Connected Icon"></a>
-                        <a href="#" id="associatedtomain_control" class="btn btn-default map-control"
-                           data-toggle="tooltip" data-placement="bottom" title="{{ __('Find Associated Buildings') }}"><img src="{{ asset('img/svg/imis-icons/associated_building.svg')}}" style="height:24px;"alt="Associated Buildings Icon"></a>
-                        <a href="#" id="wms_layer" class="btn btn-default map-control"
-                           data-toggle="tooltip" data-placement="bottom" title="{{ __('Import from WMS') }}"  ><i class="fas fa-layer-group"></i></a>
-                        <a href="#" id="get_location" class="btn btn-default map-control"data-toggle="tooltip" data-placement="bottom" title="{{ __('Locate Me') }}" ><img src="{{ asset('img/locate_me.png')}}" style="height:17px;"alt="Location Icon"> </a>
-                        <a href="#" id="kml_drag_drop" class="btn btn-default map-control"data-toggle="tooltip" data-placement="bottom" title="{{ __('KML Drag and Drop') }}" ><img src="{{ asset('img/kml_icon.png')}}" style="height:22px;"alt="Location Icon"> </a>
-                        <a href="#" id="removemarkers_control" class="btn btn-default map-control" data-toggle="tooltip"
-                           data-placement="bottom" title="{{ __('Remove Markers') }}"><i class="fa fa-trash fa-fw"></i></a>
+                    <a href="#" id="coordinate_control" class="btn btn-default map-control"
+                        style="padding:6px 14px!important;" data-toggle="tooltip" data-placement="bottom"
+                        title="{{ __('Coordinate Information') }}"><i class="fa fa-map-pin fa-fw"></i></a>
+                    <a href="#" id="getpointbycoordinates_control" class="btn btn-default map-control"
+                        data-toggle="tooltip" data-placement="bottom" title="{{ __('Locate Point by Coordinate') }}"><i
+                            class="fa fa-location-arrow" aria-hidden="true"></i></a>
+                    <a href="#" id="linemeasure_control" class="btn btn-default map-control" data-toggle="tooltip"
+                        data-placement="bottom" title="{{ __('Measure Distance') }}"><i
+                            class="fa-solid fa-ruler"></i></a>
+                    <a href="#" id="polymeasure_control" class="btn btn-default map-control" data-toggle="tooltip"
+                        data-placement="bottom" title="{{ __('Measure Area') }}"><i class="fas fa-draw-polygon"></i></a>
+                    <a href="#" id="print_control" class="btn btn-default map-control" data-toggle="tooltip"
+                        data-placement="bottom" title="{{ __('Print') }}"><i class="fa fa-print fa-fw"></i></a>
+                    <a target="_blank" href="{{ asset('pdf/tools-help.pdf') }}" class="btn btn-default map-control"
+                        data-toggle="tooltip" data-placement="bottom" title="{{ __('Help') }}"><i
+                            class="fa-solid fa-file"></i></a>
+                    <a href="#" id="nearestroad_control" class="btn btn-default map-control" data-toggle="tooltip"
+                        data-placement="bottom" title="{{ __('Find Nearest Road') }}"> <img
+                            src="{{ asset('img/svg/imis-icons/nearestroad.svg')}}" style="height:24px;"
+                            alt="Nearest Road Icon"></a>
+                    <a href="#" id="containmentbuilding_control" class="btn btn-default map-control"
+                        data-toggle="tooltip" data-placement="bottom"
+                        title="{{ __('Find Buildings Connected to Containment') }}"><img
+                            src="{{ asset('img/svg/imis-icons/building_to_containment.svg')}}" style="height:24px;"
+                            alt="Buildings Connected to Containment Icon"></a>
+                    <a href="#" id="buildingcontainment_control" class="btn btn-default map-control"
+                        data-toggle="tooltip" data-placement="bottom"
+                        title="{{ __('Find Containments Connected to Building') }}"> <img
+                            src="{{ asset('img/svg/imis-icons/containment_to_building.svg')}}" style="height:24px;"
+                            alt="Containment to Buildings Connected Icon"></a>
+                    <a href="#" id="associatedtomain_control" class="btn btn-default map-control" data-toggle="tooltip"
+                        data-placement="bottom" title="{{ __('Find Associated Buildings') }}"><img
+                            src="{{ asset('img/svg/imis-icons/associated_building.svg')}}" style="height:24px;"
+                            alt="Associated Buildings Icon"></a>
+                    <a href="#" id="wms_layer" class="btn btn-default map-control" data-toggle="tooltip"
+                        data-placement="bottom" title="{{ __('Import from WMS') }}"><i
+                            class="fas fa-layer-group"></i></a>
+                    <a href="#" id="get_location" class="btn btn-default map-control" data-toggle="tooltip"
+                        data-placement="bottom" title="{{ __('Locate Me') }}"><img src="{{ asset('img/locate_me.png')}}"
+                            style="height:17px;" alt="Location Icon"> </a>
+                    <a href="#" id="kml_drag_drop" class="btn btn-default map-control" data-toggle="tooltip"
+                        data-placement="bottom" title="{{ __('KML Drag and Drop') }}"><img
+                            src="{{ asset('img/kml_icon.png')}}" style="height:22px;" alt="Location Icon"> </a>
+                    <a href="#" id="removemarkers_control" class="btn btn-default map-control" data-toggle="tooltip"
+                        data-placement="bottom" title="{{ __('Remove Markers') }}"><i class="fa fa-trash fa-fw"></i></a>
 
-                    </ul>
+                </ul>
 
-                </div>
-
-                <div class="">
-                    <form class="form-inline" name="filterward_form" id="wardfilter_form">
-                        <div class="form-group">
-                            <div class="input-group">
-                                <select class="form-control" id="filterward_select" name="ward" style="min-width:50px;">
-                                    <option value="">All Wards</option>
-                                    @foreach($pickWardResults as $unique)
-                                    <option value= "{{ $unique->ward }}" > {{ $unique->ward }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+            </div>
+        </div>
+        <div class="d-flex align-items-center justify-content-end flex-wrap"
+            style="gap: 8px; min-width: fit-content; flex: 1 1 auto;">
+            <div class="d-flex align-items-center justify-content-between" style="gap: 5px;">
+                <form name="filterward_form" id="wardfilter_form">
+                    <div>
+                        <div class="input-group">
+                            <select class="form-control" id="filterward_select" name="ward" style="min-width: 80px;">
+                                <option value="">All Wards</option>
+                                @foreach($pickWardResults as $unique)
+                                <option value="{{ $unique->ward }}"> {{ $unique->ward }}</option>
+                                @endforeach
+                            </select>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
+                <form class="d-flex justify-content-between align-items-center" style="gap: 5px;"
+                    name="building_search_form" id="building_search_form">
+                    <div>
+                        <input type="text" class="form-control" id="building_value_text" style="min-width: 120px;" />
+                    </div>
+                    <div>
+                        <select class="form-control" id="building_field_select">
+                            <option value="bin">{{ __('BIN') }}</option>
+                            <option value="house_number">{{ __('House Number') }}</option>
+                            <option value="places_layer">{{ __('Places') }}</option>
+                            <option value="roadlines_layer">{{ __('Roads') }}</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-default" type="submit"><i class="fa fa-search fa-fw"></i></button>
 
-                <div class="float-right">
-                    <form class="form-inline" name="building_search_form" id="building_search_form">
-                        <div class="form-row">
+                </form>
 
-                                <input type="text" class="form-control" id="building_value_text" style="min-width:30% !important;" />
-                            </div>
-                            <div class="form-row">
-                                <select class="form-control" id="building_field_select">
-                                    <option value="bin">{{ __('BIN') }}</option>
-                                    <option value="house_number">{{ __('House Number') }}</option>
-                                    <option value="places_layer">{{ __('Places') }}</option>
-                                    <option value="roadlines_layer">{{ __('Roads') }}</option>
-                                </select>
-                        </div>
-                            <button class="btn btn-default" type="submit"><i class="fa fa-search fa-fw"></i></button>
-
-                    </form>
+                <div class="text-right">
+                    <a href="#" id="map-right-sidebar-toggle" class="btn btn-default">
+                        <i class="fa fa-bars"></i>
+                    </a>
                 </div>
             </div>
+
             <div id="buildings-road-popup" class="ol-popup" style="display: none;">
                 <h3 class="card-title py-2">{{ __('Summary Info') }}</h3>
                 <div id="buildings-road-popup-content"></div>
                 @can('Export in Decision Map Tools')
                 <div id="buildings-road-popup-content-download">
 
-                        <form method="get" action="{{ url("maps/export-buildings-road") }}">
-                            <input type="hidden" name="road_codes" value="" id="road_codes"/>
-                            <button type="submit" id="buildings-road-popup-export-excel-btn" class="btn btn-default">
+                    <form method="get" action="{{ url("maps/export-buildings-road") }}">
+                        <input type="hidden" name="road_codes" value="" id="road_codes" />
+                        <button type="submit" id="buildings-road-popup-export-excel-btn" class="btn btn-default">
                             {{ __('Export to Excel') }}
-                            </button>
-                            <button id="buildings-road-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer" >{{ __('Close') }}</button>
-                        </form>
+                        </button>
+                        <button id="buildings-road-popup-closer" type="button"
+                            class="btn btn-default float-right xol-popup-closer">{{ __('Close') }}</button>
+                    </form>
                 </div>
                 @endcan
             </div>
             <div id="waterbody-inaccessible-popup" class="ol-popup" style="display: none;">
                 <div id="waterbody-inaccessible-popup-content"></div>
-                    <div id="waterbody-inaccessible-popup-content-download">
-                        <form method="get" action="{{ url("maps/waterbody-inaccessible-buildings-reports") }}">
-                            <input type="hidden" name="waterbody_hose_length_report" value="" id="waterbody_hose_length_report"/>
-                            <input type="hidden" name="waterbody_hose_length_unit_report" value="" id="waterbody_hose_length_unit_report"/>
-                            <button type="submit" id="waterbody-inaccessible-export-csv-btn" class="btn btn-default">{{ __('Export to Excel') }}</button>
-                            <button id="waterbody-inaccessible-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer">{{ __('Close') }}</button>
-                        </form>
+                <div id="waterbody-inaccessible-popup-content-download">
+                    <form method="get" action="{{ url("maps/waterbody-inaccessible-buildings-reports") }}">
+                        <input type="hidden" name="waterbody_hose_length_report" value=""
+                            id="waterbody_hose_length_report" />
+                        <input type="hidden" name="waterbody_hose_length_unit_report" value=""
+                            id="waterbody_hose_length_unit_report" />
+                        <button type="submit" id="waterbody-inaccessible-export-csv-btn" class="btn btn-default">{{
+                            __('Export to Excel') }}</button>
+                        <button id="waterbody-inaccessible-popup-closer" type="button"
+                            class="btn btn-default float-right xol-popup-closer">{{ __('Close') }}</button>
+                    </form>
 
                 </div>
             </div>
@@ -137,27 +232,24 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                 @can('Export in KML Drag And Drop')
                 <div id="kml-dragdrop-popup-content-download">
                     <div class="btn-group">
-                    <form method="POST" action="{{ url('maps/get-kml-info-report-csv') }}" id="kml-export-form">
-                        @csrf
-                        <input type="hidden" name="kml_dragdrop_geom" value="" id="kml_dragdrop_geom"/>
+                        <form method="POST" action="{{ url('maps/get-kml-info-report-csv') }}" id="kml-export-form">
+                            @csrf
+                            <input type="hidden" name="kml_dragdrop_geom" value="" id="kml_dragdrop_geom" />
 
-                        <button type="submit" id="kml-dragdrop-export-excel-btn" class="btn btn-default">
-                            {{ __('Export to Excel') }}
-                        </button>
-                    </form>
+                            <button type="submit" id="kml-dragdrop-export-excel-btn" class="btn btn-default">
+                                {{ __('Export to Excel') }}
+                            </button>
+                        </form>
 
 
                     </div>
                 </div>
                 @endcan
             </div>
-            <div class="text-right">
-                <a href="#" id="map-right-sidebar-toggle" class="btn btn-default">
-                    <i class="fa fa-bars"></i>
-                </a>
-            </div>
         </div>
+    </div>
 
+    <div class="flex-grow-1 d-flex align-items-center justify-content-center" style="position:relative;">
         <div id="map">
             <div id="gmap" style="width: 100%; height: 100%; visibility: hidden;"></div>
             <div id="olmap" style="position: absolute; top: 0; left: 0; right: 0; bottom:0;"></div>
@@ -165,7 +257,8 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                 <a href="#" id="popup-closer" class="ol-popup-closer"></a>
                 <div id="popup-content"></div>
             </div>
-            <div class="box-footer" id="layer-select-box" style="position: absolute;top: 10px;left: 15px;display: none;filter: drop-shadow(0 10px 4px rgba(0,0,0,0.2));border-radius: 5px;border: 1px solid #cccccc;">
+            <div class="box-footer" id="layer-select-box"
+                style="position: absolute;top: 10px;left: 15px;display: none;filter: drop-shadow(0 10px 4px rgba(0,0,0,0.2));border-radius: 5px;border: 1px solid #cccccc;">
                 <div id="feature-info-popup-content">
                     <form class="form-inline" id="feature_info_form">
                         <div class="form-group">
@@ -179,117 +272,165 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                     <div id="feature_info_content"></div>
                 </div>
             </div>
-            <div class="box-footer" id="add-tool-box" style="display:none;position: absolute;top: 10px;left: 15px;filter: drop-shadow(0 10px 4px rgba(0,0,0,0.2));border-radius: 5px;border: 1px solid #cccccc;">
+            <div class="box-footer" id="add-tool-box"
+                style="display:none;position: absolute;top: 10px;left: 15px;filter: drop-shadow(0 10px 4px rgba(0,0,0,0.2));border-radius: 5px;border: 1px solid #cccccc;">
                 <div id="add-road-tool-box-content">
 
-                        <div xclass="form-group">
-                            <div class="input-group">
+                    <div xclass="form-group">
+                        <div class="input-group">
 
-                                <a href="#" id="add_start_control" class="btn btn-default map-control" data-toggle="tooltip"
-                                   data-placement="bottom" title="{{ __('Add') }}"><i class="fa fa-circle-plus fa-fw"></i></a>
-                                <a href="#" id="add_undo_last_point_control" class="btn btn-default map-control ml-1" data-toggle="tooltip"
-                                   data-placement="bottom" title="{{ __('Undo last point') }}"><i class="fa fa-clock-rotate-left fa-fw"></i></a>
-                                <a href="#" id="add_edit_control" class="btn btn-default map-control ml-1" data-toggle="tooltip"
-                                   data-placement="bottom" title="{{ __('Edit') }}"><i class="fa fa-pen-to-square fa-fw"></i></a>
-                                <a href="#" id="add_undo_control" class="btn btn-default map-control ml-1" data-toggle="tooltip"
-                                   data-placement="bottom" title="{{ __('Undo') }}"><i class="fa fa-rotate-left fa-fw"></i></a>
-                                <a href="#" id="add_redo_control" class="btn btn-default map-control ml-1" data-toggle="tooltip"
-                                   data-placement="bottom" title="{{ __('Redo') }}"><i class="fa fa-rotate-right fa-fw"></i></a>
-                                <a href="#" id="add_delete_control" class="btn btn-default map-control ml-1" data-toggle="tooltip"
-                                   data-placement="bottom" title="{{ __('Remove all drawn lines') }}"><i class="fa fa-trash fa-fw"></i></a>
-                                <a href="javascript:void(0);" id="add_submit_control" class="btn btn-default map-control ml-1" data-toggle="tooltip"data-placement="bottom" title="{{ __('Save') }}" data-code="" >
-                                    <i class="fa fa-floppy-disk fa-fw"></i>
-                                </a>
+                            <a href="#" id="add_start_control" class="btn btn-default map-control" data-toggle="tooltip"
+                                data-placement="bottom" title="{{ __('Add') }}"><i
+                                    class="fa fa-circle-plus fa-fw"></i></a>
+                            <a href="#" id="add_undo_last_point_control" class="btn btn-default map-control ml-1"
+                                data-toggle="tooltip" data-placement="bottom" title="{{ __('Undo last point') }}"><i
+                                    class="fa fa-clock-rotate-left fa-fw"></i></a>
+                            <a href="#" id="add_edit_control" class="btn btn-default map-control ml-1"
+                                data-toggle="tooltip" data-placement="bottom" title="{{ __('Edit') }}"><i
+                                    class="fa fa-pen-to-square fa-fw"></i></a>
+                            <a href="#" id="add_undo_control" class="btn btn-default map-control ml-1"
+                                data-toggle="tooltip" data-placement="bottom" title="{{ __('Undo') }}"><i
+                                    class="fa fa-rotate-left fa-fw"></i></a>
+                            <a href="#" id="add_redo_control" class="btn btn-default map-control ml-1"
+                                data-toggle="tooltip" data-placement="bottom" title="{{ __('Redo') }}"><i
+                                    class="fa fa-rotate-right fa-fw"></i></a>
+                            <a href="#" id="add_delete_control" class="btn btn-default map-control ml-1"
+                                data-toggle="tooltip" data-placement="bottom"
+                                title="{{ __('Remove all drawn lines') }}"><i class="fa fa-trash fa-fw"></i></a>
+                            <a href="javascript:void(0);" id="add_submit_control"
+                                class="btn btn-default map-control ml-1" data-toggle="tooltip" data-placement="bottom"
+                                title="{{ __('Save') }}" data-code="">
+                                <i class="fa fa-floppy-disk fa-fw"></i>
+                            </a>
 
-                            </div>
-                            <!-- Road Form -->
-                            <form class="form-horizontal" id="add-road-form">
-                                <div class="add-road-form" style="display: none">
-                                    <div>
-                                        <hr>
-                                        <h4>{{ __('Add Road Network') }}</h4>
+                        </div>
+                        <!-- Road Form -->
+                        <form class="form-horizontal" id="add-road-form">
+                            <div class="add-road-form" style="display: none">
+                                <div>
+                                    <hr>
+                                    <h4>{{ __('Add Road Network') }}</h4>
+                                </div>
+                                <div id="add-road-errors" tabindex="1"></div>
+
+                                <div class="add-road-form-group">
+                                    {!! Form::label('name',__('Road Name') .' <span
+                                        style="color: red">*</span>',['class' =>
+                                    'control-label'],false) !!}
+                                    {!! Form::text('name',null,['class' => 'form-control', 'placeholder' => __('Road
+                                    Name')]) !!}
+                                </div>
+
+                                <div class="add-road-form-group pt-2">
+                                    {!! Form::label('road_type',__('Road Type') .' <span
+                                        style="color: red">*</span>',['class' => 'control-label'],false) !!}
+                                    {!! Form::select('road_type', $roadTypes, null, ['class' => 'form-control',
+                                    'placeholder' => __('Road Type')]);!!}
+                                </div>
+
+                                <div id="municipality_fields_container" style="display: none;">
+                                    <div class="add-road-form-group pt-2">
+                                        {!! Form::label('ward',__('Ward') .' <span style="color: red">*</span>',['class'
+                                        =>
+                                        'control-label'],false) !!}
+                                        {!! Form::select('ward', $wards, null, ['class' => 'form-control', 'placeholder'
+                                        =>
+                                        __('Ward'), 'id' => 'ward_select']);!!}
                                     </div>
-                                    <div id="add-road-errors" tabindex="1"></div>
 
-                                     <div class="add-road-form-group">
-                                        {!! Form::label('name',__('Road Name') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
-                                        {!! Form::text('name',null,['class' => 'form-control', 'placeholder' => __('Road Name')]) !!}
+                                    {!! Form::hidden('serial_number', null, ['id' => 'serial_number']) !!}
+                                </div>
+
+                                <div class="add-road-form-group pt-2">
+                                    {!! Form::label('hierarchy',__('Hierarchy'),['class' => 'control-label'],false) !!}
+                                    {!! Form::select('hierarchy', $roadHierarchy, null, ['class' => 'form-control',
+                                    'placeholder' => __('Road Hierarchy'), 'id' => 'hierarchy']);!!}
+                                </div>
+
+                                <div class="add-road-form-group pt-2">
+                                    {!! Form::label('right_of_way',__('Right of Way (m)') .' <span
+                                        style="color: red">*</span>',['class' => 'control-label'],false) !!}
+                                    {!! Form::number('right_of_way',null,['class' => 'form-control', 'placeholder' =>
+                                    __('Right of Way (m)'),'min' => 1]) !!}
+                                </div>
+
+                                <div class="add-road-form-group pt-2">
+                                    {!! Form::label('carrying_width',__('Carrying Width (m)') .' <span
+                                        style="color: red">*</span>',['class' => 'control-label'],false) !!}
+                                    {!! Form::number('carrying_width',null,['class' => 'form-control', 'placeholder' =>
+                                    __('Carrying Width (m)'),'min' => 1]) !!}
+                                </div>
+
+
+                                <div class="add-road-form-group pt-2">
+                                    {!! Form::label('surface_type',__('Surface Type'),['class' =>
+                                    'control-label'],false)
+                                    !!}
+                                    {!! Form::select('surface_type', $roadSurfaceTypes, null, ['class' =>
+                                    'form-control',
+                                    'placeholder' => __('Road Surface Type')]);!!}
+                                </div>
+
+                                <div class="add-road-form-group pt-2">
+                                    {!! Form::label('length',__('Length (m)') .' <span
+                                        style="color: red">*</span>',['class'
+                                    => 'control-label'],false) !!}
+                                    {!! Form::number('length',null,['class' => 'form-control', 'placeholder' => __('Road
+                                    Length (m)'),'min' => 1]) !!}
+                                </div>
+
+                                <div class="add-road-form-group pt-2">
+                                    {!! Form::label('road_code',__('Road Code') .' <span
+                                        style="color: red">*</span>',['class' => 'control-label'],false) !!}
+                                    {!! Form::text('road_code',null,['class' => 'form-control', 'placeholder' =>
+                                    __('Road
+                                    Code'), 'id' => 'road_code_field']) !!}
+                                    <small id="municipality_road_hint"
+                                        style="color: #666; display: none; margin-top: 5px;">{{ __('Municipality Road:
+                                        auto-generated as 20512510 + Ward(2 digits) + Serial(4 digits)') }}</small>
+                                </div>
+
+                                <div class="add-road-form-group pt-2">
+                                    <div class="custom-control custom-checkbox">
+                                        {!! Form::checkbox('use_extension', 1, false, ['class' =>
+                                        'custom-control-input',
+                                        'id' => 'use_extension']) !!}
+                                        {!! Form::label('use_extension',__('Use Extension'),['class' =>
+                                        'custom-control-label'],false) !!}
+                                    </div>
+                                    <small style="color: #666; display: block; margin-top: 5px;">{{ __('If enabled, Road
+                                        Code above will be filled by Base Road Code selection + 2-digit extension.')
+                                        }}</small>
+                                </div>
+
+                                <div id="extension_fields_container" style="display: none;">
+                                    <div class="add-road-form-group pt-2">
+                                        {!! Form::label('base_road_code',__('Base Road Code') .' <span
+                                            style="color: red">*</span>',['class' => 'control-label'],false) !!}
+                                        {!! Form::select('base_road_code', isset($baseRoadCodes) ? $baseRoadCodes : [],
+                                        null, ['class' => 'form-control', 'placeholder' => __('Select existing road
+                                        code'),
+                                        'id' => 'base_road_code']) !!}
                                     </div>
 
                                     <div class="add-road-form-group pt-2">
-                                        {!! Form::label('road_type',__('Road Type') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
-                                        {!! Form::select('road_type', $roadTypes, null, ['class' => 'form-control', 'placeholder' => __('Road Type')]);!!}
-                                    </div>
-
-                                    <div id="municipality_fields_container" style="display: none;">
-                                        <div class="add-road-form-group pt-2">
-                                            {!! Form::label('ward',__('Ward') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
-                                            {!! Form::select('ward', $wards, null, ['class' => 'form-control', 'placeholder' => __('Ward'), 'id' => 'ward_select']);!!}
-                                        </div>
-
-                                        {!! Form::hidden('serial_number', null, ['id' => 'serial_number']) !!}
-                                    </div>
-
-                                    <div class="add-road-form-group pt-2">
-                                        {!! Form::label('hierarchy',__('Hierarchy'),['class' => 'control-label'],false) !!}
-                                        {!! Form::select('hierarchy', $roadHierarchy, null, ['class' => 'form-control', 'placeholder' => __('Road Hierarchy'), 'id' => 'hierarchy']);!!}
-                                    </div>
-
-                                    <div class="add-road-form-group pt-2">
-                                        {!! Form::label('right_of_way',__('Right of Way (m)') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
-                                        {!! Form::number('right_of_way',null,['class' => 'form-control', 'placeholder' => __('Right of Way (m)'),'min' => 1]) !!}
-                                    </div>
-
-                                    <div class="add-road-form-group pt-2">
-                                        {!! Form::label('carrying_width',__('Carrying Width (m)') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
-                                        {!! Form::number('carrying_width',null,['class' => 'form-control', 'placeholder' => __('Carrying Width (m)'),'min' => 1]) !!}
-                                    </div>
-
-
-                                    <div class="add-road-form-group pt-2">
-                                        {!! Form::label('surface_type',__('Surface Type'),['class' => 'control-label'],false) !!}
-                                        {!! Form::select('surface_type', $roadSurfaceTypes, null, ['class' => 'form-control', 'placeholder' => __('Road Surface Type')]);!!}
-                                    </div>
-
-                                    <div class="add-road-form-group pt-2">
-                                        {!! Form::label('length',__('Length (m)') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
-                                        {!! Form::number('length',null,['class' => 'form-control', 'placeholder' => __('Road Length (m)'),'min' => 1]) !!}
-                                    </div>
-
-                                    <div class="add-road-form-group pt-2">
-                                        {!! Form::label('road_code',__('Road Code') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
-                                        {!! Form::text('road_code',null,['class' => 'form-control', 'placeholder' => __('Road Code'), 'id' => 'road_code_field']) !!}
-                                        <small id="municipality_road_hint" style="color: #666; display: none; margin-top: 5px;">{{ __('Municipality Road: auto-generated as 20512510 + Ward(2 digits) + Serial(4 digits)') }}</small>
-                                    </div>
-
-                                    <div class="add-road-form-group pt-2">
-                                        <div class="custom-control custom-checkbox">
-                                            {!! Form::checkbox('use_extension', 1, false, ['class' => 'custom-control-input', 'id' => 'use_extension']) !!}
-                                            {!! Form::label('use_extension',__('Use Extension'),['class' => 'custom-control-label'],false) !!}
-                                        </div>
-                                        <small style="color: #666; display: block; margin-top: 5px;">{{ __('If enabled, Road Code above will be filled by Base Road Code selection + 2-digit extension.') }}</small>
-                                    </div>
-
-                                    <div id="extension_fields_container" style="display: none;">
-                                        <div class="add-road-form-group pt-2">
-                                            {!! Form::label('base_road_code',__('Base Road Code') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
-                                            {!! Form::select('base_road_code', isset($baseRoadCodes) ? $baseRoadCodes : [], null, ['class' => 'form-control', 'placeholder' => __('Select existing road code'), 'id' => 'base_road_code']) !!}
-                                        </div>
-
-                                        <div class="add-road-form-group pt-2">
-                                            {!! Form::label('extension',__('Extension (2 digits)') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
-                                            {!! Form::text('extension',null,['class' => 'form-control', 'placeholder' => __('01'), 'id' => 'extension', 'maxlength' => '2', 'pattern' => '[0-9]{2}']) !!}
-                                        </div>
-                                    </div>
-
-                                    <div class="add-road-form-group pt-2">
-                                        {!! Form::button(__('Save'), ['class' => 'btn btn-info', 'id' => 'add_road_submit_btn']) !!}
+                                        {!! Form::label('extension',__('Extension (2 digits)') .' <span
+                                            style="color: red">*</span>',['class' => 'control-label'],false) !!}
+                                        {!! Form::text('extension',null,['class' => 'form-control', 'placeholder' =>
+                                        __('01'), 'id' => 'extension', 'maxlength' => '2', 'pattern' => '[0-9]{2}']) !!}
                                     </div>
                                 </div>
-                            </form>
 
-                     <form class="form-horizontal" id="add-sewer-form">
-                        <div class="add-sewer-form" style="display: none">
+                                <div class="add-road-form-group pt-2">
+                                    {!! Form::button(__('Save'), ['class' => 'btn btn-info', 'id' =>
+                                    'add_road_submit_btn'])
+                                    !!}
+                                </div>
+                            </div>
+                        </form>
+
+                        <form class="form-horizontal" id="add-sewer-form">
+                            <div class="add-sewer-form" style="display: none">
                                 <div>
                                     <hr>
                                     <h4>{{ __('Add Sewer Network')}}</h4>
@@ -297,84 +438,124 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                                 <div id="add-sewer-errors" tabindex='1'>
 
                                 </div>
-                                    <div class="add-sewer-form-group">
-                                    {!! Form::label('road_code',__('Road Code') .' <span style="color: red">*</span>', ['class' => 'control-label d-block'], false) !!}
-                                    {!! Form::select('road_code', $road_code, null, ['class' => 'form-control', 'placeholder' => __('Road Code'), 'style' => 'width: 350px;']) !!}
+                                <div class="add-sewer-form-group">
+                                    {!! Form::label('road_code',__('Road Code') .' <span style="color: red">*</span>',
+                                    ['class' => 'control-label d-block'], false) !!}
+                                    {!! Form::select('road_code', $road_code, null, ['class' => 'form-control',
+                                    'placeholder' => __('Road Code'), 'style' => 'width: 350px;']) !!}
 
-                                    </div>
-                                    <div class="add-sewer-form-group pt-2">
-                                        {!! Form::label('location',__('Location') .'<span style="color: red">*</span>',['class' => 'control-label'],false) !!}
-                                        {!! Form::select('location', ['' => 'Location','middle' => 'middle','side' => 'side'], null, ['class' => 'form-control']) !!}
-                                    </div>
-                                    <div class="add-sewer-form-group pt-2">
-                                        {!! Form::label('length',__('Length (m)') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
-                                        {!! Form::text('length', null, ['class' => 'form-control', 'id' => 'length_sewer', 'placeholder' => __('Length (m)'), 'oninput' => "this.value = this.value.replace(/[^0-9.]/g, '');"]) !!}
+                                </div>
+                                <div class="add-sewer-form-group pt-2">
+                                    {!! Form::label('location',__('Location') .'<span
+                                        style="color: red">*</span>',['class'
+                                    => 'control-label'],false) !!}
+                                    {!! Form::select('location', ['' => 'Location','middle' => 'middle','side' =>
+                                    'side'],
+                                    null, ['class' => 'form-control']) !!}
+                                </div>
+                                <div class="add-sewer-form-group pt-2">
+                                    {!! Form::label('length',__('Length (m)') .' <span
+                                        style="color: red">*</span>',['class'
+                                    => 'control-label'],false) !!}
+                                    {!! Form::text('length', null, ['class' => 'form-control', 'id' => 'length_sewer',
+                                    'placeholder' => __('Length (m)'), 'oninput' => "this.value =
+                                    this.value.replace(/[^0-9.]/g, '');"]) !!}
 
-                                    </div>
-                                    <div class="add-sewer-form-group pt-2">
-                                       {!! Form::label('diameter',__('Diameter (mm)') .' <span style="color: red">*</span>',['class' => ' control-label'],false) !!}
-                                       {!! Form::text('diameter',null,['class' => 'form-control', 'placeholder' => __('Diameter (mm)'),'oninput' => "this.value = this.value.replace(/[^0-9.]/g, ''); ",]) !!}
-                                    </div>
-                                    <div class="add-sewer-form-group pt-2">
-                                        {!! Form::label('treatment_plant_id',__('Treatment Plant'),['class' => 'control-label'],false) !!}
-                                        {!! Form::select('treatment_plant_id', $treatmentPlants, null, ['class' => 'form-control', 'placeholder' => __('Treatment Plant')]);!!}
-                                    </div>
-                                    <div class="add-sewer-form-group pt-2">
-                                        {!! Form::button(__('Save'), ['class' => 'btn btn-info','id'=>'add_sewer_submit_btn', 'style' => 'width: -webkit-fill-available; margin-top: 12px;']) !!}
-                                    </div>
+                                </div>
+                                <div class="add-sewer-form-group pt-2">
+                                    {!! Form::label('diameter',__('Diameter (mm)') .' <span
+                                        style="color: red">*</span>',['class' => ' control-label'],false) !!}
+                                    {!! Form::text('diameter',null,['class' => 'form-control', 'placeholder' =>
+                                    __('Diameter
+                                    (mm)'),'oninput' => "this.value = this.value.replace(/[^0-9.]/g, ''); ",]) !!}
+                                </div>
+                                <div class="add-sewer-form-group pt-2">
+                                    {!! Form::label('treatment_plant_id',__('Treatment Plant'),['class' =>
+                                    'control-label'],false) !!}
+                                    {!! Form::select('treatment_plant_id', $treatmentPlants, null, ['class' =>
+                                    'form-control', 'placeholder' => __('Treatment Plant')]);!!}
+                                </div>
+                                <div class="add-sewer-form-group pt-2">
+                                    {!! Form::button(__('Save'), ['class' => 'btn
+                                    btn-info','id'=>'add_sewer_submit_btn',
+                                    'style' => 'width: -webkit-fill-available; margin-top: 12px;']) !!}
+                                </div>
 
                             </div>
 
-                    </form>
+                        </form>
 
-                    <form class="form-horizontal" id="add-drain-form">
-                        <div class="add-drain-form" style="display: none; overflow-y: scroll; max-height: 60vh;">
+                        <form class="form-horizontal" id="add-drain-form">
+                            <div class="add-drain-form" style="display: none; overflow-y: scroll; max-height: 60vh;">
                                 <div>
                                     <hr>
-                                     <h4>{{ __('Add Drain Network')}}</h4>
+                                    <h4>{{ __('Add Drain Network')}}</h4>
                                 </div>
                                 <div id="add-drain-errors" tabindex='1'>
 
                                 </div>
-                                    <div class="add-drain-form-group">
-                                    {!! Form::label('road_code', __('Road Code') .' <span style="color: red">*</span>', ['class' => 'control-label d-block'], false) !!}
-                                        {!! Form::select('road_code', $road_code, null, ['class' => 'form-control','id'=>'road_code_drain', 'placeholder' =>  __('Road Code'), 'style' => 'width: 350px;']) !!}
-                                    </div>
-                                    <div class="add-drain-form-group">
-                                    {!! Form::label('drain_code', __('Drain Code') .' <span style="color: red">*</span>', ['class' => 'control-label d-block'], false) !!}
-                                        {!! Form::text('drain_code', null, ['class' => 'form-control','id'=>'drain_code_drain', 'placeholder' =>  __('Drain Code'), 'readonly' => true]) !!}
-                                    </div>
-                                    <div class="add-drain-form-group pt-2">
-                                        {!! Form::label('cover_type', __('Cover Type'),['class' => 'control-label'],false) !!}
-                                        {!! Form::select('cover_type', $cover_type, null, ['class' => 'form-control', 'placeholder' => __('Cover Type')])!!}
-                                    </div>
-                                    <div class="add-drain-form-group pt-2">
-                                        {!! Form::label('surface_type', __('Surface Type'),['class' => 'control-label'],false) !!}
-                                        {!! Form::select('surface_type', $surface_type, null, ['class' => 'form-control', 'placeholder' => __('Surface Type'), 'id'=>'surface_type_drain',])!!}
-                                    </div>
-                                    <div class="add-drain-form-group pt-2">
-                                        {!! Form::label('size',__('Width (mm)') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
-                                        {!! Form::text('size', null, ['class' => 'form-control', 'placeholder' => __('Width (mm)'), 'oninput' => "this.value = this.value.replace(/[^0-9.]/g, '')"]) !!}
+                                <div class="add-drain-form-group">
+                                    {!! Form::label('road_code', __('Road Code') .' <span style="color: red">*</span>',
+                                    ['class' => 'control-label d-block'], false) !!}
+                                    {!! Form::select('road_code', $road_code, null, ['class' =>
+                                    'form-control','id'=>'road_code_drain', 'placeholder' => __('Road Code'), 'style' =>
+                                    'width: 350px;']) !!}
+                                </div>
+                                <div class="add-drain-form-group">
+                                    {!! Form::label('drain_code', __('Drain Code') .' <span
+                                        style="color: red">*</span>',
+                                    ['class' => 'control-label d-block'], false) !!}
+                                    {!! Form::text('drain_code', null, ['class' =>
+                                    'form-control','id'=>'drain_code_drain',
+                                    'placeholder' => __('Drain Code'), 'readonly' => true]) !!}
+                                </div>
+                                <div class="add-drain-form-group pt-2">
+                                    {!! Form::label('cover_type', __('Cover Type'),['class' => 'control-label'],false)
+                                    !!}
+                                    {!! Form::select('cover_type', $cover_type, null, ['class' => 'form-control',
+                                    'placeholder' => __('Cover Type')])!!}
+                                </div>
+                                <div class="add-drain-form-group pt-2">
+                                    {!! Form::label('surface_type', __('Surface Type'),['class' =>
+                                    'control-label'],false)
+                                    !!}
+                                    {!! Form::select('surface_type', $surface_type, null, ['class' => 'form-control',
+                                    'placeholder' => __('Surface Type'), 'id'=>'surface_type_drain',])!!}
+                                </div>
+                                <div class="add-drain-form-group pt-2">
+                                    {!! Form::label('size',__('Width (mm)') .' <span
+                                        style="color: red">*</span>',['class'
+                                    => 'control-label'],false) !!}
+                                    {!! Form::text('size', null, ['class' => 'form-control', 'placeholder' => __('Width
+                                    (mm)'), 'oninput' => "this.value = this.value.replace(/[^0-9.]/g, '')"]) !!}
 
-                                    </div>
-                                    <div class="add-drain-form-group pt-2">
-                                        {!! Form::label('length',__('Length (m)') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
-                                        {!! Form::text('length', null, ['class' => 'form-control', 'id' => 'length_drain', 'placeholder' => __('Length (m)'), 'oninput' => "this.value = this.value.replace(/[^0-9.]/g, '');"]) !!}
+                                </div>
+                                <div class="add-drain-form-group pt-2">
+                                    {!! Form::label('length',__('Length (m)') .' <span
+                                        style="color: red">*</span>',['class'
+                                    => 'control-label'],false) !!}
+                                    {!! Form::text('length', null, ['class' => 'form-control', 'id' => 'length_drain',
+                                    'placeholder' => __('Length (m)'), 'oninput' => "this.value =
+                                    this.value.replace(/[^0-9.]/g, '');"]) !!}
 
-                                    </div>
-                                    <div class="add-drain-form-group pt-2">
-                                        {!! Form::label('treatment_plant_id',__('Treatment Plant'),['class' => 'control-label'],false) !!}
-                                        {!! Form::select('treatment_plant_id', $treatmentPlants, null, ['class' => 'form-control', 'id' => 'tp_drain','placeholder' => __('Treatment Plant')]);!!}
-                                    </div>
-                                    <div class="add-drain-form-group pt-2">
-                                        {!! Form::button(__('Save'), ['class' => 'btn btn-info','id'=>'add_drain_submit_btn', 'style' => 'width: -webkit-fill-available; margin-top: 12px;']) !!}
-                                    </div>
+                                </div>
+                                <div class="add-drain-form-group pt-2">
+                                    {!! Form::label('treatment_plant_id',__('Treatment Plant'),['class' =>
+                                    'control-label'],false) !!}
+                                    {!! Form::select('treatment_plant_id', $treatmentPlants, null, ['class' =>
+                                    'form-control', 'id' => 'tp_drain','placeholder' => __('Treatment Plant')]);!!}
+                                </div>
+                                <div class="add-drain-form-group pt-2">
+                                    {!! Form::button(__('Save'), ['class' => 'btn
+                                    btn-info','id'=>'add_drain_submit_btn',
+                                    'style' => 'width: -webkit-fill-available; margin-top: 12px;']) !!}
+                                </div>
                             </div>
 
-                    </form>
+                        </form>
 
-                    <form class="form-horizontal" id="add-watersupply-form">
-                        <div class="add-watersupply-form" style="display: none">
+                        <form class="form-horizontal" id="add-watersupply-form">
+                            <div class="add-watersupply-form" style="display: none">
                                 <div>
                                     <hr>
                                     <h4>{{ __('Add Water Supply Network')}}</h4>
@@ -383,102 +564,148 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
 
                                 </div>
 
-                                    <div class="add-watersupply-form-group">
-                                    {!! Form::label('road_code', __('Road Code') .' <span style="color: red">*</span>', ['class' => 'control-label d-block'], false) !!}
-                                        {!! Form::select('road_code', $road_code, null, ['class' => 'form-control','id'=>'road_code_watersupply', 'placeholder' =>  __('Road Code'), 'style' => 'width: 350px;']) !!}
-                                    </div>
-                                    <div class="add-watersupply-form-group pt-2">
-                                        {!! Form::label('project_name', __('Project Name') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
-                                        {!! Form::text('project_name', null, ['class' => 'form-control', 'placeholder' => __('Project Name')]) !!}
+                                <div class="add-watersupply-form-group">
+                                    {!! Form::label('road_code', __('Road Code') .' <span style="color: red">*</span>',
+                                    ['class' => 'control-label d-block'], false) !!}
+                                    {!! Form::select('road_code', $road_code, null, ['class' =>
+                                    'form-control','id'=>'road_code_watersupply', 'placeholder' => __('Road Code'),
+                                    'style'
+                                    => 'width: 350px;']) !!}
+                                </div>
+                                <div class="add-watersupply-form-group pt-2">
+                                    {!! Form::label('project_name', __('Project Name') .' <span
+                                        style="color: red">*</span>',['class' => 'control-label'],false) !!}
+                                    {!! Form::text('project_name', null, ['class' => 'form-control', 'placeholder' =>
+                                    __('Project Name')]) !!}
 
-                                    </div>
-                                    <div class="add-watersupply-form-group pt-2">
-                                        {!! Form::label('type',__('Type'),['class' => 'control-label'],false) !!}
-                                        {!! Form::select('type', ['Main' => 'Main', 'Secondary' => 'Secondary'], null, ['class' => 'form-control', 'placeholder' => __('Type')]);!!}
-                                    </div>
-                                    <div class="add-watersupply-form-group pt-2">
-                                        {!! Form::label('material_type',__('Material Type'),['class' => 'control-label'],false) !!}
-                                        {!! Form::select('material_type', ['HDPE' => 'HDPE', 'GI' => 'GI'], null, ['class' => 'form-control', 'placeholder' => __('Material Type')])!!}
-                                    </div>
-                                    <div class="add-watersupply-form-group pt-2">
-                                       {!! Form::label('diameter',__('Diameter (mm)') .' <span style="color: red">*</span>',['class' => ' control-label'],false) !!}
-                                       {!! Form::text('diameter',null,['class' => 'form-control','id'=>'diameter_watersupply', 'placeholder' => __('Diameter (mm)'),'oninput' => "this.value = this.value.replace(/[^0-9.]/g, ''); ",]) !!}
-                                    </div>
-                                    <div class="add-watersupply-form-group pt-2">
-                                        {!! Form::label('length',__('Length (m)') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
-                                        {!! Form::text('length', null, ['class' => 'form-control', 'id' => 'length_watersupply', 'placeholder' =>  __('Length (m)'), 'oninput' => "this.value = this.value.replace(/[^0-9.]/g, '');"]) !!}
+                                </div>
+                                <div class="add-watersupply-form-group pt-2">
+                                    {!! Form::label('type',__('Type'),['class' => 'control-label'],false) !!}
+                                    {!! Form::select('type', ['Main' => 'Main', 'Secondary' => 'Secondary'], null,
+                                    ['class'
+                                    => 'form-control', 'placeholder' => __('Type')]);!!}
+                                </div>
+                                <div class="add-watersupply-form-group pt-2">
+                                    {!! Form::label('material_type',__('Material Type'),['class' =>
+                                    'control-label'],false)
+                                    !!}
+                                    {!! Form::select('material_type', ['HDPE' => 'HDPE', 'GI' => 'GI'], null, ['class'
+                                    =>
+                                    'form-control', 'placeholder' => __('Material Type')])!!}
+                                </div>
+                                <div class="add-watersupply-form-group pt-2">
+                                    {!! Form::label('diameter',__('Diameter (mm)') .' <span
+                                        style="color: red">*</span>',['class' => ' control-label'],false) !!}
+                                    {!! Form::text('diameter',null,['class' =>
+                                    'form-control','id'=>'diameter_watersupply',
+                                    'placeholder' => __('Diameter (mm)'),'oninput' => "this.value =
+                                    this.value.replace(/[^0-9.]/g, ''); ",]) !!}
+                                </div>
+                                <div class="add-watersupply-form-group pt-2">
+                                    {!! Form::label('length',__('Length (m)') .' <span
+                                        style="color: red">*</span>',['class'
+                                    => 'control-label'],false) !!}
+                                    {!! Form::text('length', null, ['class' => 'form-control', 'id' =>
+                                    'length_watersupply',
+                                    'placeholder' => __('Length (m)'), 'oninput' => "this.value =
+                                    this.value.replace(/[^0-9.]/g, '');"]) !!}
 
-                                    </div>
+                                </div>
 
-                                    <div class="add-watersupply-form-group pt-2" >
-                                    {!! Form::button(__('Save'), ['class' => 'btn btn-info', 'id' => 'add_watersupply_submit_btn', 'style' => 'width: -webkit-fill-available; margin-top: 12px;']) !!}
+                                <div class="add-watersupply-form-group pt-2">
+                                    {!! Form::button(__('Save'), ['class' => 'btn btn-info', 'id' =>
+                                    'add_watersupply_submit_btn', 'style' => 'width: -webkit-fill-available; margin-top:
+                                    12px;']) !!}
 
 
-                                    </div>
+                                </div>
                             </div>
 
-                    </form>
-                </div>
+                        </form>
+                    </div>
                     <div id="feature_info_content"></div>
                 </div>
             </div>
-            <div class="box-footer" id="add-road-inaccessible-box" style="display:none;position: absolute;top: 10px;left: 15px;filter: drop-shadow(0 10px 4px rgba(0,0,0,0.2));border-radius: 5px;border: 1px solid #cccccc;">
+            <div class="box-footer" id="add-road-inaccessible-box"
+                style="display:none;position: absolute;top: 10px;left: 15px;filter: drop-shadow(0 10px 4px rgba(0,0,0,0.2));border-radius: 5px;border: 1px solid #cccccc;">
                 <div id="add-road-inaccessible-box-content">
                     <form class="form-horizontal" id="add-road-inaccessible-form">
                         <div class="form-group">
-                            <div class="add-road-inaccessible-form" >
+                            <div class="add-road-inaccessible-form">
                                 <div>
                                     <h4>{{ __('Hard to Reach Buildings') }}</h4>
                                 </div>
                                 <div id="add-road-inaccessible-errors" tabindex='1'>
                                 </div>
-                                    <div class="add-road-inaccessible-form-group">
-                                        {!! Form::label('road_width', __('Carrying Width') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
-                                         <div class="container-fluid">
+                                <div class="add-road-inaccessible-form-group">
+                                    {!! Form::label('road_width', __('Carrying Width') .' <span
+                                        style="color: red">*</span>',['class' => 'control-label'],false) !!}
+                                    <div class="container-fluid">
                                         <div class="row">
-                                        {!! Form::text('road_width',null,['class' => 'form-control col-md-6', 'placeholder' => __('Carrying Width')  ,'oninput' => "this.value = this.value < 0 ? '' : this.value", ]) !!}
-                                        <select class="form-control col-md-6" id="road_width_unit"><option value="meter">{{ __('Meter') }}</option><option value="feet">{{ __('Feet') }}</option></select>
-                                    </div></div>
+                                            {!! Form::text('road_width',null,['class' => 'form-control col-md-6',
+                                            'placeholder' => __('Carrying Width') ,'oninput' => "this.value = this.value
+                                            < 0 ? '' : this.value", ]) !!} <select class="form-control col-md-6"
+                                                id="road_width_unit">
+                                                <option value="meter">{{ __('Meter') }}</option>
+                                                <option value="feet">{{ __('Feet') }}</option></select>
                                         </div>
-                                    <div class="add-road-inaccessible-form-group">
-                                        {!! Form::label('hose_length', __('Hose Length') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
-                                        <div class="container-fluid">
-                                        <div class="row">
-                                            {!! Form::text('hose_length',null,['class' => 'form-control col-md-6', 'placeholder' => __('Hose Length') , 'oninput' => "this.value = this.value < 0 ? '' : this.value",]) !!}
-                                        <select class="form-control col-md-6" id="hose_length_unit"><option value="meter">{{ __('Meter') }}</option><option value="feet">{{ __('Feet') }}</option></select>
-                                    </div></div></div>
-                                    <div class="add-road-inaccessible-form-group">
-                                        {!! Form::button(__('Submit'), ['class' => 'btn btn-info','id'=>'add_road_inaccessible_submit_btn']) !!}
                                     </div>
+                                </div>
+                                <div class="add-road-inaccessible-form-group">
+                                    {!! Form::label('hose_length', __('Hose Length') .' <span
+                                        style="color: red">*</span>',['class' => 'control-label'],false) !!}
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            {!! Form::text('hose_length',null,['class' => 'form-control col-md-6',
+                                            'placeholder' => __('Hose Length') , 'oninput' => "this.value = this.value <
+                                                0 ? '' : this.value",]) !!} <select class="form-control col-md-6"
+                                                id="hose_length_unit">
+                                                <option value="meter">{{ __('Meter') }}</option>
+                                                <option value="feet">{{ __('Feet') }}</option></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="add-road-inaccessible-form-group">
+                                    {!! Form::button(__('Submit'), ['class' => 'btn
+                                    btn-info','id'=>'add_road_inaccessible_submit_btn']) !!}
+                                </div>
                             </div>
                         </div>
                     </form>
                     <div id="feature_info_content"></div>
                 </div>
             </div>
-            <div class="box-footer" id="add-waterbody-inaccessible-box" style="display:none;position: absolute;top: 10px;left: 15px;filter: drop-shadow(0 10px 4px rgba(0,0,0,0.2));border-radius: 5px;border: 1px solid #cccccc;">
+            <div class="box-footer" id="add-waterbody-inaccessible-box"
+                style="display:none;position: absolute;top: 10px;left: 15px;filter: drop-shadow(0 10px 4px rgba(0,0,0,0.2));border-radius: 5px;border: 1px solid #cccccc;">
                 <div id="add-waterbody-inaccessible-box-content">
                     <form class="form-horizontal" id="add-waterbody-inaccessible-form">
                         <div class="form-group">
-                            <div class="add-waterbody-inaccessible-form" >
+                            <div class="add-waterbody-inaccessible-form">
                                 <div>
                                     <h4>{{ __('Buildings Close to Water Bodies') }}</h4>
                                 </div>
                                 <div id="add-waterbody-inaccessible-errors" tabindex='1'>
                                 </div>
-                                    <div class="add-waterbody-inaccessible-form-group">
-                                        {!! Form::label('waterbody_hose_length', __('Buffer Distance') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
-                                        <div class="container-fluid">
+                                <div class="add-waterbody-inaccessible-form-group">
+                                    {!! Form::label('waterbody_hose_length', __('Buffer Distance') .' <span
+                                        style="color: red">*</span>',['class' => 'control-label'],false) !!}
+                                    <div class="container-fluid">
                                         <div class="row">
 
-                                            {!! Form::text('waterbody_hose_length',null,['class' => 'form-control col-md-6', 'placeholder' => __('Buffer Distance'),'oninput' => "this.value = this.value < 0 ? '' : this.value",]) !!}
-                                        <select class="form-control col-md-6" id="waterbody_hose_length_unit"><option value="meter">{{ __('Meter') }}</option><option value="feet">{{ __('Feet') }}</option></select>
-                                        </div>
+                                            {!! Form::text('waterbody_hose_length',null,['class' => 'form-control
+                                            col-md-6',
+                                            'placeholder' => __('Buffer Distance'),'oninput' => "this.value = this.value
+                                            < 0 ? '' : this.value",]) !!} <select class="form-control col-md-6"
+                                                id="waterbody_hose_length_unit">
+                                                <option value="meter">{{ __('Meter') }}</option>
+                                                <option value="feet">{{ __('Feet') }}</option></select>
                                         </div>
                                     </div>
-                                    <div class="add-waterbody-inaccessible-form-group">
-                                        {!! Form::button(__('Submit'), ['class' => 'btn btn-info','id'=>'add_waterbody_inaccessible_submit_btn']) !!}
-                                    </div>
+                                </div>
+                                <div class="add-waterbody-inaccessible-form-group">
+                                    {!! Form::button(__('Submit'), ['class' => 'btn
+                                    btn-info','id'=>'add_waterbody_inaccessible_submit_btn']) !!}
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -489,12 +716,14 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                 <a href="#" id="popup-marker-closer" class="ol-popup-closer"></a>
                 <div id="popup-marker-content"></div>
             </div>
-            <div id="feature-info-popup" class="ol-popup" style="display: none; position: fixed; top: 100px; left: 100px; max-height: 300px; min-width: 450px; max-width: 500px; border: 1px solid #ddd; background-color: #fff; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
-    <a href="#" id="feature-info-popup-closer" class="ol-popup-closer" style="text-decoration: none; font-size: 16px; position: absolute; top: 10px; right: 10px;"></a>
-    <div id="feature_information" style="max-height: 250px; min-width: 450px; overflow-y: auto; padding: 10px;">
-        <!-- Content goes here -->
-    </div>
-</div>
+            <div id="feature-info-popup" class="ol-popup"
+                style="display: none; max-height: 300px; min-width: 450px; max-width: 500px;">
+                <a href="#" id="feature-info-popup-closer" class="ol-popup-closer"></a>
+                <div id="feature_information"
+                    style="max-height: 250px; min-width: 450px; overflow-y: auto; padding: 10px;">
+                    <!-- Content goes here -->
+                </div>
+            </div>
 
             <div id="report-popup" class="ol-popup" style="display: none;">
                 <a href="#" id="report-popup-closer" class="ol-popup-closer"></a>
@@ -503,8 +732,9 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                     <div><strong>{{ __('Export to') }}:</strong></div>
                     <div class="btn-group">
                         <form method="post" action="{{ url("getPolygonReportCSV") }}">
-                            <input type="hidden" name="geom" value="" id="report-export-geom"/>
-                            <button type="submit" id="report-export-csv-btn" class="btn btn-default">{{ __('Excel') }}</button>
+                            <input type="hidden" name="geom" value="" id="report-export-geom" />
+                            <button type="submit" id="report-export-csv-btn" class="btn btn-default">{{ __('Excel')
+                                }}</button>
                         </form>
                     </div>
                 </div>
@@ -513,16 +743,17 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                 <h3 class="card-title py-2">{{ __('Summary Info') }}</h3>
                 <div id="drain-potentialSummary-popup-content"></div>
                 <div id="drain-potentialSummary-popup-content-download">
-                        <form method="get" action="{{ url("maps/export-drain-potential-buildings") }}">
-                            <input type="hidden" name="db_code" value="" id="DrainBufferCode"/>
-                            <input type="hidden" name="db_distance" value="" id="DBdistance"/>
-                            @can('Export in Decision Map Tools')
-                            <button type="submit" id="drain-potentialSummary-export-excel-btn" class="btn btn-default">
-                                {{ __('Export to Excel') }}
-                            </button>
-                            @endcan
-                            <button id="drain-potentialSummary-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer" >{{ __('Close') }}</button>
-                        </form>
+                    <form method="get" action="{{ url("maps/export-drain-potential-buildings") }}">
+                        <input type="hidden" name="db_code" value="" id="DrainBufferCode" />
+                        <input type="hidden" name="db_distance" value="" id="DBdistance" />
+                        @can('Export in Decision Map Tools')
+                        <button type="submit" id="drain-potentialSummary-export-excel-btn" class="btn btn-default">
+                            {{ __('Export to Excel') }}
+                        </button>
+                        @endcan
+                        <button id="drain-potentialSummary-popup-closer" type="button"
+                            class="btn btn-default float-right xol-popup-closer">{{ __('Close') }}</button>
+                    </form>
                 </div>
             </div>
             <div id="water-body-popup" class="ol-popup" style="display: none;">
@@ -530,15 +761,17 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                 <div id="water-body-popup-content"></div>
 
                 <div id="water-body-popup-content-download">
-                        <form method="get" action="{{ url("maps/export-buffer-polygon-waterbody") }}">
-                            <input type="hidden" name="wb_code" value="" id="waterBodyCode"/>
-                            <input type="hidden" name="wb_distance" value="" id="WBdistance"/>
-                            @can('Export in Summary Information Map Tools')
-                            <button type="submit" id="water-body-export-excel-btn" class="btn btn-default">{{ __('Export to Excel') }}
-                            </button>
-                            @endcan
-                            <button id="water-body-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer" >{{ __('Close') }}</button>
-                        </form>
+                    <form method="get" action="{{ url("maps/export-buffer-polygon-waterbody") }}">
+                        <input type="hidden" name="wb_code" value="" id="waterBodyCode" />
+                        <input type="hidden" name="wb_distance" value="" id="WBdistance" />
+                        @can('Export in Summary Information Map Tools')
+                        <button type="submit" id="water-body-export-excel-btn" class="btn btn-default">{{ __('Export to
+                            Excel') }}
+                        </button>
+                        @endcan
+                        <button id="water-body-popup-closer" type="button"
+                            class="btn btn-default float-right xol-popup-closer">{{ __('Close') }}</button>
+                    </form>
                 </div>
 
             </div>
@@ -546,36 +779,42 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                 <div id="ward-buildings-popup-content"></div>
 
                 <div id="ward-buildings-popup-content-download">
-                        <form method="get" action="{{ url("maps/export-ward-buildings") }}">
-                            <input type="hidden" name="ward_building_no" value="" id="ward_building_no"/>
-                            @can('Export in Summary Information Map Tools')
-                            <button type="submit" id="ward-buildings-export-excel-btn" class="btn btn-default">{{ __('Export to Excel') }}
-                            </button>
-                            @endcan
-                            <button id="ward-buildings-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer" >{{ __('Close') }}</button>
-                        </form>
+                    <form method="get" action="{{ url("maps/export-ward-buildings") }}">
+                        <input type="hidden" name="ward_building_no" value="" id="ward_building_no" />
+                        @can('Export in Summary Information Map Tools')
+                        <button type="submit" id="ward-buildings-export-excel-btn" class="btn btn-default">{{ __('Export
+                            to
+                            Excel') }}
+                        </button>
+                        @endcan
+                        <button id="ward-buildings-popup-closer" type="button"
+                            class="btn btn-default float-right xol-popup-closer">{{ __('Close') }}</button>
+                    </form>
                 </div>
 
             </div>
             <div id="buffer-polygon-popup" class="ol-popup" style="display: none;">
 
 
-                    <h3 class="card-title py-2">{{ __('Summary Info') }}</h3>
+                <h3 class="card-title py-2">{{ __('Summary Info') }}</h3>
 
-                    <div id="buffer-polygon-popup-content"></div>
+                <div id="buffer-polygon-popup-content"></div>
 
 
 
                 <div id="buffer-polygon-popup-content-download">
-                        <form method="get" action="{{ url("maps/export-buffer-polygon") }}">
-                            <input type="hidden" name="buffer_polygon_geom" value="" id="buffer_polygon_geom"/>
-                            <input type="hidden" name="buffer_polygon_distance" value="" id="buffer_polygon_distance"/>
-                            @can('Export in Summary Information Map Tools')
-                              <button type="submit" id="buffer-polygon-export-excel-btn" class="btn btn-default">{{ __('Export to Excel') }}
-                              </button>
-                             @endcan
-                             <button id="buffer-polygon-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer" >{{ __('Close') }}</button>
-                        </form>
+                    <form method="get" action="{{ url("maps/export-buffer-polygon") }}">
+                        <input type="hidden" name="buffer_polygon_geom" value="" id="buffer_polygon_geom" />
+                        <input type="hidden" name="buffer_polygon_distance" value="" id="buffer_polygon_distance" />
+                        @can('Export in Summary Information Map Tools')
+                        <button type="submit" id="buffer-polygon-export-excel-btn" class="btn btn-default">{{ __('Export
+                            to
+                            Excel') }}
+                        </button>
+                        @endcan
+                        <button id="buffer-polygon-popup-closer" type="button"
+                            class="btn btn-default float-right xol-popup-closer">{{ __('Close') }}</button>
+                    </form>
                 </div>
 
 
@@ -586,14 +825,18 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                 <div id="road-popup-content"></div>
 
                 <div id="road-popup-content-download">
-                        <form method="get" action="{{ url("maps/export-road-buildings") }}">
-                            <input type="hidden" name="road_code" value="" id="RDCode"/>
-                            <input type="hidden" name="rb_distance" value="" id="RDBdistance"/>
-                            @can('Export in Summary Information Map Tools')
-                            <button type="submit" id="road-export-excel-btn" class="btn btn-default">{{ __('Export to Excel') }}</button>
-                            @endcan
-                            <button id="road-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer" >{{ __('Close') }}</button>
-                        </form>
+                    <form method="get" action="{{ url("maps/export-road-buildings") }}">
+                        <input type="hidden" name="road_code" value="" id="RDCode" />
+                        <input type="hidden" name="rb_distance" value="" id="RDBdistance" />
+                        @can('Export in Summary Information Map Tools')
+                        <button type="submit" id="road-export-excel-btn" class="btn btn-default">{{ __('Export to
+                            Excel')
+                            }}</button>
+                        @endcan
+                        <button id="road-popup-closer" type="button"
+                            class="btn btn-default float-right xol-popup-closer">{{
+                            __('Close') }}</button>
+                    </form>
                 </div>
 
             </div>
@@ -601,15 +844,17 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                 <h3 class="card-title py-2">{{ __('Summary Info') }}</h3>
                 <div id="point-buffer-popup-content"></div>
                 <div id="point-buffer-popup-content-download">
-                        <form method="get" action="{{ url("maps/export-point-buildings") }}">
-                            <input type="hidden" id="PTB-long-csv" name="PTB_long" value=""/>
-                            <input type="hidden" id="PTB-lat-csv" name="PTB_lat" value=""/>
-                            <input type="hidden" id="PTB-distance" name="PTB_distance" value=""/>
-                            @can('Export in Summary Information Map Tools')
-                            <button type="submit" id="ptb-export-excel-btn" class="btn btn-default">{{ __('Export to Excel') }}</button>
-                            @endcan
-                            <button id="point-buffer-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer" >{{ __('Close') }}</button>
-                        </form>
+                    <form method="get" action="{{ url("maps/export-point-buildings") }}">
+                        <input type="hidden" id="PTB-long-csv" name="PTB_long" value="" />
+                        <input type="hidden" id="PTB-lat-csv" name="PTB_lat" value="" />
+                        <input type="hidden" id="PTB-distance" name="PTB_distance" value="" />
+                        @can('Export in Summary Information Map Tools')
+                        <button type="submit" id="ptb-export-excel-btn" class="btn btn-default">{{ __('Export to Excel')
+                            }}</button>
+                        @endcan
+                        <button id="point-buffer-popup-closer" type="button"
+                            class="btn btn-default float-right xol-popup-closer">{{ __('Close') }}</button>
+                    </form>
                 </div>
             </div>
             <div id="export-popup" class="ol-popup" style="display: none;">
@@ -618,25 +863,27 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                 <div id="export-popup-content">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" >{{ __('Overlay') }}</span>
-                    </div>
-                    <select class="form-control"  id="export_overlay">
-                        <option value="">{{ __('Select a layer') }}</option>
-                    </select>
+                            <span class="input-group-text">{{ __('Overlay') }}</span>
+                        </div>
+                        <select class="form-control" id="export_overlay">
+                            <option value="">{{ __('Select a layer') }}</option>
+                        </select>
                     </div>
                     <div class="input-group">
-            <div class="input-group-prepend">
-                                        <span class="input-group-text" >{{ __('Export') }}</span>
-                                </div>
-            <div class="input-group-append">
-                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ __('Select a format') }}</button>
-                <div class="dropdown-menu">
-                <a class="dropdown-item" id="export-csv-btn" href="#">CSV</a>
-                <a class="dropdown-item"  id="export-kml-btn" href="#">KML</a>
-                <a class="dropdown-item" id="export-shape-btn"  href="#">Shape File</a>
-                </div>
-            </div>
-            </div>
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">{{ __('Export') }}</span>
+                        </div>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ __('Select a
+                                format') }}</button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" id="export-csv-btn" href="#">CSV</a>
+                                <a class="dropdown-item" id="export-kml-btn" href="#">KML</a>
+                                <a class="dropdown-item" id="export-shape-btn" href="#">Shape File</a>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
             </div>
@@ -647,11 +894,12 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                 <div id="export-csv-popup-content">
                     <div class="input-group">
                         {{-- <div class="input-group-prepend">
-                            <span class="input-group-text" >{{ __('Export') }}</span>
+                            <span class="input-group-text">{{ __('Export') }}</span>
                         </div> --}}
                         <div class="input-group-append">
-                            <input type="hidden" id="building-with-owner-polygon-geom" value=""/>
-                            <button id="export-buildings-csv-btn" class="btn btn-default">{{ __('Export to Excel') }}</button>
+                            <input type="hidden" id="building-with-owner-polygon-geom" value="" />
+                            <button id="export-buildings-csv-btn" class="btn btn-default">{{ __('Export to Excel')
+                                }}</button>
                         </div>
                     </div>
                 </div>
@@ -663,28 +911,34 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
             <div id="road-inaccessible-popup" class="ol-popup" style="display: none;">
                 <div id="road-inaccessible-popup-content"></div>
                 <div id="road-inaccessible-popup-content-download">
-                        <form method="get" action="{{ url("maps/road-inaccessible-buildings-reports") }}">
-                            <input type="hidden" name="road_width_report" value="" id="road_width_report"/>
-                            <input type="hidden" name="road_width_unit_report" value="" id="road_width_unit_report"/>
-                            <input type="hidden" name="road_hose_length_report" value="" id="road_hose_length_report"/>
-                            <input type="hidden" name="road_hose_length_unit_report" value="" id="road_hose_length_unit_report"/>
-                            <button type="submit" id="report-road-inaccessible-export-csv-btn" class="btn btn-default">{{ __('Export to Excel') }}</button>
-                            <button id="road-inaccessible-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer">{{ __('Close') }}</button>
-                        </form>
+                    <form method="get" action="{{ url("maps/road-inaccessible-buildings-reports") }}">
+                        <input type="hidden" name="road_width_report" value="" id="road_width_report" />
+                        <input type="hidden" name="road_width_unit_report" value="" id="road_width_unit_report" />
+                        <input type="hidden" name="road_hose_length_report" value="" id="road_hose_length_report" />
+                        <input type="hidden" name="road_hose_length_unit_report" value=""
+                            id="road_hose_length_unit_report" />
+                        <button type="submit" id="report-road-inaccessible-export-csv-btn" class="btn btn-default">{{
+                            __('Export to Excel') }}</button>
+                        <button id="road-inaccessible-popup-closer" type="button"
+                            class="btn btn-default float-right xol-popup-closer">{{ __('Close') }}</button>
+                    </form>
 
                 </div>
             </div>
-            <div id="map-right-sidebar">
+        </div>
+        <div id="map-right-sidebar-xxx" style="border:1px solid navy;">
+            <div id="map-right-sidebar" class="d-flex flex-column">
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="active nav-item"><a href="#layers-tab" aria-controls="layers" role="tab"
-                                                              data-toggle="tab" class="nav-link active" aria-selected="true">{{ __('Layers') }}</a></li>
+                    <li role="presentation" class="active nav-item"><a href="#layers-tab" aria-controls="layers"
+                            role="tab" data-toggle="tab" class="nav-link active" aria-selected="true">{{ __('Layers')
+                            }}</a></li>
                     <li role="presentation" class="nav-item"><a href="#analysis-tab" aria-controls="analysis" role="tab"
-                                               data-toggle="tab" class="nav-link">{{ __('Tools') }}</a></li>
+                            data-toggle="tab" class="nav-link">{{ __('Tools') }}</a></li>
                 </ul>
 
                 <!-- Tab panes -->
-                <div class="tab-content">
+                <div class="tab-content" style="overflow-y: scroll;">
                     <div role="tabpanel" class="tab-pane fade active show" id="layers-tab">
                         <div>
                             <div>
@@ -707,586 +961,738 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                     <div role="tabpanel" class="tab-pane fade" id="analysis-tab">
                         <!-- Service Providers Tools -->
                         @can('Service Delivery Map Tools')
-                            <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Service Delivery') }}">
+                        <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Service Delivery') }}">
                             <a id="servicedelivery_control" class="btn btn-default collapse-control" role="button"
-                            data-toggle="collapse" href="#collapse_service_delivery" aria-expanded="false"
-                            aria-controls="collapse_service_delivery"><i class="fa-brands fa-servicestack"></i>{{ __('Service Delivery Tools') }}</a>
-                            </span>
-                            <div class="collapse" id="collapse_service_delivery">
-                                <div class="card">
-                                    <div class="card-body">
-                                        @can('Applications Map Tools')
-                                            <!-- find application -->
-                                                <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Find Applications') }}">
-                                                    <a id="applicationcontainments_control" class="btn btn-default collapse-control collapsed" role="button" data-toggle="collapse" href="#collapse_find_appications" aria-expanded="false" aria-controls="collapse_find_appications"><i
-                                                    class="fa fa-file-text"></i>{{ __('Applications') }}</a>
-                                                </span>
-                                                <div class="collapse" id="collapse_find_appications">
-                                                    <div class="card">
-                                                        <div class="card-body">
-                                                            <form role="form" class="form-inline" name="find_application_yearmonth"
-                                                            id="find_application_yearmonth" style="margin-bottom: 15px">
-                                                                <div class="form-group">
-                                                                    <div class="input-group input-group-sm">
-                                                                        <select name="applicaion_year" class="form-control col-md-4"
-                                                                            id="applicaion_year">
-                                                                            <option value="">{{ __('Year') }}</option>
+                                data-toggle="collapse" href="#collapse_service_delivery" aria-expanded="false"
+                                aria-controls="collapse_service_delivery"><i class="fa-brands fa-servicestack"></i>{{
+                                __('Service Delivery Tools') }}</a>
+                        </span>
+                        <div class="collapse" id="collapse_service_delivery">
+                            <div class="card">
+                                <div class="card-body">
+                                    @can('Applications Map Tools')
+                                    <!-- find application -->
+                                    <span data-toggle="tooltip" data-placement="bottom"
+                                        title="{{ __('Find Applications') }}">
+                                        <a id="applicationcontainments_control"
+                                            class="btn btn-default collapse-control collapsed" role="button"
+                                            data-toggle="collapse" href="#collapse_find_appications"
+                                            aria-expanded="false" aria-controls="collapse_find_appications"><i
+                                                class="fa fa-file-text"></i>{{
+                                            __('Applications') }}</a>
+                                    </span>
+                                    <div class="collapse" id="collapse_find_appications">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <form role="form" class="form-inline" name="find_application_yearmonth"
+                                                    id="find_application_yearmonth" style="margin-bottom: 15px">
+                                                    <div class="form-group">
+                                                        <div class="input-group input-group-sm">
+                                                            <select name="applicaion_year" class="form-control col-md-4"
+                                                                id="applicaion_year">
+                                                                <option value="">{{ __('Year') }}</option>
 
-                                                                            @foreach($pickDateResults as $unique)
-                                                                                <option value= "{{ $unique->date1 }}" > {{ $unique->date1 }}</option>
+                                                                @foreach($pickDateResults as $unique)
+                                                                <option value="{{ $unique->date1 }}"> {{ $unique->date1
+                                                                    }}
+                                                                </option>
 
-                                                                            @endforeach
-                                                                        </select>
-                                                                        <select name="application_month" class="form-control col-md-4"
-                                                                            id="application_month">
-                                                                            <option value="">{{ __('Month') }}</option>
-                                                                            @for ($mm=1; $mm<=12; $mm++)
-                                                                                <option value="{{ $mm }}">{{ $mm }}</option>
-                                                                            @endfor
-                                                                        </select>
-                                                                        <div class="input-group-append">
-                                                                            <button type="submit" class="btn btn-default"><i class="fa fa-search" aria-hidden="true"></i></button>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </form>
-                                                            <form role="form" name="application_date_form" id="application_date_form" class="form-inline">
-                                                                <div class="input-group input-group-sm">
-                                                                    <div class="input-group-prepend"><span class="input-group-text">{{ __('Date') }}</span></div>
-                                                                        <input type="date" class="form-control col-md-10" id="application_date_field"/>
-                                                                        <div class="input-group-append">
-                                                                            <button type="submit" class="btn btn-default"><i class="fa fa-search" aria-hidden="true"></i></button>
-                                                                        </div>
-                                                                    </div>
-                                                            </form>
-                                                            <br>
-                                                            <table>
-                                                                <tr>
-                                                                    <td style="vertical-align: top;"><img
-                                                                                src="{{ asset("/img/application.png") }}"></td>
-                                                                    <td>-{{ __('Application only') }}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td style="vertical-align: top;"><img
-                                                                                src="{{ asset("/img/application-emptying.png") }}"></td>
-                                                                    <td>-{{ __('Application and emptying service') }}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td style="vertical-align: top;"><img
-                                                                                src="{{ asset("/img/application-feedback.png") }}"></td>
-                                                                    <td style="vertical-align: top;">-{{ __('Application, emptying service and feedback') }}
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td style="vertical-align: top;"><img
-                                                                                src="{{ asset("/img/application-sludge-collection.png") }}"></td>
-                                                                    <td style="vertical-align: top;">-{{ __('Application, emptying service, sludge collection and feedback') }}
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
+                                                                @endforeach
+                                                            </select>
+                                                            <select name="application_month"
+                                                                class="form-control col-md-4" id="application_month">
+                                                                <option value="">{{ __('Month') }}</option>
+                                                                @for ($mm=1; $mm<=12; $mm++) <option value="{{ $mm }}">
+                                                                    {{
+                                                                    $mm }}</option>
+                                                                    @endfor
+                                                            </select>
+                                                            <div class="input-group-append">
+                                                                <button type="submit" class="btn btn-default"><i
+                                                                        class="fa fa-search"
+                                                                        aria-hidden="true"></i></button>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                        @endcan
-
-                                        @can('Emptied Applications Not Reached to TP Map Tools')
-                                            <!-- find emptied applications that have not reached to treatment-plants -->
-                                            <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Emptied Applications that have not reached to Treatment Plant') }}">
-                                                <a id="applications_not_tp" class="btn btn-default collapse-control collapsed" role="button" data-toggle="collapse" href="#collapse_applications_not_tp" aria-expanded="false" aria-controls="collapse_find_tax_due_buildings"><i class="fa-solid fa-calendar-xmark"></i>{{ __('Emptied Applications not reached to Treatment Plant') }}</a>
-                                            </span>
-                                            <div class="collapse" id="collapse_applications_not_tp">
-                                                <div class="card">
-                                                    <div class="card-body">
-                                                        <form role="form" class="form-inline"
-                                                        name="find_application_not_tp_yearmonth"
-                                                        id="find_application_not_tp_yearmonth" style="margin-bottom: 15px">
-                                                            <div class="form-group">
-                                                                <div class="input-group input-group-sm">
-                                                                    <select name="applicaion_not_tp_year" class="form-control col-md-4" id="applicaion_not_tp_year">
-                                                                        <option value="">{{ __('Year') }}</option>
-                                                                        @foreach($pickDateResults as $unique)
-                                                                            <option value= "{{ $unique->date1 }}" > {{ $unique->date1 }}</option>
-                                                                        @endforeach
-                                                                    </select>
-
-                                                                    <select name="application_not_tp_month" class="form-control col-md-4" id="application_not_tp_month">
-                                                                        <option value="">{{ __('Month') }}</option>
-                                                                        @for ($mm=1; $mm<=12; $mm++)
-                                                                            <option value="{{ $mm }}">{{ $mm }}</option>
-                                                                        @endfor
-                                                                    </select>
-                                                                    <div class="input-group-append">
-                                                                        <button type="submit" class="btn btn-default"><i class="fa fa-search" aria-hidden="true"></i></button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </form>
-                                                        <form role="form" name="application_not_tp_date_form" id="application_not_tp_date_form" class="form-inline">
-                                                            <div class="input-group input-group-sm">
-                                                                <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1">{{ __('Date') }}</span></div>
-                                                                    <input type="date" class="form-control col-md-6"
-                                                                id="application_not_tp_date_field"/>
-                                                                <div class="input-group-append">
-                                                                    <button type="submit" class="btn btn-default"><i class="fa fa-search" aria-hidden="true"></i></button>
-                                                                </div>
-                                                            </div>
-                                                        </form>
-                                                        <br>
+                                                </form>
+                                                <form role="form" name="application_date_form"
+                                                    id="application_date_form" class="form-inline">
+                                                    <div class="input-group input-group-sm">
+                                                        <div class="input-group-prepend"><span
+                                                                class="input-group-text">{{
+                                                                __('Date') }}</span></div>
+                                                        <input type="date" class="form-control col-md-10"
+                                                            id="application_date_field" />
+                                                        <div class="input-group-append">
+                                                            <button type="submit" class="btn btn-default"><i
+                                                                    class="fa fa-search"
+                                                                    aria-hidden="true"></i></button>
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                </form>
+                                                <br>
+                                                <table>
+                                                    <tr>
+                                                        <td style="vertical-align: top;"><img src="{{ asset("/img/application.png") }}"></td>
+                                                        <td>-{{ __('Application only') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="vertical-align: top;"><img src="{{ asset("/img/application-emptying.png") }}"></td>
+                                                        <td>-{{ __('Application and emptying service') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="vertical-align: top;"><img src="{{ asset("/img/application-feedback.png") }}"></td>
+                                                        <td style="vertical-align: top;">-{{ __('Application, emptying
+                                                            service and feedback') }}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="vertical-align: top;"><img src="{{ asset("/img/application-sludge-collection.png") }}"></td>
+                                                        <td style="vertical-align: top;">-{{ __('Application, emptying
+                                                            service, sludge collection and feedback') }}
+                                                        </td>
+                                                    </tr>
+                                                </table>
                                             </div>
-                                        @endcan
-
-                                        @can('Containments Proposed To Be Emptied Map Tools')
-                                            <!-- find containment proposed to be emptied-->
-                                            <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Containments proposed to be emptied') }}">
-                                                <a id="containments_proposed_to_be_emptied" class="btn btn-default collapse-control" role="button" data-toggle="collapse"  href="#collapse_proposed_emptying_containments" aria-expanded="false" aria-controls="collapse_proposed_emptying_containments"><i class="fa fa-square" aria-hidden="true"></i>{{ __('Containments proposed to be emptied') }}</a>
-                                            </span>
-                                            <div class="collapse" id="collapse_proposed_emptying_containments">
-                                                <div class="card">
-                                                <div class="card-body">
-                                                        <form class="form-inline" name="proposed_emptying_days_form" id="proposed_emptying_days_form" style="margin-bottom: 15px">
-                                                            <div class="form-group ">
-                                                                <div class="input-group input-group-sm ">
-                                                                    <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1">{{ __('Next') }}</span></div>
-                                                                    <input type="text" class="form-control col-md-1"
-                                                                        id="proposed_emptying_days">
-                                                                    <div class="input-group-append"><span class="input-group-text">{{ __('Days') }}</span></div>
-                                                                    <div class="input-group-append">
-                                                                        <button type="submit" class="btn btn-default"><i class="fa fa-search" aria-hidden="true"></i></button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </form>
-                                                        <form class="form-inline" name="proposed_emptying_week_form"
-                                                        id="proposed_emptying_week_form" style="margin-bottom: 15px">
-                                                            <div class="form-group">
-                                                                <div class="input-group input-group-sm">
-                                                                    <div class="input-group-prepend">
-                                                                        <span class="input-group-text">{{ __('Next Week') }}</span>
-                                                                    </div>
-                                                                    <div class="input-group-append">
-                                                                        <button type="submit" class="btn btn-default"><i class="fa fa-search" aria-hidden="true"></i></button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </form>
-                                                        <form role="form" name="proposed_emptying_date_form" id="proposed_emptying_date_form">
-                                                            <div class="input-group input-group-sm">
-                                                                <div class="input-group-prepend"><span class="input-group-text">{{ __('Date') }}</span></div>
-                                                                <input type="date" class="form-control" id="proposed_emptying_date"/>
-                                                                <div class="input-group-append">
-                                                                    <button type="submit" class="btn btn-default"><i class="fa fa-search" aria-hidden="true"></i></button>
-                                                                </div>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endcan
-
-                                        @can('Service Feedback Map Tools')
-                                            <!-- feedback chart -->
-                                            <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Generate Feedback Chart within Custom Boundary') }}">
-                                                <a href="#" id="feedback_control" class="btn btn-default map-control"><i
-                                                class="fa fa-list-alt"></i>{{ __('Service Feedback') }}</a>
-                                            </span>
-                                        @endcan
+                                        </div>
                                     </div>
+                                    @endcan
+
+                                    @can('Emptied Applications Not Reached to TP Map Tools')
+                                    <!-- find emptied applications that have not reached to treatment-plants -->
+                                    <span data-toggle="tooltip" data-placement="bottom"
+                                        title="{{ __('Emptied Applications that have not reached to Treatment Plant') }}">
+                                        <a id="applications_not_tp" class="btn btn-default collapse-control collapsed"
+                                            role="button" data-toggle="collapse" href="#collapse_applications_not_tp"
+                                            aria-expanded="false" aria-controls="collapse_find_tax_due_buildings"><i
+                                                class="fa-solid fa-calendar-xmark"></i>{{ __('Emptied Applications not
+                                            reached to Treatment Plant') }}</a>
+                                    </span>
+                                    <div class="collapse" id="collapse_applications_not_tp">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <form role="form" class="form-inline"
+                                                    name="find_application_not_tp_yearmonth"
+                                                    id="find_application_not_tp_yearmonth" style="margin-bottom: 15px">
+                                                    <div class="form-group">
+                                                        <div class="input-group input-group-sm">
+                                                            <select name="applicaion_not_tp_year"
+                                                                class="form-control col-md-4"
+                                                                id="applicaion_not_tp_year">
+                                                                <option value="">{{ __('Year') }}</option>
+                                                                @foreach($pickDateResults as $unique)
+                                                                <option value="{{ $unique->date1 }}"> {{ $unique->date1
+                                                                    }}
+                                                                </option>
+                                                                @endforeach
+                                                            </select>
+
+                                                            <select name="application_not_tp_month"
+                                                                class="form-control col-md-4"
+                                                                id="application_not_tp_month">
+                                                                <option value="">{{ __('Month') }}</option>
+                                                                @for ($mm=1; $mm<=12; $mm++) <option value="{{ $mm }}">
+                                                                    {{
+                                                                    $mm }}</option>
+                                                                    @endfor
+                                                            </select>
+                                                            <div class="input-group-append">
+                                                                <button type="submit" class="btn btn-default"><i
+                                                                        class="fa fa-search"
+                                                                        aria-hidden="true"></i></button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                                <form role="form" name="application_not_tp_date_form"
+                                                    id="application_not_tp_date_form" class="form-inline">
+                                                    <div class="input-group input-group-sm">
+                                                        <div class="input-group-prepend"><span class="input-group-text"
+                                                                id="basic-addon1">{{ __('Date') }}</span></div>
+                                                        <input type="date" class="form-control col-md-6"
+                                                            id="application_not_tp_date_field" />
+                                                        <div class="input-group-append">
+                                                            <button type="submit" class="btn btn-default"><i
+                                                                    class="fa fa-search"
+                                                                    aria-hidden="true"></i></button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                                <br>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endcan
+
+                                    @can('Containments Proposed To Be Emptied Map Tools')
+                                    <!-- find containment proposed to be emptied-->
+                                    <span data-toggle="tooltip" data-placement="bottom"
+                                        title="{{ __('Containments proposed to be emptied') }}">
+                                        <a id="containments_proposed_to_be_emptied"
+                                            class="btn btn-default collapse-control" role="button"
+                                            data-toggle="collapse" href="#collapse_proposed_emptying_containments"
+                                            aria-expanded="false"
+                                            aria-controls="collapse_proposed_emptying_containments"><i
+                                                class="fa fa-square" aria-hidden="true"></i>{{ __('Containments proposed
+                                            to be emptied') }}</a>
+                                    </span>
+                                    <div class="collapse" id="collapse_proposed_emptying_containments">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <form class="form-inline" name="proposed_emptying_days_form"
+                                                    id="proposed_emptying_days_form" style="margin-bottom: 15px">
+                                                    <div class="form-group ">
+                                                        <div class="input-group input-group-sm ">
+                                                            <div class="input-group-prepend"><span
+                                                                    class="input-group-text" id="basic-addon1">{{
+                                                                    __('Next') }}</span></div>
+                                                            <input type="text" class="form-control col-md-1"
+                                                                id="proposed_emptying_days">
+                                                            <div class="input-group-append"><span
+                                                                    class="input-group-text">{{ __('Days') }}</span>
+                                                            </div>
+                                                            <div class="input-group-append">
+                                                                <button type="submit" class="btn btn-default"><i
+                                                                        class="fa fa-search"
+                                                                        aria-hidden="true"></i></button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                                <form class="form-inline" name="proposed_emptying_week_form"
+                                                    id="proposed_emptying_week_form" style="margin-bottom: 15px">
+                                                    <div class="form-group">
+                                                        <div class="input-group input-group-sm">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text">{{ __('Next Week')}}</span>
+                                                            </div>
+                                                            <div class="input-group-append">
+                                                                <button type="submit" class="btn btn-default"><i
+                                                                        class="fa fa-search"
+                                                                        aria-hidden="true"></i></button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                                <form role="form" name="proposed_emptying_date_form"
+                                                    id="proposed_emptying_date_form">
+                                                    <div class="input-group input-group-sm">
+                                                        <div class="input-group-prepend"><span
+                                                                class="input-group-text">{{
+                                                                __('Date') }}</span></div>
+                                                        <input type="date" class="form-control"
+                                                            id="proposed_emptying_date" />
+                                                        <div class="input-group-append">
+                                                            <button type="submit" class="btn btn-default"><i
+                                                                    class="fa fa-search"
+                                                                    aria-hidden="true"></i></button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endcan
+
+                                    @can('Service Feedback Map Tools')
+                                    <!-- feedback chart -->
+                                    <span data-toggle="tooltip" data-placement="bottom"
+                                        title="{{ __('Generate Feedback Chart within Custom Boundary') }}">
+                                        <a href="#" id="feedback_control" class="btn btn-default map-control"><i
+                                                class="fa fa-list-alt"></i>{{ __('Service Feedback') }}</a>
+                                    </span>
+                                    @endcan
                                 </div>
                             </div>
+                        </div>
                         @endcan
 
                         @can('General Map Tools')
-                            <!-- General Tools -->
-                            <span data-toggle="tooltip" data-placement="bottom" title= "General Tools">
-                                <a id="generaltools_control" class="btn btn-default collapse-control" role="button"
+                        <!-- General Tools -->
+                        <span data-toggle="tooltip" data-placement="bottom" title="General Tools">
+                            <a id="generaltools_control" class="btn btn-default collapse-control" role="button"
                                 data-toggle="collapse" href="#collapse_general_tools" aria-expanded="false"
-                                aria-controls="collapse_general_tools"><i class="fa-brands fa-servicestack"></i>{{ __('General Tools') }}</a>
-                            </span>
-                            <div class="collapse" id="collapse_general_tools">
-                                <div class="card">
-                                    <div class="card-body">
-                                        @can('Building by Structure Map Tools')
-                                            <!-- Find Building By structure -->
-                                            <span data-toggle="tooltip" data-placement="bottom" title= "{{ __('Buildings by Structure Type') }}">
-                                                <a class="btn btn-default collapse-control" role="button" data-toggle="collapse" href="#collapse_building_structype_filter" aria-expanded="false" aria-controls="collapse_building_structype_filter"><i class="fa fa-building"></i>{{ __('Buildings by Structure Type') }}</a>
-                                            </span>
-                                            <div class="collapse" id="collapse_building_structype_filter">
-                                                <div class="card">
-                                                    <div class="card-body">
-                                                        <div id="building_structype_checkbox_container">
-                                                            @foreach($pickStructureResults as $structype)
-                                                                    <div class="checkbox">
-                                                                        <label>
-                                                                            <input type="checkbox"  name="{{ $structype->id }}"   value= "{{ $structype->id }}" /> {{ $structype->type }}
-                                                                        </label>
-                                                                    </div>
-                                                            @endforeach
+                                aria-controls="collapse_general_tools"><i class="fa-brands fa-servicestack"></i>{{
+                                __('General Tools') }}</a>
+                        </span>
+                        <div class="collapse" id="collapse_general_tools">
+                            <div class="card">
+                                <div class="card-body">
+                                    @can('Building by Structure Map Tools')
+                                    <!-- Find Building By structure -->
+                                    <span data-toggle="tooltip" data-placement="bottom"
+                                        title="{{ __('Buildings by Structure Type') }}">
+                                        <a class="btn btn-default collapse-control" role="button" data-toggle="collapse"
+                                            href="#collapse_building_structype_filter" aria-expanded="false"
+                                            aria-controls="collapse_building_structype_filter"><i
+                                                class="fa fa-building"></i>{{ __('Buildings by Structure Type') }}</a>
+                                    </span>
+                                    <div class="collapse" id="collapse_building_structype_filter">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div id="building_structype_checkbox_container">
+                                                    @foreach($pickStructureResults as $structype)
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            <input type="checkbox" name="{{ $structype->id }}"
+                                                                value="{{ $structype->id }}" /> {{ $structype->type }}
+                                                        </label>
+                                                    </div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endcan
+
+                                    @can('Property Tax Map Tools')
+                                    <!-- Building by Tax Payments -->
+                                    <span data-toggle="tooltip" data-placement="bottom"
+                                        title="{{ __('Property Tax Collection Status') }}">
+                                        <a class="btn btn-default collapse-control" role="button" data-toggle="collapse"
+                                            href="#collapse_building_tax_status" aria-expanded="false"
+                                            aria-controls="collapse_building_tax_status"><i
+                                                class="fa fa-building"></i>{{
+                                            __('Property Tax Collection Status') }}</a>
+                                    </span>
+                                    <div class="collapse" id="collapse_building_tax_status">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <form role="form" name="building_tax_payment_form"
+                                                    id="building_tax_payment_form">
+                                                    <div id="building_tax_payment_checkbox_container">
+                                                        @foreach($dueYears as $key => $val)
+                                                        <div class="checkbox">
+                                                            <label>
+                                                                <input type="checkbox" name="{{$key}}"
+                                                                    value="{{$val}}" />
+                                                                {{$val}}
+                                                            </label>
+                                                        </div>
+                                                        @endforeach
+                                                    </div>
+
+                                                    <button type="button" class="btn btn-default"
+                                                        id="building_tax_payment_clear_button">{{ __('Filter') }}
+                                                    </button>
+                                                    @can('Export in General Map Tools')
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-default dropdown-toggle"
+                                                            data-toggle="dropdown" aria-haspopup="true"
+                                                            aria-expanded="false">{{ __('Export') }}<span
+                                                                class="caret"></span>
+                                                        </button>
+                                                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                            <a href="#" class="dropdown-item"
+                                                                id="export_building_tax_filter_csv">CSV</a>
+                                                            <a href="#" class="dropdown-item"
+                                                                id="export_building_tax_filter_kml">KML</a>
+                                                            <a href="#" class="dropdown-item"
+                                                                id="export_building_tax_filter_shp">Shape File</a>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                    @endcan
+                                                </form>
                                             </div>
-                                        @endcan
-
-                                        @can('Property Tax Map Tools')
-                                            <!-- Building by Tax Payments -->
-                                            <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Property Tax Collection Status') }}">
-                                                <a class="btn btn-default collapse-control" role="button" data-toggle="collapse" href="#collapse_building_tax_status" aria-expanded="false" aria-controls="collapse_building_tax_status"><i class="fa fa-building"></i>{{ __('Property Tax Collection Status') }}</a>
-                                            </span>
-                                            <div class="collapse" id="collapse_building_tax_status">
-                                                <div class="card">
-                                                    <div class="card-body">
-                                                        <form role="form" name="building_tax_payment_form" id="building_tax_payment_form">
-                                                            <div id="building_tax_payment_checkbox_container">
-                                                                @foreach($dueYears as $key => $val)
-                                                                    <div class="checkbox">
-                                                                        <label>
-                                                                            <input type="checkbox" name="{{$key}}" value="{{$val}}"/>
-                                                                            {{$val}}
-                                                                        </label>
-                                                                    </div>
-                                                                @endforeach
-                                                            </div>
-
-                                                            <button type="button" class="btn btn-default" id="building_tax_payment_clear_button">{{ __('Filter') }}
-                                                            </button>
-                                                            @can('Export in General Map Tools')
-                                                                <div class="btn-group">
-                                                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ __('Export') }}<span class="caret"></span>
-                                                                    </button>
-                                                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                                        <a href="#" class="dropdown-item" id="export_building_tax_filter_csv">CSV</a>
-                                                                        <a href="#" class="dropdown-item" id="export_building_tax_filter_kml">KML</a>
-                                                                        <a href="#" class="dropdown-item" id="export_building_tax_filter_shp">Shape File</a>
-                                                                    </div>
-                                                                </div>
-                                                            @endcan
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endcan
-
-                                        @can('Water Payment Status Map Tools')
-                                            <!-- water supply payments -->
-                                            <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Water Payment Status') }}">
-                                                <a class="btn btn-default collapse-control" role="button" data-toggle="collapse" href="#collapse_water_supply_status" aria-expanded="false" aria-controls="collapse_building_tax_status"><i class="fa fa-building"></i>{{ __('Water Payment Status') }}</a>
-                                            </span>
-                                            <div class="collapse" id="collapse_water_supply_status">
-                                                <div class="card">
-                                                    <div class="card-body">
-                                                        <form role="form" name="water_supply_payment_form" id="water_supply_payment_form">
-                                                            <div id="water_supply_payment_checkbox_container">
-                                                                @foreach($dueYears as $key => $val)
-                                                                    <div class="checkbox">
-                                                                        <label>
-                                                                            <input type="checkbox" name="{{$key}}" value="{{$val}}"/>
-                                                                            {{$val}}
-                                                                        </label>
-                                                                    </div>
-                                                                @endforeach
-                                                            </div>
-                                                            <button type="button" class="btn btn-default" id="water_supply_payment_clear_button">{{ __('Filter') }}
-                                                            </button>
-                                                            @can('Export in General Map Tools')
-                                                                <div class="btn-group">
-                                                                    <button type="button" class="btn btn-default dropdown-toggle"
-                                                                            data-toggle="dropdown" aria-haspopup="true"
-                                                                            aria-expanded="false">
-                                                                            {{ __('Export') }} <span class="caret"></span>
-                                                                    </button>
-
-                                                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                                        <a href="#" class="dropdown-item"  id="export_water_supply_filter_csv">CSV</a>
-                                                                        <a href="#" class="dropdown-item"  id="export_water_supply_filter_kml">KML</a>
-                                                                        <a href="#" class="dropdown-item"  id="export_water_supply_filter_shp">Shape File</a>
-                                                                    </div>
-                                                                </div>
-                                                            @endcan
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endcan
-
-                                        @can('Solid Waste Payment Status Map Tools')
-                                            <!-- Swm -->
-                                            <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Solid Waste Payment Status') }}">
-                                                <a class="btn btn-default collapse-control" role="button" data-toggle="collapse" href="#collapse_swm" aria-expanded="false" aria-controls="collapse_building_tax_status"><i class="fa fa-building"></i>{{ __('Solid Waste Payment Status') }}</a>
-                                            </span>
-                                            <div class="collapse" id="collapse_swm">
-                                                <div class="card">
-                                                    <div class="card-body">
-                                                        <form role="form" name="swm_form"id="swm_form">
-                                                            <div id="swm_checkbox_container">
-                                                                @foreach($dueYears as $key => $val)
-                                                                    <div class="checkbox">
-                                                                        <label>
-                                                                            <input type="checkbox" name="{{$key}}" value="{{$val}}"/>
-                                                                            {{$val}}
-                                                                        </label>
-                                                                    </div>
-                                                                @endforeach
-                                                            </div>
-                                                            <button type="button" class="btn btn-default"
-                                                                    id="swm_clear_button">{{ __('Filter') }}
-                                                            </button>
-                                                            @can('Export in General Map Tools')
-                                                                <div class="btn-group">
-                                                                    <button type="button" class="btn btn-default dropdown-toggle"
-                                                                            data-toggle="dropdown" aria-haspopup="true"
-                                                                            aria-expanded="false">
-                                                                            {{ __('Export') }} <span class="caret"></span>
-                                                                    </button>
-                                                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                                        <a href="#" class="dropdown-item"  id="export_swm_filter_csv">CSV</a>
-                                                                        <a href="#" class="dropdown-item"  id="export_swm_filter_kml">KML</a>
-                                                                        <a href="#" class="dropdown-item"  id="export_swm_filter_shp">Shape File</a>
-                                                                    </div>
-                                                                </div>
-                                                            @endcan
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endcan
+                                        </div>
                                     </div>
+                                    @endcan
+
+                                    @can('Water Payment Status Map Tools')
+                                    <!-- water supply payments -->
+                                    <span data-toggle="tooltip" data-placement="bottom"
+                                        title="{{ __('Water Payment Status') }}">
+                                        <a class="btn btn-default collapse-control" role="button" data-toggle="collapse"
+                                            href="#collapse_water_supply_status" aria-expanded="false"
+                                            aria-controls="collapse_building_tax_status"><i
+                                                class="fa fa-building"></i>{{
+                                            __('Water Payment Status') }}</a>
+                                    </span>
+                                    <div class="collapse" id="collapse_water_supply_status">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <form role="form" name="water_supply_payment_form"
+                                                    id="water_supply_payment_form">
+                                                    <div id="water_supply_payment_checkbox_container">
+                                                        @foreach($dueYears as $key => $val)
+                                                        <div class="checkbox">
+                                                            <label>
+                                                                <input type="checkbox" name="{{$key}}"
+                                                                    value="{{$val}}" />
+                                                                {{$val}}
+                                                            </label>
+                                                        </div>
+                                                        @endforeach
+                                                    </div>
+                                                    <button type="button" class="btn btn-default"
+                                                        id="water_supply_payment_clear_button">{{ __('Filter') }}
+                                                    </button>
+                                                    @can('Export in General Map Tools')
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-default dropdown-toggle"
+                                                            data-toggle="dropdown" aria-haspopup="true"
+                                                            aria-expanded="false">
+                                                            {{ __('Export') }} <span class="caret"></span>
+                                                        </button>
+
+                                                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                            <a href="#" class="dropdown-item"
+                                                                id="export_water_supply_filter_csv">CSV</a>
+                                                            <a href="#" class="dropdown-item"
+                                                                id="export_water_supply_filter_kml">KML</a>
+                                                            <a href="#" class="dropdown-item"
+                                                                id="export_water_supply_filter_shp">Shape File</a>
+                                                        </div>
+                                                    </div>
+                                                    @endcan
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endcan
+
+                                    @can('Solid Waste Payment Status Map Tools')
+                                    <!-- Swm -->
+                                    <span data-toggle="tooltip" data-placement="bottom"
+                                        title="{{ __('Solid Waste Payment Status') }}">
+                                        <a class="btn btn-default collapse-control" role="button" data-toggle="collapse"
+                                            href="#collapse_swm" aria-expanded="false"
+                                            aria-controls="collapse_building_tax_status"><i
+                                                class="fa fa-building"></i>{{
+                                            __('Solid Waste Payment Status') }}</a>
+                                    </span>
+                                    <div class="collapse" id="collapse_swm">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <form role="form" name="swm_form" id="swm_form">
+                                                    <div id="swm_checkbox_container">
+                                                        @foreach($dueYears as $key => $val)
+                                                        <div class="checkbox">
+                                                            <label>
+                                                                <input type="checkbox" name="{{$key}}"
+                                                                    value="{{$val}}" />
+                                                                {{$val}}
+                                                            </label>
+                                                        </div>
+                                                        @endforeach
+                                                    </div>
+                                                    <button type="button" class="btn btn-default"
+                                                        id="swm_clear_button">{{
+                                                        __('Filter') }}
+                                                    </button>
+                                                    @can('Export in General Map Tools')
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-default dropdown-toggle"
+                                                            data-toggle="dropdown" aria-haspopup="true"
+                                                            aria-expanded="false">
+                                                            {{ __('Export') }} <span class="caret"></span>
+                                                        </button>
+                                                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                            <a href="#" class="dropdown-item"
+                                                                id="export_swm_filter_csv">CSV</a>
+                                                            <a href="#" class="dropdown-item"
+                                                                id="export_swm_filter_kml">KML</a>
+                                                            <a href="#" class="dropdown-item"
+                                                                id="export_swm_filter_shp">Shape File</a>
+                                                        </div>
+                                                    </div>
+                                                    @endcan
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endcan
                                 </div>
                             </div>
+                        </div>
                         @endcan
 
                         @can('Data Export Map Tools')
-                            <!-- Data Export Tools -->
-                            <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Data Export') }}">
-                                <a id="dataexporttools_control" class="btn btn-default collapse-control" role="button"
+                        <!-- Data Export Tools -->
+                        <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Data Export') }}">
+                            <a id="dataexporttools_control" class="btn btn-default collapse-control" role="button"
                                 data-toggle="collapse" href="#collapse_data_export_tools" aria-expanded="false"
-                                aria-controls="collapse_data_export_tools"><i class="fa-solid fa-file-export"></i>{{ __('Data Export Tools') }}</a>
-                            </span>
-                            <div class="collapse" id="collapse_data_export_tools">
-                                <div class="card">
-                                    <div class="card-body">
-                                        @can('Filter by Wards Map Tools')
-                                            <!-- filter by wards -->
-                                            <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Filter by Wards') }}">
-                                                <a class="btn btn-default collapse-control" role="button" data-toggle="collapse"
-                                                href="#collapse_ward_filter" aria-expanded="false"
-                                                aria-controls="collapse_ward_filter"><i class="fa fa-map"></i>{{ __('Filter by Wards') }}</a>
-                                            </span>
-                                            <div class="collapse" id="collapse_ward_filter">
-                                                <div class="card">
-                                                    <div class="card-body">
-                                                        <form role="form" name="ward_form" id="ward_form">
-                                                            <div class="form-group ">
-                                                                <label for="ward" >{{ __('Wards') }}</label>
-                                                                {!! Form::select('ward', $wards,null, ['id' => 'ward', 'multiple' => true, 'style' => 'width: 100%'])!!}
-                                                            </div>
-                                                            <div class="form-group ">
-                                                                <label for="ward_overlay" >{{ __('Overlay') }}</label>
-                                                                    <select id="ward_overlay" style="width: 100%" >
-                                                                        <option value="">{{ __('Select a layer') }}</option>
-                                                                    </select>
-                                                            </div>
-                                                            <button type="submit"  id="ward_filter" class="btn btn-default">{{ __('Filter') }}</button>
-                                                            <button type="button" class="btn btn-default" id="ward_clear_button">
-                                                                {{ __('Clear') }}
-                                                            </button>
-                                                            <div class="btn-group">
-                                                                <button type="button" class="btn btn-default dropdown-toggle"
-                                                                        data-toggle="dropdown" aria-haspopup="true"
-                                                                        aria-expanded="false">
-                                                                    {{ __('Export') }}<span class="caret"></span>
-                                                                </button>
-                                                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                                    <a class="dropdown-item" href="#" id="export_ward_filter_csv">CSV</a>
-                                                                    <a class="dropdown-item" href="#" id="export_ward_filter_kml">KML</a>
-                                                                    <a class="dropdown-item" href="#" id="export_ward_filter_shp">Shape File
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </form>
+                                aria-controls="collapse_data_export_tools"><i class="fa-solid fa-file-export"></i>{{
+                                __('Data Export Tools') }}</a>
+                        </span>
+                        <div class="collapse" id="collapse_data_export_tools">
+                            <div class="card">
+                                <div class="card-body">
+                                    @can('Filter by Wards Map Tools')
+                                    <!-- filter by wards -->
+                                    <span data-toggle="tooltip" data-placement="bottom"
+                                        title="{{ __('Filter by Wards') }}">
+                                        <a class="btn btn-default collapse-control" role="button" data-toggle="collapse"
+                                            href="#collapse_ward_filter" aria-expanded="false"
+                                            aria-controls="collapse_ward_filter"><i class="fa fa-map"></i>{{ __('Filter
+                                            by
+                                            Wards') }}</a>
+                                    </span>
+                                    <div class="collapse" id="collapse_ward_filter">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <form role="form" name="ward_form" id="ward_form">
+                                                    <div class="form-group ">
+                                                        <label for="ward">{{ __('Wards') }}</label>
+                                                        {!! Form::select('ward', $wards,null, ['id' => 'ward',
+                                                        'multiple' =>
+                                                        true, 'style' => 'width: 100%'])!!}
                                                     </div>
-                                                </div>
+                                                    <div class="form-group ">
+                                                        <label for="ward_overlay">{{ __('Overlay') }}</label>
+                                                        <select id="ward_overlay" style="width: 100%">
+                                                            <option value="">{{ __('Select a layer') }}</option>
+                                                        </select>
+                                                    </div>
+                                                    <button type="submit" id="ward_filter" class="btn btn-default">{{
+                                                        __('Filter') }}</button>
+                                                    <button type="button" class="btn btn-default"
+                                                        id="ward_clear_button">
+                                                        {{ __('Clear') }}
+                                                    </button>
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-default dropdown-toggle"
+                                                            data-toggle="dropdown" aria-haspopup="true"
+                                                            aria-expanded="false">
+                                                            {{ __('Export') }}<span class="caret"></span>
+                                                        </button>
+                                                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                            <a class="dropdown-item" href="#"
+                                                                id="export_ward_filter_csv">CSV</a>
+                                                            <a class="dropdown-item" href="#"
+                                                                id="export_ward_filter_kml">KML</a>
+                                                            <a class="dropdown-item" href="#"
+                                                                id="export_ward_filter_shp">Shape File
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </form>
                                             </div>
-                                        @endcan
-
-                                        @can('Export Data Map Tools')
-                                            <!-- export data set -->
-                                            <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Export Data Set within Custom Boundary') }}">
-                                                <a href="#" id="export_control" class="btn btn-default map-control"><i class="fa-solid fa-file-export"></i>{{ __('Export Data Set') }}</a>
-                                            </span>
-                                        @endcan
-
-                                        @can('Owner Information Map Tools')
-                                            <!-- Building Owner Information -->
-                                            <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Building Owner Information within Custom Boundary') }}">
-                                                <a href="#" id="update_tax_zone" class="btn btn-default map-control"><i
-                                                    class="fa fa-database"></i>{{ __('Building Owner Information') }}</a>
-                                            </span>
-                                        @endcan
+                                        </div>
                                     </div>
+                                    @endcan
+
+                                    @can('Export Data Map Tools')
+                                    <!-- export data set -->
+                                    <span data-toggle="tooltip" data-placement="bottom"
+                                        title="{{ __('Export Data Set within Custom Boundary') }}">
+                                        <a href="#" id="export_control" class="btn btn-default map-control"><i
+                                                class="fa-solid fa-file-export"></i>{{ __('Export Data Set') }}</a>
+                                    </span>
+                                    @endcan
+
+                                    @can('Owner Information Map Tools')
+                                    <!-- Building Owner Information -->
+                                    <span data-toggle="tooltip" data-placement="bottom"
+                                        title="{{ __('Building Owner Information within Custom Boundary') }}">
+                                        <a href="#" id="update_tax_zone" class="btn btn-default map-control"><i
+                                                class="fa fa-database"></i>{{ __('Building Owner Information') }}</a>
+                                    </span>
+                                    @endcan
                                 </div>
                             </div>
+                        </div>
                         @endcan
 
                         @can('Decision Map Tools')
-                            <!-- Decision Tools -->
-                            <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Decision Tools') }}">
-                                    <a id="decisiontools_control" class="btn btn-default collapse-control" role="button"
-                                    data-toggle="collapse" href="#collapse_decision_tools" aria-expanded="false"
-                                    aria-controls="collapse_decision_tools"><i class="fa-solid fa-calendar-check"></i>{{ __('Decision Tools') }}</a>
-                            </span>
-                            <div class="collapse" id="collapse_decision_tools">
-                                <div class="card">
-                                    <div class="card-body">
-                                            @can('Tax Due Map Tools')
-                                                <!-- find tax due buildings(Commented - Might be needed in the future) -->
-                                                <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Find Tax Due Buildings') }}">
-                                                    <a id="duebuildings_control" class="btn btn-default collapse-control collapsed"
-                                                    role="button" data-toggle="collapse" href="#collapse_find_tax_due_buildings"
-                                                    aria-expanded="false" aria-controls="collapse_find_tax_due_buildings"><i class="fa-solid fa-building-circle-exclamation"></i>{{ __('Tax Due Buildings') }}</a>
-                                                </span>
-                                                <div class="collapse" id="collapse_find_tax_due_buildings">
-                                                    <div class="card">
-                                                        <div class="card-body">
-                                                            <form role="form" name="tax_due_buildings_form" id="tax_due_buildings_form">
-                                                                <div class="form-group">
-                                                                    <label for="ward_tax_due">{{ __('Wards') }}</label>
-                                                                        {!! Form::select('ward',$wards,null,['id' => 'ward_tax_due', 'multiple' => true, 'style' => 'width: 100%'])!!}
-                                                                </div>
-                                                                <button type="submit" class="btn btn-default">{{ __('Filter') }}</button>
-                                                                <button type="button" class="btn btn-default" id="wardtaxzone_clear_button">{{ __('Close') }}
-                                                                </button>
-                                                            </form>
-                                                            <table>
-                                                                <tr>
-                                                                    <td style="vertical-align: top;"><img
-                                                                                src="{{ asset("/img/building-green.png") }}"></td>
-                                                                    <td> - {{ __('Tax Due') }}</td>
-                                                                </tr>
-                                                            </table>
-                                                        </div>
+                        <!-- Decision Tools -->
+                        <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Decision Tools') }}">
+                            <a id="decisiontools_control" class="btn btn-default collapse-control" role="button"
+                                data-toggle="collapse" href="#collapse_decision_tools" aria-expanded="false"
+                                aria-controls="collapse_decision_tools"><i class="fa-solid fa-calendar-check"></i>{{
+                                __('Decision Tools') }}</a>
+                        </span>
+                        <div class="collapse" id="collapse_decision_tools">
+                            <div class="card">
+                                <div class="card-body">
+                                    @can('Tax Due Map Tools')
+                                    <!-- find tax due buildings(Commented - Might be needed in the future) -->
+                                    <span data-toggle="tooltip" data-placement="bottom"
+                                        title="{{ __('Find Tax Due Buildings') }}">
+                                        <a id="duebuildings_control" class="btn btn-default collapse-control collapsed"
+                                            role="button" data-toggle="collapse" href="#collapse_find_tax_due_buildings"
+                                            aria-expanded="false" aria-controls="collapse_find_tax_due_buildings"><i
+                                                class="fa-solid fa-building-circle-exclamation"></i>{{ __('Tax Due
+                                            Buildings') }}</a>
+                                    </span>
+                                    <div class="collapse" id="collapse_find_tax_due_buildings">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <form role="form" name="tax_due_buildings_form"
+                                                    id="tax_due_buildings_form">
+                                                    <div class="form-group">
+                                                        <label for="ward_tax_due">{{ __('Wards') }}</label>
+                                                        {!! Form::select('ward',$wards,null,['id' => 'ward_tax_due',
+                                                        'multiple' => true, 'style' => 'width: 100%'])!!}
                                                     </div>
-                                                </div>
-                                            @endcan
-
-                                            @can('Sewer Potential Map Tools')
-                                                <!-- find sewer potential buildings -->
-                                                <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Find Buildings Potential to Connect to Sewer') }}">
-                                                    <a href="#" id="drainpotential_control" class="btn btn-default map-control"><i class="fa-solid fa-building"></i>{{ __('Sewers Potential Buildings') }}</a>
-                                                </span>
-                                            @endcan
-
-                                            @can('Buildings to Sewer Map Tools')
-                                                <!-- find building to sewer -->
-                                                <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Find Buildings Connected to Sewer') }}">
-                                                    <a href="#" id="drainbuildings_control" class="btn btn-default map-control"><i class="fa fa-building"></i>{{ __('Buildings to Sewer') }}</a>
-                                                </span>
-                                            @endcan
-
-                                            @can('Buildings to Road Map Tools')
-                                                <!-- find buildings connecet to road -->
-                                                <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Find Buildings Connected to Road') }}">
-                                                    <a href="#" id="roadbuildings_control" class="btn btn-default map-control"><i class="fa fa-building"></i>{{ __('Buildings to Road') }}</a>
-                                                </span>
-                                            @endcan
-
-                                            @can('Hard to Reach Buildings Map Tools')
-                                                <!-- find Hard to Reach Buildings -->
-                                                <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Find Buildings that are Hard to Reach') }}">
-                                                    <a href="#" id="road_inaccessible_control" class="btn btn-default map-control"><i class="fa-brands fa-buffer"  title="{{ __('Hard to Reach Building') }}"></i>{{ __('Hard to Reach Buildings') }}</a>
-                                                </span>
-                                            @endcan
-
-                                            @can('Building Close to Water Bodies Map Tools')
-                                                 <!-- find Building Close to Water Bodies -->
-                                                <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Find Buildings that are close to Water Bodies') }}">
-                                                    <a href="#" id="waterbody_inaccessible_control" class="btn btn-default map-control"><i class="fa-solid fa-water"></i>{{ __('Building Close to Water Bodies') }}</a>
-                                                </span>
-                                            @endcan
-
-                                            @can('Community Toilets Map Tools')
-                                                 <!-- find Buildings using Community Toilets -->
-                                                <span data-toggle="tooltip" data-placement="bottom" title="{{ __('Find Buildings that use Community Toilet') }}">
-                                                    <a href="#" id="ptct_network" class="btn btn-default map-control" ><i class="fa-solid fa-bezier-curve"></i>{{ __('Buildings using Community Toilets') }}</a>
-                                                </span>
-                                            @endcan
-
-                                            @can('Area Population Map Tools')
-                                                <!-- area population -->
-                                                <span data-toggle="tooltip" data-placement="bottom"
-                                                    title="{{ __('Estimate Population within Custom Boundary') }}">
-                                                    <a href="#" id="areapopulation_control" class="btn btn-default map-control" data-toggle="tooltip" data-placement="bottom"><i class="fa fa-bars" aria-hidden="true"></i>{{ __('Area Population') }}</a>
-                                                </span>
-                                            @endcan
-
-                                            @can('Summary Information Buffer Map Tools')
-                                                <!-- Summary Information -->
-                                                <span data-toggle="tooltip" data-placement="bottom"
-                                                title="{{ __('Generate Information of Buildings and Containment within Custom Boundary with Buffer') }}">
-                                                    <a href="#" id="report_control_summary_buffer" class="btn btn-default map-control"><i
-                                                    class="fa fa-list-alt"></i>{{ __('Summary Information Buffer Filter') }}</a>
-                                                </span>
-                                            @endcan
-
-                                            @can('Summary Information Water Bodies Map Tools')
-                                                <!-- water bodies buffer -->
-                                                <span data-toggle="tooltip" data-placement="bottom"
-                                                    title="{{ __('Generate Information of Buildings and Containment within Selected Water Body with Buffer') }}">
-                                                    <a href="#" id="buildingswaterbodies_control" class="btn btn-default map-control"><i class="fa-solid fa-building"></i>{{ __('Water Bodies Buffer Summary Information') }}</a>
-                                                </span>
-                                            @endcan
-
-                                            @can('Summary Information Wards Map Tools')
-                                                <!-- by wards -->
-                                                <span data-toggle="tooltip" data-placement="bottom"
-                                                    title="{{ __('Generate Information of Buildings and Containment within Selected Ward') }}">
-                                                    <a href="#" id="buildingswards_control" class="btn btn-default map-control"><i class="fa-solid fa-building"></i>{{ __('Wards Summary Information') }}</a>
-                                                </span>
-                                            @endcan
-
-                                            @can('Summary Information Road Map Tools')
-                                                <!-- road buffer -->
-                                                <span data-toggle="tooltip" data-placement="bottom"
-                                                    title="{{ __('Generate Information of Buildings and Containment within Selected Road with Buffer') }}">
-                                                    <a href="#" id="buildingsroads_control" class="btn btn-default map-control"><i class="fa-solid fa-building"></i>{{ __('Road Buffer Summary Information') }}</a>
-                                                </span>
-                                            @endcan
-
-                                            @can('Summary Information Point Map Tools')
-                                                <!-- point buffer -->
-                                                <span data-toggle="tooltip" data-placement="bottom"
-                                                    title="{{ __('Generate Information of Buildings and Containment within Selected Point with Buffer') }}">
-                                                    <a href="#" id="pointbuffer_control" class="btn btn-default map-control"><i
-                                                    class="fa fa-building"></i>{{ __('Point Buffer Summary Information') }}</a>
-                                                </span>
-                                            @endcan
-                                            @can('Containments Emptied Info Map Tools')
-                                            <span data-toggle="tooltip" data-placement="bottom"
-                                          title="{{ __('Containments emptied monthly') }}">
-                            <a href="#" id="containments_emptied_monthly" class="btn btn-default map-control"><i
-                                        class="fa fa-building"></i>{{ __('Containments Emptied Information') }}</a>
-                             </span>
-                             @endcan
-                             @can('Toilet Isochrone Map Tools')
-                            <!-- toilet isochrone map -->
-                            <span data-toggle="tooltip" data-placement="bottom"
-                                          title="{{ __('Generate isochrone information of CTPT by distance traversed (m)') }}">
-                            <a href="#" id="toilet_isochrone_control" class="btn btn-default map-control"><i
-                                        class="fa fa-building"></i>{{ __('Public Toilet Accessibility Tool') }}</a>
-                             </span>
-                             @endcan
+                                                    <button type="submit" class="btn btn-default">{{ __('Filter')
+                                                        }}</button>
+                                                    <button type="button" class="btn btn-default"
+                                                        id="wardtaxzone_clear_button">{{ __('Close') }}
+                                                    </button>
+                                                </form>
+                                                <table>
+                                                    <tr>
+                                                        <td style="vertical-align: top;"><img src="{{ asset("/img/building-green.png") }}"></td>
+                                                        <td> - {{ __('Tax Due') }}</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
                                     </div>
+                                    @endcan
+
+                                    @can('Sewer Potential Map Tools')
+                                    <!-- find sewer potential buildings -->
+                                    <span data-toggle="tooltip" data-placement="bottom"
+                                        title="{{ __('Find Buildings Potential to Connect to Sewer') }}">
+                                        <a href="#" id="drainpotential_control" class="btn btn-default map-control"><i
+                                                class="fa-solid fa-building"></i>{{ __('Sewers Potential Buildings')
+                                            }}</a>
+                                    </span>
+                                    @endcan
+
+                                    @can('Buildings to Sewer Map Tools')
+                                    <!-- find building to sewer -->
+                                    <span data-toggle="tooltip" data-placement="bottom"
+                                        title="{{ __('Find Buildings Connected to Sewer') }}">
+                                        <a href="#" id="drainbuildings_control" class="btn btn-default map-control"><i
+                                                class="fa fa-building"></i>{{ __('Buildings to Sewer') }}</a>
+                                    </span>
+                                    @endcan
+
+                                    @can('Buildings to Road Map Tools')
+                                    <!-- find buildings connecet to road -->
+                                    <span data-toggle="tooltip" data-placement="bottom"
+                                        title="{{ __('Find Buildings Connected to Road') }}">
+                                        <a href="#" id="roadbuildings_control" class="btn btn-default map-control"><i
+                                                class="fa fa-building"></i>{{ __('Buildings to Road') }}</a>
+                                    </span>
+                                    @endcan
+
+                                    @can('Hard to Reach Buildings Map Tools')
+                                    <!-- find Hard to Reach Buildings -->
+                                    <span data-toggle="tooltip" data-placement="bottom"
+                                        title="{{ __('Find Buildings that are Hard to Reach') }}">
+                                        <a href="#" id="road_inaccessible_control"
+                                            class="btn btn-default map-control"><i class="fa-brands fa-buffer"
+                                                title="{{ __('Hard to Reach Building') }}"></i>{{ __('Hard to Reach
+                                            Buildings') }}</a>
+                                    </span>
+                                    @endcan
+
+                                    @can('Building Close to Water Bodies Map Tools')
+                                    <!-- find Building Close to Water Bodies -->
+                                    <span data-toggle="tooltip" data-placement="bottom"
+                                        title="{{ __('Find Buildings that are close to Water Bodies') }}">
+                                        <a href="#" id="waterbody_inaccessible_control"
+                                            class="btn btn-default map-control"><i class="fa-solid fa-water"></i>{{
+                                            __('Building Close to Water Bodies') }}</a>
+                                    </span>
+                                    @endcan
+
+                                    @can('Community Toilets Map Tools')
+                                    <!-- find Buildings using Community Toilets -->
+                                    <span data-toggle="tooltip" data-placement="bottom"
+                                        title="{{ __('Find Buildings that use Community Toilet') }}">
+                                        <a href="#" id="ptct_network" class="btn btn-default map-control"><i
+                                                class="fa-solid fa-bezier-curve"></i>{{ __('Buildings using Community
+                                            Toilets') }}</a>
+                                    </span>
+                                    @endcan
+
+                                    @can('Area Population Map Tools')
+                                    <!-- area population -->
+                                    <span data-toggle="tooltip" data-placement="bottom"
+                                        title="{{ __('Estimate Population within Custom Boundary') }}">
+                                        <a href="#" id="areapopulation_control" class="btn btn-default map-control"
+                                            data-toggle="tooltip" data-placement="bottom"><i class="fa fa-bars"
+                                                aria-hidden="true"></i>{{ __('Area Population') }}</a>
+                                    </span>
+                                    @endcan
+
+                                    @can('Summary Information Buffer Map Tools')
+                                    <!-- Summary Information -->
+                                    <span data-toggle="tooltip" data-placement="bottom"
+                                        title="{{ __('Generate Information of Buildings and Containment within Custom Boundary with Buffer') }}">
+                                        <a href="#" id="report_control_summary_buffer"
+                                            class="btn btn-default map-control"><i class="fa fa-list-alt"></i>{{
+                                            __('Summary
+                                            Information Buffer Filter') }}</a>
+                                    </span>
+                                    @endcan
+
+                                    @can('Summary Information Water Bodies Map Tools')
+                                    <!-- water bodies buffer -->
+                                    <span data-toggle="tooltip" data-placement="bottom"
+                                        title="{{ __('Generate Information of Buildings and Containment within Selected Water Body with Buffer') }}">
+                                        <a href="#" id="buildingswaterbodies_control"
+                                            class="btn btn-default map-control"><i class="fa-solid fa-building"></i>{{
+                                            __('Water Bodies Buffer Summary
+                                            Information') }}</a>
+                                    </span>
+                                    @endcan
+
+                                    @can('Summary Information Wards Map Tools')
+                                    <!-- by wards -->
+                                    <span data-toggle="tooltip" data-placement="bottom"
+                                        title="{{ __('Generate Information of Buildings and Containment within Selected Ward') }}">
+                                        <a href="#" id="buildingswards_control" class="btn btn-default map-control"><i
+                                                class="fa-solid fa-building"></i>{{ __('Wards Summary Information')
+                                            }}</a>
+                                    </span>
+                                    @endcan
+
+                                    @can('Summary Information Road Map Tools')
+                                    <!-- road buffer -->
+                                    <span data-toggle="tooltip" data-placement="bottom"
+                                        title="{{ __('Generate Information of Buildings and Containment within Selected Road with Buffer') }}">
+                                        <a href="#" id="buildingsroads_control" class="btn btn-default map-control"><i
+                                                class="fa-solid fa-building"></i>{{ __('Road Buffer Summary
+                                            Information')
+                                            }}</a>
+                                    </span>
+                                    @endcan
+
+                                    @can('Summary Information Point Map Tools')
+                                    <!-- point buffer -->
+                                    <span data-toggle="tooltip" data-placement="bottom"
+                                        title="{{ __('Generate Information of Buildings and Containment within Selected Point with Buffer') }}">
+                                        <a href="#" id="pointbuffer_control" class="btn btn-default map-control"><i
+                                                class="fa fa-building"></i>{{ __('Point Buffer Summary Information')
+                                            }}</a>
+                                    </span>
+                                    @endcan
+                                    @can('Containments Emptied Info Map Tools')
+                                    <span data-toggle="tooltip" data-placement="bottom"
+                                        title="{{ __('Containments emptied monthly') }}">
+                                        <a href="#" id="containments_emptied_monthly"
+                                            class="btn btn-default map-control"><i class="fa fa-building"></i>{{
+                                            __('Containments Emptied Information') }}</a>
+                                    </span>
+                                    @endcan
+                                    @can('Toilet Isochrone Map Tools')
+                                    <!-- toilet isochrone map -->
+                                    <span data-toggle="tooltip" data-placement="bottom"
+                                        title="{{ __('Generate isochrone information of CTPT by distance traversed (m)') }}">
+                                        <a href="#" id="toilet_isochrone_control" class="btn btn-default map-control"><i
+                                                class="fa fa-building"></i>{{ __('Public Toilet Accessibility Tool')
+                                            }}</a>
+                                    </span>
+                                    @endcan
                                 </div>
                             </div>
+                        </div>
                         @endcan
 
                     </div>
 
-                <div class="row main-row"></div>
+                    <div class="row main-row"></div>
 
 
-            </div><!-- /.content-wrapper -->
+                </div><!-- /.content-wrapper -->
+            </div>
+
             <div class="col-md-3 sidebar sidebar-top-left" style="display: none;">
                 <div class="panel-group sidebar-body map__" id="accordion-left">
                     <div class="panel panel-default">
@@ -1297,8 +1703,8 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                                     {{ __('Spatial Analysis') }}
                                 </a>
                                 <span class="pull-right slide-submenu">
-                    <i class="glyphicon glyphicon-chevron-left"></i>
-                  </span>
+                                    <i class="glyphicon glyphicon-chevron-left"></i>
+                                </span>
 
                             </h4>
                         </div>
@@ -1320,8 +1726,8 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                                     {{ __('Layers') }}
                                 </a>
                                 <span class="pull-right slide-submenu">
-                  <i class="glyphicon glyphicon-chevron-right"></i>
-                </span>
+                                    <i class="glyphicon glyphicon-chevron-right"></i>
+                                </span>
 
                             </h4>
                         </div>
@@ -1346,8 +1752,8 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                                     {{ __('Info') }}
                                 </a>
                                 <span class="pull-right slide-submenu">
-                    <i class="glyphicon glyphicon-chevron-left"></i>
-                  </span>
+                                    <i class="glyphicon glyphicon-chevron-left"></i>
+                                </span>
 
                             </h4>
                         </div>
@@ -1374,25 +1780,26 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
         </div>
     </div>
 
-
-
-
-    <footer class="main-footer" style="position:fixed;right:0;bottom:0;width: 100%;z-index:35;padding:7px;height:35px;">
-        <!-- To the right -->
-        <div class="float-right d-none d-sm-inline ">
-        	<strong>Implemented by:</strong> <a href="https://streamstech.com">Streams Tech Ltd.</a>
-    	</div>
+    <footer class="flex-shrink-0 d-flex align-items-center justify-content-between"
+        style="z-index:35; padding:10px; height:35px; color:#869099; border-top:1px solid #dee2e6; background: #fff;">
         <strong>
             &copy; {{ config('constants.SITE_NAME') }}. All rights reserved.
         </strong>
+
+        <!-- To the right -->
+        <div class="d-none d-sm-inline ml-auto">
+            <strong>Implemented by:</strong> <a href="https://streamstech.com">Streams Tech Ltd.</a>
+        </div>
 
         <!-- Default to the left -->
         <div id="footer-content">
             <div id="output"></div>
         </div>
-
     </footer>
+</div>
 
+<!-- all modals -->
+<div>
     <div class="modal fade" id="print_modal" tabindex="-1" role="dialog" aria-labelledby="print_modal_label">
         <div class="modal-dialog modal-sm print_modal_dialog ui-draggable draggable" role="document">
             <div class="modal-content">
@@ -1400,20 +1807,20 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
 
                     <h4 class="modal-title" id="print_modal_label">{{ __('Print Map') }}</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
+                        <span aria-hidden="true">×</span>
                     </button>
                 </div>
 
-                    <div class="modal-body">
-                        <div class="form-group required">
-                            <label class="control-label">{{ __('Title') }}</label>
-                            <input type="text" class="form-control" id="print_map_title"/>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label">{{ __('Description') }}</label>
-                            <textarea class="form-control" rows="3" id="print_map_description"></textarea>
-                        </div>
-                        <div class="form-group">
+                <div class="modal-body">
+                    <div class="form-group required">
+                        <label class="control-label">{{ __('Title') }}</label>
+                        <input type="text" class="form-control" id="print_map_title" />
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">{{ __('Description') }}</label>
+                        <textarea class="form-control" rows="3" id="print_map_description"></textarea>
+                    </div>
+                    <div class="form-group">
                         <label class="control-label">{{ __('Scale') }}</label>
                         <select class="form-control" id="print_scale">
                             <option value="500" selected>1:500</option>
@@ -1427,47 +1834,47 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                             <option value="75000">1:75,000</option>
                             <option value="100000">1:100,000</option>
                         </select>
-                        </div>
-                        <div class="form-group">
+                    </div>
+                    <div class="form-group">
                         <label class="control-label">{{ __('Paper Size') }}</label>
                         <select class="form-control " id="print_paper_size">
                             <option value="A4" selected>A4</option>
                             <option value="A3">A3</option>
                         </select>
-                        </div>
-                        <div class="form-group">
+                    </div>
+                    <div class="form-group">
                         <label class="control-label">{{ __('DPI') }}</label>
                         <select class="form-control " id="print_dpi">
-                            <option value="75" >75</option>
+                            <option value="75">75</option>
                             <option value="150" selected>150</option>
-                            <option value="200" >200</option>
+                            <option value="200">200</option>
                         </select>
-                        </div>
-                        <div class="form-group">
+                    </div>
+                    <div class="form-group">
                         <label class="control-label">{{ __('Orientation') }}</label>
                         <select class="form-control " id="box_orientation">
                             <!--<option value="portrait" selected>Portrait</option>-->
-                            <option value="landscape" >Landscape</option>
+                            <option value="landscape">Landscape</option>
                         </select>
-                        </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">{{ __('Close') }}</button>
-                        <button type="submit" class="btn btn-info" id="print_map_fish">{{ __('Print') }}</button>
-                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ __('Close') }}</button>
+                    <button type="submit" class="btn btn-info" id="print_map_fish">{{ __('Print') }}</button>
+                </div>
 
             </div>
         </div>
     </div>
     <div class="modal fade" id="coordinate_search_modal" tabindex="-1" role="dialog"
-         aria-labelledby="print_modal_label">
+        aria-labelledby="print_modal_label">
         <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content draggable">
                 <div class="modal-header">
 
                     <h4 class="modal-title" id="print_modal_label">{{ __('Locate point by coordinate') }}</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
+                        <span aria-hidden="true">×</span>
                     </button>
                 </div>
                 <form name="latlong_form" id="latlong_form">
@@ -1475,11 +1882,13 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
 
                         <div class="form-group">
                             <label>{{ __('Longitude') }}</label>
-                            <input type="text" class="form-control" id="point_longitude" placeholder="85.372873" value="85.372873"/>
+                            <input type="text" class="form-control" id="point_longitude" placeholder="85.372873"
+                                value="85.372873" />
                         </div>
                         <div class="form-group">
                             <label>{{ __('Latitude') }}</label>
-                            <input type="text" class="form-control" id="point_latitude" placeholder="27.636295" value="27.636295"/>
+                            <input type="text" class="form-control" id="point_latitude" placeholder="27.636295"
+                                value="27.636295" />
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -1491,13 +1900,14 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
         </div>
     </div>
     <div class="modal fade" id="emptying_containments_modal" tabindex="-1" role="dialog"
-         aria-labelledby="emptying_containments_modal_label">
+        aria-labelledby="emptying_containments_modal_label">
         <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content draggable">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="emptying_containments_modal_label">{{ __('Containments to be emptied') }}</h4>
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="emptying_containments_modal_label">{{ __('Containments to be emptied')
+                        }}</h4>
                 </div>
                 <div class="modal-body">
                 </div>
@@ -1508,7 +1918,7 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
         </div>
     </div>
     <div class="modal fade" id="proposed_emptying_modal" tabindex="-1" role="dialog"
-         aria-labelledby="proposed_emptying_modal_label">
+        aria-labelledby="proposed_emptying_modal_label">
         <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content draggable">
                 <div class="modal-header">
@@ -1524,7 +1934,7 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
         </div>
     </div>
     <div class="modal fade" id="DEMModal" tabindex="-1" role="dialog" aria-labelledby="DEMModalLabel"
-         aria-hidden="true">
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content draggable">
                 <div class="modal-header">
@@ -1545,21 +1955,23 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
     <!-- Modal -->
     <div id="feedback-popup" class="ol-popup" style="display: none;">
         <div id="feedback-popup-content"></div>
-        <button id="feedback-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer">{{ __('Close') }}</button>
+        <button id="feedback-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer">{{
+            __('Close') }}</button>
     </div>
 
-     <!-- Modal -->
-     <div id="containment-report-popup" class="ol-popup" style="display: none;">
+    <!-- Modal -->
+    <div id="containment-report-popup" class="ol-popup" style="display: none;">
         <div id="containment-report-popup-content"></div>
 
-                        <form method="get" style="margin-top: 12px;" action="{{ url("maps/export-containment-report") }}">
-                            <input type="hidden" name="containment_report_polygon" value="" id="containment_report_polygon"/>
-                            <input type="hidden" name="containment_report_year" value="" id="containment_report_year"/>
-                             @can('Export Containment Report')
-                           <button id="containment-report-popup-export" type="submit" class="btn btn-default">Export to Excel</button>
-                           @endcan
-                            <button id="containment-report-popup-closer" type="button" class="btn btn-default float-right xol-popup-closer">Close</button>
-                        </form>
+        <form method="get" style="margin-top: 12px;" action="{{ url("maps/export-containment-report") }}">
+            <input type="hidden" name="containment_report_polygon" value="" id="containment_report_polygon" />
+            <input type="hidden" name="containment_report_year" value="" id="containment_report_year" />
+            @can('Export Containment Report')
+            <button id="containment-report-popup-export" type="submit" class="btn btn-default">Export to Excel</button>
+            @endcan
+            <button id="containment-report-popup-closer" type="button"
+                class="btn btn-default float-right xol-popup-closer">Close</button>
+        </form>
     </div>
 
     <!-- Modal -->
@@ -1575,14 +1987,15 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                     <form class="form-horizontal" id="form-drain-potential">
                         <div class="form-group row">
                             <label class="col-form-label col-md-4">{{ __('Buffer Distance (m)') }}</label>
-                            <input type="text" class="form-control col-md-4" id="buffer-distance" placeholder="" value="" oninput="this.value = this.value.replace(/[^0-9]/g, '')" >
+                            <input type="text" class="form-control col-md-4" id="buffer-distance" placeholder=""
+                                value="" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
 
-                        <input type="hidden" id="drain-code" value=""/>
-                        <input type="hidden" id="drain-long" value=""/>
-                        <input type="hidden" id="drain-lat" value=""/>
-                        <div class="col-md-4">
-                        <button type="submit" class="btn btn-info">{{ __('Get Buildings') }}</button>
-                        </div>
+                            <input type="hidden" id="drain-code" value="" />
+                            <input type="hidden" id="drain-long" value="" />
+                            <input type="hidden" id="drain-lat" value="" />
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-info">{{ __('Get Buildings') }}</button>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -1605,26 +2018,27 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                     <form class="form-horizontal" id="form-waterbodies-buildings">
                         <div class="form-group row">
                             <label class="col-form-label col-md-4">{{ __('Buffer Distance (m)') }}</label>
-                           <input type="text" class="form-control col-md-4" id="buffer-distance-waterbodies" placeholder="" value="" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                            <input type="text" class="form-control col-md-4" id="buffer-distance-waterbodies"
+                                placeholder="" value="" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
 
                             <div class="col-md-4">
-                            <input type="hidden" id="water-body-code" value=""/>
-                            <input type="hidden" id="water-body-long" value=""/>
-                            <input type="hidden" id="water-body-lat" value=""/>
-                            <button type="submit" class="btn btn-info">{{ __('Get Information') }}</button>
+                                <input type="hidden" id="water-body-code" value="" />
+                                <input type="hidden" id="water-body-long" value="" />
+                                <input type="hidden" id="water-body-lat" value="" />
+                                <button type="submit" class="btn btn-info">{{ __('Get Information') }}</button>
                             </div>
                         </div>
                     </form>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ __('Close') }}</button>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">{{ __('Close') }}</button>
+                    </div>
                 </div>
-            </div>
 
+            </div>
         </div>
     </div>
-        </div>
-    <div id="popup-polygon-buffer" class="modal fade" tabindex="-1" role="dialog"  aria-hidden="true">
+    <div id="popup-polygon-buffer" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
 
             <!-- Modal content-->
@@ -1638,10 +2052,10 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
 
                             <label class="col-form-label col-md-4">{{ __('Buffer Distance (m)') }}</label>
 
-                                <input type="hidden" id="polygon-geom" value=""/>
-                        <input type="hidden" id="polygon-coordinates" value=""/>
-                                <input type="text" class="form-control  col-md-4" id="buffer-distance-polygon" placeholder=""
-                                       value="" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                            <input type="hidden" id="polygon-geom" value="" />
+                            <input type="hidden" id="polygon-coordinates" value="" />
+                            <input type="text" class="form-control  col-md-4" id="buffer-distance-polygon"
+                                placeholder="" value="" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
 
 
                             <div class="col-md-4">
@@ -1671,17 +2085,18 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                 <div class="modal-body">
                     <form class="form-horizontal" id="form-road-buildings">
                         <div class="form-group row">
-                             <label class="col-form-label col-md-4">{{ __('Buffer Distance (m)') }}</label>
+                            <label class="col-form-label col-md-4">{{ __('Buffer Distance (m)') }}</label>
 
-                            <input type="text" class="form-control col-md-4" id="buffer-distance-road" placeholder="" value="" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                            <input type="text" class="form-control col-md-4" id="buffer-distance-road" placeholder=""
+                                value="" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
 
-                        <input type="hidden" id="road-code" value=""/>
-                        <input type="hidden" id="road-long" value=""/>
-                        <input type="hidden" id="road-lat" value=""/>
-                        <div class="col-md-4">
-                        <button type="submit" class="btn btn-info">{{ __('Get Information') }}</button>
+                            <input type="hidden" id="road-code" value="" />
+                            <input type="hidden" id="road-long" value="" />
+                            <input type="hidden" id="road-lat" value="" />
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-info">{{ __('Get Information') }}</button>
+                            </div>
                         </div>
-                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -1703,17 +2118,18 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                     <form class="form-horizontal" id="form-point-buffer-buildings">
                         <div class="form-group row">
                             <label class="col-form-label col-md-4">{{ __('Buffer Distance (m)') }}</label>
-                             <input type="text" class="form-control col-md-4" id="buffer-distance-point" placeholder="" value="" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                            <input type="text" class="form-control col-md-4" id="buffer-distance-point" placeholder=""
+                                value="" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
 
 
-                        <div class="col-md-4">
-                            <input type="hidden" id="point-buffer-long-pos" value=""/>
-                        <input type="hidden" id="point-buffer-lat-pos" value=""/>
-                        <input type="hidden" id="point-buffer-long" value=""/>
-                        <input type="hidden" id="point-buffer-lat" value=""/>
-                        <button type="submit" class="btn btn-info">{{ __('Get Information') }}</button>
-                        </div>
+                            <div class="col-md-4">
+                                <input type="hidden" id="point-buffer-long-pos" value="" />
+                                <input type="hidden" id="point-buffer-lat-pos" value="" />
+                                <input type="hidden" id="point-buffer-long" value="" />
+                                <input type="hidden" id="point-buffer-lat" value="" />
+                                <button type="submit" class="btn btn-info">{{ __('Get Information') }}</button>
                             </div>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -1723,7 +2139,7 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
 
         </div>
     </div>
-    <div id="road-inaccessible-input-form" class="modal fade" tabindex="-1" role="dialog"  aria-hidden="true">
+    <div id="road-inaccessible-input-form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
 
             <!-- Modal content-->
@@ -1734,17 +2150,17 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                 <div class="modal-body">
                     <form class="form-horizontal" id="form-road-inaccessible">
                         <div class="form-group row">
-                            <label for="buffer-distance-polygon" class="control-label col-md-4">{{ __('Road Width(meters)') }}</label>
+                            <label for="buffer-distance-polygon" class="control-label col-md-4">{{ __('Road
+                                Width(meters)') }}</label>
                             <div class="col-md-4">
-                                <input type="text" class="form-control" id="road-width" placeholder=""
-                                       value="">
+                                <input type="text" class="form-control" id="road-width" placeholder="" value="">
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="buffer-distance-polygon" class="control-label col-md-4">{{ __('Vacutug Pipe Range(feets)') }}</label>
+                            <label for="buffer-distance-polygon" class="control-label col-md-4">{{ __('Vacutug Pipe
+                                Range(feets)') }}</label>
                             <div class="col-md-4">
-                                <input type="text" class="form-control" id="vacutug-range" placeholder=""
-                                       value="">
+                                <input type="text" class="form-control" id="vacutug-range" placeholder="" value="">
                             </div>
                         </div>
                         <div class="form-group">
@@ -1775,25 +2191,22 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                     <form class="form-horizontal" id="form-toilet-isochrone-map">
                         <div class="form-group row">
                             <label class="col-form-label col-md-4">{{ __('Estimated Travel Distance (m)') }}</label>
-                            <input type="number"
-                                class="form-control col-md-4"
-                                id="toilet-isochrone-distance"
-                                placeholder="{{ __('Distance in meter') }}"
-                                min="1"
-                                step="1" />
+                            <input type="number" class="form-control col-md-4" id="toilet-isochrone-distance"
+                                placeholder="{{ __('Distance in meter') }}" min="1" step="1" />
 
                         </div>
                         <div class="form-group row">
                             <div class="col-md-4">
-                                <input type="hidden" id="isochrone-long-pos" value=""/>
-                                <input type="hidden" id="isochrone-lat-pos" value=""/>
-                                <input type="hidden" id="isochrone-long" value=""/>
-                                <input type="hidden" id="isochrone-lat" value=""/>
+                                <input type="hidden" id="isochrone-long-pos" value="" />
+                                <input type="hidden" id="isochrone-lat-pos" value="" />
+                                <input type="hidden" id="isochrone-long" value="" />
+                                <input type="hidden" id="isochrone-lat" value="" />
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-info">{{ __('Get Information') }}</button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">{{ __('Close') }}</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">{{ __('Close')
+                                }}</button>
                         </div>
                     </form>
                 </div>
@@ -1803,48 +2216,50 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
         </div>
     </div>
 
-    <div class="modal fade" id="wmsModal" tabindex="-1" role="dialog" aria-labelledby="wmsModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="wmsModalLabel">{{ __('Please Enter URL') }}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+    <div class="modal fade" id="wmsModal" tabindex="-1" role="dialog" aria-labelledby="wmsModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="wmsModalLabel">{{ __('Please Enter URL') }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" class="form-control mt-3" id="wmsAddress">
+                    </input>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="wmsURL">{{ __('OK') }}</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Close') }}</button>
+                </div>
             </div>
-            <div class="modal-body">
-                <input type="text" class="form-control mt-3" id="wmsAddress">
-                </input>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="wmsURL">{{ __('OK') }}</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Close') }}</button>
+        </div>
+    </div>
+    <div class="modal fade" id="getLayerModal" tabindex="-1" role="dialog" aria-labelledby="getLayerModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="getLayerModalLabel">{{ __('Select a layer to be displayed') }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <select class="form-control mt-3" id="mapLayer">
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Close') }}</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
-<div class="modal fade" id="getLayerModal" tabindex="-1" role="dialog" aria-labelledby="getLayerModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="getLayerModalLabel">{{ __('Select a layer to be displayed') }}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <select class="form-control mt-3" id="mapLayer">
-                </select>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Close') }}</button>
-            </div>
-        </div>
-    </div>
-</div>
-    <script type="text/javascript">
-        // Google Map
+<script type="text/javascript">
+    // Google Map
         var gmap;
         var markerColors = ['green', 'light-blue', 'orange', 'pink', 'purple', 'red', 'yellow', 'blue','gold'];
 
@@ -1859,15 +2274,15 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                 // zoom: 12
             });
         }
-    </script>
+</script>
 @stop
 @push('scripts')
 <!--    <script src="{{ asset ('/old/js/html2canvas.min.js') }}"></script>
     <script src="{{ asset ('/old/js/html2canvas.js') }}"></script>-->
 
 
-    <script type="text/javascript">
-        $(document).ready(function () {
+<script type="text/javascript">
+    $(document).ready(function () {
             //Information popup tab pane switching
 
             new autoComplete({
@@ -12844,7 +13259,7 @@ $.ajax({
             function setSidebarTabContentHeight() {
                 // var height = $('#map-right-sidebar').outerHeight() - $('#map-right-sidebar .nav-tabs').outerHeight();
                 var height = window.innerHeight - $('#map-right-sidebar .nav-tabs').offset().top - $('#map-right-sidebar .nav-tabs').outerHeight() - $('footer').outerHeight();
-                $('#map-right-sidebar .tab-content').height(height);
+                // $('#map-right-sidebar .tab-content').height(height);
             }
 
             // Fix min-height of content-wrapper on window load
@@ -12933,7 +13348,7 @@ $.ajax({
             });
         });
 
-   </script>
+</script>
 
 
 @endpush
