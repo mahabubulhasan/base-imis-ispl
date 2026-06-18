@@ -130,7 +130,7 @@ class WasteBinService
         $wasteBinTypes = WasteBinType::query()->whereNull('deleted_at')->orderBy('name')->pluck('name')->all();
 
         return [
-            ['key' => 'waste_bin_id', 'label' => __('Waste Bin ID'), 'import' => false, 'template' => true, 'derived' => true],
+            ['key' => 'waste_bin_id', 'label' => __('Waste Bin ID'), 'import' => false, 'template' => false, 'derived' => true],
             ['key' => 'waste_bin_type', 'label' => __('Waste Bin Type'), 'required' => true, 'dropdown' => $wasteBinTypes, 'export' => false],
             ['key' => 'waste_bin_type_name', 'label' => __('Waste Bin Type'), 'import' => false],
             ['key' => 'total_capacity_kg', 'label' => __('Capacity (kg)'), 'required' => true],

@@ -191,7 +191,7 @@ class StsService
         $yesNo = SwmImportTemplateOptions::yesNo();
 
         return [
-            ['key' => 'sts_id', 'label' => __('STS ID'), 'import' => false, 'template' => true, 'derived' => true],
+            ['key' => 'sts_id', 'label' => __('STS ID'), 'import' => false, 'template' => false, 'derived' => true],
             ['key' => 'name', 'label' => __('STS Name'), 'required' => true],
             ['key' => 'location', 'label' => __('Location')],
             ['key' => 'ward_no', 'label' => __('Ward No.'), 'required' => true, 'dropdown' => SwmImportTemplateOptions::wardNumberStrings()],

@@ -306,7 +306,7 @@ class ComplaintService
     protected function excelColumnDefinitions(): array
     {
         return [
-            ['key' => 'complaint_id', 'label' => __('Complaint ID'), 'import' => false, 'template' => true, 'derived' => true],
+            ['key' => 'complaint_id', 'label' => __('Complaint ID'), 'import' => false, 'template' => false, 'derived' => true],
             ['key' => 'holding_number', 'label' => __('Holding Number')],
             ['key' => 'household_id', 'label' => __('Household ID')],
             ['key' => 'name', 'label' => __('Name'), 'required' => true],

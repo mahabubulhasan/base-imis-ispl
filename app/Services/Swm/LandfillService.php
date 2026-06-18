@@ -277,7 +277,7 @@ class LandfillService
         $yesNo = SwmImportTemplateOptions::yesNo();
 
         return [
-            ['key' => 'landfill_id', 'label' => __('Landfill ID'), 'import' => false, 'template' => true, 'derived' => true],
+            ['key' => 'landfill_id', 'label' => __('Landfill ID'), 'import' => false, 'template' => false, 'derived' => true],
             ['key' => 'name', 'label' => __('Landfill Name'), 'required' => true],
             ['key' => 'location', 'label' => __('Location')],
             ['key' => 'operator_name', 'label' => __('Operator Name'), 'required' => true],

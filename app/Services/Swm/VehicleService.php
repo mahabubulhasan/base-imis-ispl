@@ -396,7 +396,7 @@ class VehicleService
         $landfillLabels = SwmImportTemplateOptions::landfillLabels();
 
         $columns = [
-            ['key' => 'vehicle_id_no', 'label' => __('Vehicle ID'), 'import' => false, 'template' => true, 'derived' => true],
+            ['key' => 'vehicle_id_no', 'label' => __('Vehicle ID'), 'import' => false, 'template' => false, 'derived' => true],
             ['key' => 'vehicle_type', 'label' => __('Vehicle Type'), 'required' => true, 'dropdown' => $vehicleTypes],
             ['key' => 'vehicle_number', 'label' => __('Vehicle Number'), 'required' => true],
             ['key' => 'capacity', 'label' => __('Capacity').' ('.__('Ton').')'],

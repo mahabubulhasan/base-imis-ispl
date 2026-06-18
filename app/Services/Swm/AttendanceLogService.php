@@ -244,7 +244,7 @@ class AttendanceLogService
         $statusLabels = array_values(AttendanceLog::statusOptions());
 
         $columns = [
-            ['key' => 'id', 'label' => __('Attendance Log ID'), 'import' => false, 'template' => true, 'derived' => true],
+            ['key' => 'id', 'label' => __('Attendance Log ID'), 'import' => false, 'template' => false, 'derived' => true],
             ['key' => 'entry_at', 'label' => __('Entry Date and Time'), 'required' => true],
         ];
 

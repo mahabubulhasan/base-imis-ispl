@@ -302,7 +302,7 @@ class WorkerService
     {
         $scopedOrgId = Auth::user()?->swm_organization_id;
         $columns = [
-            ['key' => 'worker_id_no', 'label' => __('ID'), 'import' => false, 'template' => true, 'derived' => true],
+            ['key' => 'worker_id_no', 'label' => __('ID'), 'import' => false, 'template' => false, 'derived' => true],
             ['key' => 'name', 'label' => __('Name'), 'required' => true],
             ['key' => 'age', 'label' => __('Age (Years)')],
             ['key' => 'gender', 'label' => __('Gender'), 'dropdown' => [__('Male'), __('Female'), __('Others')]],

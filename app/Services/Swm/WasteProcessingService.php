@@ -138,7 +138,7 @@ class WasteProcessingService
     protected function excelColumnDefinitions(): array
     {
         return [
-            ['key' => 'id', 'label' => __('Waste Processing Log ID'), 'import' => false, 'template' => true, 'derived' => true],
+            ['key' => 'id', 'label' => __('Waste Processing Log ID'), 'import' => false, 'template' => false, 'derived' => true],
             ['key' => 'entry_at', 'label' => __('Entry Date and Time'), 'required' => true],
             ['key' => 'report_date', 'label' => __('Report Date'), 'required' => true],
             ['key' => 'reporting_month', 'label' => __('Reporting Month'), 'required' => true],

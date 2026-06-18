@@ -236,7 +236,7 @@ class LandfillLogService
     protected function excelColumnDefinitions(): array
     {
         return [
-            ['key' => 'id', 'label' => __('Landfill Log ID'), 'import' => false, 'template' => true, 'derived' => true],
+            ['key' => 'id', 'label' => __('Landfill Log ID'), 'import' => false, 'template' => false, 'derived' => true],
             ['key' => 'entry_at', 'label' => __('Entry Date and Time'), 'required' => true],
             ['key' => 'operation_date', 'label' => __('Operation Date'), 'required' => true],
             [
