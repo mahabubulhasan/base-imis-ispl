@@ -376,7 +376,7 @@ class LowIncomeCommunityServiceClass
         if ($waterConnectionStatus === null) {
             throw new \InvalidArgumentException(__(':label is required.', [
                 'label' => $this->importLabel('water_connection_status'),
-            ]);
+            ]));
         }
 
         $sanitationStatus = SwmImportRowHelper::parseBoolean($row['sanitation_status'] ?? null);
