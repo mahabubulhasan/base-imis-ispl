@@ -10027,6 +10027,26 @@ $.ajax({
             };
 
 
+            function getHouseholdsByBin(bin, household){
+                const url = '{{ url("/building-info/households-by-bin") }}/'+bin;
+                displayAjaxLoader();
+                $.ajax({
+                    url: url,
+                    type: 'get',
+                    data: {
+                        format: 'html'
+                    },
+                    success: function (response) {
+                        household.html = response;
+                        removeAjaxLoader();
+                    },
+                    error: function (data1) {
+                        displayAjaxError();
+                    }
+                });
+            }
+
+
             // Display information about feature
             function displayFeatureInformation(evt) {
 
@@ -10169,6 +10189,8 @@ $.ajax({
                     url: url,
                     type: 'get',
                     success: function (data) {
+                        let household = {html: ''};
+                        getHouseholdsByBin(data.features[0].properties.bin, household);
 
                        if (data && data.features && Array.isArray(data.features)) {
                             if (data.features.length > 0) {
@@ -10729,6 +10751,7 @@ $.ajax({
 
                                 function renderTabs() {
                                     html = `<div style="height:220px; overflow-y: scroll; overflow-x: hidden;">${html}</div>`;
+                                    const household_html = `<div style="height:220px; overflow-y: scroll; overflow-x: hidden;">${household.html}</div>`;
                                     const tabs = `
                                     <tab-container>
                                         <tab-navigation slot="navigation">
@@ -10737,7 +10760,7 @@ $.ajax({
                                         </tab-navigation>
                                         <tab-content slot="content">
                                             <tab-panel id="building" active="" style="padding:0;">${html}</tab-panel>
-                                            <tab-panel id="household">House Hold info coming soon...</tab-panel>
+                                            <tab-panel id="household" style="padding:0;">${household_html}</tab-panel>
                                         </tab-content>
                                     </tab-container>
                                     `;
@@ -13374,6 +13397,27 @@ $.ajax({
         });
 
 </script>
+<script>
+    $(function(){
+        // Initialize Bootstrap 5 accordion with proper toggle support
+        const accordionElement = document.getElementById('householdsAccordion');
+        if (accordionElement) {
+            const buttons = accordionElement.querySelectorAll('[data-bs-toggle="collapse"]');
+            buttons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = this.getAttribute('data-bs-target');
+                    const collapseElement = document.querySelector(target);
 
-
+                    if (collapseElement) {
+                        // Use Bootstrap 5 Collapse API
+                        const bsCollapse = new bootstrap.Collapse(collapseElement, {
+                            toggle: true
+                        });
+                    }
+                });
+            });
+        }
+    });
+</script>
 @endpush
