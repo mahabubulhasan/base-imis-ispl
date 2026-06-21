@@ -9,38 +9,38 @@ class TabContainer extends HTMLElement {
         :host {
           display: block;
           width: 100%;
-          
+
           /* Default Modern Minimalist Design Tokens */
           --tabs-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
           --tabs-bg: transparent;
-          
+
           /* Text and States */
           --tabs-text-color: #64748b;
           --tabs-text-hover-color: #0f172a;
           --tabs-text-active-color: #0284c7;
           --tabs-text-disabled-color: #cbd5e1;
-          
+
           /* Active Indicator */
           --tabs-indicator-color: #0284c7;
           --tabs-indicator-height: 2px;
           --tabs-indicator-radius: 9999px;
-          
+
           /* Layout and Spacing */
           --tabs-nav-border-color: #e2e8f0;
           --tabs-nav-border-width: 1px;
           --tabs-button-padding: 0.75rem 1rem;
           --tabs-button-gap: 0.5rem;
           --tabs-panel-padding: 1.5rem 0;
-          
+
           /* Typography */
           --tabs-font-size: 0.875rem;
           --tabs-font-weight: 500;
           --tabs-active-font-weight: 600;
-          
+
           /* Animations */
           --tabs-transition-duration: 0.3s;
           --tabs-transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
-          
+
           /* Focus rings for Accessibility */
           --tabs-focus-ring-color: rgba(2, 132, 199, 0.4);
           --tabs-focus-ring-width: 3px;
@@ -52,7 +52,7 @@ class TabContainer extends HTMLElement {
             --tabs-text-hover-color: #f1f5f9;
             --tabs-text-active-color: #38bdf8;
             --tabs-text-disabled-color: #475569;
-            
+
             --tabs-indicator-color: #38bdf8;
             --tabs-nav-border-color: #334155;
             --tabs-focus-ring-color: rgba(56, 189, 248, 0.4);
@@ -75,7 +75,7 @@ class TabContainer extends HTMLElement {
   _initializeTabs() {
     const buttons = this.querySelectorAll('tab-button');
     const activeBtn = Array.from(buttons).find(b => b.hasAttribute('active') && !b.hasAttribute('disabled'));
-    
+
     if (activeBtn) {
       this._activateTab(activeBtn.getAttribute('target'));
     } else if (buttons.length > 0) {
@@ -179,10 +179,10 @@ class TabNavigation extends HTMLElement {
 
   connectedCallback() {
     this._setupObserver();
-    
+
     // Keydown for accessibility keyboard navigation
     this.shadowRoot.querySelector('.nav-scroll').addEventListener('keydown', this._onKeyDown);
-    
+
     // Resize listener for layout updating
     window.addEventListener('resize', this._onResize);
 
@@ -217,9 +217,9 @@ class TabNavigation extends HTMLElement {
     // Disable transition during window resize to prevent laggy dragging visual
     const indicator = this.shadowRoot.querySelector('.indicator');
     indicator.style.transition = 'none';
-    
+
     this.updateIndicator();
-    
+
     // Restore transitions on next frame
     requestAnimationFrame(() => {
       indicator.style.transition = '';
@@ -355,12 +355,12 @@ class TabButton extends HTMLElement {
 
   connectedCallback() {
     this.shadowRoot.querySelector('button').addEventListener('click', this._onClick.bind(this));
-    
+
     // Sync initial states
     const btn = this.shadowRoot.querySelector('button');
     const isActive = this.hasAttribute('active');
     const isDisabled = this.hasAttribute('disabled');
-    
+
     btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
     btn.setAttribute('tabindex', isActive && !isDisabled ? '0' : '-1');
     if (isDisabled) btn.setAttribute('disabled', '');
