@@ -14,6 +14,7 @@ use App\Models\Swm\Worker;
 use App\Models\UtilityInfo\Roadline;
 use App\Support\Swm\SwmExcelColumns;
 use App\Support\Swm\SwmExcelExportWriter;
+use App\Support\Swm\SwmImportRowHelper;
 use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
 use Illuminate\Database\Eloquent\Builder;
@@ -265,7 +266,7 @@ class HouseholdService
             ['key' => 'tax_id', 'label' => __('Tax ID')],
             ['key' => 'waste_charge', 'label' => __('Waste Collection Fee').' ('.__('Taka').'/'.__('Month').')'],
             ['key' => 'number_of_family_members', 'label' => __('Number of Family Members')],
-            ['key' => 'using_this_service_since', 'label' => __('Using This Service Since')],
+            ['key' => 'using_this_service_since', 'label' => __('Using This Service Since'), 'date_hint' => '02 Jun 2026'],
             ['key' => 'daily_waste_volume', 'label' => __('Average Waste Collected').' ('.__('Kg').'/'.__('Day').')'],
             ['key' => 'van_puller', 'label' => __('Van Puller'), 'dropdown' => $vanPullers],
             ['key' => 'is_owner', 'label' => __('Building Owner?'), 'dropdown' => $yesNo],
@@ -276,7 +277,7 @@ class HouseholdService
             ['key' => 'segregation_practiced', 'label' => __('Segregation Practiced?'), 'dropdown' => $yesNo],
             ['key' => 'status', 'label' => __('Household Status'), 'required' => true, 'dropdown' => $statusLabels],
             ['key' => 'remarks', 'label' => __('Remarks')],
-            ['key' => 'survey_date', 'label' => __('Survey Date')],
+            ['key' => 'survey_date', 'label' => __('Survey Date'), 'date_hint' => '02 Jun 2026'],
         ];
     }
 
@@ -298,7 +299,7 @@ class HouseholdService
                 ? $this->currencyFormatter->format(Currency::TK, $row->waste_charge)
                 : '',
             'number_of_family_members' => $row->number_of_family_members,
-            'using_this_service_since' => $row->using_this_service_since?->format('Y-m-d') ?? '',
+            'using_this_service_since' => SwmImportRowHelper::exportDate($row->using_this_service_since),
             'daily_waste_volume' => $row->daily_waste_volume,
             'van_puller' => $row->vanPuller
                 ? "{$row->vanPuller->name} - {$row->vanPuller->id}"
@@ -312,7 +313,7 @@ class HouseholdService
             'segregation_practiced' => $row->segregation_practiced ? __('Yes') : __('No'),
             'status' => Household::statusOptions()[$row->status] ?? (string) $row->status,
             'remarks' => $row->remarks,
-            'survey_date' => $row->survey_date?->format('Y-m-d') ?? '',
+            'survey_date' => SwmImportRowHelper::exportDate($row->survey_date),
             default => '',
         };
     }

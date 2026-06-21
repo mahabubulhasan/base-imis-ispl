@@ -10,6 +10,7 @@ use App\Services\Swm\Concerns\HasExcelColumnValidationLabels;
 use App\Support\Swm\SwmExcelColumns;
 use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
+use App\Support\Swm\SwmImportRowHelper;
 use App\Support\Swm\SwmImportTemplateOptions;
 use Auth;
 use Box\Spout\Common\Type;
@@ -197,8 +198,8 @@ class StsLogService
     {
         return [
             ['key' => 'id', 'label' => __('STS Log ID'), 'import' => false, 'template' => false, 'derived' => true],
-            ['key' => 'entry_at', 'label' => __('Entry Date and Time'), 'required' => true],
-            ['key' => 'operation_date', 'label' => __('Operation Date'), 'required' => true],
+            ['key' => 'entry_at', 'label' => __('Entry Date and Time'), 'required' => true, 'date_hint' => '02 Jun 2026 14:30'],
+            ['key' => 'operation_date', 'label' => __('Operation Date'), 'required' => true, 'date_hint' => '02 Jun 2026'],
             [
                 'key' => 'vehicle_number',
                 'label' => __('Vehicle Number'),
@@ -267,8 +268,8 @@ class StsLogService
     {
         return match ($key) {
             'id' => $row->id,
-            'entry_at' => $row->entry_at?->format('Y-m-d H:i:s'),
-            'operation_date' => $row->operation_date?->format('Y-m-d'),
+            'entry_at' => SwmImportRowHelper::exportDateTime($row->entry_at),
+            'operation_date' => SwmImportRowHelper::exportDate($row->operation_date),
             'vehicle_number' => $row->vehicle?->vehicle_number,
             'vehicle_type_name' => $row->vehicle_type_name,
             'driver_name' => $row->driver_name,

@@ -8,6 +8,7 @@ use App\Models\Swm\Worker;
 use App\Services\Swm\Concerns\HasExcelColumnValidationLabels;
 use App\Support\Swm\SwmExcelColumns;
 use App\Support\Swm\SwmExcelFilename;
+use App\Support\Swm\SwmImportRowHelper;
 use App\Support\Swm\SwmExcelTemplateWriter;
 use Auth;
 use Box\Spout\Common\Type;
@@ -245,7 +246,7 @@ class AttendanceLogService
 
         $columns = [
             ['key' => 'id', 'label' => __('Attendance Log ID'), 'import' => false, 'template' => false, 'derived' => true],
-            ['key' => 'entry_at', 'label' => __('Entry Date and Time'), 'required' => true],
+            ['key' => 'entry_at', 'label' => __('Entry Date and Time'), 'required' => true, 'date_hint' => '02 Jun 2026 14:30'],
         ];
 
         if (! $orgId) {
@@ -272,8 +273,8 @@ class AttendanceLogService
             ['key' => 'work_type_name', 'label' => __('Worker Type'), 'import' => false, 'template' => true, 'derived' => true],
             ['key' => 'supervisor_name', 'label' => __("Supervisor's Name"), 'import' => false, 'template' => true, 'derived' => true],
             ['key' => 'attendance_status', 'label' => __('Attendance Status'), 'required' => true, 'dropdown' => $statusLabels],
-            ['key' => 'check_in_at', 'label' => __('Check-in Time')],
-            ['key' => 'check_out_at', 'label' => __('Check-out Time')],
+            ['key' => 'check_in_at', 'label' => __('Check-in Time'), 'date_hint' => '02 Jun 2026 14:30'],
+            ['key' => 'check_out_at', 'label' => __('Check-out Time'), 'date_hint' => '02 Jun 2026 14:30'],
             ['key' => 'remarks', 'label' => __('Remarks')],
         ]);
     }
@@ -286,15 +287,15 @@ class AttendanceLogService
 
         return match ($key) {
             'id' => $row->id,
-            'entry_at' => $row->entry_at?->format('Y-m-d H:i:s'),
+            'entry_at' => SwmImportRowHelper::exportDateTime($row->entry_at),
             'organization_name' => $row->organization?->name,
             'worker' => $workerLabel,
             'department' => $row->department,
             'work_type_name' => $row->work_type_name,
             'supervisor_name' => $row->supervisor_name,
             'attendance_status' => $statusLabels[$row->attendance_status] ?? $row->attendance_status,
-            'check_in_at' => $row->check_in_at?->format('Y-m-d H:i:s'),
-            'check_out_at' => $row->check_out_at?->format('Y-m-d H:i:s'),
+            'check_in_at' => SwmImportRowHelper::exportDateTime($row->check_in_at),
+            'check_out_at' => SwmImportRowHelper::exportDateTime($row->check_out_at),
             'remarks' => $row->remarks,
             default => '',
         };

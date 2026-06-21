@@ -6,6 +6,7 @@ use App\Models\Swm\WasteProcessingLog;
 use App\Services\Swm\Concerns\HasExcelColumnValidationLabels;
 use App\Support\Swm\SwmExcelColumns;
 use App\Support\Swm\SwmExcelFilename;
+use App\Support\Swm\SwmImportRowHelper;
 use App\Support\Swm\SwmExcelTemplateWriter;
 use Auth;
 use Box\Spout\Common\Type;
@@ -139,9 +140,9 @@ class WasteProcessingService
     {
         return [
             ['key' => 'id', 'label' => __('Waste Processing Log ID'), 'import' => false, 'template' => false, 'derived' => true],
-            ['key' => 'entry_at', 'label' => __('Entry Date and Time'), 'required' => true],
-            ['key' => 'report_date', 'label' => __('Report Date'), 'required' => true],
-            ['key' => 'reporting_month', 'label' => __('Reporting Month'), 'required' => true],
+            ['key' => 'entry_at', 'label' => __('Entry Date and Time'), 'required' => true, 'date_hint' => '02 Jun 2026 14:30'],
+            ['key' => 'report_date', 'label' => __('Report Date'), 'required' => true, 'date_hint' => '02 Jun 2026'],
+            ['key' => 'reporting_month', 'label' => __('Reporting Month'), 'required' => true, 'date_hint' => 'Jun 2026'],
             ['key' => 'waste_processing_site_name', 'label' => __('Waste Processing Site Name')],
             ['key' => 'waste_received_ton', 'label' => __('Quantity of Waste Received (Ton)')],
             ['key' => 'organic_waste_composted_ton', 'label' => __('Organic Waste Composted (Ton)')],
@@ -163,9 +164,9 @@ class WasteProcessingService
     {
         return match ($key) {
             'id' => $row->id,
-            'entry_at' => $row->entry_at?->format('Y-m-d H:i:s'),
-            'report_date' => $row->report_date?->format('Y-m-d'),
-            'reporting_month' => $row->reporting_month?->format('M Y'),
+            'entry_at' => SwmImportRowHelper::exportDateTime($row->entry_at),
+            'report_date' => SwmImportRowHelper::exportDate($row->report_date),
+            'reporting_month' => SwmImportRowHelper::exportMonth($row->reporting_month),
             'waste_processing_site_name' => $row->waste_processing_site_name,
             'waste_received_ton' => $row->waste_received_ton,
             'organic_waste_composted_ton' => $row->organic_waste_composted_ton,

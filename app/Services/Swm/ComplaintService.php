@@ -8,6 +8,7 @@ use App\Support\Swm\SwmExcelColumns;
 use App\Support\Swm\SwmExcelExportWriter;
 use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
+use App\Support\Swm\SwmImportRowHelper;
 use App\Support\Swm\SwmImportTemplateOptions;
 use Auth;
 use Carbon\Carbon;
@@ -312,7 +313,7 @@ class ComplaintService
             ['key' => 'name', 'label' => __('Name'), 'required' => true],
             ['key' => 'contact_number', 'label' => __('Contact Number'), 'required' => true],
             ['key' => 'ward_no', 'label' => __('Ward No.'), 'dropdown' => SwmImportTemplateOptions::wardNumberStrings()],
-            ['key' => 'incident_date', 'label' => __('Incident Date')],
+            ['key' => 'incident_date', 'label' => __('Incident Date'), 'date_hint' => '02 Jun 2026'],
             ['key' => 'complaint_type', 'label' => __('Complaint Type'), 'required' => true, 'dropdown' => array_values(config('swm_complaints.complaint_types', []))],
             ['key' => 'submitted_through', 'label' => __('Complaint Submitted Through'), 'required' => true, 'dropdown' => array_values(config('swm_complaints.submitted_through', []))],
             ['key' => 'complaint_status', 'label' => __('Complaint Status'), 'required' => true, 'dropdown' => array_values(config('swm_complaints.complaint_statuses', []))],
@@ -324,7 +325,7 @@ class ComplaintService
             ['key' => 'notes', 'label' => __('Notes')],
             ['key' => 'duplicate_complaint', 'label' => __('Duplicate Complaint'), 'dropdown' => SwmImportTemplateOptions::yesNo()],
             ['key' => 'duplicate_reference', 'label' => __('Duplicate Complaint ID')],
-            ['key' => 'date_time', 'label' => __('Date and Time')],
+            ['key' => 'date_time', 'label' => __('Date and Time'), 'date_hint' => '02 Jun 2026 14:30'],
         ];
     }
 
@@ -342,7 +343,7 @@ class ComplaintService
             'name' => $row->name,
             'contact_number' => $row->contact_number,
             'ward_no' => $row->ward_no,
-            'incident_date' => $row->incident_date?->format('Y-m-d'),
+            'incident_date' => SwmImportRowHelper::exportDate($row->incident_date),
             'complaint_type' => $typeMap[$row->complaint_type] ?? $row->complaint_type,
             'submitted_through' => $throughMap[$row->submitted_through] ?? $row->submitted_through,
             'complaint_status' => ($row->complaint_status === 'others' && ! empty($row->complaint_status_other))
@@ -355,7 +356,7 @@ class ComplaintService
             'notes' => $row->notes,
             'duplicate_complaint' => $row->duplicate_complaint ? __('Yes') : __('No'),
             'duplicate_reference' => $row->duplicate_reference,
-            'date_time' => $row->date_time?->format('Y-m-d H:i:s'),
+            'date_time' => SwmImportRowHelper::exportDateTime($row->date_time),
             default => '',
         };
     }

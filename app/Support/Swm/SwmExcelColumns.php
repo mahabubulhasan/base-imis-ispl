@@ -73,6 +73,9 @@ class SwmExcelColumns
                 if (isset($column['reference_key'])) {
                     $templateColumn['reference_key'] = $column['reference_key'];
                 }
+                if (isset($column['date_hint'])) {
+                    $templateColumn['date_hint'] = $column['date_hint'];
+                }
                 if (($column['derived'] ?? false) === true) {
                     $templateColumn['derived'] = true;
                 }

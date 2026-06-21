@@ -11,6 +11,7 @@ use App\Support\Swm\SwmExcelColumns;
 use App\Support\Swm\SwmExcelExportWriter;
 use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
+use App\Support\Swm\SwmImportRowHelper;
 use App\Support\Swm\SwmImportTemplateOptions;
 use Auth;
 use Carbon\Carbon;
@@ -642,8 +643,8 @@ class BillCollectionPaymentService
                         $row->amount,
                         $row->due_paid ?? 0,
                         (float) ($row->amount ?? 0) + (float) ($row->due_paid ?? 0),
-                        $row->payment_for_month?->format('Y-m-d'),
-                        $row->payment_time?->format('Y-m-d H:i:s'),
+                        SwmImportRowHelper::exportMonth($row->payment_for_month),
+                        SwmImportRowHelper::exportDateTime($row->payment_time),
                         $methodLabel,
                         $row->received_by_name,
                     ];
@@ -675,11 +676,11 @@ class BillCollectionPaymentService
             ['key' => 'ward', 'label' => __('Ward'), 'import' => false, 'template' => true, 'derived' => true],
             ['key' => 'road_no', 'label' => __('Road No.'), 'import' => false, 'template' => true, 'derived' => true],
             ['key' => 'road_name', 'label' => __('Road Name'), 'import' => false, 'template' => true, 'derived' => true],
-            ['key' => 'payment_for_month', 'label' => __('Transaction Month'), 'required' => true],
+            ['key' => 'payment_for_month', 'label' => __('Transaction Month'), 'required' => true, 'date_hint' => 'Jun 2026'],
             ['key' => 'amount', 'label' => __('Current Month Payment').' ('.__('Taka').')', 'required' => true],
             ['key' => 'due_paid', 'label' => __('Previous Due Payment').' ('.__('Taka').')'],
             ['key' => 'payment_method', 'label' => __('Payment Method'), 'required' => true, 'dropdown' => array_values(config('bill_collection.payment_methods', []))],
-            ['key' => 'payment_time', 'label' => __('Payment Time')],
+            ['key' => 'payment_time', 'label' => __('Payment Time'), 'date_hint' => '02 Jun 2026 14:30'],
             ['key' => 'received_by_user_id', 'label' => __('Payment Received by'), 'dropdown' => SwmImportTemplateOptions::userLabels()],
             ['key' => 'receipt_no', 'label' => __('Receipt No.')],
         ];

@@ -145,6 +145,40 @@ class SwmImportRowHelper
         return $parsed ? $parsed->copy()->startOfMonth() : null;
     }
 
+    /**
+     * Standard display format for a date-only column in exports/templates,
+     * e.g. "02 Jun 2026". Returns '' for empty values so spreadsheet cells
+     * stay blank rather than showing a placeholder.
+     */
+    public static function exportDate($value): string
+    {
+        $date = $value instanceof Carbon ? $value : self::parseDate($value);
+
+        return $date ? $date->format('d M Y') : '';
+    }
+
+    /**
+     * Standard display format for a datetime column in exports/templates,
+     * e.g. "02 Jun 2026 14:30". The time portion is always kept.
+     */
+    public static function exportDateTime($value): string
+    {
+        $date = $value instanceof Carbon ? $value : self::parseDate($value);
+
+        return $date ? $date->format('d M Y H:i') : '';
+    }
+
+    /**
+     * Standard display format for a month column in exports/templates,
+     * e.g. "Jun 2026".
+     */
+    public static function exportMonth($value): string
+    {
+        $date = $value instanceof Carbon ? $value : self::parseDate($value);
+
+        return $date ? $date->format('M Y') : '';
+    }
+
     public static function parseBoolean($value): ?bool
     {
         if ($value === null || $value === '') {

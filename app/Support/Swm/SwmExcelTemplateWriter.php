@@ -22,6 +22,13 @@ class SwmExcelTemplateWriter
     protected const VALIDATION_ROW_LIMIT = 200;
 
     /**
+     * Next free row on the Instructions sheet. Set by writeInstructionsSheet()
+     * and consumed by appendMultiselectInstructions() so the two sections never
+     * overlap regardless of how many intro/date lines were written.
+     */
+    protected int $instructionsNextRow = 10;
+
+    /**
      * @param  array<int, array{key: string, label?: string, required?: bool, dropdown?: array<int, string>, multiselect?: bool, reference_key?: string}>  $columns
      */
     public function download(string $filename, array $columns): void
@@ -124,9 +131,14 @@ class SwmExcelTemplateWriter
     {
         $sheet->setCellValue('A1', __('Import Instructions'));
         $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
-        $sheet->setCellValue('A3', __('Fill in data starting from row 2 on the Import sheet.'));
-        $sheet->setCellValue('A4', __('Columns marked with a dropdown allow one value selected from the list.'));
-        $sheet->setCellValue('A5', __('Required columns must have a value in each row you import.'));
+
+        $row = 3;
+        $sheet->setCellValue('A'.$row, __('Fill in data starting from row 2 on the Import sheet.'));
+        $row++;
+        $sheet->setCellValue('A'.$row, __('Columns marked with a dropdown allow one value selected from the list.'));
+        $row++;
+        $sheet->setCellValue('A'.$row, __('Required columns must have a value in each row you import.'));
+        $row++;
 
         $hasDerived = false;
         foreach ($columns as $column) {
@@ -136,10 +148,28 @@ class SwmExcelTemplateWriter
             }
         }
         if ($hasDerived) {
-            $sheet->setCellValue('A6', __('Read-only or derived columns are filled automatically on save; leave them blank when importing.'));
+            $sheet->setCellValue('A'.$row, __('Read-only or derived columns are filled automatically on save; leave them blank when importing.'));
+            $row++;
         }
 
-        $row = $hasDerived ? 8 : 7;
+        $dateColumns = array_filter(
+            $columns,
+            fn (array $column) => isset($column['date_hint']) && $column['date_hint'] !== ''
+        );
+        if (count($dateColumns) > 0) {
+            $row++;
+            $sheet->setCellValue('A'.$row, __('Date columns'));
+            $sheet->getStyle('A'.$row)->getFont()->setBold(true);
+            $row++;
+            $sheet->setCellValue('A'.$row, __('Enter dates using the format shown below for each column.'));
+            $row++;
+            foreach ($dateColumns as $column) {
+                $label = $column['label'] ?? $column['key'];
+                $sheet->setCellValue('A'.$row, sprintf('%s: %s', $label, $column['date_hint']));
+                $row++;
+            }
+        }
+
         $hasMultiselect = false;
         foreach ($columns as $column) {
             if (! ($column['multiselect'] ?? false)) {
@@ -150,12 +180,15 @@ class SwmExcelTemplateWriter
         }
 
         if ($hasMultiselect) {
+            $row++;
             $sheet->setCellValue('A'.$row, __('Multiselect columns'));
             $sheet->getStyle('A'.$row)->getFont()->setBold(true);
             $row++;
             $sheet->setCellValue('A'.$row, __('For multiselect columns, enter comma-separated values using options from the Reference sheet (hidden).'));
             $row += 2;
         }
+
+        $this->instructionsNextRow = $row;
     }
 
     /**
@@ -163,7 +196,7 @@ class SwmExcelTemplateWriter
      */
     protected function appendMultiselectInstructions(Worksheet $sheet, array $notes): void
     {
-        $row = 10;
+        $row = $this->instructionsNextRow;
         foreach ($notes as $note) {
             $sheet->setCellValue(
                 'A'.$row,
@@ -176,6 +209,7 @@ class SwmExcelTemplateWriter
             );
             $row++;
         }
+        $this->instructionsNextRow = $row;
     }
 
     /**
