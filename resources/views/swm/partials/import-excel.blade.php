@@ -8,7 +8,7 @@
     {!! Form::open(['route' => $storeRoute, 'files' => true, 'class' => 'form-horizontal']) !!}
         <div class="card-body">
             <div class="form-group row required">
-                {!! Form::label('import_file', __('Excel file (.xlsx)'), ['class' => 'col-sm-3 control-label', 'style' => 'padding-top:3px;']) !!}
+                {!! Form::label('import_file', __('Excel File (.xlsx)'), ['class' => 'col-sm-3 control-label', 'style' => 'padding-top:3px;']) !!}
                 <div class="col-sm-3">
                     {!! Form::file('import_file', ['accept' => '.xlsx']) !!}
                 </div>
