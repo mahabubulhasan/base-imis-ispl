@@ -356,7 +356,6 @@ class BuildingController extends Controller
 
     public function getBuildingHouseholds($bin)
     {
-        $bin = 'B32156'; // TODO Temporary hardcoded BIN for testing, remove it when frontend is ready to send actual BIN value
         $households = Household::whereNull('deleted_at')->where('bin', $bin)->get();
         $format = request()->query('format', 'html');
         if ($households->isEmpty() && $format == 'json') {

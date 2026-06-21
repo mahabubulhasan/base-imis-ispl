@@ -13397,27 +13397,4 @@ $.ajax({
         });
 
 </script>
-<script>
-    $(function(){
-        // Initialize Bootstrap 5 accordion with proper toggle support
-        const accordionElement = document.getElementById('householdsAccordion');
-        if (accordionElement) {
-            const buttons = accordionElement.querySelectorAll('[data-bs-toggle="collapse"]');
-            buttons.forEach(button => {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const target = this.getAttribute('data-bs-target');
-                    const collapseElement = document.querySelector(target);
-
-                    if (collapseElement) {
-                        // Use Bootstrap 5 Collapse API
-                        const bsCollapse = new bootstrap.Collapse(collapseElement, {
-                            toggle: true
-                        });
-                    }
-                });
-            });
-        }
-    });
-</script>
 @endpush
