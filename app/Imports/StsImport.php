@@ -9,8 +9,9 @@ use App\Support\Swm\SwmImportRowHelper;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
-class StsImport implements ToCollection, WithHeadingRow
+class StsImport implements ToCollection, WithHeadingRow, WithMultipleSheets
 {
     public int $successCount = 0;
 
@@ -19,6 +20,11 @@ class StsImport implements ToCollection, WithHeadingRow
 
     public function __construct(private int $userId)
     {
+    }
+
+    public function sheets(): array
+    {
+        return [0 => $this];   // process ONLY the first sheet
     }
 
     public function collection(Collection $rows): void
@@ -46,6 +52,10 @@ class StsImport implements ToCollection, WithHeadingRow
             if (SwmImportRowHelper::rowIsEmpty($norm)) {
                 continue;
             }
+            if (SwmImportRowHelper::rowHasNoRequiredData($norm, $columnDefinitions)) {
+                continue;
+            }
+            
 
             try {
                 $name = trim((string) ($norm['name'] ?? ''));
@@ -132,7 +142,6 @@ class StsImport implements ToCollection, WithHeadingRow
                     'destination_landfill_id' => $destinationLandfillId,
                     'operational_status' => $operationalStatus,
                 ];
-
                 $saved = $service->storeOrUpdate(null, $data);
                 if ($saved) {
                     $this->successCount++;

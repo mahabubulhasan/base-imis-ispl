@@ -13,6 +13,15 @@ class SwmExcelTemplateWriter
     use ResolvesExcelColumnLetters;
 
     /**
+     * Number of data rows that receive dropdown validations in the template.
+     * Kept modest so the sheet's used-range doesn't balloon to thousands of
+     * phantom rows — import readers would otherwise treat those styled-but-empty
+     * rows as data. Values typed beyond this limit still import and are validated
+     * server-side; they simply lack the in-cell dropdown convenience.
+     */
+    protected const VALIDATION_ROW_LIMIT = 200;
+
+    /**
      * @param  array<int, array{key: string, label?: string, required?: bool, dropdown?: array<int, string>, multiselect?: bool, reference_key?: string}>  $columns
      */
     public function download(string $filename, array $columns): void
@@ -87,7 +96,7 @@ class SwmExcelTemplateWriter
                 continue;
             }
 
-            for ($row = 2; $row <= 1001; $row++) {
+            for ($row = 2; $row <= self::VALIDATION_ROW_LIMIT + 1; $row++) {
                 $validation = $importSheet->getCell($colLetter.$row)->getDataValidation();
                 $validation->setType(DataValidation::TYPE_LIST);
                 $validation->setErrorStyle(DataValidation::STYLE_STOP);

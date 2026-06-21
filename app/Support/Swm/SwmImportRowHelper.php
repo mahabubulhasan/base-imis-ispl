@@ -85,6 +85,41 @@ class SwmImportRowHelper
         return true;
     }
 
+    /**
+     * Decide whether a mapped row carries no required data at all and should be
+     * skipped silently. This filters out stray, partially-formatted rows left
+     * below the real data (e.g. a leftover dropdown selection or a single typed
+     * cell) so they never produce "<field> is required" noise. Rows that fill
+     * at least one required field are treated as genuine and still validated.
+     *
+     * @param  array<string, mixed>  $mapped  row keyed by canonical column key
+     * @param  array<int, array{key: string, required?: bool, import?: bool}>  $columnDefinitions
+     */
+    public static function rowHasNoRequiredData(array $mapped, array $columnDefinitions): bool
+    {
+        $requiredKeys = [];
+        foreach ($columnDefinitions as $column) {
+            if (($column['import'] ?? true) === false) {
+                continue;
+            }
+            if ($column['required'] ?? false) {
+                $requiredKeys[] = $column['key'];
+            }
+        }
+
+        if ($requiredKeys === []) {
+            return false;
+        }
+
+        foreach ($requiredKeys as $key) {
+            if (trim((string) ($mapped[$key] ?? '')) !== '') {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public static function parseDate($value): ?Carbon
     {
         if ($value === null || $value === '') {
