@@ -10005,7 +10005,8 @@ $.ajax({
                 element: featureInfoPopupContainer,
                 autoPan: true,
                 stopEvent: true,
-                offset: [0, -60],
+                positioning: 'bottom-center',
+                offset: [0, 0],
                 autoPanAnimation: {
                     duration: 250
                 }
