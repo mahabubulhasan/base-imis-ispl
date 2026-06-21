@@ -716,11 +716,9 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                 <a href="#" id="popup-marker-closer" class="ol-popup-closer"></a>
                 <div id="popup-marker-content"></div>
             </div>
-            <div id="feature-info-popup" class="ol-popup"
-                style="display: none; max-height: 300px; min-width: 450px; max-width: 500px;">
+            <div id="feature-info-popup" class="ol-popup" style="display: none; height: 300px;min-width: 450px; max-width: 500px; padding: 30px 20px;">
                 <a href="#" id="feature-info-popup-closer" class="ol-popup-closer"></a>
-                <div id="feature_information"
-                    style="max-height: 250px; min-width: 450px; overflow-y: auto; padding: 10px;">
+                <div id="feature_information" style="max-height: 250px; min-width: 450px; padding: 10px; margin-top:-30px;">
                     <!-- Content goes here -->
                 </div>
             </div>
@@ -10729,6 +10727,7 @@ $.ajax({
                                 })();
 
                                 function renderTabs() {
+                                    html = `<div style="height:220px; overflow-y: scroll; overflow-x: hidden;">${html}</div>`;
                                     const tabs = `
                                     <tab-container>
                                         <tab-navigation slot="navigation">
@@ -10736,7 +10735,7 @@ $.ajax({
                                             <tab-button target="household">Household</tab-button>
                                         </tab-navigation>
                                         <tab-content slot="content">
-                                            <tab-panel id="building" active="">${html}</tab-panel>
+                                            <tab-panel id="building" active="" style="padding:0;">${html}</tab-panel>
                                             <tab-panel id="household">House Hold info coming soon...</tab-panel>
                                         </tab-content>
                                     </tab-container>
