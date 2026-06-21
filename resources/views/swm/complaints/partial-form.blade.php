@@ -37,7 +37,7 @@
             {!! Form::text('name', old('name', $isEdit ? $complaint->name : null), ['class' => 'form-control', 'placeholder' => __('Name')]) !!}
         </div>
     </div>
-    <div class="form-group row">
+    <div class="form-group row required">
         {!! Form::label('contact_number', __('Contact Number'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             {!! Form::text('contact_number', old('contact_number', $isEdit ? $complaint->contact_number : null), ['class' => 'form-control', 'placeholder' => __('Contact Number')]) !!}
@@ -63,7 +63,7 @@
             {!! Form::select('complaint_type', collect($complaintTypes)->mapWithKeys(fn ($label, $key) => [$key => __($label)])->all(), old('complaint_type', $isEdit ? $complaint->complaint_type : null), ['class' => 'form-control', 'placeholder' => __('Select Complaint Type')]) !!}
         </div>
     </div>
-    <div class="form-group row">
+    <div class="form-group row required">
         {!! Form::label('submitted_through', __('Complaint Submitted Through'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             {!! Form::select('submitted_through', collect($submittedThroughOptions)->mapWithKeys(fn ($label, $key) => [$key => __($label)])->all(), old('submitted_through', $isEdit ? $complaint->submitted_through : null), ['class' => 'form-control', 'placeholder' => __('Select')]) !!}
