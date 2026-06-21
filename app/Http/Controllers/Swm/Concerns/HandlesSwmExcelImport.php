@@ -71,16 +71,18 @@ trait HandlesSwmExcelImport
 
         $import = new $importClass((int) Auth::id());
         Excel::import($import, $fullPath);
-        $message = __('Successfully :n Records Imported For :entity From Excel.', [
+        $redirect = redirect()->route($indexRoute)
+            ->with('import_errors', $import->errors);
+
+        if ($import->successCount === 0) {
+            return $redirect->with('warning', __('No records were imported for :entity. Please review the errors below.', [
+                'entity' => $entityName,
+            ]));
+        }
+
+        return $redirect->with('success', __('Successfully :n Records Imported For :entity From Excel.', [
             'n' => $import->successCount,
             'entity' => $entityName,
-        ]);
-
-        // Always flash import_errors (even when empty) so a clean import
-        // overwrites any error list left in the session by a previous import,
-        // instead of letting stale errors ride along with the new success.
-        return redirect()->route($indexRoute)
-            ->with('success', $message)
-            ->with('import_errors', $import->errors);
+        ]));
     }
 }
