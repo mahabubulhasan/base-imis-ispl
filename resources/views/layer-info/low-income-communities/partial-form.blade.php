@@ -119,7 +119,7 @@
          {!! Form::label('population_total',__('Total Population'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             {!! Form::text('population_total',null,['class' => 'form-control', 'placeholder' => __('Total Population'),'oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",]) !!}
-        </div>  
+        </div>
     </div>
     <div class="form-group row">
          {!! Form::label('population_male',__('Male Population'),['class' => 'col-sm-3 control-label']) !!}
@@ -423,11 +423,11 @@
                 })
             ],
             view: new ol.View({
-                center: ol.proj.transform([90.8295,22.9441], 'EPSG:4326', 'EPSG:3857'),
+                center: ol.proj.transform([84.7674,24.5559], 'EPSG:4326', 'EPSG:3857'),
                 // zoom: 12,
                 minZoom: 12.5,
                 maxZoom: 19,
-                extent: ol.proj.transformExtent([90.50,22.70,91.20,23.30], 'EPSG:4326', 'EPSG:3857')
+                extent: ol.proj.transformExtent([84.50,24.30,84.90,24.80], 'EPSG:4326', 'EPSG:3857')
             })
         });
         map.addControl(layerSwitcher);
