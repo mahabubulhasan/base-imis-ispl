@@ -104,7 +104,7 @@
     </div>
 
     <div id="present-times-group" style="{{ $statusVal === \App\Models\Swm\AttendanceLog::STATUS_PRESENT ? '' : 'display:none' }}">
-        <div class="form-group row">
+        <div class="form-group row required">
             {!! Form::label('check_in_at', __('Check-in Time'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
                 <input type="datetime-local" name="check_in_at" id="check_in_at" class="form-control" value="{{ $checkInVal }}" />

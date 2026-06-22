@@ -127,7 +127,7 @@
             {!! Form::checkbox('is_lic', '1', (bool) old('is_lic', optional($primaryCollectionSite)->is_lic), ['id' => 'is_lic']) !!}
         </div>
     </div>
-    <div class="form-group row" id="lic-id-row">
+    <div class="form-group row required" id="lic-id-row">
         {!! Form::label('lic_id', __('LIC ID (if Y)'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             {!! Form::select('lic_id', $licOptions, null, ['class' => 'form-control chosen-select', 'id' => 'lic_id', 'placeholder' => __('Select LIC ID')]) !!}

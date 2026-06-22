@@ -80,6 +80,9 @@ class BillCollectionPaymentRequest extends FormRequest
         if ($this->input('due_paid') === '' || $this->input('due_paid') === null) {
             $this->merge(['due_paid' => 0]);
         }
+        if ($this->input('amount') === '' || $this->input('amount') === null) {
+            $this->merge(['amount' => 0]);
+        }
     }
 
     public function withValidator($validator): void

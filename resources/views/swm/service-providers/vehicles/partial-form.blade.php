@@ -88,19 +88,19 @@
                 ], $dumpKind, ['class' => 'form-control', 'id' => 'dumping_place_kind']) !!}
             </div>
         </div>
-        <div class="form-group row" id="dumping-sts-wrap" style="display:none;">
+        <div class="form-group row required" id="dumping-sts-wrap" style="display:none;">
             {!! Form::label('dumping_sts_id', __('Dumping Place Name'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
                 {!! Form::select('dumping_sts_id', $stsList, null, ['class' => 'form-control chosen-select', 'placeholder' => __('STS')]) !!}
             </div>
         </div>
-        <div class="form-group row" id="dumping-landfill-wrap" style="display:none;">
+        <div class="form-group row required" id="dumping-landfill-wrap" style="display:none;">
             {!! Form::label('dumping_landfill_id', __('Dumping Place Name'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
                 {!! Form::select('dumping_landfill_id', $landfills, null, ['class' => 'form-control chosen-select', 'placeholder' => __('Landfill')]) !!}
             </div>
         </div>
-        <div class="form-group row" id="dumping-other-wrap" style="display:none;">
+        <div class="form-group row required" id="dumping-other-wrap" style="display:none;">
             {!! Form::label('dumping_place_other', __('Specify Dumping Place'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
                 {!! Form::textarea('dumping_place_other', null, ['class' => 'form-control', 'rows' => 3, 'placeholder' => __('Specify Dumping Place')]) !!}
@@ -124,7 +124,7 @@
                 ], null, ['class' => 'form-control', 'id' => 'operational_type', 'placeholder' => __('Operational Type')]) !!}
             </div>
         </div>
-        <div class="form-group row" id="operational_type_other_group" style="display: none;">
+        <div class="form-group row required" id="operational_type_other_group" style="display: none;">
             {!! Form::label('operational_type_other', __('Specify Operational Type'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
                 {!! Form::text('operational_type_other', null, ['class' => 'form-control', 'placeholder' => __('Specify Operational Type')]) !!}

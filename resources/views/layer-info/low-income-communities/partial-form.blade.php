@@ -145,7 +145,7 @@
             {!! Form::select('water_connection_status', $yesNoOptions, old('water_connection_status', isset($lic) ? (($lic->water_connection_status === null) ? '' : (string) (int) $lic->water_connection_status) : ''), ['class' => 'form-control', 'id' => 'water_connection_status']) !!}
         </div>
     </div>
-    <div class="form-group row" id="no_of_wate_points_group">
+    <div class="form-group row required" id="no_of_wate_points_group">
          {!! Form::label('no_of_wate_points',__('No. of Wate Points'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             {!! Form::text('no_of_wate_points',null,['class' => 'form-control', 'placeholder' => __('No. of Wate Points'),'oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",'id' => 'no_of_wate_points']) !!}
@@ -157,7 +157,7 @@
             {!! Form::select('sanitation_status', $yesNoOptions, old('sanitation_status', isset($lic) ? (($lic->sanitation_status === null) ? '' : (string) (int) $lic->sanitation_status) : ''), ['class' => 'form-control', 'id' => 'sanitation_status']) !!}
         </div>
     </div>
-    <div class="form-group row" id="no_of_community_toilets_group">
+    <div class="form-group row required" id="no_of_community_toilets_group">
          {!! Form::label('no_of_community_toilets',__('No. of Community Toilets'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             {!! Form::text('no_of_community_toilets',null,['class' => 'form-control', 'placeholder' => __('No. of Community Toilets'),'oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",'id' => 'no_of_community_toilets']) !!}

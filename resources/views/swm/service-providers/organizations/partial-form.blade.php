@@ -77,7 +77,7 @@
 		</div>
 	</div>
 	<div id="user-password">
-	<div class="form-group row ">
+	<div class="form-group row " id="password-row">
     {!! Form::label('password',  __('Password'), ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-3">
         <input type="password"
@@ -96,7 +96,7 @@
         </div>
     </div>
 </div>
-<div class="form-group row">
+<div class="form-group row" id="password-confirm-row">
     {!! Form::label('password_confirmation',  __('Confirm Password'), ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-3">
         <input type="password"
@@ -136,6 +136,16 @@ $(function() {
             width: '100%',
             closeOnSelect: false
         });
+    }
+
+    var $createUser = $('#create_user');
+    function syncPasswordRequired() {
+        var required = $createUser.val() === '1';
+        $('#password-row, #password-confirm-row').toggleClass('required', required);
+    }
+    if ($createUser.length) {
+        $createUser.on('change', syncPasswordRequired);
+        syncPasswordRequired();
     }
 });
 </script>

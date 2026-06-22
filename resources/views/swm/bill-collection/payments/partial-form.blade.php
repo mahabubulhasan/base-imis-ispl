@@ -182,11 +182,11 @@
         </div>
     </div>
 
-    <div class="form-group row required bcp-due-dependent-row" id="bcp-current-amount-row">
+    <div class="form-group row bcp-due-dependent-row" id="bcp-current-amount-row">
         {!! Form::label('amount', __('Current Month Payment') . ' (' . __('Taka') . ')', ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3 bcp-payment-field-col">
             <div id="bcp-current-amount-input-wrap">
-                {!! Form::number('amount', old('amount', $isEdit ? $payment->amount : null), ['class' => 'form-control w-100', 'step' => '1', 'min' => '0', 'inputmode' => 'numeric']) !!}
+                {!! Form::number('amount', old('amount', $isEdit ? $payment->amount : 0), ['class' => 'form-control w-100', 'step' => '1', 'min' => '0', 'inputmode' => 'numeric']) !!}
             </div>
             <small id="bcp-current-month-paid-note" class="form-text text-info d-none">
                 {{ __("The Current Month's Waste Collection Fee Has Been Paid. You May Only Pay Previous Dues.") }}
@@ -455,7 +455,6 @@
                 $('#bcp-current-amount-input-wrap').show();
                 $('#bcp-current-month-paid-note').addClass('d-none');
                 $('#due_paid').prop('required', false).attr('min', '0');
-                $('#bcp-current-amount-row').addClass('required');
                 $('#bcp-due-paid-row').removeClass('required');
             }
         }).fail(function() {
@@ -468,7 +467,6 @@
             $('#bcp-current-amount-input-wrap').show();
             $('#bcp-current-month-paid-note').addClass('d-none');
             $('#due_paid').prop('required', false).attr('min', '0');
-            $('#bcp-current-amount-row').addClass('required');
             $('#bcp-due-paid-row').removeClass('required');
         }).always(function() {
             if (seq === balanceRequestSeq) {

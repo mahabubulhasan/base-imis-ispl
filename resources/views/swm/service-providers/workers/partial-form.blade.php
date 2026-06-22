@@ -112,7 +112,7 @@
                 {{-- <small class="form-text text-muted">{{ __('Primary, Secondary (Below SSC), SSC, HSC, Bachelor, Master, Others (specify)') }}</small> --}}
             </div>
         </div>
-        <div class="form-group row" id="education_level_other_group" style="display: none;">
+        <div class="form-group row required" id="education_level_other_group" style="display: none;">
             {!! Form::label('education_level_other', __('Education'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
                 {!! Form::text('education_level_other', null, ['class' => 'form-control', 'placeholder' => __('Education (Others specify)')]) !!}
