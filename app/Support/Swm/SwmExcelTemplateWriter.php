@@ -118,7 +118,7 @@ class SwmExcelTemplateWriter
         }
 
         $importSheet->freezePane('A2');
-        $referenceSheet->setSheetState(Worksheet::SHEETSTATE_HIDDEN);
+        $referenceSheet->setSheetState(Worksheet::SHEETSTATE_VISIBLE);
         $spreadsheet->setActiveSheetIndexByName('Import');
 
         return $spreadsheet;
@@ -135,7 +135,7 @@ class SwmExcelTemplateWriter
         $row = 3;
         $sheet->setCellValue('A'.$row, __('Fill in data starting from row 2 on the Import sheet.'));
         $row++;
-        $sheet->setCellValue('A'.$row, __('Columns marked with a dropdown allow one value selected from the list.'));
+        $sheet->setCellValue('A'.$row, __('Columns marked with a dropdown allow one value selected from the list; the full set of allowed values is listed on the Reference sheet.'));
         $row++;
         $sheet->setCellValue('A'.$row, __('Required columns must have a value in each row you import.'));
         $row++;
@@ -184,7 +184,7 @@ class SwmExcelTemplateWriter
             $sheet->setCellValue('A'.$row, __('Multiselect columns'));
             $sheet->getStyle('A'.$row)->getFont()->setBold(true);
             $row++;
-            $sheet->setCellValue('A'.$row, __('For multiselect columns, enter comma-separated values using options from the Reference sheet (hidden).'));
+            $sheet->setCellValue('A'.$row, __('For multiselect columns, enter comma-separated values using the options listed on the Reference sheet.'));
             $row += 2;
         }
 

@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\Support\Swm\SwmExcelTemplateWriter;
 use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PHPUnit\Framework\TestCase;
 
@@ -39,6 +40,8 @@ class SwmExcelTemplateWriterTest extends TestCase
         $validation = $importSheet->getCell('A2')->getDataValidation();
         $this->assertSame(DataValidation::TYPE_LIST, $validation->getType());
         $this->assertSame('Reference!$A$2:$A$3', $validation->getFormula1());
+
+        $this->assertSame(Worksheet::SHEETSTATE_VISIBLE, $referenceSheet->getSheetState());
     }
 
     public function test_multiselect_column_has_no_list_validation_and_writes_instructions(): void
