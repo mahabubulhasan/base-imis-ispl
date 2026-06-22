@@ -82,9 +82,11 @@
         .field-grid .field-value.text-block { white-space: pre-wrap; }
         .field-grid-auto {
             table-layout: auto;
+            width: 100%;
         }
         .field-grid-auto .field-label {
-            width: auto;
+            width: 1%;
+            white-space: nowrap;
             padding-right: 4px;
         }
         .field-grid-auto .field-colon {
@@ -157,15 +159,14 @@
         if ($v === 'both') return 'উভয়';
         return $v ?? '';
     };
-    $display = static function ($v) use ($na) {
+    $display = static function ($v) {
         if ($v === null || $v === '') {
-            return $na;
+            return '';
         }
         return $v;
     };
-    $displayYn = static function ($v) use ($yn, $na) {
-        $t = $yn($v);
-        return $t === '' ? $na : $t;
+    $displayYn = static function ($v) use ($yn) {
+        return $yn($v);
     };
     $bnDigits = static fn ($value) => strtr((string) $value, [
         '0' => '০', '1' => '১', '2' => '২', '3' => '৩', '4' => '৪',
@@ -182,7 +183,7 @@
 <table class="meta-dual">
     <tr>
         <td>
-            <table class="field-grid">
+            <table class="field-grid field-grid-auto">
                 <tr>
                     <td class="field-label">প্রতিবেদন নম্বর</td>
                     <td class="field-colon">:</td>
@@ -191,7 +192,7 @@
             </table>
         </td>
         <td>
-            <table class="field-grid">
+            <table class="field-grid field-grid-auto">
                 <tr>
                     <td class="field-label">তারিখ</td>
                     <td class="field-colon">:</td>
