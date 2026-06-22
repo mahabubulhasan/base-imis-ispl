@@ -22,9 +22,9 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   --><!DOCTYPE html>
     <link rel="stylesheet" href="https://cdn.rawgit.com/Viglino/ol-ext/master/dist/ol-ext.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol/ol.css" type="text/css">
 
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/maps.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ filemtime(public_path('css/app.css')) }}">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}?v={{ filemtime(public_path('css/style.css')) }}">
+    <link rel="stylesheet" href="{{ asset('css/maps.css') }}?v={{ filemtime(public_path('css/maps.css')) }}">
   </head>
   <body class="hold-transition skin-blue sidebar-mini sidebar-collapse layout-fixed">
     <!-- Site wrapper -->
@@ -53,20 +53,20 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   --><!DOCTYPE html>
                         <a href="{{ route('users.show', ['user' => Auth::user()->id]) }}" class="btn btn-block btn-dark">Profile</a>
                         @endif--}}
                     </div>
-                  <div class="col-sm-6"><a href="{{ route('logout.perform') }}" class="btn btn-block btn-dark" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a></div>  
+                  <div class="col-sm-6"><a href="{{ route('logout.perform') }}" class="btn btn-block btn-dark" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a></div>
                   <form id="logout-form" action="{{ route('logout.perform') }}" method="POST" style="display: none;">
                         {{ csrf_field() }}
                     </form>
                   </div>
-                                
+
             </div>
             </div>
       </aside>
- 
+
     <!-- REQUIRED JS SCRIPTS -->
     <script async defer src="https://maps.google.com/maps/api/js?key={{ Config::get('constants.API_KEY_GOOGLE') }}"></script>
-    
-    
+
+
     <script src="{{ asset('/js/ol.js') }}" type="text/javascript"></script>
     <script src="{{asset('js/app.js')}}"></script>
     <script type="text/javascript" src="{{ asset ('/js/map_layout.js') }}"></script>
@@ -75,7 +75,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   --><!DOCTYPE html>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="text/javascript">
       $(document).ready(function() {
-        
+
          $('body').Layout('fixLayoutHeight')
           $(document).on('collapsed.lte.pushmenu', handleExpandedEvent);
           function handleExpandedEvent(){
@@ -108,7 +108,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   --><!DOCTYPE html>
      $(document).ready(function() {
         var sidebarOpen = false;
         $('.nav-link[data-widget="control-sidebar"]').click(function(e) {
-          e.preventDefault(); 
+          e.preventDefault();
           var $controlSidebar = $('.control-sidebar');
           if (sidebarOpen) {
             $controlSidebar.css('transform', 'translateX(100%)');

@@ -352,5 +352,20 @@ class BuildingController extends Controller
                 'data' => $data,
                 ]);
         }
-}
+    }
+
+    public function getBuildingHouseholds($bin)
+    {
+        $households = Household::whereNull('deleted_at')->where('bin', $bin)->get();
+        $format = request()->query('format', 'html');
+        if ($households->isEmpty() && $format == 'json') {
+             return response()->json(['message' => 'Household not found for the provided BIN.'], 404);
+        }
+
+        if($format == 'html') {
+            return view('building-info.households.partials.household_info', compact('households'))->render();
+        }
+
+        return response()->json($households);
+    }
 }

@@ -83,6 +83,7 @@ Route::group([
     'prefix' => 'building-info',
     'namespace' => 'BuildingInfo'
 ], function () {
+    Route::get('households-by-bin/{bin}', 'BuildingController@getBuildingHouseholds');
     // building structure routes
     Route::get('get-use-categories/{functionalUseId}', 'BuildingController@getUseCategories')->name('functionaluse.getusecat');
     Route::get('buildings/buildingdashboard', 'BuildingDashboardController@index')->name('buildingdashboard');
