@@ -423,7 +423,7 @@
                 })
             ],
             view: new ol.View({
-                center: ol.proj.transform([88.27,24.54], 'EPSG:4326', 'EPSG:3857'),
+                center: ol.proj.transform([88.28,24.58], 'EPSG:4326', 'EPSG:3857'),
                 // zoom: 12,
                 minZoom: 12.5,
                 maxZoom: 19,
@@ -483,7 +483,7 @@
 
         function setInitialZoom() {
 
-            map.getView().setCenter(ol.proj.transform([88.27,24.54], 'EPSG:4326', 'EPSG:3857'));
+            map.getView().setCenter(ol.proj.transform([88.28,24.58], 'EPSG:4326', 'EPSG:3857'));
             map.getView().setZoom(12);
 
         }
