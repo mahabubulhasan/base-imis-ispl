@@ -3451,6 +3451,7 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                 @endcan
                 @endif
                 @can('Solid Waste Status Map Layer')
+                /*
                 buildings_swm_payment_status_layer:{
                         name: '{{ __("Solid Waste Service Status") }}',
                     styles:{
@@ -3469,7 +3470,7 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
                     clipLegend: true,
                     showCount: false,
                     filters: [],
-                },
+                },*/
                 @endcan
                 @can('Low Income Community Map Layer')
                 low_income_communities_layer: {
