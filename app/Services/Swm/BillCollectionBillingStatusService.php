@@ -204,11 +204,11 @@ class BillCollectionBillingStatusService
     }
 
     /**
-     * Latest selectable report end month (previous calendar month).
+     * Latest selectable report end month (current calendar month).
      */
     public function maxAllowedMonthTo(): Carbon
     {
-        return Carbon::now()->startOfMonth()->subMonth();
+        return Carbon::now()->startOfMonth();
     }
 
     /**

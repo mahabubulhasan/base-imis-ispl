@@ -48,7 +48,7 @@
 @include('layouts.components.error-alert')
 
 @php
-    $maxMonthTo = now()->copy()->subMonth()->startOfMonth();
+    $maxMonthTo = now()->copy()->startOfMonth();
     $defaultMonthTo = $maxMonthTo->format('Y-m');
     $defaultMonthFrom = $maxMonthTo->copy()->subMonths(5)->format('Y-m');
 @endphp
