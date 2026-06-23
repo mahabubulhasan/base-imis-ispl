@@ -7,6 +7,7 @@ use App\Models\BuildingInfo\BuildContain;
 use App\Models\BuildingInfo\Building;
 use App\Models\BuildingInfo\BuildingSurvey;
 use App\Models\BuildingInfo\FunctionalUse;
+use App\Models\BuildingInfo\Household;
 use App\Models\BuildingInfo\SanitationSystem;
 use App\Models\BuildingInfo\StructureType;
 use App\Models\BuildingInfo\UseCategory;
@@ -171,6 +172,7 @@ class BuildingFormDataService
                 'containment_type' => ContainmentType::pluck('type', 'id')->all(),
                 'drain_status' => false,
                 'sewer_status' => false,
+                'selectedHouseholdOptions' => $this->buildSelectedHouseholdOptions(null),
             ]
         );
     }
@@ -194,6 +196,7 @@ class BuildingFormDataService
                 'containment_type' => ContainmentType::pluck('type', 'id')->all(),
                 'drain_status' => $drain_status,
                 'sewer_status' => $sewer_status,
+                'selectedHouseholdOptions' => $this->buildSelectedHouseholdOptions($building->swm_customer_id),
             ]
         );
     }
@@ -223,6 +226,7 @@ class BuildingFormDataService
                 'containment_type' => ContainmentType::pluck('type', 'id')->all(),
                 'drain_status' => false,
                 'sewer_status' => false,
+                'selectedHouseholdOptions' => $this->buildSelectedHouseholdOptions(null),
             ]
         );
     }
@@ -556,6 +560,36 @@ class BuildingFormDataService
                 ->orderBy('code')
                 ->pluck('code', 'code'),
         ];
+    }
+
+    /**
+     *
+     * @return array<string, string>  household_id => label
+     */
+    private function buildSelectedHouseholdOptions(?string $csv): array
+    {
+        $ids = collect(explode(',', (string) $csv))
+            ->merge((array) old('swm_customer_id', []))
+            ->map(fn ($v) => trim((string) $v))
+            ->filter()
+            ->unique()
+            ->values();
+
+        if ($ids->isEmpty()) {
+            return [];
+        }
+
+        return Household::query()
+            ->whereNull('deleted_at')
+            ->whereIn('household_id', $ids->all())
+            ->orderBy('household_id')
+            ->get(['household_id', 'household_owner_name'])
+            ->mapWithKeys(fn ($h) => [
+                $h->household_id => $h->household_owner_name
+                    ? $h->household_id . ' - ' . $h->household_owner_name
+                    : (string) $h->household_id,
+            ])
+            ->all();
     }
 
     private function toArray($value): array

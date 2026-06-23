@@ -462,7 +462,8 @@
             @endphp
             {{-- Ensure an explicit empty array is submitted when nothing is selected. --}}
             <input type="hidden" name="swm_customer_id[]" value="">
-            {!! Form::select('swm_customer_id[]', $householdOptions ?? [], $selectedHouseholds->all(), [
+            {{-- Only preselected options are rendered server-side; the rest load on demand via AJAX (select2). --}}
+            {!! Form::select('swm_customer_id[]', $selectedHouseholdOptions ?? [], $selectedHouseholds->all(), [
                 'class' => 'form-control col-sm-10',
                 'id' => 'swm_customer_id',
                 'multiple' => true,
@@ -738,6 +739,19 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
             allowClear: true,
             closeOnSelect: false,
             width: '85%',
+            minimumInputLength: 0,
+            ajax: {
+                url: "{{ route('building.household-options') }}",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        search: params.term,
+                        page: params.page || 1,
+                    };
+                },
+                cache: true,
+            },
         });
     });
 </script>
