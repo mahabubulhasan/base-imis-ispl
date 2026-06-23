@@ -186,10 +186,14 @@ class HouseholdImport implements ToCollection, WithHeadingRow, WithMultipleSheet
                 ];
 
 
-                $existingId = Household::query()
-                    ->whereNull('deleted_at')
+
+                $existing = Household::withTrashed()
                     ->where('household_id', $householdId)
-                    ->value('id');
+                    ->first();
+                if ($existing && $existing->trashed()) {
+                    $existing->restore();
+                }
+                $existingId = $existing?->id;
 
                 $saved = $service->storeOrUpdate($existingId, $data);
                 if ($saved) {
