@@ -110,6 +110,7 @@ Route::group([
 
     // households routes
     Route::get('households/building-snapshot', 'HouseholdController@getBuildingSnapshot')->name('building-info.households.building-snapshot');
+    Route::get('households/bin-options', 'HouseholdController@binOptions')->name('building-info.households.bin-options');
     Route::get('households/data', 'HouseholdController@getData')->name('building-info.households.data');
     Route::get('households/export', 'HouseholdController@export')->name('building-info.households.export');
     Route::get('households/template', 'HouseholdController@downloadTemplate')->name('building-info.households.template');

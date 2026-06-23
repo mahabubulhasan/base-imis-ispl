@@ -215,7 +215,20 @@ $(function() {
         $('#bin').select2({
             width: '100%',
             placeholder: "{{ __('Select BIN') }}",
-            allowClear: true
+            allowClear: true,
+            minimumInputLength: 0,
+            ajax: {
+                url: "{{ route('building-info.households.bin-options') }}",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        search: params.term,
+                        page: params.page || 1,
+                    };
+                },
+                cache: true,
+            }
         });
         $('#ward').select2({
             width: '100%',
