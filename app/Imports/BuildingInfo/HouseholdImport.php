@@ -168,7 +168,7 @@ class HouseholdImport implements ToCollection, WithHeadingRow, WithMultipleSheet
                     'road_name' => $roadName,
                     'holding_number' => $holdingNumber,
                     'tax_id' => ($norm['tax_id'] ?? '') !== '' ? trim((string) $norm['tax_id']) : null,
-                    'waste_charge' => ($norm['waste_charge'] ?? '') !== '' ? $norm['waste_charge'] : null,
+                    'waste_charge' => SwmImportRowHelper::parseDecimal($norm['waste_charge'] ?? null),
                     'bin' => $bin,
                     'is_owner' => $isOwner,
                     'is_lic' => $isLic,
@@ -176,9 +176,7 @@ class HouseholdImport implements ToCollection, WithHeadingRow, WithMultipleSheet
                     'number_of_family_members' => ($norm['number_of_family_members'] ?? '') !== ''
                         ? (int) $norm['number_of_family_members']
                         : null,
-                    'daily_waste_volume' => ($norm['daily_waste_volume'] ?? '') !== ''
-                        ? $norm['daily_waste_volume']
-                        : null,
+                    'daily_waste_volume' => SwmImportRowHelper::parseDecimal($norm['daily_waste_volume'] ?? null),
                     'segregation_practiced' => SwmImportRowHelper::parseBoolean($norm['segregation_practiced'] ?? null) ?? false,
                     'waste_bin_provided' => $wasteBinProvided,
                     'using_this_service_since' => SwmImportRowHelper::parseDate($norm['using_this_service_since'] ?? null)?->format('Y-m-d'),
@@ -187,7 +185,13 @@ class HouseholdImport implements ToCollection, WithHeadingRow, WithMultipleSheet
                     'remarks' => ($norm['remarks'] ?? '') !== '' ? trim((string) $norm['remarks']) : null,
                 ];
 
-                $saved = $service->storeOrUpdate(null, $data);
+
+                $existingId = Household::query()
+                    ->whereNull('deleted_at')
+                    ->where('household_id', $householdId)
+                    ->value('id');
+
+                $saved = $service->storeOrUpdate($existingId, $data);
                 if ($saved) {
                     $this->successCount++;
                 } else {

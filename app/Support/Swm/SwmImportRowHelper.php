@@ -179,6 +179,45 @@ class SwmImportRowHelper
         return $date ? $date->format('M Y') : '';
     }
 
+    /**
+     * Parse a numeric cell into a float suitable for a numeric DB column.
+     * Strips currency symbols, thousands separators and stray whitespace so
+     * values produced by our own exports (e.g. "1,235" or "৳ 1,234.50") can be
+     * re-imported without tripping a Postgres "invalid input syntax for type
+     * numeric" error. Returns null when the cell is empty or carries no
+     * parseable number.
+     */
+    public static function parseDecimal($value): ?float
+    {
+        if ($value === null) {
+            return null;
+        }
+        if (is_int($value) || is_float($value)) {
+            return (float) $value;
+        }
+        $raw = trim((string) $value);
+        if ($raw === '') {
+            return null;
+        }
+        $negative = str_starts_with($raw, '-');
+        // Keep only digits and decimal points; drop currency symbols, commas, spaces, letters.
+        $cleaned = preg_replace('/[^0-9.]/u', '', $raw);
+        if ($cleaned === '' || $cleaned === '.') {
+            return null;
+        }
+        // Collapse accidental multiple decimal points to the first one.
+        $firstDot = strpos($cleaned, '.');
+        if ($firstDot !== false) {
+            $cleaned = substr($cleaned, 0, $firstDot + 1)
+                . str_replace('.', '', substr($cleaned, $firstDot + 1));
+        }
+        if (! is_numeric($cleaned)) {
+            return null;
+        }
+
+        return $negative ? -(float) $cleaned : (float) $cleaned;
+    }
+
     public static function parseBoolean($value): ?bool
     {
         if ($value === null || $value === '') {

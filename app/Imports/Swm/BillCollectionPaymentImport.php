@@ -59,15 +59,17 @@ class BillCollectionPaymentImport implements ToCollection, WithHeadingRow, WithM
                     continue;
                 }
 
-                $amount = $norm['amount'] ?? null;
-                if ($amount === null || $amount === '') {
+                $amountRaw = $norm['amount'] ?? null;
+                if ($amountRaw === null || trim((string) $amountRaw) === '') {
                     $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'amount', $columnDefinitions);
                     continue;
                 }
-                $duePaid = $norm['due_paid'] ?? 0;
-                if ($duePaid === null || $duePaid === '') {
-                    $duePaid = 0;
+                $amount = SwmImportRowHelper::parseDecimal($amountRaw);
+                if ($amount === null) {
+                    $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'amount', $columnDefinitions);
+                    continue;
                 }
+                $duePaid = SwmImportRowHelper::parseDecimal($norm['due_paid'] ?? null) ?? 0.0;
 
                 $month = $this->parseMonth($norm['payment_for_month'] ?? null);
                 if (! $month) {
