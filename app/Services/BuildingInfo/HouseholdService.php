@@ -106,10 +106,10 @@ class HouseholdService
         $household->area_mohalla_name = $data['area_mohalla_name'] ?? null;
         $household->sub_location = $data['sub_location'] ?? null;
         $household->bin = $data['bin'] ?? null;
-        $household->ward = $building?->ward ?? ($data['ward'] ?? null);
+        $household->ward = $data['ward'] ?? ($building?->ward ?? null);
         $household->road_no = $roadNo !== '' ? $roadNo : null;
         $household->road_name = $roadName !== '' ? $roadName : null;
-        $household->holding_number = $building?->house_number ?? ($data['holding_number'] ?? null);
+        $household->holding_number = $data['holding_number'] ?? ($building?->house_number ?? null);
         $household->tax_id = $data['tax_id'] ?? ($building?->tax_code);
         $household->waste_charge = $data['waste_charge'] ?? null;
         $household->is_owner = (bool) ($data['is_owner'] ?? false);

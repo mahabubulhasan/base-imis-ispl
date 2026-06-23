@@ -64,9 +64,9 @@
             {!! Form::text('area_mohalla_name', null, ['class' => 'form-control', 'placeholder' => __('Area / Mohalla Name')]) !!}
         </div>
     </div>
-    <div class="form-group row required">
+    <div class="form-group row">
         {!! Form::label('ward', __('Ward No.'), ['class' => 'col-sm-3 control-label']) !!}
-        <div class="col-sm-3">{!! Form::text('ward', null, ['class' => 'form-control', 'id' => 'ward']) !!}</div>
+        <div class="col-sm-3">{!! Form::select('ward', $wards ?? [], null, ['class' => 'form-control', 'id' => 'ward', 'placeholder' => __('Select Ward')]) !!}</div>
     </div>
     <div class="form-group row">
         {!! Form::label('road_no', __('Road No.'), ['class' => 'col-sm-3 control-label']) !!}
@@ -215,6 +215,11 @@ $(function() {
         $('#bin').select2({
             width: '100%',
             placeholder: "{{ __('Select BIN') }}",
+            allowClear: true
+        });
+        $('#ward').select2({
+            width: '100%',
+            placeholder: "{{ __('Select Ward') }}",
             allowClear: true
         });
     }

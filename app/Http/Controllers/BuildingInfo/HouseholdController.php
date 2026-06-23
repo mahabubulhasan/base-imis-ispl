@@ -9,6 +9,7 @@ use App\Imports\BuildingInfo\HouseholdImport;
 use App\Models\BuildingInfo\Building;
 use App\Models\BuildingInfo\Household;
 use App\Models\LayerInfo\Lic;
+use App\Models\LayerInfo\Ward;
 use App\Models\Swm\WasteBinType;
 use App\Models\Swm\Worker;
 use App\Models\UtilityInfo\Roadline;
@@ -35,6 +36,11 @@ class HouseholdController extends Controller
     protected function bins()
     {
         return Building::query()->whereNull('deleted_at')->orderBy('bin')->pluck('bin', 'bin')->all();
+    }
+
+    protected function wards(): array
+    {
+        return Ward::getInAscOrder();
     }
 
     protected function vanPullers()
@@ -108,14 +114,15 @@ class HouseholdController extends Controller
         $vanPullers = $this->vanPullers();
         $licOptions = $this->licOptions();
         $wasteBinTypes = $this->wasteBinTypeOptions();
-
+        $wards = $this->wards();
         return view('building-info.households.create', compact(
             'page_title',
             'household',
             'bins',
             'vanPullers',
             'licOptions',
-            'wasteBinTypes'
+            'wasteBinTypes',
+            'wards'
         ));
     }
 
@@ -141,14 +148,15 @@ class HouseholdController extends Controller
         $vanPullers = $this->vanPullers();
         $licOptions = $this->licOptions();
         $wasteBinTypes = $this->wasteBinTypeOptions();
-
+        $wards = $this->wards();
         return view('building-info.households.edit', compact(
             'page_title',
             'household',
             'bins',
             'vanPullers',
             'licOptions',
-            'wasteBinTypes'
+            'wasteBinTypes',
+            'wards'
         ));
     }
 

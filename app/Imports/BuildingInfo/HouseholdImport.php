@@ -59,7 +59,6 @@ class HouseholdImport implements ToCollection, WithHeadingRow, WithMultipleSheet
             if (SwmImportRowHelper::rowHasNoRequiredData($norm, $columnDefinitions)) {
                 continue;
             }
-
             try {
                 $householdId = trim((string) ($norm['household_id'] ?? ''));
                 $ownerName = trim((string) ($norm['household_owner_name'] ?? ''));
