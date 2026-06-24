@@ -77,14 +77,16 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   --><!DOCTYPE html>
       $(document).ready(function() {
 
          $('body').Layout('fixLayoutHeight')
-          $(document).on('collapsed.lte.pushmenu', handleExpandedEvent);
-          function handleExpandedEvent(){
-            $('.logo').css('display', 'block');
+          // Small map logo: visible only when the sidebar is minimized (collapsed),
+          // hidden when the sidebar is open/expanded. Reads the actual body state.
+          function applyLogoVisibility(){
+            var minimized = $('body').hasClass('sidebar-collapse');
+            $('#map-logo').css('display', minimized ? 'inline' : 'none');
           }
-           $(document).on('shown.lte.pushmenu', handleCollapsedEvent);
-          function handleCollapsedEvent(){
-              $('.logo').css('display', 'none');
-          }
+          // Disable the old per-click flip (header.blade.php) so it can't fight this.
+          window.hideImage = function(){};
+          $(document).on('collapsed.lte.pushmenu shown.lte.pushmenu', applyLogoVisibility);
+          applyLogoVisibility();
 
           const position = { x: 0, y: 0 }
 

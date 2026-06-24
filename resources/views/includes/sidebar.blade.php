@@ -4,18 +4,15 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     @if (request()->is('maps'))
     <a href="{{ url('/') }}" class="brand-link">
-        <img src="" alt="">
-        <span class="brand-text font-weight-light ">
-            <img src="{{ asset('/img/logo-imis.png') }}" alt="Municipality Logo" id="sidebar-logo" style="filter: brightness(0) invert(1) grayscale(1); float:left; line-height: .8;
-            margin-right: 0.5rem; margin-top:3px; height:40px; width:80%">
-        </span>
+        <img src="{{ asset('/img/logo-imis.png') }}" alt="Municipality Logo" id="sidebar-logo" style="filter: brightness(0) invert(1) grayscale(1); line-height: .8;
+        display:block; margin:0 0.75rem; width:auto; height:48px; max-width:calc(100% - 1.5rem); object-fit:contain">
     </a>
     @else
     <a href="{{ url('/') }}" class="brand-link" id="sidebar-brand-link">
-        <img src="{{ asset('/img/logo-imis.png') }}" alt="Municipality Logo" id="sidebar-logo" style="filter: brightness(0) invert(1) grayscale(1); float:left; line-height: .8;
-        margin-right: 0.5rem; margin-top:3px; max-height:33px; width:70px">
-        <img src="{{ asset('/img/logo-imis.png') }}" alt=" Municipality Logo" id="hello-text" style="filter: brightness(0) invert(1) grayscale(1); float:left; line-height : .8;
-         margin-right: 0.5rem; margin-left:3%; max-height:60px; width:80%; display: none; ">
+        <img src="{{ asset('/img/logo-imis.png') }}" alt="Municipality Logo" id="sidebar-logo" style="filter: brightness(0) invert(1) grayscale(1); line-height: .8;
+        display:block; margin:0 0.6rem; width:auto; height:34px; max-width:calc(100% - 1.2rem); object-fit:contain">
+        <img src="{{ asset('/img/logo-imis.png') }}" alt=" Municipality Logo" id="hello-text" style="filter: brightness(0) invert(1) grayscale(1); line-height : .8;
+         margin-left: 0.75rem; margin-right: 0.75rem; margin-top:6px; height:48px; width:auto; display: none; ">
     </a>
     @endif
     <div class="sidebar" style='font-family: Open Sans, sans-serif'>
