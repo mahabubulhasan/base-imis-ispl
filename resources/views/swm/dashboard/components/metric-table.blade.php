@@ -5,11 +5,12 @@
         </h4>
     @endif
     <div class="table-responsive">
-        <table class="table table-sm table-striped table-bordered swm-metric-table mb-0">
+        <table class="table table-sm table-striped table-bordered swm-metric-table tbl-aligned mb-0">
             <thead>
                 <tr>
                     @foreach($columns ?? [] as $column)
-                        <th scope="col">{{ $column['label'] ?? '' }}</th>
+                        @php($alignClass = ($column['align'] ?? null) === 'currency' ? 'col-currency' : (($column['align'] ?? null) === 'num' ? 'col-num' : ''))
+                        <th scope="col"{{ $alignClass ? ' class='.$alignClass : '' }}>{{ $column['label'] ?? '' }}</th>
                     @endforeach
                 </tr>
             </thead>
@@ -17,7 +18,8 @@
                 @forelse($rows ?? [] as $row)
                     <tr>
                         @foreach($columns ?? [] as $column)
-                            <td>{{ $row[$column['key'] ?? ''] ?? '' }}</td>
+                            @php($alignClass = ($column['align'] ?? null) === 'currency' ? 'col-currency' : (($column['align'] ?? null) === 'num' ? 'col-num' : ''))
+                            <td{{ $alignClass ? ' class='.$alignClass : '' }}>{{ $row[$column['key'] ?? ''] ?? '' }}</td>
                         @endforeach
                     </tr>
                 @empty

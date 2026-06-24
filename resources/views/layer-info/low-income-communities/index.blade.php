@@ -63,7 +63,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table id="data-table" class="table table-bordered table-striped dtr-inline" width="100%">
+                <table id="data-table" class="table table-bordered table-striped dtr-inline tbl-aligned" width="100%">
                     <thead>
                         <tr>
                             <th>{{ __('LIC ID') }}</th>
@@ -107,7 +107,8 @@
                         },
                         {
                             data: 'ward',
-                            name: 'ward'
+                            name: 'ward',
+                            className: 'col-num'
                         },
                         {
                             data: 'representative_name',
@@ -119,19 +120,23 @@
                         },
                         {
                             data: 'no_of_buildings',
-                            name: 'no_of_buildings'
+                            name: 'no_of_buildings',
+                            className: 'col-num'
                         },
                         {
                             data: 'number_of_households',
-                            name: 'number_of_households'
+                            name: 'number_of_households',
+                            className: 'col-num'
                         },
                         {
                             data: 'population_total',
-                            name: 'population_total'
+                            name: 'population_total',
+                            className: 'col-num'
                         },
                         {
                             data: 'area_decima',
-                            name: 'area_decima'
+                            name: 'area_decima',
+                            className: 'col-num'
                         },
                         {
                             data: 'action',

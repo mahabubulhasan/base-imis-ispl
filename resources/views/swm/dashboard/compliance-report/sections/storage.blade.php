@@ -16,7 +16,7 @@
         <div class="subsection">
             <h3 class="subsection-title">৩.৩ বাড়ি বাড়ি বর্জ্য সংগ্রহের জন্য কোনো বেসরকারি সংগঠন বা অন্য কাউকে নিয়োগ করা হয়ে থাকলে তার বিবরণ</h3>
             <div class="tbl-wrap">
-                <table class="tbl" id="tbl-door-orgs">
+                <table class="tbl tbl-aligned" id="tbl-door-orgs">
                     <thead>
                         <tr>
                             <th style="width:36px;">ক্রম</th>
@@ -42,7 +42,7 @@
         <div class="subsection">
             <h3 class="subsection-title">৩.৪ বর্জ্যাধার (Bins) @include('swm.dashboard.compliance-report.partials.auto-tip')</h3>
             <div class="tbl-wrap">
-                <table class="tbl" id="tbl-bins">
+                <table class="tbl tbl-aligned" id="tbl-bins">
                     <thead>
                         <tr>
                             <th style="width:36px;">ক্রম</th>

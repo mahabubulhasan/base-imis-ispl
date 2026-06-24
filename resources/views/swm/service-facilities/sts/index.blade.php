@@ -116,7 +116,7 @@
     </div>
     <div class="card-body">
     <div class="table-responsive">
-        <table id="data-table" class="table table-bordered table-striped" width="100%">
+        <table id="data-table" class="table table-bordered table-striped tbl-aligned" width="100%">
             <thead>
                 <tr>
                 <th>{{ __('STS ID') }}</th>
@@ -166,12 +166,12 @@ $(function() {
         columns: [
             { data: 'sts_id', name: 'swm.sts.sts_id' },
             { data: 'name', name: 'swm.sts.name' },
-            { data: 'ward_no', name: 'swm.sts.ward_no' },
+            { data: 'ward_no', name: 'swm.sts.ward_no', className: 'col-num' },
             { data: 'location', name: 'swm.sts.location' },
             { data: 'operator_name', name: 'swm.sts.operator_name' },
             { data: 'contact_number', name: 'swm.sts.contact_number' },
-            { data: 'capacity', name: 'swm.sts.capacity' },
-            { data: 'area', name: 'swm.sts.area' },
+            { data: 'capacity', name: 'swm.sts.capacity', className: 'col-num' },
+            { data: 'area', name: 'swm.sts.area', className: 'col-num' },
             { data: 'source_wards_text', name: 'source_wards_text', orderable: false, searchable: false },
             { data: 'waste_types', name: 'waste_types', orderable: false, searchable: false },
             { data: 'segregation_practiced', name: 'swm.sts.segregation_practiced' },

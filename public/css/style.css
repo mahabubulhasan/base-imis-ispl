@@ -1445,3 +1445,26 @@ body.layout-fixed .main-sidebar .sidebar {
 body.layout-fixed .main-sidebar .sidebar {
   padding-top: 0.5rem;
 }
+
+/* ---------------------------------------------------------------------------
+   Aligned data tables (opt-in via the `tbl-aligned` class).
+   Header: centered + top-aligned. Body: text left (default), numeric center,
+   currency right — body cells tagged with `col-num` / `col-currency`.
+   Used by SWM, Households and Low Income Communities listing/data tables.
+--------------------------------------------------------------------------- */
+.tbl-aligned thead th {
+  text-align: center !important;
+  vertical-align: top;
+}
+.tbl-aligned tbody td {
+  text-align: left;
+  vertical-align: top;
+}
+.tbl-aligned td.col-num,
+.tbl-aligned th.col-num {
+  text-align: center;
+}
+.tbl-aligned td.col-currency,
+.tbl-aligned th.col-currency {
+  text-align: right;
+}

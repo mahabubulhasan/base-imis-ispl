@@ -75,7 +75,7 @@
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table id="data-table" class="table table-bordered table-striped" width="100%">
+            <table id="data-table" class="table table-bordered table-striped tbl-aligned" width="100%">
                 <thead>
                     <tr>
                         <th>{{ __('Household ID') }}</th>
@@ -132,11 +132,11 @@ $(function() {
             { data: 'contact_number', name: 'contact_number' },
             { data: 'bin', name: 'bin' },
             { data: 'holding_number', name: 'holding_number' },
-            { data: 'ward', name: 'ward' },
+            { data: 'ward', name: 'ward', className: 'col-num' },
             { data: 'area_mohalla_name', name: 'area_mohalla_name' },
             { data: 'road_no', name: 'road_no' },
             { data: 'road_name', name: 'road_name' },
-            { data: 'waste_charge', name: 'waste_charge' },
+            { data: 'waste_charge', name: 'waste_charge', className: 'col-currency' },
             { data: 'van_puller_name', name: 'van_puller_name' },
             { data: 'lic_id', name: 'lic_id' },
             { data: 'segregation_practiced', name: 'segregation_practiced' },

@@ -58,7 +58,7 @@
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table id="data-table" class="table table-bordered table-striped" width="100%">
+            <table id="data-table" class="table table-bordered table-striped tbl-aligned" width="100%">
                 <thead>
                     <tr>
                         <th>{{ __('Landfill Loading Log ID') }}</th>
@@ -107,7 +107,7 @@ $(function() {
             { data: 'sts_source_wards_label', name: 'sts_source_wards_label', orderable: false, searchable: false },
             { data: 'other_source_wards_label', name: 'other_source_wards_label', orderable: false, searchable: false },
             { data: 'waste_type_label', name: 'waste_type_name' },
-            { data: 'quantity_ton', name: 'quantity_ton' },
+            { data: 'quantity_ton', name: 'quantity_ton', className: 'col-num' },
             { data: 'action', name: 'action', orderable: false, searchable: false }
         ],
         order: [[2, 'desc']]

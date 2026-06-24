@@ -93,7 +93,7 @@
     </div>
     <div class="card-body">
     <div class="table-responsive">
-        <table id="data-table" class="table table-bordered table-striped" width="100%">
+        <table id="data-table" class="table table-bordered table-striped tbl-aligned" width="100%">
             <thead>
                 <tr>
                 <th>{{ __('Vehicle ID') }}</th>
@@ -149,7 +149,8 @@ $(function() {
             },
             {
                 data: 'capacity',
-                name: 'swm.vehicles.capacity'
+                name: 'swm.vehicles.capacity',
+                className: 'col-num'
             },
             {
                 data: 'organization_name',

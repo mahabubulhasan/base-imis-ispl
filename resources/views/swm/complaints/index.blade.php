@@ -115,7 +115,7 @@
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table id="data-table" class="table table-bordered table-striped" width="100%">
+            <table id="data-table" class="table table-bordered table-striped tbl-aligned" width="100%">
                 <thead>
                     <tr>
                         <th>{{ __('Complaint ID') }}</th>
@@ -236,7 +236,7 @@ $(function() {
             { data: 'household_id', name: 'customer_id' },
             { data: 'name', name: 'name' },
             { data: 'contact_number', name: 'contact_number' },
-            { data: 'ward_no', name: 'ward_no' },
+            { data: 'ward_no', name: 'ward_no', className: 'col-num' },
             { data: 'incident_date', name: 'incident_date' },
             { data: 'complaint_type', name: 'complaint_type' },
             { data: 'submitted_through', name: 'submitted_through' },

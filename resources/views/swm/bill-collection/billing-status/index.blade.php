@@ -147,7 +147,7 @@
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table id="data-table" class="table table-bordered table-striped" width="100%">
+            <table id="data-table" class="table table-bordered table-striped tbl-aligned" width="100%">
                 <thead>
                     <tr class="header-group">
                         <th rowspan="2">{{ __('SL') }}</th>
@@ -311,10 +311,10 @@ $(function() {
             { data: 'household_owner_name', name: 'household_owner_name', searchable: false, orderable: true, className: 'text-left' },
             { data: 'father_or_husband_name', name: 'father_or_husband_name', searchable: false, orderable: true, className: 'text-left' },
             { data: 'sub_location', name: 'sub_location', searchable: false, orderable: true, className: 'text-left sub-location-col', width: '220px' },
-            { data: 'ward', name: 'ward', searchable: false, orderable: true, className: 'text-left' },
+            { data: 'ward', name: 'ward', searchable: false, orderable: true, className: 'text-left col-num' },
             { data: 'contact_number', name: 'contact_number', searchable: false, orderable: true, className: 'text-left' },
-            { data: 'current_service_fee', name: 'current_service_fee', searchable: false, orderable: false, className: 'text-right' },
-            { data: 'previous_due_amount', name: 'previous_due_amount', searchable: false, orderable: false, className: 'text-right' },
+            { data: 'current_service_fee', name: 'current_service_fee', searchable: false, orderable: false, className: 'text-right col-currency' },
+            { data: 'previous_due_amount', name: 'previous_due_amount', searchable: false, orderable: false, className: 'text-right col-currency' },
             {
                 data: 'due_months_of',
                 name: 'due_months_of',
@@ -345,12 +345,12 @@ $(function() {
                     return lines.join('<br>');
                 }
             },
-            { data: 'due_current_month', name: 'due_current_month', searchable: false, orderable: false, className: 'text-right' },
-            { data: 'total_due_amount', name: 'total_due_amount', searchable: false, orderable: false, className: 'text-right' },
-            { data: 'current_month_paid', name: 'current_month_paid', searchable: false, orderable: true, className: 'text-right' },
-            { data: 'previous_due_paid', name: 'previous_due_paid', searchable: false, orderable: true, className: 'text-right' },
-            { data: 'revenue_collected', name: 'revenue_collected', searchable: false, orderable: true, className: 'text-right' },
-            { data: 'remaining_due', name: 'remaining_due', searchable: false, orderable: false, className: 'text-right' }
+            { data: 'due_current_month', name: 'due_current_month', searchable: false, orderable: false, className: 'text-right col-currency' },
+            { data: 'total_due_amount', name: 'total_due_amount', searchable: false, orderable: false, className: 'text-right col-currency' },
+            { data: 'current_month_paid', name: 'current_month_paid', searchable: false, orderable: true, className: 'text-right col-currency' },
+            { data: 'previous_due_paid', name: 'previous_due_paid', searchable: false, orderable: true, className: 'text-right col-currency' },
+            { data: 'revenue_collected', name: 'revenue_collected', searchable: false, orderable: true, className: 'text-right col-currency' },
+            { data: 'remaining_due', name: 'remaining_due', searchable: false, orderable: false, className: 'text-right col-currency' }
         ],
         order: [[1, 'asc']]
     });

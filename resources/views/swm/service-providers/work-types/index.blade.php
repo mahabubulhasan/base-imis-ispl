@@ -50,7 +50,7 @@
     </div>
     <div class="card-body">
     <div style="overflow: auto; width: 100%;">
-        <table id="data-table" class="table table-bordered table-striped" width="100%">
+        <table id="data-table" class="table table-bordered table-striped tbl-aligned" width="100%">
             <thead>
                 <tr>
                 <th>{{ __('Worker Type') }}</th>

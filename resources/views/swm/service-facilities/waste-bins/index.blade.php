@@ -80,7 +80,7 @@
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table id="data-table" class="table table-bordered table-striped" width="100%">
+            <table id="data-table" class="table table-bordered table-striped tbl-aligned" width="100%">
                 <thead>
                     <tr>
                         <th>{{ __('Waste Bin ID') }}</th>
@@ -122,10 +122,10 @@ $(function () {
         columns: [
             { data: 'waste_bin_id', name: 'waste_bin_id' },
             { data: 'waste_bin_type_name', name: 'waste_bin_type_name', orderable: false, searchable: false },
-            { data: 'total_capacity_kg', name: 'total_capacity_kg' },
+            { data: 'total_capacity_kg', name: 'total_capacity_kg', className: 'col-num' },
             { data: 'placed_at_buildings_label', name: 'placed_at_buildings_label', orderable: false, searchable: false },
             { data: 'bin', name: 'bin' },
-            { data: 'ward_no', name: 'ward_no' },
+            { data: 'ward_no', name: 'ward_no', className: 'col-num' },
             { data: 'road_no', name: 'road_no' },
             { data: 'road_name', name: 'road_name' },
             { data: 'action', name: 'action', orderable: false, searchable: false }

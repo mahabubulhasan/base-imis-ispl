@@ -1,7 +1,7 @@
         <div class="subsection">
             <h3 class="subsection-title">২.৮ ল্যান্ডফিলের প্রকার @include('swm.dashboard.compliance-report.partials.auto-tip')</h3>
             <div class="tbl-wrap">
-                <table class="tbl" id="tbl-landfill-type">
+                <table class="tbl tbl-aligned" id="tbl-landfill-type">
                     <thead>
                         <tr>
                             <th style="width:36px;">ক্রম</th>
@@ -25,7 +25,7 @@
                 <input name="num_landfill_sites" type="number" min="0" class="auto-filled" value="{{ $lfInfo['num_landfill_sites'] ?? '' }}" />
             </div>
             <div class="tbl-wrap">
-                <table class="tbl" id="tbl-landfill-info">
+                <table class="tbl tbl-aligned" id="tbl-landfill-info">
                     <thead>
                         <tr>
                             <th rowspan="2" style="width:36px;">ক্রম</th>
@@ -62,7 +62,7 @@
             <h3 class="subsection-title" style="margin-top:18px;">(ও) ল্যান্ডফিলের যন্ত্রপাতির তথ্য</h3>
             <p class="subsection-note">বুলডোজার, কম্প্যাক্টর এবং অনুরূপ অন্যান্য ধরনের যন্ত্রপাতি থাকিলে উহার নাম।</p>
             <div class="tbl-wrap">
-                <table class="tbl" id="tbl-equipment">
+                <table class="tbl tbl-aligned" id="tbl-equipment">
                     <thead>
                         <tr>
                             <th style="width:36px;">ক্রম</th>

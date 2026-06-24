@@ -61,7 +61,7 @@
     </div>
     <div class="card-body">
         <div style="overflow: auto; width: 100%;">
-            <table id="data-table" class="table table-bordered table-striped" width="100%">
+            <table id="data-table" class="table table-bordered table-striped tbl-aligned" width="100%">
                 <thead>
                     <tr>
                         <th>{{ __('Customer ID') }}</th>
@@ -108,7 +108,7 @@ $(function() {
             { data: 'customer_name', name: 'customer_name' },
             { data: 'contact_number', name: 'contact_number' },
             { data: 'bin', name: 'bin' },
-            { data: 'ward', name: 'ward' },
+            { data: 'ward', name: 'ward', className: 'col-num' },
             { data: 'road_no', name: 'road_no' },
             { data: 'road_name', name: 'road_name' },
             { data: 'is_lic', name: 'is_lic' },

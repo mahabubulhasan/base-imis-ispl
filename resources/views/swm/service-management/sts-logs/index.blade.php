@@ -58,7 +58,7 @@
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table id="data-table" class="table table-bordered table-striped" width="100%">
+            <table id="data-table" class="table table-bordered table-striped tbl-aligned" width="100%">
                 <thead>
                     <tr>
                         <th>{{ __('STS Loading Log ID') }}</th>
@@ -102,7 +102,7 @@ $(function() {
             { data: 'vehicle_number', name: 'vehicle_number', orderable: true, searchable: false },
             { data: 'sts_label', name: 'sts_name' },
             { data: 'waste_type_label', name: 'waste_type_name' },
-            { data: 'quantity_ton', name: 'quantity_ton' },
+            { data: 'quantity_ton', name: 'quantity_ton', className: 'col-num' },
             { data: 'source_wards_label', name: 'source_wards', orderable: false, searchable: false },
             { data: 'action', name: 'action', orderable: false, searchable: false }
         ],

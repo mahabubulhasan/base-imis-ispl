@@ -70,7 +70,7 @@
     </div>
     <div class="card-body">
     <div style="overflow: auto; width: 100%;">
-        <table id="data-table" class="table table-bordered table-striped" width="100%">
+        <table id="data-table" class="table table-bordered table-striped tbl-aligned" width="100%">
             <thead>
                 <tr>
                     <th>{{ __('LIC ID') }}</th>
@@ -109,8 +109,8 @@ $(function() {
             { data: 'lic_id', name: 'lic_id' },
             { data: 'representative_name', name: 'representative_name' },
             { data: 'contact_no', name: 'contact_no' },
-            { data: 'number_of_hhs', name: 'number_of_hhs' },
-            { data: 'total_population', name: 'total_population' },
+            { data: 'number_of_hhs', name: 'number_of_hhs', className: 'col-num' },
+            { data: 'total_population', name: 'total_population', className: 'col-num' },
             { data: 'action', name: 'action', orderable: false, searchable: false }
         ],
         order: [ [0, 'asc'] ]

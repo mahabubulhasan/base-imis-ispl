@@ -51,7 +51,7 @@
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table id="data-table" class="table table-bordered table-striped" width="100%">
+            <table id="data-table" class="table table-bordered table-striped tbl-aligned" width="100%">
                 <thead>
                     <tr>
                         <th>{{ __('Receipt No.') }}</th>
@@ -100,10 +100,10 @@ $(function() {
             { data: 'household_id', name: 'household_id' },
             { data: 'household_owner_name', name: 'household_owner_name' },
             { data: 'contact_number', name: 'contact_number' },
-            { data: 'ward', name: 'ward' },
-            { data: 'amount', name: 'swm.bill_collection_payments.amount' },
-            { data: 'due_paid', name: 'swm.bill_collection_payments.due_paid' },
-            { data: 'total_collected', name: 'total_collected', searchable: false, orderable: false },
+            { data: 'ward', name: 'ward', className: 'col-num' },
+            { data: 'amount', name: 'swm.bill_collection_payments.amount', className: 'col-currency' },
+            { data: 'due_paid', name: 'swm.bill_collection_payments.due_paid', className: 'col-currency' },
+            { data: 'total_collected', name: 'total_collected', searchable: false, orderable: false, className: 'col-currency' },
             { data: 'payment_method', name: 'swm.bill_collection_payments.payment_method' },
             { data: 'received_by_name', name: 'received_by_name' },
             { data: 'action', name: 'action', orderable: false, searchable: false }
