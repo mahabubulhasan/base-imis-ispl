@@ -119,7 +119,7 @@
         <div class="col-sm-5">
             {!! Form::text('house_locality', null, [
                 'class' => 'form-control col-sm-10',
-                'placeholder' => 'Sub Location',
+                'placeholder' => 'Location',
                 
                 'autocomplete' => 'off',
             ]) !!}

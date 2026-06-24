@@ -82,7 +82,7 @@
     <div class="form-group row">
         {!! Form::label('sub_location', __('Location'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::text('sub_location', null, ['class' => 'form-control', 'placeholder' => __('Sub Location')]) !!}
+            {!! Form::text('sub_location', null, ['class' => 'form-control', 'placeholder' => __('Location')]) !!}
         </div>
     </div>
     <div class="form-group row">
