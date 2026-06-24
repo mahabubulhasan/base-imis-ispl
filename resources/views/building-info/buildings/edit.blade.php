@@ -172,6 +172,25 @@
             width: '85%',
             });
 
+        // LIC Name: options load on demand via AJAX (select2)
+        $('#lic_id_select').select2({
+            ajax: {
+                url: "{{ route('building.lic-options') }}",
+                data: function(params) {
+                    return {
+                        search: params.term,
+                        page: params.page || 1
+                    };
+                },
+                cache: true,
+            },
+            placeholder: '{{ __('LIC Name') }}',
+            allowClear: true,
+            closeOnSelect: true,
+            width: '85%',
+            minimumInputLength: 0,
+        });
+
 
         optionHtmlWaterCode = selectedWaterCode
             ? `<option selected=${selectedWaterCode}>${selectedWaterCode}</option>`

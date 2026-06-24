@@ -407,4 +407,33 @@ class BuildingController extends Controller
             'pagination' => ['more' => $page * $limit < $total],
         ]);
     }
+
+    public function getLicOptions(Request $request)
+    {
+        $search = trim((string) $request->query('search', ''));
+        $page = max(1, (int) $request->query('page', 1));
+        $limit = 15;
+
+        $query = Lic::query()->whereNull('deleted_at');
+        if ($search !== '') {
+            $query->where('community_name', 'ilike', '%'.$search.'%');
+        }
+
+        $total = $query->count();
+        $lics = $query
+            ->orderBy('community_name')
+            ->offset(($page - 1) * $limit)
+            ->limit($limit)
+            ->get(['id', 'community_name']);
+
+        $results = $lics->map(fn ($lic) => [
+            'id' => $lic->id,
+            'text' => (string) $lic->community_name,
+        ])->all();
+
+        return response()->json([
+            'results' => $results,
+            'pagination' => ['more' => $page * $limit < $total],
+        ]);
+    }
 }

@@ -90,6 +90,7 @@ Route::group([
     Route::get('buildings/check-house', 'BuildingController@checkHouse')->name('buildings.check-house');
     Route::get('buildings/data', 'BuildingController@getData')->name('building.getData');
     Route::get('buildings/household-options', 'BuildingController@getHouseholdOptions')->name('building.household-options');
+    Route::get('buildings/lic-options', 'BuildingController@getLicOptions')->name('building.lic-options');
     Route::get('buildings/get-house-numbers', 'BuildingController@getHouseNumbers')->name('building.get-house-numbers-containments');
     Route::get('buildings/get-house-numbers-all', 'BuildingController@getHouseNumbersAll')->name('building.get-house-numbers-all');
     Route::get('buildings/get-ctpt-house-numbers', 'BuildingController@getCTPTHouseNumbers')->name('building.get-ctpt-house-numbers');

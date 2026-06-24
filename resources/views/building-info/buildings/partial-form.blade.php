@@ -363,9 +363,11 @@
     <div class="form-group row required" style="display:none" id="lic_id">
         {!! Form::label('lic_id', __('LIC Name'), ['class' => 'col-sm-3 control-label ']) !!}
         <div class="col-sm-5">
-            {!! Form::select('lic_id', $licNames, null, [
+            {!! Form::select('lic_id', $licNames ?? [], null, [
                 'class' => 'form-control col-sm-10',
-                'placeholder' => 'LIC Name',
+                'id' => 'lic_id_select',
+                'data-placeholder' => 'LIC Name',
+                'style' => 'width:100%',
             ]) !!}
         </div>
     </div>
