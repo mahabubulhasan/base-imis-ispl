@@ -28,7 +28,7 @@ class LowIncomeCommunityRequest extends FormRequest
 {
     return [
         'community_name.required' => __('The LIC Name is required.'),
-        'sub_location.max' => __('The Sub Location may not be greater than 255 characters.'),
+        'sub_location.max' => __('The Location may not be greater than 255 characters.'),
         'ward.integer' => __('The Ward No. must be an integer.'),
         'ward.min' => __('The Ward No. must be at least 1.'),
         'road_no.max' => __('The Road No. may not be greater than 100 characters.'),

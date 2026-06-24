@@ -258,7 +258,7 @@ class HouseholdService
             ['key' => 'father_or_husband_name', 'label' => __("Father's/Husband's Name")],
             ['key' => 'contact_number', 'label' => __('Contact Number'), 'required' => true],
             ['key' => 'bin', 'label' => __('BIN')],
-            ['key' => 'area_mohalla_name', 'label' => __('Sub Location')],
+            ['key' => 'area_mohalla_name', 'label' => __('Location')],
             ['key' => 'ward', 'label' => __('Ward No.'), 'required' => true, 'dropdown' => $wards],
             ['key' => 'road_no', 'label' => __('Road No.')],
             ['key' => 'road_name', 'label' => __('Road Name'), 'required' => true],

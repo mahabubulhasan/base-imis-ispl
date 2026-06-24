@@ -301,7 +301,7 @@ class LowIncomeCommunityServiceClass
             ['key' => 'community_name', 'label' => __('LIC Name'), 'required' => true],
             ['key' => 'representative_name', 'label' => __("Representative's Name")],
             ['key' => 'representative_contact_no', 'label' => __("Representative's Contact No.")],
-            ['key' => 'sub_location', 'label' => __('Sub Location')],
+            ['key' => 'sub_location', 'label' => __('Location')],
             ['key' => 'ward', 'label' => __('Ward No.'), 'dropdown' => $wards],
             ['key' => 'road_no', 'label' => __('Road No.')],
             ['key' => 'road_name', 'label' => __('Road Name')],

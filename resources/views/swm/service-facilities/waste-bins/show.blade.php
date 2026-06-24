@@ -31,7 +31,7 @@
                 <div class="col-sm-3">{!! Form::label(null, $wasteBin->bin, ['class' => 'form-control']) !!}</div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-3 control-label">{{ __('Sub Location') }}</label>
+                <label class="col-sm-3 control-label">{{ __('Location') }}</label>
                 <div class="col-sm-3">{!! Form::label(null, $wasteBin->sub_location, ['class' => 'form-control']) !!}</div>
             </div>
             <div class="form-group row">

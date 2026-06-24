@@ -128,7 +128,7 @@
         <div class="col-sm-3 bcp-payment-field-col">
             <div class="border rounded p-3 bg-light w-100" id="bcp-household-info-panel">
                 <div><strong>{{ __('Contact Number') }}:</strong> <span id="bcp-hi-contact">{{ $initialHouseholdDetail ? ($initialHouseholdDetail['contact_number'] ?? '—') : '—' }}</span></div>
-                <div><strong>{{ __('Sub Location') }}:</strong> <span id="bcp-hi-sub-location">{{ $initialHouseholdDetail ? ($initialHouseholdDetail['sub_location'] ?? '—') : '—' }}</span></div>
+                <div><strong>{{ __('Location') }}:</strong> <span id="bcp-hi-sub-location">{{ $initialHouseholdDetail ? ($initialHouseholdDetail['sub_location'] ?? '—') : '—' }}</span></div>
                 <div><strong>{{ __('Ward') }}:</strong> <span id="bcp-hi-ward">{{ $initialHouseholdDetail ? ($initialHouseholdDetail['ward'] ?? '—') : '—' }}</span></div>
                 <div><strong>{{ __('Road No.') }}:</strong> <span id="bcp-hi-road-no">{{ $initialHouseholdDetail ? ($initialHouseholdDetail['road_no'] ?? '—') : '—' }}</span></div>
                 <div><strong>{{ __('Road Name') }}:</strong> <span id="bcp-hi-road-name">{{ $initialHouseholdDetail ? ($initialHouseholdDetail['road_name'] ?? '—') : '—' }}</span></div>

@@ -155,7 +155,7 @@
                         <th rowspan="2">{{ __('Household ID') }}</th>
                         <th rowspan="2">{{ __('Household Owner Name') }}</th>
                         <th rowspan="2">{{ __("Father's/Husband's Name") }}</th>
-                        <th rowspan="2" class="sub-location-col">{{ __('Sub Location') }}</th>
+                        <th rowspan="2" class="sub-location-col">{{ __('Location') }}</th>
                         <th rowspan="2">{{ __('Ward') }}</th>
                         <th rowspan="2">{{ __('Contact Number') }}</th>
                         <th colspan="9">{{ __('Billing Summary') }} ({{ __('in Taka') }})</th>

@@ -63,7 +63,7 @@
                                 <td>{{ $household->area_mohalla_name ?? 'N/A' }}</td>
                             </tr>
                             <tr>
-                                <td><strong>Sub Location</strong></td>
+                                <td><strong>Location</strong></td>
                                 <td>{{ $household->sub_location ?? 'N/A' }}</td>
                             </tr>
                             <tr>

@@ -85,7 +85,7 @@
                         <th>{{ __('BIN') }}</th>
                         <th>{{ __('Holding Number') }}</th>
                         <th>{{ __('Ward No.') }}</th>
-                        <th>{{ __('Sub Location') }}</th>
+                        <th>{{ __('Location') }}</th>
                         <th>{{ __('Road No.') }}</th>
                         <th>{{ __('Road Name') }}</th>
                         <th>{{ __('Waste Collection Fee (Taka/Month)') }}</th>
