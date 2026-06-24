@@ -127,6 +127,12 @@ class DoEComplianceReportController extends Controller
             'form' => $payload,
         ])
             ->setPaper('a4', 'portrait')
+            ->setOption('margin-top', '15mm')
+            ->setOption('margin-bottom', '15mm')
+            ->setOption('margin-left', '25.4mm')
+            ->setOption('margin-right', '25.4mm')
+            ->setOption('enable-smart-shrinking', false)
+            ->setOption('disable-smart-shrinking', true)
             ->setOption('encoding', 'UTF-8')
             ->setOption('enable-local-file-access', true)
             ->setOption('footer-line', false)

@@ -10,13 +10,13 @@
             font-weight: normal;
             font-style: normal;
         }
-        @page { margin: 18mm 45mm; }
+        @page { margin: 18mm 25.4mm; }
         body {
             font-family: 'Noto Sans Bengali', 'SolaimanLipi', 'Kalpurush', sans-serif;
             font-size: 12px;
             color: #111;
             line-height: 1.5;
-            padding: 0 10px;
+            padding: 0;
         }
         body, table, th, td, p, h1, h2, span { font-size: 12px; }
         .report-header { text-align: center; line-height: 1.2; margin-bottom: 20px; }
@@ -56,28 +56,28 @@
             visibility: hidden;
             overflow: hidden;
         }
-        .field-grid td { border: none; padding: 2px 0; vertical-align: middle; line-height: 1.4; }
+        .field-grid td { border: none; padding: 2px 0; vertical-align: top; line-height: 1.4; }
         .field-grid .field-label {
             width: 49%;
             text-align: left;
             padding: 2px 8px 2px 0;
             font-weight: normal;
             white-space: normal;
-            vertical-align: middle;
+            vertical-align: top;
         }
         .field-grid .field-colon {
             width: 2%;
             text-align: center;
             padding: 2px;
             white-space: nowrap;
-            vertical-align: middle;
+            vertical-align: top;
         }
         .field-grid .field-value {
             width: 49%;
             text-align: left;
             padding: 2px 0 2px 8px;
             white-space: normal;
-            vertical-align: middle;
+            vertical-align: top;
         }
         .field-grid .field-value.text-block { white-space: pre-wrap; }
         .field-grid-auto {
@@ -150,7 +150,7 @@
 <body>
 @php
     $f = $form;
-    $na = 'প্রযোজ্য নয়';
+    $na = '';
     $yn = static function ($v) {
         if ($v === 'yes') return 'হ্যাঁ';
         if ($v === 'no') return 'না';
