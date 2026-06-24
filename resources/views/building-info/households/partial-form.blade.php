@@ -61,7 +61,7 @@
     <div class="form-group row">
         {!! Form::label('area_mohalla_name', __('Sub Location'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::text('area_mohalla_name', null, ['class' => 'form-control', 'placeholder' => __('Area / Mohalla Name')]) !!}
+            {!! Form::text('area_mohalla_name', null, ['class' => 'form-control', 'placeholder' => __('Sub Location')]) !!}
         </div>
     </div>
     <div class="form-group row">
