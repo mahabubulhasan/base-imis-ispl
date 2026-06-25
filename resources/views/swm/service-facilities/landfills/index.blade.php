@@ -28,7 +28,7 @@
                 <label class="col-md-2" for="operator_name">{{ __('Operator Name') }}</label><div class="col-md-2"><input type="text" class="form-control" id="operator_name"></div>
             </div>
             <div class="form-group row">
-                <label class="col-md-2" for="contact_number">{{ __('Contact Number') }}</label><div class="col-md-2"><input type="text" class="form-control" id="contact_number"></div>
+                <label class="col-md-2" for="contact_number">{{ __('Contact No.') }}</label><div class="col-md-2"><input type="text" class="form-control" id="contact_number"></div>
                 <label class="col-md-2" for="source_sts_id">{{ __('Source STS') }}</label>
                 <div class="col-md-2"><select class="form-control chosen-select" id="source_sts_id"><option value="">{{ __('All') }}</option>@foreach($stsOptions as $id => $label)<option value="{{ $id }}">{{ $label }}</option>@endforeach</select></div>
                 <label class="col-md-2" for="waste_type_id">{{ __('Waste Type') }}</label>
@@ -50,7 +50,7 @@
     <div class="card-body"><div class="table-responsive">
         <table id="data-table" class="table table-bordered table-striped tbl-aligned" width="100%">
             <thead><tr>
-                <th>{{ __('Landfill ID') }}</th><th>{{ __('Landfill Name') }}</th><th>{{ __('Location') }}</th><th>{{ __('Landfill Type') }}</th><th>{{ __('Operator Name') }}</th><th>{{ __("Operator's Contact Number") }}</th><th>{{ __('Capacity (Ton)') }}</th><th>{{ __('Area (Acre)') }}</th>
+                <th>{{ __('Landfill ID') }}</th><th>{{ __('Landfill Name') }}</th><th>{{ __('Location') }}</th><th>{{ __('Landfill Type') }}</th><th>{{ __('Operator Name') }}</th><th>{{ __("Operator's Contact No.") }}</th><th>{{ __('Capacity (Ton)') }}</th><th>{{ __('Area (Acre)') }}</th>
                 <th>{{ __('Source STSs') }}</th><th>{{ __('Other Source Wards') }}</th><th>{{ __('Waste Type') }}</th><th>{{ __('Segregation Practiced?') }}</th><th>{{ __('Manpower Deployed') }}</th><th>{{ __('Operational Status') }}</th><th>{{ __('Actions') }}</th>
             </tr></thead>
         </table>

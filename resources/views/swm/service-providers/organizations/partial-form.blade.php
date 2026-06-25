@@ -29,9 +29,9 @@
         </div>
 
         <div class="form-group row required">
-            {!! Form::label('contact_number', __('Contact Number'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('contact_number', __('Contact No.'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
-                {!! Form::text('contact_number', null, ['class' => 'form-control', 'placeholder' => __('Contact Number'), 'oninput' => "validateOwnerContactInput(this)"]) !!}
+                {!! Form::text('contact_number', null, ['class' => 'form-control', 'placeholder' => __('Contact No.'), 'oninput' => "validateOwnerContactInput(this)"]) !!}
             </div>
         </div>
 

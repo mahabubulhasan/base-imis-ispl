@@ -264,13 +264,13 @@ class BillingDashboardModule implements SwmDashboardModuleInterface
     protected function arrearsTableColumns(): array
     {
         return [
-            ['key' => 'holding_number', 'label' => __('Holding Number')],
+            ['key' => 'holding_number', 'label' => __('Holding No.')],
             ['key' => 'household_owner_name', 'label' => __('Household Owner Name')],
             ['key' => 'ward', 'label' => __('Ward')],
             ['key' => 'fixed_service_fee', 'label' => __('Fixed Service Fee')],
             ['key' => 'due_months', 'label' => __('Due Months')],
             ['key' => 'closing_due', 'label' => __('Closing Due')],
-            ['key' => 'contact_number', 'label' => __('Contact Number')],
+            ['key' => 'contact_number', 'label' => __('Contact No.')],
         ];
     }
 

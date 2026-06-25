@@ -110,7 +110,7 @@
                     <div class="col-md-2"><input type="month" class="form-control" id="month_from" value="{{ $defaultMonthFrom }}" /></div>
                     <label for="month_to" class="col-md-2 col-form-label">{{ __('Month to') }}</label>
                     <div class="col-md-2"><input type="month" class="form-control" id="month_to" value="{{ $defaultMonthTo }}" max="{{ $defaultMonthTo }}" /></div>
-                    <label for="filter_holding_select" class="col-md-2 col-form-label">{{ __('Holding Number') }}</label>
+                    <label for="filter_holding_select" class="col-md-2 col-form-label">{{ __('Holding No.') }}</label>
                     <div class="col-md-2 bs-filter-select2">
                         <select class="form-control" id="filter_holding_select" name="holding_numbers[]" multiple="multiple" style="width:100%"></select>
                     </div>
@@ -151,13 +151,13 @@
                 <thead>
                     <tr class="header-group">
                         <th rowspan="2">{{ __('SL') }}</th>
-                        <th rowspan="2">{{ __('Holding Number') }}</th>
+                        <th rowspan="2">{{ __('Holding No.') }}</th>
                         <th rowspan="2">{{ __('Household ID') }}</th>
                         <th rowspan="2">{{ __('Household Owner Name') }}</th>
                         <th rowspan="2">{{ __("Father's/Husband's Name") }}</th>
                         <th rowspan="2" class="sub-location-col">{{ __('Location') }}</th>
                         <th rowspan="2">{{ __('Ward') }}</th>
-                        <th rowspan="2">{{ __('Contact Number') }}</th>
+                        <th rowspan="2">{{ __('Contact No.') }}</th>
                         <th colspan="9">{{ __('Billing Summary') }} ({{ __('in Taka') }})</th>
                     </tr>
                     <tr class="header-columns">

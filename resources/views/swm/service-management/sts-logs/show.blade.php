@@ -35,7 +35,7 @@
                 <div class="col-sm-3">{!! Form::label(null, $stsLog->operation_date?->format('Y-m-d'), ['class' => 'form-control']) !!}</div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-3 control-label">{{ __('Vehicle Number') }}</label>
+                <label class="col-sm-3 control-label">{{ __('Vehicle No.') }}</label>
                 <div class="col-sm-3">{!! Form::label(null, $stsLog->vehicle?->vehicle_number ?: '—', ['class' => 'form-control']) !!}</div>
             </div>
             <div class="form-group row">

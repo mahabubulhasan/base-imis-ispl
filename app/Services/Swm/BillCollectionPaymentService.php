@@ -676,8 +676,8 @@ class BillCollectionPaymentService
     {
         return [
             ['key' => 'household_id', 'label' => __('Household ID'), 'required' => true, 'dropdown' => SwmImportTemplateOptions::householdCustomerLabels()],
-            ['key' => 'holding_number', 'label' => __('Holding Number')],
-            ['key' => 'contact_number', 'label' => __('Contact Number'), 'import' => false, 'template' => true, 'derived' => true],
+            ['key' => 'holding_number', 'label' => __('Holding No.')],
+            ['key' => 'contact_number', 'label' => __('Contact No.'), 'import' => false, 'template' => true, 'derived' => true],
             ['key' => 'sub_location', 'label' => __('Location'), 'import' => false, 'template' => true, 'derived' => true],
             ['key' => 'ward', 'label' => __('Ward'), 'import' => false, 'template' => true, 'derived' => true],
             ['key' => 'road_no', 'label' => __('Road No.'), 'import' => false, 'template' => true, 'derived' => true],
@@ -696,13 +696,13 @@ class BillCollectionPaymentService
     protected function exportColumnDefinitions(): array
     {
         return [
-            ['key' => 'holding_number', 'label' => __('Holding Number')],
+            ['key' => 'holding_number', 'label' => __('Holding No.')],
             ['key' => 'customer_id', 'label' => __('Household ID')],
             ['key' => 'household_owner_name', 'label' => __('Household Owner Name')],
             ['key' => 'father_or_husband_name', 'label' => __("Father's/Husband's Name")],
             ['key' => 'ward', 'label' => __('Ward No.')],
             ['key' => 'sub_location', 'label' => __('Location')],
-            ['key' => 'contact_number', 'label' => __('Contact Number')],
+            ['key' => 'contact_number', 'label' => __('Contact No.')],
             ['key' => 'receipt_no', 'label' => __('Receipt No.')],
             ['key' => 'amount', 'label' => __('Current Month Payment').' ('.__('Taka').')'],
             ['key' => 'due_paid', 'label' => __('Previous Due Payment').' ('.__('Taka').')'],

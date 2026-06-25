@@ -35,7 +35,7 @@
     </div>
 		</div>
 		<div class="form-group row">
-			{!! Form::label('contact_number', __('Contact Number'), ['class' => 'col-sm-3 control-label']) !!}
+			{!! Form::label('contact_number', __('Contact No.'), ['class' => 'col-sm-3 control-label']) !!}
 			<div class="col-sm-3">
 				{!! Form::label(null, $landfill->contact_number, ['class' => 'form-control']) !!}
 			</div>

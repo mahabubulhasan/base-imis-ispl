@@ -204,7 +204,7 @@ class OrganizationService
             ['key' => 'email', 'label' => __('Email'), 'required' => true],
             ['key' => 'address', 'label' => __('Address'), 'required' => true],
             ['key' => 'contact_person_name', 'label' => __('Contact Person Name'), 'required' => true],
-            ['key' => 'contact_number', 'label' => __('Contact Number'), 'required' => true],
+            ['key' => 'contact_number', 'label' => __('Contact No.'), 'required' => true],
             ['key' => 'organization_type', 'label' => __('Organization Type'), 'required' => true, 'dropdown' => $orgTypes, 'export' => false],
             ['key' => 'organization_type_label', 'label' => __('Organization Type'), 'import' => false, 'template' => true, 'derived' => true],
             [

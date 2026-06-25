@@ -61,9 +61,9 @@
                                     <div class="col-md-2">
                                         <input type="text" class="form-control" id="operator_name" placeholder="{{ __('Operator Name') }}" />
                                     </div>
-                                    <label for="contact_number" class="col-md-2 col-form-label">{{ __('Operator\'s Contact Number') }}</label>
+                                    <label for="contact_number" class="col-md-2 col-form-label">{{ __('Operator\'s Contact No.') }}</label>
                                     <div class="col-md-2">
-                                        <input type="text" class="form-control" id="contact_number" placeholder="{{ __('Operator\'s Contact Number') }}" />
+                                        <input type="text" class="form-control" id="contact_number" placeholder="{{ __('Operator\'s Contact No.') }}" />
                                     </div>
                                     <label for="destination_landfill_id" class="col-md-2 col-form-label">{{ __('Destination Landfill') }}</label>
                                     <div class="col-md-2">
@@ -124,7 +124,7 @@
                 <th>{{ __('Ward No.') }}</th>
                 <th>{{ __('Location') }}</th>
                 <th>{{ __('Operator Name') }}</th>
-                <th>{{ __('Operator\'s Contact Number') }}</th>
+                <th>{{ __('Operator\'s Contact No.') }}</th>
                 <th>{{ __('Capacity (Ton)') }}</th>
                 <th>{{ __('Area (Decimal)') }}</th>
                 <th>{{ __('Source Wards') }}</th>

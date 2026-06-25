@@ -31,7 +31,7 @@
         <div id="collapseOne" class="collapse">
             <form class="form-horizontal" id="filter-form">
                 <div class="form-group row">
-                    <label for="vehicle_search" class="col-md-2 col-form-label">{{ __('Vehicle Number') }}</label>
+                    <label for="vehicle_search" class="col-md-2 col-form-label">{{ __('Vehicle No.') }}</label>
                     <div class="col-md-2"><input type="text" class="form-control" id="vehicle_search" /></div>
                     <label for="landfill_id" class="col-md-2 col-form-label">{{ __('Landfill Name') }}</label>
                     <div class="col-md-2">
@@ -64,7 +64,7 @@
                         <th>{{ __('Landfill Loading Log ID') }}</th>
                         <th>{{ __('Entry Date and Time') }}</th>
                         <th>{{ __('Operation Date') }}</th>
-                        <th>{{ __('Vehicle Number') }}</th>
+                        <th>{{ __('Vehicle No.') }}</th>
                         <th>{{ __('Landfill Name') }}</th>
                         <th>{{ __('Source STSs') }}</th>
                         <th>{{ __('STS Source Wards') }}</th>

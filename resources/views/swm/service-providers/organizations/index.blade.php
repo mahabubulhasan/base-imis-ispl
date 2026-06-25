@@ -91,7 +91,7 @@
                 <th>{{ __('Organization Name') }}</th>
                 <th>{{ __('Organization Type') }}</th>
                 <th>{{ __('Contact Person Name') }}</th>
-                <th>{{ __('Contact Number') }}</th>
+                <th>{{ __('Contact No.') }}</th>
                 <th>{{ __('Email') }}</th>
                 <th>{{ __('Service Wards') }}</th>
                 <th>{{ __('Status') }}</th>

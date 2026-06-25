@@ -35,7 +35,7 @@
         <div id="collapseOne" class="collapse">
             <form class="form-horizontal" id="filter-form">
                 <div class="form-group row">
-                    <label for="holding_number" class="col-md-2 col-form-label">{{ __('Holding Number') }}</label>
+                    <label for="holding_number" class="col-md-2 col-form-label">{{ __('Holding No.') }}</label>
                     <div class="col-md-2"><input type="text" class="form-control" id="holding_number" /></div>
                     <label for="household_id" class="col-md-2 col-form-label">{{ __('Household ID') }}</label>
                     <div class="col-md-2"><input type="text" class="form-control" id="household_id" /></div>
@@ -57,10 +57,10 @@
                         <th>{{ __('Receipt No.') }}</th>
                         <th>{{ __('Payment Time') }}</th>
                         <th>{{ __('Transaction Month') }}</th>
-                        <th>{{ __('Holding Number') }}</th>
+                        <th>{{ __('Holding No.') }}</th>
                         <th>{{ __('Household ID') }}</th>
                         <th>{{ __('Household Owner Name') }}</th>
-                        <th>{{ __('Contact Number') }}</th>
+                        <th>{{ __('Contact No.') }}</th>
                         <th>{{ __('Ward No.') }}</th>
                         <th>{{ __('Current Month Payment (Taka)') }}</th>
                         <th>{{ __('Previous Due Payment (Taka)') }}</th>

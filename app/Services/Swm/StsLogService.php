@@ -202,7 +202,7 @@ class StsLogService
             ['key' => 'operation_date', 'label' => __('Operation Date'), 'required' => true, 'date_hint' => '02 Jun 2026'],
             [
                 'key' => 'vehicle_number',
-                'label' => __('Vehicle Number'),
+                'label' => __('Vehicle No.'),
                 'required' => true,
                 'dropdown' => array_values(Vehicle::query()
                     ->whereNull('deleted_at')
@@ -342,7 +342,7 @@ class StsLogService
     protected function formOnlyValidationLabels(): array
     {
         return [
-            'vehicle_id' => __('Vehicle Number'),
+            'vehicle_id' => __('Vehicle No.'),
             'waste_type_ids' => __('Waste Type'),
         ];
     }

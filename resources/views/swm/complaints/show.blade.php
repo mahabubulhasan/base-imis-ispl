@@ -19,7 +19,7 @@
                 <div class="col-sm-3">{!! Form::label(null, optional($complaint->date_time)->format('Y-m-d H:i'), ['class' => 'form-control']) !!}</div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-3 control-label">{{ __('Holding Number') }}</label>
+                <label class="col-sm-3 control-label">{{ __('Holding No.') }}</label>
                 <div class="col-sm-3">{!! Form::label(null, $complaint->holding_number, ['class' => 'form-control']) !!}</div>
             </div>
             <div class="form-group row">
@@ -31,7 +31,7 @@
                 <div class="col-sm-3">{!! Form::label(null, $complaint->name, ['class' => 'form-control']) !!}</div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-3 control-label">{{ __('Contact Number') }}</label>
+                <label class="col-sm-3 control-label">{{ __('Contact No.') }}</label>
                 <div class="col-sm-3">{!! Form::label(null, $complaint->contact_number, ['class' => 'form-control']) !!}</div>
             </div>
             <div class="form-group row">

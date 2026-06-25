@@ -281,7 +281,7 @@ class LandfillService
             ['key' => 'name', 'label' => __('Landfill Name'), 'required' => true],
             ['key' => 'location', 'label' => __('Location')],
             ['key' => 'operator_name', 'label' => __('Operator Name'), 'required' => true],
-            ['key' => 'contact_number', 'label' => __("Operator's Contact Number"), 'required' => true],
+            ['key' => 'contact_number', 'label' => __("Operator's Contact No."), 'required' => true],
             ['key' => 'capacity', 'label' => __('Capacity').' ('.__('Ton').')'],
             ['key' => 'area', 'label' => __('Area').' ('.__('Acre').')'],
             ['key' => 'landfill_type', 'label' => __('Landfill Type'), 'dropdown' => $landfillTypes],

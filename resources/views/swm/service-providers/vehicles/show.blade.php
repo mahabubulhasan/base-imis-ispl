@@ -35,7 +35,7 @@
     </div>
 		</div>
 		<div class="form-group row">
-    {!! Form::label('vehicle_number', __('Vehicle Number'), ['class' => 'col-sm-3 control-label']) !!}
+    {!! Form::label('vehicle_number', __('Vehicle No.'), ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-3">
         {!! Form::label(null, $vehicle->vehicle_number, ['class' => 'form-control']) !!}
     </div>

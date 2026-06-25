@@ -39,7 +39,7 @@
                     <div class="col-md-2"><input type="text" class="form-control" id="father_or_husband_name"></div>
                 </div>
                 <div class="form-group row">
-                    <label for="contact_number" class="col-md-2 col-form-label">{{ __('Contact Number') }}</label>
+                    <label for="contact_number" class="col-md-2 col-form-label">{{ __('Contact No.') }}</label>
                     <div class="col-md-2"><input type="text" class="form-control" id="contact_number"></div>
                     <label for="bin" class="col-md-2 col-form-label">{{ __('BIN') }}</label>
                     <div class="col-md-2"><input type="text" class="form-control" id="bin"></div>
@@ -81,9 +81,9 @@
                         <th>{{ __('Household ID') }}</th>
                         <th>{{ __('Household Owner Name') }}</th>
                         <th>{{ __("Father's/Husband's Name") }}</th>
-                        <th>{{ __('Contact Number') }}</th>
+                        <th>{{ __('Contact No.') }}</th>
                         <th>{{ __('BIN') }}</th>
-                        <th>{{ __('Holding Number') }}</th>
+                        <th>{{ __('Holding No.') }}</th>
                         <th>{{ __('Ward No.') }}</th>
                         <th>{{ __('Location') }}</th>
                         <th>{{ __('Road No.') }}</th>

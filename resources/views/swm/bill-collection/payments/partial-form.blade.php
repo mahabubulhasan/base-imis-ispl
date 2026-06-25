@@ -112,7 +112,7 @@
         <label class="col-sm-3 control-label" for="holding_select">{{ __('Holding') }}</label>
         <div class="col-sm-3 bcp-payment-field-col">
             <select class="form-control" id="holding_select" style="width:100%"></select>
-            <small class="form-text text-muted">{{ __('Search by Holding Number (Min. 2 Characters).') }}</small>
+            <small class="form-text text-muted">{{ __('Search by Holding No. (Min. 2 Characters).') }}</small>
         </div>
     </div>
 
@@ -127,7 +127,7 @@
         <label class="col-sm-3 control-label">{{ __('Household Details') }}</label>
         <div class="col-sm-3 bcp-payment-field-col">
             <div class="border rounded p-3 bg-light w-100" id="bcp-household-info-panel">
-                <div><strong>{{ __('Contact Number') }}:</strong> <span id="bcp-hi-contact">{{ $initialHouseholdDetail ? ($initialHouseholdDetail['contact_number'] ?? '—') : '—' }}</span></div>
+                <div><strong>{{ __('Contact No.') }}:</strong> <span id="bcp-hi-contact">{{ $initialHouseholdDetail ? ($initialHouseholdDetail['contact_number'] ?? '—') : '—' }}</span></div>
                 <div><strong>{{ __('Location') }}:</strong> <span id="bcp-hi-sub-location">{{ $initialHouseholdDetail ? ($initialHouseholdDetail['sub_location'] ?? '—') : '—' }}</span></div>
                 <div><strong>{{ __('Ward') }}:</strong> <span id="bcp-hi-ward">{{ $initialHouseholdDetail ? ($initialHouseholdDetail['ward'] ?? '—') : '—' }}</span></div>
                 <div><strong>{{ __('Road No.') }}:</strong> <span id="bcp-hi-road-no">{{ $initialHouseholdDetail ? ($initialHouseholdDetail['road_no'] ?? '—') : '—' }}</span></div>

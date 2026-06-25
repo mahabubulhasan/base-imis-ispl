@@ -19,7 +19,7 @@
     @endif
 
     <div class="form-group row">
-        {!! Form::label('holding_select', __('Holding Number'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('holding_select', __('Holding No.'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             <select class="form-control" id="holding_select" style="width:100%"></select>
         </div>
@@ -38,9 +38,9 @@
         </div>
     </div>
     <div class="form-group row required">
-        {!! Form::label('contact_number', __('Contact Number'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('contact_number', __('Contact No.'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::text('contact_number', old('contact_number', $isEdit ? $complaint->contact_number : null), ['class' => 'form-control', 'placeholder' => __('Contact Number')]) !!}
+            {!! Form::text('contact_number', old('contact_number', $isEdit ? $complaint->contact_number : null), ['class' => 'form-control', 'placeholder' => __('Contact No.')]) !!}
         </div>
     </div>
 

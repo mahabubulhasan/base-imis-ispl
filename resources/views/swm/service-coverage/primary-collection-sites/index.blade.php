@@ -31,7 +31,7 @@
                     <div class="col-md-2"><input type="text" class="form-control" id="customer_id"></div>
                     <label for="customer_name" class="col-md-2 col-form-label">{{ __('Customer Name') }}</label>
                     <div class="col-md-2"><input type="text" class="form-control" id="customer_name"></div>
-                    <label for="contact_number" class="col-md-2 col-form-label">{{ __('Contact Number') }}</label>
+                    <label for="contact_number" class="col-md-2 col-form-label">{{ __('Contact No.') }}</label>
                     <div class="col-md-2"><input type="text" class="form-control" id="contact_number"></div>
                 </div>
                 <div class="form-group row">
@@ -66,7 +66,7 @@
                     <tr>
                         <th>{{ __('Customer ID') }}</th>
                         <th>{{ __('Customer Name') }}</th>
-                        <th>{{ __('Contact Number') }}</th>
+                        <th>{{ __('Contact No.') }}</th>
                         <th>{{ __('BIN') }}</th>
                         <th>{{ __('Ward') }}</th>
                         <th>{{ __('Road No.') }}</th>

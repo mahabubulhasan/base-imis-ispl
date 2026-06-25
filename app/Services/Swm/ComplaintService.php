@@ -308,10 +308,10 @@ class ComplaintService
     {
         return [
             ['key' => 'complaint_id', 'label' => __('Complaint ID'), 'import' => false, 'template' => false, 'derived' => true],
-            ['key' => 'holding_number', 'label' => __('Holding Number')],
+            ['key' => 'holding_number', 'label' => __('Holding No.')],
             ['key' => 'household_id', 'label' => __('Household ID')],
             ['key' => 'name', 'label' => __('Name'), 'required' => true],
-            ['key' => 'contact_number', 'label' => __('Contact Number'), 'required' => true],
+            ['key' => 'contact_number', 'label' => __('Contact No.'), 'required' => true],
             ['key' => 'ward_no', 'label' => __('Ward No.'), 'dropdown' => SwmImportTemplateOptions::wardNumberStrings()],
             ['key' => 'incident_date', 'label' => __('Incident Date'), 'date_hint' => '02 Jun 2026'],
             ['key' => 'complaint_type', 'label' => __('Complaint Type'), 'required' => true, 'dropdown' => array_values(config('swm_complaints.complaint_types', []))],
