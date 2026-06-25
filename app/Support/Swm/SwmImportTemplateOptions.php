@@ -71,7 +71,7 @@ class SwmImportTemplateOptions
             ->activeStatus()
             ->orderBy('household_id')
             ->get(['id', 'household_id'])
-            ->map(fn (Household $h) => trim($h->household_id).' - '.$h->id)
+            ->map(fn (Household $h) => trim($h->household_id))
             ->values()
             ->all();
     }

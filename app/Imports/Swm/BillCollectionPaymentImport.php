@@ -122,19 +122,9 @@ class BillCollectionPaymentImport implements ToCollection, WithHeadingRow, WithM
             return null;
         }
 
+        // Backward compatibility: older templates encoded the household as "code - {id}".
         if (preg_match('/ - (\d+)$/', $input, $matches)) {
             $id = (int) $matches[1];
-            if ($id > 0) {
-                return Household::query()
-                    ->whereKey($id)
-                    ->whereNull('deleted_at')
-                    ->activeStatus()
-                    ->first();
-            }
-        }
-
-        if (is_numeric($input)) {
-            $id = (int) $input;
             if ($id > 0) {
                 return Household::query()
                     ->whereKey($id)
