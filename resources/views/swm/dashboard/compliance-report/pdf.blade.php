@@ -128,7 +128,7 @@
         .col-org-name { width: 28%; }
         .col-desc { width: 62%; }
         .signature-block {
-            margin-top: 24px;
+            margin-top: 72px;
             width: 100%;
             overflow: hidden;
         }
@@ -554,25 +554,29 @@
 <div class="section">
     <h2>(৭) নিম্নোক্ত কার্যাদি স্বাস্থ্যসম্মত উপায়ে সম্পাদন নিশ্চিতকরণের লক্ষ্যে গৃহীত পদক্ষেপ</h2>
     <table class="field-grid">
-        <tr class="field-row field-row-sub">
-            <td class="field-label">(অ) দুগ্ধ খামার</td>
-            <td class="field-colon">:</td>
-            <td class="field-value text-block">{{ $display($f['step_dairy'] ?? null) }}</td>
+        <tr class="field-row field-row-heading field-row-sub">
+            <td class="field-label" colspan="3">(অ) দুগ্ধ খামার</td>
         </tr>
-        <tr class="field-row field-row-sub">
-            <td class="field-label">(আ) পশু জবেহ</td>
-            <td class="field-colon">:</td>
-            <td class="field-value text-block">{{ $display($f['step_slaughter'] ?? null) }}</td>
+        <tr class="field-row">
+            <td class="field-value text-block" colspan="3">{{ $display($f['step_dairy'] ?? null) }}</td>
         </tr>
-        <tr class="field-row field-row-sub">
-            <td class="field-label">(ই) নির্মাণ-ভাঙন বর্জ্য</td>
-            <td class="field-colon">:</td>
-            <td class="field-value text-block">{{ $display($f['step_construction'] ?? null) }}</td>
+        <tr class="field-row field-row-heading field-row-sub">
+            <td class="field-label" colspan="3">(আ) পশু জবেহ</td>
         </tr>
-        <tr class="field-row field-row-sub">
-            <td class="field-label">(ঈ) পার্ক, হাঁটার পথ, ইত্যাদি জবর দখল</td>
-            <td class="field-colon">:</td>
-            <td class="field-value text-block">{{ $display($f['step_encroachment'] ?? null) }}</td>
+        <tr class="field-row">
+            <td class="field-value text-block" colspan="3">{{ $display($f['step_slaughter'] ?? null) }}</td>
+        </tr>
+        <tr class="field-row field-row-heading field-row-sub">
+            <td class="field-label" colspan="3">(ই) নির্মাণ-ভাঙন বর্জ্য</td>
+        </tr>
+        <tr class="field-row">
+            <td class="field-value text-block" colspan="3">{{ $display($f['step_construction'] ?? null) }}</td>
+        </tr>
+        <tr class="field-row field-row-heading field-row-sub">
+            <td class="field-label" colspan="3">(ঈ) পার্ক, হাঁটার পথ, ইত্যাদি জবর দখল</td>
+        </tr>
+        <tr class="field-row">
+            <td class="field-value text-block" colspan="3">{{ $display($f['step_encroachment'] ?? null) }}</td>
         </tr>
     </table>
 </div>
@@ -649,10 +653,11 @@
             <td class="field-colon">:</td>
             <td class="field-value">{{ $displayYn($f['medical_compliance'] ?? null) }}</td>
         </tr>
-        <tr class="field-row field-row-sub">
-            <td class="field-label">(উ) চিকিৎসা বর্জ্য (ব্যবস্থাপনা ও প্রক্রিয়াজাতকরণ) বিধিমালা, ২০০৮ এর বিধানাবলি অনুসরণ করতে কোনো অসুবিধা হয়ে থাকলে তার বিবরণ</td>
-            <td class="field-colon">:</td>
-            <td class="field-value text-block">{{ $display($f['medical_issues'] ?? null) }}</td>
+        <tr class="field-row field-row-heading field-row-sub">
+            <td class="field-label" colspan="3">(উ) চিকিৎসা বর্জ্য (ব্যবস্থাপনা ও প্রক্রিয়াজাতকরণ) বিধিমালা, ২০০৮ এর বিধানাবলি অনুসরণ করতে কোনো অসুবিধা হয়ে থাকলে তার বিবরণ</td>
+        </tr>
+        <tr class="field-row">
+            <td class="field-value text-block" colspan="3">{{ $display($f['medical_issues'] ?? null) }}</td>
         </tr>
     </table>
 </div>
