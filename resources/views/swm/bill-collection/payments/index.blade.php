@@ -54,19 +54,20 @@
             <table id="data-table" class="table table-bordered table-striped tbl-aligned" width="100%">
                 <thead>
                     <tr>
-                        <th>{{ __('Receipt No.') }}</th>
-                        <th>{{ __('Payment Time') }}</th>
-                        <th>{{ __('Transaction Month') }}</th>
-                        <th>{{ __('Holding No.') }}</th>
                         <th>{{ __('Household ID') }}</th>
                         <th>{{ __('Household Owner Name') }}</th>
+                        <th>{{ __("Father's/Husband's Name") }}</th>
                         <th>{{ __('Contact No.') }}</th>
+                        <th>{{ __('Holding No.') }}</th>
                         <th>{{ __('Ward No.') }}</th>
+                        <th>{{ __('Transaction Month') }}</th>
                         <th>{{ __('Current Month Payment (Taka)') }}</th>
                         <th>{{ __('Previous Due Payment (Taka)') }}</th>
                         <th>{{ __('Total Payment (Taka)') }}</th>
                         <th>{{ __('Payment Method') }}</th>
-                        <th>{{ __('Payment Received By') }}</th>
+                        <th>{{ __('Payment Received by') }}</th>
+                        <th>{{ __('Receipt No.') }}</th>
+                        <th>{{ __('Payment Time') }}</th>
                         <th>{{ __('Actions') }}</th>
                     </tr>
                 </thead>
@@ -93,19 +94,20 @@ $(function() {
             }
         },
         columns: [
-            { data: 'receipt_no', name: 'swm.bill_collection_payments.receipt_no' },
-            { data: 'payment_time', name: 'swm.bill_collection_payments.payment_time' },
-            { data: 'payment_for_month', name: 'swm.bill_collection_payments.payment_for_month' },
-            { data: 'holding_number', name: 'swm.bill_collection_payments.holding_number' },
             { data: 'household_id', name: 'household_id' },
             { data: 'household_owner_name', name: 'household_owner_name' },
+            { data: 'father_or_husband_name', name: 'father_or_husband_name' },
             { data: 'contact_number', name: 'contact_number' },
+            { data: 'holding_number', name: 'swm.bill_collection_payments.holding_number' },
             { data: 'ward', name: 'ward', className: 'col-num' },
+            { data: 'payment_for_month', name: 'swm.bill_collection_payments.payment_for_month' },
             { data: 'amount', name: 'swm.bill_collection_payments.amount', className: 'col-currency' },
             { data: 'due_paid', name: 'swm.bill_collection_payments.due_paid', className: 'col-currency' },
             { data: 'total_collected', name: 'total_collected', searchable: false, orderable: false, className: 'col-currency' },
             { data: 'payment_method', name: 'swm.bill_collection_payments.payment_method' },
             { data: 'received_by_name', name: 'received_by_name' },
+            { data: 'receipt_no', name: 'swm.bill_collection_payments.receipt_no' },
+            { data: 'payment_time', name: 'swm.bill_collection_payments.payment_time' },
             { data: 'action', name: 'action', orderable: false, searchable: false }
         ],
         order: [[0, 'asc']]

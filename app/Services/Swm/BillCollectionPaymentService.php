@@ -505,6 +505,7 @@ class BillCollectionPaymentService
             ->orderColumn('ward', 'swm.bill_collection_payments.ward $1')
             ->orderColumn('sub_location', 'swm_pcs.sub_location $1')
             ->orderColumn('contact_number', 'swm_pcs.contact_number $1')
+            ->orderColumn('father_or_husband_name', 'swm_pcs.father_or_husband_name $1')
             ->orderColumn('receipt_no', 'swm.bill_collection_payments.receipt_no $1')
             ->orderColumn('amount', 'swm.bill_collection_payments.amount $1')
             ->orderColumn('due_paid', 'swm.bill_collection_payments.due_paid $1')
@@ -540,6 +541,9 @@ class BillCollectionPaymentService
             })
             ->addColumn('household_owner_name', function ($model) {
                 return $model->site_household_owner_name;
+            })
+            ->addColumn('father_or_husband_name', function ($model) {
+                return $model->site_father_or_husband_name ?? '';
             })
             ->addColumn('ward', function ($model) {
                 return $model->ward ?? '';
