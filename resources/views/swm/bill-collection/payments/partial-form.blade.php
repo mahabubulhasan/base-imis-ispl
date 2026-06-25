@@ -113,7 +113,6 @@
         <label class="col-sm-3 control-label" for="bcp-ward-filter">{{ __('Ward No.') }}</label>
         <div class="col-sm-3 bcp-payment-field-col">
             {!! Form::select(null, $wards ?? [], $initWard !== '' ? $initWard : null, ['class' => 'form-control w-100', 'id' => 'bcp-ward-filter', 'placeholder' => __('Select Ward')]) !!}
-            <small class="form-text text-muted">{{ __('Select a Ward to filter holdings.') }}</small>
         </div>
     </div>
 
