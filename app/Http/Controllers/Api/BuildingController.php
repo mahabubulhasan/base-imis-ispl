@@ -79,7 +79,7 @@ class BuildingController extends Controller
                 'status' => 200,
                 'message' => __('Road search results fetched successfully.'),
                 'data' => $this->buildingFormDataService->searchRoads(
-                    $request->input('ward'),
+                    $request->input('ward') ?? null,
                     $query,
                     $limit
                 ),

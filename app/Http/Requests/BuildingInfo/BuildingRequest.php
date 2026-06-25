@@ -160,7 +160,7 @@ class BuildingRequest extends FormRequest
             'construction_year' => 'required|date|before_or_equal:today',
             'floor_count' => 'required|numeric|min:0.1',
             'functional_use_id' => 'required',
-            'use_category_id' => 'required_with:functional_use_id',
+            'use_category_id' => 'nullable',
             'household_served' => [
                 // not required if use cat is Public Toilet or Community Toilet
                 'required_unless:use_category_id,34,35',
@@ -261,7 +261,7 @@ class BuildingRequest extends FormRequest
                 'regex:/^\s*\d{2}-\d{3}-\d{4}-\d{2}(\s*,\s*\d{2}-\d{3}-\d{4}-\d{2})*\s*$/'
             ],
             'structure_type_id' => 'required',
-            'use_category_id' => 'required_with:functional_use_id',
+            'use_category_id' => 'nullable',
             //year of building Construction
             'construction_year' => 'required|date|before_or_equal:today',
             'floor_count' => 'required|numeric|min:0.1',
