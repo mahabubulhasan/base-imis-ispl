@@ -84,16 +84,17 @@
                         <th>{{ __('Contact No.') }}</th>
                         <th>{{ __('BIN') }}</th>
                         <th>{{ __('Holding No.') }}</th>
-                        <th>{{ __('Ward No.') }}</th>
                         <th>{{ __('Location') }}</th>
                         <th>{{ __('Road No.') }}</th>
                         <th>{{ __('Road Name') }}</th>
+                        <th>{{ __('Ward No.') }}</th>
                         <th>{{ __('Waste Collection Fee (Taka/Month)') }}</th>
                         <th>{{ __('Van Puller') }}</th>
+                        <th>{{ __('Building Owner?') }}</th>
+                        <th>{{ __('LIC?') }}</th>
                         <th>{{ __('LIC ID') }}</th>
-                        <th>{{ __('Segregation Practiced?') }}</th>
-                        <th>{{ __('Survey Date') }}</th>
                         <th>{{ __('Household Status') }}</th>
+                        <th>{{ __('Survey Date') }}</th>
                         <th>{{ __('Actions') }}</th>
                     </tr>
                 </thead>
@@ -132,16 +133,17 @@ $(function() {
             { data: 'contact_number', name: 'contact_number' },
             { data: 'bin', name: 'bin' },
             { data: 'holding_number', name: 'holding_number' },
-            { data: 'ward', name: 'ward', className: 'col-num' },
             { data: 'area_mohalla_name', name: 'area_mohalla_name' },
             { data: 'road_no', name: 'road_no' },
             { data: 'road_name', name: 'road_name' },
+            { data: 'ward', name: 'ward', className: 'col-num' },
             { data: 'waste_charge', name: 'waste_charge', className: 'col-currency' },
             { data: 'van_puller_name', name: 'van_puller_name' },
+            { data: 'is_owner', name: 'is_owner' },
+            { data: 'is_lic', name: 'is_lic' },
             { data: 'lic_id', name: 'lic_id' },
-            { data: 'segregation_practiced', name: 'segregation_practiced' },
-            { data: 'survey_date', name: 'survey_date' },
             { data: 'status', name: 'status' },
+            { data: 'survey_date', name: 'survey_date' },
             { data: 'action', name: 'action', orderable: false, searchable: false }
         ],
         order: [[0, 'asc']]

@@ -51,7 +51,7 @@ class HouseholdRequest extends FormRequest
             ],
             'ward' => ['required', 'integer', 'min:1'],
             'road_no' => ['nullable', 'string', 'max:255'],
-            'road_name' => ['required', 'string', 'max:255'],
+            'road_name' => ['nullable', 'string', 'max:255'],
             'holding_number' => ['required', 'string', 'max:255'],
             'tax_id' => ['nullable', 'string', 'max:255'],
             'waste_charge' => ['nullable', 'numeric', 'min:0'],
