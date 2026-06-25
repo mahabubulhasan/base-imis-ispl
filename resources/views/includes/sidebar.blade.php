@@ -3,16 +3,16 @@
 // Description: Sidebar navigation links and active-state handling for dashboard modules. -->
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     @if (request()->is('maps'))
-    <a href="{{ url('/') }}" class="brand-link">
-        <img src="{{ asset('/img/logo-imis.png') }}" alt="Municipality Logo" id="sidebar-logo" style="filter: brightness(0) invert(1) grayscale(1); line-height: .8;
-        display:block; margin:0 0.75rem; width:auto; height:48px; max-width:calc(100% - 1.5rem); object-fit:contain">
+    <a href="{{ url('/') }}" class="brand-link" style="text-align:center; justify-content:center;">
+        <img src="{{ asset('/img/logo-imis.png') }}" alt="Municipality Logo" id="sidebar-logo" style="line-height: .8;
+        display:block; margin:0 auto; width:auto; height:48px; max-width:calc(100% - 1.5rem); object-fit:contain">
     </a>
     @else
-    <a href="{{ url('/') }}" class="brand-link" id="sidebar-brand-link">
-        <img src="{{ asset('/img/logo-imis.png') }}" alt="Municipality Logo" id="sidebar-logo" style="filter: brightness(0) invert(1) grayscale(1); line-height: .8;
-        display:block; margin:0 0.6rem; width:auto; height:34px; max-width:calc(100% - 1.2rem); object-fit:contain">
-        <img src="{{ asset('/img/logo-imis.png') }}" alt=" Municipality Logo" id="hello-text" style="filter: brightness(0) invert(1) grayscale(1); line-height : .8;
-         margin-left: 0.75rem; margin-right: 0.75rem; margin-top:6px; height:48px; width:auto; display: none; ">
+    <a href="{{ url('/') }}" class="brand-link" id="sidebar-brand-link" style="text-align:center; justify-content:center;">
+        <img src="{{ asset('/img/logo-imis.png') }}" alt="Municipality Logo" id="sidebar-logo" style="line-height: .8;
+        display:block; margin:0 0.25rem; width:auto; height:50px; max-width:calc(100% - 0.5rem); object-fit:contain">
+        <img src="{{ asset('/img/logo-imis.png') }}" alt="Municipality Logo" id="hello-text" style="line-height : .8;
+         margin-left: 0.75rem; margin-right: 0.75rem; margin-top:6px; height:56px; width:auto; display: none; ">
     </a>
     @endif
     <div class="sidebar" style='font-family: Open Sans, sans-serif'>
