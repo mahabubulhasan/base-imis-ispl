@@ -63,7 +63,7 @@
             </div>
             <div class="form-group row">
                 <label class="col-sm-3 control-label">{{ __('Payment method') }}</label>
-                <div class="col-sm-3">{!! Form::label(null, config('bill_collection.payment_methods')[$payment->payment_method] ?? $payment->payment_method, ['class' => 'form-control']) !!}</div>
+                <div class="col-sm-3">{!! Form::label(null, $payment->payment_method ? (config('bill_collection.payment_methods')[$payment->payment_method] ?? $payment->payment_method) : '', ['class' => 'form-control']) !!}</div>
             </div>
             <div class="form-group row">
                 <label class="col-sm-3 control-label">{{ __('Receipt no') }}</label>

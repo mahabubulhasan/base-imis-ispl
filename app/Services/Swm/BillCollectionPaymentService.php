@@ -510,6 +510,9 @@ class BillCollectionPaymentService
                 return $this->currencyFormatter->format(Currency::TK, $total);
             })
             ->editColumn('payment_method', function ($model) {
+                if ($model->payment_method === null || $model->payment_method === '') {
+                    return '';
+                }
                 $methods = config('bill_collection.payment_methods', []);
 
                 return $methods[$model->payment_method] ?? $model->payment_method;
@@ -590,7 +593,8 @@ class BillCollectionPaymentService
         $payment->due_paid = $data['due_paid'] ?? 0;
         $payment->payment_for_month = Carbon::parse($data['payment_for_month'] ?? null)->startOfMonth();
         $payment->payment_time = isset($data['payment_time']) ? Carbon::parse($data['payment_time']) : now();
-        $payment->payment_method = $data['payment_method'] ?? '';
+        $paymentMethod = $data['payment_method'] ?? null;
+        $payment->payment_method = ($paymentMethod !== null && $paymentMethod !== '') ? $paymentMethod : null;
         $payment->received_by_user_id = $data['received_by_user_id'] ?? Auth::id();
         if (array_key_exists('receipt_copy_path', $data)) {
             $payment->receipt_copy_path = $data['receipt_copy_path'];
@@ -630,7 +634,9 @@ class BillCollectionPaymentService
             $query->orderBy('swm.bill_collection_payments.id')->chunk(5000, function ($rows) use ($sheet, $colLetter, &$rowNum) {
                 foreach ($rows as $row) {
                     $methods = config('bill_collection.payment_methods', []);
-                    $methodLabel = $methods[$row->payment_method] ?? $row->payment_method;
+                    $methodLabel = ($row->payment_method === null || $row->payment_method === '')
+                        ? ''
+                        : ($methods[$row->payment_method] ?? $row->payment_method);
                     $values = [
                         $row->holding_number,
                         $row->customer_id,
@@ -679,7 +685,7 @@ class BillCollectionPaymentService
             ['key' => 'payment_for_month', 'label' => __('Transaction Month'), 'required' => true, 'date_hint' => 'Jun 2026'],
             ['key' => 'amount', 'label' => __('Current Month Payment').' ('.__('Taka').')', 'required' => true],
             ['key' => 'due_paid', 'label' => __('Previous Due Payment').' ('.__('Taka').')'],
-            ['key' => 'payment_method', 'label' => __('Payment Method'), 'required' => true, 'dropdown' => array_values(config('bill_collection.payment_methods', []))],
+            ['key' => 'payment_method', 'label' => __('Payment Method'), 'dropdown' => array_values(config('bill_collection.payment_methods', []))],
             ['key' => 'payment_time', 'label' => __('Payment Time'), 'date_hint' => '02 Jun 2026 14:30'],
             ['key' => 'received_by_user_id', 'label' => __('Payment Received by'), 'dropdown' => SwmImportTemplateOptions::userLabels()],
             ['key' => 'receipt_no', 'label' => __('Receipt No.')],

@@ -50,7 +50,7 @@ class BillCollectionPaymentRequest extends FormRequest
                     'due_paid' => ['nullable', 'numeric', 'min:0'],
                     'payment_for_month' => ['required', 'date'],
                     'payment_time' => ['nullable', 'date'],
-                    'payment_method' => ['required', 'string', Rule::in($methodKeys)],
+                    'payment_method' => ['nullable', 'string', Rule::in($methodKeys)],
                     'received_by_user_id' => [
                         'nullable',
                         'integer',
@@ -76,6 +76,9 @@ class BillCollectionPaymentRequest extends FormRequest
         ]);
         if ($this->input('received_by_user_id') === '') {
             $this->merge(['received_by_user_id' => null]);
+        }
+        if ($this->input('payment_method') === '') {
+            $this->merge(['payment_method' => null]);
         }
         if ($this->input('due_paid') === '' || $this->input('due_paid') === null) {
             $this->merge(['due_paid' => 0]);

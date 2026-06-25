@@ -201,7 +201,7 @@
         </div>
     </div>
 
-    <div class="form-group row required bcp-due-dependent-row">
+    <div class="form-group row bcp-due-dependent-row">
         {!! Form::label('payment_method', __('Payment Method'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3 bcp-payment-field-col">
             {!! Form::select('payment_method', $paymentMethods, old('payment_method', $isEdit ? $payment->payment_method : null), ['class' => 'form-control w-100', 'placeholder' => __('Select')]) !!}

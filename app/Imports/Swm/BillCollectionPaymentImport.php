@@ -77,13 +77,14 @@ class BillCollectionPaymentImport implements ToCollection, WithHeadingRow, WithM
                     continue;
                 }
 
-                $methodKey = SwmImportRowHelper::resolveConfigKey(
-                    trim((string) ($norm['payment_method'] ?? '')),
-                    $paymentMethods
-                );
-                if ($methodKey === null) {
-                    $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'payment_method', $columnDefinitions);
-                    continue;
+                $methodRaw = trim((string) ($norm['payment_method'] ?? ''));
+                $methodKey = null;
+                if ($methodRaw !== '') {
+                    $methodKey = SwmImportRowHelper::resolveConfigKey($methodRaw, $paymentMethods);
+                    if ($methodKey === null) {
+                        $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'payment_method', $columnDefinitions);
+                        continue;
+                    }
                 }
 
                 $paymentTime = SwmImportRowHelper::parseDate($norm['payment_time'] ?? null) ?? now();
