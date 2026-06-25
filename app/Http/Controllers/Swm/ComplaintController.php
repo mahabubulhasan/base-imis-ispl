@@ -180,13 +180,8 @@ class ComplaintController extends Controller
         if (strlen($q) < 2) {
             return response()->json(['results' => []]);
         }
-        $map = $this->billCollectionPaymentService->searchHoldings($q, 30);
-        $results = [];
-        foreach ($map as $id => $text) {
-            $results[] = ['id' => $id, 'text' => $text];
-        }
 
-        return response()->json(['results' => $results]);
+        return response()->json(['results' => $this->billCollectionPaymentService->searchHoldings($q, 30)['results']]);
     }
 
     public function customersSearch(Request $request)

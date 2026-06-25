@@ -25,6 +25,7 @@ class BillCollectionPayment extends Model
         'payment_time' => 'datetime',
         'amount' => 'decimal:2',
         'due_paid' => 'decimal:2',
+        'ward' => 'integer',
     ];
 
     protected $appends = [

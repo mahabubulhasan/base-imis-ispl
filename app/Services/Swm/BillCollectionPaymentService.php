@@ -31,43 +31,54 @@ class BillCollectionPaymentService
     /**
      * @return array<string, string> holding_number => label for Select2
      */
-    public function searchHoldings(string $q, int $limit = 30): array
+    /**
+     * @return array{results: array<int, array{id: string, text: string}>, has_more: bool}
+     */
+    public function searchHoldings(string $q, int $limit = 30, ?int $ward = null, int $page = 1): array
     {
         $q = trim($q);
-        if (strlen($q) < 1) {
-            return [];
-        }
+        $page = max(1, $page);
+        $offset = ($page - 1) * $limit;
 
-        $rows = Household::query()
+        $base = Household::query()
             ->whereNull('deleted_at')
             ->activeStatus()
             ->whereNotNull('holding_number')
-            ->where('holding_number', 'ILIKE', '%'.$q.'%')
-            ->select('holding_number')
+            ->when($ward !== null, fn ($query) => $query->where('ward', $ward))
+            ->when($q !== '', fn ($query) => $query->where('holding_number', 'ILIKE', '%'.$q.'%'));
+
+        $total = (clone $base)->distinct()->count('holding_number');
+
+        $rows = $base->select('holding_number')
             ->selectRaw('MIN(id) as min_id')
             ->groupBy('holding_number')
             ->orderBy('holding_number')
+            ->offset($offset)
             ->limit($limit)
             ->get();
 
-        $out = [];
+        $results = [];
         foreach ($rows as $row) {
-            $hn = $row->holding_number;
-            $out[$hn] = $hn;
+            $hn = (string) $row->holding_number;
+            $results[] = ['id' => $hn, 'text' => $hn];
         }
 
-        return $out;
+        return [
+            'results' => $results,
+            'has_more' => ($offset + count($results)) < $total,
+        ];
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array{results: array<int, array<string, mixed>>, has_more: bool}
      */
-    public function customersByHolding(string $holdingNumber, ?string $q = null): array
+    public function customersByHolding(string $holdingNumber, ?string $q = null, ?int $ward = null, int $page = 1, int $limit = 20): array
     {
         $query = Household::query()
             ->whereNull('deleted_at')
             ->activeStatus()
             ->where('holding_number', $holdingNumber)
+            ->when($ward !== null, fn ($sub) => $sub->where('ward', $ward))
             ->orderBy('household_id');
 
         if ($q !== null && $q !== '') {
@@ -79,7 +90,11 @@ class BillCollectionPaymentService
             });
         }
 
-        return $query->get([
+        $page = max(1, $page);
+        $offset = ($page - 1) * $limit;
+        $total = (clone $query)->count();
+
+        $results = $query->offset($offset)->limit($limit)->get([
             'id',
             'household_id',
             'household_owner_name',
@@ -112,6 +127,11 @@ class BillCollectionPaymentService
             ])
             ->values()
             ->all();
+
+        return [
+            'results' => $results,
+            'has_more' => ($offset + count($results)) < $total,
+        ];
     }
 
     /**
@@ -448,7 +468,6 @@ class BillCollectionPaymentService
         $query = BillCollectionPayment::query()
             ->select('swm.bill_collection_payments.*')
             ->leftJoin('building_info.households as swm_pcs', 'swm.bill_collection_payments.household_id', '=', 'swm_pcs.id')
-            ->leftJoin('building_info.buildings as swm_hh_building', 'swm_pcs.bin', '=', 'swm_hh_building.bin')
             ->leftJoin('auth.users as recv_user', 'swm.bill_collection_payments.received_by_user_id', '=', 'recv_user.id')
             ->addSelect([
                 'swm_pcs.household_owner_name as site_household_owner_name',
@@ -456,7 +475,6 @@ class BillCollectionPaymentService
                 'swm.bill_collection_payments.customer_id as household_code',
                 'swm_pcs.contact_number as household_contact_number',
                 'swm_pcs.area_mohalla_name as household_sub_location',
-                'swm_hh_building.ward as household_ward',
                 DB::raw("COALESCE(recv_user.name, '') as received_by_name"),
             ])
             ->whereNull('swm.bill_collection_payments.deleted_at');
@@ -484,7 +502,7 @@ class BillCollectionPaymentService
             ->orderColumn('received_by_name', 'recv_user.name $1')
             ->orderColumn('holding_number', 'swm.bill_collection_payments.holding_number $1')
             ->orderColumn('household_id', 'swm.bill_collection_payments.customer_id $1')
-            ->orderColumn('ward', 'swm_hh_building.ward $1')
+            ->orderColumn('ward', 'swm.bill_collection_payments.ward $1')
             ->orderColumn('sub_location', 'swm_pcs.sub_location $1')
             ->orderColumn('contact_number', 'swm_pcs.contact_number $1')
             ->orderColumn('receipt_no', 'swm.bill_collection_payments.receipt_no $1')
@@ -524,7 +542,7 @@ class BillCollectionPaymentService
                 return $model->site_household_owner_name;
             })
             ->addColumn('ward', function ($model) {
-                return $model->household_ward ?? '';
+                return $model->ward ?? '';
             })
             ->addColumn('sub_location', function ($model) {
                 return $model->household_sub_location ?? '';
@@ -589,6 +607,7 @@ class BillCollectionPaymentService
         $payment->household_id = (int) $site->id;
         $payment->holding_number = $site->holding_number ?? '';
         $payment->customer_id = $site->household_id;
+        $payment->ward = $site->ward !== null && $site->ward !== '' ? (int) $site->ward : null;
         $payment->amount = $data['amount'] ?? 0;
         $payment->due_paid = $data['due_paid'] ?? 0;
         $payment->payment_for_month = Carbon::parse($data['payment_for_month'] ?? null)->startOfMonth();
@@ -642,7 +661,7 @@ class BillCollectionPaymentService
                         $row->customer_id,
                         $row->site_household_owner_name,
                         $row->site_father_or_husband_name ?? '',
-                        $row->household_ward ?? '',
+                        $row->ward ?? '',
                         $row->household_sub_location ?? '',
                         $row->household_contact_number ?? '',
                         $row->receipt_no ?? '',
@@ -676,19 +695,17 @@ class BillCollectionPaymentService
     {
         return [
             ['key' => 'household_id', 'label' => __('Household ID'), 'required' => true, 'dropdown' => SwmImportTemplateOptions::householdCustomerLabels()],
-            ['key' => 'holding_number', 'label' => __('Holding No.')],
+            ['key' => 'household_owner_name', 'label' => __('Household Owner Name'), 'import' => false, 'template' => true, 'derived' => true],
             ['key' => 'contact_number', 'label' => __('Contact No.'), 'import' => false, 'template' => true, 'derived' => true],
-            ['key' => 'sub_location', 'label' => __('Location'), 'import' => false, 'template' => true, 'derived' => true],
-            ['key' => 'ward', 'label' => __('Ward'), 'import' => false, 'template' => true, 'derived' => true],
-            ['key' => 'road_no', 'label' => __('Road No.'), 'import' => false, 'template' => true, 'derived' => true],
-            ['key' => 'road_name', 'label' => __('Road Name'), 'import' => false, 'template' => true, 'derived' => true],
+            ['key' => 'holding_number', 'label' => __('Holding No.')],
+            ['key' => 'ward', 'label' => __('Ward No.'), 'required' => true, 'dropdown' => SwmImportTemplateOptions::wardNumberStrings()],
             ['key' => 'payment_for_month', 'label' => __('Transaction Month'), 'required' => true, 'date_hint' => 'Jun 2026'],
             ['key' => 'amount', 'label' => __('Current Month Payment').' ('.__('Taka').')', 'required' => true],
             ['key' => 'due_paid', 'label' => __('Previous Due Payment').' ('.__('Taka').')'],
             ['key' => 'payment_method', 'label' => __('Payment Method'), 'dropdown' => array_values(config('bill_collection.payment_methods', []))],
+            ['key' => 'receipt_no', 'label' => __('Receipt No.')],
             ['key' => 'payment_time', 'label' => __('Payment Time'), 'date_hint' => '02 Jun 2026 14:30'],
             ['key' => 'received_by_user_id', 'label' => __('Payment Received by'), 'dropdown' => SwmImportTemplateOptions::userLabels()],
-            ['key' => 'receipt_no', 'label' => __('Receipt No.')],
         ];
     }
 

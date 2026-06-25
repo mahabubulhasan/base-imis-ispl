@@ -59,6 +59,16 @@ class BillCollectionPaymentImport implements ToCollection, WithHeadingRow, WithM
                     continue;
                 }
 
+                $wardRaw = isset($norm['ward']) ? trim((string) $norm['ward']) : '';
+                if ($wardRaw === '') {
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'ward', $columnDefinitions);
+                    continue;
+                }
+                if (! is_numeric($wardRaw) || (int) $wardRaw !== (int) ($site->ward ?? 0)) {
+                    $this->errors[] = SwmImportRowHelper::rowMessage($rowNum, __('ward does not match household.'));
+                    continue;
+                }
+
                 $amountRaw = $norm['amount'] ?? null;
                 if ($amountRaw === null || trim((string) $amountRaw) === '') {
                     $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'amount', $columnDefinitions);
