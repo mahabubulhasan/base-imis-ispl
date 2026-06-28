@@ -3,6 +3,7 @@
 namespace App\Services\Swm;
 
 use App\Models\Swm\WasteType;
+use App\Support\ExcelDownload;
 use App\Support\Swm\SwmExcelFilename;
 use Auth;
 use Box\Spout\Common\Type;
@@ -68,7 +69,7 @@ class WasteTypeService
         return $wasteType->id;
     }
 
-    public function download(array $data): void
+    public function download(array $data): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         $name = $data['name'] ?? null;
 
@@ -91,20 +92,21 @@ class WasteTypeService
             ->setBackgroundColor(Color::rgb(228, 228, 228))
             ->build();
 
-        $writer = WriterFactory::create(Type::XLSX);
-        $writer->openToBrowser(SwmExcelFilename::export('waste_types'))
-            ->addRowWithStyle($columns, $style);
+        return ExcelDownload::xlsx(
+            SwmExcelFilename::export('waste_types'),
+            function ($writer) use ($columns, $style, $query) {
+                $writer->addRowWithStyle($columns, $style);
 
-        $query->chunk(5000, function ($rows) use ($writer) {
-            foreach ($rows as $row) {
-                $writer->addRow([
-                    $row->name,
-                    $row->description,
-                ]);
+                $query->chunk(5000, function ($rows) use ($writer) {
+                    foreach ($rows as $row) {
+                        $writer->addRow([
+                            $row->name,
+                            $row->description,
+                        ]);
+                    }
+                });
             }
-        });
-
-        $writer->close();
+        );
     }
 
     /** @return array<string, string> */

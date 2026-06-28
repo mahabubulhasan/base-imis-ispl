@@ -10,7 +10,7 @@ use App\Models\Swm\Worker;
 use App\Models\Swm\WorkType;
 use App\Services\Swm\Concerns\HasExcelColumnValidationLabels;
 use App\Support\Swm\SwmExcelColumns;
-use App\Support\Swm\SwmExcelDownload;
+use App\Support\ExcelDownload;
 use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
 use App\Support\Swm\SwmImportTemplateOptions;
@@ -336,7 +336,7 @@ class VehicleService
         $wardLabels = Ward::getInAscOrder();
         $operationalTypeLabels = self::operationalTypeLabels();
 
-        return SwmExcelDownload::xlsx(
+        return ExcelDownload::xlsx(
             SwmExcelFilename::export('vehicles'),
             function ($writer) use ($headers, $style, $query, $columns, $wardLabels, $operationalTypeLabels) {
                 $writer->addRowWithStyle($headers, $style);

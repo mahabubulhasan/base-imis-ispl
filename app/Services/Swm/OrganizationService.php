@@ -7,6 +7,7 @@ use App\Models\LayerInfo\Ward;
 use App\Models\Swm\Organization;
 use App\Models\Swm\OrganizationType;
 use App\Services\Swm\Concerns\HasExcelColumnValidationLabels;
+use App\Support\ExcelDownload;
 use App\Support\Swm\SwmExcelColumns;
 use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
@@ -113,7 +114,7 @@ class OrganizationService
         return $organization->id;
     }
 
-    public function download(array $data): void
+    public function download(array $data): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         $name = $data['name'] ?? null;
         $email = $data['email'] ?? null;
@@ -165,21 +166,22 @@ class OrganizationService
             ->setBackgroundColor(Color::rgb(228, 228, 228))
             ->build();
 
-        $writer = WriterFactory::create(Type::XLSX);
-        $writer->openToBrowser(SwmExcelFilename::export('organizations'))
-            ->addRowWithStyle($columns, $style);
+        return ExcelDownload::xlsx(
+            SwmExcelFilename::export('organizations'),
+            function ($writer) use ($columns, $style, $query, $columnDefs) {
+                $writer->addRowWithStyle($columns, $style);
 
-        $query->chunk(5000, function ($rows) use ($writer, $columnDefs) {
-            foreach ($rows as $row) {
-                $writer->addRow(SwmExcelColumns::buildExportRow(
-                    $columnDefs,
-                    $row,
-                    fn (string $key, $model) => $this->formatOrganizationExportValue($key, $model)
-                ));
+                $query->chunk(5000, function ($rows) use ($writer, $columnDefs) {
+                    foreach ($rows as $row) {
+                        $writer->addRow(SwmExcelColumns::buildExportRow(
+                            $columnDefs,
+                            $row,
+                            fn (string $key, $model) => $this->formatOrganizationExportValue($key, $model)
+                        ));
+                    }
+                });
             }
-        });
-
-        $writer->close();
+        );
     }
 
     public function downloadTemplate(): void

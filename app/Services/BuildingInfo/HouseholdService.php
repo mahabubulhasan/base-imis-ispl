@@ -12,11 +12,13 @@ use App\Services\Swm\Concerns\HasExcelColumnValidationLabels;
 use App\Models\Swm\WasteBin;
 use App\Models\Swm\Worker;
 use App\Models\UtilityInfo\Roadline;
+use App\Support\ExcelDownload;
 use App\Support\Swm\SwmExcelColumns;
-use App\Support\Swm\SwmExcelExportWriter;
 use App\Support\Swm\SwmImportRowHelper;
 use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
+use Box\Spout\Writer\Style\Color;
+use Box\Spout\Writer\Style\StyleBuilder;
 use Illuminate\Database\Eloquent\Builder;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Auth;
@@ -181,7 +183,7 @@ class HouseholdService
         return $household->id;
     }
 
-    public function download(array $data): void
+    public function download(array $data): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         $columns = $this->excelColumnDefinitions();
         $headers = SwmExcelColumns::exportHeaders($columns);
@@ -192,18 +194,24 @@ class HouseholdService
             ->orderBy('id');
         $this->applyHouseholdFilters($query, $data);
 
-        (new SwmExcelExportWriter())->download(SwmExcelFilename::export('households'), $headers, function ($sheet, $colLetter) use ($query, $columns) {
-            $rowNum = 2;
-            $query->chunk(5000, function ($rows) use ($sheet, $colLetter, $columns, &$rowNum) {
-                foreach ($rows as $row) {
-                    $values = SwmExcelColumns::buildExportRow($columns, $row, fn (string $key, $model) => $this->formatHouseholdExportValue($key, $model));
-                    foreach ($values as $index => $value) {
-                        $sheet->setCellValue($colLetter($index + 1).$rowNum, $value);
+        $style = (new StyleBuilder())
+            ->setFontBold()
+            ->setFontSize(13)
+            ->setBackgroundColor(Color::rgb(228, 228, 228))
+            ->build();
+
+        return ExcelDownload::xlsx(
+            SwmExcelFilename::export('households'),
+            function ($writer) use ($headers, $style, $query, $columns) {
+                $writer->addRowWithStyle($headers, $style);
+
+                $query->chunk(5000, function ($rows) use ($writer, $columns) {
+                    foreach ($rows as $row) {
+                        $writer->addRow(SwmExcelColumns::buildExportRow($columns, $row, fn (string $key, $model) => $this->formatHouseholdExportValue($key, $model)));
                     }
-                    $rowNum++;
-                }
-            });
-        });
+                });
+            }
+        );
     }
 
     public function downloadTemplate(): void

@@ -7,7 +7,7 @@ use App\Models\Swm\Worker;
 use App\Models\Swm\WorkType;
 use App\Services\Swm\Concerns\HasExcelColumnValidationLabels;
 use App\Support\Swm\SwmExcelColumns;
-use App\Support\Swm\SwmExcelDownload;
+use App\Support\ExcelDownload;
 use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
 use App\Support\Swm\SwmImportTemplateOptions;
@@ -264,7 +264,7 @@ class WorkerService
             ->setBackgroundColor(Color::rgb(228, 228, 228))
             ->build();
 
-        return SwmExcelDownload::xlsx(
+        return ExcelDownload::xlsx(
             SwmExcelFilename::export('workers'),
             function ($writer) use ($columns, $style, $query) {
                 $writer->addRowWithStyle($columns, $style);

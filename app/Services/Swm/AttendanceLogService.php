@@ -6,6 +6,7 @@ use App\Models\Swm\AttendanceLog;
 use App\Models\Swm\Organization;
 use App\Models\Swm\Worker;
 use App\Services\Swm\Concerns\HasExcelColumnValidationLabels;
+use App\Support\ExcelDownload;
 use App\Support\Swm\SwmExcelColumns;
 use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmImportRowHelper;
@@ -170,7 +171,7 @@ class AttendanceLogService
         return $log->id;
     }
 
-    public function download(array $data): void
+    public function download(array $data): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         $query = $this->attendanceQuery();
 
@@ -204,21 +205,22 @@ class AttendanceLogService
             ->setBackgroundColor(Color::rgb(228, 228, 228))
             ->build();
 
-        $writer = WriterFactory::create(Type::XLSX);
-        $writer->openToBrowser(SwmExcelFilename::export('attendance_logs'))
-            ->addRowWithStyle($columns, $style);
+        return ExcelDownload::xlsx(
+            SwmExcelFilename::export('attendance_logs'),
+            function ($writer) use ($columns, $style, $query, $columnDefs, $statusLabels) {
+                $writer->addRowWithStyle($columns, $style);
 
-        $query->orderBy('id')->chunk(5000, function ($rows) use ($writer, $columnDefs, $statusLabels) {
-            foreach ($rows as $row) {
-                $writer->addRow(SwmExcelColumns::buildExportRow(
-                    $columnDefs,
-                    $row,
-                    fn (string $key, AttendanceLog $model) => $this->formatAttendanceExportValue($key, $model, $statusLabels)
-                ));
+                $query->orderBy('id')->chunk(5000, function ($rows) use ($writer, $columnDefs, $statusLabels) {
+                    foreach ($rows as $row) {
+                        $writer->addRow(SwmExcelColumns::buildExportRow(
+                            $columnDefs,
+                            $row,
+                            fn (string $key, AttendanceLog $model) => $this->formatAttendanceExportValue($key, $model, $statusLabels)
+                        ));
+                    }
+                });
             }
-        });
-
-        $writer->close();
+        );
     }
 
     public function downloadTemplate(): void
