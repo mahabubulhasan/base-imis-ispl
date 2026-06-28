@@ -83,7 +83,7 @@
         <div class="col-sm-3">{!! Form::number('waste_charge', $wasteChargeInput, ['class' => 'form-control', 'step' => '1', 'min' => '0', 'inputmode' => 'numeric']) !!}</div>
     </div>
     <div class="form-group row">
-        {!! Form::label('number_of_family_members', __('Number of Family Members'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('number_of_family_members', __('No. of Family Members'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">{!! Form::number('number_of_family_members', null, ['class' => 'form-control', 'min' => 0]) !!}</div>
     </div>
     <div class="form-group row">

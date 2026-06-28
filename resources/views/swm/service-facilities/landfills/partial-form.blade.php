@@ -99,9 +99,9 @@
             </div>
         </div>
         <div class="form-group row">
-            {!! Form::label('manpower_deployed', __('Number of Manpower Deployed at the Landfill Site'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('manpower_deployed', __('No. of Manpower Deployed at the Landfill Site'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
-                {!! Form::number('manpower_deployed', old('manpower_deployed', optional($landfill)->manpower_deployed), ['class' => 'form-control', 'placeholder' => __('Number of Manpower Deployed at the Landfill Site'), 'min' => 0, 'step' => '1', 'inputmode' => 'numeric']) !!}
+                {!! Form::number('manpower_deployed', old('manpower_deployed', optional($landfill)->manpower_deployed), ['class' => 'form-control', 'placeholder' => __('No. of Manpower Deployed at the Landfill Site'), 'min' => 0, 'step' => '1', 'inputmode' => 'numeric']) !!}
             </div>
         </div>
         <div class="form-group row">
