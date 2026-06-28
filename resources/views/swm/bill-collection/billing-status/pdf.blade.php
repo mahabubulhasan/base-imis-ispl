@@ -67,6 +67,10 @@
             text-align: center;
             font-weight: bold;
         }
+
+        table.data-table.page-break-before {
+            page-break-before: always;
+        }
         .text-right {
             text-align: right;
         }
@@ -138,7 +142,53 @@
 
     <div class="pdf-month">মাসঃ {{ $monthLabel }}</div>
 
-    <table class="data-table">
+    @php
+        $estimateRowLines = function ($row) {
+            $dueParts = array_values(array_filter(array_map('trim', explode(',', (string) ($row['due_months_of'] ?? '')))));
+            $dueLines = (int) ceil(count($dueParts) / 2);
+            $wrapLines = function ($text, $charsPerLine) {
+                $len = mb_strlen(trim((string) $text));
+                return $len > 0 ? (int) ceil($len / $charsPerLine) : 1;
+            };
+
+            return max(
+                1,
+                $dueLines,
+                $wrapLines($row['household_owner_name'] ?? '', 16),
+                $wrapLines($row['father_or_husband_name'] ?? '', 16),
+                $wrapLines($row['sub_location'] ?? '', 38)
+            );
+        };
+
+        $rowOverheadLines = 0.6; // cell padding + border, in line units
+        $firstPageBudget = 40;   // body lines available on page 1 (after title block)
+        $otherPageBudget = 48;   // body lines available on later pages
+
+        $pageChunks = [];
+        $currentChunk = [];
+        $usedLines = 0.0;
+        $budget = $firstPageBudget;
+        foreach ($rows as $row) {
+            $need = $estimateRowLines($row) + $rowOverheadLines;
+            if (! empty($currentChunk) && ($usedLines + $need) > $budget) {
+                $pageChunks[] = $currentChunk;
+                $currentChunk = [];
+                $usedLines = 0.0;
+                $budget = $otherPageBudget;
+            }
+            $currentChunk[] = $row;
+            $usedLines += $need;
+        }
+        if (! empty($currentChunk)) {
+            $pageChunks[] = $currentChunk;
+        }
+        if (empty($pageChunks)) {
+            $pageChunks[] = [];
+        }
+    @endphp
+
+    @foreach($pageChunks as $chunkIndex => $chunkRows)
+    <table class="data-table{{ $chunkIndex > 0 ? ' page-break-before' : '' }}">
         <thead>
             <tr>
                 <th rowspan="2">ক্রমিক নং</th>
@@ -164,7 +214,7 @@
             </tr>
         </thead>
         <tbody>
-            @forelse($rows as $row)
+            @forelse($chunkRows as $row)
                 <tr>
                     <td class="text-left">{{ $row['sl'] }}</td>
                     <td class="text-left nowrap">{{ $row['holding_number'] }}</td>
@@ -200,6 +250,7 @@
             @endforelse
         </tbody>
     </table>
+    @endforeach
 
     <div class="pdf-footer">{{__('This billing report is generated using IMIS application.')}}</div>
 </body>
