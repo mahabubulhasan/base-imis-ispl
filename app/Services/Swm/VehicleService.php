@@ -368,15 +368,21 @@ class VehicleService
     {
         $scopedOrgId = Auth::user()?->swm_organization_id;
         $organizationColumn = null;
+        $driverPairs = [];
 
         if (! $scopedOrgId) {
-            $orgNames = Organization::query()
+            $orgs = Organization::query()
                 ->whereNull('deleted_at')
                 ->operational()
                 ->orderBy('name')
-                ->pluck('name')
-                ->all();
-            $organizationColumn = ['key' => 'organization', 'label' => __('Organization'), 'required' => true, 'dropdown' => $orgNames];
+                ->get(['id', 'name']);
+            $organizationColumn = ['key' => 'organization', 'label' => __('Organization'), 'required' => true, 'dropdown' => $orgs->pluck('name')->all()];
+
+            foreach ($orgs as $org) {
+                foreach ($this->driverWorkersForOrganization((int) $org->id) as $driverName) {
+                    $driverPairs[] = ['group' => $org->name, 'value' => $driverName];
+                }
+            }
         }
 
         $vehicleTypes = VehicleType::query()
@@ -412,8 +418,14 @@ class VehicleService
             ];
         }
 
+        $driverColumn = ['key' => 'driver', 'label' => __('Driver Name'), 'required' => true, 'dropdown' => $driverNames];
+        if ($driverPairs !== []) {
+            $driverColumn['reference_pairs'] = $driverPairs;
+            $driverColumn['reference_pairs_headers'] = [__('Organization'), __('Driver Name')];
+        }
+
         return array_merge($columns, [
-            ['key' => 'driver', 'label' => __('Driver Name'), 'required' => true, 'dropdown' => $driverNames],
+            $driverColumn,
             [
                 'key' => 'service_wards',
                 'label' => __('Service Wards'),
