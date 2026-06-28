@@ -271,15 +271,11 @@ class VehicleService
 
         if (is_null($id)) {
             $vehicle = new Vehicle();
-            $this->fillVehicleFromData($vehicle, $data);
-            $vehicle->save();
-
-            return $vehicle->id;
-        }
-
-        $vehicle = Vehicle::find($id);
-        if (! $vehicle) {
-            return null;
+        } else {
+            $vehicle = Vehicle::find($id);
+            if (! $vehicle) {
+                return null;
+            }
         }
 
         return DB::transaction(function () use ($vehicle, $data) {
