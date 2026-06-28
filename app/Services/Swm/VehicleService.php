@@ -10,6 +10,7 @@ use App\Models\Swm\Worker;
 use App\Models\Swm\WorkType;
 use App\Services\Swm\Concerns\HasExcelColumnValidationLabels;
 use App\Support\Swm\SwmExcelColumns;
+use App\Support\Swm\SwmExcelDownload;
 use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
 use App\Support\Swm\SwmImportTemplateOptions;
@@ -293,7 +294,7 @@ class VehicleService
         });
     }
 
-    public function download(array $data): void
+    public function download(array $data): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         $vehicleNumber = $data['vehicle_number'] ?? null;
         $vehicleIdNo = $data['vehicle_id_no'] ?? null;
@@ -332,25 +333,26 @@ class VehicleService
             ->setBackgroundColor(Color::rgb(228, 228, 228))
             ->build();
 
-        $writer = WriterFactory::create(Type::XLSX);
-        $writer->openToBrowser(SwmExcelFilename::export('vehicles'))
-            ->addRowWithStyle($headers, $style);
         $wardLabels = Ward::getInAscOrder();
-
         $operationalTypeLabels = self::operationalTypeLabels();
 
-        $query->orderBy('swm.vehicles.id')->chunk(5000, function ($rows) use ($writer, $columns, $wardLabels, $operationalTypeLabels) {
-            foreach ($rows as $row) {
-                $values = SwmExcelColumns::buildExportRow(
-                    $columns,
-                    $row,
-                    fn (string $key, $model) => $this->formatVehicleExportValue($key, $model, $wardLabels, $operationalTypeLabels)
-                );
-                $writer->addRow($values);
-            }
-        });
+        return SwmExcelDownload::xlsx(
+            SwmExcelFilename::export('vehicles'),
+            function ($writer) use ($headers, $style, $query, $columns, $wardLabels, $operationalTypeLabels) {
+                $writer->addRowWithStyle($headers, $style);
 
-        $writer->close();
+                $query->orderBy('swm.vehicles.id')->chunk(5000, function ($rows) use ($writer, $columns, $wardLabels, $operationalTypeLabels) {
+                    foreach ($rows as $row) {
+                        $values = SwmExcelColumns::buildExportRow(
+                            $columns,
+                            $row,
+                            fn (string $key, $model) => $this->formatVehicleExportValue($key, $model, $wardLabels, $operationalTypeLabels)
+                        );
+                        $writer->addRow($values);
+                    }
+                });
+            }
+        );
     }
 
     public function downloadTemplate(): void
