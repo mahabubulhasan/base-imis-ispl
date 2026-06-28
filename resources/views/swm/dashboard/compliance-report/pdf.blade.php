@@ -106,7 +106,6 @@
         .meta-dual > tbody > tr > td { border: none; padding: 0 6px; vertical-align: middle; width: 50%; }
         .meta-dual .field-grid { margin-bottom: 0; }
         .section {
-            page-break-inside: avoid;
             border-top: 1px solid #333;
             padding-top: 10px;
             margin-top: 12px;
