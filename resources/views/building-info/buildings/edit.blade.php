@@ -172,6 +172,30 @@
             width: '85%',
             });
 
+        // Households: options load on demand via AJAX (select2); preselected ones prepended below
+        var preselectedHouseholds = @json($selectedHouseholdOptions ?? []);
+        var $hh = $('#swm_customer_id');
+        $.each(preselectedHouseholds, function (id, text) {
+            $hh.append(new Option(text, id, true, true)); // value, text, selected, selected
+        });
+        $hh.select2({
+            placeholder: '{{ __('Select Household/s') }}',
+            allowClear: true,
+            closeOnSelect: false,
+            width: '85%',
+            minimumInputLength: 0,
+            ajax: {
+                url: "{{ route('building.household-options') }}",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term, page: params.page || 1 };
+                },
+                cache: true,
+            },
+        });
+        $hh.trigger('change');
+
         // LIC Name: options load on demand via AJAX (select2)
         $('#lic_id_select').select2({
             ajax: {

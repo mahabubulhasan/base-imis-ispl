@@ -437,21 +437,10 @@
     <div class="form-group row">
         {!! Form::label('swm_customer_id', 'SWM Customer ID', ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-5">
-            @php
-                $oldHouseholds = old('swm_customer_id');
-                if (is_array($oldHouseholds)) {
-                    $selectedHouseholds = collect($oldHouseholds)->map(fn($v) => trim((string) $v))->filter()->values();
-                } else {
-                    $selectedHouseholds = collect(explode(',', (string) ($oldHouseholds ?? ($building->swm_customer_id ?? ''))))
-                        ->map(fn($v) => trim($v))
-                        ->filter()
-                        ->values();
-                }
-            @endphp
             {{-- Ensure an explicit empty array is submitted when nothing is selected. --}}
             <input type="hidden" name="swm_customer_id[]" value="">
-            {{-- Only preselected options are rendered server-side; the rest load on demand via AJAX (select2). --}}
-            {!! Form::select('swm_customer_id[]', $selectedHouseholdOptions ?? [], $selectedHouseholds->all(), [
+            {{-- Options load on demand via AJAX (select2); selected ones are prepended in the parent blade JS. --}}
+            {!! Form::select('swm_customer_id[]', [], null, [
                 'class' => 'form-control col-sm-10',
                 'id' => 'swm_customer_id',
                 'multiple' => true,
@@ -688,26 +677,3 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
         });
     });
 </script> --}}
-<script>
-    $(function() {
-        $('#swm_customer_id').select2({
-            placeholder: '{{ __('Select Household/s') }}',
-            allowClear: true,
-            closeOnSelect: false,
-            width: '85%',
-            minimumInputLength: 0,
-            ajax: {
-                url: "{{ route('building.household-options') }}",
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                    return {
-                        search: params.term,
-                        page: params.page || 1,
-                    };
-                },
-                cache: true,
-            },
-        });
-    });
-</script>
