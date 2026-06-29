@@ -57,7 +57,7 @@
         <div class="col-sm-3">{!! Form::text('holding_number', null, ['class' => 'form-control', 'id' => 'holding_number']) !!}</div>
     </div>
     <div class="form-group row">
-        {!! Form::label('tax_id', __('Tax ID'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('tax_id', __('Tax Code'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">{!! Form::text('tax_id', null, ['class' => 'form-control', 'id' => 'tax_id']) !!}</div>
     </div>
     <div class="form-group row">

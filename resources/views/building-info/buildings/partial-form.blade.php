@@ -51,11 +51,11 @@
         </div>
     </div>
     <div class="form-group row required">
-    {!! Form::label('owner_contact', __('Owner Contact Number'), ['class' => 'col-sm-3 control-label']) !!}
+    {!! Form::label('owner_contact', __('Owner Contact No.'), ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-5">
         {!! Form::text('owner_contact', null, [
             'class' => 'form-control col-sm-10',
-            'placeholder' => 'Owner Contact Number',
+            'placeholder' => 'Owner Contact No.',
             'autocomplete' => 'off',
             'oninput' => "validateOwnerContactInput(this)",
         ]) !!}
@@ -87,9 +87,9 @@
     <!-- Building Location Information -->
 
     <div class="form-group row required">
-        {!! Form::label('ward', __('Ward Number'), ['class' => 'col-sm-3 control-label ']) !!}
+        {!! Form::label('ward', __('Ward No.'), ['class' => 'col-sm-3 control-label ']) !!}
         <div class="col-sm-5">
-            {!! Form::select('ward', $ward, null, ['class' => 'form-control col-sm-10', 'placeholder' => 'Ward Number']) !!}
+            {!! Form::select('ward', $ward, null, ['class' => 'form-control col-sm-10', 'placeholder' => 'Ward No.']) !!}
         </div>
     </div>
 
@@ -104,11 +104,11 @@
     </div>
 
     <div class="form-group row ">
-        {!! Form::label('house_number', __('House Number'), ['class' => 'col-sm-3 control-label ']) !!}
+        {!! Form::label('house_number', __('Holding No.'), ['class' => 'col-sm-3 control-label ']) !!}
         <div class="col-sm-5">
             {!! Form::text('house_number', null, [
                 'class' => 'form-control col-sm-10',
-                'placeholder' => 'House Number',
+                'placeholder' => 'Holding No.',
                 'autocomplete' => 'off',
 
             ]) !!}
@@ -177,11 +177,11 @@
     </div>
 
     <div class="form-group row required">
-    {!! Form::label('floor_count', __('Number of Floors'), ['class' => 'col-sm-3 control-label']) !!}
+    {!! Form::label('floor_count', __('No. of Floors'), ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-5">
         {!! Form::text('floor_count', null, [
             'class' => 'form-control col-sm-10',
-            'placeholder' => 'Number of Floors',
+            'placeholder' => 'No. of Floors',
             'autocomplete' => 'off',
             'oninput' => "this.value = this.value.replace(/[^0-9.]/g, ''); ",
 
@@ -226,7 +226,7 @@
         <div class="col-sm-5">
             {!! Form::number('household_served', null, [
                 'class' => 'form-control col-sm-10',
-                'placeholder' => 'Number of Households',
+                'placeholder' => 'No. of Households',
                 'autocomplete' => 'off',
                 'oninput' => "this.value = this.value < 0 ? '' : this.value",
             ]) !!}
@@ -494,11 +494,11 @@
     </div>
     {{-- show these option when toilet presence is yes  --}}
     <div class="form-group row required" id="toilet-info" style="display: none">
-        {!! Form::label('toilet_count', __('Number of Toilets'), ['class' => 'col-sm-3 control-label ']) !!}
+        {!! Form::label('toilet_count', __('No. of Toilets'), ['class' => 'col-sm-3 control-label ']) !!}
         <div class="col-sm-5">
             {!! Form::number('toilet_count', null, [
                 'class' => 'form-control col-sm-10',
-                'placeholder' => 'Number of Toilets',
+                'placeholder' => 'No. of Toilets',
                 'oninput' => "this.value = this.value < 0 ? '' : this.value",
             ]) !!}
         </div>

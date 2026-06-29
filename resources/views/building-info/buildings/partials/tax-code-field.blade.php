@@ -1,17 +1,3 @@
-{{--
-    Tax Code / Holding ID field.
-
-    A universal chip/tokenizer layer wraps EVERY mode: the user adds one tax code
-    at a time and can enter multiple comma-separated codes. A chip is committed when
-    the user types ', ' (comma then space), presses Enter, or pastes a comma-list.
-
-    Only the PER-CHIP rule differs by config('tax_code.mode'):
-      - 'legacy' : each chip auto-formats to XX-XXX-XXXX-XX and must match config('tax_code.legacy_format')
-      - 'regex'  : each chip is limited to config('tax_code.allowed_chars') (comma excluded — it's the separator)
-
-    Submission is unchanged: hidden 'tax_code' holds the comma-joined chips, validated
-    server-side by App\Http\Requests\BuildingInfo\BuildingRequest::taxCodeRules().
---}}
 @php
     $taxCodeValue = old(
         'tax_code',
@@ -24,16 +10,14 @@
 
 <!-- Tax ID (universal chip / multi-code input) -->
 <div class="form-group row">
-    {!! Form::label('tax_code', __('Tax Code/Holding ID'), ['class' => 'col-sm-3 control-label ']) !!}
+    {!! Form::label('tax_code', __('Tax Code'), ['class' => 'col-sm-3 control-label ']) !!}
     <div class="col-sm-5">
-        {{-- Hidden input holds the final comma-separated values for submission --}}
         {!! Form::hidden('tax_code', $taxCodeValue, ['id' => 'tax_code_hidden']) !!}
 
-        {{-- Visible chip input UI --}}
         <div id="tax-code-tag-input" class="form-control col-sm-10"
             style="height:auto;min-height:42px;padding:6px;display:flex;align-items:center;flex-wrap:wrap;cursor:text;">
             <ul id="tax-code-tags" style="list-style:none;display:flex;flex-wrap:wrap;padding:0;margin:0"></ul>
-            <input id="tax_code_input" type="text" placeholder="Tax Code/Holding ID"
+            <input id="tax_code_input" type="text" placeholder="Tax Code"
                 autocomplete="off" style="border:0;outline:0;flex:1;min-width:150px;padding:5px;" />
         </div>
         <small id="tax-code-error" class="form-text text-danger" style="display:none;margin-top:4px;"></small>
@@ -41,7 +25,6 @@
 </div>
 
 <script>
-    // Universal tax-code chip input (works for all config('tax_code.mode') values).
     (function () {
         const input = document.getElementById('tax_code_input');
         const tagsList = document.getElementById('tax-code-tags');
