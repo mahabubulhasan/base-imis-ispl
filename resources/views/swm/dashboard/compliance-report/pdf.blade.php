@@ -10,15 +10,15 @@
             font-weight: normal;
             font-style: normal;
         }
-        @page { margin: 18mm 25.4mm; }
+        @page { margin: 25.4mm; }
         body {
             font-family: 'Noto Sans Bengali', 'SolaimanLipi', 'Kalpurush', sans-serif;
-            font-size: 12px;
+            font-size: 14px;
             color: #111;
             line-height: 1.5;
             padding: 0;
         }
-        body, table, th, td, p, h1, h2, span { font-size: 12px; }
+        body, table, th, td, p, h1, h2, span { font-size: 14px; }
         .report-header { text-align: center; line-height: 1.2; margin-bottom: 20px; }
         .report-header h1 { margin: 2px 0; font-weight: normal; line-height: 1.2; }
         .report-header .meta { margin: 0; }
@@ -33,6 +33,11 @@
         .meta { text-align: center; margin-bottom: 12px; }
         .meta-row { margin: 2px 0; }
         table { width: 100%; border-collapse: collapse; margin: 6px 0 10px; }
+        /* wkhtmltopdf smears a collapsed border into a black block when a bordered
+           table is cut by a page break; keep bordered data tables whole. The
+           borderless layout tables (field-grid / meta-dual) are excluded so they
+           still flow freely. */
+        table:not(.field-grid):not(.meta-dual) { page-break-inside: avoid; }
         th, td { border: 1px solid #444; padding: 4px 6px; vertical-align: top; }
         th { background: #f0f0f0; font-weight: normal; }
         th.th-stacked { text-align: center; line-height: 1.25; }
