@@ -604,11 +604,11 @@
         // show drain or sewer code if containment type has drain or sewer code
         function showHideCode()
         {
-            if({{$sewer_status}} == true)
+            if(@json($sewer_status) == true)
             {
                 $('#sewer_code').show();
             }
-            if({{$drain_status}} == true)
+            if(@json($drain_status) == true)
             {
                 $('#drain_code').show();
             }
@@ -633,7 +633,7 @@
         var functional_use = $('#functional_use_id').val();
         if (functional_use) {
             $.each(usecatgs[functional_use], function(key, value) {
-                if(key == {{$building->use_category_id}})
+                if(key == @json($building->use_category_id))
             {
                 html += '<option value="' + key + '" selected="selected">' + value + '</option>';
             }
