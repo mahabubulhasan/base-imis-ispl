@@ -179,7 +179,7 @@
             $hh.append(new Option(text, id, true, true)); // value, text, selected, selected
         });
         $hh.select2({
-            placeholder: '{{ __('Select Household/s') }}',
+            placeholder: '{{ __('Select Households') }}',
             allowClear: true,
             closeOnSelect: false,
             width: '85%',
