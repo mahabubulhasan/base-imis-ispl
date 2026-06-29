@@ -82,10 +82,12 @@ class BuildingFormDataService
             ->all();
     }
 
-    public function searchRoads(string $ward, ?string $query = null, int $limit = 100): array
+    public function searchRoads(?string $ward = null, ?string $query = null, int $limit = 100): array
     {
         $roads = Roadline::query()
-            ->where('ward', $ward)
+            ->when($ward !== null && $ward !== '', function ($builder) use ($ward) {
+                $builder->where('ward', $ward);
+            })
             ->when($query, function ($builder) use ($query) {
                 $builder->where(function ($inner) use ($query) {
                     $inner->where('code', 'ilike', '%' . $query . '%')
@@ -291,6 +293,10 @@ class BuildingFormDataService
 
     private function prepareSurveyForApprove(array $data, BuildingSurvey $survey): object
     {
+        if (empty($data['nid']) && !empty($data['owner_nid'])) {
+            $data['nid'] = $data['owner_nid'];
+        }
+
         if (empty($data['surveyed_date']) && $survey->collected_date) {
             $data['surveyed_date'] = $survey->collected_date->format('Y-m-d');
         } elseif (!empty($data['surveyed_date'])) {

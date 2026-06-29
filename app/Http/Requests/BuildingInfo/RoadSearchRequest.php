@@ -14,7 +14,7 @@ class RoadSearchRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'ward' => ['required', 'string', 'max:10'],
+            'ward' => ['nullable', 'string', 'max:10'],
             'q' => ['sometimes', 'nullable', 'string', 'min:1', 'max:100'],
             'limit' => ['sometimes', 'integer', 'min:1', 'max:200'],
         ];
