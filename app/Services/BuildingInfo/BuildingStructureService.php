@@ -652,7 +652,6 @@ class BuildingStructureService
             DB::commit();
             return Redirect("building-info/buildings")->with('success', __("Building Information updated successfully"));
         } catch (\Exception $e) {
-            dd($e);
             DB::rollback();
             return Redirect("building-info/buildings")->with('error', __("Failed to update building structure") . $e);
         }

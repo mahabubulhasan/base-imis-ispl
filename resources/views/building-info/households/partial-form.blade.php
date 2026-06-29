@@ -235,7 +235,7 @@ $(function() {
     }
 
     function applySnapshot(data) {
-        $('#ward').val(data.ward || '');
+        $('#ward').val(data.ward || '').trigger('change');
         $('#road_no').val(data.road_no || '');
         $('#road_name').val(data.road_name || '');
         $('#holding_number').val(data.holding_number || '');
@@ -243,6 +243,7 @@ $(function() {
         if (!$('#tax_id').val()) {
             $('#tax_id').val(data.tax_id || '');
         }
+        $('#is_lic').val(data.low_income_hh ? '1' : '0');
         if (data.lic_id) {
             $('#is_lic').val('1');
             $('#lic_id').val(String(data.lic_id)).trigger('chosen:updated');

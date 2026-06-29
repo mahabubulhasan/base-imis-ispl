@@ -165,7 +165,8 @@ class HouseholdController extends Controller
             'tax_id' => $building->tax_code,
             'bin' => $building->bin,
             'lic_id' => $building->lic_id,
-            'area_mohalla_name' => $building->house_locality
+            'area_mohalla_name' => $building->house_locality,
+            'low_income_hh' => in_array($building->low_income_hh, [true, 1, '1', 't', 'true'], true),
         ]);
     }
 
