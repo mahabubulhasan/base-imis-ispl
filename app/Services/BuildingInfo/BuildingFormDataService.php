@@ -530,12 +530,7 @@ class BuildingFormDataService
     private function loadSearchableFormOptions(): array
     {
         return [
-            'buildingBin' => Building::query()
-                ->whereNull('building_associated_to')
-                ->whereNull('deleted_at')
-                ->distinct()
-                ->orderBy('bin')
-                ->pluck('bin', 'bin'),
+            'buildingBin' => [],
             'bin' => BuildContain::query()
                 ->whereNull('deleted_at')
                 ->distinct()

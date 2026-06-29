@@ -133,10 +133,9 @@
         //script to  make dropdowns searchable
 
          optionHtmlBIN = selectedAssociatedValue
-                ? `<option value=${selectedAssociatedValue} selected="${selectedAssociatedText}">${selectedAssociatedText}</option>`
-                : '<option selected={{ $building->building_associated_to }}">{{ $building->building_associated_to }}</option>'
-        $('#building_associated_to').prepend(
-                ).select2({
+                ? `<option value="${selectedAssociatedValue}" selected>${selectedAssociatedText}</option>`
+                : '<option value="{{ $building->building_associated_to }}" selected>{{ $building->building_associated_to }}</option>';
+        $('#building_associated_to').prepend(optionHtmlBIN).select2({
             ajax: {
                 url: "{{ route('building.get-house-numbers-all') }}",
                 data: function(params) {

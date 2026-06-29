@@ -64,7 +64,7 @@
     <h3 class="mt-3"> Building Information </h3>
 
     <!-- Main Building Identifier -->
-    <div class="form-group row required" id="main_building">
+    <div class="form-group row required" id="main_building_row">
         {!! Form::label('main_building', __('Main Building'), ['class' => 'col-sm-3 control-label ']) !!}
         <div class="col-sm-5">
             {!! Form::select('main_building', [true => 'Yes', false => 'No'], null, [
@@ -77,7 +77,7 @@
     <div class="form-group row required" id="building_associated" style="display: none;">
         {!! Form::label('building_associated_to', __('BIN of Main Building'), ['class' => 'col-sm-3 control-label ']) !!}
         <div class="col-sm-5">
-            {!! Form::select('building_associated_to', $buildingBin, null, [
+            {!! Form::select('building_associated_to', [], null, [
                 'class' => 'form-control col-sm-10',
                 'placeholder' => 'BIN of Main Building',
                 'style' => 'width:100%',

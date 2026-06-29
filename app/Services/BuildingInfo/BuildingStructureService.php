@@ -1228,7 +1228,12 @@ class BuildingStructureService
             ->get();
         $json = [];
         foreach ($house_numbers as $house_number) {
-            $json[] = ['id' => $house_number['bin'], 'text' => $house_number['house_number'] ?? $house_number['bin']];
+            $json[] = [
+                'id' => $house_number['bin'],
+                'text' => $house_number['house_number']
+                    ? $house_number['bin'] . ' - ' . $house_number['house_number']
+                    : (string) $house_number['bin'],
+            ];
         }
         return response()->json(['results' => $json, 'pagination' => ['more' => $more]]);
     }
