@@ -222,7 +222,7 @@
 
     <!-- Building Population Information - Number of Households -->
     <div class="form-group row required" id="family-count">
-        {!! Form::label('household_served', __('Number of Households'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('household_served', __('No. of Households'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-5">
             {!! Form::number('household_served', null, [
                 'class' => 'form-control col-sm-10',
