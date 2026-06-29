@@ -161,8 +161,8 @@
         };
 
         $rowOverheadLines = 0.6; // cell padding + border, in line units
-        $firstPageBudget = 40;   // body lines available on page 1 (after title block)
-        $otherPageBudget = 48;   // body lines available on later pages
+        $firstPageBudget = 54;   // body lines available on page 1 (after title block)
+        $otherPageBudget = 60;   // body lines available on later pages
 
         $pageChunks = [];
         $currentChunk = [];
