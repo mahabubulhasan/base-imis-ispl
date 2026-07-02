@@ -2403,6 +2403,7 @@ class PermissionsSeeder extends Seeder
                 ],
             ],
             */
+            /* Water Supply ISS module locked out
             [
                 "group" => "Water Supply ISS",
                 "perms" => [
@@ -2421,6 +2422,7 @@ class PermissionsSeeder extends Seeder
 
                 ],
             ],
+            */
             /* Fecal Sludge IMS (Treatment Plant Efficiency Tests) module locked out
             [
                 "group" => "Treatment Plant Efficiency Tests",

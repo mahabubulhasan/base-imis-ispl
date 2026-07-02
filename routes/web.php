@@ -185,18 +185,18 @@ Route::group([
 //     Route::resource('tax-payment', 'TaxPaymentController');
 // });
 
-// Water Supply Payment routes
-Route::group([
-    'name' => 'watersupply-payment',
-    // 'prefix' => 'watersupply-info-mgmt',
-    'namespace' => 'WaterSupplyInfo',
-    'middleware' => 'auth'
-], function () {
-    Route::get('watersupply-payment/data', 'WaterSupplyController@getData')->name('watersupply-payment.getData');
-    Route::get('watersupply-payment/export', 'WaterSupplyController@export')->name('watersupply-payment.export');
-    Route::get('watersupply-payment/exportunmatched', 'WaterSupplyController@exportunmatched')->name('watersupply-payment.exportunmatched');
-    Route::resource('watersupply-payment', 'WaterSupplyController');
-});
+// Water Supply Payment routes -- Water Supply ISS module locked out
+// Route::group([
+//     'name' => 'watersupply-payment',
+//     // 'prefix' => 'watersupply-info-mgmt',
+//     'namespace' => 'WaterSupplyInfo',
+//     'middleware' => 'auth'
+// ], function () {
+//     Route::get('watersupply-payment/data', 'WaterSupplyController@getData')->name('watersupply-payment.getData');
+//     Route::get('watersupply-payment/export', 'WaterSupplyController@export')->name('watersupply-payment.export');
+//     Route::get('watersupply-payment/exportunmatched', 'WaterSupplyController@exportunmatched')->name('watersupply-payment.exportunmatched');
+//     Route::resource('watersupply-payment', 'WaterSupplyController');
+// });
 
 // SW service Payment routes
 Route::group([

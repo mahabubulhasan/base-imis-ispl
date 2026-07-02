@@ -3,12 +3,12 @@
 // Description: Sidebar navigation links and active-state handling for dashboard modules. -->
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     @if (request()->is('maps'))
-    <a href="{{ url('/') }}" class="brand-link" style="text-align:center; justify-content:center;">
+    <a href="{{ url('/') }}" class="brand-link" style="text-align:center; justify-content:center; background-color: #fff;">
         <img src="{{ asset('/img/logo-imis.png') }}" alt="Municipality Logo" id="sidebar-logo" style="line-height: .8;
         display:block; margin:0 auto; width:auto; height:48px; max-width:calc(100% - 1.5rem); object-fit:contain">
     </a>
     @else
-    <a href="{{ url('/') }}" class="brand-link" id="sidebar-brand-link" style="text-align:center; justify-content:center;">
+    <a href="{{ url('/') }}" class="brand-link" id="sidebar-brand-link" style="text-align:center; justify-content:center; background-color: #fff; opacity: 0.91;">
         <img src="{{ asset('/img/logo-imis.png') }}" alt="Municipality Logo" id="sidebar-logo" style="line-height: .8;
         display:block; margin:0 0.25rem; width:auto; height:50px; max-width:calc(100% - 0.5rem); object-fit:contain">
         <img src="{{ asset('/img/logo-imis.png') }}" alt="Municipality Logo" id="hello-text" style="line-height : .8;
@@ -730,7 +730,7 @@
             </li>
             @endif --}}
 
-            @if(Auth::user()->hasanyPermissionInGroup(['Water Supply ISS']) || Auth::user()->hasRole('Super Admin'))
+            {{-- @if(Auth::user()->hasanyPermissionInGroup(['Water Supply ISS']) || Auth::user()->hasRole('Super Admin'))
             <li class="nav-item">
                 <a href="{{ route('watersupply-payment.index') }}" class="nav-link {{ request()->is('watersupply-payment') ? 'active' : '' }}">
                     <img src="{{ asset('img/svg/imis-icons/watersupplyISS.svg')}}" class="nav-icon" alt="Water Supply ISS Icon">
@@ -740,7 +740,7 @@
                 </a>
 
             </li>
-            @endif
+            @endif --}}
 
             @if(Auth::user()->hasanyPermissionInGroup(['Data Export','Maps']) || Auth::user()->hasRole('Super Admin'))
             <li class="nav-item  {{ request()->is('export-shp-kml', 'maps') ? 'menu-is-opening menu-open' : '' }}">

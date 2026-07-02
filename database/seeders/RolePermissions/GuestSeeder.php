@@ -45,8 +45,8 @@ class GuestSeeder extends Seeder
                     //For Utility Module -- Sewer Network / Water Supply Network locked out
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Roads', 'Drain'])->whereIn('type', ['List', 'View']));
 
-                    //For Payment ISS module -- Property Tax Collection ISS locked out
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Water Supply ISS'])->whereIn('type', ['List']));
+                    //For Payment ISS module -- Property Tax Collection ISS / Water Supply ISS locked out
+                    // $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Water Supply ISS'])->whereIn('type', ['List']));
 
                     //For Public Health Module -- locked out
                     // $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Hotspots', 'Yearly Waterborne Cases'])->whereIn('type', ['List', 'View', 'View on map']));

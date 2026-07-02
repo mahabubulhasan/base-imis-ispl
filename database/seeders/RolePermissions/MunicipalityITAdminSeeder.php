@@ -102,8 +102,8 @@ class MunicipalityITAdminSeeder extends Seeder
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Roads', 'Drain'])
                         ->whereIn('type', ['View', 'List', 'Export', 'View on map', 'History']));
 
-                    //Payment ISS -- Property Tax Collection ISS locked out
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Sw Service Payment', 'Water Supply ISS'])
+                    //Payment ISS -- Property Tax Collection ISS / Water Supply ISS locked out
+                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Sw Service Payment'])
                         ->whereIn('type', ['List', 'Export']));
 
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', [

@@ -1468,3 +1468,8 @@ body.layout-fixed .main-sidebar .sidebar {
 .tbl-aligned th.col-currency {
   text-align: right;
 }
+
+/* Global font family override */
+*:not(.fa, .fas, .far, .fab, .fal, .fad, [class*="fa-"], .material-icons, .material-icons-round, .material-icons-outlined) {
+  font-family: "Calibri Light", Calibri, "Segoe UI", sans-serif !important;
+}
