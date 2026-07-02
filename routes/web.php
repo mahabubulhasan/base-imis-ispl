@@ -559,18 +559,18 @@ Route::group([
 });
 
 // Sewer Connection IMS module locked out
-// Route::group([
-//     'name' => 'sewerconnection',
-//     'prefix' => 'sewerconnection',
-//     'namespace' => 'SewerConnection',
-//     'middleware' => 'auth'
-// ], function () {
-//     Route::get('sewerconnection/data', 'SewerConnectionController@getData');
-//     Route::get('sewerconnection/data/{id}', 'SewerConnectionController@approvesewer');
-//     Route::get('sewerconnection/datageom/{id}', 'SewerConnectionController@geombin');
-//     Route::get('sewerconnection/geomsewer/{id}', 'SewerConnectionController@geomsewer');
-//     Route::resource('sewerconnection', 'SewerConnectionController');
-// });
+Route::group([
+    'name' => 'sewerconnection',
+    'prefix' => 'sewerconnection',
+    'namespace' => 'SewerConnection',
+    'middleware' => 'auth'
+], function () {
+    Route::get('sewerconnection/data', 'SewerConnectionController@getData');
+    Route::get('sewerconnection/data/{id}', 'SewerConnectionController@approvesewer');
+    Route::get('sewerconnection/datageom/{id}', 'SewerConnectionController@geombin');
+    Route::get('sewerconnection/geomsewer/{id}', 'SewerConnectionController@geomsewer');
+    Route::resource('sewerconnection', 'SewerConnectionController');
+});
 
 /**
  * Utility Info Routes
@@ -608,21 +608,21 @@ Route::group([
     Route::resource('drains', 'DrainController');
 
     // Sewer Network module locked out (get-sewer-names kept: used by Building/Containment forms as a code lookup)
-    // Route::get('sewerlines/export', 'SewerLineController@export');
-    // Route::get('sewerlines/{code}/geometry', 'SewerLineController@getGeometry');
-    // Route::get('sewerlines/data', 'SewerLineController@getData');
-    // Route::post('sewerlines/add-sewer', 'SewerLineController@store');
-    // Route::post('sewerlines/update-sewer-geom', 'SewerLineController@updateSewerGeom');
+    Route::get('sewerlines/export', 'SewerLineController@export');
+    Route::get('sewerlines/{code}/geometry', 'SewerLineController@getGeometry');
+    Route::get('sewerlines/data', 'SewerLineController@getData');
+    Route::post('sewerlines/add-sewer', 'SewerLineController@store');
+    Route::post('sewerlines/update-sewer-geom', 'SewerLineController@updateSewerGeom');
     Route::get('sewerlines/get-sewer-names', 'SewerLineController@getSewerNames')->name('sewerlines.get-sewer-names');
-    // Route::get('sewerlines/{id}/history', 'SewerLineController@history');
+    Route::get('sewerlines/{id}/history', 'SewerLineController@history');
     // Route::resource('sewerlines', 'SewerLineController');
 
     // Water Supply Network module locked out (get-watersupply-codes kept: used by Building forms as a code lookup)
-    // Route::get('watersupplys/export', 'WaterSupplysController@export');
-    // Route::get('watersupplys/{code}/geometry', 'WaterSupplysController@getGeometry');
-    // Route::get('watersupplys/data', 'WaterSupplysController@getData');
-    // Route::post('watersupplys/add-watersupply', 'WaterSupplysController@store');
-    // Route::post('watersupplys/update-watersupply-geom', 'WaterSupplysController@updateWatersupplyGeom');
+    Route::get('watersupplys/export', 'WaterSupplysController@export');
+    Route::get('watersupplys/{code}/geometry', 'WaterSupplysController@getGeometry');
+    Route::get('watersupplys/data', 'WaterSupplysController@getData');
+    Route::post('watersupplys/add-watersupply', 'WaterSupplysController@store');
+    Route::post('watersupplys/update-watersupply-geom', 'WaterSupplysController@updateWatersupplyGeom');
     Route::get('watersupplys/get-watersupply-codes', 'WaterSupplysController@getWaterSupplyCode')->name('watersupply.get-watersupply-code');
 
     // Route::get('watersupply/{id}/history', 'WaterSupplysController@history');
@@ -744,22 +744,22 @@ Route::group([
      * Containment Routes -- Fecal Sludge IMS module locked out
      *
      */
-    // Route::get('containments/data', 'ContainmentController@getData');
-    // Route::get('containments/get-id', 'ContainmentController@getContainmentID')->name('containment.get-id');
+    Route::get('containments/data', 'ContainmentController@getData');
+    Route::get('containments/get-id', 'ContainmentController@getContainmentID')->name('containment.get-id');
 
-    // Route::get('containments/{id}/containmentData', 'ContainmentController@getContainment');
-    // Route::get('containments/{id}/listBuildings', 'ContainmentController@listBuildings');
-    // Route::delete('containments/{id}/buildings/{buidlingId}', 'ContainmentController@deleteBuilding');
+    Route::get('containments/{id}/containmentData', 'ContainmentController@getContainment');
+    Route::get('containments/{id}/listBuildings', 'ContainmentController@listBuildings');
+    Route::delete('containments/{id}/buildings/{buidlingId}', 'ContainmentController@deleteBuilding');
 
-    // Route::get('containments/{id}/create', 'ContainmentController@createContainment');
-    // Route::post('containments/{id}/store', 'ContainmentController@storeContainment');
+    Route::get('containments/{id}/create', 'ContainmentController@createContainment');
+    Route::post('containments/{id}/store', 'ContainmentController@storeContainment');
 
-    // Route::get('containments/export', 'ContainmentController@export');
-    // Route::get('containments/export-building-containment','ContainmentController@exportBuildingContainment');
+    Route::get('containments/export', 'ContainmentController@export');
+    Route::get('containments/export-building-containment','ContainmentController@exportBuildingContainment');
 
-    // Route::get('containments/{id}/history', 'ContainmentController@history');
-    // Route::get('containments/{id}/type-change-history', 'ContainmentController@typeChangeHistory');
-    // Route::resource('containments', 'ContainmentController');
+    Route::get('containments/{id}/history', 'ContainmentController@history');
+    Route::get('containments/{id}/type-change-history', 'ContainmentController@typeChangeHistory');
+    Route::resource('containments', 'ContainmentController');
 
 
     /**
