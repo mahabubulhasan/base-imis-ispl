@@ -29,40 +29,42 @@ class MunicipalitySanitationDepartmentSeeder extends Seeder
                         'Building Structures','Low Income Communities',])
                         ->whereIn('type', ['View', 'List', 'Export', 'View on map']));
                     
-                    ///FSM////
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Help Desks', 'Service Providers', 'Treatment Plants',])
-                    ->whereNotIn('type', ['History']));
+                    ///FSM//// -- Fecal Sludge IMS module locked out
+                    // $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Help Desks', 'Service Providers', 'Treatment Plants',])
+                    // ->whereNotIn('type', ['History']));
                     //Treatment Plant Efficiency Tests
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Treatment Plant Efficiency Tests'])
-                    ->whereIn('type', ['List','View','Export']));
+                    // $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Treatment Plant Efficiency Tests'])
+                    // ->whereIn('type', ['List','View','Export']));
                     //Treatment Plant Efficiency Standards
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Treatment Plant Efficiency Standards'])
-                        ->whereIn('type', ['View','Edit']));
+                    // $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Treatment Plant Efficiency Standards'])
+                    //     ->whereIn('type', ['View','Edit']));
 
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Containments'])
-                        ->whereIn('type', ['View', 'Export', 'List', 'View on map', 'Service History']));
-                    
+                    // $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Containments'])
+                    //     ->whereIn('type', ['View', 'Export', 'List', 'View on map', 'Service History']));
+
                     //Service Delivery
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Employee Infos', 'Desludging Vehicles', 'Applications', 'Emptyings', 'Sludge Collections', 'Feedbacks'])
-                        ->whereIn('type', ['View', 'Export', 'List', 'Export']));
+                    // $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Employee Infos', 'Desludging Vehicles', 'Applications', 'Emptyings', 'Sludge Collections', 'Feedbacks'])
+                    //     ->whereIn('type', ['View', 'Export', 'List', 'Export']));
 
-                    //PT/Ct IMS
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['PT/CT Toilets', 'PT Users Logs'])->whereNotIn('type',['History']));
+                    //PT/Ct IMS -- locked out
+                    // $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['PT/CT Toilets', 'PT Users Logs'])->whereNotIn('type',['History']));
 
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Roads', 'Sewers', 'WaterSupply Network', 'Drain'])
+                    // Sewer Network / Water Supply Network locked out
+                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Roads', 'Drain'])
                         ->whereIn('type', ['View', 'List', 'Export', 'View on map']));
 
-                    ///Public Health///
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Water Samples', 'Hotspots', 'Yearly Waterborne Cases'])
-                        ->whereIn('type', ['View', 'List', 'Export', 'View on map']));
+                    ///Public Health/// -- locked out
+                    // $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Water Samples', 'Hotspots', 'Yearly Waterborne Cases'])
+                    //     ->whereIn('type', ['View', 'List', 'Export', 'View on map']));
 
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['CWIS', 'KPI Dashboard', 'KPI Target']));
+                    // CWIS IMS module locked out
+                    // $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['KPI Dashboard', 'KPI Target']));
 
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['NSD Setting'])
-                        ->whereIn('type', ['List', 'Save']));
+                    // $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['NSD Setting'])
+                    //     ->whereIn('type', ['List', 'Save']));
 
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['NSD'])
-                        ->whereIn('type', ['Push', 'Show']));    
+                    // $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['NSD'])
+                    //     ->whereIn('type', ['Push', 'Show']));
 
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group',['Data Export'])->whereIn('type',['Export']));
 
@@ -145,7 +147,8 @@ class MunicipalitySanitationDepartmentSeeder extends Seeder
                     ]));
 
 
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['FSM Dashboard']));
+                    // FSM Dashboard module locked out
+                    // $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['FSM Dashboard']));
 
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Utility Dashboard'])->whereIn('name', [
                         'Drain Count Box',

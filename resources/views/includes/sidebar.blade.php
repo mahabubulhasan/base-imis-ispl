@@ -53,13 +53,14 @@
                             </a>
                         </li>
                         @endcan
-                        @can('List Building Surveys')
+                        {{-- @can('List Building Surveys')
                         <li class="nav-item">
                             <a href="{{ action('BuildingInfo\BuildingSurveyController@index') }}" class="nav-link {{ request()->is('building-info/building-surveys') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>{{__('Building Survey')}}</p>
                             </a>
                         </li>
+                        @endcan --}}
                         @can('List Households')
                         <li class="nav-item">
                             <a href="{{ action('BuildingInfo\HouseholdController@index') }}" class="nav-link {{ request()->is('building-info/households', 'building-info/households/*') ? 'active' : '' }}">
@@ -67,7 +68,6 @@
                                 <p>{{__('Households')}}</p>
                             </a>
                         </li>
-                        @endcan
                         @endcan
                         @can('List Low Income Communities')
                         <li class="nav-item">
@@ -82,7 +82,7 @@
                 </li>
                 @endif
 
-                @if (Auth::user()->hasanyPermissionInGroup([
+                {{-- @if (Auth::user()->hasanyPermissionInGroup([
                 'FSM Dashboard',
                 'Containments',
                 'Service Providers',
@@ -232,7 +232,7 @@
                                         </a>
                                     </li>
                                 @endcan
-                                {{-- @can('List Treatment Plant Efficiency Tests')
+                                @can('List Treatment Plant Efficiency Tests')
                                         <li class="nav-item">
                                             <a href="{{ action('Fsm\TreatmentPlantEffectivenessController@index') }}"
                                 class="nav-link {{ request()->is('fsm/treatment-plant-effectiveness/*','fsm/treatment-plant-effectiveness') ? 'active' : '' }}">
@@ -240,7 +240,7 @@
                                 <p>Treatment Plant Efficiency Standard</p>
                                 </a>
                         </li>
-                        @endcan --}}
+                        @endcan
 
                         @can('List Treatment Plant Efficiency Tests')
                         <li class="nav-item">
@@ -319,18 +319,18 @@
                 @endif
             </ul>
             </li>
-            @endif
+            @endif --}}
 
-            @if(Auth::user()->hasanyPermissionInGroup(['Sewer Connection']) || Auth::user()->hasRole('Super Admin'))
+            {{-- @if(Auth::user()->hasanyPermissionInGroup(['Sewer Connection']) || Auth::user()->hasRole('Super Admin'))
             <li class="nav-item">
                 <a href="{{ action('SewerConnection\SewerConnectionController@index') }}" class="nav-link {{ request()->is('sewerconnection/sewerconnection') ? 'active' : '' }}">
                 <img src="{{ asset('img/svg/imis-icons/sewerConnectionIMS.svg')}}" class="nav-icon" alt="Sewer Connection Icon">
                     <p>{{__('Sewer Connection IMS')}}</p>
                 </a>
             </li>
-            @endif
+            @endif --}}
 
-            @if(Auth::user()->hasanyPermissionInGroup(['PT/CT Toilets','PT Users Logs']) || Auth::user()->hasRole('Super Admin'))
+            {{-- @if(Auth::user()->hasanyPermissionInGroup(['PT/CT Toilets','PT Users Logs']) || Auth::user()->hasRole('Super Admin'))
             <li class="nav-item {{ request()->is('fsm/ctpt', 'fsm/ctpt/*','fsm/ctpt-users/*','fsm/ctpt-users') ? 'menu-is-opening menu-open' : '' }}">
                 <a href="#" class="nav-link {{ request()->is('fsm/ctpt','fsm/ctpt/*', 'fsm/ctpt-users/*','fsm/ctpt-users') ? 'active' : '' }}">
                     <img src="{{ asset('img/svg/imis-icons/ptctIMS.svg')}}" class="nav-icon" alt="PTCT  Icon">
@@ -360,8 +360,8 @@
                 </ul>
 
             </li>
-            @endif
-            @if(Auth::user()->hasanyPermissionInGroup(['CWIS','KPI Dashboard','KPI Target','NSD Setting']) || Auth::user()->hasRole('Super Admin'))
+            @endif --}}
+            {{-- @if(Auth::user()->hasanyPermissionInGroup(['CWIS','KPI Dashboard','KPI Target','NSD Setting']) || Auth::user()->hasRole('Super Admin'))
             <li class="nav-item {{ request()->is('cwis/*', 'fsm/kpi-dashboard', 'fsm/kpi-targets/*','fsm/kpi-targets','fsm/cwis-setting/*','fsm/cwis-setting',
                 'fsm/nsd-setting','fsm/nsd-setting/*') ? 'menu-is-opening menu-open' : '' }}">
                 <a href="" class="nav-link {{ request()->is('cwis/*', 'fsm/kpi-dashboard', 'fsm/kpi-targets/*','fsm/kpi-targets','fsm/cwis-setting/*','fsm/cwis-setting', 'fsm/nsd-setting', 'fsm/nsd-setting/*') ? 'active' : '' }}">
@@ -422,7 +422,7 @@
 
                 </ul>
             </li>
-            @endif
+            @endif --}}
 
             @if(Auth::user()->hasanyPermissionInGroup(['Utility Dashboard','Roads','Sewers','WaterSupply Network','Drain']) || Auth::user()->hasRole('Super Admin'))
             <li class="nav-item {{ request()->is('utilityinfo/*') ? 'menu-is-opening menu-open' : '' }}">
@@ -450,22 +450,22 @@
                         </a>
                     </li>
                     @endcan
-                    @can('List Sewers')
+                    {{-- @can('List Sewers')
                     <li class="nav-item">
                         <a href="{{ action('UtilityInfo\SewerLineController@index') }}" class="nav-link {{ request()->is('utilityinfo/sewerlines/*','utilityinfo/sewerlines') ? 'active' : '' }}">
                             <i class="far fa-circle nav-icon"></i>
                             <p>{{__('Sewer Network')}} </p>
                         </a>
                     </li>
-                    @endcan
-                    @can('List WaterSupply Network')
+                    @endcan --}}
+                    {{-- @can('List WaterSupply Network')
                     <li class="nav-item">
                         <a href="{{ action('UtilityInfo\WaterSupplysController@index') }}" class="nav-link {{ request()->is('utilityinfo/watersupplys/*','utilityinfo/watersupplys') ? 'active' : '' }}">
                             <i class="far fa-circle nav-icon"></i>
                             <p>{{__('Water Supply Network')}} </p>
                         </a>
                     </li>
-                    @endcan
+                    @endcan --}}
                     @can('List Drains')
                     <li class="nav-item">
                         <a href="{{ action('UtilityInfo\DrainController@index') }}" class="nav-link {{ request()->is('utilityinfo/drains/*','utilityinfo/drains') ? 'active' : '' }}">
@@ -719,7 +719,7 @@
             </li>
             @endif
 
-            @if(Auth::user()->hasanyPermissionInGroup(['Property Tax Collection ISS']) || Auth::user()->hasRole('Super Admin'))
+            {{-- @if(Auth::user()->hasanyPermissionInGroup(['Property Tax Collection ISS']) || Auth::user()->hasRole('Super Admin'))
             <li class="nav-item">
                 <a href="{{ route('tax-payment.index') }}" class="nav-link {{ request()->is('tax-payment') ? 'active' : '' }}">
                     <img src="{{ asset('img/svg/imis-icons/propertyTaxCollectionIMS.svg')}}" class="nav-icon">
@@ -728,7 +728,7 @@
                     </p>
                 </a>
             </li>
-            @endif
+            @endif --}}
 
             @if(Auth::user()->hasanyPermissionInGroup(['Water Supply ISS']) || Auth::user()->hasRole('Super Admin'))
             <li class="nav-item">
@@ -770,7 +770,7 @@
             </li>
             @endif
 
-            @if(Auth::user()->hasanyPermissionInGroup(['Water Samples','Hotspots','Yearly Waterborne Cases']) || Auth::user()->hasRole('Super Admin'))
+            {{-- @if(Auth::user()->hasanyPermissionInGroup(['Water Samples','Hotspots','Yearly Waterborne Cases']) || Auth::user()->hasRole('Super Admin'))
             <li class="nav-item {{ request()->is('publichealth/hotspots/*','publichealth/hotspots', 'publichealth/waterborne/*','publichealth/waterborne','publichealth/water-samples/*','publichealth/water-samples') ? 'menu-is-opening menu-open' : '' }}">
                 <a href="#" class="nav-link {{ request()->is('publichealth/hotspots/*','publichealth/hotspots','publichealth/waterborne/*','publichealth/waterborne' ,'publichealth/water-samples/*','publichealth/water-samples') ? 'active' : '' }}">
                     <img src="{{ asset('img/svg/imis-icons/publicHealthISS.svg')}}" class="nav-icon" alt="Fecal Sludge Icon">
@@ -806,7 +806,7 @@
 
             </ul>
             </li>
-            @endif
+            @endif --}}
 
             @if(Auth::user()->hasanyPermissionInGroup(['Users','Roles','Language']) || Auth::user()->hasRole('Super Admin'))
             <li class="nav-item {{ request()->is('auth/*','language/*') ? 'menu-is-opening menu-open' : '' }}">

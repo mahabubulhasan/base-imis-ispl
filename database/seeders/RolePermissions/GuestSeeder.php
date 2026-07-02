@@ -30,32 +30,33 @@ class GuestSeeder extends Seeder
                     //For Building Module
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Building Structures'])->whereIn('type', ['List', 'View', 'View on map']));
 
-                    //For Building Survey Module
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Building Surveys'])->whereIn('type', ['List']));
+                    //For Building Survey Module -- locked out
+                    // $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Building Surveys'])->whereIn('type', ['List']));
 
-                    //For FSM Module
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Containments', 'Service Providers', 'Employee Infos','Desludging Vehicles', 'Treatment Plants','Treatment Plant Efficiency Tests', 'Applications', 'Emptyings', 'Sludge Collections', 'Feedbacks', 'Treatment Plant Efficiency Standards','Help Desks'])->whereIn('type', ['List', 'View']));
+                    //For FSM Module -- locked out
+                    // $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Containments', 'Service Providers', 'Employee Infos','Desludging Vehicles', 'Treatment Plants','Treatment Plant Efficiency Tests', 'Applications', 'Emptyings', 'Sludge Collections', 'Feedbacks', 'Treatment Plant Efficiency Standards','Help Desks'])->whereIn('type', ['List', 'View']));
 
-                    //For PT/CT Module
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['PT/CT Toilets'])->whereIn('type', ['List', 'View', 'View on map']));
+                    //For PT/CT Module -- locked out
+                    // $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['PT/CT Toilets'])->whereIn('type', ['List', 'View', 'View on map']));
 
-                    //For PT Users Log Module
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['PT Users Logs'])->whereIn('type', ['List', 'View']));
+                    //For PT Users Log Module -- locked out
+                    // $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['PT Users Logs'])->whereIn('type', ['List', 'View']));
 
-                    //For Utility Module
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Roads', 'Sewers', 'WaterSupply Network', 'Drain'])->whereIn('type', ['List', 'View']));
+                    //For Utility Module -- Sewer Network / Water Supply Network locked out
+                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Roads', 'Drain'])->whereIn('type', ['List', 'View']));
 
-                    //For Payment ISS module
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Property Tax Collection ISS', 'Water Supply ISS'])->whereIn('type', ['List']));
+                    //For Payment ISS module -- Property Tax Collection ISS locked out
+                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Water Supply ISS'])->whereIn('type', ['List']));
 
-                    //For Public Health Module
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Hotspots', 'Yearly Waterborne Cases'])->whereIn('type', ['List', 'View', 'View on map']));
+                    //For Public Health Module -- locked out
+                    // $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Hotspots', 'Yearly Waterborne Cases'])->whereIn('type', ['List', 'View', 'View on map']));
 
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['NSD Setting'])
-                        ->whereIn('type', ['List']));
+                    // CWIS IMS module locked out
+                    // $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['NSD Setting'])
+                    //     ->whereIn('type', ['List']));
 
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['NSD'])
-                        ->whereIn('type', ['Show']));
+                    // $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['NSD'])
+                    //     ->whereIn('type', ['Show']));
 
                     $createdRole->givePermissionTo(
                         Permission::all()->whereIn('group', ['Dashboard'])
@@ -77,10 +78,10 @@ class GuestSeeder extends Seeder
                         Permission::all()->whereIn('group', ['Building Dashboard'])
                     );
 
-                    //Dashboard For FSM
-                    $createdRole->givePermissionTo(
-                        Permission::all()->whereIn('group', ['FSM Dashboard'])
-                    );
+                    //Dashboard For FSM -- locked out
+                    // $createdRole->givePermissionTo(
+                    //     Permission::all()->whereIn('group', ['FSM Dashboard'])
+                    // );
 
                     $createdRole->givePermissionTo(
                         Permission::all()->whereIn('group', ['Utility Dashboard'])

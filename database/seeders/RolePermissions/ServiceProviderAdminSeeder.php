@@ -23,15 +23,17 @@ class ServiceProviderAdminSeeder extends Seeder
             $createdRole = Role::updateOrCreate($role);
             switch ($createdRole->name){
                 case 'Service Provider - Admin':
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group',['Sludge Collections', 'Feedbacks', 'Building Structures',  'Low Income Communities', 'KPI Target' ])
+                    // CWIS IMS module locked out
+                    $createdRole->givePermissionTo(Permission::all()->whereIn('group',['Building Structures',  'Low Income Communities' ])
                     ->whereIn('type',['View','List','View on map']));
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group',['Containments'])
-                     ->whereIn('type',['View','List','View on map', 'Export', 'Service History']));
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group',['Applications','Emptyings'])
-                    ->whereIn('type',['View','List','Export']));
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group',['KPI Dashboard']));
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group',['Help Desks','Desludging Vehicles','Employee Infos'])->whereNotIn('type',['History']));
-                     $createdRole->givePermissionTo(Permission::all()->whereIn('group',['Treatment Plants'])->whereIn('type',['View','List','View on map','Export']));
+                    // Fecal Sludge IMS module locked out
+                    // $createdRole->givePermissionTo(Permission::all()->whereIn('group',['Containments'])
+                    //  ->whereIn('type',['View','List','View on map', 'Export', 'Service History']));
+                    // $createdRole->givePermissionTo(Permission::all()->whereIn('group',['Applications','Emptyings'])
+                    // ->whereIn('type',['View','List','Export']));
+                    // $createdRole->givePermissionTo(Permission::all()->whereIn('group',['KPI Dashboard']));
+                    // $createdRole->givePermissionTo(Permission::all()->whereIn('group',['Help Desks','Desludging Vehicles','Employee Infos'])->whereNotIn('type',['History']));
+                    //  $createdRole->givePermissionTo(Permission::all()->whereIn('group',['Treatment Plants'])->whereIn('type',['View','List','View on map','Export']));
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Roads'])->whereIn('type', ['List', 'View', 'View on map']));
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group',['Maps'])
                     ->whereIn('name',['Roads Map Layer','Sewers Line Map Layer','Drains Map Layer','WaterSupply Network Map Layer','Places Map Layer', 'Buildings Map Layer', 'Containments Map Layer','Sanitation System Map Layer', 'Water Body Map Layer', 'Land Use Map Layer','Service Delivery Map Tools','Applications Map Tools','Emptied Applications Not Reached to TP Map Tools','Containments Proposed To Be Emptied Map Tools','Service Feedback Map Tools',
@@ -56,15 +58,16 @@ class ServiceProviderAdminSeeder extends Seeder
                     
                ])
                );
-               $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['FSM Dashboard'])
-               ->whereIn('name', [
-                      'Containment Type-Wise Emptying Services Over the Last 5 Years Chart','Sanitation Worker Compliance with PPE Guidelines Chart','Customer Satisfaction with FSM Service Quality Chart','Ward-Wise Distribution of Emptying Requests for the Next Four Weeks Chart',
-                      'Emptying Requests for the Next Four Weeks Chart','Monthly Emptying Requests Processed by Service Providers Chart','Monthly Emptying Requests Processed by Service Providers Chart','Summary of Applications, Emptying Services, Sludge Disposal, and Feedback by Ward Chart',
-                      'Containment Types Categorized by Land Use Chart','Containment Types Categorized by Building Usage Chart','Containment Types Categorized by Building Usage Chart','Ward-Wise Distribution of Containment Types in Residential Buildings Chart',
-                      'Ward-Wise Distribution of Containment Types Chart','Proportion of Different Containment Types Chart','FSM Dashboard CountBox'
-                
-           ])
-           );
+               // FSM Dashboard module locked out
+               // $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['FSM Dashboard'])
+               // ->whereIn('name', [
+               //        'Containment Type-Wise Emptying Services Over the Last 5 Years Chart','Sanitation Worker Compliance with PPE Guidelines Chart','Customer Satisfaction with FSM Service Quality Chart','Ward-Wise Distribution of Emptying Requests for the Next Four Weeks Chart',
+               //        'Emptying Requests for the Next Four Weeks Chart','Monthly Emptying Requests Processed by Service Providers Chart','Monthly Emptying Requests Processed by Service Providers Chart','Summary of Applications, Emptying Services, Sludge Disposal, and Feedback by Ward Chart',
+               //        'Containment Types Categorized by Land Use Chart','Containment Types Categorized by Building Usage Chart','Containment Types Categorized by Building Usage Chart','Ward-Wise Distribution of Containment Types in Residential Buildings Chart',
+               //        'Ward-Wise Distribution of Containment Types Chart','Proportion of Different Containment Types Chart','FSM Dashboard CountBox'
+
+               // ])
+               // );
            ///User Information Managaement///
            $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Users'])
            ->whereIn('type', [

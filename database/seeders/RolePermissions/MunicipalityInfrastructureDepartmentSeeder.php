@@ -23,15 +23,17 @@ class MunicipalityInfrastructureDepartmentSeeder extends Seeder
             $createdRole = Role::updateOrCreate($role);
             switch ($createdRole->name){
                 case 'Municipality - Infrastructure Department':
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group',['WaterSupply Network','Sewers','Sewer Connection','Drain','Roads','Utility Dashboard'])->whereNotIn('type',['History']));
+                    // Sewer Network / Water Supply Network locked out
+                    $createdRole->givePermissionTo(Permission::all()->whereIn('group',['Drain','Roads','Utility Dashboard'])->whereNotIn('type',['History']));
 
+                    // PT/CT IMS module locked out
+                    // $createdRole->givePermissionTo(
+                    //     Permission::all()
+                    //         ->whereIn('group', ['PT/CT Toilets'])
+                    //         ->whereIn('type',['View','List','Export','View on map']));
                     $createdRole->givePermissionTo(
                         Permission::all()
-                            ->whereIn('group', ['PT/CT Toilets'])
-                            ->whereIn('type',['View','List','Export','View on map']));
-                    $createdRole->givePermissionTo(
-                        Permission::all()
-                            ->whereIn('group', ['Building Structures', 'Building Surveys', 'Low Income Communities', 'Containments'])
+                            ->whereIn('group', ['Building Structures', 'Low Income Communities'])
                             ->whereIn('type',['View','List']));
                             $createdRole->givePermissionTo(Permission::all()->whereIn('group',['API'])
                             ->where('name','Access Sewer Connection API'));
@@ -62,14 +64,15 @@ class MunicipalityInfrastructureDepartmentSeeder extends Seeder
                     'Building CountBox'
         ])
         );
-        $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['FSM Dashboard'])
-            ->whereIn('name', [
-                'Containment Types Categorized by Land Use Chart',
-                                'Containment Types Categorized by Building Usage Chart','Ward-Wise Distribution of Containment Types in Residential Buildings Chart','Ward-Wise Distribution of Containment Types Chart',
-                                'Proportion of Different Containment Types Chart'
+        // FSM Dashboard module locked out
+        // $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['FSM Dashboard'])
+        //     ->whereIn('name', [
+        //         'Containment Types Categorized by Land Use Chart',
+        //                         'Containment Types Categorized by Building Usage Chart','Ward-Wise Distribution of Containment Types in Residential Buildings Chart','Ward-Wise Distribution of Containment Types Chart',
+        //                         'Proportion of Different Containment Types Chart'
 
-        ])
-        );
+        // ])
+        // );
                 break;
                     }
                 }

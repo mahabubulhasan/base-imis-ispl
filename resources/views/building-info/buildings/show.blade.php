@@ -106,7 +106,7 @@
                 </div>
             </div>
             <div class="form-group row">
-                {!! Form::label('house_locality', __('House Locality/Address'), [
+                {!! Form::label('house_locality', __('Location'), [
                     'class' => 'col-sm-2 control-label control-label ',
                 ]) !!}
                 <div class="col-sm-3">
