@@ -5,9 +5,10 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL;
 use Cookie;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\DB;
+use Streamstech\Ekpay\Config\Config;
+use Streamstech\Ekpay\Config\ConfigKey;
+use Streamstech\Ekpay\EkpayService;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -19,7 +20,21 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(EkpayService::class, function ($app) {
+            $config = new Config();
+            $config
+                ->set(ConfigKey::SUCCESS_URL, url("/payment/success"))
+                ->set(ConfigKey::CANCEL_URL, url("/payment/cancel"))
+                ->set(ConfigKey::FAIL_URL, url("/payment/failed"))
+                ->set(ConfigKey::MERCHANT_REG_ID, config('ekpay.MERCHANT_REG_ID'))
+                ->set(ConfigKey::MERCHANT_PAS_KEY, config('ekpay.MERCHANT_PAS_KEY'))
+                ->set(ConfigKey::IPN_CHANNEL, '1') // 0=None, 1=Both, 2=Email, 3=API
+                ->set(ConfigKey::IPN_URI, url("/api/ipn"))
+                ->set(ConfigKey::IPN_EMAIL, 'codehasan@gmail.com')
+                ->set(ConfigKey::MAC, config('ekpay.MAC'))
+                ->set(Configkey::SANDBOX_ENABLED, config('ekpay.SANDBOX_ENABLED'));
+            return new EkpayService($config);
+        });
     }
 
     /**

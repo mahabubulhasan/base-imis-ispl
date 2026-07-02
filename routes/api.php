@@ -35,6 +35,10 @@ use Illuminate\Support\Facades\Route;
 */
 Route::get('get-Building-sewercode/{sewercode}',[BuildingSearchController::class,'getSewerCode']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('ipn', function(){
+    \Log::debug('IPN received: ' . json_encode(request()->all()));
+    return response()->json(['message' => 'IPN received successfully']);
+});
 
 /*
 |

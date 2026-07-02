@@ -11,6 +11,9 @@ use App\Http\Controllers\Fsm\ApplicationController;
 use App\Http\Controllers\Api\ApiServiceController;
 use App\Http\Controllers\MapsController;
 use App\Http\Controllers\Proxy\WMSProxyController;
+use Streamstech\Ekpay\Customer;
+use Streamstech\Ekpay\EkpayService;
+use Streamstech\Ekpay\Transaction;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +35,32 @@ Route::get('/', function () {
     } else {
         return view('landingpage');
     }
+});
+
+Route::get('payment/pay', function(){
+    $service = app(EkpayService::class);
+
+    $customer = new Customer(
+        'John Doe',
+        '01717508422',
+        'CUST123456');
+
+    $transaction = new Transaction(
+        'TXN123456',
+        '5.00'
+    );
+
+    return $service->send($customer, $transaction);
+});
+
+Route::get('payment/success', function(){
+    return response()->json(['message' => 'Payment successful']);
+});
+Route::get('payment/fail', function(){
+    return response()->json(['message' => 'Payment failed']);
+});
+Route::get('payment/cancel', function(){
+    return response()->json(['message' => 'Payment cancelled']);
 });
 
 Route::get('/public-dashboard', 'PublicDashboardController@index')->name('public-dashboard');
