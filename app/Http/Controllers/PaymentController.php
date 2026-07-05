@@ -10,6 +10,7 @@ use App\Models\Payment;
 use Streamstech\Ekpay\Customer;
 use Streamstech\Ekpay\EkpayService;
 use Streamstech\Ekpay\Transaction;
+use PDF;
 
 class PaymentController extends Controller
 {
@@ -85,5 +86,26 @@ class PaymentController extends Controller
     {
         $payment = Payment::findOrFail($id);
         return view('payment.receipt', compact('payment'));
+    }
+
+    public function downloadReceipt($id)
+    {
+        // Last Modified: 2026-07-05
+        // Developed By: Streams Tech Ltd.
+        // Description: Download receipt as PDF
+
+        $payment = Payment::findOrFail($id);
+
+        // Generate PDF from receipt view with styling
+        $pdf = \PDF::loadView('payment.receipt', compact('payment'));
+
+        // Set paper size and orientation
+        $pdf->setPaper('A4', 'portrait');
+
+        // Generate filename: yes-{receipt_no}.pdf
+        $filename = 'yes-' . $payment->receipt_no . '.pdf';
+
+        // Download PDF
+        return $pdf->download($filename);
     }
 }

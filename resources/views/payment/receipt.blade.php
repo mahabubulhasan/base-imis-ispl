@@ -181,10 +181,15 @@ function toBengaliNumber($number) {
 
         .print-button {
             text-align: center;
-            margin: 20px 0;
+            margin: 30px 0 20px 0;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
-        .btn-print {
+        .btn-print,
+        .btn-download {
             background-color: #2d5f3f;
             color: white;
             padding: 12px 30px;
@@ -193,9 +198,14 @@ function toBengaliNumber($number) {
             font-size: 16px;
             cursor: pointer;
             font-weight: bold;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .btn-print:hover {
+        .btn-print:hover,
+        .btn-download:hover {
             background-color: #1e4029;
         }
 
@@ -212,11 +222,12 @@ function toBengaliNumber($number) {
                 max-width: 100%;
             }
 
-            .print-button {
-                display: none;
-            }
+            @media print {
+                .print-button {
+                    display: none;
+                }
 
-            .warning-box {
+                .warning-box {
                 border: 2px solid #ffc107 !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
@@ -254,11 +265,8 @@ function toBengaliNumber($number) {
 </head>
 <body>
     <div class="receipt-container">
-        <!-- Print Button -->
-        <div class="print-button">
-            <button class="btn-print" onclick="window.print()">🖨️ প্রিন্ট করুন</button>
-        </div>
-
+        <!-- Receipt Content -->
+        <div class="receipt-content">
         <!-- Header -->
         <div class="header">
             <img src="{{ asset('layout/img/logo-Lakshmipur.png') }}" alt="Lakshmipur Logo">
@@ -373,6 +381,20 @@ function toBengaliNumber($number) {
         <div class="footer-info">
             সেবা গ্রহনের পর এই ট্রাজেকশন নম্বর দ্বারা করে <strong>imislxp-new.streamstech.com</strong> ওয়েবসাইটে <strong>Feedback</strong> দিয়ে<br>
             গিয়ে আপনার মতামত প্রদান করুন।
+        </div>
+        </div>
+        <!-- End Receipt Content -->
+
+        <!-- Print and Download Buttons at Bottom -->
+        <div class="print-button">
+            <button class="btn-print" onclick="window.print()">
+                <span>🖨️</span>
+                <span>প্রিন্ট করুন</span>
+            </button>
+            <a href="{{ route('payment.download-receipt', $payment->id) }}" class="btn-download">
+                <span>📥</span>
+                <span>PDF ডাউনলোড করুন</span>
+            </a>
         </div>
     </div>
 </body>
