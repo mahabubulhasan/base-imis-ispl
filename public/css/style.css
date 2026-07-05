@@ -211,6 +211,15 @@ span.info-box-icon{
   font-size: 0.9rem;
 }
 
+/* Sidebar main menu: selected & hover color */
+.sidebar-dark-primary .nav-sidebar>.nav-item>.nav-link.active,
+.sidebar-dark-primary .nav-sidebar>.nav-item>.nav-link:hover,
+.sidebar-dark-primary .nav-sidebar>.nav-item>.nav-link:focus,
+.sidebar-dark-primary .nav-sidebar>.nav-item.menu-open>.nav-link {
+  background-color: #008fcc;
+  color: #fff;
+}
+
 @media (max-width: 767px) {
   .small-box {
     text-align: center;

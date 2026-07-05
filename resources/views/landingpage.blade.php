@@ -361,7 +361,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                     />
                 </div>
                 <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-4 sm:mb-6 px-1 sm:px-0">
-                    Conceptualized by <a href="https://snv.org" class="text-primary font-semibold hover:underline" target="_blank" rel="noopener noreferrer">SNV</a> under the project <span>"Transitioning to Sustainable Urban Water Cycles in Bangladesh"</span> supported by the <span>Embassy of the Kingdom of the Netherlands.</span>
+                    Conceptualized by <a href="https://snv.org" class="text-primary font-semibold hover:underline" target="_blank" rel="noopener noreferrer" style="color:#008fcc;">SNV</a> under the project <span>"Transitioning to Sustainable Urban Water Cycles in Bangladesh"</span> supported by the <span>Embassy of the Kingdom of the Netherlands.</span>
                 </p>
                 {{-- <h1 class="text-4xl md:text-5xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-6 sr-only">
                     Integrated Municipal Information System <span class="text-primary">(IMIS)</span>
