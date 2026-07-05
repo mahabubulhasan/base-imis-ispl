@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
                 ->set(ConfigKey::MERCHANT_PAS_KEY, config('ekpay.MERCHANT_PAS_KEY'))
                 ->set(ConfigKey::IPN_CHANNEL, '1') // 0=None, 1=Both, 2=Email, 3=API
                 ->set(ConfigKey::IPN_URI, url("/api/ipn"))
-                ->set(ConfigKey::IPN_EMAIL, 'codehasan@gmail.com')
+                ->set(ConfigKey::IPN_EMAIL, config('ekpay.IPN_EMAIL'))
                 ->set(ConfigKey::MAC, config('ekpay.MAC'))
                 ->set(Configkey::SANDBOX_ENABLED, config('ekpay.SANDBOX_ENABLED'));
             return new EkpayService($config);
