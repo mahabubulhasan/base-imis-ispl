@@ -3,14 +3,10 @@
 // Developed By: Streams Tech Ltd.
 // Description: Registers web routes including FSM pending application create, store, index, view, and delete endpoints.
 
-use App\Http\Controllers\BuildingInfo\BuildingController;
 use App\Http\Controllers\ChartController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContactController;
-use App\Http\Controllers\Fsm\ApplicationController;
 use App\Http\Controllers\Api\ApiServiceController;
-use App\Http\Controllers\MapsController;
-use App\Http\Controllers\Proxy\WMSProxyController;
 use Streamstech\Ekpay\Customer;
 use Streamstech\Ekpay\EkpayService;
 use Streamstech\Ekpay\Transaction;
@@ -46,22 +42,17 @@ Route::get('payment/pay', function(){
         'CUST123456');
 
     $transaction = new Transaction(
-        'TXN123456',
+        'TXN123456'.time(),
         '5.00'
     );
 
     return $service->send($customer, $transaction);
 });
 
-Route::get('payment/success', function(){
-    return response()->json(['message' => 'Payment successful']);
-});
-Route::get('payment/fail', function(){
-    return response()->json(['message' => 'Payment failed']);
-});
-Route::get('payment/cancel', function(){
-    return response()->json(['message' => 'Payment cancelled']);
-});
+Route::get('payment/success', 'PaymentController@success')->name('payment.success');
+Route::get('payment/fail', 'PaymentController@failed')->name('payment.failed');
+Route::get('payment/cancel', 'PaymentController@cancel')->name('payment.cancel');
+Route::get('payment/receipt/{id}', 'PaymentController@receipt')->name('payment.receipt');
 
 Route::get('/public-dashboard', 'PublicDashboardController@index')->name('public-dashboard');
 
