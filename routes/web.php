@@ -615,7 +615,7 @@ Route::group([
     Route::post('sewerlines/update-sewer-geom', 'SewerLineController@updateSewerGeom');
     Route::get('sewerlines/get-sewer-names', 'SewerLineController@getSewerNames')->name('sewerlines.get-sewer-names');
     Route::get('sewerlines/{id}/history', 'SewerLineController@history');
-    // Route::resource('sewerlines', 'SewerLineController');
+    Route::resource('sewerlines', 'SewerLineController');
 
     // Water Supply Network module locked out (get-watersupply-codes kept: used by Building forms as a code lookup)
     Route::get('watersupplys/export', 'WaterSupplysController@export');
@@ -625,8 +625,8 @@ Route::group([
     Route::post('watersupplys/update-watersupply-geom', 'WaterSupplysController@updateWatersupplyGeom');
     Route::get('watersupplys/get-watersupply-codes', 'WaterSupplysController@getWaterSupplyCode')->name('watersupply.get-watersupply-code');
 
-    // Route::get('watersupply/{id}/history', 'WaterSupplysController@history');
-    // Route::resource('watersupplys', 'WaterSupplysController');
+    Route::get('watersupply/{id}/history', 'WaterSupplysController@history');
+    Route::resource('watersupplys', 'WaterSupplysController');
 });
 
 
