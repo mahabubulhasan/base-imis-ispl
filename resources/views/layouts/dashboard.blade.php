@@ -30,7 +30,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                 <div class="container-fluid">
                     <div class="row mb-2 align-items-center">
                         <div class="col-sm-6">
-                            <h1 style="font-family: 'Roboto', sans-serif;">@yield('title', 'Page Title')</h1>
+                            <h1 style="font-family: 'Roboto', sans-serif; font-weight: bold;">@yield('title', 'Page Title')</h1>
                         </div>
                         <div class="col-sm-6 d-flex justify-content-sm-end">
                             @yield('content_header_right')

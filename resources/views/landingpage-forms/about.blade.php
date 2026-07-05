@@ -10,7 +10,7 @@
         <!-- ABOUT SECTION -->
         <div class="bg-white p-6 md:p-10 rounded-xl shadow-lg border border-slate-200">
             <div class="section-title text-center">
-                <h3 class="text-slate-900">About <span class="text-primary">IMIS</span></h3>
+                <h3 class="text-slate-900 font-bold">About <span class="text-primary">IMIS</span></h3>
             </div>
             <div class="text-left space-y-6">
                 <p class="text-slate-700 leading-relaxed">
@@ -58,7 +58,7 @@
         <!-- CWIS SECTION -->
         <div class="bg-white p-6 md:p-10 rounded-xl shadow-lg border border-slate-200">
             <div class="section-title">
-                <h3 class="text-slate-900">Citywide Inclusive Sanitation <span class="text-primary">(CWIS)</span></h3>
+                <h3 class="text-slate-900 font-bold">Citywide Inclusive Sanitation <span class="text-primary">(CWIS)</span></h3>
             </div>
             <div class="text-left">
                 <p class="text-slate-700">
@@ -82,7 +82,7 @@
         <!-- FEATURES SECTION -->
         <div class="bg-white p-6 md:p-10 rounded-xl shadow-lg border border-slate-200">
             <div class="section-title text-center">
-                <h3 class="text-slate-900">Features of <span class="text-primary">IMIS</span></h3>
+                <h3 class="text-slate-900 font-bold">Features of <span class="text-primary">IMIS</span></h3>
             </div>
             <div class="text-left">
                 <ul class="text-slate-700 list-disc pl-8 space-y-1 leading-relaxed">
@@ -107,7 +107,7 @@
         <!-- FUNCTIONAL MODULES SECTION -->
         <div class="bg-white p-6 md:p-10 rounded-xl shadow-lg border border-slate-200">
             <div class="section-title">
-                <h3 class="text-slate-900">Functional<span class="text-primary"> Modules</span></h3>
+                <h3 class="text-slate-900 font-bold">Functional<span class="text-primary"> Modules</span></h3>
             </div>
 
             <!-- Grid of modules -->

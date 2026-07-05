@@ -5,7 +5,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 @section('content')
 
 @can('Building CountBox')
-    <h1 style="padding-bottom: 15px;font-size: 24px;">{{__("Buildings") }}</h1>
+    <h1 style="padding-bottom: 15px;font-size: 24px;font-weight: bold;">{{__("Buildings") }}</h1>
     <div class="row">
         <div class="col-lg-3 col-md-12 col-xs-12  d-flex">
             @include('dashboard.countBox._buildCountBox')
@@ -52,7 +52,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 @endcan
 
 @can('Sanitation CountBox')
-    <h1 style="padding: 15px 0 15px 0; font-size: 24px;">{{ __("Building Sanitation Facilities") }}</h1>
+    <h1 style="padding: 15px 0 15px 0; font-size: 24px;font-weight: bold;">{{ __("Building Sanitation Facilities") }}</h1>
     <div class="row">
         @foreach ($sanitationSystems as $sanitationSystem)
             <div class="col-lg-3 col-xs-6">
@@ -86,7 +86,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 
 
 @can('Utility CountBox')
-    <h1 style="padding: 15px 0 15px 0;font-size: 24px;">{{ __("Utilities") }}</h1>
+    <h1 style="padding: 15px 0 15px 0;font-size: 24px;font-weight: bold;">{{ __("Utilities") }}</h1>
     <div class="row">
         <div class="col-lg-3 col-xs-6">
             @include('dashboard.countBox._sumRoadsCountBox')
@@ -101,7 +101,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 @endcan
 
 @can('FSM CountBox')
-        <h1 style="padding: 15px 0 15px 0;font-size: 24px;">{{ __("FSM Services") }}</h1>
+        <h1 style="padding: 15px 0 15px 0;font-size: 24px;font-weight: bold;">{{ __("FSM Services") }}</h1>
         <div class="row">
             <!-- ./col -->
             <div class="col-lg-4 col-xs-6">
@@ -129,7 +129,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 @endcan
 
 @can('PTCT CountBox')
-    <h1 style="padding: 15px 0 15px 0;font-size: 24px;">{{ __("PT/CT") }}</h1>
+    <h1 style="padding: 15px 0 15px 0;font-size: 24px;font-weight: bold;">{{ __("PT/CT") }}</h1>
         <div class="row">
         <div class="col-lg-3 col-xs-6">
             @include('dashboard.countBox._pTCountBox')
@@ -147,7 +147,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 @endcan
 
 @can('Public Health CountBox')
-    <h1 style="padding: 15px 0 15px 0;font-size: 24px;">{{ __("Public Health") }}</h1>
+    <h1 style="padding: 15px 0 15px 0;font-size: 24px;font-weight: bold;">{{ __("Public Health") }}</h1>
     <div class="row">
         <div class="col-lg-3 col-xs-6">
             @include('dashboard.countBox._totalHotspotCountBox')

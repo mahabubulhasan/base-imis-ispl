@@ -46,7 +46,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
             theme: {
                 extend: {
                     colors: {
-                        primary: "#0D47A1",
+                        primary: "#375380",
                         "background-light": "#F8FAFC",
                         "accent-blue": "#3b82f6",
                         "accent-green": "#22c55e",
