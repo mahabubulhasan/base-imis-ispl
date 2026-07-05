@@ -192,7 +192,9 @@ class PendingApplicationService
         }
 
         try {
-            $this->storePendingApplication($validator->validated());
+            $application = $this->storePendingApplication($validator->validated());
+            // Store application ID in session for later retrieval
+            session(['created_application_id' => $application->id]);
         } catch (\Throwable $e) {
             return redirect()->back()
                 ->withInput()

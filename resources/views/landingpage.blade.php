@@ -734,6 +734,13 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                     const data = await res.json();
 
                     if (res.ok && data.success) {
+                        // If application_id exists, redirect to payment checkout immediately
+                        if (data.application_id) {
+                            window.location.href = `/payment/checkout/${data.application_id}`;
+                            return;
+                        }
+
+                        // Otherwise show success modal
                         successMessage.value = data.message || 'Your FSM application has been submitted successfully!';
                         showModal.value = true;
                         resetForm();

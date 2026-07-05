@@ -27,10 +27,25 @@ class Payment extends Model
 
     public static function generateReceiptNumber()
     {
-        $lastPayment = self::latest('id')->first();
-        $lastReceiptNo = $lastPayment ? (int) substr($lastPayment->receipt_no, 3) : 0;
-        $newReceiptNo = str_pad($lastReceiptNo + 1, 7, '0', STR_PAD_LEFT);
-        return 'RC-' . $newReceiptNo;
+        $now = now();
+        $yearMonth = $now->format('ym'); // YYMM format (e.g., "2607" for July 2026)
+
+        // Find the last payment for this month
+        $lastPaymentThisMonth = self::whereRaw("receipt_no LIKE ?", [$yearMonth . '%'])
+            ->latest('id')
+            ->first();
+
+        if ($lastPaymentThisMonth) {
+            // Extract the 4-digit sequence number (last 4 digits)
+            $lastSequence = (int) substr($lastPaymentThisMonth->receipt_no, 4);
+        } else {
+            $lastSequence = 0;
+        }
+
+        // Increment and format to 4 digits
+        $newSequence = str_pad($lastSequence + 1, 4, '0', STR_PAD_LEFT);
+
+        return $yearMonth . $newSequence;
     }
 
     public static function generateTransactionId()

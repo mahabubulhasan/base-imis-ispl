@@ -41,10 +41,17 @@ class PublicApplicationController extends Controller
 
                     // Check for success message
                     if ($session && $session->has('success')) {
-                        return response()->json([
+                        $response = [
                             'success' => true,
                             'message' => $session->get('success')
-                        ]);
+                        ];
+
+                        // Include application_id if it was stored in session
+                        if ($session->has('created_application_id')) {
+                            $response['application_id'] = $session->get('created_application_id');
+                        }
+
+                        return response()->json($response);
                     }
 
                     // Check for error message
