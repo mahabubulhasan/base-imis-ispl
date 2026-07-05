@@ -2,6 +2,14 @@
 {{-- Developed By: Streams Tech Ltd. --}}
 {{-- Description: Printable payment receipt for Lakshmipur Pourashava --}}
 
+<?php
+// Localize numbers to Bengali using PHP's NumberFormatter
+function toBengaliNumber($number) {
+    $formatter = new \NumberFormatter('bn_BD', \NumberFormatter::DECIMAL);
+    return $formatter->format($number);
+}
+?>
+
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -278,11 +286,11 @@
             <div class="receipt-info-right">
                 <div class="info-row">
                     <span class="info-label">ফি পরিশোধের তারিখ:</span>
-                    {{ \Carbon\Carbon::parse($payment->payment_timestamp)->locale('bn')->isoFormat('DD MMMM YYYY') }}
+                    {{ $payment->payment_timestamp }}
                 </div>
                 <div class="info-row">
                     <span class="info-label">ফি পরিশোধের সময়:</span>
-                    {{ \Carbon\Carbon::parse($payment->payment_timestamp)->format('h:i A') }}
+                    {{ $payment->payment_timestamp }}
                 </div>
             </div>
         </div>
@@ -325,7 +333,7 @@
             </tr>
             <tr>
                 <td>প্রস্তাবিত খালি করার তারিখ</td>
-                <td>{{ $payment->proposed_service_date ? \Carbon\Carbon::parse($payment->proposed_service_date)->locale('bn')->isoFormat('DD MMMM YYYY') : 'N/A' }}</td>
+                <td>{{ $payment->proposed_service_date }}</td>
             </tr>
         </table>
 
@@ -344,7 +352,7 @@
             <tbody>
                 <tr>
                     <td>পয়ঃবর্জ্য সংগ্রহ সেবা ফি</td>
-                    <td><span class="bengali-number">৬১,৫০০/-</span></td>
+                    <td><span class="bengali-number">{{ toBengaliNumber($payment->amount) }}/-</span></td>
                     <td>অনলাইন পেমেন্ট</td>
                 </tr>
             </tbody>
@@ -363,7 +371,7 @@
 
         <!-- Footer -->
         <div class="footer-info">
-            সেবা গ্রহনের পর এই ট্রাজেকশন নম্বর দ্বারা করে <strong>imiskp-new.streamstech.com</strong> ওয়েবসাইটে <strong>Feedback</strong> দিয়ে<br>
+            সেবা গ্রহনের পর এই ট্রাজেকশন নম্বর দ্বারা করে <strong>imislxp-new.streamstech.com</strong> ওয়েবসাইটে <strong>Feedback</strong> দিয়ে<br>
             গিয়ে আপনার মতামত প্রদান করুন।
         </div>
     </div>
