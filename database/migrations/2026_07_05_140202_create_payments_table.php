@@ -19,6 +19,7 @@ class CreatePaymentsTable extends Migration
             $table->string('transaction_id', 50);
             $table->integer('application_id')->nullable();
             $table->timestamp('payment_timestamp');
+            $table->integer('amount');
             $table->string('applicant_name');
             $table->string('applicant_contact', 20);
             $table->string('holding_owner_name');

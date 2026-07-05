@@ -14,6 +14,7 @@ class Payment extends Model
         'transaction_id',
         'application_id',
         'payment_timestamp',
+        'amount',
         'applicant_name',
         'applicant_contact',
         'holding_owner_name',
@@ -62,6 +63,7 @@ class Payment extends Model
         $taxCode,
         $applicationId = null,
         $proposedServiceDate = null,
+        $amount = 1500,
         $serviceType = 'Emptying'
     ) {
         $receiptNo = self::generateReceiptNumber();
@@ -72,6 +74,7 @@ class Payment extends Model
             'receipt_no' => $receiptNo,
             'transaction_id' => $transactionId,
             'payment_timestamp' => $paymentTimestamp,
+            'amount' => $amount, // Assuming a fixed amount for the service
             'applicant_name' => $applicantName,
             'applicant_contact' => $applicantContact,
             'holding_owner_name' => $holdingOwnerName,

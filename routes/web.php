@@ -49,6 +49,8 @@ Route::get('payment/pay', function(){
     return $service->send($customer, $transaction);
 });
 
+Route::get('payment/checkout/{application_id}', 'PaymentController@checkout')->name('payment.checkout');
+Route::post('payment/store/{application_id}', 'PaymentController@store')->name('payment.store');
 Route::get('payment/success', 'PaymentController@success')->name('payment.success');
 Route::get('payment/fail', 'PaymentController@failed')->name('payment.failed');
 Route::get('payment/cancel', 'PaymentController@cancel')->name('payment.cancel');
