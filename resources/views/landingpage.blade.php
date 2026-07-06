@@ -427,7 +427,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                     © {{ config('constants.SITE_NAME') }}. All rights reserved.
                 </div>
                 <div class="sm:text-right text-sm">
-                    Developed by <a href="https://streamstech.com" class="text-primary font-semibold hover:underline" target="_blank" rel="noopener noreferrer">Streams Tech Ltd.</a>
+                    Developed by <a href="https://streamstech.com" class="text-primary font-semibold hover:underline" target="_blank" rel="noopener noreferrer">Streams Tech</a>
                 </div>
             </div>
         </div>

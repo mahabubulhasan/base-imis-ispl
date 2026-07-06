@@ -8,6 +8,9 @@
     <span class="pb-0 text-left text-xl-right flex-shrink-0">
         &copy; {{ config('constants.SITE_NAME') }}. All rights reserved.
     </span>
+    <span class="text-sm text-left text-xl-right">
+        Developed by <a href="https://streamstech.com" target="_blank" rel="noopener noreferrer">Streams Tech</a>
+    </span>
 </footer>
 <aside class="control-sidebar control-sidebar-dark" >
     <div class="p-3" >
