@@ -104,22 +104,22 @@
     </div>
 
     <div class="form-group row ">
-        {!! Form::label('house_number', __('House Number'), ['class' => 'col-sm-3 control-label ']) !!}
+        {!! Form::label('house_number', __('Holding ID'), ['class' => 'col-sm-3 control-label ']) !!}
         <div class="col-sm-5">
             {!! Form::text('house_number', null, [
                 'class' => 'form-control col-sm-10',
-                'placeholder' => 'House Number',
+                'placeholder' => 'Holding ID',
                 'autocomplete' => 'off',
 
             ]) !!}
         </div>
     </div>
     <div class="form-group row ">
-        {!! Form::label('house_locality', __('House Locality/Address'), ['class' => 'col-sm-3 control-label ']) !!}
+        {!! Form::label('house_locality', __('Address'), ['class' => 'col-sm-3 control-label ']) !!}
         <div class="col-sm-5">
             {!! Form::text('house_locality', null, [
                 'class' => 'form-control col-sm-10',
-                'placeholder' => 'House Locality/Address',
+                'placeholder' => 'Address',
                 'autocomplete' => 'off',
             ]) !!}
         </div>
@@ -127,7 +127,7 @@
 
     <!-- Tax  ID -->
     <div class="form-group row">
-    {!! Form::label('tax_code', __('Tax Code/Holding ID'), ['class' => 'col-sm-3 control-label ']) !!}
+    {!! Form::label('tax_code', __('Tax Code'), ['class' => 'col-sm-3 control-label ']) !!}
     <div class="col-sm-5">
         {{-- Hidden input that will contain the final comma-separated values for submission --}}
         {!! Form::hidden('tax_code', old('tax_code', isset($building) ? $building->tax_code : (isset($buildingSurvey) ? $buildingSurvey->tax_code : null)), ['id' => 'tax_code_hidden']) !!}

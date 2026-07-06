@@ -3,7 +3,7 @@
 @section('content')
     <div class="card card-info">
         <div class="card-header with-border">
-            <h3 class="card-title">{{ __('House Number') }} : {{ $building->bin }}</h3>
+            <h3 class="card-title">{{ __('Holding ID') }} : {{ $building->bin }}</h3>
         </div><!-- /.card-header -->
         @include('layouts.components.error-list')
         {!! Form::model($building, [
