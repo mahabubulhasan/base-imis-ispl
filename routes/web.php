@@ -54,8 +54,8 @@ Route::post('payment/store/{application_id}', 'PaymentController@store')->name('
 Route::get('payment/success', 'PaymentController@success')->name('payment.success');
 Route::get('payment/fail', 'PaymentController@failed')->name('payment.failed');
 Route::get('payment/cancel', 'PaymentController@cancel')->name('payment.cancel');
-Route::get('payment/receipt/{id}', 'PaymentController@receipt')->name('payment.receipt');
-Route::get('payment/download-receipt/{id}', 'PaymentController@downloadReceipt')->name('payment.download-receipt');
+Route::get('payment/receipt/{transaction_id}', 'PaymentController@receipt')->name('payment.receipt');
+Route::get('payment/download-receipt/{transaction_id}', 'PaymentController@downloadReceipt')->name('payment.download-receipt');
 
 Route::get('/public-dashboard', 'PublicDashboardController@index')->name('public-dashboard');
 

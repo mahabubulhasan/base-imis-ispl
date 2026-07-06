@@ -64,6 +64,8 @@ class PaymentController extends Controller
             '1500.00'
         );
 
+        session()->put('payment_id', $payment->id);
+
         return $ekpayService->send($customer, $transaction);
     }
 
@@ -82,19 +84,19 @@ class PaymentController extends Controller
         return view('payment.failed');
     }
 
-    public function receipt($id)
+    public function receipt($transaction_id)
     {
-        $payment = Payment::findOrFail($id);
+        $payment = Payment::where('transaction_id', $transaction_id)->firstOrFail();
         return view('payment.receipt', compact('payment'));
     }
 
-    public function downloadReceipt($id)
+    public function downloadReceipt($transaction_id)
     {
         // Last Modified: 2026-07-05
         // Developed By: Streams Tech Ltd.
         // Description: Download receipt as PDF
 
-        $payment = Payment::findOrFail($id);
+        $payment = Payment::where('transaction_id', $transaction_id)->firstOrFail();
 
         // Generate PDF from receipt view with styling
         $pdf = \PDF::loadView('payment.receipt', compact('payment'));

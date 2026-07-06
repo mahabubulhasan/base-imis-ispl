@@ -107,10 +107,10 @@
 
         @php
             // In a real scenario, you'd get the payment ID from the session or URL parameter
-            $paymentId = session('payment_id', 1); // Default to 1 for demo
+            $transaction_id = request()->query('transId');
         @endphp
 
-        <a href="{{ route('payment.receipt', $paymentId) }}" class="btn-receipt">
+        <a href="{{ route('payment.receipt', $transaction_id) }}" class="btn-receipt">
             📄 রসিদ দেখুন
         </a>
 
@@ -118,7 +118,7 @@
             <script>
                 // Auto-redirect to receipt after 3 seconds
                 setTimeout(function() {
-                    window.location.href = "{{ route('payment.receipt', $paymentId) }}";
+                    window.location.href = "{{ route('payment.receipt', $transaction_id) }}";
                 }, 3000);
             </script>
             ৩ সেকেন্ডে স্বয়ংক্রিয়ভাবে রসিদে নিয়ে যাওয়া হবে...

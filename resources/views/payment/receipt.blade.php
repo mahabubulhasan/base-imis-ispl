@@ -391,7 +391,7 @@ function toBengaliNumber($number) {
                 <span>🖨️</span>
                 <span>প্রিন্ট করুন</span>
             </button>
-            <a href="{{ route('payment.download-receipt', $payment->id) }}" class="btn-download">
+            <a href="{{ route('payment.download-receipt', $payment->transaction_id) }}" class="btn-download">
                 <span>📥</span>
                 <span>PDF ডাউনলোড করুন</span>
             </a>
