@@ -15,6 +15,59 @@ Description: Displays the pending FSM application create form using the shared c
 	{!! Form::close() !!}
 @endsection
 
+@push('style')
+	<style>
+		/* Radio Button Styling */
+		.radio-options-container {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 2rem;
+			margin-top: 0.5rem;
+		}
+
+		.form-check {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+		}
+
+		.form-check-input {
+			cursor: pointer;
+			width: 1.2rem;
+			height: 1.2rem;
+			margin: 0;
+		}
+
+		.form-check-label {
+			cursor: pointer;
+			margin: 0;
+			font-weight: 500;
+			color: #333;
+			user-select: none;
+			font-size: 0.95rem;
+		}
+
+		.form-check-input:checked + .form-check-label {
+			color: #007bff;
+			font-weight: 600;
+		}
+
+		/* Additional spacing for form groups */
+		.form-group {
+			margin-bottom: 1.5rem;
+		}
+
+		.field-hidden {
+			display: none !important;
+		}
+
+		/* Card spacing improvement */
+		.card-body {
+			padding: 2rem;
+		}
+	</style>
+@endpush
+
 @push('scripts')
 	<script>
 		function formatPendingTaxId(element) {
@@ -58,6 +111,7 @@ Description: Displays the pending FSM application create form using the shared c
 			const today = new Date().toISOString().split('T')[0];
 			$('#proposed_emptying_date').attr('min', today);
 
+			// Initial setup
 			$('#has_tax_id').on('change', togglePendingTaxIdField);
 			togglePendingTaxIdField();
 		});

@@ -117,13 +117,13 @@ class PaymentController extends Controller
         $trnxId = $request->trnx_info['mer_trnx_id'];
         switch ($request->msg_code) {
             case 1020:
-                Payment::updateTransactionStatus($trnxId, "paid");
+                Payment::updateTransactionStatus($trnxId, "Paid");
                 break;
             case 1021:
-                Payment::updateTransactionStatus($trnxId, "failed");
+                Payment::updateTransactionStatus($trnxId, "Failed");
                 break;
             case 1022:
-                Payment::updateTransactionStatus($trnxId, "canceled");
+                Payment::updateTransactionStatus($trnxId, "Canceled");
                 break;
         }
 
@@ -222,10 +222,11 @@ class PaymentController extends Controller
         // Description: Return badge class based on payment status
 
         return match($status) {
-            'paid' => 'success',
-            'failed' => 'danger',
-            'canceled' => 'warning',
-            'pending' => 'info',
+            'Paid' => 'success',
+            'Failed' => 'danger',
+            'Canceled' => 'warning',
+            'Pending' => 'info',
+            'Cash' => 'success',
             default => 'secondary'
         };
     }

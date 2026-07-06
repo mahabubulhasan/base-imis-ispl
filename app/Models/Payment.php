@@ -114,4 +114,24 @@ class Payment extends Model
 
         return false;
     }
+
+    public static function cashInHandPayment($applicantName, $applicantContact, $holdingOwnerName, $address, $taxCode, $applicationId = null, $proposedServiceDate = null, $amount = 1500, $serviceType = 'Emptying')
+    {
+        // Create a new payment record with status 'Cash' for cash in hand
+        return self::create([
+            'receipt_no' => self::generateReceiptNumber(),
+            'transaction_id' => self::generateTransactionId(),
+            'payment_timestamp' => now(),
+            'amount' => $amount,
+            'applicant_name' => $applicantName,
+            'applicant_contact' => $applicantContact,
+            'holding_owner_name' => $holdingOwnerName,
+            'address' => $address,
+            'tax_code' => $taxCode,
+            'service_type' => $serviceType,
+            'proposed_service_date' => $proposedServiceDate,
+            'application_id' => $applicationId,
+            'transaction_status' => 'Cash' // Marking as cash in hand
+        ]);
+    }
 }

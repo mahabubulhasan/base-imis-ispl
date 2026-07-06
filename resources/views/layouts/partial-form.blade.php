@@ -26,7 +26,7 @@ A dynamic form layout
                 </div>
                 <div class="card-body">
                     @foreach($group['fields'] as $field)
-                    <div class="form-group row @if($field->required) required @endif" @if(!empty($field->hidden)) @if($field->hidden === true) style="display: none" @endif @endif>
+                    <div class="form-group row @if($field->required) required @endif {{ ($field->hidden === true) ? 'field-hidden' : '' }}" id="form-group-{{ $field->inputId }}">
                         {!! Form::label($field->labelFor,$field->label,['class' => $field->labelClass]) !!}
                         <div class="col-sm-4">
                             @if($field->inputType === 'text')
@@ -51,7 +51,16 @@ A dynamic form layout
                                 {!! Form::label($field->inputId,$field->labelValue,['class' => $field->inputClass,'disabled' => $field->disabled]) !!}
                             @endif
                             @if($field->inputType === 'radio')
-                                {!! Form::radio($field->inputId,$field->labelValue,['class' => $field->inputClass,'disabled' => $field->disabled]) !!}
+                                <div class="radio-options-container">
+                                    @foreach($field->radioValues as $radioValue => $radioLabel)
+                                    <div class="form-check">
+                                        <input type="radio" class="form-check-input" name="{{ $field->inputId }}" id="{{ $field->inputId }}_{{ $loop->index }}" value="{{ $radioValue }}" {{ ($field->selectedValue == $radioValue) ? 'checked' : '' }} {{ $field->disabled ? 'disabled' : '' }}>
+                                        <label class="form-check-label" for="{{ $field->inputId }}_{{ $loop->index }}">
+                                            {{ $radioLabel }}
+                                        </label>
+                                    </div>
+                                    @endforeach
+                                </div>
                             @endif
                             @if($field->inputType === 'multiple-select')
                                 {!! Form::select($field->inputId,$field->selectValues,$field->selectedValue,['class' => $field->inputClass,'disabled' => $field->disabled]) !!}
@@ -128,7 +137,7 @@ A dynamic form layout
 @else
     @foreach($formFields as $formField)
     <div class="col-sm-12 col-md-8 col-lg-8">
-        <div class="form-group row @if($formField->required) required @endif" @if(!empty($formField->hidden)) @if($formField->hidden === true) style="display: none" @endif @endif>
+        <div class="form-group row @if($formField->required) required @endif {{ ($formField->hidden === true) ? 'field-hidden' : '' }}" id="form-group-{{ $formField->inputId }}">
             {!! Form::label($formField->labelFor,$formField->label,['class' => $formField->labelClass,'disabled' => $formField->disabled]) !!}
             <div class="col-sm-4">
                 @if($formField->inputType === 'text')
@@ -150,7 +159,16 @@ A dynamic form layout
                     {!! Form::label($formField->inputId,$formField->labelValue,['class' => $formField->inputClass,'disabled' => $formField->disabled]) !!}
                 @endif
                 @if($formField->inputType === 'radio')
-                    {!! Form::radio($formField->inputId,$formField->labelValue,['class' => $formField->inputClass,'disabled' => $formField->disabled]) !!}
+                    <div class="radio-options-container">
+                        @foreach($formField->radioValues as $radioValue => $radioLabel)
+                        <div class="form-check">
+                            <input type="radio" class="form-check-input" name="{{ $formField->inputId }}" id="{{ $formField->inputId }}_{{ $loop->index }}" value="{{ $radioValue }}" {{ ($formField->selectedValue == $radioValue) ? 'checked' : '' }} {{ $formField->disabled ? 'disabled' : '' }}>
+                            <label class="form-check-label" for="{{ $formField->inputId }}_{{ $loop->index }}">
+                                {{ $radioLabel }}
+                            </label>
+                        </div>
+                        @endforeach
+                    </div>
                 @endif
                 @if($formField->inputType === 'multiple-select')
                     {!! Form::select($formField->inputId,$formField->selectValues,$formField->selectedValue,['class' => $formField->inputClass,'disabled' => $formField->disabled]) !!}

@@ -8,11 +8,13 @@ namespace App\Services\Fsm;
 use App\Classes\FormField;
 use App\Models\Fsm\Application;
 use App\Models\LayerInfo\Ward;
+use App\Models\Payment;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -125,6 +127,29 @@ class PendingApplicationService
                     ),
                 ],
             ],
+            [
+                'title' => __('Payment Method'),
+                'fields' => [
+                    new FormField(
+                        label: __('Select Payment Method'),
+                        labelFor: 'payment_method',
+                        inputType: 'radio',
+                        inputId: 'payment_method',
+                        radioValues: ['cash_in_hand' => __('Cash in Hand'), 'ekpay' => __('Pay using Ekpay')],
+                        selectedValue: old('payment_method'),
+                        required: true,
+                    ),
+                    new FormField(
+                        label: __('Select Amount'),
+                        labelFor: 'amount',
+                        inputType: 'radio',
+                        inputId: 'amount',
+                        radioValues: ['1500' => __('৳ 1500'), '1800' => __('৳ 1800')],
+                        selectedValue: old('amount'),
+                        required: true,
+                    ),
+                ],
+            ],
         ];
     }
 
@@ -163,6 +188,8 @@ class PendingApplicationService
             'notes' => 'nullable|string|max:1000',
             'latitude' => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
+            'payment_method' => 'required|in:cash_in_hand,ekpay',
+            'amount' => 'required|in:1500,1800',
         ], [
             'has_tax_id.required' => __('Please select if you have a Tax Code.'),
             'has_tax_id.in' => __('The Tax Code selection is invalid.'),
@@ -178,6 +205,10 @@ class PendingApplicationService
             'latitude.between' => __('Latitude must be between -90 and 90.'),
             'longitude.numeric' => __('Longitude must be a valid number.'),
             'longitude.between' => __('Longitude must be between -180 and 180.'),
+            'payment_method.required' => __('Payment Method is required.'),
+            'payment_method.in' => __('The selected Payment Method is invalid.'),
+            'amount.required' => __('Please select an amount.'),
+            'amount.in' => __('The selected amount is invalid.'),
         ]);
     }
 
@@ -206,7 +237,8 @@ class PendingApplicationService
 
     public function storePendingApplication(array $validated): Application
     {
-        return Application::create([
+        DB::beginTransaction();
+        $application = Application::create([
             'tax_code' => ($validated['has_tax_id'] ?? 'no') === 'yes' ? ($validated['tax_id'] ?? null) : null,
             'applicant_name' => $validated['customer_name'],
             'applicant_contact' => $validated['customer_contact'],
@@ -218,6 +250,34 @@ class PendingApplicationService
             'approved_status' => false,
             'application_date' => now()->format('Y-m-d H:i:s'),
         ]);
+
+        if($validated['payment_method'] === 'cash_in_hand') {
+            Payment::cashInHandPayment(
+                $validated['customer_name'],
+                $validated['customer_contact'],
+                $validated['holding_owner_name'] ?? null,
+                $validated['address'],
+                $validated['tax_id'] ?? null,
+                $application->id,
+                $validated['proposed_emptying_date'],
+                (int)$validated['amount']
+            );
+        } else {
+            Payment::createPayment(
+                $validated['customer_name'],
+                $validated['customer_contact'],
+                $validated['holding_owner_name'] ?? null,
+                $validated['address'],
+                $validated['tax_id'] ?? null,
+                $application->id,
+                $validated['proposed_emptying_date'],
+                (int)$validated['amount']
+            );
+        }
+
+
+        DB::commit();
+        return $application;
     }
 
     public function getPendingApplicationsQuery(Request $request): Builder
