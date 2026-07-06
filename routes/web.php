@@ -33,22 +33,6 @@ Route::get('/', function () {
     }
 });
 
-Route::get('payment/pay', function(){
-    $service = app(EkpayService::class);
-
-    $customer = new Customer(
-        'John Doe',
-        '01717508422',
-        'CUST123456');
-
-    $transaction = new Transaction(
-        'TXN123456'.time(),
-        '5.00'
-    );
-
-    return $service->send($customer, $transaction);
-});
-
 Route::get('payment/checkout/{application_id}', 'PaymentController@checkout')->name('payment.checkout');
 Route::post('payment/store/{application_id}', 'PaymentController@store')->name('payment.store');
 Route::get('payment/success', 'PaymentController@success')->name('payment.success');
