@@ -50,7 +50,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
         </div> <!-- col div -->
     </div> <!-- row div -->
 @endcan
-
+{{--
 @can('Sanitation CountBox')
     <h1 style="padding: 15px 0 15px 0; font-size: 24px;font-weight: bold;">{{ __("Building Sanitation Facilities") }}</h1>
     <div class="row">
@@ -83,7 +83,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
         </div> <!-- sub col div -->
     </div> <!-- row div -->
 @endcan
-
+--}}
 
 @can('Utility CountBox')
     <h1 style="padding: 15px 0 15px 0;font-size: 24px;font-weight: bold;">{{ __("Utilities") }}</h1>
@@ -100,6 +100,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
     </div> <!-- row div -->
 @endcan
 
+{{--
 @can('FSM CountBox')
         <h1 style="padding: 15px 0 15px 0;font-size: 24px;font-weight: bold;">{{ __("FSM Services") }}</h1>
         <div class="row">
@@ -127,7 +128,9 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
         </div>
         <!-- /.row -->
 @endcan
+--}}
 
+{{--
 @can('PTCT CountBox')
     <h1 style="padding: 15px 0 15px 0;font-size: 24px;font-weight: bold;">{{ __("PT/CT") }}</h1>
         <div class="row">
@@ -145,7 +148,9 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
         </div> <!--sub col div -->
     </div> <!-- row div -->
 @endcan
+--}}
 
+{{--
 @can('Public Health CountBox')
     <h1 style="padding: 15px 0 15px 0;font-size: 24px;font-weight: bold;">{{ __("Public Health") }}</h1>
     <div class="row">
@@ -157,7 +162,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
         </div> <!--sub col div -->
     </div> <!-- row div -->
 @endcan
-
+--}}
 <div class="row">
     @can('Ward-Wise Distribution of Buildings Chart')
         <div class="col-md-6">
@@ -178,7 +183,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
         </div>
     </div>
 @endcan
-
+{{--
 <div class="row">
     @can('Proportion of Different Containment Types Chart')
         <div class="col-md-6">
@@ -193,7 +198,8 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
     @endcan
 
 </div>
-
+--}}
+{{--
 <div class="row">
         @can('Containment Type-Wise Emptying Services Over the Last 5 Years Chart')
             <div class="col-md-6">
@@ -213,7 +219,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
         </div>
     </div>
 @endcan
-
+--}}
 
 
 
@@ -232,6 +238,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
     </div>
     @endcan
     </div>
+    {{--
     <div class="row">
         @can('Yearly Distribution of Waterborne Disease Chart')
             <div class="col-md-6">
@@ -244,6 +251,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
             </div>
         @endcan
     </div>
+    --}}
 @stop
 
 @push('scripts')
