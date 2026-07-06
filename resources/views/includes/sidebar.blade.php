@@ -106,7 +106,8 @@
                             'fsm/sludge-collection/*','fsm/sludge-collection',
                             'fsm/feedback','fsm/feedback/*',
                             'fsm/help-desks/*','fsm/help-desks',
-                            'fsm/treatment-plant-test/*','fsm/treatment-plant-test','fsm/treatment-plant-performance-test/*','fsm/treatment-plant-performance-test'
+                            'fsm/treatment-plant-test/*','fsm/treatment-plant-test','fsm/treatment-plant-performance-test/*','fsm/treatment-plant-performance-test',
+                            'payment/history/*','payment/history'
                         )
                             ? 'menu-is-opening menu-open'
                             : '' }}">
@@ -124,7 +125,8 @@
                                 'fsm/sludge-collection','fsm/sludge-collection/*',
                                 'fsm/feedback','fsm/feedback/*',
                                 'fsm/help-desks/*','fsm/help-desks',
-                                'fsm/treatment-plant-test/*','fsm/treatment-plant-test','fsm/treatment-plant-performance-test/*','fsm/treatment-plant-performance-test'
+                                'fsm/treatment-plant-test/*','fsm/treatment-plant-test','fsm/treatment-plant-performance-test/*','fsm/treatment-plant-performance-test',
+                                'payment/history/*','payment/history'
                             )
                                 ? 'active'
                                 : '' }}">
@@ -255,8 +257,8 @@
                 'List Feedbacks',
                 'List Sludge Collections',
                 'List Help Desks') || Auth::user()->hasRole('Super Admin'))
-                <li class="nav-item  {{ request()->is('fsm/pending-application/*', 'fsm/pending-application', 'fsm/application/*', 'fsm/application','fsm/emptying', 'fsm/emptying/*','fsm/sludge-collection/*','fsm/sludge-collection', 'fsm/feedback/*','fsm/feedback', 'fsm/help-desks/*','fsm/help-desks') ? 'menu-is-opening menu-open' : '' }}">
-                    <a href="#" class="nav-link {{ request()->is('fsm/pending-application/*', 'fsm/pending-application', 'fsm/application/*', 'fsm/application','fsm/emptying', 'fsm/sludge-collection/*','fsm/sludge-collection', 'fsm/feedback/*','fsm/feedback', 'fsm/help-desks/*','fsm/help-desks') ? 'active subnav' : '' }}">
+                <li class="nav-item  {{ request()->is('fsm/pending-application/*', 'fsm/pending-application', 'fsm/application/*', 'fsm/application','fsm/emptying', 'fsm/emptying/*','fsm/sludge-collection/*','fsm/sludge-collection', 'fsm/feedback/*','fsm/feedback', 'fsm/help-desks/*','fsm/help-desks', 'payment/history/*','payment/history') ? 'menu-is-opening menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ request()->is('fsm/pending-application/*', 'fsm/pending-application', 'fsm/application/*', 'fsm/application','fsm/emptying', 'fsm/sludge-collection/*','fsm/sludge-collection', 'fsm/feedback/*','fsm/feedback', 'fsm/help-desks/*','fsm/help-desks', 'payment/history/*','payment/history') ? 'active subnav' : '' }}">
                         <i class="nav-icon fa-regular fa-building"></i>
                         <p>
                             {{__('Emptying Service IMS')}} <i class="right fas fa-angle-left"></i>
@@ -265,7 +267,7 @@
                     <ul class="nav nav-treeview">
                         @can('List Applications')
                         <li class="nav-item">
-                            <a href="{{ route('payment.history') }}" class="nav-link {{ request()->is('payment-history/*','payment-history') ? 'active' : '' }}">
+                            <a href="{{ route('payment.history') }}" class="nav-link {{ request()->is('payment/history/*','payment/history') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>{{__('Payment History')}}</p>
                             </a>

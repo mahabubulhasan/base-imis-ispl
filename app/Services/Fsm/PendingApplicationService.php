@@ -131,13 +131,12 @@ class PendingApplicationService
                 'title' => __('Payment Method'),
                 'fields' => [
                     new FormField(
-                        label: __('Select Payment Method'),
+                        label: __('Pay using Cash in Hand'),
                         labelFor: 'payment_method',
-                        inputType: 'radio',
+                        inputType: 'checkbox',
                         inputId: 'payment_method',
-                        radioValues: ['cash_in_hand' => __('Cash in Hand'), 'ekpay' => __('Pay using Ekpay')],
+                        checkboxValue: 'cash_in_hand',
                         selectedValue: old('payment_method'),
-                        required: true,
                     ),
                     new FormField(
                         label: __('Select Amount'),
@@ -146,7 +145,6 @@ class PendingApplicationService
                         inputId: 'amount',
                         radioValues: ['1500' => __('৳ 1500'), '1800' => __('৳ 1800')],
                         selectedValue: old('amount'),
-                        required: true,
                     ),
                 ],
             ],
@@ -188,8 +186,8 @@ class PendingApplicationService
             'notes' => 'nullable|string|max:1000',
             'latitude' => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
-            'payment_method' => 'required|in:cash_in_hand,ekpay',
-            'amount' => 'required|in:1500,1800',
+            'payment_method' => 'nullable|in:cash_in_hand',
+            'amount' => 'required_if:payment_method,cash_in_hand|nullable|in:1500,1800',
         ], [
             'has_tax_id.required' => __('Please select if you have a Tax Code.'),
             'has_tax_id.in' => __('The Tax Code selection is invalid.'),
@@ -205,9 +203,8 @@ class PendingApplicationService
             'latitude.between' => __('Latitude must be between -90 and 90.'),
             'longitude.numeric' => __('Longitude must be a valid number.'),
             'longitude.between' => __('Longitude must be between -180 and 180.'),
-            'payment_method.required' => __('Payment Method is required.'),
             'payment_method.in' => __('The selected Payment Method is invalid.'),
-            'amount.required' => __('Please select an amount.'),
+            'amount.required_if' => __('Please select an amount.'),
             'amount.in' => __('The selected amount is invalid.'),
         ]);
     }
@@ -251,7 +248,8 @@ class PendingApplicationService
             'application_date' => now()->format('Y-m-d H:i:s'),
         ]);
 
-        if($validated['payment_method'] === 'cash_in_hand') {
+        // Create payment record only if cash_in_hand payment method is selected
+        if(!empty($validated['payment_method']) && $validated['payment_method'] === 'cash_in_hand') {
             Payment::cashInHandPayment(
                 $validated['customer_name'],
                 $validated['customer_contact'],
@@ -260,21 +258,9 @@ class PendingApplicationService
                 $validated['tax_id'] ?? null,
                 $application->id,
                 $validated['proposed_emptying_date'],
-                (int)$validated['amount']
-            );
-        } else {
-            Payment::createPayment(
-                $validated['customer_name'],
-                $validated['customer_contact'],
-                $validated['holding_owner_name'] ?? null,
-                $validated['address'],
-                $validated['tax_id'] ?? null,
-                $application->id,
-                $validated['proposed_emptying_date'],
-                (int)$validated['amount']
+                (int)($validated['amount'] ?? 1500)
             );
         }
-
 
         DB::commit();
         return $application;

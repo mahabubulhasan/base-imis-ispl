@@ -62,6 +62,14 @@ A dynamic form layout
                                     @endforeach
                                 </div>
                             @endif
+                            @if($field->inputType === 'checkbox')
+                                <div class="form-check mt-2">
+                                    <input type="checkbox" class="form-check-input" name="{{ $field->inputId }}" id="{{ $field->inputId }}" value="{{ $field->checkboxValue }}" {{ ($field->selectedValue == $field->checkboxValue) ? 'checked' : '' }} {{ $field->disabled ? 'disabled' : '' }} onchange="togglePaymentAmountFields()">
+                                    <label class="form-check-label font-weight-500" for="{{ $field->inputId }}">
+                                        {{ $field->label }}
+                                    </label>
+                                </div>
+                            @endif
                             @if($field->inputType === 'multiple-select')
                                 {!! Form::select($field->inputId,$field->selectValues,$field->selectedValue,['class' => $field->inputClass,'disabled' => $field->disabled]) !!}
                             @endif
@@ -168,6 +176,14 @@ A dynamic form layout
                             </label>
                         </div>
                         @endforeach
+                    </div>
+                @endif
+                @if($formField->inputType === 'checkbox')
+                    <div class="form-check mt-2">
+                        <input type="checkbox" class="form-check-input" name="{{ $formField->inputId }}" id="{{ $formField->inputId }}" value="{{ $formField->checkboxValue }}" {{ ($formField->selectedValue == $formField->checkboxValue) ? 'checked' : '' }} {{ $formField->disabled ? 'disabled' : '' }} onchange="togglePaymentAmountFields()">
+                        <label class="form-check-label font-weight-500" for="{{ $formField->inputId }}">
+                            {{ $formField->label }}
+                        </label>
                     </div>
                 @endif
                 @if($formField->inputType === 'multiple-select')

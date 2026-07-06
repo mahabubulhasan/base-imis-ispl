@@ -17,6 +17,7 @@ class FormField
         $inputClass,
         $selectValues,
         $radioValues,
+        $checkboxValue,
         $selectedValue,
         $placeholder,
         $disabled,
@@ -37,6 +38,7 @@ class FormField
         String $inputClass = 'form-control',
         array $selectValues = [],
         array $radioValues = [],
+        String $checkboxValue = '1',
         String $selectedValue=null,
         String $placeholder = 'Enter value here',
         String $labelValue=null,
@@ -57,6 +59,7 @@ class FormField
         $this->inputClass = $inputClass;
         $this->selectValues = $selectValues;
         $this->radioValues = $radioValues;
+        $this->checkboxValue = $checkboxValue;
         $this->selectedValue = $selectedValue;
         $this->placeholder = $placeholder;
         $this->disabled = $disabled;

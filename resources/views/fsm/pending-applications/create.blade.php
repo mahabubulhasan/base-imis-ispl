@@ -52,6 +52,11 @@ Description: Displays the pending FSM application create form using the shared c
 			font-weight: 600;
 		}
 
+		.form-check-input[type="checkbox"]:checked {
+			background-color: #007bff;
+			border-color: #007bff;
+		}
+
 		/* Additional spacing for form groups */
 		.form-group {
 			margin-bottom: 1.5rem;
@@ -64,6 +69,15 @@ Description: Displays the pending FSM application create form using the shared c
 		/* Card spacing improvement */
 		.card-body {
 			padding: 2rem;
+		}
+
+		/* Checkbox specific styling */
+		.form-check.mt-2 {
+			margin-top: 0.5rem !important;
+		}
+
+		.font-weight-500 {
+			font-weight: 500;
 		}
 	</style>
 @endpush
@@ -107,6 +121,21 @@ Description: Displays the pending FSM application create form using the shared c
 			}
 		}
 
+		function togglePaymentAmountFields() {
+			const paymentMethodCheckbox = $('#payment_method').is(':checked');
+			const amountWrapper = $('#form-group-amount');
+
+			console.log('Payment method checkbox checked:', paymentMethodCheckbox);
+			console.log('Amount wrapper found:', amountWrapper.length > 0);
+
+			if (paymentMethodCheckbox) {
+				amountWrapper.removeClass('field-hidden');
+			} else {
+				amountWrapper.addClass('field-hidden');
+				$('input[name="amount"]').prop('checked', false);
+			}
+		}
+
 		$(document).ready(function() {
 			const today = new Date().toISOString().split('T')[0];
 			$('#proposed_emptying_date').attr('min', today);
@@ -114,6 +143,12 @@ Description: Displays the pending FSM application create form using the shared c
 			// Initial setup
 			$('#has_tax_id').on('change', togglePendingTaxIdField);
 			togglePendingTaxIdField();
+
+			// Payment method handling
+			$('#payment_method').on('change', togglePaymentAmountFields);
+			togglePaymentAmountFields();
+
+			console.log('Form initialized');
 		});
 	</script>
 @endpush
