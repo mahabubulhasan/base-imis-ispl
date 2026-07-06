@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Fsm\Application;
 use App\Models\Payment;
+use Illuminate\Http\Request;
 use Streamstech\Ekpay\Customer;
 use Streamstech\Ekpay\EkpayService;
 use Streamstech\Ekpay\Transaction;
@@ -109,5 +110,27 @@ class PaymentController extends Controller
 
         // Download PDF
         return $pdf->download($filename);
+    }
+
+    public function ipn(Request $request)
+    {
+        $trnxId = $request->trnx_info['mer_trnx_id'];
+        switch ($request->msg_code) {
+            case 1020:
+                Payment::updateTransactionStatus($trnxId, "paid");
+                break;
+            case 1021:
+                Payment::updateTransactionStatus($trnxId, "failed");
+                break;
+            case 1022:
+                Payment::updateTransactionStatus($trnxId, "canceled");
+                break;
+        }
+
+        return response()->json([
+            'ack_code' => 'ack'.time(),
+            'ack_msg' => 'Acknowledge Successfully.',
+            'ack_timestamp' => now()->toDateTimeString()
+        ]);
     }
 }
