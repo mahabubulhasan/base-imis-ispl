@@ -80,6 +80,7 @@
                             <th>{{ __('Address') }}</th>
                             <th>{{ __('Proposed Emptying Date') }}</th>
                             <th>{{ __('Application Date') }}</th>
+                            <th>{{ __('Payment Status') }}</th>
                             <th>{{ __('Actions') }}</th>
                         </tr>
                     </thead>
@@ -138,6 +139,10 @@
                     {
                         data: 'application_date',
                         name: 'application_date'
+                    },
+                    {
+                        data: 'payment_status',
+                        name: 'payment_status'
                     },
                     {
                         data: 'action',

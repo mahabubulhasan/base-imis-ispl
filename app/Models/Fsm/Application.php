@@ -4,6 +4,7 @@
 namespace App\Models\Fsm;
 
 use App\Models\BuildingInfo\Building;
+use App\Models\Payment;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -139,6 +140,11 @@ class Application extends Model
     public function sludge_collection()
     {
         return $this->hasOne(SludgeCollection::class, 'application_id', 'id');
+    }
+
+    public function payment()
+    {
+        return $this->hasOne(Payment::class, 'application_id', 'id');
     }
 
 }

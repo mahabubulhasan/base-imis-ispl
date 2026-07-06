@@ -268,7 +268,7 @@ class PendingApplicationService
 
     public function getPendingApplicationsQuery(Request $request): Builder
     {
-        $query = Application::query();
+        $query = Application::with('payment');
 
         if ($request->filled('tax_id')) {
             $query->where('tax_code', 'ILIKE', '%' . trim($request->tax_id) . '%');
@@ -310,7 +310,14 @@ class PendingApplicationService
                         . '</form>';
                 }
 
+                if($pendingApplication->payment) {
+                    $actions .= '<a href="' . route('payment.receipt', $pendingApplication->payment->transaction_id) . '" class="btn btn-primary btn-sm" title="' . __('View Receipt') . '"><i class="fas fa-receipt"></i></a>';
+                }
+
                 return $actions;
+            })
+            ->addColumn('payment_status', function (Application $pendingApplication) {
+                return $pendingApplication->payment ? ucfirst($pendingApplication->payment->transaction_status) : __('Not Paid');
             })
             ->editColumn('applicant_contact', function (Application $pendingApplication) {
                 $contact = $pendingApplication->applicant_contact ?: '-';
