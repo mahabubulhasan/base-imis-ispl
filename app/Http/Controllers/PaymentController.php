@@ -133,4 +133,119 @@ class PaymentController extends Controller
             'ack_timestamp' => now()->toDateTimeString()
         ]);
     }
+
+    public function history()
+    {
+        // Last Modified: 2026-07-06
+        // Developed By: Streams Tech Ltd.
+        // Description: Display payment history with filters
+
+        return view('payment.history');
+    }
+
+    public function getPaymentData(Request $request)
+    {
+        // Last Modified: 2026-07-06
+        // Developed By: Streams Tech Ltd.
+        // Description: Fetch payment data for DataTable with server-side processing
+
+        $columns = ['id', 'transaction_id', 'applicant_name', 'amount', 'status', 'created_at', 'applicant_contact', 'receipt_no', 'customer_name'];
+        $columnIndex = $request->input('order.0.column', 0);
+        $columnSortOrder = $request->input('order.0.dir', 'desc');
+        $columnName = $columns[$columnIndex] ?? 'created_at';
+
+        $searchValue = $request->input('search.value', '');
+        $start = $request->input('start', 0);
+        $length = $request->input('length', 10);
+
+        // Build query
+        $query = Payment::query();
+
+        // Apply filters
+        if ($request->filled('applicant_name')) {
+            $query->where('applicant_name', 'like', '%' . $request->input('applicant_name') . '%');
+        }
+
+        if ($request->filled('transaction_id')) {
+            $query->where('transaction_id', 'like', '%' . $request->input('transaction_id') . '%');
+        }
+
+        if ($request->filled('receipt_no')) {
+            $query->where('receipt_no', 'like', '%' . $request->input('receipt_no') . '%');
+        }
+
+        if ($request->filled('payment_date_from') && $request->filled('payment_date_to')) {
+            $query->whereBetween('created_at', [
+                $request->input('payment_date_from') . ' 00:00:00',
+                $request->input('payment_date_to') . ' 23:59:59'
+            ]);
+        }
+
+        // Count total records
+        $totalRecords = Payment::count();
+        $filteredRecords = $query->count();
+
+        // Get paginated data
+        $payments = $query->orderBy($columnName, $columnSortOrder)
+            ->offset($start)
+            ->limit($length)
+            ->get();
+
+        // Format data for DataTable
+        $data = [];
+        foreach ($payments as $payment) {
+            $data[] = [
+                'id' => $payment->id,
+                'transaction_id' => $payment->transaction_id,
+                'applicant_name' => $payment->applicant_name,
+                'amount' => '৳ ' . number_format($payment->amount, 2),
+                'status' => '<span class="badge badge-' . $this->getStatusBadgeClass($payment->transaction_status) . '">' . ucfirst($payment->transaction_status) . '</span>',
+                'created_at' => $payment->created_at->format('Y-m-d H:i'),
+                'applicant_contact' => $payment->applicant_contact,
+                'receipt_no' => $payment->receipt_no,
+                'action' => $this->getPaymentActions($payment->transaction_id)
+            ];
+        }
+
+        return response()->json([
+            'draw' => intval($request->input('draw')),
+            'recordsTotal' => $totalRecords,
+            'recordsFiltered' => $filteredRecords,
+            'data' => $data
+        ]);
+    }
+
+    private function getStatusBadgeClass($status)
+    {
+        // Last Modified: 2026-07-06
+        // Developed By: Streams Tech Ltd.
+        // Description: Return badge class based on payment status
+
+        return match($status) {
+            'paid' => 'success',
+            'failed' => 'danger',
+            'canceled' => 'warning',
+            'pending' => 'info',
+            default => 'secondary'
+        };
+    }
+
+    private function getPaymentActions($transactionId)
+    {
+        // Last Modified: 2026-07-06
+        // Developed By: Streams Tech Ltd.
+        // Description: Generate action buttons for payment records
+
+        $viewReceiptUrl = route('payment.receipt', $transactionId);
+        $downloadReceiptUrl = route('payment.download-receipt', $transactionId);
+
+        return '
+            <a href="' . $viewReceiptUrl . '" class="btn btn-sm btn-info" title="View Receipt">
+                <i class="fas fa-eye"></i>
+            </a>
+            <a href="' . $downloadReceiptUrl . '" class="btn btn-sm btn-primary" title="Download Receipt">
+                <i class="fas fa-download"></i>
+            </a>
+        ';
+    }
 }
