@@ -71,8 +71,13 @@ class BillCollectionPaymentRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
+        $payment = $this->route('payment');
+        $paymentForMonth = $payment instanceof BillCollectionPayment
+            ? $payment->payment_for_month?->startOfMonth()->toDateString()
+            : now()->startOfMonth()->toDateString();
+
         $this->merge([
-            'payment_for_month' => now()->startOfMonth()->toDateString(),
+            'payment_for_month' => $paymentForMonth ?? now()->startOfMonth()->toDateString(),
         ]);
         if ($this->input('received_by_user_id') === '') {
             $this->merge(['received_by_user_id' => null]);

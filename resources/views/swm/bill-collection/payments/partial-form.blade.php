@@ -1,8 +1,10 @@
 @php
     $isEdit = isset($payment) && $payment;
     $excludePaymentId = $isEdit ? $payment->id : null;
-    $defaultMonth = now()->format('Y-m');
-    $dueThroughMonthLabel = \Carbon\Carbon::createFromFormat('Y-m', $defaultMonth)->subMonth()->format('F Y');
+    $defaultMonth = ($isEdit && $payment->payment_for_month)
+        ? $payment->payment_for_month->format('Y-m')
+        : now()->format('Y-m');
+    $dueThroughMonthLabel = \Carbon\Carbon::createFromFormat('Y-m', $defaultMonth)->format('F Y');
     $defaultPaymentTime = old(
         'payment_time',
         ($isEdit && $payment->payment_time)
@@ -148,7 +150,7 @@
         <div class="col-sm-3 bcp-payment-field-col">
             <input type="hidden" name="payment_for_month" id="payment_for_month" value="{{ $defaultMonth }}" />
             <input type="text" class="form-control w-100" value="{{ \Carbon\Carbon::createFromFormat('Y-m', $defaultMonth)->format('F Y') }}" readonly />
-            <small class="form-text text-muted">{{ __('Transaction Month Is Auto-Selected as Current Month.') }}</small>
+            <small class="form-text text-muted">{{ $isEdit ? __('Transaction Month Cannot Be Changed After Creation.') : __('Transaction Month Is Auto-Selected as Current Month.') }}</small>
         </div>
     </div>
 
@@ -324,29 +326,6 @@
         return ym + '-01';
     }
 
-    function dueThroughMonthFirstDay(ym) {
-        if (!ym || ym.length < 7) return null;
-        var parts = ym.split('-');
-        if (parts.length < 2) return null;
-        var year = parseInt(parts[0], 10);
-        var month = parseInt(parts[1], 10);
-        if (!year || !month || month < 1 || month > 12) return null;
-        var dt = new Date(year, month - 2, 1);
-        var m = String(dt.getMonth() + 1).padStart(2, '0');
-        return dt.getFullYear() + '-' + m + '-01';
-    }
-
-    function dueThroughMonthLabel(ym) {
-        if (!ym || ym.length < 7) return '—';
-        var parts = ym.split('-');
-        if (parts.length < 2) return '—';
-        var year = parseInt(parts[0], 10);
-        var month = parseInt(parts[1], 10);
-        if (!year || !month || month < 1 || month > 12) return '—';
-        var dt = new Date(year, month - 2, 1);
-        return dt.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
-    }
-
     function formatCurrencyDisplay(value) {
         return window.ImisFormat.currency('tk', value);
     }
@@ -376,24 +355,24 @@
         return dt.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
     }
 
-    function updateNoDueInfo(currentData, dueData) {
+    function updateNoDueInfo(data) {
         $('#bcp-no-due-holding').text($('#holding_number').val() || '—');
         $('#bcp-no-due-household').text(selectedHouseholdText || $('#household_code').val() || '—');
         $('#bcp-no-due-month').text(getSelectedPaymentMonthLabel());
         $('#bcp-no-due-waste-charge').text(
-            (currentData.waste_charge === null || currentData.waste_charge === undefined)
+            (data.waste_charge === null || data.waste_charge === undefined)
                 ? '—'
-                : formatCurrencyDisplay(currentData.waste_charge)
+                : formatCurrencyDisplay(data.waste_charge)
         );
         $('#bcp-no-due-total-due').text(
-            (dueData.due === null || dueData.due === undefined)
+            (data.due === null || data.due === undefined)
                 ? '0'
-                : formatCurrencyDisplay(dueData.due)
+                : formatCurrencyDisplay(data.due)
         );
     }
 
     function updateDueMonthLabel() {
-        var label = dueThroughMonthLabel($('#payment_for_month').val());
+        var label = getSelectedPaymentMonthLabel();
         $('#bcp-due-month-label').text(label);
         $('#bcp-due-summary-month').text(label);
     }
@@ -402,9 +381,8 @@
         var siteId = $('#household_id').val();
         var ym = $('#payment_for_month').val();
         var pm = monthFirstDay(ym);
-        var duePm = dueThroughMonthFirstDay(ym);
         updateDueMonthLabel();
-        if (!siteId || !pm || !duePm) {
+        if (!siteId || !pm) {
             setBalanceLoading(false);
             $('#bcp-waste-charge').text('');
             $('#bcp-due').text('');
@@ -416,37 +394,28 @@
         }
         var seq = ++balanceRequestSeq;
         setBalanceLoading(true);
-        function balanceRequestUrl(paymentMonth) {
-            var url = balanceUrl + '?household_id=' + encodeURIComponent(siteId)
-                + '&payment_for_month=' + encodeURIComponent(paymentMonth);
-            if (excludePaymentId) {
-                url += '&exclude_payment_id=' + encodeURIComponent(excludePaymentId);
-            }
-            return url;
+        var url = balanceUrl + '?household_id=' + encodeURIComponent(siteId)
+            + '&payment_for_month=' + encodeURIComponent(pm);
+        if (excludePaymentId) {
+            url += '&exclude_payment_id=' + encodeURIComponent(excludePaymentId);
         }
-        $.when(
-            $.getJSON(balanceRequestUrl(pm)),
-            $.getJSON(balanceRequestUrl(duePm))
-        ).done(function(currentRes, dueRes) {
+        $.getJSON(url).done(function(data) {
             if (seq !== balanceRequestSeq) {
                 return;
             }
-            var data = currentRes[0];
-            var dueData = dueRes[0];
             if (data.waste_charge === null || data.waste_charge === undefined) {
                 $('#bcp-waste-charge').text('{{ __('Not Set') }}');
             } else {
                 $('#bcp-waste-charge').text(formatCurrencyDisplay(data.waste_charge));
             }
-            if (dueData.due === null || dueData.due === undefined) {
+            if (data.due === null || data.due === undefined) {
                 $('#bcp-due').text('—');
             } else {
-                $('#bcp-due').text(formatCurrencyDisplay(dueData.due));
+                $('#bcp-due').text(formatCurrencyDisplay(data.due));
             }
-            var dueNumeric = Number(dueData.due);
-            var arrearsCleared = isFinite(dueNumeric) && dueNumeric <= 0;
-            var hasNoDue = arrearsCleared && !!data.current_month_fully_paid;
-            updateNoDueInfo(data, dueData);
+            var dueNumeric = Number(data.due);
+            var hasNoDue = isFinite(dueNumeric) && dueNumeric <= 0;
+            updateNoDueInfo(data);
             setNoDueState(hasNoDue);
             if (hasNoDue) {
                 return;
