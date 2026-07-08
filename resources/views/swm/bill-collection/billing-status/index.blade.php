@@ -105,7 +105,7 @@
         <div id="collapseFilters" class="collapse">
             <form class="form-horizontal" id="filter-form">
                 <div class="form-group row">
-                    <label for="month_to" class="col-md-2 col-form-label">{{ __('Month to') }}</label>
+                    <label for="month_to" class="col-md-2 col-form-label">{{ __('Through Month') }}</label>
                     <div class="col-md-2"><input type="month" class="form-control" id="month_to" value="{{ $defaultMonthTo }}" max="{{ $defaultMonthTo }}" /></div>
                     <label for="filter_holding_select" class="col-md-2 col-form-label">{{ __('Holding No.') }}</label>
                     <div class="col-md-2 bs-filter-select2">

@@ -423,7 +423,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
         </div> --}}
         <div class="mt-4 mx-3">
             <div class="mx-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-left pb-4">
-                <div>
+                <div class="text-sm">
                     © {{ config('constants.SITE_NAME') }}. All rights reserved.
                 </div>
                 <div class="sm:text-right text-sm">

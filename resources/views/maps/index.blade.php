@@ -1780,13 +1780,13 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
 
     <footer class="flex-shrink-0 d-flex align-items-center justify-content-between"
         style="z-index:35; padding:10px; height:35px; color:#869099; border-top:1px solid #dee2e6; background: #fff;">
-        <strong>
+        <span style="color:#343a40;">
             &copy; {{ config('constants.SITE_NAME') }}. All rights reserved.
-        </strong>
+        </span>
 
         <!-- To the right -->
-        <div class="d-none d-sm-inline ml-auto">
-            <strong>Implemented by:</strong> <a href="https://streamstech.com">Streams Tech Ltd.</a>
+        <div class="d-none d-sm-inline ml-auto" style="color:#343a40;">
+            Developed by: <a href="https://streamstech.com" style="color:#375380; font-weight:600;">Streams Tech Ltd.</a>
         </div>
 
         <!-- Default to the left -->
