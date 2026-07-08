@@ -171,7 +171,7 @@
     <div id="bcp-no-due-info" class="d-none">
         <div class="bcp-no-due-box">
             <div class="bcp-no-due-title">{{ __('Payment Not Required') }}</div>
-            <div class="bcp-no-due-message">{{ __('All Previous Dues Have Been Cleared for This Household.') }}</div>
+            <div class="bcp-no-due-message">{{ __('All Previous Dues and This Month\'s Fee Have Been Paid for This Household.') }}</div>
             <ul class="bcp-no-due-meta">
                 <li><strong>{{ __('Holding') }}:</strong> <span id="bcp-no-due-holding">—</span></li>
                 <li><strong>{{ __('Household') }}:</strong> <span id="bcp-no-due-household">—</span></li>
@@ -444,7 +444,8 @@
                 $('#bcp-due').text(formatCurrencyDisplay(dueData.due));
             }
             var dueNumeric = Number(dueData.due);
-            var hasNoDue = isFinite(dueNumeric) && dueNumeric <= 0;
+            var arrearsCleared = isFinite(dueNumeric) && dueNumeric <= 0;
+            var hasNoDue = arrearsCleared && !!data.current_month_fully_paid;
             updateNoDueInfo(data, dueData);
             setNoDueState(hasNoDue);
             if (hasNoDue) {
