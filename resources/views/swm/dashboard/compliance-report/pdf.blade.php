@@ -11,15 +11,18 @@
             font-style: normal;
         }
         @page { margin: 25.4mm; }
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
         body {
             font-family: 'Noto Sans Bengali', 'SolaimanLipi', 'Kalpurush', sans-serif;
             font-size: 14px;
             color: #111;
             line-height: 1.5;
-            padding: 0;
         }
-        body, table, th, td, p, h1, h2, span { font-size: 14px; }
-        .report-header { text-align: center; line-height: 1.2; margin-bottom: 20px; }
+        body, table, th, td, p, h1, h2, span { font-size: 14px; margin: 0; }
+        .report-header { text-align: center; line-height: 1.2; margin: 0 0 20px; }
         .report-header h1 { margin: 2px 0; font-weight: normal; line-height: 1.2; }
         .report-header .meta { margin: 0; }
         .report-header .meta-row { margin: 0; display: block; }
@@ -30,7 +33,7 @@
             text-decoration: none;
             font-weight: normal;
         }
-        .meta { text-align: center; margin-bottom: 12px; }
+        .meta { text-align: center; margin: 0 0 12px; }
         .meta-row { margin: 2px 0; }
         table { width: 100%; border-collapse: collapse; margin: 6px 0 10px; }
         /* wkhtmltopdf smears a collapsed border into a black block when a bordered

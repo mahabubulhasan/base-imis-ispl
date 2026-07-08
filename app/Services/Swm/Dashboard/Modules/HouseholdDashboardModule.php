@@ -44,10 +44,9 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
     {
         $p = $this->settingsService->perCapitaKgPerDay();
         $agg = $this->householdAggregates($period);
-        $activeMembers = (float) $agg->active_members;
         $avgFamilySize = (float) $agg->avg_family_size;
-        $dailyGenTon = ($p * $activeMembers) / 1000;
         $totalPopulation = $this->settingsService->totalPopulationAsOf($period->periodEnd);
+        $dailyGenTon = ($p * $totalPopulation) / 1000;
 
         $collectedDailyKg = (float) $agg->active_collected_daily_kg;
         $disposedDesignated = $this->landfillDisposedTon($period);
