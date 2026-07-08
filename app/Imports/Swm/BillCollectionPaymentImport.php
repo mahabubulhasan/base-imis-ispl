@@ -81,9 +81,17 @@ class BillCollectionPaymentImport implements ToCollection, WithHeadingRow, WithM
                 }
                 $duePaid = SwmImportRowHelper::parseDecimal($norm['due_paid'] ?? null) ?? 0.0;
 
-                $month = $this->parseMonth($norm['payment_for_month'] ?? null);
-                if (! $month) {
-                    $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'payment_for_month', $columnDefinitions);
+                $transactionMonth = $this->parseMonth($norm['transaction_month'] ?? null);
+                if (! $transactionMonth) {
+                    $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'transaction_month', $columnDefinitions);
+                    continue;
+                }
+                $maxTransactionMonth = now()->startOfMonth();
+                if ($transactionMonth->gt($maxTransactionMonth)) {
+                    $this->errors[] = SwmImportRowHelper::rowInvalid(
+                        $rowNum, 'transaction_month', $columnDefinitions,
+                        __('cannot be later than :month', ['month' => $maxTransactionMonth->format('M Y')])
+                    );
                     continue;
                 }
 
@@ -104,7 +112,7 @@ class BillCollectionPaymentImport implements ToCollection, WithHeadingRow, WithM
                     'household_id' => $site->id,
                     'amount' => $amount,
                     'due_paid' => $duePaid,
-                    'payment_for_month' => $month->format('Y-m-d'),
+                    'transaction_month' => $transactionMonth->format('Y-m-d'),
                     'payment_time' => $paymentTime,
                     'payment_method' => $methodKey,
                     'received_by_user_id' => $recvId,

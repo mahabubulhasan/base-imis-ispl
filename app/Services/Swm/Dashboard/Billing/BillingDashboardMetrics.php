@@ -36,11 +36,12 @@ final class BillingDashboardMetrics
      *     default_count: int,
      *     ward_arrears: array<string, string>,
      *     table_rows: list<array<string, mixed>>,
+     *     billed_month: Carbon,
      * }
      */
     public function aggregate(DashboardReportingPeriod $period): array
     {
-        $monthStart = $period->toMonth->copy()->startOfMonth();
+        $monthStart = $this->billedMonthCeiling($period->toMonth);
         $monthDate = $monthStart->toDateString();
 
         $totalBilledAmount = '0.00';
@@ -157,7 +158,22 @@ final class BillingDashboardMetrics
             'default_count' => $defaultCount,
             'ward_arrears' => $wardArrears,
             'table_rows' => $tableRows,
+            'billed_month' => $monthStart,
         ];
+    }
+
+    /**
+     * Latest month for which billing obligation is actually known (last completed billing
+     * month). The dashboard's "Through Month" picker is a transaction-axis pick and can reach
+     * the current month, but no payment_for_month-driven figure (due, obligation, or any
+     * "collected through" total keyed on payment_for_month) may ever look past this ceiling.
+     */
+    public function billedMonthCeiling(Carbon $month): Carbon
+    {
+        $ceiling = Carbon::now()->subMonthNoOverflow()->startOfMonth();
+        $month = $month->copy()->startOfMonth();
+
+        return $month->gt($ceiling) ? $ceiling : $month;
     }
 
     /**
@@ -243,14 +259,14 @@ final class BillingDashboardMetrics
 
         $rows = BillCollectionPayment::query()
             ->whereNull('deleted_at')
-            ->whereDate('payment_for_month', '>=', $startMonth->toDateString())
-            ->whereDate('payment_for_month', '<=', $endMonth->toDateString())
+            ->whereDate('transaction_month', '>=', $startMonth->toDateString())
+            ->whereDate('transaction_month', '<=', $endMonth->toDateString())
             ->selectRaw("
-                date_trunc('month', payment_for_month)::date as month_key,
+                date_trunc('month', transaction_month)::date as month_key,
                 COALESCE(SUM(amount + COALESCE(due_paid, 0)), 0)::float as revenue
             ")
-            ->groupByRaw("date_trunc('month', payment_for_month)")
-            ->orderByRaw("date_trunc('month', payment_for_month)")
+            ->groupByRaw("date_trunc('month', transaction_month)")
+            ->orderByRaw("date_trunc('month', transaction_month)")
             ->get();
 
         $indexed = [];

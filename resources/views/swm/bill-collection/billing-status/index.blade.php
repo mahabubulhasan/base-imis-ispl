@@ -50,7 +50,6 @@
 @php
     $maxMonthTo = now()->copy()->startOfMonth();
     $defaultMonthTo = $maxMonthTo->format('Y-m');
-    $defaultMonthFrom = $maxMonthTo->copy()->subMonths(5)->format('Y-m');
 @endphp
 
 <div class="row">
@@ -58,7 +57,7 @@
         <div class="info-box">
             <span class="info-box-icon bg-info"><i class="fas fa-hand-holding-usd"></i></span>
             <div class="info-box-content">
-                <span class="info-box-text" title="{{ __('Bill Collected This Month (Taka)') }}">{{ __('Bill Collected This Month (Taka)') }}</span>
+                <span class="info-box-text" title="{{ __('Bill Collected This Month (Taka)') }}">{{ __('Bill Collected Last Month (Taka)') }}</span>
                 <span class="info-box-number" id="summary-bill-collected-this-month">—</span>
             </div>
         </div>
@@ -76,7 +75,7 @@
         <div class="info-box">
             <span class="info-box-icon bg-info"><i class="fas fa-calendar-alt"></i></span>
             <div class="info-box-content">
-                <span class="info-box-text" title="{{ __('Due This Month (Taka)') }}">{{ __('Due This Month (Taka)') }}</span>
+                <span class="info-box-text" title="{{ __('Due This Month (Taka)') }}">{{ __('Due Last Month (Taka)') }}</span>
                 <span class="info-box-number" id="summary-due-this-month">—</span>
             </div>
         </div>
@@ -106,20 +105,18 @@
         <div id="collapseFilters" class="collapse">
             <form class="form-horizontal" id="filter-form">
                 <div class="form-group row">
-                    <label for="month_from" class="col-md-2 col-form-label">{{ __('Month from') }}</label>
-                    <div class="col-md-2"><input type="month" class="form-control" id="month_from" value="{{ $defaultMonthFrom }}" /></div>
                     <label for="month_to" class="col-md-2 col-form-label">{{ __('Month to') }}</label>
                     <div class="col-md-2"><input type="month" class="form-control" id="month_to" value="{{ $defaultMonthTo }}" max="{{ $defaultMonthTo }}" /></div>
                     <label for="filter_holding_select" class="col-md-2 col-form-label">{{ __('Holding No.') }}</label>
                     <div class="col-md-2 bs-filter-select2">
                         <select class="form-control" id="filter_holding_select" name="holding_numbers[]" multiple="multiple" style="width:100%"></select>
                     </div>
-                </div>
-                <div class="form-group row">
                     <label for="filter_customer_select" class="col-md-2 col-form-label">{{ __('Household ID') }}</label>
                     <div class="col-md-2 bs-filter-select2">
                         <select class="form-control" id="filter_customer_select" name="customer_site_ids[]" multiple="multiple" style="width:100%"></select>
                     </div>
+                </div>
+                <div class="form-group row">
                     <label for="is_owner" class="col-md-2 col-form-label">{{ __('Owner') }}</label>
                     <div class="col-md-2">
                         <select class="form-control" id="is_owner">
@@ -287,7 +284,6 @@ $(function() {
         ajax: {
             url: '{!! route("swm.billing-status.data") !!}',
             data: function(d) {
-                d.month_from = $('#month_from').val();
                 d.month_to = $('#month_to').val();
                 d.holding_numbers = selectedHoldingNumbers();
                 d.customer_site_ids = $('#filter_customer_select').val();
@@ -365,7 +361,6 @@ $(function() {
     });
 
     $('#reset-filter').on('click', function() {
-        $('#month_from').val('{{ $defaultMonthFrom }}');
         $('#month_to').val('{{ $defaultMonthTo }}');
         $('#filter_holding_select').val(null).trigger('change');
         $('#filter_customer_select').val(null).trigger('change');
@@ -377,7 +372,6 @@ $(function() {
     $('#download-pdf').on('click', function(e) {
         e.preventDefault();
         var params = new URLSearchParams();
-        params.set('month_from', $('#month_from').val() || '');
         params.set('month_to', $('#month_to').val() || '');
         params.set('is_owner', $('#is_owner').val() || '');
         params.set('van_puller_id', $('#van_puller_id').val() || '');

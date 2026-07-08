@@ -21,8 +21,8 @@
     <form id="swm-dashboard-filter-form" class="swm-dashboard-filter-form form-inline d-flex flex-wrap align-items-center mb-0" method="get" action="{{ route('swm.dashboard-kpis.index') }}">
         <label for="to_month" class="col-form-label mb-0 mr-2 font-weight-bold">{{ __('Through Month') }}</label>
         <input type="month" id="to_month" name="to_month" class="form-control"
-            max="{{ $dashboard['period']['max_to_month'] ?? now()->subMonth()->format('Y-m') }}"
-            value="{{ $dashboard['period']['to_month'] ?? ($dashboard['period']['max_to_month'] ?? now()->subMonth()->format('Y-m')) }}"
+            max="{{ $dashboard['period']['max_to_month'] ?? now()->format('Y-m') }}"
+            value="{{ $dashboard['period']['to_month'] ?? ($dashboard['period']['max_to_month'] ?? now()->format('Y-m')) }}"
             aria-label="{{ __('Through month') }}">
         <button type="submit" class="btn btn-info ml-2">{{ __('Apply') }}</button>
     </form>

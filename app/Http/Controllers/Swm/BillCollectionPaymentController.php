@@ -114,7 +114,7 @@ class BillCollectionPaymentController extends Controller
     {
         $validated = $request->validate([
             'household_id' => ['required', 'integer'],
-            'payment_for_month' => ['required', 'date'],
+            'transaction_month' => ['required', 'date'],
             'exclude_payment_id' => ['nullable', 'integer'],
         ]);
         $site = Household::query()
@@ -124,7 +124,7 @@ class BillCollectionPaymentController extends Controller
         if (! $site) {
             return response()->json(['error' => __('Household not found.')], 404);
         }
-        $month = Carbon::parse($validated['payment_for_month'])->startOfMonth();
+        $month = Carbon::parse($validated['transaction_month'])->startOfMonth()->subMonthNoOverflow();
         $excludeId = isset($validated['exclude_payment_id']) ? (int) $validated['exclude_payment_id'] : null;
 
         return response()->json(

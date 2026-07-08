@@ -40,7 +40,6 @@ class BillCollectionBillingStatusController extends Controller
         ]);
 
         $request->validate([
-            'month_from' => ['nullable', 'date_format:Y-m'],
             'month_to' => ['nullable', 'date_format:Y-m'],
             'is_owner' => ['nullable', 'in:0,1'],
             'van_puller_id' => ['nullable', 'integer', 'min:1'],
@@ -105,7 +104,6 @@ class BillCollectionBillingStatusController extends Controller
         ]);
 
         $request->validate([
-            'month_from' => ['nullable', 'date_format:Y-m'],
             'month_to' => ['nullable', 'date_format:Y-m'],
             'is_owner' => ['nullable', 'in:0,1'],
             'van_puller_id' => ['nullable', 'integer', 'min:1'],
@@ -119,7 +117,7 @@ class BillCollectionBillingStatusController extends Controller
 
         $pdf = PDF::loadView('swm.bill-collection.billing-status.pdf', [
             'rows' => $result['rows'] ?? [],
-            'monthFrom' => $result['month_from'] ?? null,
+            'monthFrom' => null,
             'monthTo' => $result['month_to'] ?? null,
         ])
             ->setPaper('a4', 'landscape')
@@ -130,11 +128,9 @@ class BillCollectionBillingStatusController extends Controller
             ->setOption('enable-javascript', false)
             ->setOption('javascript-delay', 0);
 
-        $monthFrom = $result['month_from'] ?? null;
         $monthTo = $result['month_to'] ?? null;
-        $fromLabel = $monthFrom instanceof \Carbon\Carbon ? $monthFrom->format('Y-m') : 'na';
         $toLabel = $monthTo instanceof \Carbon\Carbon ? $monthTo->format('Y-m') : 'na';
-        $filename = "billing-status-{$fromLabel}_to_{$toLabel}.pdf";
+        $filename = "billing-status-{$toLabel}.pdf";
 
         return $pdf->download($filename);
     }

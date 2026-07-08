@@ -48,7 +48,7 @@ class BillCollectionPaymentRequest extends FormRequest
                     'household_code' => ['required', 'string', 'max:255'],
                     'amount' => ['required', 'numeric', 'min:0'],
                     'due_paid' => ['nullable', 'numeric', 'min:0'],
-                    'payment_for_month' => ['required', 'date'],
+                    'transaction_month' => ['required', 'date'],
                     'payment_time' => ['nullable', 'date'],
                     'payment_method' => ['nullable', 'string', Rule::in($methodKeys)],
                     'received_by_user_id' => [
@@ -72,12 +72,14 @@ class BillCollectionPaymentRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $payment = $this->route('payment');
-        $paymentForMonth = $payment instanceof BillCollectionPayment
-            ? $payment->payment_for_month?->startOfMonth()->toDateString()
-            : now()->startOfMonth()->toDateString();
+        $transactionMonth = $payment instanceof BillCollectionPayment
+            ? $payment->transaction_month?->startOfMonth()
+            : now()->startOfMonth();
+        $transactionMonth = $transactionMonth ?? now()->startOfMonth();
 
         $this->merge([
-            'payment_for_month' => $paymentForMonth ?? now()->startOfMonth()->toDateString(),
+            'transaction_month' => $transactionMonth->toDateString(),
+            'payment_for_month' => $transactionMonth->copy()->subMonthNoOverflow()->toDateString(),
         ]);
         if ($this->input('received_by_user_id') === '') {
             $this->merge(['received_by_user_id' => null]);

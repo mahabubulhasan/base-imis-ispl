@@ -494,8 +494,8 @@ class BillCollectionPaymentService
                 if (! empty($data['household_id'] ?? null)) {
                     $q->where('swm.bill_collection_payments.customer_id', 'ILIKE', '%'.trim((string) $data['household_id']).'%');
                 }
-                if (! empty($data['payment_for_month'] ?? null)) {
-                    $q->whereDate('swm.bill_collection_payments.payment_for_month', Carbon::parse($data['payment_for_month'])->startOfMonth());
+                if (! empty($data['transaction_month'] ?? null)) {
+                    $q->whereDate('swm.bill_collection_payments.transaction_month', Carbon::parse($data['transaction_month'])->startOfMonth());
                 }
             })
             ->orderColumn('site_household_owner_name', 'swm_pcs.household_owner_name $1')
@@ -509,10 +509,10 @@ class BillCollectionPaymentService
             ->orderColumn('receipt_no', 'swm.bill_collection_payments.receipt_no $1')
             ->orderColumn('amount', 'swm.bill_collection_payments.amount $1')
             ->orderColumn('due_paid', 'swm.bill_collection_payments.due_paid $1')
-            ->orderColumn('payment_for_month', 'swm.bill_collection_payments.payment_for_month $1')
+            ->orderColumn('transaction_month', 'swm.bill_collection_payments.transaction_month $1')
             ->orderColumn('payment_time', 'swm.bill_collection_payments.payment_time $1')
-            ->editColumn('payment_for_month', function ($model) {
-                return $model->payment_for_month?->format('M Y') ?? '';
+            ->editColumn('transaction_month', function ($model) {
+                return $model->transaction_month?->format('M Y') ?? '';
             })
             ->editColumn('payment_time', function ($model) {
                 return $model->payment_time?->format('Y-m-d H:i') ?? '';
@@ -614,7 +614,9 @@ class BillCollectionPaymentService
         $payment->ward = $site->ward !== null && $site->ward !== '' ? (int) $site->ward : null;
         $payment->amount = $data['amount'] ?? 0;
         $payment->due_paid = $data['due_paid'] ?? 0;
-        $payment->payment_for_month = Carbon::parse($data['payment_for_month'] ?? null)->startOfMonth();
+        $transactionMonth = Carbon::parse($data['transaction_month'] ?? null)->startOfMonth();
+        $payment->transaction_month = $transactionMonth;
+        $payment->payment_for_month = $transactionMonth->copy()->subMonthNoOverflow();
         $payment->payment_time = isset($data['payment_time']) ? Carbon::parse($data['payment_time']) : now();
         $paymentMethod = $data['payment_method'] ?? null;
         $payment->payment_method = ($paymentMethod !== null && $paymentMethod !== '') ? $paymentMethod : null;
@@ -636,7 +638,7 @@ class BillCollectionPaymentService
     {
         $holdingNumber = $data['holding_number'] ?? null;
         $householdId = $data['household_id'] ?? null;
-        $paymentForMonth = $data['payment_for_month'] ?? null;
+        $transactionMonth = $data['transaction_month'] ?? null;
 
         $columns = SwmExcelColumns::exportHeaders($this->exportColumnDefinitions());
 
@@ -648,8 +650,8 @@ class BillCollectionPaymentService
         if (! empty($householdId)) {
             $query->where('swm.bill_collection_payments.customer_id', 'ILIKE', '%'.trim((string) $householdId).'%');
         }
-        if (! empty($paymentForMonth)) {
-            $query->whereDate('swm.bill_collection_payments.payment_for_month', Carbon::parse($paymentForMonth)->startOfMonth());
+        if (! empty($transactionMonth)) {
+            $query->whereDate('swm.bill_collection_payments.transaction_month', Carbon::parse($transactionMonth)->startOfMonth());
         }
 
         (new SwmExcelExportWriter())->download(SwmExcelFilename::export('bill_collection'), $columns, function ($sheet, $colLetter) use ($query) {
@@ -672,7 +674,7 @@ class BillCollectionPaymentService
                         $row->amount,
                         $row->due_paid ?? 0,
                         (float) ($row->amount ?? 0) + (float) ($row->due_paid ?? 0),
-                        SwmImportRowHelper::exportMonth($row->payment_for_month),
+                        SwmImportRowHelper::exportMonth($row->transaction_month),
                         SwmImportRowHelper::exportDateTime($row->payment_time),
                         $methodLabel,
                         $row->received_by_name,
@@ -703,7 +705,7 @@ class BillCollectionPaymentService
             ['key' => 'contact_number', 'label' => __('Contact No.'), 'import' => false, 'template' => true, 'derived' => true],
             ['key' => 'holding_number', 'label' => __('Holding No.')],
             ['key' => 'ward', 'label' => __('Ward No.'), 'required' => true, 'dropdown' => SwmImportTemplateOptions::wardNumberStrings()],
-            ['key' => 'payment_for_month', 'label' => __('Transaction Month'), 'required' => true, 'date_hint' => 'Jun 2026'],
+            ['key' => 'transaction_month', 'label' => __('Transaction Month'), 'required' => true, 'date_hint' => 'Jun 2026'],
             ['key' => 'amount', 'label' => __('Current Month Payment').' ('.__('Taka').')', 'required' => true],
             ['key' => 'due_paid', 'label' => __('Previous Due Payment').' ('.__('Taka').')'],
             ['key' => 'payment_method', 'label' => __('Payment Method'), 'dropdown' => array_values(config('bill_collection.payment_methods', []))],
@@ -728,7 +730,7 @@ class BillCollectionPaymentService
             ['key' => 'amount', 'label' => __('Current Month Payment').' ('.__('Taka').')'],
             ['key' => 'due_paid', 'label' => __('Previous Due Payment').' ('.__('Taka').')'],
             ['key' => 'total_collected', 'label' => __('Total Payment').' ('.__('Taka').')'],
-            ['key' => 'payment_for_month', 'label' => __('Transaction Month')],
+            ['key' => 'transaction_month', 'label' => __('Transaction Month')],
             ['key' => 'payment_time', 'label' => __('Payment Time')],
             ['key' => 'payment_method', 'label' => __('Payment Method')],
             ['key' => 'received_by_name', 'label' => __('Payment Received by')],

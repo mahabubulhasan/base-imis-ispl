@@ -39,8 +39,8 @@
                     <div class="col-md-2"><input type="text" class="form-control" id="holding_number" /></div>
                     <label for="household_id" class="col-md-2 col-form-label">{{ __('Household ID') }}</label>
                     <div class="col-md-2"><input type="text" class="form-control" id="household_id" /></div>
-                    <label for="payment_for_month" class="col-md-2 col-form-label">{{ __('Payment For Month') }}</label>
-                    <div class="col-md-2"><input type="month" class="form-control" id="payment_for_month" /></div>
+                    <label for="transaction_month" class="col-md-2 col-form-label">{{ __('Transaction Month') }}</label>
+                    <div class="col-md-2"><input type="month" class="form-control" id="transaction_month" /></div>
                 </div>
                 <div class="card-footer text-right">
                     <button type="submit" class="btn btn-info">{{ __('Filter') }}</button>
@@ -90,7 +90,7 @@ $(function() {
             data: function(d) {
                 d.holding_number = $('#holding_number').val();
                 d.household_id = $('#household_id').val();
-                d.payment_for_month = $('#payment_for_month').val();
+                d.transaction_month = $('#transaction_month').val();
             }
         },
         columns: [
@@ -100,7 +100,7 @@ $(function() {
             { data: 'contact_number', name: 'contact_number' },
             { data: 'holding_number', name: 'swm.bill_collection_payments.holding_number' },
             { data: 'ward', name: 'ward', className: 'col-num' },
-            { data: 'payment_for_month', name: 'swm.bill_collection_payments.payment_for_month' },
+            { data: 'transaction_month', name: 'swm.bill_collection_payments.transaction_month' },
             { data: 'amount', name: 'swm.bill_collection_payments.amount', className: 'col-currency' },
             { data: 'due_paid', name: 'swm.bill_collection_payments.due_paid', className: 'col-currency' },
             { data: 'total_collected', name: 'total_collected', searchable: false, orderable: false, className: 'col-currency' },
@@ -144,11 +144,11 @@ $(function() {
         var searchData = $('input[type=search]').val();
         var holding_number = $('#holding_number').val() || '';
         var household_id = $('#household_id').val() || '';
-        var payment_for_month = $('#payment_for_month').val() || '';
+        var transaction_month = $('#transaction_month').val() || '';
         window.location.href = "{!! route('swm.bill-collection-payments.export') !!}?searchData=" + encodeURIComponent(searchData || '') +
             "&holding_number=" + encodeURIComponent(holding_number) +
             "&household_id=" + encodeURIComponent(household_id) +
-            "&payment_for_month=" + encodeURIComponent(payment_for_month);
+            "&transaction_month=" + encodeURIComponent(transaction_month);
     });
 });
 </script>

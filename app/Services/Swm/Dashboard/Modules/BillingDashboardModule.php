@@ -104,7 +104,7 @@ class BillingDashboardModule implements SwmDashboardModuleInterface
             // ],
             [
                 'label' => __('Total Bill Collected (through :month) (Taka)', [
-                    'month' => $period->toMonth->format('M Y'),
+                    'month' => ($agg['billed_month'] ?? $period->toMonth)->format('M Y'),
                 ]),
                 'value' => $this->formatter->integer($agg['total_revenue_collected']),
                 'icon' => 'fa-coins',
@@ -166,7 +166,7 @@ class BillingDashboardModule implements SwmDashboardModuleInterface
 
     protected function billCollectionByWardChart(DashboardReportingPeriod $period): array
     {
-        $byWard = $this->metrics->billCollectionByWard($period->toMonth);
+        $byWard = $this->metrics->billCollectionByWard($this->metrics->billedMonthCeiling($period->toMonth));
         $aligned = $this->alignCountsToWardAxis($byWard);
 
         return [
@@ -185,7 +185,7 @@ class BillingDashboardModule implements SwmDashboardModuleInterface
 
     protected function paymentMethodChart(DashboardReportingPeriod $period): array
     {
-        $collected = $this->metrics->paymentMethodCollectedThroughMonth($period->toMonth);
+        $collected = $this->metrics->paymentMethodCollectedThroughMonth($this->metrics->billedMonthCeiling($period->toMonth));
         $methods = config('bill_collection.payment_methods', []);
         $byMethod = [];
         foreach ($collected as $key => $amount) {

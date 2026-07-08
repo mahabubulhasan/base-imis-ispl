@@ -1,10 +1,10 @@
 @php
     $isEdit = isset($payment) && $payment;
     $excludePaymentId = $isEdit ? $payment->id : null;
-    $defaultMonth = ($isEdit && $payment->payment_for_month)
-        ? $payment->payment_for_month->format('Y-m')
+    $defaultMonth = ($isEdit && $payment->transaction_month)
+        ? $payment->transaction_month->format('Y-m')
         : now()->format('Y-m');
-    $dueThroughMonthLabel = \Carbon\Carbon::createFromFormat('Y-m', $defaultMonth)->format('F Y');
+    $dueThroughMonthLabel = \Carbon\Carbon::createFromFormat('Y-m', $defaultMonth)->subMonthNoOverflow()->format('F Y');
     $defaultPaymentTime = old(
         'payment_time',
         ($isEdit && $payment->payment_time)
@@ -146,9 +146,9 @@
     </div>
 
     <div class="form-group row required bcp-due-dependent-row">
-        {!! Form::label('payment_for_month', __('Transaction Month'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('transaction_month', __('Transaction Month'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3 bcp-payment-field-col">
-            <input type="hidden" name="payment_for_month" id="payment_for_month" value="{{ $defaultMonth }}" />
+            <input type="hidden" name="transaction_month" id="transaction_month" value="{{ $defaultMonth }}" />
             <input type="text" class="form-control w-100" value="{{ \Carbon\Carbon::createFromFormat('Y-m', $defaultMonth)->format('F Y') }}" readonly />
             <small class="form-text text-muted">{{ $isEdit ? __('Transaction Month Cannot Be Changed After Creation.') : __('Transaction Month Is Auto-Selected as Current Month.') }}</small>
         </div>
@@ -344,7 +344,7 @@
     }
 
     function getSelectedPaymentMonthLabel() {
-        var ym = $('#payment_for_month').val();
+        var ym = $('#transaction_month').val();
         if (!ym || ym.length < 7) return '—';
         var parts = ym.split('-');
         if (parts.length < 2) return '—';
@@ -352,6 +352,18 @@
         var month = parseInt(parts[1], 10);
         if (!year || !month || month < 1 || month > 12) return '—';
         var dt = new Date(year, month - 1, 1);
+        return dt.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+    }
+
+    function getTargetBilledMonthLabel() {
+        var ym = $('#transaction_month').val();
+        if (!ym || ym.length < 7) return '—';
+        var parts = ym.split('-');
+        if (parts.length < 2) return '—';
+        var year = parseInt(parts[0], 10);
+        var month = parseInt(parts[1], 10);
+        if (!year || !month || month < 1 || month > 12) return '—';
+        var dt = new Date(year, month - 2, 1);
         return dt.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
     }
 
@@ -372,14 +384,14 @@
     }
 
     function updateDueMonthLabel() {
-        var label = getSelectedPaymentMonthLabel();
+        var label = getTargetBilledMonthLabel();
         $('#bcp-due-month-label').text(label);
         $('#bcp-due-summary-month').text(label);
     }
 
     function refreshBalance() {
         var siteId = $('#household_id').val();
-        var ym = $('#payment_for_month').val();
+        var ym = $('#transaction_month').val();
         var pm = monthFirstDay(ym);
         updateDueMonthLabel();
         if (!siteId || !pm) {
@@ -395,7 +407,7 @@
         var seq = ++balanceRequestSeq;
         setBalanceLoading(true);
         var url = balanceUrl + '?household_id=' + encodeURIComponent(siteId)
-            + '&payment_for_month=' + encodeURIComponent(pm);
+            + '&transaction_month=' + encodeURIComponent(pm);
         if (excludePaymentId) {
             url += '&exclude_payment_id=' + encodeURIComponent(excludePaymentId);
         }
@@ -555,7 +567,7 @@
         refreshBalance();
     });
 
-    $('#payment_for_month').on('change', refreshBalance);
+    $('#transaction_month').on('change', refreshBalance);
     updateDueMonthLabel();
 
     @if($initHolding !== '')
