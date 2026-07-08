@@ -165,24 +165,24 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 --}}
 <div class="row">
     @can('Ward-Wise Distribution of Buildings Chart')
-        <div class="col-md-6">
+        <div class="col-md-12">
             @include('dashboard.buildings._buildingsPerWardChart')
         </div>
     @endcan
-    @can('Building Use Composition Chart')
+    {{--@can('Building Use Composition Chart')
         <div class="col-md-6">
             @include('dashboard.buildings._buildingUseChart')
         </div>
-    @endcan
+    @endcan --}}
 </div>
 
-@can('Building Connections to Sanitation System Types Chart')
+{{-- @can('Building Connections to Sanitation System Types Chart')
     <div class="row">
         <div class="col-md-12">
             @include('dashboard.buildings._sanitationSystemsChart')
         </div>
     </div>
-@endcan
+@endcan --}}
 {{--
 <div class="row">
     @can('Proportion of Different Containment Types Chart')
