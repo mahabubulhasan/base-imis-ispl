@@ -5,11 +5,11 @@
 <!-- End Branding -->
 
 <footer class="main-footer py-2 d-flex flex-column flex-xl-row justify-content-between align-items-start align-items-xl-center gap-2">
-    <span class="pb-0 text-left text-xl-right flex-shrink-0 text-sm text-dark">
+    <span class="pb-0 text-left text-xl-right flex-shrink-0" style="font-family: 'Calibri Light', Calibri, 'Segoe UI', sans-serif; font-size: 0.875rem; color: #1f2937;">
         &copy; {{ config('constants.SITE_NAME') }}. All rights reserved.
     </span>
-    <span class="text-sm text-left text-xl-right text-dark">
-        Developed by <a href="https://streamstech.com" class="font-weight-bold" style="color: #375380;" target="_blank" rel="noopener noreferrer">Streams Tech</a>
+    <span class="text-left text-xl-right" style="font-family: 'Calibri Light', Calibri, 'Segoe UI', sans-serif; font-size: 0.875rem; color: #1f2937;">
+        Developed by <a href="https://streamstech.com" style="font-family: 'Calibri Light', Calibri, 'Segoe UI', sans-serif; font-weight: 600; color: #375380;" target="_blank" rel="noopener noreferrer">Streams Tech</a>
     </span>
 </footer>
 <aside class="control-sidebar control-sidebar-dark" >

@@ -1779,14 +1779,14 @@ Description: Map interface view with tools for road, sewer, drain, and water sup
     </div>
 
     <footer class="flex-shrink-0 d-flex align-items-center justify-content-between"
-        style="z-index:35; padding:10px; height:35px; color:#869099; border-top:1px solid #dee2e6; background: #fff;">
-        <span style="color:#343a40;">
+        style="z-index:35; padding:10px; height:35px; border-top:1px solid #dee2e6; background: #fff;">
+        <span style="font-family: 'Calibri Light', Calibri, 'Segoe UI', sans-serif; font-size: 0.875rem; color: #1f2937;">
             &copy; {{ config('constants.SITE_NAME') }}. All rights reserved.
         </span>
 
         <!-- To the right -->
-        <div class="d-none d-sm-inline ml-auto" style="color:#343a40;">
-            Developed by: <a href="https://streamstech.com" style="color:#375380; font-weight:600;">Streams Tech Ltd.</a>
+        <div class="d-none d-sm-inline ml-auto" style="font-family: 'Calibri Light', Calibri, 'Segoe UI', sans-serif; font-size: 0.875rem; color: #1f2937;">
+            Developed by <a href="https://streamstech.com" style="font-family: 'Calibri Light', Calibri, 'Segoe UI', sans-serif; color:#375380; font-weight:600;">Streams Tech</a>
         </div>
 
         <!-- Default to the left -->
