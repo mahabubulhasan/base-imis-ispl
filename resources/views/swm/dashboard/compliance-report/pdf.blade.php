@@ -180,7 +180,7 @@
         '5' => '৫', '6' => '৬', '7' => '৭', '8' => '৮', '9' => '৯',
     ]);
 @endphp
-<div class="report-header">
+<div class="report-header" style="margin-top:0px; !important">
 @if(!empty($f['org_name']))
     <p class="meta"><span class="meta-row">{{ $f['org_name'] }}</span></p>
 @endif
