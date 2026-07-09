@@ -55,7 +55,7 @@
     </div>
     <!-- /.card-header -->
     <div class="card-body collapse show">
-        <canvas id="{{ $canvas_id }}" style="height:250px"></canvas>
+        <canvas id="{{ $canvas_id }}" style="height:{{ $height ?? '250px' }}"></canvas>
     </div>
     <!-- /.card-body -->
 </div>

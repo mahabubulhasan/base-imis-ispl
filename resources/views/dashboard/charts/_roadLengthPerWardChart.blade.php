@@ -3,7 +3,8 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 @include('layouts.dashboard.chart-card',[
     'card_title' => __("Wardwise Total Road Length (m)"),
     'export_chart_btn_id' => "exportroadLengthPerWardChart",
-    'canvas_id' => "roadLengthPerWardChart"
+    'canvas_id' => "roadLengthPerWardChart",
+    'height' => "300px"
 ])
 @push('scripts')
     <script>
@@ -22,6 +23,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
                 ]
             },
             options: {
+                maintainAspectRatio: false,
                 animation:{
                     animateScale:true
                 },

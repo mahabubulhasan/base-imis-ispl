@@ -48,7 +48,8 @@
   </div>
   @endcan
 
-  @can('Sanitation CountBox')
+  {{-- 
+@can('Sanitation CountBox')
   <h1 style="padding: 15px 0 15px 0; font-size: 24px;font-weight: bold;">{{ __("Building Sanitation Facilities") }}</h1>
   <div class="row">
       @foreach ($sanitationSystems as $sanitationSystem)
@@ -80,7 +81,7 @@
           @include('dashboard.countBox._sanitationOffsiteContainmentCountBox')
       </div> <!-- sub col div -->
   </div> <!-- row div -->
-@endcan
+@endcan --}}
 
 
 

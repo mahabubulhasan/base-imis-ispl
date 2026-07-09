@@ -164,17 +164,24 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 @endcan
 --}}
 <div class="row">
+    <div class="col-md-12">
+        @can('Ward-Wise Distribution of Buildings Chart')
+            @include('dashboard.buildings._buildingsPerWardChart')
+        @endcan
+    </div>
+</div>
+{{-- <div class="row">
     @can('Ward-Wise Distribution of Buildings Chart')
         <div class="col-md-12">
             @include('dashboard.buildings._buildingsPerWardChart')
-        </div>
+        </div> 
     @endcan
-    {{--@can('Building Use Composition Chart')
+    @can('Building Use Composition Chart')
         <div class="col-md-6">
             @include('dashboard.buildings._buildingUseChart')
         </div>
-    @endcan --}}
-</div>
+    @endcan 
+</div> --}}
 
 {{-- @can('Building Connections to Sanitation System Types Chart')
     <div class="row">
@@ -183,6 +190,10 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
         </div>
     </div>
 @endcan --}}
+
+
+
+
 {{--
 <div class="row">
     @can('Proportion of Different Containment Types Chart')
@@ -222,35 +233,41 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 --}}
 
 
-
-
-
-
 <div class="row">
-        @can('Ward-Wise Total Road Length Chart')
-            <div class="col-md-6">
-                @include('dashboard.charts._roadLengthPerWardChart')
-            </div>
-        @endcan
-       @can('Ward-Wise Roadside Drain Length Chart')
-    <div class="col-md-6">
-        @include('dashboard.charts._drainLengthPerWardChart')
-    </div>
+    @can('Ward-Wise Total Road Length Chart')
+        <div class="col-md-12">
+            @include('dashboard.charts._roadLengthPerWardChart')
+        </div>
     @endcan
-    </div>
-    {{--
-    <div class="row">
-        @can('Yearly Distribution of Waterborne Disease Chart')
-            <div class="col-md-6">
-                @include('dashboard.charts._waterborneCasesChart')
-            </div>
-        @endcan
-        @can('Performance of Municipal Treatment Plants by Last 5 Years Chart')
-            <div class="col-md-6">
-                @include('dashboard.fsmCharts._treatmentPlantTestbyYearChart')
-            </div>
-        @endcan
-    </div>
+</div>
+
+{{-- 
+<div class="row">
+    @can('Ward-Wise Total Road Length Chart')
+        <div class="col-md-6">
+            @include('dashboard.charts._roadLengthPerWardChart')
+        </div>
+    @endcan
+    @can('Ward-Wise Roadside Drain Length Chart')
+        <div class="col-md-6">
+            @include('dashboard.charts._drainLengthPerWardChart')
+        </div>
+    @endcan
+</div>
+--}}
+{{-- 
+<div class="row">
+    @can('Yearly Distribution of Waterborne Disease Chart')
+        <div class="col-md-6">
+            @include('dashboard.charts._waterborneCasesChart')
+        </div>
+    @endcan
+    @can('Performance of Municipal Treatment Plants by Last 5 Years Chart')
+        <div class="col-md-6">
+            @include('dashboard.fsmCharts._treatmentPlantTestbyYearChart')
+        </div>
+    @endcan
+</div>
     --}}
 @stop
 

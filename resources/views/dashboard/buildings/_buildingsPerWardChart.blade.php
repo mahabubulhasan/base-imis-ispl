@@ -1,7 +1,8 @@
 @include('layouts.dashboard.chart-card', [
     'card_title' => __("Wardwise Distribution of Buildings"), // Removed extra quotes
     'export_chart_btn_id' => "exportbuildingsPerWardChart",
-    'canvas_id' => "buildingsPerWardChart"
+    'canvas_id' => "buildingsPerWardChart",
+    'height' => "300px"
 ])
 
 @push('scripts')
@@ -25,6 +26,7 @@ var myChart = new Chart(ctx, {
       animateScale:true
     },
     responsive: true,
+    maintainAspectRatio: false,
       legend: {
          labels: {
               boxWidth: 10
