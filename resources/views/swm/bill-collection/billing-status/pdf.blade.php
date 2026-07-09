@@ -135,7 +135,7 @@
             </div>
         @endif
         <div class="pdf-header-title">
-            <div class="org">চাঁপাইনবাবগঞ্জ পৌরসভা</div>
+            <div class="org">{{config('app.city_bn')}} {{config('app.city_suffix_bn')}}</div>
             <div class="report">বাসাবাড়ীর বর্জ্য ব্যবস্থাপনা সেবামূল্য আদায় সীট</div>
         </div>
     </div>
