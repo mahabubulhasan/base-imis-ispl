@@ -227,8 +227,34 @@
         }
 
         @media (max-width: 768px) {
+            .section-title {
+                display: none;
+            }
+
             .info-grid {
                 grid-template-columns: 1fr;
+                gap: 12px;
+                margin-bottom: 12px;
+            }
+
+            .info-item {
+                padding: 10px;
+                margin-bottom: 0;
+            }
+
+            .info-label {
+                font-size: 11px;
+                margin-bottom: 3px;
+            }
+
+            .info-value {
+                font-size: 13px;
+            }
+
+            /* Hide non-essential fields on mobile */
+            .info-item:nth-child(3),
+            .info-item:nth-child(4) {
+                display: none;
             }
 
             .button-group {
@@ -237,14 +263,60 @@
 
             .btn {
                 width: 100%;
+                padding: 12px 30px;
+                font-size: 14px;
+            }
+
+            .checkout-header {
+                padding: 20px;
             }
 
             .checkout-header h1 {
                 font-size: 24px;
+                margin-bottom: 8px;
+            }
+
+            .checkout-header p {
+                font-size: 14px;
             }
 
             .checkout-content {
-                padding: 20px;
+                padding: 15px;
+            }
+
+            .payment-summary {
+                padding: 15px;
+                margin: 20px 0;
+            }
+
+            .payment-summary h3 {
+                font-size: 16px;
+                margin-bottom: 12px;
+            }
+
+            .payment-row {
+                padding: 8px 0;
+                font-size: 13px;
+            }
+
+            .payment-row.total {
+                padding: 10px 0;
+                font-size: 15px;
+            }
+
+            .checkbox-group {
+                padding: 12px;
+                margin: 15px 0;
+            }
+
+            .checkbox-group label {
+                font-size: 13px;
+            }
+
+            .warning-message {
+                padding: 12px;
+                margin-bottom: 15px;
+                font-size: 12px;
             }
         }
     </style>
@@ -261,7 +333,7 @@
         <div class="checkout-content">
             <!-- Warning Message -->
             <div class="warning-message">
-                <strong>⚠️ গুরুত্বপূর্ণ:</strong> নিম্নলিখিত তথ্য যাচাই করে নিশ্চিত করুন যে সবকিছু সঠিক আছে।
+                <strong>⚠️ গুরুত্বপূর্ণ:</strong> নিম্নলিখিত তথ্য যাচাই করে পেমেন্ট নিশ্চিত করুন।
             </div>
 
             <!-- Applicant Information Section -->
@@ -303,27 +375,6 @@
                 <div class="info-item">
                     <span class="info-label">সম্পূর্ণ ঠিকানা</span>
                     <span class="info-value">{{ $application->address }}</span>
-                </div>
-            </div>
-
-            <!-- Service Information -->
-            <div class="section-title">
-                সেবা তথ্য
-            </div>
-            <div class="info-grid">
-                <div class="info-item">
-                    <span class="info-label">প্রস্তাবিত খালি করার তারিখ</span>
-                    <span class="info-value">
-                        @if($application->proposed_emptying_date)
-                            {{ \Carbon\Carbon::parse($application->proposed_emptying_date)->locale('bn')->isoFormat('DD MMMM YYYY') }}
-                        @else
-                            N/A
-                        @endif
-                    </span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">BIN (বিল্ডিং আইডেন্টিফাই নম্বর)</span>
-                    <span class="info-value">{{ $application->bin ?? 'N/A' }}</span>
                 </div>
             </div>
 
