@@ -203,12 +203,12 @@
             </tr>
             <tr>
                 <th>নির্ধারিত সেবামূল্য</th>
-                <th>বিগত মাসসমূহ বকেয়া</th>
                 <th class="due-months-col">বকেয়া মাসসমূহ</th>
-                <th>চলতি</th>
                 <th>আদায়যোগ্য মোট সেবামূল্য</th>
                 <th>আদায়কৃত চলতি</th>
+                <th>চলতি</th>
                 <th>আদায়কৃত বকেয়া</th>
+                <th>বিগত মাসসমূহ বকেয়া</th>
                 <th>মোট বিল আদায়</th>
                 <th>আদায় শেষে বকেয়া</th>
             </tr>
@@ -225,7 +225,6 @@
                     <td class="text-left">{{ $row['ward'] }}</td>
                     <td class="text-left nowrap">{{ $row['contact_number'] }}</td>
                     <td class="amount">{{ $row['current_service_fee'] ?? currency(0) }}</td>
-                    <td class="amount">{{ $row['previous_due_amount'] ?? currency(0) }}</td>
                     <td class="text-left due-months-col">
                         @php
                             $dueMonthsParts = array_values(array_filter(array_map('trim', explode(',', (string) ($row['due_months_of'] ?? '')))));
@@ -236,10 +235,11 @@
                         @endphp
                         {!! implode('<br>', $dueMonthsLines) !!}
                     </td>
-                    <td class="amount">{{ $row['due_current_month'] ?? currency(0) }}</td>
                     <td class="amount">{{ $row['total_due_amount'] ?? currency(0) }}</td>
                     <td class="amount">{{ $row['current_month_paid'] ?? currency(0) }}</td>
+                    <td class="amount">{{ $row['due_current_month'] ?? currency(0) }}</td>
                     <td class="amount">{{ $row['previous_due_paid'] ?? currency(0) }}</td>
+                    <td class="amount">{{ $row['previous_due_amount'] ?? currency(0) }}</td>
                     <td class="amount">{{ $row['revenue_collected'] ?? currency(0) }}</td>
                     <td class="amount">{{ $row['remaining_due'] ?? currency(0) }}</td>
                 </tr>

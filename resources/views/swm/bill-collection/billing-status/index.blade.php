@@ -159,12 +159,12 @@
                     </tr>
                     <tr class="header-columns">
                         <th>{{ __('Waste Collection Fee') }}</th>
-                        <th>{{ __('Previous Due') }}</th>
                         <th class="due-months-col">{{ __('Due Months') }}</th>
-                        <th>{{ __('Current Due') }}</th>
-                        <th>{{ __('Payable Amount') }}</th>
+                        <th>{{ __('Payable Amount for Current Month') }}</th>
                         <th>{{ __('Current Paid') }}</th>
+                        <th>{{ __('Current Due') }}</th>
                         <th>{{ __('Previous Due Paid') }}</th>
+                        <th>{{ __('Previous Due') }}</th>
                         <th>{{ __('Total Bill Collected') }}</th>
                         <th>{{ __('Closing Due') }}</th>
                     </tr>
@@ -310,7 +310,6 @@ $(function() {
             { data: 'ward', name: 'ward', searchable: false, orderable: true, className: 'text-left col-num' },
             { data: 'contact_number', name: 'contact_number', searchable: false, orderable: true, className: 'text-left' },
             { data: 'current_service_fee', name: 'current_service_fee', searchable: false, orderable: false, className: 'text-right col-currency' },
-            { data: 'previous_due_amount', name: 'previous_due_amount', searchable: false, orderable: false, className: 'text-right col-currency' },
             {
                 data: 'due_months_of',
                 name: 'due_months_of',
@@ -341,10 +340,11 @@ $(function() {
                     return lines.join('<br>');
                 }
             },
-            { data: 'due_current_month', name: 'due_current_month', searchable: false, orderable: false, className: 'text-right col-currency' },
             { data: 'total_due_amount', name: 'total_due_amount', searchable: false, orderable: false, className: 'text-right col-currency' },
             { data: 'current_month_paid', name: 'current_month_paid', searchable: false, orderable: true, className: 'text-right col-currency' },
+            { data: 'due_current_month', name: 'due_current_month', searchable: false, orderable: false, className: 'text-right col-currency' },
             { data: 'previous_due_paid', name: 'previous_due_paid', searchable: false, orderable: true, className: 'text-right col-currency' },
+            { data: 'previous_due_amount', name: 'previous_due_amount', searchable: false, orderable: false, className: 'text-right col-currency' },
             { data: 'revenue_collected', name: 'revenue_collected', searchable: false, orderable: true, className: 'text-right col-currency' },
             { data: 'remaining_due', name: 'remaining_due', searchable: false, orderable: false, className: 'text-right col-currency' }
         ],
