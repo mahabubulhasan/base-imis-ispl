@@ -267,12 +267,6 @@
                     <ul class="nav nav-treeview">
                         @can('List Applications')
                         <li class="nav-item">
-                            <a href="{{ route('payment.history') }}" class="nav-link {{ request()->is('payment/history/*','payment/history') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>{{__('Payment History')}}</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
                             <a href="{{ route('pending-application.index') }}" class="nav-link {{ request()->is('fsm/pending-application/*','fsm/pending-application') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>{{__('Pending Application')}}</p>
@@ -309,6 +303,12 @@
                             </a>
                         </li>
                         @endcan
+                        <li class="nav-item">
+                            <a href="{{ route('payment.history') }}" class="nav-link {{ request()->is('payment/history/*','payment/history') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>{{__('Payment History')}}</p>
+                            </a>
+                        </li>
                         @can('List Help Desks')
                         <li class="nav-item">
                             <a href="{{ action('Fsm\HelpDeskController@index') }}" class="nav-link {{ request()->is('fsm/help-desks/*','fsm/help-desks') ? 'active' : '' }}">
