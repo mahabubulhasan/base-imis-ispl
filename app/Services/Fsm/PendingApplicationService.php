@@ -131,7 +131,7 @@ class PendingApplicationService
                 'title' => __('Payment Method'),
                 'fields' => [
                     new FormField(
-                        label: __('Pay using Cash in Hand'),
+                        label: __('Pay in Cash'),
                         labelFor: 'payment_method',
                         inputType: 'checkbox',
                         inputId: 'payment_method',
@@ -139,12 +139,12 @@ class PendingApplicationService
                         selectedValue: old('payment_method'),
                     ),
                     new FormField(
-                        label: __('Select Amount'),
+                        label: __('Enter Amount'),
                         labelFor: 'amount',
-                        inputType: 'radio',
+                        inputType: 'text',
                         inputId: 'amount',
-                        radioValues: ['1500' => __('৳ 1500'), '1800' => __('৳ 1800')],
-                        selectedValue: old('amount'),
+                        inputValue: old('amount'),
+                        placeholder: __('Amount'),
                     ),
                 ],
             ],
