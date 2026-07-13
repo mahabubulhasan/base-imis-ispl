@@ -585,11 +585,13 @@
         // show drain or sewer code if containment type has drain or sewer code
         function showHideCode()
         {
-            if({{$sewer_status}} == true)
+            let sewer_status = @js($sewer_status) || false;
+            let drain_status = @js($drain_status) || false;
+            if(sewer_status == true)
             {
                 $('#sewer_code').show();
             }
-            if({{$drain_status}} == true)
+            if(drain_status == true)
             {
                 $('#drain_code').show();
             }
