@@ -187,7 +187,7 @@ class PendingApplicationService
             'latitude' => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
             'payment_method' => 'nullable|in:cash_in_hand',
-            'amount' => 'required_if:payment_method,cash_in_hand|nullable|in:1500,1800',
+            'amount' => 'required_if:payment_method,cash_in_hand|nullable',
         ], [
             'has_tax_id.required' => __('Please select if you have a Tax Code.'),
             'has_tax_id.in' => __('The Tax Code selection is invalid.'),
