@@ -43,7 +43,7 @@
                                 <div class="accordion-body">
                                     <form class="form-horizontal" id="filter-form">
                                         <div class="form-group row">
-                                            <label for="owner_name" class="control-label col-md-2">{{ __('Community Name') }}</label>
+                                            <label for="owner_name" class="control-label col-md-2">{{ __('LIC Name') }}</label>
                                             <div class="col-md-2">
                                                 <input type="text" class="form-control" id="community_name"
                                                     placeholder="{{ __('Community Name') }}" />
