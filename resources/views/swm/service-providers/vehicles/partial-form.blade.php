@@ -213,8 +213,9 @@ $(function() {
         var $drv = $('#driver_worker_id');
         $drv.empty();
         $drv.append($('<option></option>').attr('value', '').text('{{ __('Driver Name') }}'));
+        $drv.prop('disabled', true).trigger('chosen:updated');
         if (!driversUrl) {
-            $drv.trigger('chosen:updated');
+            $drv.prop('disabled', false).trigger('chosen:updated');
             return;
         }
         var params = {};
@@ -228,7 +229,7 @@ $(function() {
                 });
             })
             .always(function() {
-                $drv.trigger('chosen:updated');
+                $drv.prop('disabled', false).trigger('chosen:updated');
             });
     }
 

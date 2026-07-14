@@ -115,7 +115,7 @@ class VehicleRequest extends FormRequest
 
                 return [
                     'organization_id' => [
-                        'nullable',
+                        'required',
                         'integer',
                         Rule::exists('pgsql.swm.organizations', 'id')->where(function ($query) {
                             return $query->whereNull('deleted_at');
