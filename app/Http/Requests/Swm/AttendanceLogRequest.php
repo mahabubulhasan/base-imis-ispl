@@ -84,11 +84,7 @@ class AttendanceLogRequest extends FormRequest
                 AttendanceLog::STATUS_ABSENT,
                 AttendanceLog::STATUS_ON_LEAVE,
             ])],
-            'check_in_at' => [
-                Rule::requiredIf(fn () => $this->input('attendance_status') === AttendanceLog::STATUS_PRESENT),
-                'nullable',
-                'date',
-            ],
+            'check_in_at' => ['nullable', 'date'],
             'check_out_at' => ['nullable', 'date'],
             'remarks' => ['nullable', 'string'],
         ];

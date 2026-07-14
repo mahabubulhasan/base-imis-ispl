@@ -110,16 +110,6 @@ class AttendanceLogImport implements ToCollection, WithHeadingRow, WithMultipleS
                 $checkIn = SwmImportRowHelper::parseDate($norm['check_in_at'] ?? null);
                 $checkOut = SwmImportRowHelper::parseDate($norm['check_out_at'] ?? null);
 
-                if ($status === AttendanceLog::STATUS_PRESENT && ! $checkIn) {
-                    $this->errors[] = SwmImportRowHelper::rowRequiredWhen(
-                        $rowNum,
-                        'check_in_at',
-                        $columnDefinitions,
-                        'attendance_status',
-                        (string) (AttendanceLog::statusOptions()[AttendanceLog::STATUS_PRESENT] ?? __('present'))
-                    );
-                    continue;
-                }
                 if ($checkIn && $checkOut && $checkOut->lt($checkIn)) {
                     $this->errors[] = SwmImportRowHelper::rowMessage(
                         $rowNum,
