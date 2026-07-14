@@ -128,7 +128,7 @@ class PendingApplicationService
                 ],
             ],
             [
-                'title' => __('Payment Method'),
+                'title' => __('Payment Information'),
                 'fields' => [
                     new FormField(
                         label: __('Amount (BDT)'),
