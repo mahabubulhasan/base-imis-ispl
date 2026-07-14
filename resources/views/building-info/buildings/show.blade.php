@@ -42,7 +42,7 @@
             </div>
 
             <div class="form-group row">
-                {!! Form::label('contact_no', __('Owner Contact Number'), ['class' => 'col-sm-2 control-label']) !!}
+                {!! Form::label('contact_no', __('Owner Contact No.'), ['class' => 'col-sm-2 control-label']) !!}
                 <div class="col-sm-3">
                     {!! Form::number('contact_no', $building->Owners->owner_contact ?? '', [
                         'class' => 'form-control col-sm-10 font-weight-bold',
@@ -78,7 +78,7 @@
 
 
             <div class="form-group row">
-                {!! Form::label('ward', __('Ward Number'), ['class' => 'col-sm-2 control-label ']) !!}
+                {!! Form::label('ward', __('Ward No.'), ['class' => 'col-sm-2 control-label ']) !!}
                 <div class="col-sm-3">
                     {!! Form::text('ward', $building->ward, [
                         'class' => 'form-control col-sm-10 font-weight-bold',
@@ -97,7 +97,7 @@
             </div>
 
             <div class="form-group row">
-                {!! Form::label('house_number', __('House Number'), ['class' => 'col-sm-2 control-label control-label ']) !!}
+                {!! Form::label('house_number', __('Holding No.'), ['class' => 'col-sm-2 control-label control-label ']) !!}
                 <div class="col-sm-3">
                     {!! Form::text('house_number', $building->house_number, [
                         'class' => 'form-control col-sm-10  font-weight-bold',
@@ -106,7 +106,7 @@
                 </div>
             </div>
             <div class="form-group row">
-                {!! Form::label('house_locality', __('House Locality/Address'), [
+                {!! Form::label('house_locality', __('Location'), [
                     'class' => 'col-sm-2 control-label control-label ',
                 ]) !!}
                 <div class="col-sm-3">
@@ -118,7 +118,7 @@
             </div>
             <!-- Tax Code -->
             <div class="form-group row">
-                {!! Form::label('tax_id', __('Tax Code/Holding ID'), ['class' => 'col-sm-2 col-form-label ']) !!}
+                {!! Form::label('tax_id', __('Tax Code'), ['class' => 'col-sm-2 col-form-label ']) !!}
 
                 <div class="col-sm-3">
                     {!! Form::text('tax_id', $building->tax_code, [
@@ -174,7 +174,7 @@
                 </div>
             </div>
             <div class="form-group row">
-                {!! Form::label('floor_count', __('Number of Floors'), ['class' => 'col-sm-2 control-label']) !!}
+                {!! Form::label('floor_count', __('No. of Floors'), ['class' => 'col-sm-2 control-label']) !!}
                 <div class="col-sm-3">
                     {!! Form::number('floor_count', $building->floor_count, [
                         'class' => 'form-control col-sm-10 font-weight-bold',
@@ -220,7 +220,7 @@
             </div>
             <!--  Building Population Information -->
             <div class="form-group row">
-                {!! Form::label('household_served', __('Number of Households'), ['class' => 'col-sm-2 control-label']) !!}
+                {!! Form::label('household_served', __('No. of Households'), ['class' => 'col-sm-2 control-label']) !!}
                 <div class="col-sm-3">
                     {!! Form::number('household_served', $building->household_served, [
                         'class' => 'form-control col-sm-10 font-weight-bold',
@@ -412,7 +412,7 @@
 
 
             <div class="form-group row">
-                {!! Form::label('toilet_count', __('Number of Toilets'), ['class' => 'col-sm-2 control-label']) !!}
+                {!! Form::label('toilet_count', __('No. of Toilets'), ['class' => 'col-sm-2 control-label']) !!}
                 <div class="col-sm-3">
                     {!! Form::text('toilet_count', $building->toilet_count, [
                         'class' => 'form-control col-sm-10 font-weight-bold',

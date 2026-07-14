@@ -51,11 +51,11 @@
         </div>
     </div>
     <div class="form-group row required">
-    {!! Form::label('owner_contact', __('Owner Contact Number'), ['class' => 'col-sm-3 control-label']) !!}
+    {!! Form::label('owner_contact', __('Owner Contact No.'), ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-5">
         {!! Form::text('owner_contact', null, [
             'class' => 'form-control col-sm-10',
-            'placeholder' => 'Owner Contact Number',
+            'placeholder' => 'Owner Contact No.',
             'autocomplete' => 'off',
             'oninput' => "validateOwnerContactInput(this)",
         ]) !!}
@@ -64,7 +64,7 @@
     <h3 class="mt-3"> Building Information </h3>
 
     <!-- Main Building Identifier -->
-    <div class="form-group row required" id="main_building">
+    <div class="form-group row required" id="main_building_row">
         {!! Form::label('main_building', __('Main Building'), ['class' => 'col-sm-3 control-label ']) !!}
         <div class="col-sm-5">
             {!! Form::select('main_building', [true => 'Yes', false => 'No'], null, [
@@ -77,7 +77,7 @@
     <div class="form-group row required" id="building_associated" style="display: none;">
         {!! Form::label('building_associated_to', __('BIN of Main Building'), ['class' => 'col-sm-3 control-label ']) !!}
         <div class="col-sm-5">
-            {!! Form::select('building_associated_to', $buildingBin, null, [
+            {!! Form::select('building_associated_to', [], null, [
                 'class' => 'form-control col-sm-10',
                 'placeholder' => 'BIN of Main Building',
                 'style' => 'width:100%',
@@ -87,9 +87,9 @@
     <!-- Building Location Information -->
 
     <div class="form-group row required">
-        {!! Form::label('ward', __('Ward Number'), ['class' => 'col-sm-3 control-label ']) !!}
+        {!! Form::label('ward', __('Ward No.'), ['class' => 'col-sm-3 control-label ']) !!}
         <div class="col-sm-5">
-            {!! Form::select('ward', $ward, null, ['class' => 'form-control col-sm-10', 'placeholder' => 'Ward Number']) !!}
+            {!! Form::select('ward', $ward, null, ['class' => 'form-control col-sm-10', 'placeholder' => 'Ward No.']) !!}
         </div>
     </div>
 
@@ -104,44 +104,30 @@
     </div>
 
     <div class="form-group row ">
-        {!! Form::label('house_number', __('House Number'), ['class' => 'col-sm-3 control-label ']) !!}
+        {!! Form::label('house_number', __('Holding No.'), ['class' => 'col-sm-3 control-label ']) !!}
         <div class="col-sm-5">
             {!! Form::text('house_number', null, [
                 'class' => 'form-control col-sm-10',
-                'placeholder' => 'House Number',
+                'placeholder' => 'Holding No.',
                 'autocomplete' => 'off',
 
             ]) !!}
         </div>
     </div>
     <div class="form-group row ">
-        {!! Form::label('house_locality', 'Sub Location', ['class' => 'col-sm-3 control-label ']) !!}
+        {!! Form::label('house_locality', 'Location', ['class' => 'col-sm-3 control-label ']) !!}
         <div class="col-sm-5">
             {!! Form::text('house_locality', null, [
                 'class' => 'form-control col-sm-10',
-                'placeholder' => 'Sub Location',
+                'placeholder' => 'Location',
+                
                 'autocomplete' => 'off',
             ]) !!}
         </div>
     </div>
 
-    <!-- Tax  ID -->
-    <div class="form-group row">
-    {!! Form::label('tax_code', __('Tax Code/Holding ID'), ['class' => 'col-sm-3 control-label ']) !!}
-    <div class="col-sm-5">
-        {{-- Hidden input that will contain the final comma-separated values for submission --}}
-        {!! Form::hidden('tax_code', old('tax_code', isset($building) ? $building->tax_code : (isset($buildingSurvey) ? $buildingSurvey->tax_code : null)), ['id' => 'tax_code_hidden']) !!}
-
-        {{-- Visible tag input UI --}}
-        <div id="tax-code-tag-input" class="form-control col-sm-10" style="min-height:42px;padding:6px;display:flex;align-items:center;flex-wrap:wrap;cursor:text;">
-            <ul id="tax-code-tags" style="list-style:none;display:flex;flex-wrap:wrap;padding:0;margin:0"></ul>
-            <input id="tax_code_input" type="text" placeholder="" autocomplete="off"
-                style="border:0;outline:0;flex:1;min-width:150px;padding:5px;" />
-        </div>
-        <!-- <small id="tax-code-hint" class="form-text text-muted">Format: 00-000-0000-00 </small> -->
-        <small id="tax-code-error" class="form-text text-danger" style="display:none;margin-top:4px;"></small>
-    </div>
-</div>
+    <!-- Tax ID (renderer + validation driven by config('tax_code.mode')) -->
+    @include('building-info.buildings.partials.tax-code-field')
 
     <!-- Basic Building Structure Information -->
     <div class="form-group row required">
@@ -191,11 +177,11 @@
     </div>
 
     <div class="form-group row required">
-    {!! Form::label('floor_count', __('Number of Floors'), ['class' => 'col-sm-3 control-label']) !!}
+    {!! Form::label('floor_count', __('No. of Floors'), ['class' => 'col-sm-3 control-label']) !!}
     <div class="col-sm-5">
         {!! Form::text('floor_count', null, [
             'class' => 'form-control col-sm-10',
-            'placeholder' => 'Number of Floors',
+            'placeholder' => 'No. of Floors',
             'autocomplete' => 'off',
             'oninput' => "this.value = this.value.replace(/[^0-9.]/g, ''); ",
 
@@ -236,11 +222,11 @@
 
     <!-- Building Population Information - Number of Households -->
     <div class="form-group row required" id="family-count">
-        {!! Form::label('household_served', __('Number of Households'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('household_served', __('No. of Households'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-5">
             {!! Form::number('household_served', null, [
                 'class' => 'form-control col-sm-10',
-                'placeholder' => 'Number of Households',
+                'placeholder' => 'No. of Households',
                 'autocomplete' => 'off',
                 'oninput' => "this.value = this.value < 0 ? '' : this.value",
             ]) !!}
@@ -378,9 +364,11 @@
     <div class="form-group row required" style="display:none" id="lic_id">
         {!! Form::label('lic_id', __('LIC Name'), ['class' => 'col-sm-3 control-label ']) !!}
         <div class="col-sm-5">
-            {!! Form::select('lic_id', $licNames, null, [
+            {!! Form::select('lic_id', $licNames ?? [], null, [
                 'class' => 'form-control col-sm-10',
-                'placeholder' => 'LIC Name',
+                'id' => 'lic_id_select',
+                'data-placeholder' => 'LIC Name',
+                'style' => 'width:100%',
             ]) !!}
         </div>
     </div>
@@ -449,20 +437,10 @@
     <div class="form-group row">
         {!! Form::label('swm_customer_id', 'SWM Customer ID', ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-5">
-            @php
-                $oldHouseholds = old('swm_customer_id');
-                if (is_array($oldHouseholds)) {
-                    $selectedHouseholds = collect($oldHouseholds)->map(fn($v) => trim((string) $v))->filter()->values();
-                } else {
-                    $selectedHouseholds = collect(explode(',', (string) ($oldHouseholds ?? ($building->swm_customer_id ?? ''))))
-                        ->map(fn($v) => trim($v))
-                        ->filter()
-                        ->values();
-                }
-            @endphp
             {{-- Ensure an explicit empty array is submitted when nothing is selected. --}}
             <input type="hidden" name="swm_customer_id[]" value="">
-            {!! Form::select('swm_customer_id[]', $householdOptions ?? [], $selectedHouseholds->all(), [
+            {{-- Options load on demand via AJAX (select2); selected ones are prepended in the parent blade JS. --}}
+            {!! Form::select('swm_customer_id[]', [], null, [
                 'class' => 'form-control col-sm-10',
                 'id' => 'swm_customer_id',
                 'multiple' => true,
@@ -505,11 +483,11 @@
     </div>
     {{-- show these option when toilet presence is yes  --}}
     <div class="form-group row required" id="toilet-info" style="display: none">
-        {!! Form::label('toilet_count', __('Number of Toilets'), ['class' => 'col-sm-3 control-label ']) !!}
+        {!! Form::label('toilet_count', __('No. of Toilets'), ['class' => 'col-sm-3 control-label ']) !!}
         <div class="col-sm-5">
             {!! Form::number('toilet_count', null, [
                 'class' => 'form-control col-sm-10',
-                'placeholder' => 'Number of Toilets',
+                'placeholder' => 'No. of Toilets',
                 'oninput' => "this.value = this.value < 0 ? '' : this.value",
             ]) !!}
         </div>
@@ -699,198 +677,3 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
         });
     });
 </script> --}}
-<script>
-    // Enforce digits and trailing 'x' characters, auto-insert hyphens: 00-000-0000-00
-    function formatTaxCode(el) {
-        let v = (el.value || '').toLowerCase();
-        // keep only digits and 'x'
-        v = v.replace(/[^0-9x]/g, '');
-        // count x characters and remove them from digit sequence
-        const xCount = (v.match(/x/g) || []).length;
-        let digits = v.replace(/x/g, '');
-        // limit total raw chars (digits + x) to 11 (2+3+4+2)
-        const maxRaw = 11;
-        if (digits.length + xCount > maxRaw) {
-            // prefer keeping digits; trim excess from digits first
-            const allowedDigits = Math.min(digits.length, maxRaw);
-            digits = digits.slice(0, allowedDigits);
-        }
-        const xs = 'x'.repeat(Math.min(xCount, Math.max(0, maxRaw - digits.length)));
-        const clean = (digits + xs).slice(0, maxRaw);
-
-        // split into groups [2,3,4,2]
-        const groups = [];
-        const lens = [2, 3, 4, 2];
-        let idx = 0;
-        for (let i = 0; i < lens.length && idx < clean.length; i++) {
-            groups.push(clean.substr(idx, lens[i]));
-            idx += lens[i];
-        }
-        el.value = groups.join('-');
-    }
-
-    // NOTE: Do not auto-format the hidden tax_code input; the tag UI handles display and formatting.
-</script>
-<script>
-    $(function() {
-        $('#swm_customer_id').select2({
-            placeholder: '{{ __('Select Household/s') }}',
-            allowClear: true,
-            closeOnSelect: false,
-            width: '85%',
-        });
-    });
-</script>
-<script>
-    // Tag input for Tax Code/Holding ID
-    (function () {
-        const input = document.getElementById('tax_code_input');
-        const tagsList = document.getElementById('tax-code-tags');
-        const hidden = document.getElementById('tax_code_hidden');
-        const errorEl = document.getElementById('tax-code-error');
-        const TAG_FORMAT = /^\d{2}-\d{3}-\d{4}-[0-9x]{2}$/i; // allowed final 'x' chars in last group
-        const MAX_RAW = 11; // 2+3+4+2
-
-        // Format raw input into 00-000-0000-00 (allows 'x' only at end groups via handling)
-        function formatTaxCodeValue(str) {
-            let v = (str || '').toLowerCase();
-            v = v.replace(/[^0-9x]/g, '');
-            const xCount = (v.match(/x/g) || []).length;
-            let digits = v.replace(/x/g, '');
-            if (digits.length + xCount > MAX_RAW) {
-                const allowedDigits = Math.min(digits.length, MAX_RAW);
-                digits = digits.slice(0, allowedDigits);
-            }
-            const xs = 'x'.repeat(Math.min(xCount, Math.max(0, MAX_RAW - digits.length)));
-            const clean = (digits + xs).slice(0, MAX_RAW);
-            const lens = [2,3,4,2];
-            const groups = [];
-            let idx = 0;
-            for (let i = 0; i < lens.length && idx < clean.length; i++) {
-                groups.push(clean.substr(idx, lens[i]));
-                idx += lens[i];
-            }
-            return groups.join('-');
-        }
-
-        // Render a tag element
-        function renderTag(value) {
-            const li = document.createElement('li');
-            li.className = 'tax-tag';
-            li.style.cssText = 'display:flex;align-items:center;background:#e9f2ff;margin:4px 6px;padding:4px 8px;border-radius:12px;font-size:0.9em;';
-            li.setAttribute('data-value', value);
-
-            const span = document.createElement('span');
-            span.textContent = value;
-            span.style.marginRight = '8px';
-
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.innerHTML = '&times;';
-            btn.style.cssText = 'border:0;background:transparent;cursor:pointer;font-size:1em;line-height:1;padding:0;';
-            btn.addEventListener('click', function () {
-                tagsList.removeChild(li);
-                updateHidden();
-            });
-
-            li.appendChild(span);
-            li.appendChild(btn);
-            tagsList.appendChild(li);
-        }
-
-        // Add tag if valid
-        function addTag(raw) {
-            const formatted = formatTaxCodeValue(raw);
-            if (!formatted) return;
-            if (!TAG_FORMAT.test(formatted)) {
-                showError('Tax Code must be in XX-XXX-XXXX-XX format. "x" allowed only in last two characters.');
-                return;
-            }
-            // avoid duplicates
-            const existing = Array.from(tagsList.querySelectorAll('li')).map(n => n.getAttribute('data-value'));
-            if (existing.includes(formatted)) {
-                input.value = '';
-                return clearError();
-            }
-            renderTag(formatted);
-            input.value = '';
-            clearError();
-            updateHidden();
-        }
-
-        function updateHidden() {
-            const vals = Array.from(tagsList.querySelectorAll('li')).map(n => n.getAttribute('data-value'));
-            hidden.value = vals.join(',');
-        }
-
-        function showError(msg) {
-            errorEl.textContent = msg;
-            errorEl.style.display = 'block';
-        }
-
-        function clearError() {
-            errorEl.textContent = '';
-            errorEl.style.display = 'none';
-        }
-
-        // handle input formatting while typing
-        input.addEventListener('input', function (e) {
-            const cursorPos = input.selectionStart;
-            const before = input.value;
-            const formatted = formatTaxCodeValue(before);
-            input.value = formatted.replace(/-/g, ''); // keep typing without hyphens inside input (we want user to see hyphens optionally)
-            // After converting, set a visual formatted value for UX: show hyphens while typing by setting placeholder-like overlay:
-            // Simpler: show formatted text in the input (with hyphens) but keep selection at end
-            input.value = formatted;
-            input.setSelectionRange(input.value.length, input.value.length);
-            clearError();
-        });
-
-        // add tag on comma or Enter
-        input.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter' || e.key === ',') {
-                e.preventDefault();
-                const raw = input.value;
-                addTag(raw);
-            } else if (e.key === 'Backspace' && input.value === '') {
-                // if input empty and backspace pressed, remove last tag
-                const last = tagsList.querySelector('li:last-child');
-                if (last) {
-                    tagsList.removeChild(last);
-                    updateHidden();
-                }
-            }
-        });
-
-        // also add tag when input loses focus (if any content)
-        input.addEventListener('blur', function () {
-            const val = input.value.trim();
-            if (val !== '') addTag(val);
-        });
-
-        // prepopulate from existing hidden value (model binding or old input)
-        function preload() {
-            const val = hidden.value || '{{ old("tax_code") ?? (isset($building) ? $building->tax_code : (isset($buildingSurvey) ? $buildingSurvey->tax_code : "")) }}';
-            if (!val) return;
-            // if server provided comma-separated or single value, split
-            const items = val.split(',').map(s => s.trim()).filter(Boolean);
-            items.forEach(it => {
-                const formatted = formatTaxCodeValue(it);
-                if (formatted && TAG_FORMAT.test(formatted)) renderTag(formatted);
-            });
-            updateHidden();
-        }
-
-        // initialize
-        document.addEventListener('DOMContentLoaded', function () {
-            preload();
-        });
-
-        // expose for debugging (optional)
-        window._taxCodeTagInput = {
-            addTag: addTag,
-            formatTaxCodeValue: formatTaxCodeValue,
-            updateHidden: updateHidden
-        };
-    })();
-</script>

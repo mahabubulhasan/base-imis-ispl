@@ -59,29 +59,50 @@ class BillCollectionPaymentImport implements ToCollection, WithHeadingRow, WithM
                     continue;
                 }
 
-                $amount = $norm['amount'] ?? null;
-                if ($amount === null || $amount === '') {
+                $wardRaw = isset($norm['ward']) ? trim((string) $norm['ward']) : '';
+                if ($wardRaw === '') {
+                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'ward', $columnDefinitions);
+                    continue;
+                }
+                if (! is_numeric($wardRaw) || (int) $wardRaw !== (int) ($site->ward ?? 0)) {
+                    $this->errors[] = SwmImportRowHelper::rowMessage($rowNum, __('ward does not match household.'));
+                    continue;
+                }
+
+                $amountRaw = $norm['amount'] ?? null;
+                if ($amountRaw === null || trim((string) $amountRaw) === '') {
                     $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'amount', $columnDefinitions);
                     continue;
                 }
-                $duePaid = $norm['due_paid'] ?? 0;
-                if ($duePaid === null || $duePaid === '') {
-                    $duePaid = 0;
+                $amount = SwmImportRowHelper::parseDecimal($amountRaw);
+                if ($amount === null) {
+                    $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'amount', $columnDefinitions);
+                    continue;
                 }
+                $duePaid = SwmImportRowHelper::parseDecimal($norm['due_paid'] ?? null) ?? 0.0;
 
-                $month = $this->parseMonth($norm['payment_for_month'] ?? null);
-                if (! $month) {
-                    $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'payment_for_month', $columnDefinitions);
+                $transactionMonth = $this->parseMonth($norm['transaction_month'] ?? null);
+                if (! $transactionMonth) {
+                    $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'transaction_month', $columnDefinitions);
+                    continue;
+                }
+                $maxTransactionMonth = now()->startOfMonth();
+                if ($transactionMonth->gt($maxTransactionMonth)) {
+                    $this->errors[] = SwmImportRowHelper::rowInvalid(
+                        $rowNum, 'transaction_month', $columnDefinitions,
+                        __('cannot be later than :month', ['month' => $maxTransactionMonth->format('M Y')])
+                    );
                     continue;
                 }
 
-                $methodKey = SwmImportRowHelper::resolveConfigKey(
-                    trim((string) ($norm['payment_method'] ?? '')),
-                    $paymentMethods
-                );
-                if ($methodKey === null) {
-                    $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'payment_method', $columnDefinitions);
-                    continue;
+                $methodRaw = trim((string) ($norm['payment_method'] ?? ''));
+                $methodKey = null;
+                if ($methodRaw !== '') {
+                    $methodKey = SwmImportRowHelper::resolveConfigKey($methodRaw, $paymentMethods);
+                    if ($methodKey === null) {
+                        $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'payment_method', $columnDefinitions);
+                        continue;
+                    }
                 }
 
                 $paymentTime = SwmImportRowHelper::parseDate($norm['payment_time'] ?? null) ?? now();
@@ -91,7 +112,7 @@ class BillCollectionPaymentImport implements ToCollection, WithHeadingRow, WithM
                     'household_id' => $site->id,
                     'amount' => $amount,
                     'due_paid' => $duePaid,
-                    'payment_for_month' => $month->format('Y-m-d'),
+                    'transaction_month' => $transactionMonth->format('Y-m-d'),
                     'payment_time' => $paymentTime,
                     'payment_method' => $methodKey,
                     'received_by_user_id' => $recvId,
@@ -119,19 +140,9 @@ class BillCollectionPaymentImport implements ToCollection, WithHeadingRow, WithM
             return null;
         }
 
+        // Backward compatibility: older templates encoded the household as "code - {id}".
         if (preg_match('/ - (\d+)$/', $input, $matches)) {
             $id = (int) $matches[1];
-            if ($id > 0) {
-                return Household::query()
-                    ->whereKey($id)
-                    ->whereNull('deleted_at')
-                    ->activeStatus()
-                    ->first();
-            }
-        }
-
-        if (is_numeric($input)) {
-            $id = (int) $input;
             if ($id > 0) {
                 return Household::query()
                     ->whereKey($id)

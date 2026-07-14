@@ -32,7 +32,7 @@ class DashboardReportingPeriodResolver
 
     public function latestAllowedToMonth(): Carbon
     {
-        return now()->subMonth()->startOfMonth();
+        return now()->startOfMonth();
     }
 
     public function latestAllowedToMonthString(): string

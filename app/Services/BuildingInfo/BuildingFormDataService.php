@@ -7,6 +7,7 @@ use App\Models\BuildingInfo\BuildContain;
 use App\Models\BuildingInfo\Building;
 use App\Models\BuildingInfo\BuildingSurvey;
 use App\Models\BuildingInfo\FunctionalUse;
+use App\Models\BuildingInfo\Household;
 use App\Models\BuildingInfo\SanitationSystem;
 use App\Models\BuildingInfo\StructureType;
 use App\Models\BuildingInfo\UseCategory;
@@ -171,6 +172,7 @@ class BuildingFormDataService
                 'containment_type' => ContainmentType::pluck('type', 'id')->all(),
                 'drain_status' => false,
                 'sewer_status' => false,
+                'selectedHouseholdOptions' => $this->buildSelectedHouseholdOptions(null),
             ]
         );
     }
@@ -194,6 +196,8 @@ class BuildingFormDataService
                 'containment_type' => ContainmentType::pluck('type', 'id')->all(),
                 'drain_status' => $drain_status,
                 'sewer_status' => $sewer_status,
+                'selectedHouseholdOptions' => $this->buildSelectedHouseholdOptions($building->swm_customer_id),
+                'licNames' => $this->buildSelectedLicOption(old('lic_id', $building->lic_id)),
             ]
         );
     }
@@ -223,6 +227,7 @@ class BuildingFormDataService
                 'containment_type' => ContainmentType::pluck('type', 'id')->all(),
                 'drain_status' => false,
                 'sewer_status' => false,
+                'selectedHouseholdOptions' => $this->buildSelectedHouseholdOptions(null),
             ]
         );
     }
@@ -525,20 +530,15 @@ class BuildingFormDataService
     private function loadSearchableFormOptions(): array
     {
         return [
-            'buildingBin' => Building::query()
-                ->whereNull('building_associated_to')
-                ->whereNull('deleted_at')
-                ->distinct()
-                ->orderBy('bin')
-                ->pluck('bin', 'bin'),
+            'buildingBin' => [],
             'bin' => BuildContain::query()
                 ->whereNull('deleted_at')
                 ->distinct()
                 ->orderBy('bin')
                 ->pluck('bin', 'bin'),
-            'road_code' => Roadline::get(['code', 'name'])->mapWithKeys(function ($item) {
-                return [$item->code => ($item->name ? $item->code . ' - ' . $item->name : $item->code)];
-            })->toArray(),
+            // Road options load on demand via AJAX (select2); the blade JS prepends the
+            // currently-selected option, so nothing needs to be rendered server-side.
+            'road_code' => [],
             'sewer_code' => SewerLine::query()
                 ->whereNull('deleted_at')
                 ->orderBy('code')
@@ -548,14 +548,60 @@ class BuildingFormDataService
                 ->orderBy('code')
                 ->pluck('code', 'code')
                 ->all(),
-            'licNames' => Lic::query()
-                ->whereNull('deleted_at')
-                ->orderBy('community_name')
-                ->pluck('community_name', 'id'),
+            // LIC options load on demand via AJAX (select2); only the currently-selected
+            // option is rendered server-side (see buildSelectedLicOption()).
+            'licNames' => $this->buildSelectedLicOption(old('lic_id')),
             'waterSupply' => WaterSupplys::query()
                 ->orderBy('code')
                 ->pluck('code', 'code'),
         ];
+    }
+
+    /**
+     *
+     * @return array<string, string>  household_id => label
+     */
+    private function buildSelectedHouseholdOptions(?string $csv): array
+    {
+        $ids = collect(explode(',', (string) $csv))
+            ->merge((array) old('swm_customer_id', []))
+            ->map(fn ($v) => trim((string) $v))
+            ->filter()
+            ->unique()
+            ->values();
+
+        if ($ids->isEmpty()) {
+            return [];
+        }
+
+        return Household::query()
+            ->whereNull('deleted_at')
+            ->whereIn('household_id', $ids->all())
+            ->orderBy('household_id')
+            ->get(['household_id', 'household_owner_name'])
+            ->mapWithKeys(fn ($h) => [
+                $h->household_id => $h->household_owner_name
+                    ? $h->household_id . ' - ' . $h->household_owner_name
+                    : (string) $h->household_id,
+            ])
+            ->all();
+    }
+
+    /**
+     * Single preselected LIC option for the building form (rest load via AJAX).
+     *
+     * @return array<int|string, string>  id => community_name
+     */
+    private function buildSelectedLicOption($licId): array
+    {
+        $licId = ($licId !== null && $licId !== '') ? $licId : null;
+        if ($licId === null) {
+            return [];
+        }
+
+        $name = Lic::whereKey($licId)->value('community_name');
+
+        return $name !== null ? [$licId => $name] : [];
     }
 
     private function toArray($value): array

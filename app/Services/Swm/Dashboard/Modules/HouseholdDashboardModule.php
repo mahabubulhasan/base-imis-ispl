@@ -44,10 +44,9 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
     {
         $p = $this->settingsService->perCapitaKgPerDay();
         $agg = $this->householdAggregates($period);
-        $activeMembers = (float) $agg->active_members;
         $avgFamilySize = (float) $agg->avg_family_size;
-        $dailyGenTon = ($p * $activeMembers) / 1000;
         $totalPopulation = $this->settingsService->totalPopulationAsOf($period->periodEnd);
+        $dailyGenTon = ($p * $totalPopulation) / 1000;
 
         $collectedDailyKg = (float) $agg->active_collected_daily_kg;
         $disposedDesignated = $this->landfillDisposedTon($period);
@@ -87,7 +86,7 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
             ->selectRaw('COUNT(CASE WHEN segregation_practiced = true THEN 1 END) as segregation_yes')
             ->selectRaw('COUNT(CASE WHEN segregation_practiced = false OR segregation_practiced IS NULL THEN 1 END) as segregation_no')
             ->selectRaw('COUNT(CASE WHEN is_lic = true THEN 1 END) as lic_hh_count')
-            ->selectRaw("SUM(CASE WHEN is_lic = true AND status = ? THEN COALESCE(number_of_family_members, 0) ELSE 0 END) as lic_active_members", [Household::STATUS_ACTIVE])
+            ->selectRaw("SUM(CASE WHEN is_lic = true AND lic_id IS NOT NULL AND status = ? THEN COALESCE(number_of_family_members, 0) ELSE 0 END) as lic_active_members", [Household::STATUS_ACTIVE])
             ->selectRaw('COUNT(CASE WHEN is_lic = true AND segregation_practiced = true THEN 1 END) as lic_seg_yes')
             ->first();
     }
@@ -291,7 +290,7 @@ class HouseholdDashboardModule implements SwmDashboardModuleInterface
         $licTotal = Lic::query()->count();
         $waterCount = Lic::query()->where('water_connection_status', true)->count();
         $sanitationCount = Lic::query()->where('sanitation_status', true)->count();
-        $licPopulationCovered = (float) $agg->lic_active_members + (float) Lic::query()->sum('population_total');
+        $licPopulationCovered = (float) $agg->lic_active_members;
         $licSegRate = (int) $agg->lic_hh_count > 0
             ? ((int) $agg->lic_seg_yes / (int) $agg->lic_hh_count) * 100
             : 0;

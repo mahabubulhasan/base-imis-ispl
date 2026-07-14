@@ -652,7 +652,6 @@ class BuildingStructureService
             DB::commit();
             return Redirect("building-info/buildings")->with('success', __("Building Information updated successfully"));
         } catch (\Exception $e) {
-            dd($e);
             DB::rollback();
             return Redirect("building-info/buildings")->with('error', __("Failed to update building structure") . $e);
         }
@@ -1229,7 +1228,12 @@ class BuildingStructureService
             ->get();
         $json = [];
         foreach ($house_numbers as $house_number) {
-            $json[] = ['id' => $house_number['bin'], 'text' => $house_number['house_number'] ?? $house_number['bin']];
+            $json[] = [
+                'id' => $house_number['bin'],
+                'text' => $house_number['house_number']
+                    ? $house_number['bin'] . ' - ' . $house_number['house_number']
+                    : (string) $house_number['bin'],
+            ];
         }
         return response()->json(['results' => $json, 'pagination' => ['more' => $more]]);
     }

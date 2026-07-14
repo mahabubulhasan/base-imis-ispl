@@ -368,4 +368,72 @@ class BuildingController extends Controller
 
         return response()->json($households);
     }
+
+    /**
+     * Searchable, paginated household options for the building form's
+     * SWM household select2 (server-side source). Returns the select2
+     * JSON shape: { results: [{id, text}], pagination: { more } }.
+     */
+    public function getHouseholdOptions(Request $request)
+    {
+        $search = trim((string) $request->query('search', ''));
+        $page = max(1, (int) $request->query('page', 1));
+        $limit = 15;
+
+        $query = Household::query()->whereNull('deleted_at');
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('household_id', 'ilike', '%'.$search.'%')
+                    ->orWhere('household_owner_name', 'ilike', '%'.$search.'%');
+            });
+        }
+
+        $total = $query->count();
+        $households = $query
+            ->orderBy('household_id')
+            ->offset(($page - 1) * $limit)
+            ->limit($limit)
+            ->get(['household_id', 'household_owner_name']);
+
+        $results = $households->map(fn ($h) => [
+            'id' => $h->household_id,
+            'text' => $h->household_owner_name
+                ? $h->household_id.' - '.$h->household_owner_name
+                : (string) $h->household_id,
+        ])->all();
+
+        return response()->json([
+            'results' => $results,
+            'pagination' => ['more' => $page * $limit < $total],
+        ]);
+    }
+
+    public function getLicOptions(Request $request)
+    {
+        $search = trim((string) $request->query('search', ''));
+        $page = max(1, (int) $request->query('page', 1));
+        $limit = 15;
+
+        $query = Lic::query()->whereNull('deleted_at');
+        if ($search !== '') {
+            $query->where('community_name', 'ilike', '%'.$search.'%');
+        }
+
+        $total = $query->count();
+        $lics = $query
+            ->orderBy('community_name')
+            ->offset(($page - 1) * $limit)
+            ->limit($limit)
+            ->get(['id', 'community_name']);
+
+        $results = $lics->map(fn ($lic) => [
+            'id' => $lic->id,
+            'text' => (string) $lic->community_name,
+        ])->all();
+
+        return response()->json([
+            'results' => $results,
+            'pagination' => ['more' => $page * $limit < $total],
+        ]);
+    }
 }

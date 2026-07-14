@@ -57,9 +57,14 @@ class WasteBinImport implements ToCollection, WithHeadingRow, WithMultipleSheets
                     continue;
                 }
 
-                $capacity = $norm['total_capacity_kg'] ?? null;
-                if ($capacity === null || $capacity === '') {
+                $capacityRaw = $norm['total_capacity_kg'] ?? null;
+                if ($capacityRaw === null || trim((string) $capacityRaw) === '') {
                     $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'total_capacity_kg', $columnDefinitions);
+                    continue;
+                }
+                $capacity = SwmImportRowHelper::parseDecimal($capacityRaw);
+                if ($capacity === null) {
+                    $this->errors[] = SwmImportRowHelper::rowInvalid($rowNum, 'total_capacity_kg', $columnDefinitions);
                     continue;
                 }
 
@@ -89,8 +94,8 @@ class WasteBinImport implements ToCollection, WithHeadingRow, WithMultipleSheets
                     'sub_location' => trim((string) ($norm['sub_location'] ?? '')) ?: null,
                     'road_no' => trim((string) ($norm['road_no'] ?? '')) ?: null,
                     'road_name' => trim((string) ($norm['road_name'] ?? '')) ?: null,
-                    'latitude' => ($norm['latitude'] ?? '') !== '' ? $norm['latitude'] : null,
-                    'longitude' => ($norm['longitude'] ?? '') !== '' ? $norm['longitude'] : null,
+                    'latitude' => SwmImportRowHelper::parseDecimal($norm['latitude'] ?? null),
+                    'longitude' => SwmImportRowHelper::parseDecimal($norm['longitude'] ?? null),
                     'total_capacity_kg' => $capacity,
                 ];
 

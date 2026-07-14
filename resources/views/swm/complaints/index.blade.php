@@ -40,7 +40,7 @@
                     <div class="col-md-2"><input type="date" class="form-control" id="date_to" /></div>
                 </div>
                 <div class="form-group row">
-                    <label for="filter_holding_number_select" class="col-md-2 col-form-label">{{ __('Holding Number') }}</label>
+                    <label for="filter_holding_number_select" class="col-md-2 col-form-label">{{ __('Holding No.') }}</label>
                     <div class="col-md-2"><select class="form-control" id="filter_holding_number_select" style="width:100%"></select></div>
                     <label for="filter_customer_id_select" class="col-md-2 col-form-label">{{ __('Household ID') }}</label>
                     <div class="col-md-2"><select class="form-control" id="filter_customer_id_select" style="width:100%"></select></div>
@@ -73,7 +73,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <label for="contact_number" class="col-md-2 col-form-label">{{ __('Contact Number') }}</label>
+                    <label for="contact_number" class="col-md-2 col-form-label">{{ __('Contact No.') }}</label>
                     <div class="col-md-2"><input type="text" class="form-control" id="contact_number" /></div>
                 </div>
                 <div class="form-group row">
@@ -115,15 +115,15 @@
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table id="data-table" class="table table-bordered table-striped" width="100%">
+            <table id="data-table" class="table table-bordered table-striped tbl-aligned" width="100%">
                 <thead>
                     <tr>
                         <th>{{ __('Complaint ID') }}</th>
                         <th>{{ __('Entry Date and Time') }}</th>
-                        <th>{{ __('Holding Number') }}</th>
+                        <th>{{ __('Holding No.') }}</th>
                         <th>{{ __('Household ID') }}</th>
                         <th>{{ __('Name') }}</th>
-                        <th>{{ __('Contact Number') }}</th>
+                        <th>{{ __('Contact No.') }}</th>
                         <th>{{ __('Ward No.') }}</th>
                         <th>{{ __('Incident Date') }}</th>
                         <th>{{ __('Complaint Type') }}</th>
@@ -236,7 +236,7 @@ $(function() {
             { data: 'household_id', name: 'customer_id' },
             { data: 'name', name: 'name' },
             { data: 'contact_number', name: 'contact_number' },
-            { data: 'ward_no', name: 'ward_no' },
+            { data: 'ward_no', name: 'ward_no', className: 'col-num' },
             { data: 'incident_date', name: 'incident_date' },
             { data: 'complaint_type', name: 'complaint_type' },
             { data: 'submitted_through', name: 'submitted_through' },

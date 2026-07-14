@@ -9,7 +9,7 @@ $greeting = __('Hi') . ', ' . config('constants.SITE_NAME') . ', ' . implode(', 
             <a href="{{ url('/') }}" class="" >
                 <span class="">
                     <img src="{{ asset('/img/logo-imis.png') }}" alt="Municipality Logo" id="map-logo"
-                        style="line-height: .8; margin-right: 0.5rem; margin-top:8px; max-height:33px; width:70px">
+                        style="line-height: .8; margin-left: 0.75rem; margin-right: 0.5rem; display:block; height:50px; width:auto; object-fit:contain">
                 </span>
             </a>
         @endif

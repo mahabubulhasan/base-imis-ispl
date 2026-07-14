@@ -20,9 +20,9 @@
         </div>
 
         <div class="form-group row required">
-            {!! Form::label('vehicle_number', __('Vehicle Number'), ['class' => 'col-sm-3 control-label']) !!}
+            {!! Form::label('vehicle_number', __('Vehicle No.'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
-                {!! Form::text('vehicle_number', null, ['class' => 'form-control', 'placeholder' => __('Vehicle Number')]) !!}
+                {!! Form::text('vehicle_number', null, ['class' => 'form-control', 'placeholder' => __('Vehicle No.')]) !!}
             </div>
         </div>
         <div class="form-group row">
@@ -53,7 +53,7 @@
         </div>
         {!! Form::hidden('organization_id', $scopedOrganizationId) !!}
         @else
-        <div class="form-group row">
+        <div class="form-group row required">
             {!! Form::label('organization_id', __('Organization'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
                 {!! Form::select('organization_id', $organizationChoices, null, ['class' => 'form-control chosen-select', 'id' => 'organization_id', 'data-placeholder' => __('Organization')]) !!}
@@ -213,8 +213,9 @@ $(function() {
         var $drv = $('#driver_worker_id');
         $drv.empty();
         $drv.append($('<option></option>').attr('value', '').text('{{ __('Driver Name') }}'));
+        $drv.prop('disabled', true).trigger('chosen:updated');
         if (!driversUrl) {
-            $drv.trigger('chosen:updated');
+            $drv.prop('disabled', false).trigger('chosen:updated');
             return;
         }
         var params = {};
@@ -228,7 +229,7 @@ $(function() {
                 });
             })
             .always(function() {
-                $drv.trigger('chosen:updated');
+                $drv.prop('disabled', false).trigger('chosen:updated');
             });
     }
 

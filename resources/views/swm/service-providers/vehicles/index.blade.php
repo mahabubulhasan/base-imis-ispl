@@ -35,9 +35,9 @@
                             <div class="accordion-body">
                             <form class="form-horizontal" id="filter-form">
                                 <div class="form-group row">
-                                    <label for="vehicle_number" class="col-md-2 col-form-label">{{ __('Vehicle Number') }}</label>
+                                    <label for="vehicle_number" class="col-md-2 col-form-label">{{ __('Vehicle No.') }}</label>
                                     <div class="col-md-2">
-                                        <input type="text" class="form-control" id="vehicle_number" placeholder="{{ __('Vehicle Number') }}" />
+                                        <input type="text" class="form-control" id="vehicle_number" placeholder="{{ __('Vehicle No.') }}" />
                                     </div>
                                     <label for="vehicle_id_no" class="col-md-2 col-form-label">{{ __('Vehicle ID') }}</label>
                                     <div class="col-md-2">
@@ -93,11 +93,11 @@
     </div>
     <div class="card-body">
     <div class="table-responsive">
-        <table id="data-table" class="table table-bordered table-striped" width="100%">
+        <table id="data-table" class="table table-bordered table-striped tbl-aligned" width="100%">
             <thead>
                 <tr>
                 <th>{{ __('Vehicle ID') }}</th>
-                <th>{{ __('Vehicle Number') }}</th>
+                <th>{{ __('Vehicle No.') }}</th>
                 <th>{{ __('Vehicle Type') }}</th>
                 <th>{{ __('Capacity (Ton)') }}</th>
                 <th>{{ __('Organization') }}</th>
@@ -149,7 +149,8 @@ $(function() {
             },
             {
                 data: 'capacity',
-                name: 'swm.vehicles.capacity'
+                name: 'swm.vehicles.capacity',
+                className: 'col-num'
             },
             {
                 data: 'organization_name',

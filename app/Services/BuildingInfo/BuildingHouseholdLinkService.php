@@ -79,12 +79,14 @@ class BuildingHouseholdLinkService
         $oldBin = ($oldBin !== null && $oldBin !== '') ? $oldBin : null;
         $newBin = ($newBin !== null && $newBin !== '') ? $newBin : null;
 
-        if ($oldBin === $newBin) {
+        if ($newBin === null) {
+            $this->removeHouseholdIdFromAllBuildings($householdId);
+
             return;
         }
 
-        if ($newBin === null) {
-            $this->removeHouseholdIdFromAllBuildings($householdId);
+        if ($oldBin === $newBin) {
+            $this->addHouseholdIdToBuilding($newBin, $householdId);
 
             return;
         }

@@ -53,7 +53,7 @@
     </div>
 
     <div class="form-group row">
-        {!! Form::label('sub_location', __('Sub Location'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('sub_location', __('Location'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">{!! Form::text('sub_location', null, ['class' => 'form-control', 'id' => 'sub_location']) !!}</div>
     </div>
 
@@ -115,7 +115,21 @@
             return;
         }
         $('#waste_bin_type_id').select2({ width: '100%', placeholder: @json(__('Select type')), allowClear: true });
-        $('#bin').select2({ width: '100%', placeholder: @json(__('Select BIN')), allowClear: true });
+        $('#bin').select2({
+            width: '100%',
+            placeholder: @json(__('Select BIN')),
+            allowClear: true,
+            minimumInputLength: 0,
+            ajax: {
+                url: '{{ route('building-info.households.bin-options') }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term, page: params.page || 1 };
+                },
+                cache: true,
+            }
+        });
         $('#ward_no').select2({ width: '100%', placeholder: @json(__('Ward No.')), allowClear: true });
     }
 

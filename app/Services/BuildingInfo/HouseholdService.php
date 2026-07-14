@@ -12,11 +12,13 @@ use App\Services\Swm\Concerns\HasExcelColumnValidationLabels;
 use App\Models\Swm\WasteBin;
 use App\Models\Swm\Worker;
 use App\Models\UtilityInfo\Roadline;
+use App\Support\ExcelDownload;
 use App\Support\Swm\SwmExcelColumns;
-use App\Support\Swm\SwmExcelExportWriter;
 use App\Support\Swm\SwmImportRowHelper;
 use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
+use Box\Spout\Writer\Style\Color;
+use Box\Spout\Writer\Style\StyleBuilder;
 use Illuminate\Database\Eloquent\Builder;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Auth;
@@ -106,10 +108,10 @@ class HouseholdService
         $household->area_mohalla_name = $data['area_mohalla_name'] ?? null;
         $household->sub_location = $data['sub_location'] ?? null;
         $household->bin = $data['bin'] ?? null;
-        $household->ward = $building?->ward ?? ($data['ward'] ?? null);
+        $household->ward = $data['ward'] ?? ($building?->ward ?? null);
         $household->road_no = $roadNo !== '' ? $roadNo : null;
         $household->road_name = $roadName !== '' ? $roadName : null;
-        $household->holding_number = $building?->house_number ?? ($data['holding_number'] ?? null);
+        $household->holding_number = $data['holding_number'] ?? ($building?->house_number ?? null);
         $household->tax_id = $data['tax_id'] ?? ($building?->tax_code);
         $household->waste_charge = $data['waste_charge'] ?? null;
         $household->is_owner = (bool) ($data['is_owner'] ?? false);
@@ -181,7 +183,7 @@ class HouseholdService
         return $household->id;
     }
 
-    public function download(array $data): void
+    public function download(array $data): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         $columns = $this->excelColumnDefinitions();
         $headers = SwmExcelColumns::exportHeaders($columns);
@@ -192,18 +194,24 @@ class HouseholdService
             ->orderBy('id');
         $this->applyHouseholdFilters($query, $data);
 
-        (new SwmExcelExportWriter())->download(SwmExcelFilename::export('households'), $headers, function ($sheet, $colLetter) use ($query, $columns) {
-            $rowNum = 2;
-            $query->chunk(5000, function ($rows) use ($sheet, $colLetter, $columns, &$rowNum) {
-                foreach ($rows as $row) {
-                    $values = SwmExcelColumns::buildExportRow($columns, $row, fn (string $key, $model) => $this->formatHouseholdExportValue($key, $model));
-                    foreach ($values as $index => $value) {
-                        $sheet->setCellValue($colLetter($index + 1).$rowNum, $value);
+        $style = (new StyleBuilder())
+            ->setFontBold()
+            ->setFontSize(13)
+            ->setBackgroundColor(Color::rgb(228, 228, 228))
+            ->build();
+
+        return ExcelDownload::xlsx(
+            SwmExcelFilename::export('households'),
+            function ($writer) use ($headers, $style, $query, $columns) {
+                $writer->addRowWithStyle($headers, $style);
+
+                $query->chunk(5000, function ($rows) use ($writer, $columns) {
+                    foreach ($rows as $row) {
+                        $writer->addRow(SwmExcelColumns::buildExportRow($columns, $row, fn (string $key, $model) => $this->formatHouseholdExportValue($key, $model)));
                     }
-                    $rowNum++;
-                }
-            });
-        });
+                });
+            }
+        );
     }
 
     public function downloadTemplate(): void
@@ -256,25 +264,25 @@ class HouseholdService
             ['key' => 'household_id', 'label' => __('Household ID'), 'required' => true],
             ['key' => 'household_owner_name', 'label' => __('Household Owner Name'), 'required' => true],
             ['key' => 'father_or_husband_name', 'label' => __("Father's/Husband's Name")],
-            ['key' => 'contact_number', 'label' => __('Contact Number'), 'required' => true],
+            ['key' => 'contact_number', 'label' => __('Contact No.'), 'required' => true],
             ['key' => 'bin', 'label' => __('BIN')],
-            ['key' => 'area_mohalla_name', 'label' => __('Sub Location')],
-            ['key' => 'ward', 'label' => __('Ward No.'), 'required' => true, 'dropdown' => $wards],
-            ['key' => 'road_no', 'label' => __('Road No.')],
-            ['key' => 'road_name', 'label' => __('Road Name'), 'required' => true],
-            ['key' => 'holding_number', 'label' => __('Holding Number'), 'required' => true],
+            ['key' => 'holding_number', 'label' => __('Holding No.'), 'required' => true],
             ['key' => 'tax_id', 'label' => __('Tax ID')],
+            ['key' => 'area_mohalla_name', 'label' => __('Location')],
+            ['key' => 'road_no', 'label' => __('Road No.')],
+            ['key' => 'road_name', 'label' => __('Road Name')],
+            ['key' => 'ward', 'label' => __('Ward No.'), 'required' => true, 'dropdown' => $wards],
             ['key' => 'waste_charge', 'label' => __('Waste Collection Fee').' ('.__('Taka').'/'.__('Month').')'],
             ['key' => 'number_of_family_members', 'label' => __('Number of Family Members')],
-            ['key' => 'using_this_service_since', 'label' => __('Using This Service Since'), 'date_hint' => '02 Jun 2026'],
             ['key' => 'daily_waste_volume', 'label' => __('Average Waste Collected').' ('.__('Kg').'/'.__('Day').')'],
+            ['key' => 'segregation_practiced', 'label' => __('Segregation Practiced?'), 'dropdown' => $yesNo],
             ['key' => 'van_puller', 'label' => __('Van Puller'), 'dropdown' => $vanPullers],
+            ['key' => 'using_this_service_since', 'label' => __('Using This Service Since'), 'date_hint' => '02 Jun 2026'],
             ['key' => 'is_owner', 'label' => __('Building Owner?'), 'dropdown' => $yesNo],
             // Parent-level flag only; nested waste_bins[*] rows are managed in the form, not via Excel.
             ['key' => 'waste_bin_provided', 'label' => __('Waste Bin Provided?'), 'dropdown' => $yesNo],
             ['key' => 'is_lic', 'label' => __('LIC?'), 'dropdown' => $yesNo],
             ['key' => 'lic_id', 'label' => __('LIC ID'), 'dropdown' => $licOptions],
-            ['key' => 'segregation_practiced', 'label' => __('Segregation Practiced?'), 'dropdown' => $yesNo],
             ['key' => 'status', 'label' => __('Household Status'), 'required' => true, 'dropdown' => $statusLabels],
             ['key' => 'remarks', 'label' => __('Remarks')],
             ['key' => 'survey_date', 'label' => __('Survey Date'), 'date_hint' => '02 Jun 2026'],

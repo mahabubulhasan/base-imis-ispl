@@ -244,6 +244,7 @@ class PermissionsSeeder extends Seeder
                     ],
                 ]
             ],
+            /* Sewer Network module locked out
             [
                 "group" => "Sewers",
                 "perms" => [
@@ -342,6 +343,8 @@ class PermissionsSeeder extends Seeder
                     ],
                 ]
             ],
+            */ // Sewer Network / Water Supply Network module locked out
+            /* Fecal Sludge IMS (Help Desks) module locked out
             [
                 "group" => "Help Desks",
                 "perms" => [
@@ -375,6 +378,8 @@ class PermissionsSeeder extends Seeder
                     ],
                 ]
             ],
+            */ // Fecal Sludge IMS (Help Desks) module locked out
+            /* Fecal Sludge IMS (Service Providers) module locked out
             [
                 "group" => "Service Providers",
                 "perms" => [
@@ -408,6 +413,8 @@ class PermissionsSeeder extends Seeder
                     ]
                 ]
             ],
+            */ // Fecal Sludge IMS (Service Providers) module locked out
+            /* Fecal Sludge IMS (Treatment Plants) module locked out
             [
                 "group" => "Treatment Plants",
                 "perms" => [
@@ -453,6 +460,8 @@ class PermissionsSeeder extends Seeder
                     ],
                 ]
             ],
+            */ // Fecal Sludge IMS (Treatment Plants) module locked out
+            /* Fecal Sludge IMS (Desludging Vehicles) module locked out
             [
                 "group" => "Desludging Vehicles",
                 "perms" => [
@@ -486,6 +495,8 @@ class PermissionsSeeder extends Seeder
                     ],
                 ]
             ],
+            */ // Fecal Sludge IMS (Desludging Vehicles) module locked out
+            /* Fecal Sludge IMS (Treatment Plant Efficiency Standards) module locked out
             [
                 "group" => "Treatment Plant Efficiency Standards",
                 "perms" => [
@@ -499,6 +510,8 @@ class PermissionsSeeder extends Seeder
                     ],
                 ]
             ],
+            */ // Fecal Sludge IMS (Treatment Plant Efficiency Standards) module locked out
+            /* Fecal Sludge IMS (Containments) module locked out
             [
                 "group" => "Containments",
                 "perms" => [
@@ -562,6 +575,8 @@ class PermissionsSeeder extends Seeder
 
                 ]
             ],
+            */ // Fecal Sludge IMS (Containments) module locked out
+            /* PT/CT IMS module locked out
             [
                 "group" => "PT/CT Toilets",
                 "perms" => [
@@ -632,6 +647,8 @@ class PermissionsSeeder extends Seeder
                     ],
                 ]
             ],
+            */
+            /* Public Health ISS (Hotspots) module locked out
             [
                 "group" => "Hotspots",
                 "perms" => [
@@ -670,6 +687,8 @@ class PermissionsSeeder extends Seeder
                 ],
 
             ],
+            */ // Public Health ISS module locked out
+            /* Fecal Sludge IMS (Applications) module locked out
             [
                 "group" => "Applications",
                 "perms" => [
@@ -707,6 +726,8 @@ class PermissionsSeeder extends Seeder
                     ],
                 ]
             ],
+            */ // Fecal Sludge IMS (Applications) module locked out
+            /* Fecal Sludge IMS (Emptyings) module locked out
             [
                 "group" => "Emptyings",
                 "perms" => [
@@ -740,6 +761,8 @@ class PermissionsSeeder extends Seeder
                     ],
                 ]
             ],
+            */ // Fecal Sludge IMS (Emptyings) module locked out
+            /* Fecal Sludge IMS (Sludge Collections) module locked out
             [
                 "group" => "Sludge Collections",
                 "perms" => [
@@ -773,6 +796,7 @@ class PermissionsSeeder extends Seeder
                     ],
                 ]
             ],
+            */ // Fecal Sludge IMS (Sludge Collections) module locked out
             [
                 "group" => "API",
                 "perms" => [
@@ -1624,6 +1648,7 @@ class PermissionsSeeder extends Seeder
                     ],
                 ]
             ],
+            /* Building Survey module locked out
             [
                 "group" => "Building Surveys",
                 "perms" => [
@@ -1649,6 +1674,8 @@ class PermissionsSeeder extends Seeder
                     ]
                 ]
             ],
+            */
+            /* Sewer Connection module locked out
             [
                 "group" => "Sewer Connection",
                 "perms" => [
@@ -1670,6 +1697,8 @@ class PermissionsSeeder extends Seeder
                     ],
                 ]
             ],
+            */
+            /* Public Health ISS (Yearly Waterborne Cases) module locked out
             [
                 "group" => "Yearly Waterborne Cases",
                 "perms" => [
@@ -1703,6 +1732,7 @@ class PermissionsSeeder extends Seeder
                     ],
                 ]
             ],
+            */ // Public Health ISS module locked out
 
 
 
@@ -1790,6 +1820,7 @@ class PermissionsSeeder extends Seeder
                 ],
             ],
 
+            /* Fecal Sludge IMS (FSM Dashboard) module locked out
             [
                 "group" => "FSM Dashboard",
                 "perms" => [
@@ -1860,6 +1891,7 @@ class PermissionsSeeder extends Seeder
 
                 ],
             ],
+            */ // Fecal Sludge IMS (FSM Dashboard) module locked out
             [
                 "group" => "Utility Dashboard",
                 "perms" => [
@@ -1931,6 +1963,7 @@ class PermissionsSeeder extends Seeder
 
                 ],
             ],
+            /* Fecal Sludge IMS (Feedbacks) module locked out
             [
                 "group" => "Feedbacks",
                 "perms" => [
@@ -1960,6 +1993,8 @@ class PermissionsSeeder extends Seeder
                     ],
                 ]
             ],
+            */ // Fecal Sludge IMS (Feedbacks) module locked out
+            /* Fecal Sludge IMS (Employee Infos) module locked out
             [
                 "group" => "Employee Infos",
                 "perms" => [
@@ -1994,6 +2029,7 @@ class PermissionsSeeder extends Seeder
 
                 ]
             ],
+            */ // Fecal Sludge IMS (Employee Infos) module locked out
             [
                 "group" => "Maps",
                 "perms" => [
@@ -2228,6 +2264,7 @@ class PermissionsSeeder extends Seeder
 
             ],
 
+            /* Public Health ISS (Water Samples) module locked out
             [
                 "group" => "Water Samples",
                 "perms" => [
@@ -2273,6 +2310,8 @@ class PermissionsSeeder extends Seeder
                     ],
                 ]
             ],
+            */ // Public Health ISS module locked out
+            /* CWIS IMS (KPI Dashboard) module locked out
             [
                 "group" => "KPI Dashboard",
                 "perms" => [
@@ -2343,6 +2382,8 @@ class PermissionsSeeder extends Seeder
                     ]
                 ]
             ],
+            */ // CWIS IMS (KPI Target) module locked out
+            /* Property Tax Collection ISS module locked out
             [
                 "group" => "Property Tax Collection ISS",
                 "perms" => [
@@ -2361,6 +2402,8 @@ class PermissionsSeeder extends Seeder
 
                 ],
             ],
+            */
+            /* Water Supply ISS module locked out
             [
                 "group" => "Water Supply ISS",
                 "perms" => [
@@ -2379,6 +2422,8 @@ class PermissionsSeeder extends Seeder
 
                 ],
             ],
+            */
+            /* Fecal Sludge IMS (Treatment Plant Efficiency Tests) module locked out
             [
                 "group" => "Treatment Plant Efficiency Tests",
                 "perms" => [
@@ -2412,6 +2457,7 @@ class PermissionsSeeder extends Seeder
                     ],
                 ]
             ],
+            */ // Fecal Sludge IMS (Treatment Plant Efficiency Tests) module locked out
             [
                 "group" => "Low Income Communities",
                 "perms" => [
@@ -2462,6 +2508,7 @@ class PermissionsSeeder extends Seeder
                     ]
                 ]
             ],
+            /* CWIS IMS module locked out
             [
                 "group" => "CWIS",
                 "perms" => [
@@ -2487,6 +2534,8 @@ class PermissionsSeeder extends Seeder
                     ]
                 ]
             ],
+            */
+            /* CWIS IMS (NSD) module locked out
             [
                 "group" => "NSD",
                 "perms" => [
@@ -2517,6 +2566,7 @@ class PermissionsSeeder extends Seeder
                     ]
                 ]
             ]
+            */ // CWIS IMS (NSD Setting) module locked out
         ];
 
 

@@ -31,7 +31,7 @@
                                 <td>{{ $household->household_owner_name }}</td>
                             </tr>
                             <tr>
-                                <td><strong>Contact Number</strong></td>
+                                <td><strong>Contact No.</strong></td>
                                 <td>{{ $household->contact_number }}</td>
                             </tr>
                             <tr>
@@ -47,7 +47,7 @@
                                 <td>{{ $household->ward }}</td>
                             </tr>
                             <tr>
-                                <td><strong>Road Number</strong></td>
+                                <td><strong>Road No.</strong></td>
                                 <td>{{ $household->road_no }}</td>
                             </tr>
                             <tr>
@@ -55,7 +55,7 @@
                                 <td>{{ $household->road_name }}</td>
                             </tr>
                             <tr>
-                                <td><strong>Holding Number</strong></td>
+                                <td><strong>Holding No.</strong></td>
                                 <td>{{ $household->holding_number }}</td>
                             </tr>
                             <tr>
@@ -63,7 +63,7 @@
                                 <td>{{ $household->area_mohalla_name ?? 'N/A' }}</td>
                             </tr>
                             <tr>
-                                <td><strong>Sub Location</strong></td>
+                                <td><strong>Location</strong></td>
                                 <td>{{ $household->sub_location ?? 'N/A' }}</td>
                             </tr>
                             <tr>

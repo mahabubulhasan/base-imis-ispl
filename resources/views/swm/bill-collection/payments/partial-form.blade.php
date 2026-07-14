@@ -1,8 +1,10 @@
 @php
     $isEdit = isset($payment) && $payment;
     $excludePaymentId = $isEdit ? $payment->id : null;
-    $defaultMonth = now()->format('Y-m');
-    $dueThroughMonthLabel = \Carbon\Carbon::createFromFormat('Y-m', $defaultMonth)->subMonth()->format('F Y');
+    $defaultMonth = ($isEdit && $payment->transaction_month)
+        ? $payment->transaction_month->format('Y-m')
+        : now()->format('Y-m');
+    $dueThroughMonthLabel = \Carbon\Carbon::createFromFormat('Y-m', $defaultMonth)->subMonthNoOverflow()->format('F Y');
     $defaultPaymentTime = old(
         'payment_time',
         ($isEdit && $payment->payment_time)
@@ -11,6 +13,7 @@
     );
     $recvUsers = ['' => __('Default (Logged-in User)')] + $users->all();
     $initHolding = old('holding_number', $isEdit ? ($payment->holding_number ?? '') : '');
+    $initWard = $isEdit && $payment->ward !== null && $payment->ward !== '' ? (string) $payment->ward : '';
     $initCustomerName = $isEdit ? optional($payment->primaryCollectionSite)->household_owner_name : null;
     $initFatherOrHusbandName = $isEdit ? optional($payment->primaryCollectionSite)->father_or_husband_name : null;
     $initSite = $isEdit ? optional($payment->primaryCollectionSite) : null;
@@ -109,10 +112,17 @@
     {!! Form::hidden('household_code', old('household_code', $isEdit ? $payment->customer_id : ''), ['id' => 'household_code']) !!}
 
     <div class="form-group row required">
-        <label class="col-sm-3 control-label" for="holding_select">{{ __('Holding') }}</label>
+        <label class="col-sm-3 control-label" for="bcp-ward-filter">{{ __('Ward No.') }}</label>
         <div class="col-sm-3 bcp-payment-field-col">
-            <select class="form-control" id="holding_select" style="width:100%"></select>
-            <small class="form-text text-muted">{{ __('Search by Holding Number (Min. 2 Characters).') }}</small>
+            {!! Form::select(null, $wards ?? [], $initWard !== '' ? $initWard : null, ['class' => 'form-control w-100', 'id' => 'bcp-ward-filter', 'placeholder' => __('Select Ward')]) !!}
+        </div>
+    </div>
+
+    <div class="form-group row required">
+        <label class="col-sm-3 control-label" for="holding_select">{{ __('Holding No.') }}</label>
+        <div class="col-sm-3 bcp-payment-field-col">
+            <select class="form-control" id="holding_select" style="width:100%" @if($initWard === '' && $initHolding === '') disabled @endif></select>
+            <small class="form-text text-muted">{{ __('Search by Holding No. (Min. 2 Characters).') }}</small>
         </div>
     </div>
 
@@ -127,9 +137,8 @@
         <label class="col-sm-3 control-label">{{ __('Household Details') }}</label>
         <div class="col-sm-3 bcp-payment-field-col">
             <div class="border rounded p-3 bg-light w-100" id="bcp-household-info-panel">
-                <div><strong>{{ __('Contact Number') }}:</strong> <span id="bcp-hi-contact">{{ $initialHouseholdDetail ? ($initialHouseholdDetail['contact_number'] ?? '—') : '—' }}</span></div>
-                <div><strong>{{ __('Sub Location') }}:</strong> <span id="bcp-hi-sub-location">{{ $initialHouseholdDetail ? ($initialHouseholdDetail['sub_location'] ?? '—') : '—' }}</span></div>
-                <div><strong>{{ __('Ward') }}:</strong> <span id="bcp-hi-ward">{{ $initialHouseholdDetail ? ($initialHouseholdDetail['ward'] ?? '—') : '—' }}</span></div>
+                <div><strong>{{ __('Contact No.') }}:</strong> <span id="bcp-hi-contact">{{ $initialHouseholdDetail ? ($initialHouseholdDetail['contact_number'] ?? '—') : '—' }}</span></div>
+                <div><strong>{{ __('Location') }}:</strong> <span id="bcp-hi-sub-location">{{ $initialHouseholdDetail ? ($initialHouseholdDetail['sub_location'] ?? '—') : '—' }}</span></div>
                 <div><strong>{{ __('Road No.') }}:</strong> <span id="bcp-hi-road-no">{{ $initialHouseholdDetail ? ($initialHouseholdDetail['road_no'] ?? '—') : '—' }}</span></div>
                 <div><strong>{{ __('Road Name') }}:</strong> <span id="bcp-hi-road-name">{{ $initialHouseholdDetail ? ($initialHouseholdDetail['road_name'] ?? '—') : '—' }}</span></div>
             </div>
@@ -137,11 +146,11 @@
     </div>
 
     <div class="form-group row required bcp-due-dependent-row">
-        {!! Form::label('payment_for_month', __('Transaction Month'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('transaction_month', __('Transaction Month'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3 bcp-payment-field-col">
-            <input type="hidden" name="payment_for_month" id="payment_for_month" value="{{ $defaultMonth }}" />
+            <input type="hidden" name="transaction_month" id="transaction_month" value="{{ $defaultMonth }}" />
             <input type="text" class="form-control w-100" value="{{ \Carbon\Carbon::createFromFormat('Y-m', $defaultMonth)->format('F Y') }}" readonly />
-            <small class="form-text text-muted">{{ __('Transaction Month Is Auto-Selected as Current Month.') }}</small>
+            <small class="form-text text-muted">{{ $isEdit ? __('Transaction Month Cannot Be Changed After Creation.') : __('Transaction Month Is Auto-Selected as Current Month.') }}</small>
         </div>
     </div>
 
@@ -164,7 +173,7 @@
     <div id="bcp-no-due-info" class="d-none">
         <div class="bcp-no-due-box">
             <div class="bcp-no-due-title">{{ __('Payment Not Required') }}</div>
-            <div class="bcp-no-due-message">{{ __('All Previous Dues Have Been Cleared for This Household.') }}</div>
+            <div class="bcp-no-due-message">{{ __('All Previous Dues and This Month\'s Fee Have Been Paid for This Household.') }}</div>
             <ul class="bcp-no-due-meta">
                 <li><strong>{{ __('Holding') }}:</strong> <span id="bcp-no-due-holding">—</span></li>
                 <li><strong>{{ __('Household') }}:</strong> <span id="bcp-no-due-household">—</span></li>
@@ -201,7 +210,7 @@
         </div>
     </div>
 
-    <div class="form-group row required bcp-due-dependent-row">
+    <div class="form-group row bcp-due-dependent-row">
         {!! Form::label('payment_method', __('Payment Method'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3 bcp-payment-field-col">
             {!! Form::select('payment_method', $paymentMethods, old('payment_method', $isEdit ? $payment->payment_method : null), ['class' => 'form-control w-100', 'placeholder' => __('Select')]) !!}
@@ -289,14 +298,13 @@
         }
         $('#bcp-hi-contact').text(formatHouseholdInfoText(data.contact_number));
         $('#bcp-hi-sub-location').text(formatHouseholdInfoText(data.sub_location));
-        $('#bcp-hi-ward').text(formatHouseholdInfoText(data.ward));
         $('#bcp-hi-road-no').text(formatHouseholdInfoText(data.road_no));
         $('#bcp-hi-road-name').text(formatHouseholdInfoText(data.road_name));
         setHouseholdInfoVisible(true);
     }
 
     function clearHouseholdInfoPanel() {
-        $('#bcp-hi-contact, #bcp-hi-sub-location, #bcp-hi-ward, #bcp-hi-road-no, #bcp-hi-road-name, #bcp-hi-area-mohalla')
+        $('#bcp-hi-contact, #bcp-hi-sub-location, #bcp-hi-road-no, #bcp-hi-road-name, #bcp-hi-area-mohalla')
             .text(householdInfoPlaceholder());
         setHouseholdInfoVisible(false);
     }
@@ -318,29 +326,6 @@
         return ym + '-01';
     }
 
-    function dueThroughMonthFirstDay(ym) {
-        if (!ym || ym.length < 7) return null;
-        var parts = ym.split('-');
-        if (parts.length < 2) return null;
-        var year = parseInt(parts[0], 10);
-        var month = parseInt(parts[1], 10);
-        if (!year || !month || month < 1 || month > 12) return null;
-        var dt = new Date(year, month - 2, 1);
-        var m = String(dt.getMonth() + 1).padStart(2, '0');
-        return dt.getFullYear() + '-' + m + '-01';
-    }
-
-    function dueThroughMonthLabel(ym) {
-        if (!ym || ym.length < 7) return '—';
-        var parts = ym.split('-');
-        if (parts.length < 2) return '—';
-        var year = parseInt(parts[0], 10);
-        var month = parseInt(parts[1], 10);
-        if (!year || !month || month < 1 || month > 12) return '—';
-        var dt = new Date(year, month - 2, 1);
-        return dt.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
-    }
-
     function formatCurrencyDisplay(value) {
         return window.ImisFormat.currency('tk', value);
     }
@@ -359,7 +344,7 @@
     }
 
     function getSelectedPaymentMonthLabel() {
-        var ym = $('#payment_for_month').val();
+        var ym = $('#transaction_month').val();
         if (!ym || ym.length < 7) return '—';
         var parts = ym.split('-');
         if (parts.length < 2) return '—';
@@ -370,35 +355,46 @@
         return dt.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
     }
 
-    function updateNoDueInfo(currentData, dueData) {
+    function getTargetBilledMonthLabel() {
+        var ym = $('#transaction_month').val();
+        if (!ym || ym.length < 7) return '—';
+        var parts = ym.split('-');
+        if (parts.length < 2) return '—';
+        var year = parseInt(parts[0], 10);
+        var month = parseInt(parts[1], 10);
+        if (!year || !month || month < 1 || month > 12) return '—';
+        var dt = new Date(year, month - 2, 1);
+        return dt.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+    }
+
+    function updateNoDueInfo(data) {
         $('#bcp-no-due-holding').text($('#holding_number').val() || '—');
         $('#bcp-no-due-household').text(selectedHouseholdText || $('#household_code').val() || '—');
         $('#bcp-no-due-month').text(getSelectedPaymentMonthLabel());
         $('#bcp-no-due-waste-charge').text(
-            (currentData.waste_charge === null || currentData.waste_charge === undefined)
+            (data.waste_charge === null || data.waste_charge === undefined)
                 ? '—'
-                : formatCurrencyDisplay(currentData.waste_charge)
+                : formatCurrencyDisplay(data.waste_charge)
         );
         $('#bcp-no-due-total-due').text(
-            (dueData.due === null || dueData.due === undefined)
+            (data.due === null || data.due === undefined)
                 ? '0'
-                : formatCurrencyDisplay(dueData.due)
+                : formatCurrencyDisplay(data.due)
         );
     }
 
     function updateDueMonthLabel() {
-        var label = dueThroughMonthLabel($('#payment_for_month').val());
+        var label = getTargetBilledMonthLabel();
         $('#bcp-due-month-label').text(label);
         $('#bcp-due-summary-month').text(label);
     }
 
     function refreshBalance() {
         var siteId = $('#household_id').val();
-        var ym = $('#payment_for_month').val();
+        var ym = $('#transaction_month').val();
         var pm = monthFirstDay(ym);
-        var duePm = dueThroughMonthFirstDay(ym);
         updateDueMonthLabel();
-        if (!siteId || !pm || !duePm) {
+        if (!siteId || !pm) {
             setBalanceLoading(false);
             $('#bcp-waste-charge').text('');
             $('#bcp-due').text('');
@@ -410,36 +406,28 @@
         }
         var seq = ++balanceRequestSeq;
         setBalanceLoading(true);
-        function balanceRequestUrl(paymentMonth) {
-            var url = balanceUrl + '?household_id=' + encodeURIComponent(siteId)
-                + '&payment_for_month=' + encodeURIComponent(paymentMonth);
-            if (excludePaymentId) {
-                url += '&exclude_payment_id=' + encodeURIComponent(excludePaymentId);
-            }
-            return url;
+        var url = balanceUrl + '?household_id=' + encodeURIComponent(siteId)
+            + '&transaction_month=' + encodeURIComponent(pm);
+        if (excludePaymentId) {
+            url += '&exclude_payment_id=' + encodeURIComponent(excludePaymentId);
         }
-        $.when(
-            $.getJSON(balanceRequestUrl(pm)),
-            $.getJSON(balanceRequestUrl(duePm))
-        ).done(function(currentRes, dueRes) {
+        $.getJSON(url).done(function(data) {
             if (seq !== balanceRequestSeq) {
                 return;
             }
-            var data = currentRes[0];
-            var dueData = dueRes[0];
             if (data.waste_charge === null || data.waste_charge === undefined) {
                 $('#bcp-waste-charge').text('{{ __('Not Set') }}');
             } else {
                 $('#bcp-waste-charge').text(formatCurrencyDisplay(data.waste_charge));
             }
-            if (dueData.due === null || dueData.due === undefined) {
+            if (data.due === null || data.due === undefined) {
                 $('#bcp-due').text('—');
             } else {
-                $('#bcp-due').text(formatCurrencyDisplay(dueData.due));
+                $('#bcp-due').text(formatCurrencyDisplay(data.due));
             }
-            var dueNumeric = Number(dueData.due);
+            var dueNumeric = Number(data.due);
             var hasNoDue = isFinite(dueNumeric) && dueNumeric <= 0;
-            updateNoDueInfo(data, dueData);
+            updateNoDueInfo(data);
             setNoDueState(hasNoDue);
             if (hasNoDue) {
                 return;
@@ -478,16 +466,20 @@
     $('#holding_select').select2({
         placeholder: '{{ __('Search Holding') }}',
         allowClear: true,
-        minimumInputLength: 2,
         ajax: {
             url: holdingsUrl,
             dataType: 'json',
             delay: 250,
+            cache: true,
             data: function(params) {
-                return { q: params.term };
+                return { q: params.term, ward: $('#bcp-ward-filter').val() || '', page: params.page || 1 };
             },
-            processResults: function(data) {
-                return { results: data.results || [] };
+            processResults: function(data, params) {
+                params.page = params.page || 1;
+                return {
+                    results: data.results || [],
+                    pagination: { more: !!(data.pagination && data.pagination.more) }
+                };
             },
             headers: { 'X-CSRF-TOKEN': csrf }
         }
@@ -500,17 +492,40 @@
             url: customersUrl,
             dataType: 'json',
             delay: 250,
+            cache: true,
             data: function(params) {
                 return {
                     holding_number: $('#holding_number').val(),
-                    q: params.term
+                    q: params.term,
+                    ward: $('#bcp-ward-filter').val() || '',
+                    page: params.page || 1
                 };
             },
-            processResults: function(data) {
-                return { results: data.results || [] };
+            processResults: function(data, params) {
+                params.page = params.page || 1;
+                return {
+                    results: data.results || [],
+                    pagination: { more: !!(data.pagination && data.pagination.more) }
+                };
             },
             headers: { 'X-CSRF-TOKEN': csrf }
         }
+    });
+
+    $('#bcp-ward-filter').select2({
+        placeholder: '{{ __('Select Ward') }}',
+        allowClear: true,
+        width: '100%'
+    });
+
+    $('#bcp-ward-filter').on('change', function() {
+        $('#holding_select').prop('disabled', false).val(null).trigger('change');
+        $('#holding_number').val('');
+        $('#household_id').val('');
+        $('#household_code').val('');
+        $('#customer_site_select').prop('disabled', true).val(null).trigger('change');
+        clearHouseholdInfoPanel();
+        refreshBalance();
     });
 
     $('#holding_select').on('select2:select', function(e) {
@@ -552,7 +567,7 @@
         refreshBalance();
     });
 
-    $('#payment_for_month').on('change', refreshBalance);
+    $('#transaction_month').on('change', refreshBalance);
     updateDueMonthLabel();
 
     @if($initHolding !== '')

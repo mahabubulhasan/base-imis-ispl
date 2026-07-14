@@ -25,7 +25,7 @@
 
     <div class="card card-outline card-primary">
         <div class="card-header text-center">
-            <h3>Integrated Municipal Information System</h3>
+            <h3 style="font-weight: bold;">Integrated Municipal Information System</h3>
         </div>
         <div class="card-body">
         @yield('content')

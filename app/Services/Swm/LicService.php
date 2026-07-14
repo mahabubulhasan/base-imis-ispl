@@ -4,6 +4,7 @@ namespace App\Services\Swm;
 
 use App\Models\Swm\Lic;
 use Auth;
+use App\Support\ExcelDownload;
 use App\Support\Swm\SwmExcelColumns;
 use Box\Spout\Common\Type;
 use Box\Spout\Writer\Style\Color;
@@ -83,7 +84,7 @@ class LicService
         return $lic->id;
     }
 
-    public function download(array $data): void
+    public function download(array $data): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         $columns = SwmExcelColumns::exportHeaders($this->exportColumnDefinitions());
 
@@ -111,23 +112,24 @@ class LicService
             ->setBackgroundColor(Color::rgb(228, 228, 228))
             ->build();
 
-        $writer = WriterFactory::create(Type::CSV);
-        $writer->openToBrowser('SW LIC.csv')
-            ->addRowWithStyle($columns, $style);
+        return ExcelDownload::csv(
+            'SW LIC.csv',
+            function ($writer) use ($columns, $style, $query) {
+                $writer->addRowWithStyle($columns, $style);
 
-        $query->orderBy('id')->chunk(5000, function ($rows) use ($writer) {
-            foreach ($rows as $row) {
-                $writer->addRow([
-                    $row->lic_id,
-                    $row->representative_name,
-                    $row->contact_no,
-                    $row->number_of_hhs,
-                    $row->total_population,
-                ]);
+                $query->orderBy('id')->chunk(5000, function ($rows) use ($writer) {
+                    foreach ($rows as $row) {
+                        $writer->addRow([
+                            $row->lic_id,
+                            $row->representative_name,
+                            $row->contact_no,
+                            $row->number_of_hhs,
+                            $row->total_population,
+                        ]);
+                    }
+                });
             }
-        });
-
-        $writer->close();
+        );
     }
 
     /** @return array<int, array{key: string, label: string}> */

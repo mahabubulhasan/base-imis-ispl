@@ -61,6 +61,9 @@ class SwmExcelTemplateWriter
 
         $multiselectNotes = [];
 
+
+        $nextGroupRefColIndex = count($columns) + 2;
+
         foreach ($columns as $index => $column) {
             $colLetter = $this->columnLetter($index + 1);
             $header = $column['label'] ?? $column['key'];
@@ -70,6 +73,20 @@ class SwmExcelTemplateWriter
             $importSheet->getStyle($colLetter.'1')->getFill()
                 ->setFillType(Fill::FILL_SOLID)
                 ->getStartColor()->setRGB('E4E4E4');
+
+            $pairs = $column['reference_pairs'] ?? null;
+            if (is_array($pairs) && count($pairs) > 0) {
+                $nextGroupRefColIndex = $this->writeGroupedReference(
+                    $importSheet,
+                    $referenceSheet,
+                    $column,
+                    $colLetter,
+                    $pairs,
+                    $nextGroupRefColIndex
+                );
+
+                continue;
+            }
 
             $dropdown = $column['dropdown'] ?? null;
             if (! is_array($dropdown) || count($dropdown) === 0) {
@@ -125,6 +142,68 @@ class SwmExcelTemplateWriter
     }
 
     /**
+     * Render a two-column "group -> value" block on the Reference sheet (e.g.
+     * Organization -> Driver Name) and point the import column's in-cell dropdown
+     * at the value column so the reader can tell which values belong to which
+     * group. Returns the next free grouped-reference column index.
+     *
+     * @param  array{label?: string, key: string, required?: bool, multiselect?: bool, reference_pairs_headers?: array<int, string>}  $column
+     * @param  array<int, array{group?: string, value?: string}>  $pairs
+     */
+    protected function writeGroupedReference(
+        Worksheet $importSheet,
+        Worksheet $referenceSheet,
+        array $column,
+        string $importColLetter,
+        array $pairs,
+        int $nextGroupRefColIndex
+    ): int {
+        $header = $column['label'] ?? $column['key'];
+        $headers = $column['reference_pairs_headers'] ?? [__('Group'), $header];
+
+        $groupCol = $this->columnLetter($nextGroupRefColIndex);
+        $valueCol = $this->columnLetter($nextGroupRefColIndex + 1);
+
+        $referenceSheet->setCellValue($groupCol.'1', $headers[0] ?? __('Group'));
+        $referenceSheet->setCellValue($valueCol.'1', $headers[1] ?? $header);
+        $referenceSheet->getStyle($groupCol.'1')->getFont()->setBold(true);
+        $referenceSheet->getStyle($valueCol.'1')->getFont()->setBold(true);
+
+        $row = 2;
+        foreach ($pairs as $pair) {
+            $value = (string) ($pair['value'] ?? '');
+            if ($value === '') {
+                continue;
+            }
+            $referenceSheet->setCellValue($groupCol.$row, (string) ($pair['group'] ?? ''));
+            $referenceSheet->setCellValue($valueCol.$row, $value);
+            $row++;
+        }
+        $lastRow = $row - 1;
+
+        // No values written (e.g. groups exist but have no entries): nothing to
+        // validate against, so leave the import column free-text.
+        if ($lastRow < 2) {
+            return $nextGroupRefColIndex;
+        }
+
+        if (! ($column['multiselect'] ?? false)) {
+            $rangeFormula = 'Reference!$'.$valueCol.'$2:$'.$valueCol.'$'.$lastRow;
+            for ($r = 2; $r <= self::VALIDATION_ROW_LIMIT + 1; $r++) {
+                $validation = $importSheet->getCell($importColLetter.$r)->getDataValidation();
+                $validation->setType(DataValidation::TYPE_LIST);
+                $validation->setErrorStyle(DataValidation::STYLE_STOP);
+                $validation->setAllowBlank(! ($column['required'] ?? false));
+                $validation->setShowDropDown(true);
+                $validation->setFormula1($rangeFormula);
+            }
+        }
+
+        // Advance past this block's two columns plus a one-column gap.
+        return $nextGroupRefColIndex + 3;
+    }
+
+    /**
      * @param  array<int, array{key: string, label?: string, required?: bool, dropdown?: array<int, string>, multiselect?: bool, reference_key?: string}>  $columns
      */
     protected function writeInstructionsSheet(Worksheet $sheet, array $columns): void
@@ -139,6 +218,19 @@ class SwmExcelTemplateWriter
         $row++;
         $sheet->setCellValue('A'.$row, __('Required columns must have a value in each row you import.'));
         $row++;
+
+        foreach ($columns as $column) {
+            if (empty($column['reference_pairs'])) {
+                continue;
+            }
+            $label = $column['label'] ?? $column['key'];
+            $groupHeader = $column['reference_pairs_headers'][0] ?? __('Group');
+            $sheet->setCellValue('A'.$row, __(':label must belong to the selected :group; see the ":group -> :label" list on the Reference sheet.', [
+                'label' => $label,
+                'group' => $groupHeader,
+            ]));
+            $row++;
+        }
 
         $hasDerived = false;
         foreach ($columns as $column) {

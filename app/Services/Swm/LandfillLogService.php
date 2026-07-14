@@ -8,6 +8,7 @@ use App\Models\Swm\Sts;
 use App\Models\Swm\Vehicle;
 use App\Models\Swm\WasteType;
 use App\Services\Swm\Concerns\HasExcelColumnValidationLabels;
+use App\Support\ExcelDownload;
 use App\Support\Swm\SwmExcelColumns;
 use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
@@ -194,7 +195,7 @@ class LandfillLogService
         return $log->id;
     }
 
-    public function download(array $data): void
+    public function download(array $data): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         $query = $this->landfillLogQuery();
         $this->applyFilters($query, $data);
@@ -208,21 +209,22 @@ class LandfillLogService
             ->setBackgroundColor(Color::rgb(228, 228, 228))
             ->build();
 
-        $writer = WriterFactory::create(Type::XLSX);
-        $writer->openToBrowser(SwmExcelFilename::export('landfill_logs'))
-            ->addRowWithStyle($columns, $style);
+        return ExcelDownload::xlsx(
+            SwmExcelFilename::export('landfill_logs'),
+            function ($writer) use ($columns, $style, $query, $columnDefs) {
+                $writer->addRowWithStyle($columns, $style);
 
-        $query->orderBy('id')->chunk(5000, function ($rows) use ($writer, $columnDefs) {
-            foreach ($rows as $row) {
-                $writer->addRow(SwmExcelColumns::buildExportRow(
-                    $columnDefs,
-                    $row,
-                    fn (string $key, LandfillLog $model) => $this->formatLandfillLogExportValue($key, $model)
-                ));
+                $query->orderBy('id')->chunk(5000, function ($rows) use ($writer, $columnDefs) {
+                    foreach ($rows as $row) {
+                        $writer->addRow(SwmExcelColumns::buildExportRow(
+                            $columnDefs,
+                            $row,
+                            fn (string $key, LandfillLog $model) => $this->formatLandfillLogExportValue($key, $model)
+                        ));
+                    }
+                });
             }
-        });
-
-        $writer->close();
+        );
     }
 
     public function downloadTemplate(): void
@@ -242,7 +244,7 @@ class LandfillLogService
             ['key' => 'operation_date', 'label' => __('Operation Date'), 'required' => true, 'date_hint' => '02 Jun 2026'],
             [
                 'key' => 'vehicle_number',
-                'label' => __('Vehicle Number'),
+                'label' => __('Vehicle No.'),
                 'required' => true,
                 'dropdown' => array_values(Vehicle::query()
                     ->whereNull('deleted_at')
@@ -453,7 +455,7 @@ class LandfillLogService
     protected function formOnlyValidationLabels(): array
     {
         return [
-            'vehicle_id' => __('Vehicle Number'),
+            'vehicle_id' => __('Vehicle No.'),
             'landfill_id' => __('Landfill Name'),
             'waste_type_ids' => __('Waste Types'),
             'source_sts_ids' => __('Source STSs'),

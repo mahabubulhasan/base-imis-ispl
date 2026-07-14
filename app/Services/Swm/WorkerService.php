@@ -7,6 +7,7 @@ use App\Models\Swm\Worker;
 use App\Models\Swm\WorkType;
 use App\Services\Swm\Concerns\HasExcelColumnValidationLabels;
 use App\Support\Swm\SwmExcelColumns;
+use App\Support\ExcelDownload;
 use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
 use App\Support\Swm\SwmImportTemplateOptions;
@@ -213,7 +214,7 @@ class WorkerService
         });
     }
 
-    public function download(array $data): void
+    public function download(array $data): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         $name = $data['name'] ?? null;
         $mobile = $data['mobile'] ?? null;
@@ -263,18 +264,19 @@ class WorkerService
             ->setBackgroundColor(Color::rgb(228, 228, 228))
             ->build();
 
-        $writer = WriterFactory::create(Type::XLSX);
-        $writer->openToBrowser(SwmExcelFilename::export('workers'))
-            ->addRowWithStyle($columns, $style);
+        return ExcelDownload::xlsx(
+            SwmExcelFilename::export('workers'),
+            function ($writer) use ($columns, $style, $query) {
+                $writer->addRowWithStyle($columns, $style);
 
-        $query->orderBy('swm.workers.id')->chunk(5000, function ($rows) use ($writer, $columns) {
-            $columnDefinitions = $this->excelColumnDefinitions();
-            foreach ($rows as $row) {
-                $writer->addRow(SwmExcelColumns::buildExportRow($columnDefinitions, $row, fn (string $key, $model) => $this->formatWorkerExportValue($key, $model)));
+                $query->orderBy('swm.workers.id')->chunk(5000, function ($rows) use ($writer, $columns) {
+                    $columnDefinitions = $this->excelColumnDefinitions();
+                    foreach ($rows as $row) {
+                        $writer->addRow(SwmExcelColumns::buildExportRow($columnDefinitions, $row, fn (string $key, $model) => $this->formatWorkerExportValue($key, $model)));
+                    }
+                });
             }
-        });
-
-        $writer->close();
+        );
     }
 
     public function downloadTemplate(): void

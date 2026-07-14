@@ -9,7 +9,7 @@
     <div class="section-header"><h2>(৬) কোনো বেসরকারি ব্যক্তি বা প্রতিষ্ঠানকে কঠিন বর্জ্য প্রক্রিয়াকরণের দায়িত্ব প্রদান করা হয়ে থাকলে তার বিবরণ</h2></div>
     <div class="section-body">
         <div class="tbl-wrap">
-            <table class="tbl" id="tbl-contracts">
+            <table class="tbl tbl-aligned" id="tbl-contracts">
                 <thead>
                     <tr>
                         <th style="width:36px;">ক্রম</th>
@@ -66,7 +66,7 @@
     <div class="section-header"><h2>(৯) মোবাইল কোর্ট পরিচালনা করা হয়ে থাকলে তার বিবরণ</h2></div>
     <div class="section-body">
         <div class="tbl-wrap">
-            <table class="tbl">
+            <table class="tbl tbl-aligned">
                 <thead>
                     <tr>
                         <th>মোট মামলার সংখ্যা</th>
@@ -77,10 +77,10 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td><input type="number" min="0" name="mc_cases" /></td>
-                        <td><input type="number" min="0" name="mc_convicted" /></td>
-                        <td><input type="number" min="0" step="0.01" name="mc_fines" /></td>
-                        <td><input type="number" min="0" name="mc_imprisoned" /></td>
+                        <td class="col-num"><input type="number" min="0" name="mc_cases" /></td>
+                        <td class="col-num"><input type="number" min="0" name="mc_convicted" /></td>
+                        <td class="col-currency"><input type="number" min="0" step="0.01" name="mc_fines" /></td>
+                        <td class="col-num"><input type="number" min="0" name="mc_imprisoned" /></td>
                     </tr>
                 </tbody>
             </table>

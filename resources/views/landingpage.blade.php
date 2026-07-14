@@ -46,7 +46,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
             theme: {
                 extend: {
                     colors: {
-                        primary: "#0D47A1",
+                        primary: "#375380",
                         "background-light": "#F8FAFC",
                         "accent-blue": "#3b82f6",
                         "accent-green": "#22c55e",
@@ -361,7 +361,7 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                     />
                 </div>
                 <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-4 sm:mb-6 px-1 sm:px-0">
-                    Conceptualised by <a href="https://snv.org" class="text-primary font-semibold hover:underline" target="_blank" rel="noopener noreferrer">SNV Netherlands Development Organization</a> under the project <span class="font-semibold text-slate-800">"Transitioning to Sustainable Urban Water Cycles in Bangladesh"</span> supported by the <span class="font-semibold text-slate-800">Embassy of the Kingdom of the Netherlands</span>
+                    Conceptualized by <a href="https://snv.org" class="text-primary font-semibold hover:underline" target="_blank" rel="noopener noreferrer" style="color:#008fcc;">SNV</a> under the project <span>"Transitioning to Sustainable Urban Water Cycles in Bangladesh"</span> supported by the <span>Embassy of the Kingdom of the Netherlands.</span>
                 </p>
                 {{-- <h1 class="text-4xl md:text-5xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-6 sr-only">
                     Integrated Municipal Information System <span class="text-primary">(IMIS)</span>
@@ -423,11 +423,11 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
         </div> --}}
         <div class="mt-4 mx-3">
             <div class="mx-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-left pb-4">
-                <div>
+                <div class="text-sm">
                     © {{ config('constants.SITE_NAME') }}. All rights reserved.
                 </div>
                 <div class="sm:text-right text-sm">
-                    Developed by <a href="https://streamstech.com" class="text-primary font-semibold hover:underline" target="_blank" rel="noopener noreferrer">Streams Tech Ltd.</a>
+                    Developed by <a href="https://streamstech.com" class="text-primary font-semibold hover:underline" target="_blank" rel="noopener noreferrer">Streams Tech</a>
                 </div>
             </div>
         </div>

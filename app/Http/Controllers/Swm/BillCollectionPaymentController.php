@@ -8,6 +8,7 @@ use App\Http\Requests\Swm\BillCollectionPaymentRequest;
 use App\Imports\Swm\BillCollectionPaymentImport;
 use App\Models\Swm\BillCollectionPayment;
 use App\Models\BuildingInfo\Household;
+use App\Models\LayerInfo\Ward;
 use App\Models\User;
 use App\Services\Swm\BillCollectionPaymentService;
 use Carbon\Carbon;
@@ -54,16 +55,19 @@ class BillCollectionPaymentController extends Controller
     public function holdingsSearch(Request $request)
     {
         $q = trim((string) $request->get('q', ''));
-        if (strlen($q) < 2) {
-            return response()->json(['results' => []]);
+        $ward = $request->filled('ward') ? (int) $request->get('ward') : null;
+        $page = max(1, (int) $request->get('page', 1));
+        // With a ward selected the dropdown auto-loads that ward's holdings (no search term needed);
+        // without a ward, keep the 2-character minimum to avoid loading every holding.
+        if ($ward === null && strlen($q) < 2) {
+            return response()->json(['results' => [], 'pagination' => ['more' => false]]);
         }
-        $map = $this->billCollectionPaymentService->searchHoldings($q, 30);
-        $results = [];
-        foreach ($map as $id => $text) {
-            $results[] = ['id' => $id, 'text' => $text];
-        }
+        $result = $this->billCollectionPaymentService->searchHoldings($q, 20, $ward, $page);
 
-        return response()->json(['results' => $results]);
+        return response()->json([
+            'results' => $result['results'],
+            'pagination' => ['more' => $result['has_more']],
+        ]);
     }
 
     public function customersByHolding(Request $request)
@@ -71,13 +75,17 @@ class BillCollectionPaymentController extends Controller
         $request->validate([
             'holding_number' => ['required', 'string', 'max:255'],
             'q' => ['nullable', 'string', 'max:255'],
+            'ward' => ['nullable', 'integer'],
+            'page' => ['nullable', 'integer', 'min:1'],
         ]);
-        $rows = $this->billCollectionPaymentService->customersByHolding(
+        $result = $this->billCollectionPaymentService->customersByHolding(
             $request->input('holding_number'),
-            $request->filled('q') ? $request->input('q') : null
+            $request->filled('q') ? $request->input('q') : null,
+            $request->filled('ward') ? (int) $request->input('ward') : null,
+            max(1, (int) $request->get('page', 1))
         );
         $results = [];
-        foreach ($rows as $row) {
+        foreach ($result['results'] as $row) {
             $results[] = [
                 'id' => (string) $row['id'],
                 'text' => $row['text'],
@@ -96,14 +104,17 @@ class BillCollectionPaymentController extends Controller
             ];
         }
 
-        return response()->json(['results' => $results]);
+        return response()->json([
+            'results' => $results,
+            'pagination' => ['more' => $result['has_more']],
+        ]);
     }
 
     public function balanceThroughMonth(Request $request)
     {
         $validated = $request->validate([
             'household_id' => ['required', 'integer'],
-            'payment_for_month' => ['required', 'date'],
+            'transaction_month' => ['required', 'date'],
             'exclude_payment_id' => ['nullable', 'integer'],
         ]);
         $site = Household::query()
@@ -113,7 +124,7 @@ class BillCollectionPaymentController extends Controller
         if (! $site) {
             return response()->json(['error' => __('Household not found.')], 404);
         }
-        $month = Carbon::parse($validated['payment_for_month'])->startOfMonth();
+        $month = Carbon::parse($validated['transaction_month'])->startOfMonth()->subMonthNoOverflow();
         $excludeId = isset($validated['exclude_payment_id']) ? (int) $validated['exclude_payment_id'] : null;
 
         return response()->json(
@@ -127,6 +138,7 @@ class BillCollectionPaymentController extends Controller
         $payment = null;
         $paymentMethods = config('bill_collection.payment_methods', []);
         $users = User::query()->orderBy('name')->pluck('name', 'id');
+        $wards = Ward::getInAscOrder();
         $canChooseReceivedBy = $this->userCanChooseBillCollectionReceivedBy();
 
         return view('swm.bill-collection.payments.create', compact(
@@ -134,6 +146,7 @@ class BillCollectionPaymentController extends Controller
             'payment',
             'paymentMethods',
             'users',
+            'wards',
             'canChooseReceivedBy'
         ));
     }
@@ -171,6 +184,7 @@ class BillCollectionPaymentController extends Controller
         $page_title = __('Edit Payment');
         $paymentMethods = config('bill_collection.payment_methods', []);
         $users = User::query()->orderBy('name')->pluck('name', 'id');
+        $wards = Ward::getInAscOrder();
         $payment->load(['primaryCollectionSite', 'receivedBy']);
         $canChooseReceivedBy = $this->userCanChooseBillCollectionReceivedBy();
 
@@ -179,6 +193,7 @@ class BillCollectionPaymentController extends Controller
             'payment',
             'paymentMethods',
             'users',
+            'wards',
             'canChooseReceivedBy'
         ));
     }

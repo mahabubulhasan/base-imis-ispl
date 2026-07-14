@@ -5,6 +5,7 @@ namespace App\Imports\Swm;
 use App\Models\Swm\Organization;
 use App\Models\Swm\Landfill;
 use App\Models\Swm\Sts;
+use App\Models\Swm\Vehicle;
 use App\Models\Swm\VehicleType;
 use App\Models\Swm\Worker;
 use App\Services\Swm\VehicleService;
@@ -113,12 +114,21 @@ class VehicleImport implements ToCollection, WithHeadingRow, WithMultipleSheets
                     continue;
                 }
 
-                $driverWorkerId = $this->resolveDriverWorkerId(
-                    trim((string) ($norm['driver'] ?? '')),
-                    $orgId
-                );
+                $driverName = trim((string) ($norm['driver'] ?? ''));
+                $driverWorkerId = $this->resolveDriverWorkerId($driverName, $orgId);
                 if (! $driverWorkerId) {
-                    $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'driver', $columnDefinitions);
+                    if ($driverName === '') {
+                        $this->errors[] = SwmImportRowHelper::rowRequired($rowNum, 'driver', $columnDefinitions);
+                    } else {
+                        $orgLabel = $orgMap[$orgId] ?? trim((string) ($norm['organization'] ?? ''));
+                        $this->errors[] = SwmImportRowHelper::rowMessage(
+                            $rowNum,
+                            __("Driver ':name' not found for the selected organization (:org).", [
+                                'name' => $driverName,
+                                'org' => $orgLabel,
+                            ])
+                        );
+                    }
                     continue;
                 }
 
@@ -210,7 +220,24 @@ class VehicleImport implements ToCollection, WithHeadingRow, WithMultipleSheets
                     'remarks' => ($norm['remarks'] ?? '') !== '' ? trim((string) $norm['remarks']) : null,
                 ];
 
-                $saved = $service->storeOrUpdate(null, $data);
+                // Upsert by (organization, vehicle number): if a vehicle with the
+                // same number already exists for this organization (matching the
+                // partial unique index on non-deleted rows), update it instead of
+                // attempting a second insert that would violate the constraint.
+                $existing = Vehicle::query()
+                    ->whereNull('deleted_at')
+                    ->where('organization_id', $orgId)
+                    ->where('vehicle_number', $vehicleNumber)
+                    ->first(['id', 'vehicle_id_no']);
+
+                // The import template carries no Vehicle ID No column, so keep the
+                // existing one on update rather than letting the service regenerate
+                // a fresh id_no for an already-registered vehicle.
+                if ($existing && ($data['vehicle_id_no'] ?? null) === null) {
+                    $data['vehicle_id_no'] = $existing->vehicle_id_no;
+                }
+
+                $saved = $service->storeOrUpdate($existing ? (int) $existing->id : null, $data);
                 if ($saved) {
                     $this->successCount++;
                 } else {

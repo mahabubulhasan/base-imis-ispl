@@ -73,6 +73,12 @@ class SwmExcelColumns
                 if (isset($column['reference_key'])) {
                     $templateColumn['reference_key'] = $column['reference_key'];
                 }
+                if (isset($column['reference_pairs'])) {
+                    $templateColumn['reference_pairs'] = $column['reference_pairs'];
+                }
+                if (isset($column['reference_pairs_headers'])) {
+                    $templateColumn['reference_pairs_headers'] = $column['reference_pairs_headers'];
+                }
                 if (isset($column['date_hint'])) {
                     $templateColumn['date_hint'] = $column['date_hint'];
                 }

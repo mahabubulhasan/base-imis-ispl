@@ -89,6 +89,8 @@ Route::group([
     Route::get('buildings/buildingdashboard', 'BuildingDashboardController@index')->name('buildingdashboard');
     Route::get('buildings/check-house', 'BuildingController@checkHouse')->name('buildings.check-house');
     Route::get('buildings/data', 'BuildingController@getData')->name('building.getData');
+    Route::get('buildings/household-options', 'BuildingController@getHouseholdOptions')->name('building.household-options');
+    Route::get('buildings/lic-options', 'BuildingController@getLicOptions')->name('building.lic-options');
     Route::get('buildings/get-house-numbers', 'BuildingController@getHouseNumbers')->name('building.get-house-numbers-containments');
     Route::get('buildings/get-house-numbers-all', 'BuildingController@getHouseNumbersAll')->name('building.get-house-numbers-all');
     Route::get('buildings/get-ctpt-house-numbers', 'BuildingController@getCTPTHouseNumbers')->name('building.get-ctpt-house-numbers');
@@ -102,13 +104,14 @@ Route::group([
     Route::resource('buildings', 'BuildingController');
 
     // building survey routes
-    Route::get('building-surveys/data', 'BuildingSurveyController@getData')->name('building.getData');
-    Route::get('building-surveys/{id}/approve', 'BuildingSurveyController@approve');
-    Route::get('building-surveys/download/{filename}', 'BuildingSurveyController@download')->name('building.download');
-    Route::resource('building-surveys', 'BuildingSurveyController');
+    // Route::get('building-surveys/data', 'BuildingSurveyController@getData')->name('building.getData');
+    // Route::get('building-surveys/{id}/approve', 'BuildingSurveyController@approve');
+    // Route::get('building-surveys/download/{filename}', 'BuildingSurveyController@download')->name('building.download');
+    // Route::resource('building-surveys', 'BuildingSurveyController');
 
     // households routes
     Route::get('households/building-snapshot', 'HouseholdController@getBuildingSnapshot')->name('building-info.households.building-snapshot');
+    Route::get('households/bin-options', 'HouseholdController@binOptions')->name('building-info.households.bin-options');
     Route::get('households/data', 'HouseholdController@getData')->name('building-info.households.data');
     Route::get('households/export', 'HouseholdController@export')->name('building-info.households.export');
     Route::get('households/template', 'HouseholdController@downloadTemplate')->name('building-info.households.template');
@@ -166,34 +169,34 @@ Route::group([
     Route::get('searchPermission/{id}', 'RoleController@searchPermission');
 });
 
-// Tax Payment routes
-Route::group([
-    'name' => 'tax-payment',
-    // 'prefix' => 'tax-info-mgmt',
-    'namespace' => 'TaxPaymentInfo',
-    'middleware' => 'auth'
-], function () {
-    Route::get('tax-payment/data', 'TaxPaymentController@getData')->name('tax-payment.getData');
-    Route::get('tax-payment/export', 'TaxPaymentController@export')->name('tax-payment.export');
-    Route::get('tax-payment/exportunmatched', 'TaxPaymentController@exportunmatched')->name('tax-payment.exportunmatched');
-    Route::get('tax-payment/get-bins', 'TaxPaymentController@getBins')->name('tax-payment.getBins');
-    Route::get('new-tax-payment', 'TaxPaymentController@newTaxPaymentForm')->name('tax-payment.new');
-    Route::post('new-tax-payment', 'TaxPaymentController@storeNewTaxPayment')->name('tax-payment.storeNew');
-    Route::resource('tax-payment', 'TaxPaymentController');
-});
+// Tax Payment routes -- Property Tax Collection ISS module locked out
+// Route::group([
+//     'name' => 'tax-payment',
+//     // 'prefix' => 'tax-info-mgmt',
+//     'namespace' => 'TaxPaymentInfo',
+//     'middleware' => 'auth'
+// ], function () {
+//     Route::get('tax-payment/data', 'TaxPaymentController@getData')->name('tax-payment.getData');
+//     Route::get('tax-payment/export', 'TaxPaymentController@export')->name('tax-payment.export');
+//     Route::get('tax-payment/exportunmatched', 'TaxPaymentController@exportunmatched')->name('tax-payment.exportunmatched');
+//     Route::get('tax-payment/get-bins', 'TaxPaymentController@getBins')->name('tax-payment.getBins');
+//     Route::get('new-tax-payment', 'TaxPaymentController@newTaxPaymentForm')->name('tax-payment.new');
+//     Route::post('new-tax-payment', 'TaxPaymentController@storeNewTaxPayment')->name('tax-payment.storeNew');
+//     Route::resource('tax-payment', 'TaxPaymentController');
+// });
 
-// Water Supply Payment routes
-Route::group([
-    'name' => 'watersupply-payment',
-    // 'prefix' => 'watersupply-info-mgmt',
-    'namespace' => 'WaterSupplyInfo',
-    'middleware' => 'auth'
-], function () {
-    Route::get('watersupply-payment/data', 'WaterSupplyController@getData')->name('watersupply-payment.getData');
-    Route::get('watersupply-payment/export', 'WaterSupplyController@export')->name('watersupply-payment.export');
-    Route::get('watersupply-payment/exportunmatched', 'WaterSupplyController@exportunmatched')->name('watersupply-payment.exportunmatched');
-    Route::resource('watersupply-payment', 'WaterSupplyController');
-});
+// Water Supply Payment routes -- Water Supply ISS module locked out
+// Route::group([
+//     'name' => 'watersupply-payment',
+//     // 'prefix' => 'watersupply-info-mgmt',
+//     'namespace' => 'WaterSupplyInfo',
+//     'middleware' => 'auth'
+// ], function () {
+//     Route::get('watersupply-payment/data', 'WaterSupplyController@getData')->name('watersupply-payment.getData');
+//     Route::get('watersupply-payment/export', 'WaterSupplyController@export')->name('watersupply-payment.export');
+//     Route::get('watersupply-payment/exportunmatched', 'WaterSupplyController@exportunmatched')->name('watersupply-payment.exportunmatched');
+//     Route::resource('watersupply-payment', 'WaterSupplyController');
+// });
 
 // SW service Payment routes
 Route::group([
@@ -555,6 +558,7 @@ Route::group([
     });
 });
 
+// Sewer Connection IMS module locked out
 Route::group([
     'name' => 'sewerconnection',
     'prefix' => 'sewerconnection',
@@ -603,6 +607,7 @@ Route::group([
     Route::get('drains/{id}/history', 'DrainController@history');
     Route::resource('drains', 'DrainController');
 
+    // Sewer Network module locked out (get-sewer-names kept: used by Building/Containment forms as a code lookup)
     Route::get('sewerlines/export', 'SewerLineController@export');
     Route::get('sewerlines/{code}/geometry', 'SewerLineController@getGeometry');
     Route::get('sewerlines/data', 'SewerLineController@getData');
@@ -612,6 +617,7 @@ Route::group([
     Route::get('sewerlines/{id}/history', 'SewerLineController@history');
     Route::resource('sewerlines', 'SewerLineController');
 
+    // Water Supply Network module locked out (get-watersupply-codes kept: used by Building forms as a code lookup)
     Route::get('watersupplys/export', 'WaterSupplysController@export');
     Route::get('watersupplys/{code}/geometry', 'WaterSupplysController@getGeometry');
     Route::get('watersupplys/data', 'WaterSupplysController@getData');
@@ -635,72 +641,76 @@ Route::group([
     'namespace' => 'Fsm'
 ], function () {
 
-    Route::post('/nsd/authenticate', 'NsdDashboardController@getBearerToken');
-    Route::get('/nsd/push-nsd/{year}', 'NsdDashboardController@pushToNsd');
-    Route::get('/nsd/cwis-data/{year}', 'NsdDashboardController@getCwisData');
-    Route::get('/nsd/cwis-status', 'NsdDashboardController@checkNsdStatus');
-    Route::get('/nsd-setting', 'NsdSettingController@index')->name('nsd-setting.index');
-    Route::get('/nsd-setting/create', 'NsdSettingController@create')->name('nsd-setting.create');
-    Route::post('/nsd-setting', 'NsdSettingController@store')->name('nsd-setting.store');
-    Route::get('/nsd-setting/{id}/edit', 'NsdSettingController@edit')->name('nsd-setting.edit');
-    Route::put('/nsd-setting/{id}', 'NsdSettingController@update')->name('nsd-setting.update');
+    // CWIS IMS module locked out
+    // Route::post('/nsd/authenticate', 'NsdDashboardController@getBearerToken');
+    // Route::get('/nsd/push-nsd/{year}', 'NsdDashboardController@pushToNsd');
+    // Route::get('/nsd/cwis-data/{year}', 'NsdDashboardController@getCwisData');
+    // Route::get('/nsd/cwis-status', 'NsdDashboardController@checkNsdStatus');
+    // Route::get('/nsd-setting', 'NsdSettingController@index')->name('nsd-setting.index');
+    // Route::get('/nsd-setting/create', 'NsdSettingController@create')->name('nsd-setting.create');
+    // Route::post('/nsd-setting', 'NsdSettingController@store')->name('nsd-setting.store');
+    // Route::get('/nsd-setting/{id}/edit', 'NsdSettingController@edit')->name('nsd-setting.edit');
+    // Route::put('/nsd-setting/{id}', 'NsdSettingController@update')->name('nsd-setting.update');
 
 
 
-    Route::get('/cwis-setting/data', 'CwisSettingController@getData');
-    Route::resource('/cwis-setting', 'CwisSettingController');
+    // CWIS IMS module locked out
+    // Route::get('/cwis-setting/data', 'CwisSettingController@getData');
+    // Route::resource('/cwis-setting', 'CwisSettingController');
 
-    Route::get('/treatment-plant-performance-test/data', 'TreatmentplantPerformanceTestController@getData');
-    Route::resource('/treatment-plant-performance-test', 'TreatmentplantPerformanceTestController');
+    // Fecal Sludge IMS module locked out
+    // Route::get('/treatment-plant-performance-test/data', 'TreatmentplantPerformanceTestController@getData');
+    // Route::resource('/treatment-plant-performance-test', 'TreatmentplantPerformanceTestController');
 
 
-    Route::get('fsmdashboard', 'FsmDashboardController@index')->name('fsmdashboard');
-    Route::get('/store-kpi', 'KpiDashboardController@storekpi');
-    Route::get('/data', 'KpiDashboardController@data');
-    Route::get('/card', 'KpiDashboardController@card');
+    // Route::get('fsmdashboard', 'FsmDashboardController@index')->name('fsmdashboard');
+    // CWIS IMS module locked out
+    // Route::get('/store-kpi', 'KpiDashboardController@storekpi');
+    // Route::get('/data', 'KpiDashboardController@data');
+    // Route::get('/card', 'KpiDashboardController@card');
 
-    Route::get('generate-report/{year?}/{serviceprovider?}', 'KpiDashboardController@generateReport');
-    Route::resource('/kpi-dashboard', 'KpiDashboardController');
-
-    /**
-     * Kpi Target Routes
-     */
-    Route::get('kpi-targets/data', 'KpiTargetController@getData');
-    Route::get('kpi-targets/export', 'KpiTargetController@export');
-    Route::get('kpi-targets/{id}/history', 'KpiTargetController@history');
-    Route::resource('kpi-targets', 'KpiTargetController');
+    // Route::get('generate-report/{year?}/{serviceprovider?}', 'KpiDashboardController@generateReport');
+    // Route::resource('/kpi-dashboard', 'KpiDashboardController');
 
     /**
-     * Service Providers Routes
+     * Kpi Target Routes -- CWIS IMS module locked out
      */
-    Route::get('service-providers/data', 'ServiceProviderController@getData');
-    Route::get('service-providers/export', 'ServiceProviderController@export');
-    Route::get('service-providers/{id}/history', 'ServiceProviderController@history');
-    Route::resource('service-providers', 'ServiceProviderController');
+    // Route::get('kpi-targets/data', 'KpiTargetController@getData');
+    // Route::get('kpi-targets/export', 'KpiTargetController@export');
+    // Route::get('kpi-targets/{id}/history', 'KpiTargetController@history');
+    // Route::resource('kpi-targets', 'KpiTargetController');
 
     /**
-     * Employee Info Routes
+     * Service Providers Routes -- Fecal Sludge IMS module locked out
      */
-    Route::get('employee-infos/data', 'EmployeeInfoController@getData');
-    Route::get('employee-infos/export', 'EmployeeInfoController@export');
-    Route::get('employee-infos/{id}/history', 'EmployeeInfoController@history');
-    Route::resource('employee-infos', 'EmployeeInfoController');
+    // Route::get('service-providers/data', 'ServiceProviderController@getData');
+    // Route::get('service-providers/export', 'ServiceProviderController@export');
+    // Route::get('service-providers/{id}/history', 'ServiceProviderController@history');
+    // Route::resource('service-providers', 'ServiceProviderController');
 
     /**
-     * Help Desks Routes
+     * Employee Info Routes -- Fecal Sludge IMS module locked out
      */
-    Route::get('help-desks/data', 'HelpDeskController@getData');
-    Route::get('help-desks/export', 'HelpDeskController@export');
-    Route::get('help-desks/{id}/history', 'HelpDeskController@history');
-    Route::resource('help-desks', 'HelpDeskController');
+    // Route::get('employee-infos/data', 'EmployeeInfoController@getData');
+    // Route::get('employee-infos/export', 'EmployeeInfoController@export');
+    // Route::get('employee-infos/{id}/history', 'EmployeeInfoController@history');
+    // Route::resource('employee-infos', 'EmployeeInfoController');
 
     /**
-     * Treatment Plants Routes
+     * Help Desks Routes -- Fecal Sludge IMS module locked out
      */
-    Route::get('treatment-plants/data', 'TreatmentPlantController@getData');
-    Route::get('treatment-plants/export', 'TreatmentPlantController@export');
-    Route::get('treatment-plants/{id}/history', 'TreatmentPlantController@history');
-    Route::resource('treatment-plants', 'TreatmentPlantController');
+    // Route::get('help-desks/data', 'HelpDeskController@getData');
+    // Route::get('help-desks/export', 'HelpDeskController@export');
+    // Route::get('help-desks/{id}/history', 'HelpDeskController@history');
+    // Route::resource('help-desks', 'HelpDeskController');
+
+    /**
+     * Treatment Plants Routes -- Fecal Sludge IMS module locked out
+     */
+    // Route::get('treatment-plants/data', 'TreatmentPlantController@getData');
+    // Route::get('treatment-plants/export', 'TreatmentPlantController@export');
+    // Route::get('treatment-plants/{id}/history', 'TreatmentPlantController@history');
+    // Route::resource('treatment-plants', 'TreatmentPlantController');
 
     /**
      * Treatment Plant Efficiency Standard Routes
@@ -710,28 +720,28 @@ Route::group([
 
     /**
      *
-     * Treatment Plant Efficiency Test Routes
+     * Treatment Plant Efficiency Test Routes -- Fecal Sludge IMS module locked out
      */
-    Route::get('treatment-plant-test/data', 'TreatmentPlantTestController@getData');
-    Route::get('treatment-plant-test/export', 'TreatmentPlantTestController@export');
+    // Route::get('treatment-plant-test/data', 'TreatmentPlantTestController@getData');
+    // Route::get('treatment-plant-test/export', 'TreatmentPlantTestController@export');
 
-    Route::get('treatment-plant-test/{id}/history', 'TreatmentPlantTestController@history');
-    Route::resource('treatment-plant-test', 'TreatmentPlantTestController');
+    // Route::get('treatment-plant-test/{id}/history', 'TreatmentPlantTestController@history');
+    // Route::resource('treatment-plant-test', 'TreatmentPlantTestController');
 
 
     /**
      *
 
-     * Desludging Vehicles Routes
+     * Desludging Vehicles Routes -- Fecal Sludge IMS module locked out
      */
-    Route::get('desludging-vehicles/data', 'VacutugTypeController@getData');
-    Route::get('desludging-vehicles/export', 'VacutugTypeController@export');
-    Route::get('desludging-vehicles/{id}/history', 'VacutugTypeController@history');
-    Route::resource('desludging-vehicles', 'VacutugTypeController');
+    // Route::get('desludging-vehicles/data', 'VacutugTypeController@getData');
+    // Route::get('desludging-vehicles/export', 'VacutugTypeController@export');
+    // Route::get('desludging-vehicles/{id}/history', 'VacutugTypeController@history');
+    // Route::resource('desludging-vehicles', 'VacutugTypeController');
 
 
     /**
-     * Containment Routes
+     * Containment Routes -- Fecal Sludge IMS module locked out
      *
      */
     Route::get('containments/data', 'ContainmentController@getData');
@@ -753,76 +763,76 @@ Route::group([
 
 
     /**
-     * CTPT Info Routes
+     * CTPT Info Routes -- PT/CT IMS module locked out
      */
-    Route::get('ctpt/data', 'CtptController@getData');
-    Route::get('ctpt/export', 'CtptController@export');
-    Route::get('ctpt/{id}/buildings', 'CtptController@listBuildings');
-    Route::get('ctpt/{id}/buildings/add', 'CtptController@addBuildings');
-    Route::patch('ctpt/{id}/buildings', 'CtptController@saveBuildings');
-    Route::get('ctpt/buildings/data', 'CtptController@getAllBuildingData');
-    Route::get('calculate', 'CtptController@calculate');
-    Route::get('ctpt/{id}/history', 'CtptController@history');
+    // Route::get('ctpt/data', 'CtptController@getData');
+    // Route::get('ctpt/export', 'CtptController@export');
+    // Route::get('ctpt/{id}/buildings', 'CtptController@listBuildings');
+    // Route::get('ctpt/{id}/buildings/add', 'CtptController@addBuildings');
+    // Route::patch('ctpt/{id}/buildings', 'CtptController@saveBuildings');
+    // Route::get('ctpt/buildings/data', 'CtptController@getAllBuildingData');
+    // Route::get('calculate', 'CtptController@calculate');
+    // Route::get('ctpt/{id}/history', 'CtptController@history');
 
 
-    Route::resource('ctpt', 'CtptController');
+    // Route::resource('ctpt', 'CtptController');
 
     /**
-     * CTPT Users Info Routes
+     * CTPT Users Info Routes -- PT/CT IMS module locked out
      */
-    Route::get('ctpt-users/data', 'CtptUserController@getData');
-    Route::get('ctpt-users/export', 'CtptUserController@export');
-    Route::get('ctpt-users/{id}/history', 'CtptUserController@history');
+    // Route::get('ctpt-users/data', 'CtptUserController@getData');
+    // Route::get('ctpt-users/export', 'CtptUserController@export');
+    // Route::get('ctpt-users/{id}/history', 'CtptUserController@history');
 
-    Route::resource('ctpt-users', 'CtptUserController');
+    // Route::resource('ctpt-users', 'CtptUserController');
 
     /**
-     * Application Routes
+     * Application Routes -- Fecal Sludge IMS module locked out
      *
      */
-    Route::get('application/getData', 'ApplicationController@getData')->name('application.get-data');
-    Route::get('application/export', 'ApplicationController@export')->name('application.export');
-    Route::get('application/{id}/history', 'ApplicationController@history')->name('application.history');
-    Route::get('application/getBuildingDetails', 'ApplicationController@buildingDetails')->name('application.get-building-details');
-    Route::get('application/pdf/{year}/{month}/monthly-report', 'ApplicationController@monthlyApplicationsPdf');
-    Route::get('application/{id}/application-report', 'ApplicationController@applicationReport')->name('application.report');
-    Route::get('/service-provider/{service_provider_id}', 'ApplicationController@getServiceProvider');
-    Route::resource('application', 'ApplicationController');
+    // Route::get('application/getData', 'ApplicationController@getData')->name('application.get-data');
+    // Route::get('application/export', 'ApplicationController@export')->name('application.export');
+    // Route::get('application/{id}/history', 'ApplicationController@history')->name('application.history');
+    // Route::get('application/getBuildingDetails', 'ApplicationController@buildingDetails')->name('application.get-building-details');
+    // Route::get('application/pdf/{year}/{month}/monthly-report', 'ApplicationController@monthlyApplicationsPdf');
+    // Route::get('application/{id}/application-report', 'ApplicationController@applicationReport')->name('application.report');
+    // Route::get('/service-provider/{service_provider_id}', 'ApplicationController@getServiceProvider');
+    // Route::resource('application', 'ApplicationController');
 
-    Route::get('pending-application/getData', 'PendingApplicationController@getData')->name('pending-application.get-data');
-    Route::resource('pending-application', 'PendingApplicationController')->only(['index', 'show', 'create', 'store', 'destroy']);
-
-    /**
-     * Emptying Routes
-     *
-     */
-    Route::get('emptying/create/{id}', 'EmptyingController@create')->name('emptying.create-id');
-    Route::get('emptying/{id}/history', 'EmptyingController@history')->name('emptying.history');
-    Route::get('emptying/export', 'EmptyingController@export')->name('emptying.export');
-    Route::get('emptying/getData', 'EmptyingController@getData')->name('emptying.get-data');
-    Route::resource('emptying', 'EmptyingController');
+    // Route::get('pending-application/getData', 'PendingApplicationController@getData')->name('pending-application.get-data');
+    // Route::resource('pending-application', 'PendingApplicationController')->only(['index', 'show', 'create', 'store', 'destroy']);
 
     /**
-     * Feedback Routes
+     * Emptying Routes -- Fecal Sludge IMS module locked out
      *
      */
-    Route::get('feedback/getData', 'FeedbackController@getData')->name('feedback.get-data');
-    Route::get('feedback/export', 'FeedbackController@export');
-    Route::get('feedback/editFeedback/{id}', 'FeedbackController@createFeedback')->name('feedback.create-Feedback');
-
-    Route::resource('feedback', 'FeedbackController');
+    // Route::get('emptying/create/{id}', 'EmptyingController@create')->name('emptying.create-id');
+    // Route::get('emptying/{id}/history', 'EmptyingController@history')->name('emptying.history');
+    // Route::get('emptying/export', 'EmptyingController@export')->name('emptying.export');
+    // Route::get('emptying/getData', 'EmptyingController@getData')->name('emptying.get-data');
+    // Route::resource('emptying', 'EmptyingController');
 
     /**
-     * Sludge Collection Routes
+     * Feedback Routes -- Fecal Sludge IMS module locked out
      *
      */
-    Route::get('sludge-collection/create/{id}', 'SludgeCollectionController@create')->name('sludge-collection.create-id');
-    Route::get('sludge-collection/getData', 'SludgeCollectionController@getData')->name('sludge-collection.get-data');
-    Route::get('sludge-collection/export', 'SludgeCollectionController@export');
-    Route::get('sludge-collection/{id}/history', 'SludgeCollectionController@history');
+    // Route::get('feedback/getData', 'FeedbackController@getData')->name('feedback.get-data');
+    // Route::get('feedback/export', 'FeedbackController@export');
+    // Route::get('feedback/editFeedback/{id}', 'FeedbackController@createFeedback')->name('feedback.create-Feedback');
+
+    // Route::resource('feedback', 'FeedbackController');
+
+    /**
+     * Sludge Collection Routes -- Fecal Sludge IMS module locked out
+     *
+     */
+    // Route::get('sludge-collection/create/{id}', 'SludgeCollectionController@create')->name('sludge-collection.create-id');
+    // Route::get('sludge-collection/getData', 'SludgeCollectionController@getData')->name('sludge-collection.get-data');
+    // Route::get('sludge-collection/export', 'SludgeCollectionController@export');
+    // Route::get('sludge-collection/{id}/history', 'SludgeCollectionController@history');
 
 
-    Route::resource('sludge-collection', 'SludgeCollectionController');
+    // Route::resource('sludge-collection', 'SludgeCollectionController');
 
 
 });
@@ -831,25 +841,26 @@ Route::group([
  * FSM Info Routes
  */
 
-Route::group([
-    'name' => 'cwis',
-    'prefix' => 'cwis',
-    'namespace' => 'Cwis',
-    'middleware' => 'auth'
-], function () {
+// CWIS IMS module locked out
+// Route::group([
+//     'name' => 'cwis',
+//     'prefix' => 'cwis',
+//     'namespace' => 'Cwis',
+//     'middleware' => 'auth'
+// ], function () {
 
 
-    /**
-     * CWIS Routes
-     */
-    Route::get('cwis-df-mne/newsurvey', 'CwisMneController@createIndex');
-    Route::post('cwis-df-mne/newsurvey', 'CwisMneController@createStore');
-    Route::get('cwis-df-mne/export-mne-csv', 'CwisMneController@exportMneCsv');
-    Route::get('cwis/getall/{year?}', 'CwisNewDashboardController@getall');
-    Route::post('/chart/download-pdf', [ChartController::class, 'downloadPDF']);
-    Route::get('export-csv/{year}', 'CwisNewDashboardController@exportCsv');
-    Route::resource('cwis/cwis-df-mne', 'CwisMneController');
-});
+//     /**
+//      * CWIS Routes
+//      */
+//     Route::get('cwis-df-mne/newsurvey', 'CwisMneController@createIndex');
+//     Route::post('cwis-df-mne/newsurvey', 'CwisMneController@createStore');
+//     Route::get('cwis-df-mne/export-mne-csv', 'CwisMneController@exportMneCsv');
+//     Route::get('cwis/getall/{year?}', 'CwisNewDashboardController@getall');
+//     Route::post('/chart/download-pdf', [ChartController::class, 'downloadPDF']);
+//     Route::get('export-csv/{year}', 'CwisNewDashboardController@exportCsv');
+//     Route::resource('cwis/cwis-df-mne', 'CwisMneController');
+// });
 /**
  * Maps Routes
  */
@@ -924,39 +935,40 @@ Route::group(['middleware' => 'auth'], function () {
  * Utility Info Routes
  */
 
-Route::group([
-    'name' => 'publichealth',
-    'prefix' => 'publichealth',
-    'namespace' => 'PublicHealth',
-    'middleware' => 'auth'
-], function () {
+// Public Health ISS module locked out
+// Route::group([
+//     'name' => 'publichealth',
+//     'prefix' => 'publichealth',
+//     'namespace' => 'PublicHealth',
+//     'middleware' => 'auth'
+// ], function () {
 
-    Route::get('waterborne/data', 'YearlyWaterborneController@getData');
-    Route::get('waterborne/export', 'YearlyWaterborneController@export');
-    Route::get('waterborne/{id}/history', 'YearlyWaterborneController@history');
-    Route::resource('waterborne', 'YearlyWaterborneController');
+//     Route::get('waterborne/data', 'YearlyWaterborneController@getData');
+//     Route::get('waterborne/export', 'YearlyWaterborneController@export');
+//     Route::get('waterborne/{id}/history', 'YearlyWaterborneController@history');
+//     Route::resource('waterborne', 'YearlyWaterborneController');
 
-    /**
-     * Water Samples Routes
-     *
-     */
-    Route::get('water-samples/data', 'WaterSamplesController@getData')->name('water-samples.get-data');
-    Route::get('water-samples/export', 'WaterSamplesController@export');
-    Route::get('water-samples/{id}/history', 'WaterSamplesController@history');
+//     /**
+//      * Water Samples Routes
+//      *
+//      */
+//     Route::get('water-samples/data', 'WaterSamplesController@getData')->name('water-samples.get-data');
+//     Route::get('water-samples/export', 'WaterSamplesController@export');
+//     Route::get('water-samples/{id}/history', 'WaterSamplesController@history');
 
-    Route::resource('water-samples', 'WaterSamplesController');
+//     Route::resource('water-samples', 'WaterSamplesController');
 
-     /**
-     *Hotspot Indentification Routes
-     */
-    Route::get('hotspots/data', 'HotspotController@getData');
-    Route::get('hotspots/viewhotspot/{id}', 'HotspotController@viewhotspot');
+//      /**
+//      *Hotspot Indentification Routes
+//      */
+//     Route::get('hotspots/data', 'HotspotController@getData');
+//     Route::get('hotspots/viewhotspot/{id}', 'HotspotController@viewhotspot');
 
-    Route::get('hotspots/export', 'HotspotController@export');
-    Route::get('hotspots/{id}/history', 'HotspotController@history');
+//     Route::get('hotspots/export', 'HotspotController@export');
+//     Route::get('hotspots/{id}/history', 'HotspotController@history');
 
-    Route::resource('hotspots', 'HotspotController');
-});
+//     Route::resource('hotspots', 'HotspotController');
+// });
 Route::group([
     'name' => 'language',
     'prefix' => 'language',

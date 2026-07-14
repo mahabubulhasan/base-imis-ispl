@@ -35,12 +35,12 @@
         <div id="collapseOne" class="collapse">
             <form class="form-horizontal" id="filter-form">
                 <div class="form-group row">
-                    <label for="holding_number" class="col-md-2 col-form-label">{{ __('Holding Number') }}</label>
+                    <label for="holding_number" class="col-md-2 col-form-label">{{ __('Holding No.') }}</label>
                     <div class="col-md-2"><input type="text" class="form-control" id="holding_number" /></div>
                     <label for="household_id" class="col-md-2 col-form-label">{{ __('Household ID') }}</label>
                     <div class="col-md-2"><input type="text" class="form-control" id="household_id" /></div>
-                    <label for="payment_for_month" class="col-md-2 col-form-label">{{ __('Payment For Month') }}</label>
-                    <div class="col-md-2"><input type="month" class="form-control" id="payment_for_month" /></div>
+                    <label for="transaction_month" class="col-md-2 col-form-label">{{ __('Transaction Month') }}</label>
+                    <div class="col-md-2"><input type="month" class="form-control" id="transaction_month" /></div>
                 </div>
                 <div class="card-footer text-right">
                     <button type="submit" class="btn btn-info">{{ __('Filter') }}</button>
@@ -51,22 +51,23 @@
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table id="data-table" class="table table-bordered table-striped" width="100%">
+            <table id="data-table" class="table table-bordered table-striped tbl-aligned" width="100%">
                 <thead>
                     <tr>
-                        <th>{{ __('Receipt No.') }}</th>
-                        <th>{{ __('Payment Time') }}</th>
-                        <th>{{ __('Transaction Month') }}</th>
-                        <th>{{ __('Holding Number') }}</th>
                         <th>{{ __('Household ID') }}</th>
                         <th>{{ __('Household Owner Name') }}</th>
-                        <th>{{ __('Contact Number') }}</th>
+                        <th>{{ __("Father's/Husband's Name") }}</th>
+                        <th>{{ __('Contact No.') }}</th>
+                        <th>{{ __('Holding No.') }}</th>
                         <th>{{ __('Ward No.') }}</th>
+                        <th>{{ __('Transaction Month') }}</th>
                         <th>{{ __('Current Month Payment (Taka)') }}</th>
                         <th>{{ __('Previous Due Payment (Taka)') }}</th>
                         <th>{{ __('Total Payment (Taka)') }}</th>
                         <th>{{ __('Payment Method') }}</th>
-                        <th>{{ __('Payment Received By') }}</th>
+                        <th>{{ __('Payment Received by') }}</th>
+                        <th>{{ __('Receipt No.') }}</th>
+                        <th>{{ __('Payment Time') }}</th>
                         <th>{{ __('Actions') }}</th>
                     </tr>
                 </thead>
@@ -89,23 +90,24 @@ $(function() {
             data: function(d) {
                 d.holding_number = $('#holding_number').val();
                 d.household_id = $('#household_id').val();
-                d.payment_for_month = $('#payment_for_month').val();
+                d.transaction_month = $('#transaction_month').val();
             }
         },
         columns: [
-            { data: 'receipt_no', name: 'swm.bill_collection_payments.receipt_no' },
-            { data: 'payment_time', name: 'swm.bill_collection_payments.payment_time' },
-            { data: 'payment_for_month', name: 'swm.bill_collection_payments.payment_for_month' },
-            { data: 'holding_number', name: 'swm.bill_collection_payments.holding_number' },
             { data: 'household_id', name: 'household_id' },
             { data: 'household_owner_name', name: 'household_owner_name' },
+            { data: 'father_or_husband_name', name: 'father_or_husband_name' },
             { data: 'contact_number', name: 'contact_number' },
-            { data: 'ward', name: 'ward' },
-            { data: 'amount', name: 'swm.bill_collection_payments.amount' },
-            { data: 'due_paid', name: 'swm.bill_collection_payments.due_paid' },
-            { data: 'total_collected', name: 'total_collected', searchable: false, orderable: false },
+            { data: 'holding_number', name: 'swm.bill_collection_payments.holding_number' },
+            { data: 'ward', name: 'ward', className: 'col-num' },
+            { data: 'transaction_month', name: 'swm.bill_collection_payments.transaction_month' },
+            { data: 'amount', name: 'swm.bill_collection_payments.amount', className: 'col-currency' },
+            { data: 'due_paid', name: 'swm.bill_collection_payments.due_paid', className: 'col-currency' },
+            { data: 'total_collected', name: 'total_collected', searchable: false, orderable: false, className: 'col-currency' },
             { data: 'payment_method', name: 'swm.bill_collection_payments.payment_method' },
             { data: 'received_by_name', name: 'received_by_name' },
+            { data: 'receipt_no', name: 'swm.bill_collection_payments.receipt_no' },
+            { data: 'payment_time', name: 'swm.bill_collection_payments.payment_time' },
             { data: 'action', name: 'action', orderable: false, searchable: false }
         ],
         order: [[0, 'asc']]
@@ -142,11 +144,11 @@ $(function() {
         var searchData = $('input[type=search]').val();
         var holding_number = $('#holding_number').val() || '';
         var household_id = $('#household_id').val() || '';
-        var payment_for_month = $('#payment_for_month').val() || '';
+        var transaction_month = $('#transaction_month').val() || '';
         window.location.href = "{!! route('swm.bill-collection-payments.export') !!}?searchData=" + encodeURIComponent(searchData || '') +
             "&holding_number=" + encodeURIComponent(holding_number) +
             "&household_id=" + encodeURIComponent(household_id) +
-            "&payment_for_month=" + encodeURIComponent(payment_for_month);
+            "&transaction_month=" + encodeURIComponent(transaction_month);
     });
 });
 </script>

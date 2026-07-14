@@ -5,7 +5,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 @section('content')
 
 @can('Building CountBox')
-    <h1 style="padding-bottom: 15px;font-size: 24px;">{{__("Buildings") }}</h1>
+    <h1 style="padding-bottom: 15px;font-size: 24px;font-weight: bold;">{{__("Buildings") }}</h1>
     <div class="row">
         <div class="col-lg-3 col-md-12 col-xs-12  d-flex">
             @include('dashboard.countBox._buildCountBox')
@@ -50,9 +50,9 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
         </div> <!-- col div -->
     </div> <!-- row div -->
 @endcan
-
+{{--
 @can('Sanitation CountBox')
-    <h1 style="padding: 15px 0 15px 0; font-size: 24px;">{{ __("Building Sanitation Facilities") }}</h1>
+    <h1 style="padding: 15px 0 15px 0; font-size: 24px;font-weight: bold;">{{ __("Building Sanitation Facilities") }}</h1>
     <div class="row">
         @foreach ($sanitationSystems as $sanitationSystem)
             <div class="col-lg-3 col-xs-6">
@@ -83,10 +83,10 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
         </div> <!-- sub col div -->
     </div> <!-- row div -->
 @endcan
-
+--}}
 
 @can('Utility CountBox')
-    <h1 style="padding: 15px 0 15px 0;font-size: 24px;">{{ __("Utilities") }}</h1>
+    <h1 style="padding: 15px 0 15px 0;font-size: 24px;font-weight: bold;">{{ __("Utilities") }}</h1>
     <div class="row">
         <div class="col-lg-3 col-xs-6">
             @include('dashboard.countBox._sumRoadsCountBox')
@@ -100,8 +100,9 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
     </div> <!-- row div -->
 @endcan
 
+{{--
 @can('FSM CountBox')
-        <h1 style="padding: 15px 0 15px 0;font-size: 24px;">{{ __("FSM Services") }}</h1>
+        <h1 style="padding: 15px 0 15px 0;font-size: 24px;font-weight: bold;">{{ __("FSM Services") }}</h1>
         <div class="row">
             <!-- ./col -->
             <div class="col-lg-4 col-xs-6">
@@ -127,9 +128,11 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
         </div>
         <!-- /.row -->
 @endcan
+--}}
 
+{{--
 @can('PTCT CountBox')
-    <h1 style="padding: 15px 0 15px 0;font-size: 24px;">{{ __("PT/CT") }}</h1>
+    <h1 style="padding: 15px 0 15px 0;font-size: 24px;font-weight: bold;">{{ __("PT/CT") }}</h1>
         <div class="row">
         <div class="col-lg-3 col-xs-6">
             @include('dashboard.countBox._pTCountBox')
@@ -145,9 +148,11 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
         </div> <!--sub col div -->
     </div> <!-- row div -->
 @endcan
+--}}
 
+{{--
 @can('Public Health CountBox')
-    <h1 style="padding: 15px 0 15px 0;font-size: 24px;">{{ __("Public Health") }}</h1>
+    <h1 style="padding: 15px 0 15px 0;font-size: 24px;font-weight: bold;">{{ __("Public Health") }}</h1>
     <div class="row">
         <div class="col-lg-3 col-xs-6">
             @include('dashboard.countBox._totalHotspotCountBox')
@@ -157,28 +162,39 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
         </div> <!--sub col div -->
     </div> <!-- row div -->
 @endcan
-
+--}}
 <div class="row">
-    @can('Ward-Wise Distribution of Buildings Chart')
-        <div class="col-md-6">
+    <div class="col-md-12">
+        @can('Ward-Wise Distribution of Buildings Chart')
             @include('dashboard.buildings._buildingsPerWardChart')
-        </div>
+        @endcan
+    </div>
+</div>
+{{-- <div class="row">
+    @can('Ward-Wise Distribution of Buildings Chart')
+        <div class="col-md-12">
+            @include('dashboard.buildings._buildingsPerWardChart')
+        </div> 
     @endcan
     @can('Building Use Composition Chart')
         <div class="col-md-6">
             @include('dashboard.buildings._buildingUseChart')
         </div>
-    @endcan
-</div>
+    @endcan 
+</div> --}}
 
-@can('Building Connections to Sanitation System Types Chart')
+{{-- @can('Building Connections to Sanitation System Types Chart')
     <div class="row">
         <div class="col-md-12">
             @include('dashboard.buildings._sanitationSystemsChart')
         </div>
     </div>
-@endcan
+@endcan --}}
 
+
+
+
+{{--
 <div class="row">
     @can('Proportion of Different Containment Types Chart')
         <div class="col-md-6">
@@ -193,7 +209,8 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
     @endcan
 
 </div>
-
+--}}
+{{--
 <div class="row">
         @can('Containment Type-Wise Emptying Services Over the Last 5 Years Chart')
             <div class="col-md-6">
@@ -213,37 +230,45 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
         </div>
     </div>
 @endcan
-
-
-
-
-
+--}}
 
 
 <div class="row">
-        @can('Ward-Wise Total Road Length Chart')
-            <div class="col-md-6">
-                @include('dashboard.charts._roadLengthPerWardChart')
-            </div>
-        @endcan
-       @can('Ward-Wise Roadside Drain Length Chart')
-    <div class="col-md-6">
-        @include('dashboard.charts._drainLengthPerWardChart')
-    </div>
+    @can('Ward-Wise Total Road Length Chart')
+        <div class="col-md-12">
+            @include('dashboard.charts._roadLengthPerWardChart')
+        </div>
     @endcan
-    </div>
-    <div class="row">
-        @can('Yearly Distribution of Waterborne Disease Chart')
-            <div class="col-md-6">
-                @include('dashboard.charts._waterborneCasesChart')
-            </div>
-        @endcan
-        @can('Performance of Municipal Treatment Plants by Last 5 Years Chart')
-            <div class="col-md-6">
-                @include('dashboard.fsmCharts._treatmentPlantTestbyYearChart')
-            </div>
-        @endcan
-    </div>
+</div>
+
+{{-- 
+<div class="row">
+    @can('Ward-Wise Total Road Length Chart')
+        <div class="col-md-6">
+            @include('dashboard.charts._roadLengthPerWardChart')
+        </div>
+    @endcan
+    @can('Ward-Wise Roadside Drain Length Chart')
+        <div class="col-md-6">
+            @include('dashboard.charts._drainLengthPerWardChart')
+        </div>
+    @endcan
+</div>
+--}}
+{{-- 
+<div class="row">
+    @can('Yearly Distribution of Waterborne Disease Chart')
+        <div class="col-md-6">
+            @include('dashboard.charts._waterborneCasesChart')
+        </div>
+    @endcan
+    @can('Performance of Municipal Treatment Plants by Last 5 Years Chart')
+        <div class="col-md-6">
+            @include('dashboard.fsmCharts._treatmentPlantTestbyYearChart')
+        </div>
+    @endcan
+</div>
+    --}}
 @stop
 
 @push('scripts')

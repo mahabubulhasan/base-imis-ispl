@@ -49,7 +49,7 @@
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table id="data-table" class="table table-bordered table-striped" width="100%">
+            <table id="data-table" class="table table-bordered table-striped tbl-aligned" width="100%">
                 <thead>
                     <tr>
                         <th>{{ __('Waste Processing Log ID') }}</th>
@@ -94,12 +94,12 @@ $(function() {
             { data: 'report_date', name: 'report_date' },
             { data: 'reporting_month_label', name: 'reporting_month' },
             { data: 'waste_processing_site_name', name: 'waste_processing_site_name' },
-            { data: 'waste_received_ton', name: 'waste_received_ton' },
-            { data: 'organic_waste_composted_ton', name: 'organic_waste_composted_ton' },
-            { data: 'inorganic_waste_recycled_ton', name: 'inorganic_waste_recycled_ton' },
-            { data: 'waste_incinerated_ton', name: 'waste_incinerated_ton' },
-            { data: 'waste_burned_open_air_ton', name: 'waste_burned_open_air_ton' },
-            { data: 'residual_waste_landfilled_ton', name: 'residual_waste_landfilled_ton' },
+            { data: 'waste_received_ton', name: 'waste_received_ton', className: 'col-num' },
+            { data: 'organic_waste_composted_ton', name: 'organic_waste_composted_ton', className: 'col-num' },
+            { data: 'inorganic_waste_recycled_ton', name: 'inorganic_waste_recycled_ton', className: 'col-num' },
+            { data: 'waste_incinerated_ton', name: 'waste_incinerated_ton', className: 'col-num' },
+            { data: 'waste_burned_open_air_ton', name: 'waste_burned_open_air_ton', className: 'col-num' },
+            { data: 'residual_waste_landfilled_ton', name: 'residual_waste_landfilled_ton', className: 'col-num' },
             { data: 'action', name: 'action', orderable: false, searchable: false }
         ],
         order: [[2, 'desc']]

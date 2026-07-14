@@ -28,16 +28,20 @@ class MunicipalityPublicHealthDepartmentSeeder extends Seeder
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Low Income Communities'])
                         ->whereIn('type', ['View', 'Export', 'List', 'View on map']));
 
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['PT/CT Toilets'])
-                        ->whereIn('type', ['View', 'Export', 'List', 'View on map']));
+                    // PT/CT IMS module locked out
+                    // $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['PT/CT Toilets'])
+                    //     ->whereIn('type', ['View', 'Export', 'List', 'View on map']));
 
 
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['CWIS'])
-                        ->whereIn('type', ['List','View','Export']));
+                    // CWIS IMS module locked out
+                    // $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['CWIS'])
+                    //     ->whereIn('type', ['List','View','Export']));
 
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['WaterSupply Network'])
-                        ->whereIn('type', ['View', 'List', 'View on map']));
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Water Samples', 'Hotspots', 'Yearly Waterborne Cases'])->whereNotIn('type', ['History']));
+                    // Water Supply Network module locked out
+                    // $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['WaterSupply Network'])
+                    //     ->whereIn('type', ['View', 'List', 'View on map']));
+                    // Public Health ISS module locked out
+                    // $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Water Samples', 'Hotspots', 'Yearly Waterborne Cases'])->whereNotIn('type', ['History']));
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Maps'])
                         ->whereIn('name', [
                             'Export Data Map Tools',

@@ -28,7 +28,7 @@
                 <label class="col-md-2" for="operator_name">{{ __('Operator Name') }}</label><div class="col-md-2"><input type="text" class="form-control" id="operator_name"></div>
             </div>
             <div class="form-group row">
-                <label class="col-md-2" for="contact_number">{{ __('Contact Number') }}</label><div class="col-md-2"><input type="text" class="form-control" id="contact_number"></div>
+                <label class="col-md-2" for="contact_number">{{ __('Contact No.') }}</label><div class="col-md-2"><input type="text" class="form-control" id="contact_number"></div>
                 <label class="col-md-2" for="source_sts_id">{{ __('Source STS') }}</label>
                 <div class="col-md-2"><select class="form-control chosen-select" id="source_sts_id"><option value="">{{ __('All') }}</option>@foreach($stsOptions as $id => $label)<option value="{{ $id }}">{{ $label }}</option>@endforeach</select></div>
                 <label class="col-md-2" for="waste_type_id">{{ __('Waste Type') }}</label>
@@ -48,9 +48,9 @@
         </form>
     </div></div>
     <div class="card-body"><div class="table-responsive">
-        <table id="data-table" class="table table-bordered table-striped" width="100%">
+        <table id="data-table" class="table table-bordered table-striped tbl-aligned" width="100%">
             <thead><tr>
-                <th>{{ __('Landfill ID') }}</th><th>{{ __('Landfill Name') }}</th><th>{{ __('Location') }}</th><th>{{ __('Landfill Type') }}</th><th>{{ __('Operator Name') }}</th><th>{{ __("Operator's Contact Number") }}</th><th>{{ __('Capacity (Ton)') }}</th><th>{{ __('Area (Acre)') }}</th>
+                <th>{{ __('Landfill ID') }}</th><th>{{ __('Landfill Name') }}</th><th>{{ __('Location') }}</th><th>{{ __('Landfill Type') }}</th><th>{{ __('Operator Name') }}</th><th>{{ __("Operator's Contact No.") }}</th><th>{{ __('Capacity (Ton)') }}</th><th>{{ __('Area (Acre)') }}</th>
                 <th>{{ __('Source STSs') }}</th><th>{{ __('Other Source Wards') }}</th><th>{{ __('Waste Type') }}</th><th>{{ __('Segregation Practiced?') }}</th><th>{{ __('Manpower Deployed') }}</th><th>{{ __('Operational Status') }}</th><th>{{ __('Actions') }}</th>
             </tr></thead>
         </table>
@@ -67,8 +67,8 @@ d.source_sts_id=$('#source_sts_id').val();d.waste_type_id=$('#waste_type_id').va
 d.segregation_practiced=$('#segregation_practiced').val();d.landfill_type_id=$('#landfill_type_id').val();
 }},
 columns:[
-{data:'landfill_id',name:'landfill_id'},{data:'name',name:'name'},{data:'location',name:'location'},{data:'landfill_type_name',name:'landfill_type_id',orderable:false,searchable:false},{data:'operator_name',name:'operator_name'},{data:'contact_number',name:'contact_number'},{data:'capacity',name:'capacity'},{data:'area',name:'area'},
-{data:'source_sts_text',name:'source_sts_text',orderable:false,searchable:false},{data:'source_wards_text',name:'source_wards_text',orderable:false,searchable:false},{data:'waste_types',name:'waste_types',orderable:false,searchable:false},{data:'segregation_practiced',name:'segregation_practiced'},{data:'manpower_deployed',name:'manpower_deployed'},{data:'operational_status',name:'operational_status'},
+{data:'landfill_id',name:'landfill_id'},{data:'name',name:'name'},{data:'location',name:'location'},{data:'landfill_type_name',name:'landfill_type_id',orderable:false,searchable:false},{data:'operator_name',name:'operator_name'},{data:'contact_number',name:'contact_number'},{data:'capacity',name:'capacity',className:'col-num'},{data:'area',name:'area',className:'col-num'},
+{data:'source_sts_text',name:'source_sts_text',orderable:false,searchable:false},{data:'source_wards_text',name:'source_wards_text',orderable:false,searchable:false},{data:'waste_types',name:'waste_types',orderable:false,searchable:false},{data:'segregation_practiced',name:'segregation_practiced'},{data:'manpower_deployed',name:'manpower_deployed',className:'col-num'},{data:'operational_status',name:'operational_status'},
 {data:'action',name:'action',orderable:false,searchable:false}
 ],
 order:[[0,'asc']]

@@ -80,9 +80,9 @@
         </div>
     </div>
     <div class="form-group row">
-        {!! Form::label('sub_location', __('Sub Location'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('sub_location', __('Location'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
-            {!! Form::text('sub_location', null, ['class' => 'form-control', 'placeholder' => __('Sub Location')]) !!}
+            {!! Form::text('sub_location', null, ['class' => 'form-control', 'placeholder' => __('Location')]) !!}
         </div>
     </div>
     <div class="form-group row">
@@ -146,7 +146,7 @@
         </div>
     </div>
     <div class="form-group row required" id="no_of_wate_points_group">
-         {!! Form::label('no_of_wate_points',__('No. of Wate Points'),['class' => 'col-sm-3 control-label']) !!}
+         {!! Form::label('no_of_wate_points',__('No. of Water Points'),['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             {!! Form::text('no_of_wate_points',null,['class' => 'form-control', 'placeholder' => __('No. of Wate Points'),'oninput'=>"this.value = this.value.replace(/[^0-9]/g, '')",'id' => 'no_of_wate_points']) !!}
         </div>

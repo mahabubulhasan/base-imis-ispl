@@ -30,8 +30,8 @@ class MunicipalityBuildingPermitDepartmentSeeder extends Seeder
                     // Buildings page permissions (all except history)
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group',['Building Structures'])->whereNotIn('type',['History']));
                     
-                    // Building Survey page permissions (all)
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group',['Building Surveys']));
+                    // Building Survey page permissions (all) -- Building Survey module locked out
+                    // $createdRole->givePermissionTo(Permission::all()->whereIn('group',['Building Surveys']));
                       
                     // Low Income Community page permissions (all except history)
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group',['Low Income Communities'])->whereNotIn('type',['History']));
@@ -39,19 +39,19 @@ class MunicipalityBuildingPermitDepartmentSeeder extends Seeder
                     // Dashboard permissions
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Dashboard'])->whereIn('name',['Building Connections to Sanitation System Types Chart','Utility CountBox']));
 
-                    // Containments Page permissions
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group',['Containments'])->whereNotIn('type',['History', 'Service History']));
+                    // Containments Page permissions -- Fecal Sludge IMS module locked out
+                    // $createdRole->givePermissionTo(Permission::all()->whereIn('group',['Containments'])->whereNotIn('type',['History', 'Service History']));
 
                     // Building Dashboard permissions
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['Building Dashboard'])->whereIn('name',['Building Use Composition Chart',
                     'Ward-Wise Distribution of Buildings Chart','Sanitation CountBox','Building CountBox']));
 
-                    // FSM Dashboard permissions
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['FSM Dashboard'])->whereIn('name',['Containment Types Categorized by Land Use Chart',
-                    'Containment Types Categorized by Building Usage Chart','Ward-Wise Distribution of Containment Types in Residential Buildings Chart','Ward-Wise Distribution of Containment Types Chart','Proportion of Different Containment Types Chart']));
+                    // FSM Dashboard permissions -- locked out
+                    // $createdRole->givePermissionTo(Permission::all()->whereIn('group', ['FSM Dashboard'])->whereIn('name',['Containment Types Categorized by Land Use Chart',
+                    // 'Containment Types Categorized by Building Usage Chart','Ward-Wise Distribution of Containment Types in Residential Buildings Chart','Ward-Wise Distribution of Containment Types Chart','Proportion of Different Containment Types Chart']));
 
-                    // sewer,water supply, drains permissions
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group',['Roads','Sewers','Drain','WaterSupply Network'])
+                    // sewer,water supply, drains permissions -- Sewer Network / Water Supply Network locked out
+                    $createdRole->givePermissionTo(Permission::all()->whereIn('group',['Roads','Drain'])
                     ->whereIn('type',['List','View']));
 
                     // roads permissions

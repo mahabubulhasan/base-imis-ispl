@@ -10,16 +10,19 @@
             font-weight: normal;
             font-style: normal;
         }
-        @page { margin: 18mm 45mm; }
+        @page { margin: 25.4mm; }
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
         body {
             font-family: 'Noto Sans Bengali', 'SolaimanLipi', 'Kalpurush', sans-serif;
-            font-size: 12px;
+            font-size: 14px;
             color: #111;
             line-height: 1.5;
-            padding: 0 10px;
         }
-        body, table, th, td, p, h1, h2, span { font-size: 12px; }
-        .report-header { text-align: center; line-height: 1.2; margin-bottom: 20px; }
+        body, table, th, td, p, h1, h2, span { font-size: 14px; margin: 0; }
+        .report-header { text-align: center; line-height: 1.2; margin: 0 0 20px; }
         .report-header h1 { margin: 2px 0; font-weight: normal; line-height: 1.2; }
         .report-header .meta { margin: 0; }
         .report-header .meta-row { margin: 0; display: block; }
@@ -30,9 +33,14 @@
             text-decoration: none;
             font-weight: normal;
         }
-        .meta { text-align: center; margin-bottom: 12px; }
+        .meta { text-align: center; margin: 0 0 12px; }
         .meta-row { margin: 2px 0; }
         table { width: 100%; border-collapse: collapse; margin: 6px 0 10px; }
+        /* wkhtmltopdf smears a collapsed border into a black block when a bordered
+           table is cut by a page break; keep bordered data tables whole. The
+           borderless layout tables (field-grid / meta-dual) are excluded so they
+           still flow freely. */
+        table:not(.field-grid):not(.meta-dual) { page-break-inside: avoid; }
         th, td { border: 1px solid #444; padding: 4px 6px; vertical-align: top; }
         th { background: #f0f0f0; font-weight: normal; }
         th.th-stacked { text-align: center; line-height: 1.25; }
@@ -56,28 +64,28 @@
             visibility: hidden;
             overflow: hidden;
         }
-        .field-grid td { border: none; padding: 2px 0; vertical-align: middle; line-height: 1.4; }
+        .field-grid td { border: none; padding: 2px 0; vertical-align: top; line-height: 1.4; }
         .field-grid .field-label {
             width: 49%;
             text-align: left;
             padding: 2px 8px 2px 0;
             font-weight: normal;
             white-space: normal;
-            vertical-align: middle;
+            vertical-align: top;
         }
         .field-grid .field-colon {
             width: 2%;
             text-align: center;
             padding: 2px;
             white-space: nowrap;
-            vertical-align: middle;
+            vertical-align: top;
         }
         .field-grid .field-value {
             width: 49%;
             text-align: left;
             padding: 2px 0 2px 8px;
             white-space: normal;
-            vertical-align: middle;
+            vertical-align: top;
         }
         .field-grid .field-value.text-block { white-space: pre-wrap; }
         .field-grid-auto {
@@ -106,7 +114,6 @@
         .meta-dual > tbody > tr > td { border: none; padding: 0 6px; vertical-align: middle; width: 50%; }
         .meta-dual .field-grid { margin-bottom: 0; }
         .section {
-            page-break-inside: avoid;
             border-top: 1px solid #333;
             padding-top: 10px;
             margin-top: 12px;
@@ -128,7 +135,7 @@
         .col-org-name { width: 28%; }
         .col-desc { width: 62%; }
         .signature-block {
-            margin-top: 24px;
+            margin-top: 72px;
             width: 100%;
             overflow: hidden;
         }
@@ -150,7 +157,7 @@
 <body>
 @php
     $f = $form;
-    $na = 'প্রযোজ্য নয়';
+    $na = '';
     $yn = static function ($v) {
         if ($v === 'yes') return 'হ্যাঁ';
         if ($v === 'no') return 'না';
@@ -173,7 +180,7 @@
         '5' => '৫', '6' => '৬', '7' => '৭', '8' => '৮', '9' => '৯',
     ]);
 @endphp
-<div class="report-header">
+<div class="report-header" style="margin-top:0px; !important">
 @if(!empty($f['org_name']))
     <p class="meta"><span class="meta-row">{{ $f['org_name'] }}</span></p>
 @endif
@@ -554,25 +561,29 @@
 <div class="section">
     <h2>(৭) নিম্নোক্ত কার্যাদি স্বাস্থ্যসম্মত উপায়ে সম্পাদন নিশ্চিতকরণের লক্ষ্যে গৃহীত পদক্ষেপ</h2>
     <table class="field-grid">
-        <tr class="field-row field-row-sub">
-            <td class="field-label">(অ) দুগ্ধ খামার</td>
-            <td class="field-colon">:</td>
-            <td class="field-value text-block">{{ $display($f['step_dairy'] ?? null) }}</td>
+        <tr class="field-row field-row-heading field-row-sub">
+            <td class="field-label" colspan="3">(অ) দুগ্ধ খামার</td>
         </tr>
-        <tr class="field-row field-row-sub">
-            <td class="field-label">(আ) পশু জবেহ</td>
-            <td class="field-colon">:</td>
-            <td class="field-value text-block">{{ $display($f['step_slaughter'] ?? null) }}</td>
+        <tr class="field-row">
+            <td class="field-value text-block" colspan="3">{{ $display($f['step_dairy'] ?? null) }}</td>
         </tr>
-        <tr class="field-row field-row-sub">
-            <td class="field-label">(ই) নির্মাণ-ভাঙন বর্জ্য</td>
-            <td class="field-colon">:</td>
-            <td class="field-value text-block">{{ $display($f['step_construction'] ?? null) }}</td>
+        <tr class="field-row field-row-heading field-row-sub">
+            <td class="field-label" colspan="3">(আ) পশু জবেহ</td>
         </tr>
-        <tr class="field-row field-row-sub">
-            <td class="field-label">(ঈ) পার্ক, হাঁটার পথ, ইত্যাদি জবর দখল</td>
-            <td class="field-colon">:</td>
-            <td class="field-value text-block">{{ $display($f['step_encroachment'] ?? null) }}</td>
+        <tr class="field-row">
+            <td class="field-value text-block" colspan="3">{{ $display($f['step_slaughter'] ?? null) }}</td>
+        </tr>
+        <tr class="field-row field-row-heading field-row-sub">
+            <td class="field-label" colspan="3">(ই) নির্মাণ-ভাঙন বর্জ্য</td>
+        </tr>
+        <tr class="field-row">
+            <td class="field-value text-block" colspan="3">{{ $display($f['step_construction'] ?? null) }}</td>
+        </tr>
+        <tr class="field-row field-row-heading field-row-sub">
+            <td class="field-label" colspan="3">(ঈ) পার্ক, হাঁটার পথ, ইত্যাদি জবর দখল</td>
+        </tr>
+        <tr class="field-row">
+            <td class="field-value text-block" colspan="3">{{ $display($f['step_encroachment'] ?? null) }}</td>
         </tr>
     </table>
 </div>
@@ -649,10 +660,11 @@
             <td class="field-colon">:</td>
             <td class="field-value">{{ $displayYn($f['medical_compliance'] ?? null) }}</td>
         </tr>
-        <tr class="field-row field-row-sub">
-            <td class="field-label">(উ) চিকিৎসা বর্জ্য (ব্যবস্থাপনা ও প্রক্রিয়াজাতকরণ) বিধিমালা, ২০০৮ এর বিধানাবলি অনুসরণ করতে কোনো অসুবিধা হয়ে থাকলে তার বিবরণ</td>
-            <td class="field-colon">:</td>
-            <td class="field-value text-block">{{ $display($f['medical_issues'] ?? null) }}</td>
+        <tr class="field-row field-row-heading field-row-sub">
+            <td class="field-label" colspan="3">(উ) চিকিৎসা বর্জ্য (ব্যবস্থাপনা ও প্রক্রিয়াজাতকরণ) বিধিমালা, ২০০৮ এর বিধানাবলি অনুসরণ করতে কোনো অসুবিধা হয়ে থাকলে তার বিবরণ</td>
+        </tr>
+        <tr class="field-row">
+            <td class="field-value text-block" colspan="3">{{ $display($f['medical_issues'] ?? null) }}</td>
         </tr>
     </table>
 </div>

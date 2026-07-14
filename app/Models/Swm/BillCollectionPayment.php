@@ -22,9 +22,11 @@ class BillCollectionPayment extends Model
 
     protected $casts = [
         'payment_for_month' => 'date',
+        'transaction_month' => 'date',
         'payment_time' => 'datetime',
         'amount' => 'decimal:2',
         'due_paid' => 'decimal:2',
+        'ward' => 'integer',
     ];
 
     protected $appends = [

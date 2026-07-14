@@ -61,9 +61,9 @@
                                     <div class="col-md-2">
                                         <input type="text" class="form-control" id="operator_name" placeholder="{{ __('Operator Name') }}" />
                                     </div>
-                                    <label for="contact_number" class="col-md-2 col-form-label">{{ __('Operator\'s Contact Number') }}</label>
+                                    <label for="contact_number" class="col-md-2 col-form-label">{{ __('Operator\'s Contact No.') }}</label>
                                     <div class="col-md-2">
-                                        <input type="text" class="form-control" id="contact_number" placeholder="{{ __('Operator\'s Contact Number') }}" />
+                                        <input type="text" class="form-control" id="contact_number" placeholder="{{ __('Operator\'s Contact No.') }}" />
                                     </div>
                                     <label for="destination_landfill_id" class="col-md-2 col-form-label">{{ __('Destination Landfill') }}</label>
                                     <div class="col-md-2">
@@ -116,7 +116,7 @@
     </div>
     <div class="card-body">
     <div class="table-responsive">
-        <table id="data-table" class="table table-bordered table-striped" width="100%">
+        <table id="data-table" class="table table-bordered table-striped tbl-aligned" width="100%">
             <thead>
                 <tr>
                 <th>{{ __('STS ID') }}</th>
@@ -124,7 +124,7 @@
                 <th>{{ __('Ward No.') }}</th>
                 <th>{{ __('Location') }}</th>
                 <th>{{ __('Operator Name') }}</th>
-                <th>{{ __('Operator\'s Contact Number') }}</th>
+                <th>{{ __('Operator\'s Contact No.') }}</th>
                 <th>{{ __('Capacity (Ton)') }}</th>
                 <th>{{ __('Area (Decimal)') }}</th>
                 <th>{{ __('Source Wards') }}</th>
@@ -166,12 +166,12 @@ $(function() {
         columns: [
             { data: 'sts_id', name: 'swm.sts.sts_id' },
             { data: 'name', name: 'swm.sts.name' },
-            { data: 'ward_no', name: 'swm.sts.ward_no' },
+            { data: 'ward_no', name: 'swm.sts.ward_no', className: 'col-num' },
             { data: 'location', name: 'swm.sts.location' },
             { data: 'operator_name', name: 'swm.sts.operator_name' },
             { data: 'contact_number', name: 'swm.sts.contact_number' },
-            { data: 'capacity', name: 'swm.sts.capacity' },
-            { data: 'area', name: 'swm.sts.area' },
+            { data: 'capacity', name: 'swm.sts.capacity', className: 'col-num' },
+            { data: 'area', name: 'swm.sts.area', className: 'col-num' },
             { data: 'source_wards_text', name: 'source_wards_text', orderable: false, searchable: false },
             { data: 'waste_types', name: 'waste_types', orderable: false, searchable: false },
             { data: 'segregation_practiced', name: 'swm.sts.segregation_practiced' },

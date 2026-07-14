@@ -9,6 +9,7 @@ use App\Imports\BuildingInfo\HouseholdImport;
 use App\Models\BuildingInfo\Building;
 use App\Models\BuildingInfo\Household;
 use App\Models\LayerInfo\Lic;
+use App\Models\LayerInfo\Ward;
 use App\Models\Swm\WasteBinType;
 use App\Models\Swm\Worker;
 use App\Models\UtilityInfo\Roadline;
@@ -22,7 +23,7 @@ class HouseholdController extends Controller
     public function __construct(protected HouseholdService $householdService)
     {
         $this->middleware('auth');
-        $this->middleware('permission:List Households', ['only' => ['index', 'getData', 'getBuildingSnapshot']]);
+        $this->middleware('permission:List Households', ['only' => ['index', 'getData', 'getBuildingSnapshot', 'binOptions']]);
         $this->middleware('permission:View Household', ['only' => ['show']]);
         $this->middleware('permission:Add Household', ['only' => ['create', 'store']]);
         $this->middleware('permission:Edit Household', ['only' => ['edit', 'update']]);
@@ -32,9 +33,77 @@ class HouseholdController extends Controller
         $this->middleware('permission:View Household History', ['only' => ['history']]);
     }
 
-    protected function bins()
+    /**
+     * Preselected BIN option(s) for the household form's select2. The full list
+     * loads on demand via AJAX (binOptions), so only the household's current bin
+     * plus any old('bin') from a failed submit need a server-rendered option.
+     *
+     * @return array<string, string>  bin => label
+     */
+    protected function bins(?Household $household = null): array
     {
-        return Building::query()->whereNull('deleted_at')->orderBy('bin')->pluck('bin', 'bin')->all();
+        $bins = collect([$household?->bin, old('bin')])
+            ->map(fn ($v) => trim((string) $v))
+            ->filter()
+            ->unique()
+            ->values();
+
+        if ($bins->isEmpty()) {
+            return [];
+        }
+
+        return Building::query()
+            ->whereNull('deleted_at')
+            ->whereIn('bin', $bins->all())
+            ->orderBy('bin')
+            ->get(['bin', 'house_number'])
+            ->mapWithKeys(fn ($b) => [
+                $b->bin => $b->house_number ? $b->bin.' - '.$b->house_number : (string) $b->bin,
+            ])
+            ->all();
+    }
+
+    /**
+     * Searchable, paginated building-BIN options for the household form's
+     * select2 (server-side source). Returns { results: [{id, text}], pagination: { more } }.
+     */
+    public function binOptions(Request $request)
+    {
+        $search = trim((string) $request->query('search', ''));
+        $page = max(1, (int) $request->query('page', 1));
+        $limit = 15;
+
+        $query = Building::query()->whereNull('deleted_at');
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('bin', 'ilike', '%'.$search.'%')
+                    ->orWhere('house_number', 'ilike', '%'.$search.'%');
+            });
+        }
+
+        $total = $query->count();
+        $buildings = $query
+            ->orderBy('bin')
+            ->offset(($page - 1) * $limit)
+            ->limit($limit)
+            ->get(['bin', 'house_number']);
+
+        $results = $buildings->map(fn ($b) => [
+            'id' => $b->bin,
+            'text' => $b->house_number
+                ? $b->bin.' - '.$b->house_number
+                : (string) $b->bin,
+        ])->all();
+
+        return response()->json([
+            'results' => $results,
+            'pagination' => ['more' => $page * $limit < $total],
+        ]);
+    }
+
+    protected function wards(): array
+    {
+        return Ward::getInAscOrder();
     }
 
     protected function vanPullers()
@@ -96,7 +165,8 @@ class HouseholdController extends Controller
             'tax_id' => $building->tax_code,
             'bin' => $building->bin,
             'lic_id' => $building->lic_id,
-            'area_mohalla_name' => $building->house_locality
+            'area_mohalla_name' => $building->house_locality,
+            'low_income_hh' => in_array($building->low_income_hh, [true, 1, '1', 't', 'true'], true),
         ]);
     }
 
@@ -105,17 +175,19 @@ class HouseholdController extends Controller
         $page_title = __('Add Household');
         $household = null;
         $bins = $this->bins();
+        // create: preselected bin only from old('bin') on a failed submit
         $vanPullers = $this->vanPullers();
         $licOptions = $this->licOptions();
         $wasteBinTypes = $this->wasteBinTypeOptions();
-
+        $wards = $this->wards();
         return view('building-info.households.create', compact(
             'page_title',
             'household',
             'bins',
             'vanPullers',
             'licOptions',
-            'wasteBinTypes'
+            'wasteBinTypes',
+            'wards'
         ));
     }
 
@@ -137,18 +209,19 @@ class HouseholdController extends Controller
     {
         $household->load(['wasteBins.wasteBinType']);
         $page_title = __('Edit Household');
-        $bins = $this->bins();
+        $bins = $this->bins($household);
         $vanPullers = $this->vanPullers();
         $licOptions = $this->licOptions();
         $wasteBinTypes = $this->wasteBinTypeOptions();
-
+        $wards = $this->wards();
         return view('building-info.households.edit', compact(
             'page_title',
             'household',
             'bins',
             'vanPullers',
             'licOptions',
-            'wasteBinTypes'
+            'wasteBinTypes',
+            'wards'
         ));
     }
 

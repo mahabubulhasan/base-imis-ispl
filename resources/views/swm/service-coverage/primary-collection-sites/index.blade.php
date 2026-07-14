@@ -31,7 +31,7 @@
                     <div class="col-md-2"><input type="text" class="form-control" id="customer_id"></div>
                     <label for="customer_name" class="col-md-2 col-form-label">{{ __('Customer Name') }}</label>
                     <div class="col-md-2"><input type="text" class="form-control" id="customer_name"></div>
-                    <label for="contact_number" class="col-md-2 col-form-label">{{ __('Contact Number') }}</label>
+                    <label for="contact_number" class="col-md-2 col-form-label">{{ __('Contact No.') }}</label>
                     <div class="col-md-2"><input type="text" class="form-control" id="contact_number"></div>
                 </div>
                 <div class="form-group row">
@@ -61,12 +61,12 @@
     </div>
     <div class="card-body">
         <div style="overflow: auto; width: 100%;">
-            <table id="data-table" class="table table-bordered table-striped" width="100%">
+            <table id="data-table" class="table table-bordered table-striped tbl-aligned" width="100%">
                 <thead>
                     <tr>
                         <th>{{ __('Customer ID') }}</th>
                         <th>{{ __('Customer Name') }}</th>
-                        <th>{{ __('Contact Number') }}</th>
+                        <th>{{ __('Contact No.') }}</th>
                         <th>{{ __('BIN') }}</th>
                         <th>{{ __('Ward') }}</th>
                         <th>{{ __('Road No.') }}</th>
@@ -108,7 +108,7 @@ $(function() {
             { data: 'customer_name', name: 'customer_name' },
             { data: 'contact_number', name: 'contact_number' },
             { data: 'bin', name: 'bin' },
-            { data: 'ward', name: 'ward' },
+            { data: 'ward', name: 'ward', className: 'col-num' },
             { data: 'road_no', name: 'road_no' },
             { data: 'road_name', name: 'road_name' },
             { data: 'is_lic', name: 'is_lic' },

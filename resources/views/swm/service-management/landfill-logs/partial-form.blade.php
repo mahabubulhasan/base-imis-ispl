@@ -73,7 +73,7 @@
     </div>
 
     <div class="form-group row required">
-        {!! Form::label('vehicle_id', __('Vehicle Number'), ['class' => 'col-sm-3 control-label']) !!}
+        {!! Form::label('vehicle_id', __('Vehicle No.'), ['class' => 'col-sm-3 control-label']) !!}
         <div class="col-sm-3">
             <select name="vehicle_id" id="vehicle_id" class="form-control" style="width:100%" data-placeholder="{{ __('Search vehicle by number') }}"></select>
         </div>

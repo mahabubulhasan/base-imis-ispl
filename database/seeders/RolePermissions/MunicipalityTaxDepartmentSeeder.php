@@ -25,7 +25,8 @@ class MunicipalityTaxDepartmentSeeder extends Seeder
                 case 'Municipality - Tax Department':
 
                     
-                    $createdRole->givePermissionTo(Permission::all()->whereIn('group',['Property Tax Collection ISS']));
+                    // Property Tax Collection ISS module locked out
+                    // $createdRole->givePermissionTo(Permission::all()->whereIn('group',['Property Tax Collection ISS']));
                     $createdRole->givePermissionTo(Permission::all()->whereIn('group',['Maps'])
                     ->whereIN('name',[
                         'Municipality Map Layer',

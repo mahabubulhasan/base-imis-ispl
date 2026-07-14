@@ -67,6 +67,10 @@
             text-align: center;
             font-weight: bold;
         }
+
+        table.data-table.page-break-before {
+            page-break-before: always;
+        }
         .text-right {
             text-align: right;
         }
@@ -131,14 +135,60 @@
             </div>
         @endif
         <div class="pdf-header-title">
-            <div class="org">চাঁপাইনবাবগঞ্জ পৌরসভা</div>
+            <div class="org">{{config('app.city_bn')}} {{config('app.city_suffix_bn')}}</div>
             <div class="report">বাসাবাড়ীর বর্জ্য ব্যবস্থাপনা সেবামূল্য আদায় সীট</div>
         </div>
     </div>
 
     <div class="pdf-month">মাসঃ {{ $monthLabel }}</div>
 
-    <table class="data-table">
+    @php
+        $estimateRowLines = function ($row) {
+            $dueParts = array_values(array_filter(array_map('trim', explode(',', (string) ($row['due_months_of'] ?? '')))));
+            $dueLines = (int) ceil(count($dueParts) / 2);
+            $wrapLines = function ($text, $charsPerLine) {
+                $len = mb_strlen(trim((string) $text));
+                return $len > 0 ? (int) ceil($len / $charsPerLine) : 1;
+            };
+
+            return max(
+                1,
+                $dueLines,
+                $wrapLines($row['household_owner_name'] ?? '', 16),
+                $wrapLines($row['father_or_husband_name'] ?? '', 16),
+                $wrapLines($row['sub_location'] ?? '', 38)
+            );
+        };
+
+        $rowOverheadLines = 0.6; // cell padding + border, in line units
+        $firstPageBudget = 54;   // body lines available on page 1 (after title block)
+        $otherPageBudget = 60;   // body lines available on later pages
+
+        $pageChunks = [];
+        $currentChunk = [];
+        $usedLines = 0.0;
+        $budget = $firstPageBudget;
+        foreach ($rows as $row) {
+            $need = $estimateRowLines($row) + $rowOverheadLines;
+            if (! empty($currentChunk) && ($usedLines + $need) > $budget) {
+                $pageChunks[] = $currentChunk;
+                $currentChunk = [];
+                $usedLines = 0.0;
+                $budget = $otherPageBudget;
+            }
+            $currentChunk[] = $row;
+            $usedLines += $need;
+        }
+        if (! empty($currentChunk)) {
+            $pageChunks[] = $currentChunk;
+        }
+        if (empty($pageChunks)) {
+            $pageChunks[] = [];
+        }
+    @endphp
+
+    @foreach($pageChunks as $chunkIndex => $chunkRows)
+    <table class="data-table{{ $chunkIndex > 0 ? ' page-break-before' : '' }}">
         <thead>
             <tr>
                 <th rowspan="2">ক্রমিক নং</th>
@@ -153,18 +203,18 @@
             </tr>
             <tr>
                 <th>নির্ধারিত সেবামূল্য</th>
-                <th>বিগত মাসসমূহ বকেয়া</th>
                 <th class="due-months-col">বকেয়া মাসসমূহ</th>
-                <th>চলতি</th>
-                <th>আদায়যোগ্য মোট সেবামূল্য</th>
+                <th>চলতি মাসের আদায়যোগ্য সেবামূল্য</th>
                 <th>আদায়কৃত চলতি</th>
+                <th>চলতি</th>
                 <th>আদায়কৃত বকেয়া</th>
+                <th>বিগত মাসসমূহ বকেয়া</th>
                 <th>মোট বিল আদায়</th>
                 <th>আদায় শেষে বকেয়া</th>
             </tr>
         </thead>
         <tbody>
-            @forelse($rows as $row)
+            @forelse($chunkRows as $row)
                 <tr>
                     <td class="text-left">{{ $row['sl'] }}</td>
                     <td class="text-left nowrap">{{ $row['holding_number'] }}</td>
@@ -175,7 +225,6 @@
                     <td class="text-left">{{ $row['ward'] }}</td>
                     <td class="text-left nowrap">{{ $row['contact_number'] }}</td>
                     <td class="amount">{{ $row['current_service_fee'] ?? currency(0) }}</td>
-                    <td class="amount">{{ $row['previous_due_amount'] ?? currency(0) }}</td>
                     <td class="text-left due-months-col">
                         @php
                             $dueMonthsParts = array_values(array_filter(array_map('trim', explode(',', (string) ($row['due_months_of'] ?? '')))));
@@ -186,10 +235,11 @@
                         @endphp
                         {!! implode('<br>', $dueMonthsLines) !!}
                     </td>
-                    <td class="amount">{{ $row['due_current_month'] ?? currency(0) }}</td>
                     <td class="amount">{{ $row['total_due_amount'] ?? currency(0) }}</td>
                     <td class="amount">{{ $row['current_month_paid'] ?? currency(0) }}</td>
+                    <td class="amount">{{ $row['due_current_month'] ?? currency(0) }}</td>
                     <td class="amount">{{ $row['previous_due_paid'] ?? currency(0) }}</td>
+                    <td class="amount">{{ $row['previous_due_amount'] ?? currency(0) }}</td>
                     <td class="amount">{{ $row['revenue_collected'] ?? currency(0) }}</td>
                     <td class="amount">{{ $row['remaining_due'] ?? currency(0) }}</td>
                 </tr>
@@ -200,6 +250,7 @@
             @endforelse
         </tbody>
     </table>
+    @endforeach
 
     <div class="pdf-footer">{{__('This billing report is generated using IMIS application.')}}</div>
 </body>

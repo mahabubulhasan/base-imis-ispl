@@ -211,6 +211,8 @@ class RoleController extends Controller
         $watersupply_network = Permission::where('group','WaterSupply Network')->orderBy('type')->get();
         $swm_service_payment = Permission::where('group','Sw Service Payment')->orderBy('type')->get();
         $swm_service_provider_organizations = Permission::where('group', 'SW Service Provider Organizations')->orderBy('type')->get();
+        $swm_organization_types = Permission::where('group', 'SW Service Provider Organization Types')->orderBy('type')->get();
+        $swm_landfill_types = Permission::where('group', 'SW Service Provider Landfill Types')->orderBy('type')->get();
         $swm_work_types = Permission::where('group', 'SW Service Provider Work Types')->orderBy('type')->get();
         $swm_workers = Permission::where('group', 'SW Service Provider Workers')->orderBy('type')->get();
         $swm_vehicle_types = Permission::where('group', 'SW Service Provider Vehicle Types')->orderBy('type')->get();
@@ -274,6 +276,8 @@ class RoleController extends Controller
             'WaterSupply Network' => $watersupply_network,
             'Sw Service Payment' => $swm_service_payment,
             'SW Service Provider Organizations' => $swm_service_provider_organizations,
+            'SW Service Provider Organization Types' => $swm_organization_types,
+            'SW Service Provider Landfill Types' => $swm_landfill_types,
             'SW Service Provider Work Types' => $swm_work_types,
             'SW Service Provider Workers' => $swm_workers,
             'SW Service Provider Vehicle Types' => $swm_vehicle_types,

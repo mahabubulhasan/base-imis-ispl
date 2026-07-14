@@ -122,6 +122,35 @@ class BuildingRequest extends FormRequest
         return $rules;
     }
 
+    /**
+     * Validation rules for the tax_code field.
+     *
+     * Mirrors the form renderer driven by config('tax_code.mode'):
+     *   - 'legacy' : one or more comma-separated codes matching the legacy format
+     *   - 'regex'  : a single free-text string limited to the allowed character set
+     *
+     * @return array<int, string>
+     */
+    private function taxCodeRules(): array
+    {
+        $cfg = config('tax_code');
+
+        if (($cfg['mode'] ?? 'regex') === 'legacy') {
+            $code = $cfg['legacy_format'];
+            // One code, or several joined by commas with optional surrounding spaces.
+            $pattern = '/^\s*' . $code . '(\s*,\s*' . $code . ')*\s*$/i';
+        } else {
+            $pattern = '/^[' . $cfg['allowed_chars'] . ']*$/';
+        }
+
+        return [
+            'nullable',
+            'string',
+            'max:' . ($cfg['max_length'] ?? 250),
+            'regex:' . $pattern,
+        ];
+    }
+
     public function store()
     {
         Validator::extend(
@@ -147,20 +176,14 @@ class BuildingRequest extends FormRequest
             'ward' => 'required',
             'road_code' => 'required',
             'house_number' => 'nullable|unique:pgsql.building_info.buildings,house_number',
-            // Allow comma-separated tax codes; max length ~250 chars
-            'tax_code' => [
-                'nullable',
-                'string',
-                'max:250',
-                // Pattern: code or multiple codes separated by commas with optional spaces
-                'regex:/^\s*\d{2}-\d{3}-\d{4}-\d{2}(\s*,\s*\d{2}-\d{3}-\d{4}-\d{2})*\s*$/'
-            ],
+            // Renderer + validation mode driven by config('tax_code.mode'); see taxCodeRules().
+            'tax_code' => $this->taxCodeRules(),
             'structure_type_id' => 'required',
              //year of building Construction
             'construction_year' => 'required|date|before_or_equal:today',
             'floor_count' => 'required|numeric|min:0.1',
             'functional_use_id' => 'required',
-            'use_category_id' => 'required_with:functional_use_id',
+            'use_category_id' => 'nullable',
             'household_served' => [
                 // not required if use cat is Public Toilet or Community Toilet
                 'required_unless:use_category_id,34,35',
@@ -253,15 +276,10 @@ class BuildingRequest extends FormRequest
             'ward' => 'required',
             'road_code' => 'required',
             'house_number' => 'nullable|unique:pgsql.building_info.buildings,house_number,' . $bin . ',bin',
-            // Allow comma-separated tax codes; max length ~250 chars
-            'tax_code' => [
-                'nullable',
-                'string',
-                'max:250',
-                'regex:/^\s*\d{2}-\d{3}-\d{4}-\d{2}(\s*,\s*\d{2}-\d{3}-\d{4}-\d{2})*\s*$/'
-            ],
+            // Renderer + validation mode driven by config('tax_code.mode'); see taxCodeRules().
+            'tax_code' => $this->taxCodeRules(),
             'structure_type_id' => 'required',
-            'use_category_id' => 'required_with:functional_use_id',
+            'use_category_id' => 'nullable',
             //year of building Construction
             'construction_year' => 'required|date|before_or_equal:today',
             'floor_count' => 'required|numeric|min:0.1',

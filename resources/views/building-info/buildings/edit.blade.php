@@ -133,10 +133,9 @@
         //script to  make dropdowns searchable
 
          optionHtmlBIN = selectedAssociatedValue
-                ? `<option value=${selectedAssociatedValue} selected="${selectedAssociatedText}">${selectedAssociatedText}</option>`
-                : '<option selected={{ $building->building_associated_to }}">{{ $building->building_associated_to }}</option>'
-        $('#building_associated_to').prepend(
-                ).select2({
+                ? `<option value="${selectedAssociatedValue}" selected>${selectedAssociatedText}</option>`
+                : '<option value="{{ $building->building_associated_to }}" selected>{{ $building->building_associated_to }}</option>';
+        $('#building_associated_to').prepend(optionHtmlBIN).select2({
             ajax: {
                 url: "{{ route('building.get-house-numbers-all') }}",
                 data: function(params) {
@@ -171,6 +170,49 @@
             closeOnSelect: true,
             width: '85%',
             });
+
+        // Households: options load on demand via AJAX (select2); preselected ones prepended below
+        var preselectedHouseholds = @json($selectedHouseholdOptions ?? []);
+        var $hh = $('#swm_customer_id');
+        $.each(preselectedHouseholds, function (id, text) {
+            $hh.append(new Option(text, id, true, true)); // value, text, selected, selected
+        });
+        $hh.select2({
+            placeholder: '{{ __('Select Households') }}',
+            allowClear: true,
+            closeOnSelect: false,
+            width: '85%',
+            minimumInputLength: 0,
+            ajax: {
+                url: "{{ route('building.household-options') }}",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { search: params.term, page: params.page || 1 };
+                },
+                cache: true,
+            },
+        });
+        $hh.trigger('change');
+
+        // LIC Name: options load on demand via AJAX (select2)
+        $('#lic_id_select').select2({
+            ajax: {
+                url: "{{ route('building.lic-options') }}",
+                data: function(params) {
+                    return {
+                        search: params.term,
+                        page: params.page || 1
+                    };
+                },
+                cache: true,
+            },
+            placeholder: '{{ __('LIC Name') }}',
+            allowClear: true,
+            closeOnSelect: true,
+            width: '85%',
+            minimumInputLength: 0,
+        });
 
 
         optionHtmlWaterCode = selectedWaterCode
@@ -585,11 +627,11 @@
         // show drain or sewer code if containment type has drain or sewer code
         function showHideCode()
         {
-            if({{$sewer_status}} == true)
+            if(@json($sewer_status) == true)
             {
                 $('#sewer_code').show();
             }
-            if({{$drain_status}} == true)
+            if(@json($drain_status) == true)
             {
                 $('#drain_code').show();
             }
@@ -614,7 +656,7 @@
         var functional_use = $('#functional_use_id').val();
         if (functional_use) {
             $.each(usecatgs[functional_use], function(key, value) {
-                if(key == {{$building->use_category_id}})
+                if(key == @json($building->use_category_id))
             {
                 html += '<option value="' + key + '" selected="selected">' + value + '</option>';
             }

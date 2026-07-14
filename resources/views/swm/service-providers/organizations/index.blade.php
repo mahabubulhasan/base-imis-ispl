@@ -85,13 +85,13 @@
     </div>
     <div class="card-body">
     <div class="table-responsive">
-        <table id="data-table" class="table table-bordered table-striped" width="100%">
+        <table id="data-table" class="table table-bordered table-striped tbl-aligned" width="100%">
             <thead>
                 <tr>
                 <th>{{ __('Organization Name') }}</th>
                 <th>{{ __('Organization Type') }}</th>
                 <th>{{ __('Contact Person Name') }}</th>
-                <th>{{ __('Contact Number') }}</th>
+                <th>{{ __('Contact No.') }}</th>
                 <th>{{ __('Email') }}</th>
                 <th>{{ __('Service Wards') }}</th>
                 <th>{{ __('Status') }}</th>

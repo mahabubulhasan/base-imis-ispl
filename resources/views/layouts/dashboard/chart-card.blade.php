@@ -31,7 +31,7 @@
 
 <div class="card card-outline card-info">
     <div class="card-header">
-        <h3 class="card-title">{{ $card_title }}</h3>
+        <h3 class="card-title font-weight-bold">{{ $card_title }}</h3>
         <div class="card-tools">
             <!-- Buttons, labels, and many other things can be placed here! -->
             
@@ -55,7 +55,7 @@
     </div>
     <!-- /.card-header -->
     <div class="card-body collapse show">
-        <canvas id="{{ $canvas_id }}" style="height:250px"></canvas>
+        <canvas id="{{ $canvas_id }}" style="height:{{ $height ?? '250px' }}"></canvas>
     </div>
     <!-- /.card-body -->
 </div>

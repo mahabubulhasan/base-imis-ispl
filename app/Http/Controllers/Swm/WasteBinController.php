@@ -64,9 +64,27 @@ class WasteBinController extends Controller
         ]);
     }
 
-    protected function bins(): array
+    protected function bins(?WasteBin $wasteBin = null): array
     {
-        return Building::query()->whereNull('deleted_at')->orderBy('bin')->pluck('bin', 'bin')->all();
+        $bins = collect([$wasteBin?->bin, old('bin')])
+            ->map(fn ($v) => trim((string) $v))
+            ->filter()
+            ->unique()
+            ->values();
+
+        if ($bins->isEmpty()) {
+            return [];
+        }
+
+        return Building::query()
+            ->whereNull('deleted_at')
+            ->whereIn('bin', $bins->all())
+            ->orderBy('bin')
+            ->get(['bin', 'house_number'])
+            ->mapWithKeys(fn ($b) => [
+                $b->bin => $b->house_number ? $b->bin.' - '.$b->house_number : (string) $b->bin,
+            ])
+            ->all();
     }
 
     public function create()
@@ -106,7 +124,7 @@ class WasteBinController extends Controller
         $page_title = __('Edit Waste Bin');
         $wards = Ward::getInAscOrder();
         $wasteBinTypes = WasteBinType::query()->whereNull('deleted_at')->orderBy('name')->pluck('name', 'id');
-        $bins = $this->bins();
+        $bins = $this->bins($wasteBin);
 
         return view('swm.service-facilities.waste-bins.edit', compact(
             'page_title',

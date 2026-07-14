@@ -7,6 +7,7 @@ use App\Models\Swm\StsLog;
 use App\Models\Swm\Vehicle;
 use App\Models\Swm\WasteType;
 use App\Services\Swm\Concerns\HasExcelColumnValidationLabels;
+use App\Support\ExcelDownload;
 use App\Support\Swm\SwmExcelColumns;
 use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
@@ -154,7 +155,7 @@ class StsLogService
         return $log->id;
     }
 
-    public function download(array $data): void
+    public function download(array $data): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         $query = $this->stsLogQuery();
         $this->applyFilters($query, $data);
@@ -168,21 +169,22 @@ class StsLogService
             ->setBackgroundColor(Color::rgb(228, 228, 228))
             ->build();
 
-        $writer = WriterFactory::create(Type::XLSX);
-        $writer->openToBrowser(SwmExcelFilename::export('sts_logs'))
-            ->addRowWithStyle($columns, $style);
+        return ExcelDownload::xlsx(
+            SwmExcelFilename::export('sts_logs'),
+            function ($writer) use ($columns, $style, $query, $columnDefs) {
+                $writer->addRowWithStyle($columns, $style);
 
-        $query->orderBy('id')->chunk(5000, function ($rows) use ($writer, $columnDefs) {
-            foreach ($rows as $row) {
-                $writer->addRow(SwmExcelColumns::buildExportRow(
-                    $columnDefs,
-                    $row,
-                    fn (string $key, StsLog $model) => $this->formatStsLogExportValue($key, $model)
-                ));
+                $query->orderBy('id')->chunk(5000, function ($rows) use ($writer, $columnDefs) {
+                    foreach ($rows as $row) {
+                        $writer->addRow(SwmExcelColumns::buildExportRow(
+                            $columnDefs,
+                            $row,
+                            fn (string $key, StsLog $model) => $this->formatStsLogExportValue($key, $model)
+                        ));
+                    }
+                });
             }
-        });
-
-        $writer->close();
+        );
     }
 
     public function downloadTemplate(): void
@@ -202,7 +204,7 @@ class StsLogService
             ['key' => 'operation_date', 'label' => __('Operation Date'), 'required' => true, 'date_hint' => '02 Jun 2026'],
             [
                 'key' => 'vehicle_number',
-                'label' => __('Vehicle Number'),
+                'label' => __('Vehicle No.'),
                 'required' => true,
                 'dropdown' => array_values(Vehicle::query()
                     ->whereNull('deleted_at')
@@ -342,7 +344,7 @@ class StsLogService
     protected function formOnlyValidationLabels(): array
     {
         return [
-            'vehicle_id' => __('Vehicle Number'),
+            'vehicle_id' => __('Vehicle No.'),
             'waste_type_ids' => __('Waste Type'),
         ];
     }

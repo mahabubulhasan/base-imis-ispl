@@ -200,7 +200,7 @@ class StsService
             ['key' => 'latitude', 'label' => __('Latitude')],
             ['key' => 'longitude', 'label' => __('Longitude')],
             ['key' => 'operator_name', 'label' => __('Operator Name'), 'required' => true],
-            ['key' => 'contact_number', 'label' => __("Operator's Contact Number"), 'required' => true],
+            ['key' => 'contact_number', 'label' => __("Operator's Contact No."), 'required' => true],
             ['key' => 'capacity', 'label' => __('Capacity').' ('.__('Ton').')'],
             ['key' => 'area', 'label' => __('Area').' ('.__('Decimal').')'],
             [

@@ -136,7 +136,7 @@ class WasteBinService
             ['key' => 'total_capacity_kg', 'label' => __('Capacity (kg)'), 'required' => true],
             ['key' => 'placed_at_buildings', 'label' => __('Placed at Buildings?'), 'dropdown' => SwmImportTemplateOptions::yesNo()],
             ['key' => 'bin', 'label' => __('BIN')],
-            ['key' => 'sub_location', 'label' => __('Sub Location')],
+            ['key' => 'sub_location', 'label' => __('Location')],
             ['key' => 'ward_no', 'label' => __('Ward No.'), 'dropdown' => SwmImportTemplateOptions::wardNumberStrings()],
             ['key' => 'road_no', 'label' => __('Road No.')],
             ['key' => 'road_name', 'label' => __('Road Name')],

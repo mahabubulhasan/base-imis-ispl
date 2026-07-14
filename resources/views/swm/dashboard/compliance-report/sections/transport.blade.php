@@ -2,7 +2,7 @@
     <div class="section-header"><h2>(৪) বর্জ্য পরিবহন</h2></div>
     <div class="section-body">
         <div class="tbl-wrap">
-            <table class="tbl" id="tbl-transport">
+            <table class="tbl tbl-aligned" id="tbl-transport">
                 <thead>
                     <tr>
                         <th style="width:36px;">ক্রম</th>

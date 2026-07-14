@@ -10,6 +10,7 @@ use App\Models\Swm\Worker;
 use App\Models\Swm\WorkType;
 use App\Services\Swm\Concerns\HasExcelColumnValidationLabels;
 use App\Support\Swm\SwmExcelColumns;
+use App\Support\ExcelDownload;
 use App\Support\Swm\SwmExcelFilename;
 use App\Support\Swm\SwmExcelTemplateWriter;
 use App\Support\Swm\SwmImportTemplateOptions;
@@ -271,15 +272,11 @@ class VehicleService
 
         if (is_null($id)) {
             $vehicle = new Vehicle();
-            $this->fillVehicleFromData($vehicle, $data);
-            $vehicle->save();
-
-            return $vehicle->id;
-        }
-
-        $vehicle = Vehicle::find($id);
-        if (! $vehicle) {
-            return null;
+        } else {
+            $vehicle = Vehicle::find($id);
+            if (! $vehicle) {
+                return null;
+            }
         }
 
         return DB::transaction(function () use ($vehicle, $data) {
@@ -297,7 +294,7 @@ class VehicleService
         });
     }
 
-    public function download(array $data): void
+    public function download(array $data): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         $vehicleNumber = $data['vehicle_number'] ?? null;
         $vehicleIdNo = $data['vehicle_id_no'] ?? null;
@@ -336,25 +333,26 @@ class VehicleService
             ->setBackgroundColor(Color::rgb(228, 228, 228))
             ->build();
 
-        $writer = WriterFactory::create(Type::XLSX);
-        $writer->openToBrowser(SwmExcelFilename::export('vehicles'))
-            ->addRowWithStyle($headers, $style);
         $wardLabels = Ward::getInAscOrder();
-
         $operationalTypeLabels = self::operationalTypeLabels();
 
-        $query->orderBy('swm.vehicles.id')->chunk(5000, function ($rows) use ($writer, $columns, $wardLabels, $operationalTypeLabels) {
-            foreach ($rows as $row) {
-                $values = SwmExcelColumns::buildExportRow(
-                    $columns,
-                    $row,
-                    fn (string $key, $model) => $this->formatVehicleExportValue($key, $model, $wardLabels, $operationalTypeLabels)
-                );
-                $writer->addRow($values);
-            }
-        });
+        return ExcelDownload::xlsx(
+            SwmExcelFilename::export('vehicles'),
+            function ($writer) use ($headers, $style, $query, $columns, $wardLabels, $operationalTypeLabels) {
+                $writer->addRowWithStyle($headers, $style);
 
-        $writer->close();
+                $query->orderBy('swm.vehicles.id')->chunk(5000, function ($rows) use ($writer, $columns, $wardLabels, $operationalTypeLabels) {
+                    foreach ($rows as $row) {
+                        $values = SwmExcelColumns::buildExportRow(
+                            $columns,
+                            $row,
+                            fn (string $key, $model) => $this->formatVehicleExportValue($key, $model, $wardLabels, $operationalTypeLabels)
+                        );
+                        $writer->addRow($values);
+                    }
+                });
+            }
+        );
     }
 
     public function downloadTemplate(): void
@@ -370,15 +368,21 @@ class VehicleService
     {
         $scopedOrgId = Auth::user()?->swm_organization_id;
         $organizationColumn = null;
+        $driverPairs = [];
 
         if (! $scopedOrgId) {
-            $orgNames = Organization::query()
+            $orgs = Organization::query()
                 ->whereNull('deleted_at')
                 ->operational()
                 ->orderBy('name')
-                ->pluck('name')
-                ->all();
-            $organizationColumn = ['key' => 'organization', 'label' => __('Organization'), 'required' => true, 'dropdown' => $orgNames];
+                ->get(['id', 'name']);
+            $organizationColumn = ['key' => 'organization', 'label' => __('Organization'), 'required' => true, 'dropdown' => $orgs->pluck('name')->all()];
+
+            foreach ($orgs as $org) {
+                foreach ($this->driverWorkersForOrganization((int) $org->id) as $driverName) {
+                    $driverPairs[] = ['group' => $org->name, 'value' => $driverName];
+                }
+            }
         }
 
         $vehicleTypes = VehicleType::query()
@@ -398,7 +402,7 @@ class VehicleService
         $columns = [
             ['key' => 'vehicle_id_no', 'label' => __('Vehicle ID'), 'import' => false, 'template' => false, 'derived' => true],
             ['key' => 'vehicle_type', 'label' => __('Vehicle Type'), 'required' => true, 'dropdown' => $vehicleTypes],
-            ['key' => 'vehicle_number', 'label' => __('Vehicle Number'), 'required' => true],
+            ['key' => 'vehicle_number', 'label' => __('Vehicle No.'), 'required' => true],
             ['key' => 'capacity', 'label' => __('Capacity').' ('.__('Ton').')'],
         ];
 
@@ -414,8 +418,14 @@ class VehicleService
             ];
         }
 
+        $driverColumn = ['key' => 'driver', 'label' => __('Driver Name'), 'required' => true, 'dropdown' => $driverNames];
+        if ($driverPairs !== []) {
+            $driverColumn['reference_pairs'] = $driverPairs;
+            $driverColumn['reference_pairs_headers'] = [__('Organization'), __('Driver Name')];
+        }
+
         return array_merge($columns, [
-            ['key' => 'driver', 'label' => __('Driver Name'), 'required' => true, 'dropdown' => $driverNames],
+            $driverColumn,
             [
                 'key' => 'service_wards',
                 'label' => __('Service Wards'),
@@ -424,8 +434,8 @@ class VehicleService
                 'reference_key' => 'service_wards',
             ],
             ['key' => 'dumping_place_kind', 'label' => __('Dumping Place Type'), 'required' => true, 'dropdown' => $dumpingKinds],
-            ['key' => 'dumping_sts_id', 'label' => __('Dumping Place Name'), 'dropdown' => $stsLabels],
-            ['key' => 'dumping_landfill_id', 'label' => __('Dumping Place Name'), 'dropdown' => $landfillLabels],
+            ['key' => 'dumping_sts_id', 'label' => __('Dumping Place Name (STS)'), 'dropdown' => $stsLabels],
+            ['key' => 'dumping_landfill_id', 'label' => __('Dumping Place Name (Landfill)'), 'dropdown' => $landfillLabels],
             ['key' => 'dumping_place_other', 'label' => __('Specify Dumping Place')],
             ['key' => 'fuel_type', 'label' => __('Fuel Type')],
             ['key' => 'operational_type', 'label' => __('Operational Type'), 'dropdown' => $operationalLabels],

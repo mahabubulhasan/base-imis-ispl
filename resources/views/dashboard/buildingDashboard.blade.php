@@ -4,7 +4,7 @@
 
 @can('Building CountBox')
 
-<h1 style="padding-bottom: 15px;font-size: 24px;">{{  __("Buildings")}}</h1>
+<h1 style="padding-bottom: 15px;font-size: 24px;font-weight: bold;">{{  __("Buildings")}}</h1>
   <div class="row">
 
         <div class="col-lg-3 col-md-12 col-xs-12  d-flex">
@@ -48,8 +48,9 @@
   </div>
   @endcan
 
-  @can('Sanitation CountBox')
-  <h1 style="padding: 15px 0 15px 0; font-size: 24px;">{{ __("Building Sanitation Facilities") }}</h1>
+  {{-- 
+@can('Sanitation CountBox')
+  <h1 style="padding: 15px 0 15px 0; font-size: 24px;font-weight: bold;">{{ __("Building Sanitation Facilities") }}</h1>
   <div class="row">
       @foreach ($sanitationSystems as $sanitationSystem)
           <div class="col-lg-3 col-xs-6">
@@ -80,7 +81,7 @@
           @include('dashboard.countBox._sanitationOffsiteContainmentCountBox')
       </div> <!-- sub col div -->
   </div> <!-- row div -->
-@endcan
+@endcan --}}
 
 
 
