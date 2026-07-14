@@ -53,7 +53,7 @@
         </div>
         {!! Form::hidden('organization_id', $scopedOrganizationId) !!}
         @else
-        <div class="form-group row">
+        <div class="form-group row required">
             {!! Form::label('organization_id', __('Organization'), ['class' => 'col-sm-3 control-label']) !!}
             <div class="col-sm-3">
                 {!! Form::select('organization_id', $organizationChoices, null, ['class' => 'form-control chosen-select', 'id' => 'organization_id', 'data-placeholder' => __('Organization')]) !!}
