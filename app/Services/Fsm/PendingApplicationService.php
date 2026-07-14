@@ -137,6 +137,7 @@ class PendingApplicationService
                         inputId: 'amount',
                         inputValue: old('amount'),
                         placeholder: __('Amount (BDT)'),
+                        required: true,
                     ),
                 ],
             ],

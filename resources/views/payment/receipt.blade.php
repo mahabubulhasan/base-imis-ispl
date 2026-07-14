@@ -370,16 +370,16 @@ function toBengaliNumber($number) {
         <div class="warning-box">
             <div class="warning-text">
                 <span class="warning-icon">⚠</span>
-                <strong>গুরুত্বপূর্ণ সেবা বিষয়ক মতামত বা অভিযোগের জন্য ট্রাজেকশন নম্বরটি সংরক্ষণ করুন</strong>
+                <strong>গুরুত্বপূর্ণ সেবা বিষয়ক মতামত বা অভিযোগের জন্য রসিদ নম্বরটি সংরক্ষণ করুন</strong>
                 <div style="margin-top: 10px;">
-                    <strong>আপনার ট্রাজেকশন নম্বর:</strong> {{ $payment->transaction_id }}
+                    <strong>আপনার রসিদ নম্বর:</strong> {{ $payment->receipt_no }} <br>
                 </div>
             </div>
         </div>
 
         <!-- Footer -->
         <div class="footer-info">
-            সেবা গ্রহনের পর এই ট্রাজেকশন নম্বর দ্বারা করে <strong>imislxp-new.streamstech.com</strong> ওয়েবসাইটে <strong>Feedback</strong> দিয়ে<br>
+            সেবা গ্রহনের পর এই রসিদ নম্বর দ্বারা করে <strong>imislxp-new.streamstech.com</strong> ওয়েবসাইটে <strong>Feedback</strong> দিয়ে<br>
             গিয়ে আপনার মতামত প্রদান করুন।
         </div>
         </div>
