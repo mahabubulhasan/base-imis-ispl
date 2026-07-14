@@ -704,7 +704,7 @@
                                 </a>
                             </li>
                             @endcan
-                            @can('Waste Generation Setting')
+                            @can('View SW Per Capita Generation Setting')
                             <li class="nav-item">
                                 <a href="{{ route('swm.settings.per-capita-sw-generation.edit') }}" class="nav-link {{ request()->is('swm/settings/per-capita-sw-generation', 'swm/settings/per-capita-sw-generation/*') ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
