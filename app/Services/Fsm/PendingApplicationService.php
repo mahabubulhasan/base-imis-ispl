@@ -131,20 +131,12 @@ class PendingApplicationService
                 'title' => __('Payment Method'),
                 'fields' => [
                     new FormField(
-                        label: __('Pay in Cash'),
-                        labelFor: 'payment_method',
-                        inputType: 'checkbox',
-                        inputId: 'payment_method',
-                        checkboxValue: 'cash_in_hand',
-                        selectedValue: old('payment_method'),
-                    ),
-                    new FormField(
-                        label: __('Enter Amount'),
+                        label: __('Amount (BDT)'),
                         labelFor: 'amount',
                         inputType: 'text',
                         inputId: 'amount',
                         inputValue: old('amount'),
-                        placeholder: __('Amount'),
+                        placeholder: __('Amount (BDT)'),
                     ),
                 ],
             ],
@@ -186,8 +178,7 @@ class PendingApplicationService
             'notes' => 'nullable|string|max:1000',
             'latitude' => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
-            'payment_method' => 'nullable|in:cash_in_hand',
-            'amount' => 'required_if:payment_method,cash_in_hand|nullable',
+            'amount' => 'numeric',
         ], [
             'has_tax_id.required' => __('Please select if you have a Tax Code.'),
             'has_tax_id.in' => __('The Tax Code selection is invalid.'),
@@ -203,9 +194,7 @@ class PendingApplicationService
             'latitude.between' => __('Latitude must be between -90 and 90.'),
             'longitude.numeric' => __('Longitude must be a valid number.'),
             'longitude.between' => __('Longitude must be between -180 and 180.'),
-            'payment_method.in' => __('The selected Payment Method is invalid.'),
-            'amount.required_if' => __('Please select an amount.'),
-            'amount.in' => __('The selected amount is invalid.'),
+            'amount.numeric' => __('Amount must be a valid number.'),
         ]);
     }
 

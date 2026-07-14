@@ -368,9 +368,6 @@
             </div>
 
             <!-- Address Information -->
-            <div class="section-title">
-                ঠিকানা তথ্য
-            </div>
             <div class="info-grid full">
                 <div class="info-item">
                     <span class="info-label">সম্পূর্ণ ঠিকানা</span>
