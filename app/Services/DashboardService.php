@@ -38,6 +38,18 @@ class DashboardService
             ->whereNull('deleted_at')
             ->count();
     }
+
+    public function countBuildingsByUseExactArray($useNames)
+    {
+        return Building::whereIn('functional_use_id', function ($query) use ($useNames) {
+            $query->select('id')
+                ->from('building_info.functional_uses')
+                ->whereIn('name', $useNames );
+        })
+            ->whereNull('deleted_at')
+            ->count();
+    }
+
     public function getCostPaidByContainmentOwnerPerward($year)
     {
 

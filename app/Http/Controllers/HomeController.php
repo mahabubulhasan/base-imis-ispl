@@ -59,11 +59,11 @@ class HomeController extends Controller
 
 
 
-        $commercialBuildCount = $this->dashboardService->countBuildingsByUseExact('Commercial');
+        $commercialBuildCount = $this->dashboardService->countBuildingsByUseExactArray(['Mercantile', 'Storage Buildings', 'Industrial Buildings', 'Business (Offices)']);
         $residentialBuildingCount = $this->dashboardService->countBuildingsByUseExact('Residential');
-        $mixedBuildCount = $this->dashboardService->countBuildingsByUseExact('Mixed (Residential, Commercial, Office uses)');
-        $industrialBuildingCount = $this->dashboardService->countBuildingsByUseExact('Industrial');
-        $educationBuildingCount = $this->dashboardService->countBuildingsByUseExact('Educational');
+        $mixedBuildCount = $this->dashboardService->countBuildingsByUseExact('Mixed uses');
+        $industrialBuildingCount = $this->dashboardService->countBuildingsByUseExact('Industrial Buildings');
+        $educationBuildingCount = $this->dashboardService->countBuildingsByUseExact('Educational Facilities');
         $institutionBuildingCount = $this->dashboardService->countBuildingsByUse('Institution');
         $institutionNames = FunctionalUse::where('name', 'like', '%Institution%')
             ->pluck('name')
