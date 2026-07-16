@@ -32,6 +32,16 @@ class  BuildingDashboardService
             ->whereNull('deleted_at')
             ->count();
     }
+    public function countBuildingsByUseArray($useNames)
+    {
+        return Building::whereIn('functional_use_id', function ($query) use ($useNames) {
+            $query->select('id')
+                ->from('building_info.functional_uses')
+                ->whereIn('name', $useNames);
+        })
+            ->whereNull('deleted_at')
+            ->count();
+    }
     public function getCostPaidByContainmentOwnerPerward($year)
     {
 
@@ -674,12 +684,12 @@ class  BuildingDashboardService
 
         $query = "SELECT a.ward, a.type, a.count, b.totalward,
         ROUND(a.count * 100/b.totalward) as percentage_proportion
-            FROM ( 
+            FROM (
             Select ct.type, count(c.*), b.ward
-            FROM building_info.buildings b 
-            JOIN building_info.build_contains bc on b.bin = bc.bin 
-                AND bc.deleted_at IS NULL 
-                AND bc.bin IS NOT NULL 
+            FROM building_info.buildings b
+            JOIN building_info.build_contains bc on b.bin = bc.bin
+                AND bc.deleted_at IS NULL
+                AND bc.bin IS NOT NULL
                 AND bc.containment_id IS NOT NULL
             JOIN fsm.containments c on bc.containment_id = c.id
                 AND c.deleted_at IS NULL
@@ -688,10 +698,10 @@ class  BuildingDashboardService
             where f.name = 'Residential' AND b.deleted_at IS NULL group by ct.type, b.ward
                 ) a
             JOIN ( select count(c.*) as totalward, b.ward
-                FROM building_info.buildings b  
-                JOIN building_info.build_contains bc on b.bin = bc.bin 
-                    AND bc.deleted_at IS NULL 
-                    AND bc.bin IS NOT NULL 
+                FROM building_info.buildings b
+                JOIN building_info.build_contains bc on b.bin = bc.bin
+                    AND bc.deleted_at IS NULL
+                    AND bc.bin IS NOT NULL
                     AND bc.containment_id IS NOT NULL
                 JOIN fsm.containments c on bc.containment_id = c.id
                     AND c.deleted_at IS NULL
@@ -782,10 +792,10 @@ class  BuildingDashboardService
         $query = 'SELECT a.bldg_name, a.type, a.count, b.total_bldguse,
 		ROUND(a.count * 100/b.total_bldguse::numeric, 2 ) as percentage_proportion
                 FROM (select ct.type, count(c.*), bldg.name as bldg_name
-                from building_info.buildings b 
-                 JOIN building_info.build_contains bc on b.bin = bc.bin 
-                    AND bc.deleted_at IS NULL 
-                    AND bc.bin IS NOT NULL 
+                from building_info.buildings b
+                 JOIN building_info.build_contains bc on b.bin = bc.bin
+                    AND bc.deleted_at IS NULL
+                    AND bc.bin IS NOT NULL
                     AND bc.containment_id IS NOT NULL
                 JOIN fsm.containments c on bc.containment_id = c.id
                     AND c.deleted_at IS NULL
@@ -794,10 +804,10 @@ class  BuildingDashboardService
                 where b.functional_use_id is not null AND b.deleted_at IS NULL group by ct.type, b.functional_use_id, bldg.name
                      ) a
                 JOIN ( select count(c.*) as total_bldguse, bldg.name as bldg_name
-               from building_info.buildings b  
-               JOIN building_info.build_contains bc on b.bin = bc.bin 
-                    AND bc.deleted_at IS NULL 
-                    AND bc.bin IS NOT NULL 
+               from building_info.buildings b
+               JOIN building_info.build_contains bc on b.bin = bc.bin
+                    AND bc.deleted_at IS NULL
+                    AND bc.bin IS NOT NULL
                     AND bc.containment_id IS NOT NULL
                 JOIN fsm.containments c on bc.containment_id = c.id
                     AND c.deleted_at IS NULL
@@ -969,10 +979,10 @@ class  BuildingDashboardService
         $query = "SELECT
         w.ward, COUNT(a.id) AS count
         FROM layer_info.wards w
-        LEFT JOIN ( building_info.buildings b  
-                    JOIN building_info.build_contains bc on b.bin = bc.bin 
-                        AND bc.deleted_at IS NULL 
-                        AND bc.bin IS NOT NULL 
+        LEFT JOIN ( building_info.buildings b
+                    JOIN building_info.build_contains bc on b.bin = bc.bin
+                        AND bc.deleted_at IS NULL
+                        AND bc.bin IS NOT NULL
                         AND bc.containment_id IS NOT NULL
                     JOIN fsm.containments c on bc.containment_id = c.id
                         AND c.deleted_at IS NULL)
@@ -1053,10 +1063,10 @@ class  BuildingDashboardService
         $query = "SELECT
         w.ward, COUNT(a.id) AS count
         FROM layer_info.wards w
-        LEFT JOIN ( building_info.buildings b  
-                JOIN building_info.build_contains bc on b.bin = bc.bin 
-                    AND bc.deleted_at IS NULL 
-                    AND bc.bin IS NOT NULL 
+        LEFT JOIN ( building_info.buildings b
+                JOIN building_info.build_contains bc on b.bin = bc.bin
+                    AND bc.deleted_at IS NULL
+                    AND bc.bin IS NOT NULL
                     AND bc.containment_id IS NOT NULL
                 JOIN fsm.containments c on bc.containment_id = c.id
                     AND c.deleted_at IS NULL)

@@ -37,11 +37,11 @@ class BuildingDashboardController extends Controller
             $buildingCount = Building::whereNull('deleted_at')->count();
 
 
-            $commercialBuildCount = $this->buildingdashboardService->countBuildingsByUseExact('Commercial');
+            $commercialBuildCount = $this->buildingdashboardService->countBuildingsByUseArray(['Mercantile', 'Storage Buildings', 'Industrial Buildings', 'Business (Offices)']);
             $residentialBuildingCount = $this->buildingdashboardService->countBuildingsByUseExact('Residential');
-            $mixedBuildCount = $this->buildingdashboardService->countBuildingsByUseExact('Mixed (Residential, Commercial, Office uses)');
-            $industrialBuildingCount = $this->buildingdashboardService->countBuildingsByUseExact('Industrial');
-            $educationBuildingCount = $this->buildingdashboardService->countBuildingsByUseExact('Educational');
+            $mixedBuildCount = $this->buildingdashboardService->countBuildingsByUseExact('Mixed uses');
+            $industrialBuildingCount = $this->buildingdashboardService->countBuildingsByUseExact('Industrial Buildings');
+            $educationBuildingCount = $this->buildingdashboardService->countBuildingsByUseExact('Educational Facilities');
             $institutionBuildingCount = $this->buildingdashboardService->countBuildingsByUse('Institution');
             $institutionNames = FunctionalUse::where('name', 'like', '%Institution%')
                 ->pluck('name')
