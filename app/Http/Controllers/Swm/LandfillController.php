@@ -199,7 +199,7 @@ class LandfillController extends Controller
 
     public function destroy(Landfill $landfill)
     {
-        if (Sts::withTrashed()->where('destination_landfill_id', $landfill->id)->exists()) {
+        if (Sts::where('destination_landfill_id', $landfill->id)->exists()) {
             return redirect()->route('swm.landfills.index')->with('error', __('Cannot delete SW landfill that is set as destination for one or more STS records.'));
         }
         if (Vehicle::query()->where('dumping_landfill_id', $landfill->id)->exists()) {
