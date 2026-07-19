@@ -956,57 +956,71 @@ function onloadDynamicContainmentType() {
         const passwordError = document.getElementById('password-error');
         const confirmPasswordError = document.getElementById('confirm-password-error');
 
-        // Focus Events to Show Messages
-        passwordField.addEventListener('focus', () => passwordError.style.display = 'block');
-        confirmPasswordField.addEventListener('focus', () => confirmPasswordError.style.display = 'block');
+        // Only attach event listeners if password fields exist on the page
+        if (passwordField && confirmPasswordField && passwordError && confirmPasswordError) {
+            // Focus Events to Show Messages
+            passwordField.addEventListener('focus', () => passwordError.style.display = 'block');
+            confirmPasswordField.addEventListener('focus', () => confirmPasswordError.style.display = 'block');
 
-        // Blur Events to Hide Messages
-        passwordField.addEventListener('blur', () => passwordError.style.display = 'none');
-        confirmPasswordField.addEventListener('blur', () => confirmPasswordError.style.display = 'none');
+            // Blur Events to Hide Messages
+            passwordField.addEventListener('blur', () => passwordError.style.display = 'none');
+            confirmPasswordField.addEventListener('blur', () => confirmPasswordError.style.display = 'none');
 
-        // Input Validation for Password
-        passwordField.addEventListener('input', validatePassword);
-        confirmPasswordField.addEventListener('input', validateConfirmPassword);
+            // Input Validation for Password
+            passwordField.addEventListener('input', validatePassword);
+            confirmPasswordField.addEventListener('input', validateConfirmPassword);
 
-        // Validation Logic
-        function validatePassword() {
-            const password = passwordField.value;
+            // Validation Logic
+            function validatePassword() {
+                const password = passwordField.value;
 
-            // Requirements
-            const hasUpperCase = /[A-Z]/.test(password);
-            const hasLowerCase = /[a-z]/.test(password);
-            const hasNumber = /\d/.test(password);
-            const hasSymbol = /[\W_]/.test(password);
-            const hasMinLength = password.length >= 8;
+                // Requirements
+                const hasUpperCase = /[A-Z]/.test(password);
+                const hasLowerCase = /[a-z]/.test(password);
+                const hasNumber = /\d/.test(password);
+                const hasSymbol = /[\W_]/.test(password);
+                const hasMinLength = password.length >= 8;
 
-            // Update Message Colors
-            document.getElementById('char-count').style.color = hasMinLength ? 'green' : 'red';
-            document.getElementById('uppercase-lowercase').style.color = (hasUpperCase && hasLowerCase) ? 'green' : 'red';
-            document.getElementById('symbol').style.color = hasSymbol ? 'green' : 'red';
-            document.getElementById('number').style.color = hasNumber ? 'green' : 'red';
+                // Update Message Colors
+                const charCountEl = document.getElementById('char-count');
+                const uppercaseLowercaseEl = document.getElementById('uppercase-lowercase');
+                const symbolEl = document.getElementById('symbol');
+                const numberEl = document.getElementById('number');
 
-            // Trigger Confirm Password Validation
-            validateConfirmPassword();
-        }
+                if (charCountEl) charCountEl.style.color = hasMinLength ? 'green' : 'red';
+                if (uppercaseLowercaseEl) uppercaseLowercaseEl.style.color = (hasUpperCase && hasLowerCase) ? 'green' : 'red';
+                if (symbolEl) symbolEl.style.color = hasSymbol ? 'green' : 'red';
+                if (numberEl) numberEl.style.color = hasNumber ? 'green' : 'red';
 
-        function validateConfirmPassword() {
-            const confirmPassword = confirmPasswordField.value;
-            const password = passwordField.value;
+                // Trigger Confirm Password Validation
+                validateConfirmPassword();
+            }
 
-            // Requirements
-            const hasUpperCase = /[A-Z]/.test(confirmPassword);
-            const hasLowerCase = /[a-z]/.test(confirmPassword);
-            const hasNumber = /\d/.test(confirmPassword);
-            const hasSymbol = /[\W_]/.test(confirmPassword);
-            const hasMinLength = confirmPassword.length >= 8;
-            const passwordsMatch = confirmPassword === password;
+            function validateConfirmPassword() {
+                const confirmPassword = confirmPasswordField.value;
+                const password = passwordField.value;
 
-            // Update Message Colors
-            document.getElementById('confirm-char-count').style.color = hasMinLength ? 'green' : 'red';
-            document.getElementById('confirm-uppercase-lowercase').style.color = (hasUpperCase && hasLowerCase) ? 'green' : 'red';
-            document.getElementById('confirm-symbol').style.color = hasSymbol ? 'green' : 'red';
-            document.getElementById('confirm-number').style.color = hasNumber ? 'green' : 'red';
-            document.getElementById('confirm-match').style.color = passwordsMatch ? 'green' : 'red';
+                // Requirements
+                const hasUpperCase = /[A-Z]/.test(confirmPassword);
+                const hasLowerCase = /[a-z]/.test(confirmPassword);
+                const hasNumber = /\d/.test(confirmPassword);
+                const hasSymbol = /[\W_]/.test(confirmPassword);
+                const hasMinLength = confirmPassword.length >= 8;
+                const passwordsMatch = confirmPassword === password;
+
+                // Update Message Colors
+                const confirmCharCountEl = document.getElementById('confirm-char-count');
+                const confirmUppercaseLowercaseEl = document.getElementById('confirm-uppercase-lowercase');
+                const confirmSymbolEl = document.getElementById('confirm-symbol');
+                const confirmNumberEl = document.getElementById('confirm-number');
+                const confirmMatchEl = document.getElementById('confirm-match');
+
+                if (confirmCharCountEl) confirmCharCountEl.style.color = hasMinLength ? 'green' : 'red';
+                if (confirmUppercaseLowercaseEl) confirmUppercaseLowercaseEl.style.color = (hasUpperCase && hasLowerCase) ? 'green' : 'red';
+                if (confirmSymbolEl) confirmSymbolEl.style.color = hasSymbol ? 'green' : 'red';
+                if (confirmNumberEl) confirmNumberEl.style.color = hasNumber ? 'green' : 'red';
+                if (confirmMatchEl) confirmMatchEl.style.color = passwordsMatch ? 'green' : 'red';
+            }
         }
 
         function handleSizeReadOnlyChange()
