@@ -365,4 +365,215 @@ A dynamic form layout
     </div>
 @endif
 
+@push('scripts')
+<script>
+// Last Modified: July 19, 2026
+// Developed By: Streams Tech Ltd.
+// Description: Tax Code lookup functionality for auto-filling ward and holding owner name
+
+(function() {
+    // Configuration
+    const TAX_CODE_PATTERN = /^\d{2}-\d{3}-\d{4}-\d{2}$/;
+    const MIN_TAX_ID_LENGTH = 8;
+    let taxIdLookupDebounceTimer = null;
+    let activeTaxLookupRequestId = 0;
+    let hasManualWardOverride = false;
+    let hasManualHoldingOwnerOverride = false;
+
+    /**
+     * Validates tax code format
+     * Format: ##-###-####-##
+     */
+    function isValidTaxId(taxId) {
+        return TAX_CODE_PATTERN.test(taxId.trim());
+    }
+
+    /**
+     * Checks if tax code has minimum length
+     */
+    function hasMinimumLength(taxId) {
+        const digitsOnly = taxId.replace(/[^0-9]/g, '');
+        return digitsOnly.length >= MIN_TAX_ID_LENGTH;
+    }
+
+    /**
+     * Formats tax code as user types
+     * Automatically adds dashes after 2, 5, and 9 characters
+     */
+    function formatTaxId(value) {
+        // Remove all non-digits
+        let digitsOnly = value.replace(/[^0-9]/g, '');
+
+        // Apply formatting: ##-###-####-##
+        if (digitsOnly.length > 0) {
+            if (digitsOnly.length <= 2) {
+                return digitsOnly;
+            } else if (digitsOnly.length <= 5) {
+                return digitsOnly.slice(0, 2) + '-' + digitsOnly.slice(2);
+            } else if (digitsOnly.length <= 9) {
+                return digitsOnly.slice(0, 2) + '-' + digitsOnly.slice(2, 5) + '-' + digitsOnly.slice(5);
+            } else {
+                return digitsOnly.slice(0, 2) + '-' + digitsOnly.slice(2, 5) + '-' + digitsOnly.slice(5, 9) + '-' + digitsOnly.slice(9, 11);
+            }
+        }
+        return '';
+    }
+
+    /**
+     * Extracts ward from tax code (first 2 digits)
+     */
+    function extractWardFromTaxId(taxIdValue) {
+        if (!taxIdValue || !isValidTaxId(taxIdValue)) {
+            return '';
+        }
+        return taxIdValue.substring(0, 2);
+    }
+
+    /**
+     * Clears auto-populated fields
+     */
+    function clearAutoPopulatedFields() {
+        const holdingOwnerInput = document.getElementById('holding_owner_name');
+        if (holdingOwnerInput && !hasManualHoldingOwnerOverride) {
+            holdingOwnerInput.value = '';
+        }
+        hasManualHoldingOwnerOverride = false;
+    }
+
+    /**
+     * Fetches building data from server using tax code
+     */
+    async function fetchBuildingDataByTaxId(taxIdValue, requestId) {
+        try {
+            const endpoint = '{{ route("client-fsm-application.get-building-data") }}';
+            const response = await fetch(`${endpoint}?tax_id=${encodeURIComponent(taxIdValue)}`, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+
+            const data = await response.json();
+
+            // Check if this is still the active request
+            if (requestId !== activeTaxLookupRequestId) {
+                return;
+            }
+
+            if (response.ok && data.success && data.data) {
+                const { owner_name, ward } = data.data;
+
+                // Auto-populate holding owner name
+                const holdingOwnerInput = document.getElementById('holding_owner_name');
+                if (holdingOwnerInput && !hasManualHoldingOwnerOverride) {
+                    holdingOwnerInput.value = owner_name || '';
+                }
+
+                // Auto-populate ward if available
+                if (ward) {
+                    const wardSelect = document.getElementById('ward');
+                    if (wardSelect && !hasManualWardOverride) {
+                        wardSelect.value = ward;
+                    }
+                }
+            } else {
+                clearAutoPopulatedFields();
+            }
+        } catch (error) {
+            if (requestId !== activeTaxLookupRequestId) {
+                return;
+            }
+            clearAutoPopulatedFields();
+            console.error('Failed to fetch building data:', error);
+        }
+    }
+
+    /**
+     * Handles tax code input with debounce
+     */
+    function handleTaxCodeInput(event) {
+        const taxIdInput = event.target;
+        let value = taxIdInput.value;
+
+        // Format the input
+        const formattedValue = formatTaxId(value);
+        if (value !== formattedValue) {
+            taxIdInput.value = formattedValue;
+            value = formattedValue;
+        }
+
+        // Clear previous debounce timer
+        if (taxIdLookupDebounceTimer) {
+            clearTimeout(taxIdLookupDebounceTimer);
+        }
+
+        // Reset overrides on user input
+        hasManualWardOverride = false;
+        hasManualHoldingOwnerOverride = false;
+
+        // Return early if tax code is empty or too short
+        if (!value || !hasMinimumLength(value)) {
+            clearAutoPopulatedFields();
+            return;
+        }
+
+        // Debounce the lookup by 800ms
+        taxIdLookupDebounceTimer = setTimeout(() => {
+            if (isValidTaxId(value)) {
+                activeTaxLookupRequestId++;
+                const requestId = activeTaxLookupRequestId;
+                fetchBuildingDataByTaxId(value, requestId);
+            }
+        }, 800);
+    }
+
+    /**
+     * Handles ward field change to detect manual override
+     */
+    function handleWardChange(event) {
+        if (event.target.value) {
+            hasManualWardOverride = true;
+        }
+    }
+
+    /**
+     * Handles holding owner name field change to detect manual override
+     */
+    function handleHoldingOwnerChange(event) {
+        if (event.target.value) {
+            hasManualHoldingOwnerOverride = true;
+        }
+    }
+
+    /**
+     * Initialize event listeners when DOM is ready
+     */
+    function initializeTaxCodeLookup() {
+        const taxIdInput = document.getElementById('tax_id');
+        const wardSelect = document.getElementById('ward');
+        const holdingOwnerInput = document.getElementById('holding_owner_name');
+
+        if (taxIdInput) {
+            taxIdInput.addEventListener('input', handleTaxCodeInput);
+        }
+
+        if (wardSelect) {
+            wardSelect.addEventListener('change', handleWardChange);
+        }
+
+        if (holdingOwnerInput) {
+            holdingOwnerInput.addEventListener('input', handleHoldingOwnerChange);
+        }
+    }
+
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeTaxCodeLookup);
+    } else {
+        initializeTaxCodeLookup();
+    }
+})();
+</script>
+@endpush
+
 
