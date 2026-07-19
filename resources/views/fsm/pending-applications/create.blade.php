@@ -125,9 +125,6 @@ Description: Displays the pending FSM application create form using the shared c
 			const paymentMethodCheckbox = $('#payment_method').is(':checked');
 			const amountWrapper = $('#form-group-amount');
 
-			console.log('Payment method checkbox checked:', paymentMethodCheckbox);
-			console.log('Amount wrapper found:', amountWrapper.length > 0);
-
 			if (paymentMethodCheckbox) {
 				amountWrapper.removeClass('field-hidden');
 			} else {
@@ -147,8 +144,6 @@ Description: Displays the pending FSM application create form using the shared c
 			// Payment method handling
 			$('#payment_method').on('change', togglePaymentAmountFields);
 			togglePaymentAmountFields();
-
-			console.log('Form initialized');
 		});
 	</script>
 @endpush
