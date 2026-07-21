@@ -127,11 +127,15 @@ class PaymentController extends Controller
                 break;
         }
 
-        return response()->json([
+        $response = [
             'ack_code' => 'ack'.time(),
             'ack_msg' => 'Acknowledge Successfully.',
             'ack_timestamp' => now()->toDateTimeString()
-        ]);
+        ];
+
+        \Log::info('IPN Response: ', $response);
+
+        return response()->json($response);
     }
 
     public function history()
