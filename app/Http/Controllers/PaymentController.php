@@ -163,6 +163,13 @@ class PaymentController extends Controller
             // Call EkpayService status method
             $response = $ekpayService->status($transactionId, $transactionDate);
 
+            // Convert Guzzle Response object to array
+            if (is_object($response)) {
+                $response = json_decode($response->getBody(), true);
+                \Log::debug($response->msg_code);
+                \Log::debug('Payment status response: ', $response);
+            }
+
             if (isset($response['msg_code'])) {
                 $trnxId = $response['trnx_info']['mer_trnx_id'] ?? $transactionId;
 
