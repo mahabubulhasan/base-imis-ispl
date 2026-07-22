@@ -165,7 +165,7 @@ class PaymentController extends Controller
 
             // Convert Guzzle Response object to array
             if (is_object($response)) {
-                \Log::debug($response->msg_code);
+                \Log::debug($response->getBody()->getContents());
                 $response = json_decode($response->getBody(), true);
                 \Log::debug('Payment status response: ', $response);
             }
