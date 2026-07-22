@@ -28,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
                 ->set(ConfigKey::FAIL_URL, url("/payment/failed"))
                 ->set(ConfigKey::MERCHANT_REG_ID, config('ekpay.MERCHANT_REG_ID'))
                 ->set(ConfigKey::MERCHANT_PAS_KEY, config('ekpay.MERCHANT_PAS_KEY'))
-                ->set(ConfigKey::IPN_CHANNEL, '1') // 0=None, 1=Both, 2=Email, 3=API
+                ->set(ConfigKey::IPN_CHANNEL, '3') // 0=None, 1=Both, 2=Email, 3=API
                 ->set(ConfigKey::IPN_URI, url("/payment/ipn"))
                 ->set(ConfigKey::IPN_EMAIL, config('ekpay.IPN_EMAIL'))
                 ->set(ConfigKey::MAC, config('ekpay.MAC'))
