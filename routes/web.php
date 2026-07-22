@@ -42,6 +42,7 @@ Route::get('payment/receipt/{transaction_id}', 'PaymentController@receipt')->nam
 Route::get('payment/download-receipt/{transaction_id}', 'PaymentController@downloadReceipt')->name('payment.download-receipt');
 Route::get('payment/history/data', 'PaymentController@getPaymentData')->name('payment.history.data');
 Route::get('payment/history', 'PaymentController@history')->name('payment.history');
+Route::post('payment/status', 'PaymentController@checkPaymentStatus')->name('payment.status');
 Route::post('payment/ipn', 'PaymentController@ipn')->name('payment.ipn');
 
 Route::get('/public-dashboard', 'PublicDashboardController@index')->name('public-dashboard');

@@ -171,6 +171,78 @@
                 $('#payment_date_to').val('');
                 dataTable.draw();
             });
+
+            // Handle refresh status button click
+            $(document).on('click', '.refresh-status-btn', function(e) {
+                e.preventDefault();
+
+                var $btn = $(this);
+                var $form = $btn.closest('.refresh-status-form');
+                var transactionId = $btn.data('transaction-id');
+
+                // Disable button and show loading state
+                $btn.prop('disabled', true);
+                var originalHtml = $btn.html();
+                $btn.html('<i class="fas fa-spinner fa-spin"></i> {{ __("Checking...") }}');
+
+                // Send AJAX request
+                $.ajax({
+                    url: $form.attr('action'),
+                    type: 'POST',
+                    data: $form.serialize(),
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // Update the status badge
+                            var statusBadge = $('#status-badge-' + transactionId);
+                            statusBadge.removeClass(function(index, css) {
+                                return (css.match(/\bbadge-\S+/g) || []).join(' ');
+                            });
+                            statusBadge.addClass('badge-' + response.badge_class);
+                            statusBadge.text(response.status);
+
+                            // Show success message
+                            var alertHtml = '<div class="alert alert-success alert-dismissible fade show" role="alert">' +
+                                '<strong>{{ __("Success!") }}</strong> ' + response.message +
+                                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                                '<span aria-hidden="true">&times;</span>' +
+                                '</button>' +
+                                '</div>';
+
+                            // Insert alert at top of card
+                            $('.card:first').prepend(alertHtml);
+
+                            // Remove alert after 5 seconds
+                            setTimeout(function() {
+                                $('.alert-success').fadeOut(function() {
+                                    $(this).remove();
+                                });
+                            }, 5000);
+
+                            // Refresh the datatable after 2 seconds
+                            setTimeout(function() {
+                                dataTable.draw(false);
+                            }, 2000);
+                        } else {
+                            alert('{{ __("Error") }}: ' + response.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        var message = '{{ __("Failed to check payment status") }}';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            message = xhr.responseJSON.message;
+                        }
+                        alert('{{ __("Error") }}: ' + message);
+                    },
+                    complete: function() {
+                        // Re-enable button and restore original state
+                        $btn.prop('disabled', false);
+                        $btn.html(originalHtml);
+                    }
+                });
+            });
         });
     </script>
 @endpush

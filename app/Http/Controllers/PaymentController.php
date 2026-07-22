@@ -147,12 +147,74 @@ class PaymentController extends Controller
         return view('payment.history');
     }
 
+    public function checkPaymentStatus(EkpayService $ekpayService, Request $request)
+    {
+        $transactionId = $request->input('transaction_id');
+        $transactionDate = $request->input('transaction_date');
+
+        if (!$transactionId || !$transactionDate) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Transaction ID and date are required'
+            ], 400);
+        }
+
+        try {
+            // Call EkpayService status method
+            $response = $ekpayService->status($transactionId, $transactionDate);
+
+            if (isset($response['msg_code'])) {
+                $trnxId = $response['trnx_info']['mer_trnx_id'] ?? $transactionId;
+
+                // Update payment status based on msg_code
+                switch ($response['msg_code']) {
+                    case '1020':
+                        Payment::updateTransactionStatus($trnxId, "Paid");
+                        break;
+                    case '1021':
+                        Payment::updateTransactionStatus($trnxId, "Failed");
+                        break;
+                    case '1022':
+                        Payment::updateTransactionStatus($trnxId, "Canceled");
+                        break;
+                }
+
+                $newStatus = $this->getStatusFromMsgCode($response['msg_code']);
+                $badgeClass = $this->getStatusBadgeClass($newStatus);
+
+                return response()->json([
+                    'success' => true,
+                    'status' => $newStatus,
+                    'badge_class' => $badgeClass,
+                    'message' => $response['msg_det'] ?? 'Status updated successfully'
+                ]);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid response from payment gateway'
+            ], 500);
+        } catch (\Exception $e) {
+            \Log::error('Payment status check error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to check payment status: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    private function getStatusFromMsgCode($msgCode)
+    {
+        return match($msgCode) {
+            '1020' => 'Paid',
+            '1021' => 'Failed',
+            '1022' => 'Canceled',
+            default => 'Pending'
+        };
+    }
+
     public function getPaymentData(Request $request)
     {
-        // Last Modified: 2026-07-06
-        // Developed By: Streams Tech Ltd.
-        // Description: Fetch payment data for DataTable with server-side processing
-
         $columns = ['id', 'transaction_id', 'applicant_name', 'amount', 'status', 'created_at', 'applicant_contact', 'receipt_no', 'customer_name'];
         $columnIndex = $request->input('order.0.column', 0);
         $columnSortOrder = $request->input('order.0.dir', 'desc');
@@ -203,11 +265,11 @@ class PaymentController extends Controller
                 'transaction_id' => $payment->transaction_id,
                 'applicant_name' => $payment->applicant_name,
                 'amount' => '৳ ' . number_format($payment->amount, 2),
-                'status' => '<span class="badge badge-' . $this->getStatusBadgeClass($payment->transaction_status) . '">' . ucfirst($payment->transaction_status) . '</span>',
+                'status' => '<span class="badge badge-' . $this->getStatusBadgeClass($payment->transaction_status) . '" id="status-badge-' . $payment->transaction_id . '">' . ucfirst($payment->transaction_status) . '</span>',
                 'created_at' => $payment->created_at->format('Y-m-d H:i'),
                 'applicant_contact' => $payment->applicant_contact,
                 'receipt_no' => $payment->receipt_no,
-                'action' => $this->getPaymentActions($payment->transaction_id)
+                'action' => $this->getPaymentActions($payment->transaction_id, $payment->transaction_status, $payment->payment_timestamp)
             ];
         }
 
@@ -221,10 +283,6 @@ class PaymentController extends Controller
 
     private function getStatusBadgeClass($status)
     {
-        // Last Modified: 2026-07-06
-        // Developed By: Streams Tech Ltd.
-        // Description: Return badge class based on payment status
-
         return match($status) {
             'Paid' => 'success',
             'Failed' => 'danger',
@@ -235,22 +293,36 @@ class PaymentController extends Controller
         };
     }
 
-    private function getPaymentActions($transactionId)
+    private function getPaymentActions($transactionId, $status = null, $paymentTimestamp = null)
     {
-        // Last Modified: 2026-07-06
-        // Developed By: Streams Tech Ltd.
-        // Description: Generate action buttons for payment records
-
         $viewReceiptUrl = route('payment.receipt', $transactionId);
         $downloadReceiptUrl = route('payment.download-receipt', $transactionId);
+        $statusCheckUrl = route('payment.status');
 
-        return '
+        $actions = '
             <a href="' . $viewReceiptUrl . '" class="btn btn-sm btn-info" title="View Receipt">
                 <i class="fas fa-eye"></i>
             </a>
             <a href="' . $downloadReceiptUrl . '" class="btn btn-sm btn-primary" title="Download Receipt">
                 <i class="fas fa-download"></i>
-            </a>
+            </a>';
+
+        // Add refresh button for pending payments
+        if ($status === 'Pending' && $paymentTimestamp) {
+            $transactionDate = \Carbon\Carbon::parse($paymentTimestamp)->format('Y-m-d');
+            $actions .= '
+            <form method="POST" action="' . $statusCheckUrl . '" style="display: inline;" class="refresh-status-form">
+                ' . csrf_field() . '
+                <input type="hidden" name="transaction_id" value="' . $transactionId . '">
+                <input type="hidden" name="transaction_date" value="' . $transactionDate . '">
+                <button type="submit" class="btn btn-sm btn-warning refresh-status-btn" title="Refresh Status" data-transaction-id="' . $transactionId . '">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </form>';
+        }
+
+        $actions .= '
         ';
+        return $actions;
     }
 }
