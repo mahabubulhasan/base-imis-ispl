@@ -141,10 +141,6 @@ class PaymentController extends Controller
 
     public function history()
     {
-        // Last Modified: 2026-07-06
-        // Developed By: Streams Tech Ltd.
-        // Description: Display payment history with filters
-
         return view('payment.history');
     }
 
@@ -312,7 +308,10 @@ class PaymentController extends Controller
             </a>
             <a href="' . $downloadReceiptUrl . '" class="btn btn-sm btn-primary" title="Download Receipt">
                 <i class="fas fa-download"></i>
-            </a>';
+            </a>
+            <button type="button" class="btn btn-sm btn-secondary view-log-btn" title="View Transaction Log" data-transaction-id="' . $transactionId . '">
+                <i class="fas fa-file-alt"></i>
+            </button>';
 
         // Add refresh button for pending payments
         if ($status === 'Pending' && $paymentTimestamp) {
@@ -331,5 +330,49 @@ class PaymentController extends Controller
         $actions .= '
         ';
         return $actions;
+    }
+
+    public function getTransactionLog(Request $request)
+    {
+        // Last Modified: 2026-07-23
+        // Developed By: Streams Tech Ltd.
+        // Description: Fetch the latest transaction log for a payment
+
+        $transactionId = $request->input('transaction_id');
+
+        if (!$transactionId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Transaction ID is required'
+            ], 400);
+        }
+
+        try {
+            $transactionLog = TransactionLog::where('transaction_id', $transactionId)
+                ->latest('created_at')
+                ->first();
+
+            if (!$transactionLog) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No transaction log found'
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'transaction_id' => $transactionLog->transaction_id,
+                    'transaction_date' => $transactionLog->transaction_date,
+                    'response' => $transactionLog->response
+                ]
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error fetching transaction log: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch transaction log'
+            ], 500);
+        }
     }
 }

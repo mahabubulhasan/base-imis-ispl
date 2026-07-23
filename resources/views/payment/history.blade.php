@@ -90,6 +90,42 @@
             </div>
         </div>
     </div>
+
+    <!-- Transaction Log Modal -->
+    <div class="modal fade" id="transactionLogModal" tabindex="-1" role="dialog" aria-labelledby="transactionLogModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="transactionLogModalLabel">{{ __('Transaction Log') }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label><strong>{{ __('Transaction ID') }}</strong></label>
+                        <p id="log-transaction-id"></p>
+                    </div>
+                    <div class="form-group">
+                        <label><strong>{{ __('Transaction Date') }}</strong></label>
+                        <p id="log-transaction-date"></p>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <strong>{{ __('Response') }}</strong>
+                            <button type="button" class="btn btn-sm btn-outline-secondary float-right" id="copy-json-btn" title="{{ __('Copy to Clipboard') }}">
+                                <i class="fas fa-copy"></i> {{ __('Copy') }}
+                            </button>
+                        </label>
+                        <pre id="log-response" style="background-color: #f5f5f5; padding: 10px; border-radius: 4px; max-height: 400px; overflow-y: auto;"></pre>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Close') }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @stop
 
 @push('scripts')
@@ -170,6 +206,111 @@
                 $('#payment_date_from').val('');
                 $('#payment_date_to').val('');
                 dataTable.draw();
+            });
+
+            // Handle view transaction log button click
+            $(document).on('click', '.view-log-btn', function(e) {
+                e.preventDefault();
+
+                var transactionId = $(this).data('transaction-id');
+
+                // Disable button and show loading state
+                var $btn = $(this);
+                $btn.prop('disabled', true);
+                var originalHtml = $btn.html();
+                $btn.html('<i class="fas fa-spinner fa-spin"></i>');
+
+                // Send AJAX request
+                $.ajax({
+                    url: '{{ route("payment.transaction-log") }}',
+                    type: 'GET',
+                    data: {
+                        transaction_id: transactionId
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // Populate modal with data
+                            $('#log-transaction-id').text(response.data.transaction_id);
+                            $('#log-transaction-date').text(response.data.transaction_date);
+
+                            // Pretty print JSON
+                            try {
+                                var jsonObject = JSON.parse(response.data.response);
+                                var prettyJson = JSON.stringify(jsonObject, null, 2);
+                                $('#log-response').text(prettyJson);
+                            } catch (error) {
+                                // If response is already formatted or not JSON
+                                $('#log-response').text(response.data.response);
+                            }
+
+                            // Store the JSON for copy functionality
+                            $('#copy-json-btn').data('json-data', response.data.response);
+
+                            // Show modal
+                            $('#transactionLogModal').modal('show');
+                        } else {
+                            alert('{{ __("Error") }}: ' + response.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        var message = '{{ __("Failed to fetch transaction log") }}';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            message = xhr.responseJSON.message;
+                        }
+                        alert('{{ __("Error") }}: ' + message);
+                    },
+                    complete: function() {
+                        // Re-enable button and restore original state
+                        $btn.prop('disabled', false);
+                        $btn.html(originalHtml);
+                    }
+                });
+            });
+
+            // Handle copy JSON button click
+            $(document).on('click', '#copy-json-btn', function(e) {
+                e.preventDefault();
+
+                var jsonData = $('#log-response').text();
+
+                if (!jsonData) {
+                    alert('{{ __("No data to copy") }}');
+                    return;
+                }
+
+                // Copy to clipboard
+                navigator.clipboard.writeText(jsonData).then(function() {
+                    // Show success toast
+                    var alertHtml = '<div class="alert alert-success alert-dismissible fade show" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px;">' +
+                        '<strong>{{ __("Success!") }}</strong> {{ __("JSON copied to clipboard") }}' +
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                        '<span aria-hidden="true">&times;</span>' +
+                        '</button>' +
+                        '</div>';
+
+                    $('body').append(alertHtml);
+
+                    // Remove alert after 3 seconds
+                    setTimeout(function() {
+                        $('.alert-success').fadeOut(function() {
+                            $(this).remove();
+                        });
+                    }, 3000);
+
+                    // Change button text temporarily
+                    var $btn = $('#copy-json-btn');
+                    var originalHtml = $btn.html();
+                    $btn.html('<i class="fas fa-check"></i> {{ __("Copied") }}');
+
+                    setTimeout(function() {
+                        $btn.html(originalHtml);
+                    }, 2000);
+                }).catch(function(err) {
+                    alert('{{ __("Failed to copy to clipboard") }}');
+                });
             });
 
             // Handle refresh status button click
