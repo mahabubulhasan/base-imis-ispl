@@ -163,7 +163,7 @@ class PaymentController extends Controller
             // Convert Guzzle Response object to array
             if (is_object($response)) {
                 TransactionLog::logTransaction($transactionId, $transactionDate, $response->getBody()->getContents());
-                $response = json_decode($response->getBody()->getContents(), true);
+                $response = json_decode($response->getBody(), true);
             }
 
             if (isset($response['msg_code'])) {
