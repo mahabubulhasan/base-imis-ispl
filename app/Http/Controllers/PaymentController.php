@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Fsm\Application;
 use App\Models\Payment;
+use App\Models\TransactionLog;
 use Illuminate\Http\Request;
 use Streamstech\Ekpay\Customer;
 use Streamstech\Ekpay\EkpayService;
@@ -165,7 +166,8 @@ class PaymentController extends Controller
 
             // Convert Guzzle Response object to array
             if (is_object($response)) {
-                $response = json_decode($response->getBody(), true);
+                TransactionLog::logTransaction($transactionId, $transactionDate, $response->getBody()->getContents());
+                $response = json_decode($response->getBody()->getContents(), true);
             }
 
             if (isset($response['msg_code'])) {
