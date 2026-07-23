@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\TransactionLog;
 use Illuminate\Database\Eloquent\Model;
 
 class Payment extends Model
@@ -24,6 +25,11 @@ class Payment extends Model
         'proposed_service_date',
         'transaction_status' // pending, success, failed, cancel
     ];
+
+    public function transactionLogs()
+    {
+        return $this->hasMany(TransactionLog::class, 'transaction_id', 'transaction_id')->orderBy('created_at', 'desc');
+    }
 
     public static function generateReceiptNumber()
     {
