@@ -116,6 +116,12 @@ class PaymentController extends Controller
     public function ipn(Request $request)
     {
         $trnxId = $request->trnx_info['mer_trnx_id'];
+        $trnxDate = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s e', $request->req_timestamp)->format('Y-m-d');
+
+        if($trnxId && $trnxDate) {
+            TransactionLog::logTransaction($trnxId, $trnxDate, json_encode($request->all()));
+        }
+
         switch ($request->msg_code) {
             case 1020:
                 Payment::updateTransactionStatus($trnxId, "Paid");
