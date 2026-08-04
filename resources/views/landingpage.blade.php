@@ -368,23 +368,31 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
             <!-- Left Column: Hero Content -->
             <div class="max-w-xl">
                 <h1 class="text-4xl md:text-5xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-6">
-                    {{ __('login.hero_title') }}
+                    {{ __('login.hero_title') }} <span class="text-primary">{{ __('login.hero_title_accent') }}</span>
                 </h1>
                 <p class="text-lg text-slate-600 mb-4 leading-relaxed">
-                    {{ __('login.hero_subtitle') }}
+                    {{ __('login.hero_description') }}
                 </p>
                 <div class="text-sm text-slate-700 space-y-1 mb-8 bg-gradient-to-r from-blue-50/40 to-transparent p-5 rounded-lg border-l-4 border-primary/30">
                     <div>
-                        <span class="font-semibold text-slate-900">{{ __('login.hero_feature_1') }}</span>
+                        <span class="font-semibold text-slate-900">{{ __('login.project_label') }}</span>
+                        <span class="text-slate-700"> {{ __('login.project_name') }}</span>
                     </div>
                     <div>
-                        <span class="font-semibold text-slate-900">{{ __('login.hero_feature_2') }}</span>
+                        <span class="font-semibold text-slate-900">{{ __('login.implementing_org_label') }}</span>
+                        <span class="text-slate-700"> {{ __('login.implementing_org_name') }}</span>
                     </div>
                     <div>
-                        <span class="font-semibold text-slate-900">{{ __('login.hero_feature_3') }}</span>
+                        <span class="font-semibold text-slate-900">{{ __('login.funded_by_label') }}</span>
+                        <span class="text-slate-700"> {{ __('login.funded_by_text') }}</span>
                     </div>
                     <div>
-                        <span class="font-semibold text-slate-900">{{ __('login.hero_feature_4') }}</span>
+                        <span class="font-semibold text-slate-900">{{ __('login.technical_partners_label') }}</span>
+                        <div class="text-slate-700 ml-1 mt-2 space-y-1">
+                            <div class="flex items-start"><span class="mr-2">•</span><span>{{ __('login.tech_partner_1') }}</span></div>
+                            <div class="flex items-start"><span class="mr-2">•</span><span>{{ __('login.tech_partner_2') }}</span></div>
+                            <div class="flex items-start"><span class="mr-2">•</span><span>{{ __('login.tech_partner_3') }}</span></div>
+                        </div>
                     </div>
                 </div>
             </div>

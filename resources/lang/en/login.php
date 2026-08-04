@@ -15,10 +15,17 @@ return [
     'sign_in_to_portal' => 'Sign in to Portal',
 
     // Hero section
-    'hero_title' => 'Empowering Municipal Governance',
-    'hero_subtitle' => 'Integrated Municipal Information System (IMIS) - A comprehensive solution for data-driven governance and public service delivery',
-    'hero_feature_1' => 'Citywide Inclusive Sanitation (CWIS) Management',
-    'hero_feature_2' => 'Real-time FSM Service Chain Tracking',
-    'hero_feature_3' => 'Data-driven Decision Making Dashboards',
-    'hero_feature_4' => 'Integrated GIS-based Municipal Services',
+    'hero_title' => 'Integrated Municipal Information System',
+    'hero_title_accent' => '(IMIS)',
+    'hero_description' => 'This application was implemented under the following project:',
+    'project_label' => 'Project:',
+    'project_name' => 'Inclusive and Integrated Sanitation and Hygiene Project in 10 Priority Towns in Bangladesh',
+    'implementing_org_label' => 'Implementing Organization:',
+    'implementing_org_name' => 'Department of Public Health Engineering (DPHE)',
+    'funded_by_label' => 'Funded by:',
+    'funded_by_text' => 'Government of Bangladesh, Islamic Development Bank, and Gates Foundation',
+    'technical_partners_label' => 'Technical Partners:',
+    'tech_partner_1' => 'Global Water and Sanitation Center (GWSC) under the Asian Institute of Technology (AIT), Thailand',
+    'tech_partner_2' => 'Innovative Solution Pvt. Limited, Nepal',
+    'tech_partner_3' => 'Streams Tech Ltd., Bangladesh',
 ];
