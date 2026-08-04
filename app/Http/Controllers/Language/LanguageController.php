@@ -142,7 +142,7 @@ class LanguageController extends Controller
     {
         // Last Modified: 2026-08-04
         // Developed By: Streams Tech Ltd.
-        // Description: Set application language cookie and redirect back
+        // Description: Set application language cookie and redirect back to previous page
 
         $lang = $request->query('lang', 'en');
 
@@ -154,10 +154,11 @@ class LanguageController extends Controller
         // Set cookie value with format "timestamp|language"
         $cookieValue = time() . '|' . $lang;
 
-        // Create response with cookie
-        $response = redirect('/');
+        // Redirect back to previous page (or / if no referrer)
+        // This prevents redirect chains that can lose the cookie
+        $response = redirect()->back();
 
-        // Attach cookie with 1 year expiration (60 * 24 * 365 minutes)
+        // Attach cookie with 1 year expiration (525600 minutes)
         $response->cookie('app_language', $cookieValue, 60 * 24 * 365, '/', null, false, false);
 
         return $response;

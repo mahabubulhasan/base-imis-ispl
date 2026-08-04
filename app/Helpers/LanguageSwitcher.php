@@ -9,8 +9,20 @@ class LanguageSwitcher
     public static function language_switcher()
     {
         $defaultLang = 'en';
-        $cookieLang = Cookie::get('app_language');
+        $cookieValue = Cookie::get('app_language');
+        $cookieLang = $defaultLang;
 
+        // Extract language code from cookie format "timestamp|language"
+        if (!empty($cookieValue)) {
+            try {
+                $parts = explode('|', $cookieValue);
+                if (count($parts) === 2 && in_array($parts[1], ['en', 'bn'])) {
+                    $cookieLang = $parts[1];
+                }
+            } catch (\Exception $e) {
+                $cookieLang = $defaultLang;
+            }
+        }
 
         // Check if the language in the cookie still exists in the database
         $languageExists = Language::where('status', 'true')->where('code', $cookieLang)->exists();
