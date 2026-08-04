@@ -50,16 +50,21 @@ class AppServiceProvider extends ServiceProvider
         $this->setAppLocale();
     }
 
-    // function to set languge as base lang or selected lang
+    // Function to set language as base language or selected language from cookie
     private function setAppLocale()
     {
         $locale = 'en';
 
         if (!empty(Cookie::get('app_language'))) {
             try {
-                $decrypted = \Crypt::decryptString(Cookie::get('app_language'));
-                $locale = explode('|', $decrypted)[1];
+                $cookieValue = Cookie::get('app_language');
+                // Extract language from format "timestamp|language"
+                $parts = explode('|', $cookieValue);
+                if (count($parts) === 2 && in_array($parts[1], ['en', 'bn'])) {
+                    $locale = $parts[1];
+                }
             } catch (\Exception $e) {
+                // If parsing fails, keep default locale
             }
         }
         App::setLocale($locale);

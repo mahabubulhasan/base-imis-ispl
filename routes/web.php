@@ -603,6 +603,10 @@ Route::group([
 
     Route::resource('hotspots', 'HotspotController');
 });
+
+// Public language switching route (accessible without authentication)
+Route::get('language/switch', 'Language\LanguageController@set_lang')->name('lang.switch');
+
 Route::group([
     'name' => 'language',
     'prefix' => 'language',
@@ -610,7 +614,6 @@ Route::group([
     'middleware' => 'auth'
 ], function () {
     Route::post('/generate/{id}', 'LanguageController@generate_translate')->name('lang.generate');
-    Route::get('/switch', 'LanguageController@set_lang')->name('lang.switch');
     Route::get('/data', 'LanguageController@getData');
     Route::get('/exportFormat', 'LanguageController@export_csv_format');
     Route::post('/import/{id}', 'LanguageController@import_translates')->name('lang.import');

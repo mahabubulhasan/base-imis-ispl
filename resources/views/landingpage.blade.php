@@ -305,17 +305,27 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
                 </a>
                 <div class="hidden md:flex items-center space-x-8">
                     <a class="text-sm font-medium hover:text-primary transition-colors cursor-pointer"
-                        href="/#/about">About</a>
+                        href="/#/about">{{ __('common.nav_about') }}</a>
                     <a class="text-sm font-medium hover:text-primary transition-colors cursor-pointer"
-                        href="/#/dashboard">Public Dashboard</a>
-                    <a class="text-sm font-medium hover:text-primary transition-colors cursor-pointer" href="/#/fsm">FSM
-                        Application</a>
+                        href="/#/dashboard">{{ __('common.nav_dashboard') }}</a>
+                    <a class="text-sm font-medium hover:text-primary transition-colors cursor-pointer" href="/#/fsm">{{ __('common.nav_fsm') }}</a>
                     <a class="text-sm font-medium hover:text-primary transition-colors cursor-pointer"
-                        href="/#/feedback">Feedback</a>
+                        href="/#/feedback">{{ __('common.nav_feedback') }}</a>
                     <a class="text-sm font-medium hover:text-primary transition-colors cursor-pointer"
-                        href="/#/contact">Contact</a>
+                        href="/#/contact">{{ __('common.nav_contact') }}</a>
                     <a class="text-sm font-medium hover:text-primary transition-colors cursor-pointer"
-                        href="/#/">Sign In</a>
+                        href="/#/">{{ __('common.nav_signin') }}</a>
+
+                    <!-- Language Selector -->
+                    <div class="flex items-center space-x-2 ml-4 pl-4 border-l border-slate-300">
+                        <span class="text-xs font-semibold text-slate-600">{{ __('common.language') }}:</span>
+                        <a href="{{ route('lang.switch') }}?lang=en" class="text-xs font-medium px-2 py-1 rounded transition-colors {{ app()->getLocale() === 'en' ? 'bg-primary text-white' : 'text-slate-700 hover:bg-slate-100' }}">
+                            EN
+                        </a>
+                        <a href="{{ route('lang.switch') }}?lang=bn" class="text-xs font-medium px-2 py-1 rounded transition-colors {{ app()->getLocale() === 'bn' ? 'bg-primary text-white' : 'text-slate-700 hover:bg-slate-100' }}">
+                            BN
+                        </a>
+                    </div>
                 </div>
                 <button class="md:hidden p-2 rounded-full hover:bg-slate-100 transition-colors" onclick="toggleMenu()"
                     aria-label="Toggle menu">
@@ -324,15 +334,19 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
             </div>
             <!-- Mobile Menu -->
             <div id="mobileMenu" class="hidden md:hidden pb-4 border-t border-slate-200">
-                <a class="block px-4 py-2 text-sm font-medium hover:bg-slate-100 rounded" href="/#/about">About</a>
-                <a class="block px-4 py-2 text-sm font-medium hover:bg-slate-100 rounded" href="/#/dashboard">Public
-                    Dashboard</a>
-                <a class="block px-4 py-2 text-sm font-medium hover:bg-slate-100 rounded" href="/#/fsm">FSM
-                    Application</a>
+                <a class="block px-4 py-2 text-sm font-medium hover:bg-slate-100 rounded" href="/#/about">{{ __('common.nav_about') }}</a>
+                <a class="block px-4 py-2 text-sm font-medium hover:bg-slate-100 rounded" href="/#/dashboard">{{ __('common.nav_dashboard') }}</a>
+                <a class="block px-4 py-2 text-sm font-medium hover:bg-slate-100 rounded" href="/#/fsm">{{ __('common.nav_fsm') }}</a>
                 <a class="block px-4 py-2 text-sm font-medium hover:bg-slate-100 rounded"
-                    href="/#/feedback">Feedback</a>
-                <a class="block px-4 py-2 text-sm font-medium hover:bg-slate-100 rounded" href="/#/contact">Contact</a>
-                <a class="block px-4 py-2 text-sm font-medium hover:bg-slate-100 rounded" href="/#/">Sign In</a>
+                    href="/#/feedback">{{ __('common.nav_feedback') }}</a>
+                <a class="block px-4 py-2 text-sm font-medium hover:bg-slate-100 rounded" href="/#/contact">{{ __('common.nav_contact') }}</a>
+                <a class="block px-4 py-2 text-sm font-medium hover:bg-slate-100 rounded" href="/#/">{{ __('common.nav_signin') }}</a>
+                <!-- Mobile Language Selector -->
+                <div class="px-4 py-3 border-t border-slate-200 flex items-center space-x-2">
+                    <span class="text-xs font-semibold text-slate-600">{{ __('common.language') }}:</span>
+                    <a href="{{ route('lang.switch') }}?lang=en" class="text-xs font-medium px-2 py-1 rounded transition-colors {{ app()->getLocale() === 'en' ? 'bg-primary text-white' : 'text-slate-700 hover:bg-slate-100' }}">EN</a>
+                    <a href="{{ route('lang.switch') }}?lang=bn" class="text-xs font-medium px-2 py-1 rounded transition-colors {{ app()->getLocale() === 'bn' ? 'bg-primary text-white' : 'text-slate-700 hover:bg-slate-100' }}">BN</a>
+                </div>
             </div>
         </div>
     </nav>
@@ -354,31 +368,23 @@ Description: Modern municipal portal with hero section, glassmorphic design, and
             <!-- Left Column: Hero Content -->
             <div class="max-w-xl">
                 <h1 class="text-4xl md:text-5xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-6">
-                    Integrated Municipal Information System <span class="text-primary">(IMIS)</span>
+                    {{ __('login.hero_title') }}
                 </h1>
                 <p class="text-lg text-slate-600 mb-4 leading-relaxed">
-                    This application was implemented under the following project:
+                    {{ __('login.hero_subtitle') }}
                 </p>
                 <div class="text-sm text-slate-700 space-y-1 mb-8 bg-gradient-to-r from-blue-50/40 to-transparent p-5 rounded-lg border-l-4 border-primary/30">
                     <div>
-                        <span class="font-semibold text-slate-900">Project:</span>
-                        <span class="text-slate-700"> Inclusive and Integrated Sanitation and Hygiene Project in 10 Priority Towns in Bangladesh</span>
+                        <span class="font-semibold text-slate-900">{{ __('login.hero_feature_1') }}</span>
                     </div>
                     <div>
-                        <span class="font-semibold text-slate-900">Implementing Organization:</span>
-                        <span class="text-slate-700"> Department of Public Health Engineering (DPHE)</span>
+                        <span class="font-semibold text-slate-900">{{ __('login.hero_feature_2') }}</span>
                     </div>
                     <div>
-                        <span class="font-semibold text-slate-900">Funded by:</span>
-                        <span class="text-slate-700"> Government of Bangladesh, Islamic Development Bank, and Gates Foundation</span>
+                        <span class="font-semibold text-slate-900">{{ __('login.hero_feature_3') }}</span>
                     </div>
                     <div>
-                        <span class="font-semibold text-slate-900">Technical Partners:</span>
-                        <div class="text-slate-700 ml-1 mt-2 space-y-1">
-                            <div class="flex items-start"><span class="mr-2">•</span><span>Global Water and Sanitation Center (GWSC) under the Asian Institute of Technology (AIT), Thailand</span></div>
-                            <div class="flex items-start"><span class="mr-2">•</span><span>Innovative Solution Pvt. Limited, Nepal</span></div>
-                            <div class="flex items-start"><span class="mr-2">•</span><span>Streams Tech Ltd., Bangladesh</span></div>
-                        </div>
+                        <span class="font-semibold text-slate-900">{{ __('login.hero_feature_4') }}</span>
                     </div>
                 </div>
             </div>

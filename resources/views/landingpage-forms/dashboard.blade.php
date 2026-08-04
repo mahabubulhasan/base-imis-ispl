@@ -1,13 +1,13 @@
-<!-- Last Modified: 2026-05-13
+<!-- Last Modified: 2026-08-04
 // Developed By: Streams Tech Ltd.
-// Description: Public dashboard with infographic card layout for municipal data visualization, including CWIS equity and safety metrics. -->
+// Description: Public dashboard with infographic card layout for municipal data visualization, including CWIS equity and safety metrics with language support. -->
 
 @php
     $cwisEquityCards = [
         [
             'key' => 'eq1',
             'code' => 'EQ-1',
-            'label' => 'Ratio of LIC access to total population access',
+            'label' => __('dashboard.eq_1_label'),
             'icon' => 'balance',
             'unit' => 'number',
             'valueClass' => 'text-5xl md:text-6xl',
@@ -15,27 +15,27 @@
     ];
 
     $cwisSafetyCards = [
-        ['key' => 'sf1a', 'code' => 'SF-1a', 'label' => 'Percentage of population with access to safe, private, individual toilets/latrines', 'icon' => 'shield'],
-        ['key' => 'sf1b', 'code' => 'SF-1b', 'label' => 'Percentage of on-site sanitation that have been desludged', 'icon' => 'shield'],
-        ['key' => 'sf1c', 'code' => 'SF-1c', 'label' => 'Percentage of collected FS disposed at a treatment plant or at designated disposal site', 'icon' => 'shield'],
-        ['key' => 'sf1d', 'code' => 'SF-1d', 'label' => 'FS treatment capacity as a percentage of total FS generated from NSS connections (excluding safely disposed in situ)', 'icon' => 'shield'],
-        ['key' => 'sf1e', 'code' => 'SF-1e', 'label' => 'FS treatment capacity as a percentage of total FS collected from NSS connections', 'icon' => 'shield'],
-        ['key' => 'sf1f', 'code' => 'SF-1f', 'label' => 'Wastewater treatment capacity as a percentage of total wastewater generated from sewered connections and greywater generated from non-sewered connections', 'icon' => 'shield'],
-        ['key' => 'sf1g', 'code' => 'SF-1g', 'label' => 'Effectiveness of FS/WW treatment in meeting prescribed standards for effluent discharge and biosolids disposal', 'icon' => 'shield'],
-        ['key' => 'sf2a', 'code' => 'SF-2a', 'label' => 'Percentage LIC population with access to safe individual toilets', 'icon' => 'shield'],
-        ['key' => 'sf2b', 'code' => 'SF-2b', 'label' => 'Percentage of LIC, NSS, IHHLs that have been desludged', 'icon' => 'shield'],
-        ['key' => 'sf2c', 'code' => 'SF-2c', 'label' => 'Percentage of collected FS (collected from LIC) disposed at treatment plant or designated disposal sites', 'icon' => 'shield'],
-        ['key' => 'sf3', 'code' => 'SF-3', 'label' => 'Percentage of dependent population (those without access to a private toilet/latrine) with access to safe shared facilities (CT/PT)', 'icon' => 'shield'],
-        ['key' => 'sf3b', 'code' => 'SF-3b', 'label' => 'Percentage of CTs that adhere to principles of universal design', 'icon' => 'shield'],
-        ['key' => 'sf3c', 'code' => 'SF-3c', 'label' => 'Percentage of users of CTs that are women', 'icon' => 'shield'],
-        ['key' => 'sf3e', 'code' => 'SF-3e', 'label' => 'Average distance from the house to the closest CT (in meters)', 'icon' => 'shield'],
-        ['key' => 'sf4a', 'code' => 'SF-4a', 'label' => 'Percentage of PTs where FS and WW generated is safely transported to TP or safely disposed in situ', 'icon' => 'shield'],
-        ['key' => 'sf4b', 'code' => 'SF-4b', 'label' => 'Percentage of PTs that adhere to principles of universal design', 'icon' => 'shield'],
-        ['key' => 'sf4d', 'code' => 'SF-4d', 'label' => 'Percentage of users of PTs that are women', 'icon' => 'shield'],
-        ['key' => 'sf5', 'code' => 'SF-5', 'label' => 'Percentage of educational institutions where FS/WW generated is safely transported to TP or safely disposed in situ', 'icon' => 'shield'],
-        ['key' => 'sf6', 'code' => 'SF-6', 'label' => 'Percentage of healthcare facilities where FS/WW generated is safely transported to TP or safely disposed in situ', 'icon' => 'shield'],
-        ['key' => 'sf7', 'code' => 'SF-7', 'label' => 'Percentage of desludging services completed mechanically or semi-mechanically (by a gulper)', 'icon' => 'shield'],
-        ['key' => 'sf9', 'code' => 'SF-9', 'label' => 'Percentage of tests which are in compliance with water quality standards for fecal coliform', 'icon' => 'shield'],
+        ['key' => 'sf1a', 'code' => 'SF-1a', 'label' => __('dashboard.sf_1a_label'), 'icon' => 'shield'],
+        ['key' => 'sf1b', 'code' => 'SF-1b', 'label' => __('dashboard.sf_1b_label'), 'icon' => 'shield'],
+        ['key' => 'sf1c', 'code' => 'SF-1c', 'label' => __('dashboard.sf_1c_label'), 'icon' => 'shield'],
+        ['key' => 'sf1d', 'code' => 'SF-1d', 'label' => __('dashboard.sf_1d_label'), 'icon' => 'shield'],
+        ['key' => 'sf1e', 'code' => 'SF-1e', 'label' => __('dashboard.sf_1e_label'), 'icon' => 'shield'],
+        ['key' => 'sf1f', 'code' => 'SF-1f', 'label' => __('dashboard.sf_1f_label'), 'icon' => 'shield'],
+        ['key' => 'sf1g', 'code' => 'SF-1g', 'label' => __('dashboard.sf_1g_label'), 'icon' => 'shield'],
+        ['key' => 'sf2a', 'code' => 'SF-2a', 'label' => __('dashboard.sf_2a_label'), 'icon' => 'shield'],
+        ['key' => 'sf2b', 'code' => 'SF-2b', 'label' => __('dashboard.sf_2b_label'), 'icon' => 'shield'],
+        ['key' => 'sf2c', 'code' => 'SF-2c', 'label' => __('dashboard.sf_2c_label'), 'icon' => 'shield'],
+        ['key' => 'sf3', 'code' => 'SF-3', 'label' => __('dashboard.sf_3_label'), 'icon' => 'shield'],
+        ['key' => 'sf3b', 'code' => 'SF-3b', 'label' => __('dashboard.sf_3b_label'), 'icon' => 'shield'],
+        ['key' => 'sf3c', 'code' => 'SF-3c', 'label' => __('dashboard.sf_3c_label'), 'icon' => 'shield'],
+        ['key' => 'sf3e', 'code' => 'SF-3e', 'label' => __('dashboard.sf_3e_label'), 'icon' => 'shield'],
+        ['key' => 'sf4a', 'code' => 'SF-4a', 'label' => __('dashboard.sf_4a_label'), 'icon' => 'shield'],
+        ['key' => 'sf4b', 'code' => 'SF-4b', 'label' => __('dashboard.sf_4b_label'), 'icon' => 'shield'],
+        ['key' => 'sf4d', 'code' => 'SF-4d', 'label' => __('dashboard.sf_4d_label'), 'icon' => 'shield'],
+        ['key' => 'sf5', 'code' => 'SF-5', 'label' => __('dashboard.sf_5_label'), 'icon' => 'shield'],
+        ['key' => 'sf6', 'code' => 'SF-6', 'label' => __('dashboard.sf_6_label'), 'icon' => 'shield'],
+        ['key' => 'sf7', 'code' => 'SF-7', 'label' => __('dashboard.sf_7_label'), 'icon' => 'shield'],
+        ['key' => 'sf9', 'code' => 'SF-9', 'label' => __('dashboard.sf_9_label'), 'icon' => 'shield'],
     ];
 @endphp
 
@@ -43,7 +43,7 @@
     <!-- Loading Spinner -->
     <div id="dashboard-loader" class="flex justify-center items-center py-20">
         <div class="animate-spin rounded-full h-12 w-12 border-4 border-cyan-600 border-t-transparent"></div>
-        <span class="ml-4 text-slate-600 text-lg">Loading Dashboard...</span>
+        <span class="ml-4 text-slate-600 text-lg">{{ __('dashboard.loading_dashboard') }}</span>
     </div>
 
     <!-- Dashboard Content Container -->

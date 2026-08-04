@@ -1,12 +1,12 @@
 {{--
-// Last Modified: 2026-04-07
+// Last Modified: 2026-08-04
 // Developed By: Streams Tech Ltd.
-// Description: Public feedback landing page form
+// Description: Public feedback landing page form with language support
 --}}
 <!-- FEEDBACK TAB -->
 <div id="feedback" class="tab-content p-5 md:p-10 min-h-[calc(100vh-100px)] animate-fadeIn">
     <div class="bg-white p-5 md:p-8 rounded-xl shadow-lg border border-slate-200 w-full max-w-6xl mx-auto">
-        <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold text-center text-slate-900 mb-6 md:mb-8">Feedback Form</h1>
+        <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold text-center text-slate-900 mb-6 md:mb-8">{{ __('feedback.form_title') }}</h1>
 
         <form id="feedback-form" class="needs-validation" novalidate @submit.prevent="handleSubmit">
             @csrf
@@ -17,12 +17,12 @@
             </div>
             <!-- Application Information Section -->
             <fieldset class="app_fieldset">
-                <legend>Application Information</legend>
+                <legend>{{ __('feedback.application_section') }}</legend>
 
                 <div class="row">
                     <div class="col-12 col-md-6 mb-3">
-                        <label for="application_id" class="block text-gray-800 font-semibold mb-2 text-base">Application Number <span class="text-red-500">*</span></label>
-                        <input type="text" id="application_id" name="application_id" placeholder="Enter your application number" required
+                        <label for="application_id" class="block text-gray-800 font-semibold mb-2 text-base">{{ __('feedback.application_number') }} <span class="text-red-500">*</span></label>
+                        <input type="text" id="application_id" name="application_id" placeholder="{{ __('feedback.application_number_placeholder') }}" required
                             v-model="applicationId" @blur="fetchApplicationData"
                             class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-base transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10">
                         <span v-if="fieldErrors.application_id" class="text-red-600 text-sm mt-1 block">@{{ fieldErrors.application_id }}</span>
@@ -31,13 +31,13 @@
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
-                            <span>Loading application details...</span>
+                            <span>{{ __('feedback.loading_application_details') }}</span>
                         </div>
                     </div>
 
                     <div class="col-12 col-md-6 mb-3">
-                        <label for="customer_name" class="block text-gray-800 font-semibold mb-2 text-base">Service Receiver Name <span class="text-red-500">*</span></label>
-                        <input type="text" id="customer_name" name="customer_name" placeholder="Will be filled automatically" required
+                        <label for="customer_name" class="block text-gray-800 font-semibold mb-2 text-base">{{ __('feedback.service_receiver_name') }} <span class="text-red-500">*</span></label>
+                        <input type="text" id="customer_name" name="customer_name" placeholder="{{ __('feedback.service_receiver_placeholder') }}" required
                             v-model="customerName"
                             class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-base transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10">
                         <span v-if="fieldErrors.customer_name" class="text-red-600 text-sm mt-1 block">@{{ fieldErrors.customer_name }}</span>
@@ -46,15 +46,15 @@
 
                 <div class="row">
                     <div class="col-12 col-md-6 mb-3">
-                        <label for="customer_number" class="block text-gray-800 font-semibold mb-2 text-base">Service Receiver Contact <span class="text-red-500">*</span></label>
-                        <input type="text" id="customer_number" name="customer_number" placeholder="Will be filled automatically" required
+                        <label for="customer_number" class="block text-gray-800 font-semibold mb-2 text-base">{{ __('feedback.service_receiver_contact') }} <span class="text-red-500">*</span></label>
+                        <input type="text" id="customer_number" name="customer_number" placeholder="{{ __('feedback.service_receiver_placeholder') }}" required
                             v-model="customerNumber"
                             class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-base transition-all duration-300 focus:outline-none focus:border-[#0056b3] focus:ring-4 focus:ring-[#0056b3]/10">
                         <span v-if="fieldErrors.customer_number" class="text-red-600 text-sm mt-1 block">@{{ fieldErrors.customer_number }}</span>
                     </div>
 
                     <div class="col-12 col-md-6 mb-3">
-                        <label for="service_provider_name" class="block text-gray-800 font-semibold mb-2 text-base">Service Provider Name</label>
+                        <label for="service_provider_name" class="block text-gray-800 font-semibold mb-2 text-base">{{ __('feedback.service_provider_name') }}</label>
                         <input type="text" id="service_provider_name" name="service_provider_name" readonly
                             v-model="serviceProviderName"
                             class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-200 bg-gray-50 text-base cursor-not-allowed">
@@ -64,7 +64,7 @@
 
                 <div class="row">
                     <div class="col-12 col-md-6 mb-3">
-                        <label for="service_provider_contact" class="block text-gray-800 font-semibold mb-2 text-base">Service Provider Contact</label>
+                        <label for="service_provider_contact" class="block text-gray-800 font-semibold mb-2 text-base">{{ __('feedback.service_provider_contact') }}</label>
                         <input type="text" id="service_provider_contact" name="service_provider_contact" readonly
                             v-model="serviceProviderContact"
                             class="form-control w-full px-4 py-3 rounded-lg border-2 border-gray-200 bg-gray-50 text-base cursor-not-allowed">
@@ -75,23 +75,23 @@
 
             <!-- Service Feedback Section -->
             <fieldset class="app_fieldset">
-                <legend>Service Feedback</legend>
+                <legend>{{ __('feedback.feedback_section') }}</legend>
 
                 <div class="row">
                     <div class="col-12 mb-3">
-                        <label class="block text-gray-800 font-semibold mb-2 text-base">1. Did the emptier wear safety equipment? <span class="text-red-500">*</span></label>
+                        <label class="block text-gray-800 font-semibold mb-2 text-base">{{ __('feedback.safety_equipment_question') }} <span class="text-red-500">*</span></label>
                         <div class="flex flex-wrap gap-3">
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="safety_measures" value="Yes" v-model="safetyMeasures" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Yes</span>
+                                <span class="text-gray-700">{{ __('feedback.yes') }}</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="safety_measures" value="No" v-model="safetyMeasures" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">No</span>
+                                <span class="text-gray-700">{{ __('feedback.no') }}</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="safety_measures" value="Unknown" v-model="safetyMeasures" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Unknown</span>
+                                <span class="text-gray-700">{{ __('feedback.unknown') }}</span>
                             </label>
                         </div>
                         <span v-if="fieldErrors.safety_measures" class="text-red-600 text-sm mt-1 block">@{{ fieldErrors.safety_measures }}</span>
@@ -100,19 +100,19 @@
 
                 <div class="row">
                     <div class="col-12 mb-3">
-                        <label class="block text-gray-800 font-semibold mb-2 text-base">2. How would you rate the attitude of the emptiers during service? <span class="text-red-500">*</span></label>
+                        <label class="block text-gray-800 font-semibold mb-2 text-base">{{ __('feedback.q2_emptier_attitude') }} <span class="text-red-500">*</span></label>
                         <div class="flex flex-wrap gap-3">
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="fsm_quality_level" value="3" v-model="fsmQualityLevel" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Satisfied</span>
+                                <span class="text-gray-700">{{ __('feedback.satisfied') }}</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="fsm_quality_level" value="2" v-model="fsmQualityLevel" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Neutral</span>
+                                <span class="text-gray-700">{{ __('feedback.neutral') }}</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="fsm_quality_level" value="1" v-model="fsmQualityLevel" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Dissatisfied</span>
+                                <span class="text-gray-700">{{ __('feedback.dissatisfied') }}</span>
                             </label>
                         </div>
                         <span v-if="fieldErrors.fsm_quality_level" class="text-red-600 text-sm mt-1 block">@{{ fieldErrors.fsm_quality_level }}</span>
@@ -129,19 +129,19 @@
 
                 <div class="row">
                     <div class="col-12 mb-3">
-                        <label class="block text-gray-800 font-semibold mb-2 text-base">3. How do you assess the response time of the emptying service? <span class="text-red-500">*</span></label>
+                        <label class="block text-gray-800 font-semibold mb-2 text-base">{{ __('feedback.q3_response_time') }} <span class="text-red-500">*</span></label>
                         <div class="flex flex-wrap gap-3">
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="service_delivery_efficiency" value="3" v-model="serviceDeliveryEfficiency" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Satisfied</span>
+                                <span class="text-gray-700">{{ __('feedback.satisfied') }}</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="service_delivery_efficiency" value="2" v-model="serviceDeliveryEfficiency" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Neutral</span>
+                                <span class="text-gray-700">{{ __('feedback.neutral') }}</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="service_delivery_efficiency" value="1" v-model="serviceDeliveryEfficiency" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Dissatisfied</span>
+                                <span class="text-gray-700">{{ __('feedback.dissatisfied') }}</span>
                             </label>
                         </div>
                         <span v-if="fieldErrors.service_delivery_efficiency" class="text-red-600 text-sm mt-1 block">@{{ fieldErrors.service_delivery_efficiency }}</span>
@@ -158,19 +158,19 @@
 
                 <div class="row">
                     <div class="col-12 mb-3">
-                        <label class="block text-gray-800 font-semibold mb-2 text-base">4. How satisfied are you with the overall emptying service? <span class="text-red-500">*</span></label>
+                        <label class="block text-gray-800 font-semibold mb-2 text-base">{{ __('feedback.q4_overall_satisfaction') }} <span class="text-red-500">*</span></label>
                         <div class="flex flex-wrap gap-3">
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="overall_satisfaction" value="3" v-model="overallSatisfaction" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Satisfied</span>
+                                <span class="text-gray-700">{{ __('feedback.satisfied') }}</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="overall_satisfaction" value="2" v-model="overallSatisfaction" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Neutral</span>
+                                <span class="text-gray-700">{{ __('feedback.neutral') }}</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="overall_satisfaction" value="1" v-model="overallSatisfaction" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Dissatisfied</span>
+                                <span class="text-gray-700">{{ __('feedback.dissatisfied') }}</span>
                             </label>
                         </div>
                         <span v-if="fieldErrors.overall_satisfaction" class="text-red-600 text-sm mt-1 block">@{{ fieldErrors.overall_satisfaction }}</span>
@@ -187,19 +187,19 @@
 
                 <div class="row">
                     <div class="col-12 mb-3">
-                        <label class="block text-gray-800 font-semibold mb-2 text-base">5. How satisfied are you with the price of this service? <span class="text-red-500">*</span></label>
+                        <label class="block text-gray-800 font-semibold mb-2 text-base">{{ __('feedback.q5_price_satisfaction') }} <span class="text-red-500">*</span></label>
                         <div class="flex flex-wrap gap-3">
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="service_quality_price" value="3" v-model="serviceQualityPrice" required class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Satisfied</span>
+                                <span class="text-gray-700">{{ __('feedback.satisfied') }}</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="service_quality_price" value="2" v-model="serviceQualityPrice" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Neutral</span>
+                                <span class="text-gray-700">{{ __('feedback.neutral') }}</span>
                             </label>
                             <label class="flex items-center space-x-3 cursor-pointer">
                                 <input type="radio" name="service_quality_price" value="1" v-model="serviceQualityPrice" class="w-5 h-5 text-[#0056b3] border-gray-300 focus:ring-[#0056b3]">
-                                <span class="text-gray-700">Dissatisfied</span>
+                                <span class="text-gray-700">{{ __('feedback.dissatisfied') }}</span>
                             </label>
                         </div>
                         <span v-if="fieldErrors.service_quality_price" class="text-red-600 text-sm mt-1 block">@{{ fieldErrors.service_quality_price }}</span>
