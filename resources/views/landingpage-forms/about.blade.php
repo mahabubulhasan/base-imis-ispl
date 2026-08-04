@@ -1,7 +1,7 @@
 {{--
-// Last Modified: 2026-04-16
+// Last Modified: 2026-08-04
 // Developed By: Streams Tech Ltd.
-// Description: Renders landing page About tab sections and feature/module content.
+// Description: Renders landing page About tab sections and feature/module content with language support.
 --}}
 
 <!-- ABOUT TAB -->
@@ -10,41 +10,30 @@
         <!-- ABOUT SECTION -->
         <div class="bg-white p-6 md:p-10 rounded-xl shadow-lg border border-slate-200">
             <div class="section-title text-center">
-                <h3 class="text-slate-900">About <span class="text-primary">IMIS</span></h3>
+                <h3 class="text-slate-900">{{ __('about.page_title') }} <span class="text-primary">IMIS</span></h3>
             </div>
             <div class="text-left space-y-6">
                 <p class="text-slate-700 leading-relaxed">
-                    IMIS is an open-source GIS-based Digital Public Infrastructure (DPI) which functions as both a
-                    municipal information system and a software solution, integrating data, processes, and services
-                    to enhance municipal governance—particularly in sanitation management with Citywide Inclusive
-                    Sanitation (CWIS) approach to achieve SDG 6.2. It offers municipalities data-driven
-                    decision-making tools to strengthen governance across various sectors. By leveraging open-source
-                    technologies and Geographic Information Systems (GIS), it facilitates:
+                    {{ __('about.about_description') }}
                 </p>
 
                 <ul class="text-slate-700 list-disc pl-8 space-y-1">
-                    <li>Planning, management, and monitoring of sanitation systems using the CWIS approach.</li>
-                    <li>End-to-end FSM (Faecal Sludge Management) service chain oversight, including real-time data
-                        tracking.</li>
-                    <li>Generation and visualization of CWIS indicators for performance assessment.</li>
-                    <li>Intuitive dashboards for tracking CWIS indicators, Key Performance Indicators (KPIs), and
-                        other essential municipal governance metrics.</li>
+                    <li>{{ __('about.features.feature_1') }}</li>
+                    <li>{{ __('about.features.feature_2') }}</li>
+                    <li>{{ __('about.features.feature_3') }}</li>
+                    <li>{{ __('about.features.feature_4') }}</li>
                 </ul>
 
                 <p class="text-slate-700 leading-relaxed">
-                    IMIS as a sub-national public data system contributes to national-level monitoring by feeding data
-                    into centralized systems, supporting CWIS indicators and other critical metrics for achieving
-                    sanitation targets. Beyond sanitation management, with its modular and scalable design, Base IMIS
-                    empowers local authorities by providing a unified, data-driven framework that enhances efficiency,
-                    accountability, and service delivery in municipal governance.
+                    {{ __('about.additional_info') }}
                 </p>
             </div>
             <div class="flex items-center justify-between bg-slate-100 rounded-lg px-5 py-3 mt-6">
                 <div class="copyright text-sm text-slate-700">
-                    <strong> Base IMIS &copy; 2022-{{ \Carbon\Carbon::now()->format('Y') }} by <a
+                    <strong>Base IMIS © 2022-{{ now()->format('Y') }} {{ __('about.copyright') }} <a
                             href="http://www.innovativesolution.com.np">
-                            ISPL</a> & <a href="https://www.gwsc.ait.ac.th/">GWSC-AIT</a> is licensed under <a
-                            href="https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1">CC BY-NC-SA 4.0
+                            {{ __('about.copyright_ispl') }}</a> & <a href="https://www.gwsc.ait.ac.th/">{{ __('about.copyright_gwsc_ait') }}</a> {{ __('about.copyright_license') }} <a
+                            href="https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1">{{ __('about.copyright_license_link') }}
                         </a>
                     </strong>
                 </div>
@@ -58,48 +47,30 @@
         <!-- CWIS SECTION -->
         <div class="bg-white p-6 md:p-10 rounded-xl shadow-lg border border-slate-200">
             <div class="section-title">
-                <h3 class="text-slate-900">Citywide Inclusive Sanitation <span class="text-primary">(CWIS)</span></h3>
+                <h3 class="text-slate-900">{{ __('about.cwis_title') }} <span class="text-primary">{{ __('about.cwis_acronym') }}</span></h3>
             </div>
             <div class="text-left">
                 <p class="text-slate-700">
-                    CWIS is an approach to achieve SDG 6.2 for safe, equitable and financially viable sanitation
-                    systems and services. CWIS ensures everyone in a city has access to safely managed sanitation,
-                    and human waste is safely managed along the whole sanitation service chain ensuring protection
-                    of the environment and human health.
+                    {{ __('about.cwis_description') }}
                 </p>
                 <div class="flex justify-center my-6">
                     <img src="{{ asset('img/svg/landing-page/cwis.jpg') }}" alt="CWIS"
                         class="max-w-full h-auto rounded-lg shadow-lg">
                 </div>
-                <p class="text-slate-700">CWIS approach focuses on service provision and its enabling environment rather
-                    than on building
-                    infrastructure, therefore, reliable data is the key success factor for CWIS. UN Water SDG 6
-                    global acceleration framework has also identified data and information as one of the five
-                    accelerators of SDG 6 outcomes.</p>
+                <p class="text-slate-700">{{ __('about.cwis_focus') }}</p>
             </div>
         </div>
 
         <!-- FEATURES SECTION -->
         <div class="bg-white p-6 md:p-10 rounded-xl shadow-lg border border-slate-200">
             <div class="section-title text-center">
-                <h3 class="text-slate-900">Features of <span class="text-primary">IMIS</span></h3>
+                <h3 class="text-slate-900">{{ __('about.features_title') }} <span class="text-primary">IMIS</span></h3>
             </div>
             <div class="text-left">
                 <ul class="text-slate-700 list-disc pl-8 space-y-1 leading-relaxed">
-                    <li>Spatial context for municipal data - infrastructure, services, and resources</li>
-                    <li>Efficient storage and management of municipal data, including infrastructure and essential
-                        services</li>
-                    <li>Integration of CWIS data to support planning, management, and evaluation of sanitation
-                        systems and services</li>
-                    <li>Decision support tools for decision-making based on spatial analysis and modelling</li>
-                    <li>Real-time dashboard for monitoring KPIs and CWIS indicators</li>
-                    <li>User-friendly interfaces with access control features</li>
-                    <li>Scalability to adapt to the evolving technology and information needs</li>
-                    <li>Mainstreaming CWIS service chain into the city's business process</li>
-                    <li>Interoperable with external data sources, including tax/revenue, public health, emergency
-                        response data and more</li>
-                    <li>Robust security measures to safeguard sensitive data, ensuring city data privacy compliance
-                    </li>
+                    @foreach(__('about.features_list') as $feature)
+                        <li>{{ $feature }}</li>
+                    @endforeach
                 </ul>
             </div>
         </div>
@@ -107,7 +78,7 @@
         <!-- FUNCTIONAL MODULES SECTION -->
         <div class="bg-white p-6 md:p-10 rounded-xl shadow-lg border border-slate-200">
             <div class="section-title">
-                <h3 class="text-slate-900">Functional<span class="text-primary"> Modules</span></h3>
+                <h3 class="text-slate-900">{{ __('about.modules_title') }}<span class="text-primary"> {{ __('about.modules_subtitle') }}</span></h3>
             </div>
 
             <!-- Grid of modules -->
@@ -119,13 +90,11 @@
                     <div class="text-center mb-4">
                         <img src="{{ asset('img/svg/landing-page/buildingIMS.svg') }}" alt="Building Icon"
                             class="h-16 w-16 mx-auto mb-3">
-                        <h5 class="text-lg font-semibold text-slate-900">Building Information Management System</h5>
+                        <h5 class="text-lg font-semibold text-slate-900">{{ __('about.module_building_title') }}</h5>
                     </div>
                     <ul class="list-disc list-inside space-y-2 text-slate-700 text-sm text-left">
-                        <li>Maintains information about all existing and new buildings with their building footprints,
-                            sanitation system, socio-economic condition, etc</li>
-                        <li>Maintains information about low-income communities with their geographic coverage and
-                            sanitation system</li>
+                        <li>{{ __('about.module_building_desc_1') }}</li>
+                        <li>{{ __('about.module_building_desc_2') }}</li>
                     </ul>
                 </div>
 
@@ -135,11 +104,10 @@
                     <div class="text-center mb-4">
                         <img src="{{ asset('img/svg/landing-page/propertyTaxCollectionIMS.svg') }}"
                             alt="Property Tax Icon" class="h-16 w-16 mx-auto mb-3">
-                        <h5 class="text-lg font-semibold text-slate-900">Property Tax Collection Support System</h5>
+                        <h5 class="text-lg font-semibold text-slate-900">{{ __('about.module_property_tax_title') }}</h5>
                     </div>
                     <ul class="list-disc list-inside space-y-2 text-slate-700 text-sm text-left">
-                        <li>Enables import of property tax or other revenue data into IMIS for spatial visualization of
-                            buildings or containments with their tax or revenue collection status</li>
+                        <li>{{ __('about.module_property_tax_desc') }}</li>
                     </ul>
                 </div>
 
@@ -149,17 +117,15 @@
                     <div class="text-center mb-4">
                         <img src="{{ asset('img/svg/landing-page/urbanManagementDSS.svg') }}"
                             alt="Urban Management Icon" class="h-16 w-16 mx-auto mb-3">
-                        <h5 class="text-lg font-semibold text-slate-900">Urban Management Decision Support System</h5>
+                        <h5 class="text-lg font-semibold text-slate-900">{{ __('about.module_urban_mgmt_title') }}</h5>
                     </div>
                     <ul class="list-disc list-inside space-y-2 text-slate-700 text-sm text-left">
-                        <li>Dashboard for monitoring the situation of sanitation and other elements required for
-                            planning, management and monitoring and evaluation of CWIS</li>
-                        <li>Dashboards for monitoring KPIs and CWIS indicators</li>
-                        <li>Tools for real-time monitoring of the sanitation service chain</li>
-                        <li>Spatial analysis tools</li>
-                        <li>Query and attribute analysis tools</li>
-                        <li>Basic navigation tools for exploration, analysis, and visualization of spatial data within a
-                            GIS environment and tools for printing maps</li>
+                        <li>{{ __('about.module_urban_mgmt_desc_1') }}</li>
+                        <li>{{ __('about.module_urban_mgmt_desc_2') }}</li>
+                        <li>{{ __('about.module_urban_mgmt_desc_3') }}</li>
+                        <li>{{ __('about.module_urban_mgmt_desc_4') }}</li>
+                        <li>{{ __('about.module_urban_mgmt_desc_5') }}</li>
+                        <li>{{ __('about.module_urban_mgmt_desc_6') }}</li>
                     </ul>
                 </div>
 
@@ -169,13 +135,13 @@
                     <div class="text-center mb-4">
                         <img src="{{ asset('img/svg/landing-page/utilityIMS.svg') }}" alt="Utility Icon"
                             class="h-16 w-16 mx-auto mb-3">
-                        <h5 class="text-lg font-semibold text-slate-900">Utility Information Management System</h5>
+                        <h5 class="text-lg font-semibold text-slate-900">{{ __('about.module_utility_title') }}</h5>
                     </div>
                     <ul class="list-disc list-inside space-y-2 text-slate-700 text-sm text-left">
-                        <li>Maintains road network information</li>
-                        <li>Maintains water supply network information</li>
-                        <li>Maintains sewerage network information</li>
-                        <li>Maintains drainage network information</li>
+                        <li>{{ __('about.module_utility_desc_1') }}</li>
+                        <li>{{ __('about.module_utility_desc_2') }}</li>
+                        <li>{{ __('about.module_utility_desc_3') }}</li>
+                        <li>{{ __('about.module_utility_desc_4') }}</li>
                     </ul>
                 </div>
 
@@ -185,11 +151,10 @@
                     <div class="text-center mb-4">
                         <img src="{{ asset('img/svg/landing-page/swmPaymentStatus.svg') }}" alt="Solid Waste Icon"
                             class="h-16 w-16 mx-auto mb-3">
-                        <h5 class="text-lg font-semibold text-slate-900">Solid Waste Information Support System</h5>
+                        <h5 class="text-lg font-semibold text-slate-900">{{ __('about.module_swm_title') }}</h5>
                     </div>
                     <ul class="list-disc list-inside space-y-2 text-slate-700 text-sm text-left">
-                        <li>Enables import of solid waste management data into the system for spatial visualization of
-                            buildings with their solid waste management status</li>
+                        <li>{{ __('about.module_swm_desc') }}</li>
                     </ul>
                 </div>
 
@@ -199,11 +164,10 @@
                     <div class="text-center mb-4">
                         <img src="{{ asset('img/svg/landing-page/watersupplyISS.svg') }}" alt="Water Supply Icon"
                             class="h-16 w-16 mx-auto mb-3">
-                        <h5 class="text-lg font-semibold text-slate-900">Water Supply Information Support System</h5>
+                        <h5 class="text-lg font-semibold text-slate-900">{{ __('about.module_water_supply_title') }}</h5>
                     </div>
                     <ul class="list-disc list-inside space-y-2 text-slate-700 text-sm text-left">
-                        <li>Enables import of water supply bill payment data into the system for spatial visualization
-                            of buildings with their bill payment status</li>
+                        <li>{{ __('about.module_water_supply_desc') }}</li>
                     </ul>
                 </div>
 
@@ -213,18 +177,15 @@
                     <div class="text-center mb-4">
                         <img src="{{ asset('img/svg/landing-page/fecalSludgeIMS.svg') }}" alt="Fecal Sludge Icon"
                             class="h-16 w-16 mx-auto mb-3">
-                        <h5 class="text-lg font-semibold text-slate-900">Fecal Sludge Information Management System</h5>
+                        <h5 class="text-lg font-semibold text-slate-900">{{ __('about.module_fsm_title') }}</h5>
                     </div>
                     <ul class="list-disc list-inside space-y-2 text-slate-700 text-sm text-left">
-                        <li>Maintains information about all containments with their geographic location</li>
-                        <li>Maintains information about FSM service providers and their resources</li>
-                        <li>Maintains information about the Fecal Sludge Treatment Plant and the FS disposed records
-                        </li>
-                        <li>Maintains the quality test record of treated wastewater and compost generated from the
-                            treatment plant</li>
-                        <li>Maintains records of services from containment emptying to transport, and desludging of FS
-                            in the treatment plant</li>
-                        <li>Maintains the customer feedback data</li>
+                        <li>{{ __('about.module_fsm_desc_1') }}</li>
+                        <li>{{ __('about.module_fsm_desc_2') }}</li>
+                        <li>{{ __('about.module_fsm_desc_3') }}</li>
+                        <li>{{ __('about.module_fsm_desc_4') }}</li>
+                        <li>{{ __('about.module_fsm_desc_5') }}</li>
+                        <li>{{ __('about.module_fsm_desc_6') }}</li>
                     </ul>
                 </div>
 

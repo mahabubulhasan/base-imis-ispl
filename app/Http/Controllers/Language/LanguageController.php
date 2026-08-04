@@ -26,7 +26,7 @@ class LanguageController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth', ['except' => ['set_lang']]);
         $this->middleware('permission:List Languages', ['only' => ['index']]);
         $this->middleware('permission:View Language', ['only' => ['show']]);
         $this->middleware('permission:Add Language', ['only' => ['create', 'store', 'import_translates']]);
@@ -37,8 +37,6 @@ class LanguageController extends Controller
         $this->middleware('permission:Generate Translation', ['only' => ['generate_translate']]);
         $this->middleware('permission:Export Translation CSV', ['only' => ['export_csv_format']]);
         $this->middleware('permission:Add Language', ['only' => ['create', 'store', 'import_translates']]);
-
-
     }
     /**
 
@@ -142,9 +140,27 @@ class LanguageController extends Controller
     // sets app_language cookie as the selected language
     public function set_lang(Request $request)
     {
-        $lang = isset($request->lang) ? $request->lang : 'en';
-        $_key = Cookie::queue(Cookie::make('app_language', $lang, (60 * 24 * 365)));
-        return back();
+        // Last Modified: 2026-08-04
+        // Developed By: Streams Tech Ltd.
+        // Description: Set application language cookie and redirect back
+
+        $lang = $request->query('lang', 'en');
+
+        // Validate language is supported
+        if (!in_array($lang, ['en', 'bn'])) {
+            $lang = 'en';
+        }
+
+        // Set cookie value with format "timestamp|language"
+        $cookieValue = time() . '|' . $lang;
+
+        // Create response with cookie
+        $response = redirect('/');
+
+        // Attach cookie with 1 year expiration (60 * 24 * 365 minutes)
+        $response->cookie('app_language', $cookieValue, 60 * 24 * 365, '/', null, false, false);
+
+        return $response;
     }
 
 
