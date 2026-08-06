@@ -208,7 +208,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 <div class="modal fade" id="invalidDataModal" tabindex="-1" role="dialog" aria-labelledby="invalidDataModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-        
+
             <div class="modal-body text-center">
                 <p>
                     {{__('Some indicators have been calculated as')}} <strong>NaN</strong> {{__('(Not a Number)')}} or <strong>NA</strong> {{__('(Not Available)')}}.
@@ -225,11 +225,11 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
                         </ul>
                     </li>
                 </ul>
-             
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Close') }}</button>
-               
+
             </div>
         </div>
     </div>
@@ -365,7 +365,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
         <br>
         @include('cwis.cwis-dashboard.chart-layout.seperate-chart-layout.safety-card')
     </div>
-    
+
     <div class="select-dropdown">
         <select style="text-align: center;" id="cwis-year-select">
             <option value="">{{__('Select year')}}</option>
@@ -375,11 +375,12 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
         </select>
     </div>
     <div class="buttons-container">
+        <button class="pdf" onclick="window.open('{{ asset('pdf/CWIS_Manual_for_IMIS_Final_v3.pdf') }}', '_blank')">{{ __('About CWIS') }}</button>
         @can('Push CWIS Indicator to NSD')
-        <button class="export-button" style="margin-right:none" id="nsd-push">Push Data to NSD</button>
+        <button class="export-button" style="margin-right:none" id="nsd-push">{{ __('Push Data to NSD') }}</button>
         @endcan
         @can('Check Status of Indicator in NSD')
-        <button class="export-button" style="margin-right:none" id="nsd-status">Check Publication status in NSD</button>
+        <button class="export-button" style="margin-right:none" id="nsd-status">{{ __('Check Publication status in NSD') }}</button>
         @endcan
         <button class="export-button" style="margin-right:none" id="export">{{__("Export to Excel")}}</button>
         <button class="pdf">{{__("Generate PDF")}}</button>
@@ -927,7 +928,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
                         sf9Image : sf9Image
                     }),
                 })
-                
+
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Failed to download PDF');
@@ -949,7 +950,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
                  // Hide the loader overlay after AJAX request completes, regardless of success or failure
                 $('#loader-overlay').hide();
             });
-                
+
         }
 
         document.querySelector('.pdf').addEventListener('click', downloadPDF);
@@ -1002,14 +1003,14 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
         type: "GET",
         dataType: "json",
         success: function (response) {
-            console.log(response);            
+            console.log(response);
 
             if (Array.isArray(response) && response.length > 0) {
-                let data = response[0]; 
+                let data = response[0];
                 let city = data.city;
                 let publishedYears = data.published_years || [];
                 let draftYears = data.draft_years || [];
-               
+
                 Swal.fire({
                     title: 'CWIS Status of Published and Draft Years',
                     html: `<p><strong>City:</strong> ${city}</p>
@@ -1018,7 +1019,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
                     icon: 'info',
                     confirmButtonText: 'OK'
                 });
-            } 
+            }
         },
         error: function (xhr, status, error) {
             Swal.fire({
