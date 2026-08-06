@@ -258,7 +258,9 @@ class PendingApplicationService
 
     public function getPendingApplicationsQuery(Request $request): Builder
     {
-        $query = Application::with('payment');
+        $query = Application::with('payment')->whereHas('payment', function (Builder $paymentQuery) {
+            $paymentQuery->where('transaction_status', 'Paid')->orWhere('transaction_status', 'Cash');
+        });
 
         if ($request->filled('tax_id')) {
             $query->where('tax_code', 'ILIKE', '%' . trim($request->tax_id) . '%');
