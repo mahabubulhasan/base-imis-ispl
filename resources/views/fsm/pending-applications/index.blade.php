@@ -49,9 +49,9 @@
                                             <div class="col-md-4">
                                                 <input type="text" id="ward" class="form-control" placeholder="{{ __('Ward') }}">
                                             </div>
-                                            <label class="col-md-2 col-form-label">{{ __('Applicant Contact') }}</label>
+                                            <label class="col-md-2 col-form-label">{{ __('Customer Contact') }}</label>
                                             <div class="col-md-4">
-                                                <input type="text" id="customer_contact" class="form-control" placeholder="{{ __('Applicant Contact') }}">
+                                                <input type="text" id="customer_contact" class="form-control" placeholder="{{ __('Customer Contact') }}">
                                             </div>
                                         </div>
                                         <div class="card-footer text-right">
