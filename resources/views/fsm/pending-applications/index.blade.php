@@ -80,7 +80,7 @@
                             <th>{{ __('Address') }}</th>
                             <th>{{ __('Proposed Emptying Date') }}</th>
                             <th>{{ __('Application Date') }}</th>
-                            <th>{{ __('Payment Status') }}</th>
+                            <th>{{ __('Payment Method') }}</th>
                             <th>{{ __('Actions') }}</th>
                         </tr>
                     </thead>

@@ -310,7 +310,10 @@ class PendingApplicationService
                 return $actions;
             })
             ->addColumn('payment_status', function (Application $pendingApplication) {
-                return $pendingApplication->payment ? ucfirst($pendingApplication->payment->transaction_status) : __('Not Paid');
+                $status = $pendingApplication->payment->transaction_status;
+                $status = $status == 'Paid' ? 'Online' : $status;
+
+                return $pendingApplication->payment ? ucfirst($status) : __('Not Paid');
             })
             ->editColumn('applicant_contact', function (Application $pendingApplication) {
                 $contact = $pendingApplication->applicant_contact ?: '-';
