@@ -239,7 +239,7 @@ class PendingApplicationService
         ]);
 
         // Create payment record only if cash_in_hand payment method is selected
-        if(!empty($validated['payment_method']) && $validated['payment_method'] === 'cash_in_hand') {
+        if(!empty($validated['amount']) && $validated['amount'] > 0) {
             Payment::cashInHandPayment(
                 $validated['customer_name'],
                 $validated['customer_contact'],
