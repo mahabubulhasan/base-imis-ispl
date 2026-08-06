@@ -1,78 +1,78 @@
 <?php
 // Last Modified: 2026-08-04
 // Developed By: Streams Tech Ltd.
-// Description: প্রতিক্রিয়া ফর্মের অনুবাদ স্ট্রিং
+// Description: ফিডব্যাক ফরমের অনুবাদ স্ট্রিং
 
 return [
-    'form_title' => 'প্রতিক্রিয়া ফর্ম',
+    'form_title' => 'ফিডব্যাক ফরম',
 
     // Application Information Section
-    'application_section' => 'আবেদন তথ্য',
+    'application_section' => 'আবেদনের তথ্য',
     'application_number' => 'আবেদন নম্বর',
-    'application_number_placeholder' => 'আপনার আবেদন নম্বর প্রবেশ করুন',
-    'service_receiver_name' => 'সেবা প্রাপকের নাম',
-    'service_receiver_contact' => 'সেবা প্রাপকের যোগাযোগ',
-    'service_receiver_placeholder' => 'স্বয়ংক্রিয়ভাবে পূরণ করা হবে',
+    'application_number_placeholder' => 'আপনার আবেদন নম্বর লিখুন',
+    'service_receiver_name' => 'সেবাগ্রহীতার নাম',
+    'service_receiver_contact' => 'সেবাগ্রহীতার যোগাযোগ নম্বর',
+    'service_receiver_placeholder' => 'স্বয়ংক্রিয়ভাবে পূরণ হবে',
     'service_provider_name' => 'সেবা প্রদানকারীর নাম',
-    'service_provider_contact' => 'সেবা প্রদানকারীর যোগাযোগ',
+    'service_provider_contact' => 'সেবা প্রদানকারীর যোগাযোগ নম্বর',
 
     // Service Feedback Section
-    'feedback_section' => 'সেবা প্রতিক্রিয়া',
-    'safety_equipment_question' => 'খালি করার ব্যক্তি কি নিরাপত্তা সরঞ্জাম পরেছেন?',
-    'fsm_quality_question' => 'আপনি যে এফএসএম সেবা পেয়েছেন তার গুণমান কিভাবে মূল্যায়ন করবেন?',
-    'service_efficiency_question' => 'সেবা প্রদানের দক্ষতা কিভাবে মূল্যায়ন করবেন?',
-    'overall_satisfaction_question' => 'সেবার প্রতি আপনার সামগ্রিক সন্তুষ্টি কী?',
-    'quality_price_question' => 'মূল্যের সাথে তুলনা করে গুণমান কিভাবে মূল্যায়ন করবেন?',
+    'feedback_section' => 'সেবা সম্পর্কে ফিডব্যাক',
+    'safety_equipment_question' => 'স্লাজ অপসারণের সময় স্যানিটেশন কর্মীরা কি PPE পরেছিলেন?',
+    'fsm_quality_question' => 'আপনি যে FSM সেবা পেয়েছেন, তার মান কেমন ছিল?',
+    'service_efficiency_question' => 'সেবা দেওয়ার দক্ষতা কেমন ছিল?',
+    'overall_satisfaction_question' => 'সেবা নিয়ে সব মিলিয়ে আপনি কতটা সন্তুষ্ট?',
+    'quality_price_question' => 'খরচের তুলনায় সেবার মান কেমন ছিল?',
 
     // Specific feedback form questions (matching HTML)
-    'q2_emptier_attitude' => 'সেবার সময় খালি করার ব্যক্তির মনোভাব কিভাবে মূল্যায়ন করবেন?',
-    'q3_response_time' => 'খালিকরণ সেবার প্রতিক্রিয়া সময় কিভাবে মূল্যায়ন করবেন?',
-    'q4_overall_satisfaction' => 'সামগ্রিক খালিকরণ সেবায় কত সন্তুষ্ট?',
-    'q5_price_satisfaction' => 'এই সেবার মূল্যে কত সন্তুষ্ট?',
+    'q2_emptier_attitude' => 'সেবা দেওয়ার সময় কর্মীদের আচরণ কেমন ছিল?',
+    'q3_response_time' => 'আবেদনের পর সেবা পেতে যে সময় লেগেছে, তা কেমন ছিল?',
+    'q4_overall_satisfaction' => 'খালি করার সেবা নিয়ে সব মিলিয়ে আপনি কতটা সন্তুষ্ট?',
+    'q5_price_satisfaction' => 'এই সেবার খরচ নিয়ে আপনি কতটা সন্তুষ্ট?',
 
     // Radio Options
     'yes' => 'হ্যাঁ',
     'no' => 'না',
-    'unknown' => 'অজানা',
-    'very_poor' => 'খুবই খারাপ',
+    'unknown' => 'জানা নেই',
+    'very_poor' => 'খুব খারাপ',
     'poor' => 'খারাপ',
-    'satisfactory' => 'সন্তোষজনক',
-    'good' => 'ভাল',
-    'very_good' => 'খুবই ভাল',
+    'satisfactory' => 'মোটামুটি',
+    'good' => 'ভালো',
+    'very_good' => 'খুব ভালো',
     'excellent' => 'চমৎকার',
-    'highly_dissatisfied' => 'অত্যন্ত অসন্তুষ্ট',
+    'highly_dissatisfied' => 'খুব অসন্তুষ্ট',
     'dissatisfied' => 'অসন্তুষ্ট',
-    'neutral' => 'নিরপেক্ষ',
+    'neutral' => 'মাঝামাঝি',
     'satisfied' => 'সন্তুষ্ট',
-    'highly_satisfied' => 'অত্যন্ত সন্তুষ্ট',
+    'highly_satisfied' => 'খুব সন্তুষ্ট',
 
     // Comments Section
-    'comments_if_dissatisfied' => 'যদি অসন্তুষ্ট হন, দয়া করে ব্যাখ্যা করুন:',
-    'quality_concerns' => 'গুণমান সম্পর্কিত উদ্বেগ',
-    'efficiency_concerns' => 'দক্ষতা সম্পর্কিত উদ্বেগ',
-    'satisfaction_concerns' => 'সন্তুষ্টি সম্পর্কিত উদ্বেগ',
-    'price_concerns' => 'মূল্য সম্পর্কিত উদ্বেগ',
+    'comments_if_dissatisfied' => 'অসন্তুষ্ট হলে অনুগ্রহ করে কারণ লিখুন:',
+    'quality_concerns' => 'সেবার মান সম্পর্কে মন্তব্য',
+    'efficiency_concerns' => 'সেবার দক্ষতা সম্পর্কে মন্তব্য',
+    'satisfaction_concerns' => 'সন্তুষ্টি সম্পর্কে মন্তব্য',
+    'price_concerns' => 'খরচ সম্পর্কে মন্তব্য',
 
     // Additional Information Section
     'additional_info_section' => 'অতিরিক্ত তথ্য',
-    'customer_gender' => 'লিঙ্গ',
-    'website_score' => 'আমাদের ওয়েবসাইট কিভাবে মূল্যায়ন করবেন?',
+    'customer_gender' => 'জেন্ডার',
+    'website_score' => 'আমাদের ওয়েবসাইটটি আপনার কেমন লেগেছে?',
     'comments' => 'অতিরিক্ত মন্তব্য',
-    'comments_placeholder' => 'দয়া করে কোনো অতিরিক্ত প্রতিক্রিয়া বা পরামর্শ শেয়ার করুন',
+    'comments_placeholder' => 'অতিরিক্ত কোনো ফিডব্যাক বা পরামর্শ থাকলে লিখুন',
 
     // Validation Messages
-    'validation_application_id_required' => 'আবেদন নম্বর প্রয়োজনীয়',
-    'validation_customer_name_required' => 'সেবা প্রাপকের নাম প্রয়োজনীয়',
-    'validation_customer_number_required' => 'সেবা প্রাপকের যোগাযোগ প্রয়োজনীয়',
-    'validation_safety_measures_required' => 'দয়া করে একটি নিরাপত্তা ব্যবস্থা বিকল্প নির্বাচন করুন',
-    'validation_fsm_quality_required' => 'দয়া করে এফএসএম সেবার গুণমান মূল্যায়ন করুন',
-    'validation_service_efficiency_required' => 'দয়া করে সেবা দক্ষতা মূল্যায়ন করুন',
-    'validation_overall_satisfaction_required' => 'দয়া করে আপনার সামগ্রিক সন্তুষ্টি মূল্যায়ন করুন',
-    'validation_quality_price_required' => 'দয়া করে মূল্যের সাথে তুলনা করে গুণমান মূল্যায়ন করুন',
+    'validation_application_id_required' => 'আবেদন নম্বর দিতে হবে।',
+    'validation_customer_name_required' => 'সেবাগ্রহীতার নাম দিতে হবে।',
+    'validation_customer_number_required' => 'সেবাগ্রহীতার যোগাযোগ নম্বর দিতে হবে।',
+    'validation_safety_measures_required' => 'PPE পরা হয়েছিল কি না তা দিতে হবে।',
+    'validation_fsm_quality_required' => 'FSM সেবার মান দিতে হবে।',
+    'validation_service_efficiency_required' => 'সেবার দক্ষতা সম্পর্কে মতামত দিতে হবে।',
+    'validation_overall_satisfaction_required' => 'সব মিলিয়ে আপনার সন্তুষ্টি সম্পর্কে মতামত দিতে হবে।',
+    'validation_quality_price_required' => 'খরচের তুলনায় সেবার মান সম্পর্কে মতামত দিতে হবে।',
 
     // Success Messages
-    'submission_success' => 'প্রতিক্রিয়া সফলভাবে জমা দেওয়া হয়েছে!',
-    'submission_success_message' => 'আপনার প্রতিক্রিয়ার জন্য ধন্যবাদ। আপনার মূল্যবান মতামত আমাদের সেবা উন্নত করতে সাহায্য করে।',
-    'loading_application_details' => 'আবেদন বিবরণ লোড হচ্ছে...',
-    'submit_another' => 'অন্য একটি প্রতিক্রিয়া জমা দিন',
+    'submission_success' => 'আপনার ফিডব্যাক সফলভাবে জমা হয়েছে!',
+    'submission_success_message' => 'ফিডব্যাক দেওয়ার জন্য আপনাকে ধন্যবাদ। আপনার মূল্যবান মতামত আমাদের সেবার মান বাড়াতে সাহায্য করবে।',
+    'loading_application_details' => 'আবেদনের তথ্য লোড হচ্ছে...',
+    'submit_another' => 'আরেকটি ফিডব্যাক দিন',
 ];
