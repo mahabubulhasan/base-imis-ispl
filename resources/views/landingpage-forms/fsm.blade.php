@@ -149,7 +149,7 @@ Description: FSM Application Form - Vue 3 Implementation with Language Support -
 
                     <div class="col-12 mb-3">
                         <label class="block text-gray-800 font-semibold mb-2 text-base">
-                            {{ __('fsm.notes') }} <small class="text-gray-500">({{ __('common.loading') }})</small>
+                            {{ __('fsm.notes') }} <small class="text-gray-500">({{ __('common.optional') }})</small>
                         </label>
                         <textarea
                             v-model="notes"

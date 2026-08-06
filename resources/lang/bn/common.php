@@ -26,6 +26,7 @@ return [
     'next' => 'পরবর্তী',
     'previous' => 'পূর্ববর্তী',
     'loading' => 'লোড হচ্ছে...',
+    'optional' => 'ঐচ্ছিক',
 
     // Common messages
     'success' => 'সফল!',

@@ -26,6 +26,7 @@ return [
     'next' => 'Next',
     'previous' => 'Previous',
     'loading' => 'Loading...',
+    'optional' => 'Optional',
 
     // Common messages
     'success' => 'Success!',
