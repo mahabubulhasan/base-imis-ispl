@@ -386,7 +386,7 @@
 
                 <div class="payment-row">
                     <span class="payment-label">সেবা ফি</span>
-                    <span class="payment-amount">১,৫০০.০০ টাকা</span>
+                    <span class="payment-amount">{{ translate_number(config('ekpay.DEFAULT_AMOUNT')) }} টাকা</span>
                 </div>
 
                 <div class="payment-row">
@@ -396,7 +396,7 @@
 
                 <div class="payment-row total">
                     <span class="payment-label">মোট পরিমাণ</span>
-                    <span class="payment-amount">১,৫০০.০০ টাকা</span>
+                    <span class="payment-amount">{{ translate_number(config('ekpay.DEFAULT_AMOUNT')) }} টাকা</span>
                 </div>
             </div>
 
@@ -413,7 +413,7 @@
                 <form id="payment-form" method="POST" action="{{ route('payment.store', $application->id) }}" style="display: inline;">
                     @csrf
                     <input type="hidden" name="application_id" value="{{ $application->id }}">
-                    <input type="hidden" name="amount" value="1500">
+                    <input type="hidden" name="amount" value="{{ config('ekpay.DEFAULT_AMOUNT') }}">
                     <button type="submit" class="btn btn-primary" id="checkout-btn" disabled>
                         🔒 নিরাপদে পেমেন্ট করুন
                     </button>

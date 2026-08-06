@@ -60,3 +60,20 @@ if (!function_exists('moveOthersToEnd')) {
         return $array;
     }
 }
+
+if (!function_exists('translate_number')) {
+    /**
+     * Convert number to Bangla using Intl NumberFormatter
+     *
+     * @param int|float $number Input number
+     * @return string Number formatted in Bangla digits
+     */
+    function translate_number($number, $locale = 'bn_BD'): string
+    {
+        // Create formatter for Bangla (Bangladesh) locale
+        $formatter = new NumberFormatter($locale, NumberFormatter::DECIMAL);
+
+        // Format the number
+        return $formatter->format($number);
+    }
+}
