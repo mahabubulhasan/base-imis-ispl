@@ -275,7 +275,8 @@ class PendingApplicationService
         }
 
         if ($request->filled('customer_contact')) {
-            $query->where('applicant_contact', 'ILIKE', '%' . trim($request->customer_contact) . '%');
+            $contact = strlen(trim($request->customer_contact)) == 11 ? ltrim(trim($request->customer_contact), '0') : trim($request->customer_contact);
+            $query->where('applicant_contact', 'ILIKE', '%' . $contact . '%');
         }
 
         return $query->orderByDesc('id');
