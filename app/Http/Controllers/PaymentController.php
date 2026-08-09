@@ -63,7 +63,7 @@ class PaymentController extends Controller
 
         $transaction = new Transaction(
             $payment->transaction_id,
-            '1500.00'
+            config('ekpay.DEFAULT_AMOUNT')
         );
 
         session()->put('payment_id', $payment->id);
