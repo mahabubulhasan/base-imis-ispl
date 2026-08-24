@@ -383,7 +383,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
         <button class="export-button" style="margin-right:none" id="nsd-status">{{ __('Check Publication status in NSD') }}</button>
         @endcan
         <button class="export-button" style="margin-right:none" id="export">{{__("Export to Excel")}}</button>
-        <button class="pdf">{{__("Generate PDF")}}</button>
+        <button class="pdf" id="generate-pdf">{{__("Generate PDF")}}</button>
     </div>
 </div>
 <div id="loader-overlay" style="display: none;">
@@ -953,7 +953,7 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 
         }
 
-        document.querySelector('.pdf').addEventListener('click', downloadPDF);
+        document.getElementById('generate-pdf').addEventListener('click', downloadPDF);
     });
 
     $('#nsd-push').on('click', function (e) {
