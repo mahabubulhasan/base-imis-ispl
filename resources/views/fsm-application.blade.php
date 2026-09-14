@@ -161,7 +161,8 @@ Developed By: Streamstech Ltd.   -->
                     <div class="col-lg-8 mt-5 mt-lg-0">
 
                         @if(session('success'))
-                        <div class="alert alert-primary alert-dismissible fade show shadow-sm" role="alert" style="border-left: 4px solid #28a745; background-color: #d4edda; border-color: #c3e6cb;">
+                        <div class="alert alert-primary alert-dismissible fade show shadow-sm" role="alert"
+                            style="border-left: 4px solid #28a745; background-color: #d4edda; border-color: #c3e6cb;">
                             <i class="fas fa-check-circle mr-2"></i>
                             <strong>Success!</strong> {{ session('success') }}
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -171,7 +172,8 @@ Developed By: Streamstech Ltd.   -->
                         @endif
 
                         @if(session('error'))
-                        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert" style="border-left: 4px solid #dc3545;">
+                        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert"
+                            style="border-left: 4px solid #dc3545;">
                             <i class="fas fa-exclamation-triangle mr-2"></i>
                             <strong>Error!</strong> {{ session('error') }}
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -181,7 +183,8 @@ Developed By: Streamstech Ltd.   -->
                         @endif
 
                         @if($errors->any())
-                        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert" style="border-left: 4px solid #dc3545;">
+                        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert"
+                            style="border-left: 4px solid #dc3545;">
                             <i class="fas fa-exclamation-triangle mr-2"></i>
                             <ul class="mb-0">
                                 @foreach($errors->all() as $error)
@@ -202,12 +205,17 @@ Developed By: Streamstech Ltd.   -->
 
                                 <div class="form-row">
                                     <div class="form-group row col-12">
-                                        {!! Form::label('has_tax_id', 'Do you have a Tax ID? ', ['class' => 'col-sm-3 control-label']) !!}
+                                        {!! Form::label('has_tax_id', 'Do you have a Tax ID? ', ['class' => 'col-sm-3
+                                        control-label']) !!}
                                         <div class="col-sm-5">
-                                            <select name="has_tax_id" class="form-control @error('has_tax_id') is-invalid @enderror" id="has_tax_id" required>
+                                            <select name="has_tax_id"
+                                                class="form-control @error('has_tax_id') is-invalid @enderror"
+                                                id="has_tax_id" required>
                                                 <option value="">Please select</option>
-                                                <option value="yes" {{ old('has_tax_id') == 'yes' ? 'selected' : '' }}>Yes</option>
-                                                <option value="no" {{ old('has_tax_id') == 'no' ? 'selected' : '' }}>No</option>
+                                                <option value="yes" {{ old('has_tax_id')=='yes' ? 'selected' : '' }}>Yes
+                                                </option>
+                                                <option value="no" {{ old('has_tax_id')=='no' ? 'selected' : '' }}>No
+                                                </option>
                                             </select>
                                             @error('has_tax_id')
                                             <div class="invalid-feedback">{{ $message }}</div>
@@ -218,9 +226,12 @@ Developed By: Streamstech Ltd.   -->
 
                                 <!-- Tax ID field: initially shown only when old('has_tax_id') == 'yes' -->
                                 <div class="form-row">
-                                    <div class="form-group col-12 col-md-6" id="tax_id_group" style="{{ old('has_tax_id') == 'yes' ? '' : 'display:none;' }}">
-                                        <label for="tax_id">Tax ID <span class="text-danger tax-required-star" style="{{ old('has_tax_id') == 'yes' ? '' : 'display:none;' }}">*</span></label>
-                                        <input type="text" name="tax_id" class="form-control @error('tax_id') is-invalid @enderror" id="tax_id"
+                                    <div class="form-group col-12 col-md-6" id="tax_id_group"
+                                        style="{{ old('has_tax_id') == 'yes' ? '' : 'display:none;' }}">
+                                        <label for="tax_id">Tax ID <span class="text-danger tax-required-star"
+                                                style="{{ old('has_tax_id') == 'yes' ? '' : 'display:none;' }}">*</span></label>
+                                        <input type="text" name="tax_id"
+                                            class="form-control @error('tax_id') is-invalid @enderror" id="tax_id"
                                             placeholder="##-###-####-##" value="{{ old('tax_id') }}">
                                         @error('tax_id')
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -235,18 +246,24 @@ Developed By: Streamstech Ltd.   -->
 
                                 <div class="form-row">
                                     <div class="form-group col-12 col-md-6">
-                                        <label for="customer_name">Customer Name <span class="text-danger">*</span></label>
-                                        <input type="text" name="customer_name" class="form-control @error('customer_name') is-invalid @enderror" id="customer_name"
-                                            placeholder="Customer Name" value="{{ old('customer_name') }}" required aria-required="true">
+                                        <label for="customer_name">Customer Name <span
+                                                class="text-danger">*</span></label>
+                                        <input type="text" name="customer_name"
+                                            class="form-control @error('customer_name') is-invalid @enderror"
+                                            id="customer_name" placeholder="Customer Name"
+                                            value="{{ old('customer_name') }}" required aria-required="true">
                                         @error('customer_name')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
 
                                     <div class="form-group col-12 col-md-6">
-                                        <label for="customer_contact">Contact No. <span class="text-danger">*</span></label>
-                                        <input type="tel" class="form-control @error('customer_contact') is-invalid @enderror" name="customer_contact" id="customer_contact"
-                                            placeholder="01#########" value="{{ old('customer_contact') }}" required aria-required="true">
+                                        <label for="customer_contact">Contact No. <span
+                                                class="text-danger">*</span></label>
+                                        <input type="tel"
+                                            class="form-control @error('customer_contact') is-invalid @enderror"
+                                            name="customer_contact" id="customer_contact" placeholder="01#########"
+                                            value="{{ old('customer_contact') }}" required aria-required="true">
                                         @error('customer_contact')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -256,8 +273,10 @@ Developed By: Streamstech Ltd.   -->
                                 <div class="form-row">
                                     <div class="form-group col-12 col-md-6">
                                         <label for="holding_owner_name">Holding Owner Name</label>
-                                        <input type="text" name="holding_owner_name" class="form-control @error('holding_owner_name') is-invalid @enderror" id="holding_owner_name"
-                                            placeholder="Holding Owner Name" value="{{ old('holding_owner_name') }}">
+                                        <input type="text" name="holding_owner_name"
+                                            class="form-control @error('holding_owner_name') is-invalid @enderror"
+                                            id="holding_owner_name" placeholder="Holding Owner Name"
+                                            value="{{ old('holding_owner_name') }}">
                                         @error('holding_owner_name')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -265,10 +284,12 @@ Developed By: Streamstech Ltd.   -->
 
                                     <div class="form-group col-12 col-md-6">
                                         <label for="ward">Ward <span class="text-danger">*</span></label>
-                                        <select name="ward" class="form-control @error('ward') is-invalid @enderror" id="ward" required aria-required="true">
+                                        <select name="ward" class="form-control @error('ward') is-invalid @enderror"
+                                            id="ward" required aria-required="true">
                                             <option value="">Select Ward</option>
                                             @foreach($wards as $ward)
-                                            <option value="{{ $ward }}" {{ old('ward') == $ward ? 'selected' : '' }}>{{ $ward }}</option>
+                                            <option value="{{ $ward }}" {{ old('ward')==$ward ? 'selected' : '' }}>{{
+                                                $ward }}</option>
                                             @endforeach
                                         </select>
                                         @error('ward')
@@ -279,8 +300,11 @@ Developed By: Streamstech Ltd.   -->
 
                                 <div class="form-row">
                                     <div class="form-group col-12 col-md-6">
-                                        <label for="road_code">Road Name <small class="text-muted">(Optional)</small></label>
-                                        <select name="road_code" class="form-control @error('road_code') is-invalid @enderror" id="road_code">
+                                        <label for="road_code">Road Name <small
+                                                class="text-muted">(Optional)</small></label>
+                                        <select name="road_code"
+                                            class="form-control @error('road_code') is-invalid @enderror"
+                                            id="road_code">
                                             <option value="">Select Road</option>
                                         </select>
                                         @error('road_code')
@@ -291,7 +315,9 @@ Developed By: Streamstech Ltd.   -->
 
                                 <div class="form-group">
                                     <label for="address">Address <span class="text-danger">*</span></label>
-                                    <textarea class="form-control @error('address') is-invalid @enderror" name="address" id="address" rows="3" placeholder="Address" required aria-required="true">{{ old('address') }}</textarea>
+                                    <textarea class="form-control @error('address') is-invalid @enderror" name="address"
+                                        id="address" rows="3" placeholder="Address" required
+                                        aria-required="true">{{ old('address') }}</textarea>
                                     @error('address')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -303,25 +329,49 @@ Developed By: Streamstech Ltd.   -->
 
                                 <div class="form-row">
                                     <div class="form-group col-12 col-md-4">
-                                        <label for="proposed_emptying_date">Proposed Emptying Date <span class="text-danger">*</span></label>
-                                        <input type="date" class="form-control form-control-sm @error('proposed_emptying_date') is-invalid @enderror" name="proposed_emptying_date" id="proposed_emptying_date"
+                                        <label for="application_date">Application Date <small
+                                                class="text-muted">(Optional)</small></label>
+                                        <input type="date"
+                                            class="form-control form-control-sm @error('application_date') is-invalid @enderror"
+                                            name="application_date" id="application_date"
+                                            value="{{ old('application_date') }}">
+                                        @error('application_date')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <div class="form-group col-12 col-md-4">
+                                        <label for="proposed_emptying_date">Proposed Emptying Date <span
+                                                class="text-danger">*</span></label>
+                                        <input type="date"
+                                            class="form-control form-control-sm @error('proposed_emptying_date') is-invalid @enderror"
+                                            name="proposed_emptying_date" id="proposed_emptying_date"
                                             value="{{ old('proposed_emptying_date') }}" required aria-required="true">
                                         @error('proposed_emptying_date')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
+                                </div>
 
+                                <div class="form-row">
                                     <div class="form-group col-12 col-md-8">
-                                        <label class="d-block mb-2">Coordinates <small class="text-muted">(Optional)</small></label>
+                                        <label class="d-block mb-2">Coordinates <small
+                                                class="text-muted">(Optional)</small></label>
                                         <div class="input-group input-group-sm">
-                                            <input type="text" class="form-control @error('latitude') is-invalid @enderror" name="latitude" id="latitude"
-                                                placeholder="Latitude" value="{{ old('latitude') }}" aria-label="Latitude">
-                                            <input type="text" class="form-control @error('longitude') is-invalid @enderror" name="longitude" id="longitude"
-                                                placeholder="Longitude" value="{{ old('longitude') }}" aria-label="Longitude">
+                                            <input type="text"
+                                                class="form-control @error('latitude') is-invalid @enderror"
+                                                name="latitude" id="latitude" placeholder="Latitude"
+                                                value="{{ old('latitude') }}" aria-label="Latitude">
+                                            <input type="text"
+                                                class="form-control @error('longitude') is-invalid @enderror"
+                                                name="longitude" id="longitude" placeholder="Longitude"
+                                                value="{{ old('longitude') }}" aria-label="Longitude">
                                             <div class="input-group-append">
-                                                <button type="button" class="btn btn-outline-secondary btn-sm" id="btn-get-location" title="Use browser to detect location">
+                                                <button type="button" class="btn btn-outline-secondary btn-sm"
+                                                    id="btn-get-location" title="Use browser to detect location">
                                                     <i class="fa fa-map-marker-alt" aria-hidden="true"></i>
-                                                    <span id="btn-get-location-text" class="text-nowrap ml-1">Use my location</span>
+                                                    <span id="btn-get-location-text" class="text-nowrap ml-1">Use my
+                                                        location</span>
                                                 </button>
                                             </div>
                                         </div>
@@ -337,8 +387,8 @@ Developed By: Streamstech Ltd.   -->
                             </fieldset>
 
                             <div class="text-center mt-3">
-                                 <button type="submit" class="btn btn-primary btn-block">Submit</button>
-                             </div>
+                                <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                            </div>
                         </form>
                     </div>
 
@@ -361,9 +411,11 @@ Developed By: Streamstech Ltd.   -->
     <footer id="footer" class="section-bg">
         <div class="container py-4">
             <div class="copyright">
-                <strong> Base IMIS <i class="fa-regular fa-copyright"> </i>  2022-{{ \Carbon\Carbon::now()->format('Y') }} by <a href="http://www.innovativesolution.com.np">
-	ISPL</a> & <a href="https://www.gwsc.ait.ac.th/">GWSC-AIT</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1">CC BY-NC-SA 4.0 </a>
-</strong>
+                <strong> Base IMIS <i class="fa-regular fa-copyright"> </i> 2022-{{ \Carbon\Carbon::now()->format('Y')
+                    }} by <a href="http://www.innovativesolution.com.np">
+                        ISPL</a> & <a href="https://www.gwsc.ait.ac.th/">GWSC-AIT</a> is licensed under <a
+                        href="https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1">CC BY-NC-SA 4.0 </a>
+                </strong>
             </div>
             <div class="credits">
                 Implemented by
@@ -393,7 +445,9 @@ Developed By: Streamstech Ltd.   -->
     <script src="{{asset('js/app.js')}}"></script>
     <!-- Template Main JS File -->
     <script src="{{ asset('js/main.js')}}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cleave.js/1.0.2/cleave.min.js" integrity="sha512-SvgzybymTn9KvnNGu0HxXiGoNeOi0TTK7viiG0EGn2Qbeu/NFi3JdWrJs2JHiGA1Lph+dxiDv5F9gDlcgBzjfA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cleave.js/1.0.2/cleave.min.js"
+        integrity="sha512-SvgzybymTn9KvnNGu0HxXiGoNeOi0TTK7viiG0EGn2Qbeu/NFi3JdWrJs2JHiGA1Lph+dxiDv5F9gDlcgBzjfA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         function myFunction() {
             var x = document.getElementById("password");

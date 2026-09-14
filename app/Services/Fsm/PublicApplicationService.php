@@ -24,7 +24,8 @@ class PublicApplicationService
                 'max:50',
             ],
             'address' => 'required|string|max:500',
-            'proposed_emptying_date' => 'required|date|after_or_equal:today',
+            'proposed_emptying_date' => 'required|date',
+            'application_date' => 'nullable|date',
             'latitude' => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
         ], [
@@ -34,7 +35,7 @@ class PublicApplicationService
             'tax_id.required' => 'Tax ID is required.',
             'address.required' => 'Address is required.',
             'proposed_emptying_date.required' => 'Proposed Emptying Date is required.',
-            'proposed_emptying_date.after_or_equal' => 'Proposed Emptying Date must be today or a future date.',
+            'application_date.date' => 'Application Date must be a valid date.',
             'latitude.numeric' => 'Latitude must be a valid number.',
             'latitude.between' => 'Latitude must be between -90 and 90.',
             'longitude.numeric' => 'Longitude must be a valid number.',
@@ -100,7 +101,7 @@ class PublicApplicationService
             $application->customer_contact = $request->customer_contact ?? $ownerContact;
             $application->customer_gender = $ownerGender;
 
-            $application->application_date = now()->format('Y-m-d H:i:s');
+            $application->application_date = request('application_date') ?? now()->format('Y-m-d H:i:s');
             $application->applicant_name = $request->customer_name ?? $ownerName ?? null;
             $application->applicant_contact = $request->customer_contact ?? $ownerContact ?? null;
             $application->save();
