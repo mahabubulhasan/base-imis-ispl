@@ -764,7 +764,7 @@ class ApplicationService
     {
 
         $rows = $this->getAllApplications($request);
-        $rows->where('approved_status', true);
+        $rows->where('approved_status', true)->orderBy('updated_at', 'desc');
 
         return DataTables::of($rows)
             ->filter(function ($query) use ($request) {
