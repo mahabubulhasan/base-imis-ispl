@@ -285,7 +285,7 @@ class PendingApplicationService
     public function getDatatable(Request $request)
     {
         $query = $this->getPendingApplicationsQuery($request);
-        $query->where('approved_status', false);
+        $query->where('approved_status', false)->orderBy('updated_at', 'desc');
 
         return DataTables::of($query)
             ->addColumn('action', function (Application $pendingApplication) {
