@@ -266,7 +266,7 @@ function toBengaliNumber($number) {
 <body>
     <div class="receipt-container">
         <!-- Receipt Content -->
-        <div class="receipt-content">
+        < class="receipt-content">
         <!-- Header -->
         <div class="header">
             <img src="{{ asset('layout/img/logo-Lakshmipur.png') }}" alt="Lakshmipur Logo">
@@ -361,10 +361,14 @@ function toBengaliNumber($number) {
                 <tr>
                     <td>পয়ঃবর্জ্য সংগ্রহ সেবা ফি</td>
                     <td><span class="bengali-number">{{ toBengaliNumber($payment->amount) }}/-</span></td>
-                    <td>অনলাইন পেমেন্ট</td>
+                    <td>{{ $payment->transaction_status }}</td>
                 </tr>
             </tbody>
         </table>
+
+        <div>
+            <strong>নোটঃ</strong> পয়ঃবর্জ্য সেবা সম্পন্ন হওয়ার পর সেবা গ্রহীতাকে সংশ্লিষ্ট ক্লিনারকে অতিরিক্ত ৩০০–৫০০ টাকা সেবা-সম্মানী প্রদান করা বাধ্যতামূলক। এ ক্ষেত্রে নির্ধারিত সেবা-সম্মানী যথাযথভাবে পরিশোধ নিশ্চিত করতে হবে।
+        </div>
 
         <!-- Warning Box -->
         <div class="warning-box">
@@ -395,6 +399,7 @@ function toBengaliNumber($number) {
                 <span>PDF ডাউনলোড করুন</span>
             </a>
         </div>
+
     </div>
 </body>
 </html>
