@@ -7,7 +7,7 @@
         [
             'key' => 'eq1',
             'code' => 'EQ-1',
-            'label' => __('dashboard.eq_1_label'),
+            'label' => __('dashboard-pg.eq_1_label'),
             'icon' => 'balance',
             'unit' => 'number',
             'valueClass' => 'text-5xl md:text-6xl',
@@ -15,27 +15,27 @@
     ];
 
     $cwisSafetyCards = [
-        ['key' => 'sf1a', 'code' => 'SF-1a', 'label' => __('dashboard.sf_1a_label'), 'icon' => 'shield'],
-        ['key' => 'sf1b', 'code' => 'SF-1b', 'label' => __('dashboard.sf_1b_label'), 'icon' => 'shield'],
-        ['key' => 'sf1c', 'code' => 'SF-1c', 'label' => __('dashboard.sf_1c_label'), 'icon' => 'shield'],
-        ['key' => 'sf1d', 'code' => 'SF-1d', 'label' => __('dashboard.sf_1d_label'), 'icon' => 'shield'],
-        ['key' => 'sf1e', 'code' => 'SF-1e', 'label' => __('dashboard.sf_1e_label'), 'icon' => 'shield'],
-        ['key' => 'sf1f', 'code' => 'SF-1f', 'label' => __('dashboard.sf_1f_label'), 'icon' => 'shield'],
-        ['key' => 'sf1g', 'code' => 'SF-1g', 'label' => __('dashboard.sf_1g_label'), 'icon' => 'shield'],
-        ['key' => 'sf2a', 'code' => 'SF-2a', 'label' => __('dashboard.sf_2a_label'), 'icon' => 'shield'],
-        ['key' => 'sf2b', 'code' => 'SF-2b', 'label' => __('dashboard.sf_2b_label'), 'icon' => 'shield'],
-        ['key' => 'sf2c', 'code' => 'SF-2c', 'label' => __('dashboard.sf_2c_label'), 'icon' => 'shield'],
-        ['key' => 'sf3', 'code' => 'SF-3', 'label' => __('dashboard.sf_3_label'), 'icon' => 'shield'],
-        ['key' => 'sf3b', 'code' => 'SF-3b', 'label' => __('dashboard.sf_3b_label'), 'icon' => 'shield'],
-        ['key' => 'sf3c', 'code' => 'SF-3c', 'label' => __('dashboard.sf_3c_label'), 'icon' => 'shield'],
-        ['key' => 'sf3e', 'code' => 'SF-3e', 'label' => __('dashboard.sf_3e_label'), 'icon' => 'shield'],
-        ['key' => 'sf4a', 'code' => 'SF-4a', 'label' => __('dashboard.sf_4a_label'), 'icon' => 'shield'],
-        ['key' => 'sf4b', 'code' => 'SF-4b', 'label' => __('dashboard.sf_4b_label'), 'icon' => 'shield'],
-        ['key' => 'sf4d', 'code' => 'SF-4d', 'label' => __('dashboard.sf_4d_label'), 'icon' => 'shield'],
-        ['key' => 'sf5', 'code' => 'SF-5', 'label' => __('dashboard.sf_5_label'), 'icon' => 'shield'],
-        ['key' => 'sf6', 'code' => 'SF-6', 'label' => __('dashboard.sf_6_label'), 'icon' => 'shield'],
-        ['key' => 'sf7', 'code' => 'SF-7', 'label' => __('dashboard.sf_7_label'), 'icon' => 'shield'],
-        ['key' => 'sf9', 'code' => 'SF-9', 'label' => __('dashboard.sf_9_label'), 'icon' => 'shield'],
+        ['key' => 'sf1a', 'code' => 'SF-1a', 'label' => __('dashboard-pg.sf_1a_label'), 'icon' => 'shield'],
+        ['key' => 'sf1b', 'code' => 'SF-1b', 'label' => __('dashboard-pg.sf_1b_label'), 'icon' => 'shield'],
+        ['key' => 'sf1c', 'code' => 'SF-1c', 'label' => __('dashboard-pg.sf_1c_label'), 'icon' => 'shield'],
+        ['key' => 'sf1d', 'code' => 'SF-1d', 'label' => __('dashboard-pg.sf_1d_label'), 'icon' => 'shield'],
+        ['key' => 'sf1e', 'code' => 'SF-1e', 'label' => __('dashboard-pg.sf_1e_label'), 'icon' => 'shield'],
+        ['key' => 'sf1f', 'code' => 'SF-1f', 'label' => __('dashboard-pg.sf_1f_label'), 'icon' => 'shield'],
+        ['key' => 'sf1g', 'code' => 'SF-1g', 'label' => __('dashboard-pg.sf_1g_label'), 'icon' => 'shield'],
+        ['key' => 'sf2a', 'code' => 'SF-2a', 'label' => __('dashboard-pg.sf_2a_label'), 'icon' => 'shield'],
+        ['key' => 'sf2b', 'code' => 'SF-2b', 'label' => __('dashboard-pg.sf_2b_label'), 'icon' => 'shield'],
+        ['key' => 'sf2c', 'code' => 'SF-2c', 'label' => __('dashboard-pg.sf_2c_label'), 'icon' => 'shield'],
+        ['key' => 'sf3', 'code' => 'SF-3', 'label' => __('dashboard-pg.sf_3_label'), 'icon' => 'shield'],
+        ['key' => 'sf3b', 'code' => 'SF-3b', 'label' => __('dashboard-pg.sf_3b_label'), 'icon' => 'shield'],
+        ['key' => 'sf3c', 'code' => 'SF-3c', 'label' => __('dashboard-pg.sf_3c_label'), 'icon' => 'shield'],
+        ['key' => 'sf3e', 'code' => 'SF-3e', 'label' => __('dashboard-pg.sf_3e_label'), 'icon' => 'shield'],
+        ['key' => 'sf4a', 'code' => 'SF-4a', 'label' => __('dashboard-pg.sf_4a_label'), 'icon' => 'shield'],
+        ['key' => 'sf4b', 'code' => 'SF-4b', 'label' => __('dashboard-pg.sf_4b_label'), 'icon' => 'shield'],
+        ['key' => 'sf4d', 'code' => 'SF-4d', 'label' => __('dashboard-pg.sf_4d_label'), 'icon' => 'shield'],
+        ['key' => 'sf5', 'code' => 'SF-5', 'label' => __('dashboard-pg.sf_5_label'), 'icon' => 'shield'],
+        ['key' => 'sf6', 'code' => 'SF-6', 'label' => __('dashboard-pg.sf_6_label'), 'icon' => 'shield'],
+        ['key' => 'sf7', 'code' => 'SF-7', 'label' => __('dashboard-pg.sf_7_label'), 'icon' => 'shield'],
+        ['key' => 'sf9', 'code' => 'SF-9', 'label' => __('dashboard-pg.sf_9_label'), 'icon' => 'shield'],
     ];
 @endphp
 
@@ -43,7 +43,7 @@
     <!-- Loading Spinner -->
     <div id="dashboard-loader" class="flex justify-center items-center py-20">
         <div class="animate-spin rounded-full h-12 w-12 border-4 border-cyan-600 border-t-transparent"></div>
-        <span class="ml-4 text-slate-600 text-lg">{{ __('dashboard.loading_dashboard') }}</span>
+        <span class="ml-4 text-slate-600 text-lg">{{ __('dashboard-pg.loading_dashboard') }}</span>
     </div>
 
     <!-- Dashboard Content Container -->
