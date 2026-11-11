@@ -110,7 +110,7 @@ class EmptyingServiceController extends Controller
     public function getPendingApplications()
     {
         try {
-            $applications = Application::where('approved_status', false)->get();
+            $applications = Application::where('approved_status', false)->orderBy('created_at')->get();
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
