@@ -265,8 +265,6 @@ function toBengaliNumber($number) {
 </head>
 <body>
     <div class="receipt-container">
-        <!-- Receipt Content -->
-        < class="receipt-content">
         <!-- Header -->
         <div class="header">
             <img src="{{ asset('layout/img/logo-Lakshmipur.png') }}" alt="Lakshmipur Logo">
@@ -287,17 +285,11 @@ function toBengaliNumber($number) {
                     <strong>{{ $payment->receipt_no }}</strong>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">ট্রাজেকশন নম্বর:</span>
+                    <span class="info-label">ট্রানজেকশন নম্বর:</span>
                     <strong>{{ $payment->transaction_id }}</strong>
                 </div>
-            </div>
-            <div class="receipt-info-right">
                 <div class="info-row">
                     <span class="info-label">ফি পরিশোধের তারিখ:</span>
-                    {{ $payment->payment_timestamp }}
-                </div>
-                <div class="info-row">
-                    <span class="info-label">ফি পরিশোধের সময়:</span>
                     {{ $payment->payment_timestamp }}
                 </div>
             </div>
