@@ -375,7 +375,7 @@ function toBengaliNumber($number) {
 
         <!-- Footer -->
         <div class="footer-info">
-            সেবা গ্রহনের পর <strong>imislxp-new.streamstech.com</strong> ওয়েবসাইটের <strong>Feedback</strong> ট্যাবে এই রসিদ নম্বর ব্যবহার করে আপনার মতামত প্রদান করুন।
+            সেবা গ্রহনের পর <strong>IMIS</strong> ওয়েবসাইটের <strong>Feedback</strong> ট্যাবে এই রসিদ নম্বর ব্যবহার করে আপনার মতামত প্রদান করুন।
         </div>
         </div>
         <!-- End Receipt Content -->
