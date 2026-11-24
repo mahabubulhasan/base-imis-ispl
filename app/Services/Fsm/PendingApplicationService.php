@@ -239,7 +239,7 @@ class PendingApplicationService
         ]);
 
         // Create payment record only if cash_in_hand payment method is selected
-        if(is_numeric($validated['amount'])) {
+        if(array_key_exists('amount', $validated) && is_numeric($validated['amount'])) {
             Payment::cashInHandPayment(
                 $validated['customer_name'],
                 $validated['customer_contact'],
@@ -248,7 +248,7 @@ class PendingApplicationService
                 $validated['tax_id'] ?? null,
                 $application->id,
                 $validated['proposed_emptying_date'],
-                (int)($validated['amount'] ?? 1500)
+                (int)($validated['amount'] ?? env('DEFAULT_AMOUNT', 1500))
             );
         }
 

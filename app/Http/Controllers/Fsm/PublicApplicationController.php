@@ -33,7 +33,7 @@ class PublicApplicationController extends Controller
         // Check if it's an AJAX request
         if ($request->ajax() || $request->wantsJson()) {
             try {
-                $request['amount'] = $request->exists('amount') ? $request['amount'] : 1500; // for online payment default is 1500
+                // $request['amount'] = $request->exists('amount') ? $request['amount'] :  env('DEFAULT_AMOUNT', 1500); // for online payment default is 1500
                 $result = $this->_applicationService->createApplication($request);
 
                 // Check if result is a redirect (success or error)
