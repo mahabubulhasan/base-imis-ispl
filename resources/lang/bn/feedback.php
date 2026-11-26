@@ -8,8 +8,8 @@ return [
 
     // Application Information Section
     'application_section' => 'আবেদনের তথ্য',
-    'application_number' => 'আবেদন নম্বর',
-    'application_number_placeholder' => 'আপনার আবেদন নম্বর লিখুন',
+    'application_number' => 'রসিদ নম্বর',
+    'application_number_placeholder' => 'আপনার রসিদ নম্বর লিখুন',
     'service_receiver_name' => 'সেবাগ্রহীতার নাম',
     'service_receiver_contact' => 'সেবাগ্রহীতার যোগাযোগ নম্বর',
     'service_receiver_placeholder' => 'স্বয়ংক্রিয়ভাবে পূরণ হবে',

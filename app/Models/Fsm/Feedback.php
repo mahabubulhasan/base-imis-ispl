@@ -26,7 +26,7 @@ class Feedback extends Model
      * @var array
      */
     protected $fillable = [
-        'application_id',
+        'application_id', // basically storing receipt no
         'customer_name',
         'customer_gender',
         'customer_number',

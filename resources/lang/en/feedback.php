@@ -8,8 +8,8 @@ return [
 
     // Application Information Section
     'application_section' => 'Application Information',
-    'application_number' => 'Application Number',
-    'application_number_placeholder' => 'Enter your application number',
+    'application_number' => 'Receipt Number',
+    'application_number_placeholder' => 'Enter your receipt number',
     'service_receiver_name' => 'Service Receiver Name',
     'service_receiver_contact' => 'Service Receiver Contact',
     'service_receiver_placeholder' => 'Will be filled automatically',
